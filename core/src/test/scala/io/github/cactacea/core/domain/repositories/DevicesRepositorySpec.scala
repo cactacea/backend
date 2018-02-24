@@ -1,0 +1,31 @@
+package io.github.cactacea.core.domain.repositories
+
+import com.twitter.util.Await
+import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.infrastructure.dao.DevicesDAO
+
+class DevicesRepositorySpec extends SessionRepositoryTest {
+
+  val devicesRepository = injector.instance[DevicesRepository]
+  val devicesDAO = injector.instance[DevicesDAO]
+
+  test("updateDeviceToken") {
+
+    val displayName = "new account"
+    val password = "password"
+    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
+    val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
+    val auth = signUp(displayName, password, udid)
+
+    Await.result(devicesRepository.update(udid, pushToken, auth.account.id.toSessionId))
+
+    val devices = Await.result(devicesDAO.find(auth.account.id.toSessionId))
+    assert(devices.size == 1)
+
+    val device = devices.head
+    assert(device.pushToken == pushToken)
+
+  }
+
+
+}

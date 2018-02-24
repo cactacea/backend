@@ -1,0 +1,6 @@
+send_a_text={0} {1}
+sent_an_image={0} 画像を送信しました。
+you_have_got_a_message=新着メッセージがあります。
+posted_a_feed={0} フィードを投稿しました。
+posted_a_comment={0} コメントを投稿しました。
+invited_a_group={0} がグループへ招待しました。
