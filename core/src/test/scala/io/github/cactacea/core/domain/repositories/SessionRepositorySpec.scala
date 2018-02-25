@@ -6,7 +6,7 @@ import io.github.cactacea.core.helpers.SessionRepositoryTest
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.models.Accounts
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, AccountTerminated, SessionTimeout}
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountTerminated, InvalidAccountNameOrPassword, SessionTimeout}
 
 class SessionRepositorySpec extends SessionRepositoryTest {
 
@@ -80,7 +80,7 @@ class SessionRepositorySpec extends SessionRepositoryTest {
 
     assert(intercept[CactaceaException] {
       Await.result(sessionRepository.signIn(displayName, "invalid password", udid, userAgent))
-    }.error == AccountNotFound)
+    }.error == InvalidAccountNameOrPassword)
 
   }
 
@@ -193,7 +193,7 @@ class SessionRepositorySpec extends SessionRepositoryTest {
 
     assert(intercept[CactaceaException] {
       Await.result(sessionRepository.signIn("token key", "token secret", "udid", "user agent"))
-    }.error == AccountNotFound)
+    }.error == InvalidAccountNameOrPassword)
 
   }
 
@@ -201,7 +201,7 @@ class SessionRepositorySpec extends SessionRepositoryTest {
 
     assert(intercept[CactaceaException] {
       Await.result(sessionRepository.signIn("token key", "token secret", "udid", "user agent"))
-    }.error == AccountNotFound)
+    }.error == InvalidAccountNameOrPassword)
 
   }
 
@@ -209,7 +209,7 @@ class SessionRepositorySpec extends SessionRepositoryTest {
 
     assert(intercept[CactaceaException] {
       Await.result(sessionRepository.signIn("token key", "token secret", "udid", "user agent"))
-    }.error == AccountNotFound)
+    }.error == InvalidAccountNameOrPassword)
 
   }
 
