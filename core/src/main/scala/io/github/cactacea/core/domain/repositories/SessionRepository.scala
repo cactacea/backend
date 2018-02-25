@@ -48,7 +48,7 @@ class SessionRepository {
           _signIn(a, udid, userAgent)
         }
       case None =>
-        Future.exception(CactaceaException(AccountNotFound))
+        Future.exception(CactaceaException(InvalidAccountNameOrPassword))
     })
   }
 
