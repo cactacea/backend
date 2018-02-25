@@ -54,6 +54,7 @@ object CactaceaError {
   final object AccountNameAlreadyUsed           extends BadRequest(40027, "Account name already used.")
   final object CanNotSpecifyMyself              extends BadRequest(40028, "Can not specify myself.")
   final object PasswordNotMatched               extends BadRequest(40029, "Password not matched.")
+  final object InvalidAccountNameOrPassword     extends BadRequest(40030, "Invalid Account name or password.")
 
   final object SessionNotAuthorized             extends UnAuthorized(40100, "Session not authorized.")
   final object SessionTimeout                   extends UnAuthorized(40101, "Access token expired.")
