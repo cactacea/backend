@@ -2,10 +2,10 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.core.helpers.SessionRepositoryTest
 import io.github.cactacea.core.infrastructure.identifiers.GroupInviteId
+import io.github.cactacea.core.specs.RepositorySpec
 
-class DeliveryGroupInvitesRepositorySpec extends SessionRepositoryTest {
+class DeliveryGroupInvitesRepositorySpec extends RepositorySpec {
 
   val devicesRepository = injector.instance[DevicesRepository]
   val deliveryGroupInvitesRepository = injector.instance[DeliveryGroupInvitesRepository]

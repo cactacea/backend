@@ -1,8 +1,8 @@
 package io.github.cactacea.core.domain.repositories
 
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.specs.RepositorySpec
 
-class TimelineRepositorySpec extends SessionRepositoryTest {
+class TimelineRepositorySpec extends RepositorySpec {
 
   val timelineRepository = injector.instance[TimelineRepository]
 

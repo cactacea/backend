@@ -56,8 +56,8 @@ object CactaceaError {
   final object PasswordNotMatched               extends BadRequest(40029, "Password not matched.")
   final object InvalidAccountNameOrPassword     extends BadRequest(40030, "Invalid Account name or password.")
 
-  final object SessionNotAuthorized             extends UnAuthorized(40100, "Session not authorized.")
-  final object SessionTimeout                   extends UnAuthorized(40101, "Access token expired.")
+  final object SessionNotAuthorized             extends Unauthorized(40100, "Session not authorized.")
+  final object SessionTimeout                   extends Unauthorized(40101, "Access token expired.")
 
   // 406 Not Acceptable
   final object NotAcceptableMimeTypeFound       extends NotFound(40400, "Not acceptable mime type found.")

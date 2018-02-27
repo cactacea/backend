@@ -2,9 +2,9 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FriendRequestStatusType
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.specs.DAOSpec
 
-class FriendRequestsDAOSpec extends CactaceaDAOTest {
+class FriendRequestsDAOSpec extends DAOSpec {
 
   val friendRequestsDAO: FriendRequestsDAO = injector.instance[FriendRequestsDAO]
 

@@ -5,8 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
-import io.github.cactacea.core.infrastructure.db.DatabaseService
-import io.github.cactacea.core.infrastructure.queries.RelationshipBlocksCountQuery
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 import io.github.cactacea.core.util.PasswordHashGenerator
 import org.joda.time.DateTime
 

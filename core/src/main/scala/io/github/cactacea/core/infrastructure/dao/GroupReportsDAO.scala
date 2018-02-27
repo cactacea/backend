@@ -3,9 +3,9 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.ReportType
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class GroupReportsDAO @Inject()(db: DatabaseService) {

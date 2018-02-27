@@ -1,10 +1,10 @@
 package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
-import io.github.cactacea.core.domain.enums.{FeedPrivacyType}
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.core.specs.DAOSpec
 
-class DeliveryFeedsDAOSpec extends CactaceaDAOTest {
+class DeliveryFeedsDAOSpec extends DAOSpec {
 
   val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
   val accountFeedsDAO: AccountFeedsDAO = injector.instance[AccountFeedsDAO]

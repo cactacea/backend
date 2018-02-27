@@ -3,10 +3,10 @@ package io.github.cactacea.core.infrastructure.dao
 import com.twitter.util.Await
 import io.jsonwebtoken.impl.TextCodec
 import io.jsonwebtoken.impl.crypto.MacProvider
-import io.github.cactacea.core.helpers.CactaceaDAOTest
 import io.github.cactacea.core.infrastructure.models.Relationships
+import io.github.cactacea.core.specs.DAOSpec
 
-class MutesDAOSpec extends CactaceaDAOTest {
+class MutesDAOSpec extends DAOSpec {
 
   val mutesDAO: MutesDAO = injector.instance[MutesDAO]
 

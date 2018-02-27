@@ -5,8 +5,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.ReportType
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.domain.repositories.{AccountsRepository, ReportsRepository}
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 import org.joda.time.DateTime
 
 @Singleton

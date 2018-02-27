@@ -2,12 +2,12 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums._
-import io.github.cactacea.core.helpers.SessionRepositoryTest
 import io.github.cactacea.core.infrastructure.identifiers._
+import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, CommentNotFound, FeedNotFound, GroupNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
-class ReportsRepositorySpec extends SessionRepositoryTest {
+class ReportsRepositorySpec extends RepositorySpec {
 
   val reportsRepository = injector.instance[ReportsRepository]
   val feedsRepository = injector.instance[FeedsRepository]
