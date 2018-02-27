@@ -6,9 +6,8 @@ import io.github.cactacea.core.application.responses.FeedCreated
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.core.domain.models.Feed
 import io.github.cactacea.core.domain.repositories._
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
-import io.github.cactacea.core.infrastructure.services.{PushNotificationService, QueueService}
+import io.github.cactacea.core.infrastructure.services.{DatabaseService, PushNotificationService, QueueService}
 import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 @Singleton

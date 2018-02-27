@@ -1,4 +1,4 @@
-package io.github.cactacea.core.infrastructure.db
+package io.github.cactacea.core.infrastructure.services
 
 import java.sql.Timestamp
 import java.util.Date

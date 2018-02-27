@@ -9,7 +9,7 @@ import io.github.cactacea.backend.helpers.DatabaseHelper
 import io.github.cactacea.backend.modules.{DefaultPushNotificationModule, DefaultQueueModule, DefaultStorageModule}
 import io.github.cactacea.backend.server.DefaultServer
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.infrastructure.db.DatabaseProviderModule
+import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import io.github.cactacea.core.util.tokens.AuthTokenGenerator
 
 import scala.util.parsing.json.{JSONArray, JSONObject}

@@ -3,9 +3,8 @@ package io.github.cactacea.backend.thirdparties
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.{Future, Return, Throw}
 import io.github.cactacea.core.infrastructure.clients.onesignal.{OneSignalHttpClient, OneSignalNotificationFactory}
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.services.PushNotificationService
+import io.github.cactacea.core.infrastructure.services.{DatabaseService, PushNotificationService}
 
 @Singleton
 class OneSignalService @Inject()(db: DatabaseService) extends PushNotificationService {

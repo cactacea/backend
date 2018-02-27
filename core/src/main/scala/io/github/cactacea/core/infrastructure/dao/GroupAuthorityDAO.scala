@@ -3,9 +3,9 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{AccountGroups, Groups, Relationships}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 import io.github.cactacea.core.util.responses.CactaceaError._
 import io.github.cactacea.core.util.responses.CactaceaError
 

@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.infrastructure.identifiers.{FeedId, MediumId}
 import io.github.cactacea.core.infrastructure.models.{FeedMediums, Mediums}
-import io.github.cactacea.core.infrastructure.db.DatabaseService
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class FeedMediumDAO @Inject()(db: DatabaseService) {

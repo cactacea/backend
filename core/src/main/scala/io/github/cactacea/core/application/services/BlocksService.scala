@@ -4,8 +4,8 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.domain.repositories.BlocksRepository
-import io.github.cactacea.core.infrastructure.db.DatabaseService
-import io.github.cactacea.core.infrastructure.identifiers.{SessionId, AccountId}
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class BlocksService @Inject()(db: DatabaseService) {

@@ -8,7 +8,7 @@ import com.twitter.util.Await
 import com.twitter.util.logging.Logging
 import io.github.cactacea.core.application.services.SessionService
 import io.github.cactacea.core.helpers.DatabaseHelper
-import io.github.cactacea.core.infrastructure.db.DatabaseProviderModule
+import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import io.github.cactacea.core.mocks.{MockPushNotificationModule, MockQueueModule}
 import org.scalatest.BeforeAndAfter
 

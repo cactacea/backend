@@ -7,7 +7,7 @@ import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.handlers.DatabaseWarmupHandler
 import io.github.cactacea.backend.modules._
 import io.github.cactacea.core.application.controllers._
-import io.github.cactacea.core.infrastructure.db.DatabaseProviderModule
+import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import io.github.cactacea.core.util.filters._
 import io.github.cactacea.core.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 

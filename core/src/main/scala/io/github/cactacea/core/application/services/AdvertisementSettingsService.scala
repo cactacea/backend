@@ -4,8 +4,8 @@ import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.AdvertisementSetting
 import io.github.cactacea.core.domain.repositories.AdvertisementSettingsRepository
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 class AdvertisementSettingsService @Inject()(db: DatabaseService) {
 

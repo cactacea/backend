@@ -1,4 +1,4 @@
-package io.github.cactacea.core.infrastructure.db
+package io.github.cactacea.core.infrastructure.services
 
 import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.TwitterModule

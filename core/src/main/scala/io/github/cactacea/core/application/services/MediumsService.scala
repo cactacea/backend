@@ -7,9 +7,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.application.responses.MediumCreated
 import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.domain.repositories.MediumsRepository
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.core.infrastructure.services.StorageService
+import io.github.cactacea.core.infrastructure.services.{DatabaseService, StorageService}
 import io.github.cactacea.core.util.MediaMetadataExtractor
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError.NotAcceptableMimeTypeFound

@@ -2,9 +2,9 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.infrastructure.db.DatabaseService
-import io.github.cactacea.core.infrastructure.identifiers.{SessionId, AccountId}
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.core.infrastructure.models.Blocks
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 class BlockersDAO @Inject()(db: DatabaseService) {
 

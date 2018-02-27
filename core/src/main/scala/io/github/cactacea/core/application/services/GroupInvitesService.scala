@@ -5,9 +5,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.application.responses.GroupInviteCreated
 import io.github.cactacea.core.domain.models.GroupInvite
 import io.github.cactacea.core.domain.repositories.{DeliveryGroupInvitesRepository, GroupInvitesRepository}
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.services.{PushNotificationService, QueueService}
+import io.github.cactacea.core.infrastructure.services.{DatabaseService, PushNotificationService, QueueService}
 import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 @Singleton

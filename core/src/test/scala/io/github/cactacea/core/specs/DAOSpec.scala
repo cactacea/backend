@@ -8,9 +8,9 @@ import com.twitter.util.logging.Logging
 import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.helpers.{DatabaseHelper, FactoryHelper}
 import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, MediumsDAO}
-import io.github.cactacea.core.infrastructure.db.{DatabaseProviderModule, DatabaseService}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Mediums}
+import io.github.cactacea.core.infrastructure.services.{DatabaseProviderModule, DatabaseService}
 import org.scalatest.BeforeAndAfter
 
 class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {

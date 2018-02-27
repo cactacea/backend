@@ -7,7 +7,7 @@ import com.twitter.util.Await
 import com.twitter.util.logging.Logging
 import io.github.cactacea.core.domain.repositories.SessionRepository
 import io.github.cactacea.core.helpers.DatabaseHelper
-import io.github.cactacea.core.infrastructure.db.{DatabaseProviderModule, DatabaseService}
+import io.github.cactacea.core.infrastructure.services.{DatabaseProviderModule, DatabaseService}
 import org.scalatest.BeforeAndAfter
 
 class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
