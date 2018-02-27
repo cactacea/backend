@@ -1,9 +1,9 @@
 package io.github.cactacea.core.infrastructure.clients.google
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.helpers.DAOSpec
 
-class GooglePlusHttpClientSpec extends CactaceaDAOTest {
+class GooglePlusHttpClientSpec extends DAOSpec {
 
   var googlePlusClient = injector.instance[GooglePlusHttpClient]
 

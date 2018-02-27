@@ -2,9 +2,9 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.SocialAccountType
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.helpers.DAOSpec
 
-class SocialAccountsDAOSpec extends CactaceaDAOTest {
+class SocialAccountsDAOSpec extends DAOSpec {
 
   val socialAccountsDAO: SocialAccountsDAO = injector.instance[SocialAccountsDAO]
 

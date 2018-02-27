@@ -1,7 +1,7 @@
 package io.github.cactacea.core.application.services
 
-import io.github.cactacea.core.helpers.CactaceaServiceTest
+import io.github.cactacea.core.helpers.ServiceSpec
 
-class MessagesServiceSpec extends CactaceaServiceTest {
+class MessagesServiceSpec extends ServiceSpec {
 
 }

@@ -2,10 +2,10 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, MediumType}
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.FeedId
 
-class DeliveryFeedsRepositorySpec extends SessionRepositoryTest {
+class DeliveryFeedsRepositorySpec extends RepositorySpec {
 
   val friendsRepository = injector.instance[FriendsRepository]
   val feedsRepository = injector.instance[FeedsRepository]

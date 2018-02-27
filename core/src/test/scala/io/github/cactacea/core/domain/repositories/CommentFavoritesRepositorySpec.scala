@@ -2,13 +2,13 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.CommentFavoritesDAO
 import io.github.cactacea.core.infrastructure.identifiers.CommentId
 import io.github.cactacea.core.util.responses.CactaceaError.{CommentAlreadyFavorited, CommentNotFavorited, CommentNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
-class CommentFavoritesRepositorySpec extends SessionRepositoryTest {
+class CommentFavoritesRepositorySpec extends RepositorySpec {
 
   val commentFavoritesRepository = injector.instance[CommentFavoritesRepository]
   val commentsRepository = injector.instance[CommentsRepository]

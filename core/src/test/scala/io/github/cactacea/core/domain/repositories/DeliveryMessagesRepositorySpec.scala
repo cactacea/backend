@@ -2,9 +2,9 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.helpers.RepositorySpec
 
-class DeliveryMessagesRepositorySpec extends SessionRepositoryTest {
+class DeliveryMessagesRepositorySpec extends RepositorySpec {
 
   var groupsRepository = injector.instance[GroupsRepository]
   var groupAccountsRepository = injector.instance[GroupAccountsRepository]

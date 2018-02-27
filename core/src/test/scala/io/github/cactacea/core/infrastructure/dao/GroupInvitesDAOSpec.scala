@@ -2,10 +2,10 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupInviteStatusType, GroupPrivacyType}
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.models.GroupInvites
 
-class GroupInvitesDAOSpec extends CactaceaDAOTest {
+class GroupInvitesDAOSpec extends DAOSpec {
 
   import db._
 

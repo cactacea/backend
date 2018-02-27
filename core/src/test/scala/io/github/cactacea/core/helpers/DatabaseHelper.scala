@@ -1,39 +1,14 @@
 package io.github.cactacea.core.helpers
 
-import com.twitter.finatra.json.modules.FinatraJacksonModule
-import com.twitter.inject.IntegrationTest
-import com.twitter.inject.app.TestInjector
 import com.twitter.util.Await
-import com.twitter.util.logging.Logging
 import io.github.cactacea.core.infrastructure.models._
-import io.github.cactacea.core.util.modules.{PushNotificationServiceProviderModule, QueueServiceProviderModule, StorageServiceProviderModule}
 import io.github.cactacea.core.util.provider.module.DatabaseProviderModule
-import org.scalatest.BeforeAndAfter
 
-class CactaceaTest extends IntegrationTest with BeforeAndAfter with Logging {
+object DatabaseHelper {
 
-  override val injector =
-    TestInjector(
-      modules = Seq(
-        DatabaseProviderModule,
-        PushNotificationServiceProviderModule,
-        QueueServiceProviderModule,
-        StorageServiceProviderModule,
-        FinatraJacksonModule
-      )
-    ).create
-
-  before {
-    initialize()
-  }
-
-  after {
-    initialize()
-  }
-
+  val db = DatabaseProviderModule.context()
 
   def initialize() = {
-    val db = DatabaseUtil.db
     import db._
     val r = db.transaction {
       for {

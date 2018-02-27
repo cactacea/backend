@@ -2,10 +2,10 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.MediumType
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.MediumsDAO
 
-class MediumsRepositorySpec extends SessionRepositoryTest {
+class MediumsRepositorySpec extends RepositorySpec {
 
   val mediumRepository = injector.instance[MediumsRepository]
   val mediumsDAO = injector.instance[MediumsDAO]

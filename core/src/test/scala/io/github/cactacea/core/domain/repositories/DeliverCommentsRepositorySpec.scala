@@ -2,11 +2,11 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.CommentsDAO
 import io.github.cactacea.core.infrastructure.identifiers.CommentId
 
-class DeliverCommentsRepositorySpec extends SessionRepositoryTest {
+class DeliverCommentsRepositorySpec extends RepositorySpec {
 
   val commentsRepository = injector.instance[CommentsRepository]
   val commentsDAO = injector.instance[CommentsDAO]

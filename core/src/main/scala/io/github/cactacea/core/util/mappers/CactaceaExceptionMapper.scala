@@ -8,7 +8,7 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.Errors
 
 @Singleton
-class ValidationExceptionMapper @Inject()(response: ResponseBuilder) extends ExceptionMapper[CactaceaException] {
+class CactaceaExceptionMapper @Inject()(response: ResponseBuilder) extends ExceptionMapper[CactaceaException] {
 
   override def toResponse(request: Request, exception: CactaceaException) = {
     val error = exception.error
@@ -17,6 +17,8 @@ class ValidationExceptionMapper @Inject()(response: ResponseBuilder) extends Exc
       response.notFound(errors)
     } else if (error.status == Status.BadRequest) {
       response.badRequest(errors)
+    } else if (error.status == Status.Unauthorized) {
+      response.unauthorized(errors)
     } else {
       response.internalServerError(errors)
     }

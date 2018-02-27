@@ -1,10 +1,10 @@
 package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.DevicesDAO
 
-class DevicesRepositorySpec extends SessionRepositoryTest {
+class DevicesRepositorySpec extends RepositorySpec {
 
   val devicesRepository = injector.instance[DevicesRepository]
   val devicesDAO = injector.instance[DevicesDAO]

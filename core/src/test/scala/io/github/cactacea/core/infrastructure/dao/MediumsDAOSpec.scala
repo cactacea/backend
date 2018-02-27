@@ -2,11 +2,11 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.MediumType
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.identifiers.MediumId
 import io.github.cactacea.core.infrastructure.models.Mediums
 
-class MediumsDAOSpec extends CactaceaDAOTest {
+class MediumsDAOSpec extends DAOSpec {
 
   val mediumsDAO: MediumsDAO = injector.instance[MediumsDAO]
 

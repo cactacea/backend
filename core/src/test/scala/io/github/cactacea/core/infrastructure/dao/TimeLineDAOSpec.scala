@@ -2,11 +2,11 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, ReportType}
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, TimelineFeedId}
 import io.github.cactacea.core.infrastructure.models.Timelines
 
-class TimeLineDAOSpec extends CactaceaDAOTest {
+class TimeLineDAOSpec extends DAOSpec {
 
   val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
   val followsDAO: FollowsDAO = injector.instance[FollowsDAO]

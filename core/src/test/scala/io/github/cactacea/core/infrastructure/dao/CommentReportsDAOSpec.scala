@@ -2,10 +2,10 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, ReportType}
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.models.CommentReports
 
-class CommentReportsDAOSpec extends CactaceaDAOTest {
+class CommentReportsDAOSpec extends DAOSpec {
 
   import db._
 

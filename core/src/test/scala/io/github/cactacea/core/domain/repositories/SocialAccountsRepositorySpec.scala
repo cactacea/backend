@@ -2,12 +2,12 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.SocialAccountType
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.SocialAccountsDAO
 import io.github.cactacea.core.util.responses.CactaceaError.{SocialAccountAlreadyConnected, SocialAccountNotConnected}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
-class SocialAccountsRepositorySpec extends SessionRepositoryTest {
+class SocialAccountsRepositorySpec extends RepositorySpec {
 
   val socialAccountsRepository = injector.instance[SocialAccountsRepository]
   var socialAccountsDAO = injector.instance[SocialAccountsDAO]

@@ -1,9 +1,9 @@
 package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.SessionRepositoryTest
+import io.github.cactacea.core.helpers.RepositorySpec
 
-class FollowersRepositorySpec extends SessionRepositoryTest {
+class FollowersRepositorySpec extends RepositorySpec {
 
   val followersRepository = injector.instance[FollowersRepository]
   val followsRepository = injector.instance[FollowsRepository]

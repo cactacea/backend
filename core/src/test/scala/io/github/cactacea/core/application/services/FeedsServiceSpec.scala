@@ -2,9 +2,9 @@ package io.github.cactacea.core.application.services
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.CactaceaServiceTest
+import io.github.cactacea.core.helpers.ServiceSpec
 
-class FeedsServiceSpec extends CactaceaServiceTest {
+class FeedsServiceSpec extends ServiceSpec {
 
   val feedsService = injector.instance[FeedsService]
 
