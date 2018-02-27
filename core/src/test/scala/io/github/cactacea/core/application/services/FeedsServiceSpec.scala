@@ -2,7 +2,7 @@ package io.github.cactacea.core.application.services
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.ServiceSpec
+import io.github.cactacea.core.specs.ServiceSpec
 
 class FeedsServiceSpec extends ServiceSpec {
 

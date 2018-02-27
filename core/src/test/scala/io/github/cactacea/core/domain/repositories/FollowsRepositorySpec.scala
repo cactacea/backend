@@ -1,8 +1,8 @@
 package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
+import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyFollowed, AccountNotFollowed, AccountNotFound, CanNotSpecifyMyself}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 

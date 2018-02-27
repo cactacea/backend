@@ -7,25 +7,15 @@
         </encoder>
     </appender>
 
-    <!-- log to a non-existing remote host to show the problem -->
-    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <remoteHost>0.0.0.0</remoteHost>
-        <port>5000</port>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-    </appender>
-
     <root level="WARN">
-        <appender-ref ref="stash" />
         <appender-ref ref="STDOUT" />
     </root>
 
     <logger name="io.getquill.FinagleMysqlContext" level="WARN">
-        <appender-ref ref="stash" />
         <appender-ref ref="STDOUT" />
     </logger>
 
     <logger name="com.twitter.finatra.http.filters.AccessLoggingFilter" level="WARN">
-        <appender-ref ref="stash" />
         <appender-ref ref="STDOUT" />
     </logger>
 

@@ -2,7 +2,7 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.core.helpers.RepositorySpec
+import io.github.cactacea.core.specs.RepositorySpec
 
 class DeliveryMessagesRepositorySpec extends RepositorySpec {
 

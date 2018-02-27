@@ -2,8 +2,8 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.models.AccountFeeds
+import io.github.cactacea.core.specs.DAOSpec
 
 class AccountFeedsDAOSpec extends DAOSpec {
 

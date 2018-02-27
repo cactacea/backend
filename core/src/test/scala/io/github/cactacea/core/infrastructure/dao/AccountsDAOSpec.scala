@@ -3,8 +3,9 @@ package io.github.cactacea.core.infrastructure.dao
 import com.twitter.inject.Logging
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.AccountStatusType
-import io.github.cactacea.core.helpers.{DAOSpec, FactoryHelper}
+import io.github.cactacea.core.helpers.FactoryHelper
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
+import io.github.cactacea.core.specs.DAOSpec
 import io.github.cactacea.core.util.PasswordHashGenerator
 
 class AccountsDAOSpec extends DAOSpec with Logging {

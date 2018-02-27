@@ -21,11 +21,62 @@ lazy val backend = (project in file("backend"))
       dockerEntrypoint := Seq("bin/%s" format executableScriptName.value, "-storage=s3")
   )
   .dependsOn(core)
+  .settings(backendLibrarySetting)
+  .settings(testLibrarySetting)
   .enablePlugins(JavaAppPackaging)
+
+lazy val backendLibrarySetting = Seq(
+  resolvers ++= Seq(
+    Resolver.sonatypeRepo("releases"),
+    "Maven central" at "http://repo1.maven.org/maven2/"
+  ),
+  libraryDependencies ++= Seq(
+//    "ch.qos.logback" % "logback-classic" % versions.logback,
+//    "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
+//    "io.getquill" % "quill-finagle-mysql_2.12" % "2.3.2",
+//    "com.typesafe" % "config" % "1.3.2",
+//    "io.jsonwebtoken" % "jjwt" % "0.9.0",
+//    "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
+    "com.jsuereth" %% "scala-arm" % "2.0",
+//    "com.danielasfregola" %% "twitter4s" % "5.3",
+//    "com.github.seratch" %% "awscala" % "0.6.+",
+    "mysql" % "mysql-connector-java" % "6.0.6",
+    "org.flywaydb" % "flyway-core" % "4.2.0"
+
+//    "com.roundeights" %% "hasher" % "1.2.0",
+//    "com.drewnoakes" % "metadata-extractor" % "2.11.0"
+
+  )
+)
+
+lazy val util = (project in file("util"))
+  .settings(utilSetting)
+  .settings(utilLibrarySetting)
+
+lazy val utilSetting = Seq(
+  organization := "jp.github.cactacea.util",
+  name := "core",
+  scalaVersion := "2.12.4",
+  parallelExecution in ThisBuild := false,
+  testOptions in Test += Tests.Argument("-oI")
+)
+
+lazy val utilLibrarySetting = Seq(
+  resolvers ++= Seq(
+    Resolver.sonatypeRepo("releases"),
+    "Maven central" at "http://repo1.maven.org/maven2/"
+  ),
+  libraryDependencies ++= Seq(
+    "com.github.seratch" %% "awscala" % "0.6.+"
+  )
+)
+
+
 
 lazy val core = (project in file("core"))
   .settings(coreSetting)
   .settings(coreLibrarySetting)
+  .settings(testLibrarySetting)
 
 lazy val coreSetting = Seq(
     organization := "jp.github.cactacea.core",
@@ -62,38 +113,45 @@ lazy val coreLibrarySetting = Seq(
         "com.typesafe" % "config" % "1.3.2",
         "io.jsonwebtoken" % "jjwt" % "0.9.0",
         "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
-        "com.jsuereth" %% "scala-arm" % "2.0",
+//        "com.jsuereth" %% "scala-arm" % "2.0",
         "com.danielasfregola" %% "twitter4s" % "5.3",
         "com.github.seratch" %% "awscala" % "0.6.+",
-        "mysql" % "mysql-connector-java" % "6.0.6",
-
-        "org.flywaydb" % "flyway-core" % "4.2.0",
+//        "mysql" % "mysql-connector-java" % "6.0.6",
+//        "org.flywaydb" % "flyway-core" % "4.2.0",
 
         "com.roundeights" %% "hasher" % "1.2.0",
-        "com.drewnoakes" % "metadata-extractor" % "2.11.0",
+        "com.drewnoakes" % "metadata-extractor" % "2.11.0"
 
-        "com.twitter" %% "finatra-http" % versions.finatra % "test",
-        "com.twitter" %% "finatra-jackson" % versions.finatra % "test",
-        "com.twitter" %% "inject-server" % versions.finatra % "test",
-        "com.twitter" %% "inject-app" % versions.finatra % "test",
-        "com.twitter" %% "inject-core" % versions.finatra % "test",
-        "com.twitter" %% "inject-modules" % versions.finatra % "test",
-        "com.google.inject.extensions" % "guice-testlib" % versions.guice % "test",
-        "com.twitter" %% "finatra-http" % versions.finatra % "test" classifier "tests",
-        "com.twitter" %% "finatra-jackson" % versions.finatra % "test" classifier "tests",
-        "com.twitter" %% "inject-server" % versions.finatra % "test" classifier "tests",
-        "com.twitter" %% "inject-app" % versions.finatra % "test" classifier "tests",
-        "com.twitter" %% "inject-core" % versions.finatra % "test" classifier "tests",
-        "com.twitter" %% "inject-modules" % versions.finatra % "test" classifier "tests",
-        "org.mockito" % "mockito-core" %  versions.mockito % "test",
-        "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
-        "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
-        "org.specs2" %% "specs2-core" % versions.specs2 % "test",
-        "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-        "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
     )
 )
 
+lazy val testLibrarySetting = Seq(
+  resolvers ++= Seq(
+    Resolver.sonatypeRepo("releases"),
+    "Maven central" at "http://repo1.maven.org/maven2/"
+  ),
+  libraryDependencies ++= Seq(
+    "com.twitter" %% "finatra-http" % versions.finatra % "test",
+    "com.twitter" %% "finatra-jackson" % versions.finatra % "test",
+    "com.twitter" %% "inject-server" % versions.finatra % "test",
+    "com.twitter" %% "inject-app" % versions.finatra % "test",
+    "com.twitter" %% "inject-core" % versions.finatra % "test",
+    "com.twitter" %% "inject-modules" % versions.finatra % "test",
+    "com.google.inject.extensions" % "guice-testlib" % versions.guice % "test",
+    "com.twitter" %% "finatra-http" % versions.finatra % "test" classifier "tests",
+    "com.twitter" %% "finatra-jackson" % versions.finatra % "test" classifier "tests",
+    "com.twitter" %% "inject-server" % versions.finatra % "test" classifier "tests",
+    "com.twitter" %% "inject-app" % versions.finatra % "test" classifier "tests",
+    "com.twitter" %% "inject-core" % versions.finatra % "test" classifier "tests",
+    "com.twitter" %% "inject-modules" % versions.finatra % "test" classifier "tests",
+    "org.mockito" % "mockito-core" %  versions.mockito % "test",
+    "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
+    "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
+    "org.specs2" %% "specs2-core" % versions.specs2 % "test",
+    "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
+    "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
+  )
+)
 // for sbt flyway:migration command
 libraryDependencies ++= Seq(
     "mysql" % "mysql-connector-java" % "6.0.6"

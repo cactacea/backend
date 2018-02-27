@@ -3,9 +3,9 @@ package io.github.cactacea.core.domain.repositories
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, MediumType}
 import io.github.cactacea.core.domain.models.Message
-import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.MessagesDAO
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, MediumId}
+import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{GroupNotFound, MediumNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 

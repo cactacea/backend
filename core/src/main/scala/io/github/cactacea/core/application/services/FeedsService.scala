@@ -8,8 +8,7 @@ import io.github.cactacea.core.domain.models.Feed
 import io.github.cactacea.core.domain.repositories._
 import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
-import io.github.cactacea.core.infrastructure.pushnotifications.PushNotificationService
-import io.github.cactacea.core.infrastructure.queues.QueueService
+import io.github.cactacea.core.infrastructure.services.{PushNotificationService, QueueService}
 import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 @Singleton

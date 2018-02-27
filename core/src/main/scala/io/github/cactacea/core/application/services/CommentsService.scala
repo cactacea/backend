@@ -8,8 +8,7 @@ import io.github.cactacea.core.domain.models.Comment
 import io.github.cactacea.core.domain.repositories.{CommentsRepository, DeliveryCommentsRepository, ReportsRepository}
 import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
-import io.github.cactacea.core.infrastructure.pushnotifications.PushNotificationService
-import io.github.cactacea.core.infrastructure.queues.QueueService
+import io.github.cactacea.core.infrastructure.services.{PushNotificationService, QueueService}
 import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 @Singleton

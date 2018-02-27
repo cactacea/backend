@@ -1,8 +1,8 @@
 package io.github.cactacea.core.helpers
 
 import com.twitter.util.Await
+import io.github.cactacea.core.infrastructure.db.DatabaseProviderModule
 import io.github.cactacea.core.infrastructure.models._
-import io.github.cactacea.core.util.provider.module.DatabaseProviderModule
 
 object DatabaseHelper {
 

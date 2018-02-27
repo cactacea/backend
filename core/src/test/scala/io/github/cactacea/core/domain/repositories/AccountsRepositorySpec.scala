@@ -2,8 +2,8 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.MediumType
-import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
+import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyUsed, AccountNotFound, MediumNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
