@@ -12,7 +12,7 @@ class CactaceaServerSpec extends ServerSpec {
 
   test("sessions test") {
 
-    val f = Future.collect((1 to 1000).map { i =>
+    val f = Future.collect((1 to 1).map { i =>
       Future {
 
         val uuid = UUID.randomUUID().toString
