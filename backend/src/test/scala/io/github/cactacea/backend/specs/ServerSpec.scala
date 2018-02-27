@@ -5,10 +5,10 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
+import io.github.cactacea.backend.helpers.DatabaseHelper
 import io.github.cactacea.backend.modules.{DefaultPushNotificationModule, DefaultQueueModule, DefaultStorageModule}
 import io.github.cactacea.backend.server.DefaultServer
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.DatabaseHelper
 import io.github.cactacea.core.infrastructure.db.DatabaseProviderModule
 import io.github.cactacea.core.util.tokens.AuthTokenGenerator
 
