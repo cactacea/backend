@@ -1,10 +1,10 @@
 package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.CactaceaDAOTest
 import io.github.cactacea.core.infrastructure.models.Blocks
+import io.github.cactacea.core.specs.DAOSpec
 
-class BlockersDAOSpec extends CactaceaDAOTest {
+class BlockersDAOSpec extends DAOSpec {
 
   import db._
 

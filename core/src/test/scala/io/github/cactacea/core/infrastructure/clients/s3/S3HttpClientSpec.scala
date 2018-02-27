@@ -5,9 +5,9 @@ import java.nio.file.Files
 
 import com.twitter.finagle.http.MediaType
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.specs.DAOSpec
 
-class S3HttpClientSpec extends CactaceaDAOTest {
+class S3HttpClientSpec extends DAOSpec {
 
   var s3HttpClient = injector.instance[S3HttpClient]
 

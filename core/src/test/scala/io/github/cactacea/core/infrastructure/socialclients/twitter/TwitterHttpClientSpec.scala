@@ -1,9 +1,9 @@
 package io.github.cactacea.core.infrastructure.clients.twitter
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.specs.DAOSpec
 
-class TwitterHttpClientSpec extends CactaceaDAOTest {
+class TwitterHttpClientSpec extends DAOSpec {
 
   var twitterAPI = injector.instance[TwitterHttpClient]
 

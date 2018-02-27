@@ -4,9 +4,8 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.{Account, Feed}
 import io.github.cactacea.core.domain.repositories.FeedFavoritesRepository
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
-import io.github.cactacea.core.infrastructure.queues.QueueService
+import io.github.cactacea.core.infrastructure.services.{DatabaseService, QueueService}
 
 @Singleton
 class FeedFavoritesService @Inject()(db: DatabaseService) {

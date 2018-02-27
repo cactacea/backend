@@ -17,14 +17,12 @@ class AuthFilter extends SimpleFilter[Request, Response] {
       case true =>
         service(request)
       case false =>
-        AuthTokenGenerator.checkApiKey(request.headerMap.get("X-API-KEY")).flatMap({ _ =>
-          AuthTokenGenerator.parse(request.headerMap.get("X-AUTHORIZATION")).flatMap({ auth =>
-            sessionRepository.checkAccountStatus(auth.sessionId, auth.expiresIn).flatMap({ _ =>
-              RequestContext.setAuthorized(true)
-              AuthUserContext.setId(request, auth.sessionId)
-              AuthUserContext.setUdid(request, auth.sessionUdid)
-              service(request)
-            })
+        AuthTokenGenerator.parse(request.headerMap.get("X-AUTHORIZATION")).flatMap({ auth =>
+          sessionRepository.checkAccountStatus(auth.sessionId, auth.expiresIn).flatMap({ _ =>
+            RequestContext.setAuthorized(true)
+            AuthUserContext.setId(request, auth.sessionId)
+            AuthUserContext.setUdid(request, auth.sessionUdid)
+            service(request)
           })
         })
     }

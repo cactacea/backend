@@ -84,7 +84,7 @@ object AuthTokenGenerator {
     }
   }
 
-  private lazy val apiKey = config.getString("apiKey")
+  lazy val apiKey = config.getString("apiKey")
 
   def checkApiKey(requestApiKey: Option[String]): Future[Unit] = {
     requestApiKey match {

@@ -3,10 +3,10 @@ package io.github.cactacea.core.application.services
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.responses.FriendRequestCreated
-import io.github.cactacea.core.domain.models.{FriendRequest}
-import io.github.cactacea.core.domain.repositories.{FriendRequestsRepository}
-import io.github.cactacea.core.infrastructure.db.DatabaseService
-import io.github.cactacea.core.infrastructure.identifiers.{FriendRequestId, SessionId, AccountId}
+import io.github.cactacea.core.domain.models.FriendRequest
+import io.github.cactacea.core.domain.repositories.FriendRequestsRepository
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 class FriendRequestsService @Inject()(db: DatabaseService) {
 

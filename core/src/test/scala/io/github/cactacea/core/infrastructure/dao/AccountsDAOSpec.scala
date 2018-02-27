@@ -3,11 +3,12 @@ package io.github.cactacea.core.infrastructure.dao
 import com.twitter.inject.Logging
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.AccountStatusType
-import io.github.cactacea.core.helpers.{AccountsFactoryUtil, CactaceaDAOTest}
+import io.github.cactacea.core.helpers.FactoryHelper
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
+import io.github.cactacea.core.specs.DAOSpec
 import io.github.cactacea.core.util.PasswordHashGenerator
 
-class AccountsDAOSpec extends CactaceaDAOTest with Logging {
+class AccountsDAOSpec extends DAOSpec with Logging {
 
   val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
   val blocksDAO: BlocksDAO = injector.instance[BlocksDAO]
@@ -20,7 +21,7 @@ class AccountsDAOSpec extends CactaceaDAOTest with Logging {
 
     val sessionAccount = this.createAccount(0L)
 
-    val newUser = AccountsFactoryUtil.create(1L)
+    val newUser = FactoryHelper.createAccounts(1L)
     val accountId = Await.result(
       accountsDAO.create(newUser.accountName, newUser.displayName, newUser.password, newUser.web, newUser.birthday, newUser.location, newUser.bio)
     )
@@ -96,7 +97,7 @@ class AccountsDAOSpec extends CactaceaDAOTest with Logging {
 
     val sessionAccount = this.createAccount(1L)
 
-    val newUser = AccountsFactoryUtil.create(0L)
+    val newUser = FactoryHelper.createAccounts(0L)
     val accountId = this.insertAccounts(newUser)
 
     Await.result(

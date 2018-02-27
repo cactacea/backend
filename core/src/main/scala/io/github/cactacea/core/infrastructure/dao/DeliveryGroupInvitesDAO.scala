@@ -2,9 +2,9 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupInviteId}
 import io.github.cactacea.core.infrastructure.models._
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class DeliveryGroupInvitesDAO @Inject()(db: DatabaseService) {

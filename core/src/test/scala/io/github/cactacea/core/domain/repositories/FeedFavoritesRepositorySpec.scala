@@ -2,12 +2,12 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.SessionRepositoryTest
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId}
+import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, FeedAlreadyFavorited, FeedNotFavorited, FeedNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
-class FeedFavoritesRepositorySpec extends SessionRepositoryTest {
+class FeedFavoritesRepositorySpec extends RepositorySpec {
 
   var feedsRepository = injector.instance[FeedsRepository]
   var feedFavoritesRepository = injector.instance[FeedFavoritesRepository]

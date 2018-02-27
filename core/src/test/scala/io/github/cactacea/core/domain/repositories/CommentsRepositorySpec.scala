@@ -2,13 +2,13 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, ReportType}
-import io.github.cactacea.core.helpers.SessionRepositoryTest
 import io.github.cactacea.core.infrastructure.dao.CommentsDAO
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId}
+import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{CommentNotFound, FeedNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
-class CommentsRepositorySpec extends SessionRepositoryTest {
+class CommentsRepositorySpec extends RepositorySpec {
 
   val commentsRepository = injector.instance[CommentsRepository]
   val commentsDAO = injector.instance[CommentsDAO]

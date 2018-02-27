@@ -2,13 +2,13 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums._
-import io.github.cactacea.core.helpers.SessionRepositoryTest
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.models.Accounts
+import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountTerminated, InvalidAccountNameOrPassword, SessionTimeout}
 
-class SessionRepositorySpec extends SessionRepositoryTest {
+class SessionRepositorySpec extends RepositorySpec {
 
   val sessionRepository = injector.instance[SessionRepository]
   val devicesDAO = injector.instance[DevicesDAO]
