@@ -31,21 +31,9 @@ lazy val backendLibrarySetting = Seq(
     "Maven central" at "http://repo1.maven.org/maven2/"
   ),
   libraryDependencies ++= Seq(
-//    "ch.qos.logback" % "logback-classic" % versions.logback,
-//    "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
-//    "io.getquill" % "quill-finagle-mysql_2.12" % "2.3.2",
-//    "com.typesafe" % "config" % "1.3.2",
-//    "io.jsonwebtoken" % "jjwt" % "0.9.0",
-//    "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
     "com.jsuereth" %% "scala-arm" % "2.0",
-//    "com.danielasfregola" %% "twitter4s" % "5.3",
-//    "com.github.seratch" %% "awscala" % "0.6.+",
     "mysql" % "mysql-connector-java" % "6.0.6",
     "org.flywaydb" % "flyway-core" % "4.2.0"
-
-//    "com.roundeights" %% "hasher" % "1.2.0",
-//    "com.drewnoakes" % "metadata-extractor" % "2.11.0"
-
   )
 )
 
@@ -113,11 +101,8 @@ lazy val coreLibrarySetting = Seq(
         "com.typesafe" % "config" % "1.3.2",
         "io.jsonwebtoken" % "jjwt" % "0.9.0",
         "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
-//        "com.jsuereth" %% "scala-arm" % "2.0",
         "com.danielasfregola" %% "twitter4s" % "5.3",
         "com.github.seratch" %% "awscala" % "0.6.+",
-//        "mysql" % "mysql-connector-java" % "6.0.6",
-//        "org.flywaydb" % "flyway-core" % "4.2.0",
 
         "com.roundeights" %% "hasher" % "1.2.0",
         "com.drewnoakes" % "metadata-extractor" % "2.11.0"
