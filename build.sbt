@@ -31,35 +31,9 @@ lazy val backendLibrarySetting = Seq(
     "Maven central" at "http://repo1.maven.org/maven2/"
   ),
   libraryDependencies ++= Seq(
-    "com.jsuereth" %% "scala-arm" % "2.0",
-    "mysql" % "mysql-connector-java" % "6.0.6",
-    "org.flywaydb" % "flyway-core" % "4.2.0"
+    "com.jsuereth" %% "scala-arm" % "2.0"
   )
 )
-
-lazy val util = (project in file("util"))
-  .settings(utilSetting)
-  .settings(utilLibrarySetting)
-
-lazy val utilSetting = Seq(
-  organization := "jp.github.cactacea.util",
-  name := "core",
-  scalaVersion := "2.12.4",
-  parallelExecution in ThisBuild := false,
-  testOptions in Test += Tests.Argument("-oI")
-)
-
-lazy val utilLibrarySetting = Seq(
-  resolvers ++= Seq(
-    Resolver.sonatypeRepo("releases"),
-    "Maven central" at "http://repo1.maven.org/maven2/"
-  ),
-  libraryDependencies ++= Seq(
-    "com.github.seratch" %% "awscala" % "0.6.+"
-  )
-)
-
-
 
 lazy val core = (project in file("core"))
   .settings(coreSetting)
@@ -104,6 +78,9 @@ lazy val coreLibrarySetting = Seq(
         "com.danielasfregola" %% "twitter4s" % "5.3",
         "com.github.seratch" %% "awscala" % "0.6.+",
 
+        "mysql" % "mysql-connector-java" % "6.0.6",
+        "org.flywaydb" % "flyway-core" % "4.2.0",
+
         "com.roundeights" %% "hasher" % "1.2.0",
         "com.drewnoakes" % "metadata-extractor" % "2.11.0"
 
@@ -137,7 +114,25 @@ lazy val testLibrarySetting = Seq(
     "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
   )
 )
-// for sbt flyway:migration command
-libraryDependencies ++= Seq(
-    "mysql" % "mysql-connector-java" % "6.0.6"
+
+lazy val util = (project in file("util"))
+  .settings(utilSetting)
+  .settings(utilLibrarySetting)
+
+lazy val utilSetting = Seq(
+  organization := "jp.github.cactacea.util",
+  name := "core",
+  scalaVersion := "2.12.4",
+  parallelExecution in ThisBuild := false,
+  testOptions in Test += Tests.Argument("-oI")
+)
+
+lazy val utilLibrarySetting = Seq(
+  resolvers ++= Seq(
+    Resolver.sonatypeRepo("releases"),
+    "Maven central" at "http://repo1.maven.org/maven2/"
+  ),
+  libraryDependencies ++= Seq(
+    "com.github.seratch" %% "awscala" % "0.6.+"
+  )
 )
