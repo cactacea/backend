@@ -5,7 +5,7 @@
 
 **Cactacea** is a framework to construct social networking applications and built on top of [Finatra](https://twitter.github.io/finatra/), [Finagle](https://twitter.github.io/finagle/), Twitter Server.
 
-### Features ###
+## Features ##
 
 Cactacea provides the following features.
 
@@ -18,7 +18,8 @@ Cactacea provides the following features.
 - `Authentication`, `Authorization` - API Key, OAuth2
 
 
-### Components ###
+
+## Components ##
 
 Cactacea consists of four main components.
 
@@ -27,9 +28,10 @@ Cactacea consists of four main components.
 - `Message` - define notifidation messages.
 - `Queue` - queue to fan out feeds, messages and etc.
 
-### Modules ###
 
-Modules are implements of above componentsa and the following modules are provided.
+## Modules ##
+
+Modules are implements of above components and the following modules are provided.
 
 - [`DefaultPushNotificationModule`](https://github.com/cactacea/backend/blob/master/backend/src/main/scala/io/github/cactacea/backend/modules/DefaultPushNotificationModule.scala) - no push notifications module.
 - [`DefaultStorateModule`](https://github.com/cactacea/backend/blob/master/backend/src/main/scala/io/github/cactacea/backend/modules/DefaultStorageModule.scala) - store files to local volumes.
