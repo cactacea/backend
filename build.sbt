@@ -1,11 +1,11 @@
-import sbt.Keys.{organization, parallelExecution, resolvers, testOptions}
+import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val backend = (project in file("backend"))
   .settings(
       organization := "io.github.cactacea.backend",
       name := "backend",
       scalaVersion := "2.12.4",
-      parallelExecution in ThisBuild := false,
+      concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
       testOptions in Test += Tests.Argument("-oI"),
       mainClass in (Compile, run) := Some("io.github.cactacea.backend.CactaceaServerApp")
   )
@@ -42,7 +42,7 @@ lazy val coreSetting = Seq(
     organization := "jp.github.cactacea.core",
     scalaVersion := "2.12.4",
     name := "core",
-    parallelExecution in ThisBuild := false,
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
 )
 
@@ -120,14 +120,14 @@ lazy val utilSetting = Seq(
   organization := "jp.github.cactacea.util",
   scalaVersion := "2.12.4",
   name := "core",
-  parallelExecution in ThisBuild := false,
+  concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
   testOptions in Test += Tests.Argument("-oI")
 )
 
 lazy val utilLibrarySetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    "Maven central" at "http://repo1.maven.org/maven2/"
+    "Maven central" at "http://central.maven.org/maven2/"
   ),
   libraryDependencies ++= Seq(
     "com.github.seratch" %% "awscala" % "0.6.+"
