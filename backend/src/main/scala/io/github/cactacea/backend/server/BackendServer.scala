@@ -11,18 +11,24 @@ import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import io.github.cactacea.core.util.filters._
 import io.github.cactacea.core.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 
-class DefaultServer extends HttpServer {
+class BackendServer extends HttpServer {
 
   override val disableAdminHttpServer = false
   override val defaultFinatraHttpPort = ":9000"
   override val defaultAdminPort = 9001
-  override val defaultHttpServerName = "CactaceaServer"
+  override val defaultHttpServerName = "Backend Server"
 
-  override val modules = Seq(
-    DatabaseProviderModule,
-    DefaultPushNotificationModule,
-    DefaultQueueModule,
-    DefaultStorageModule
+  protected  val databaseModule = DatabaseProviderModule
+
+  val pushNotificationModule = DefaultPushNotificationModule
+  val queueModule = DefaultQueueModule
+  val storageModule = DefaultStorageModule
+
+  addFrameworkModules(
+    databaseModule,
+    pushNotificationModule,
+    queueModule,
+    storageModule
   )
 
   override def configureHttp(router: HttpRouter) = {
