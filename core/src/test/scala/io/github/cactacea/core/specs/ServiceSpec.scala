@@ -28,6 +28,10 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
     DatabaseHelper.initialize()
   }
 
+  after {
+    DatabaseHelper.initialize()
+  }
+
   @Inject var sessionService: SessionService = _
 
   def signUp(accountName: String, password: String, udid: String) = {

@@ -27,6 +27,7 @@ class ServerSpec extends FeatureTest {
 
   override protected def afterAll() = {
     super.afterAll()
+    DatabaseHelper.initialize()
   }
 
   override val injector =

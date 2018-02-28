@@ -1,6 +1,4 @@
-import sbt.Keys.{organization, resolvers, testOptions}
-
-scalaVersion := "2.12.4"
+import sbt.Keys.{organization, parallelExecution, resolvers, testOptions}
 
 lazy val backend = (project in file("backend"))
   .settings(
@@ -8,8 +6,8 @@ lazy val backend = (project in file("backend"))
       name := "backend",
       scalaVersion := "2.12.4",
       parallelExecution in ThisBuild := false,
-      mainClass in (Compile, run) := Some("io.github.cactacea.backend.CactaceaServerApp"),
-      testOptions in Test += Tests.Argument("-oI")
+      testOptions in Test += Tests.Argument("-oI"),
+      mainClass in (Compile, run) := Some("io.github.cactacea.backend.CactaceaServerApp")
   )
   .settings(
       version in Docker := "latest",
@@ -28,7 +26,7 @@ lazy val backend = (project in file("backend"))
 lazy val backendLibrarySetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    "Maven central" at "http://repo1.maven.org/maven2/"
+    "Maven central" at "http://central.maven.org/maven2/"
   ),
   libraryDependencies ++= Seq(
     "com.jsuereth" %% "scala-arm" % "2.0"
@@ -42,14 +40,14 @@ lazy val core = (project in file("core"))
 
 lazy val coreSetting = Seq(
     organization := "jp.github.cactacea.core",
-    name := "core",
     scalaVersion := "2.12.4",
+    name := "core",
     parallelExecution in ThisBuild := false,
     testOptions in Test += Tests.Argument("-oI")
 )
 
 lazy val versions = new {
-    val finatra = "18.2.0"
+    val finatra = "17.12.0"
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
@@ -61,17 +59,16 @@ lazy val versions = new {
 lazy val coreLibrarySetting = Seq(
     resolvers ++= Seq(
         Resolver.sonatypeRepo("releases"),
-        "Maven central" at "http://repo1.maven.org/maven2/"
+        "Maven central" at "http://central.maven.org/maven2/"
     ),
     libraryDependencies ++= Seq(
-        "io.zipkin.finagle" %% "zipkin-finagle" % "1.2.2",
         "com.twitter" %% "finagle-core" % versions.finatra,
         "com.twitter" %% "finatra-http" % versions.finatra,
         "com.twitter" %% "finatra-httpclient" % versions.finatra,
-        "com.github.finagle" % "finagle-oauth2_2.12" % "17.12.0",
+        "com.github.finagle" %% "finagle-oauth2" % versions.finatra,
         "ch.qos.logback" % "logback-classic" % versions.logback,
         "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
-        "io.getquill" % "quill-finagle-mysql_2.12" % "2.3.2",
+        "io.getquill" %% "quill-finagle-mysql" % "2.3.2",
         "com.typesafe" % "config" % "1.3.2",
         "io.jsonwebtoken" % "jjwt" % "0.9.0",
         "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
@@ -90,7 +87,7 @@ lazy val coreLibrarySetting = Seq(
 lazy val testLibrarySetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    "Maven central" at "http://repo1.maven.org/maven2/"
+    "Maven central" at "http://central.maven.org/maven2/"
   ),
   libraryDependencies ++= Seq(
     "com.twitter" %% "finatra-http" % versions.finatra % "test",
@@ -121,8 +118,8 @@ lazy val util = (project in file("util"))
 
 lazy val utilSetting = Seq(
   organization := "jp.github.cactacea.util",
-  name := "core",
   scalaVersion := "2.12.4",
+  name := "core",
   parallelExecution in ThisBuild := false,
   testOptions in Test += Tests.Argument("-oI")
 )
