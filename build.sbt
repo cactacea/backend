@@ -7,7 +7,7 @@ lazy val backend = (project in file("backend"))
       scalaVersion := "2.12.4",
       concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
       testOptions in Test += Tests.Argument("-oI"),
-      mainClass in (Compile, run) := Some("io.github.cactacea.backend.CactaceaServerApp")
+      mainClass in (Compile, run) := Some("io.github.cactacea.backend.server.DefaultServerApp")
   )
   .settings(
       version in Docker := "latest",
