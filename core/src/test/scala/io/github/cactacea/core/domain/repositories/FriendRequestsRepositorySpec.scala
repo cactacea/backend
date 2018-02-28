@@ -1,13 +1,13 @@
 package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.SessionRepositoryTest
 import io.github.cactacea.core.infrastructure.dao.{FriendRequestsDAO, FriendRequestsStatusDAO, FriendsDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FriendRequestId}
+import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyRequested, AccountNotFound, CanNotSpecifyMyself, FriendRequestNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
-class FriendRequestsRepositorySpec extends SessionRepositoryTest {
+class FriendRequestsRepositorySpec extends RepositorySpec {
 
   val friendRequestsRepository = injector.instance[FriendRequestsRepository]
   val blocksRepository = injector.instance[BlocksRepository]

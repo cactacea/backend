@@ -4,8 +4,8 @@ import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.PushNotificationSetting
 import io.github.cactacea.core.domain.repositories.PushNotificationSettingsRepository
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 class PushNotificationSettingsService @Inject()(db: DatabaseService) {
 

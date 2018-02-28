@@ -1,9 +1,9 @@
 package io.github.cactacea.core.util.clients.facebook
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.CactaceaDAOTest
+import io.github.cactacea.core.specs.DAOSpec
 
-class FacebookHttpClientSpec extends CactaceaDAOTest {
+class FacebookHttpClientSpec extends DAOSpec {
 
   var facebookHttpClient = injector.instance[FacebookHttpClient]
 

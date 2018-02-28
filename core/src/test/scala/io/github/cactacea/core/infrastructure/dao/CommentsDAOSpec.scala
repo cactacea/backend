@@ -2,10 +2,10 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.CactaceaDAOTest
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId}
+import io.github.cactacea.core.specs.DAOSpec
 
-class CommentsDAOSpec extends CactaceaDAOTest {
+class CommentsDAOSpec extends DAOSpec {
 
   val commentFavoritesDAO = injector.instance[CommentFavoritesDAO]
   val commentsDAO: CommentsDAO = injector.instance[CommentsDAO]

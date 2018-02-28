@@ -1,0 +1,44 @@
+package io.github.cactacea.core.helpers
+
+import io.github.cactacea.core.domain.enums.MediumType
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId}
+import io.github.cactacea.core.infrastructure.models.{Accounts, Mediums}
+
+object FactoryHelper {
+
+  def createMediums(accountId: AccountId) = {
+    Mediums(
+      MediumId(0L),
+      "key",
+      "http://127.0.0.1/resource/image.jpg",
+      120,
+      120,
+      128L,
+      Some("http://127.0.0.1/resource/thumnail_image.jpg"),
+      MediumType.image.toValue,
+      accountId
+    )
+  }
+
+  def createAccounts(accountName: Long): Accounts = {
+    Accounts(
+      id = AccountId(0L),
+      profileImage = None,
+      profileImageUrl = None,
+      accountName = accountName.toString,
+      displayName = "displayname",
+      password = "password",
+      position = 0L,
+      accountStatus = 0L,
+      followCount = 0L,
+      followerCount = 0L,
+      friendCount = 0L,
+      web = Some("test@example.com"),
+      birthday = None,
+      location = Some("location"),
+      bio = Some("bio"),
+      signedOutAt = None
+    )
+  }
+
+}
