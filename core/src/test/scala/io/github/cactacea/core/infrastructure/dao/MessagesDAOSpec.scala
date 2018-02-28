@@ -2,10 +2,10 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, MediumType}
-import io.github.cactacea.core.helpers.CactaceaDAOTest
 import io.github.cactacea.core.infrastructure.models.Messages
+import io.github.cactacea.core.specs.DAOSpec
 
-class MessagesDAOSpec extends CactaceaDAOTest {
+class MessagesDAOSpec extends DAOSpec {
 
   val messagesDAO: MessagesDAO = injector.instance[MessagesDAO]
   val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]

@@ -6,8 +6,8 @@ import io.github.cactacea.core.application.responses.GroupCreated
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, ReportType}
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.domain.repositories._
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, SessionId}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class GroupsService @Inject()(db: DatabaseService) {

@@ -5,8 +5,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.SocialAccountType
 import io.github.cactacea.core.domain.models.SocialAccount
 import io.github.cactacea.core.domain.repositories.SocialAccountsRepository
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class SocialAccountsService @Inject()(db: DatabaseService) {

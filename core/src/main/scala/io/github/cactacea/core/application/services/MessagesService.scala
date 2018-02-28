@@ -5,10 +5,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.application.responses.MessageCreated
 import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.domain.repositories.{DeliveryMessagesRepository, MessagesRepository}
-import io.github.cactacea.core.infrastructure.db.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.pushnotifications.PushNotificationService
-import io.github.cactacea.core.infrastructure.queues.QueueService
+import io.github.cactacea.core.infrastructure.services.{DatabaseService, PushNotificationService, QueueService}
 import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 class MessagesService @Inject()(db: DatabaseService) {

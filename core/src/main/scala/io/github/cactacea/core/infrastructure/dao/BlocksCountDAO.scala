@@ -3,8 +3,8 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, CommentId, FeedId, SessionId}
-import io.github.cactacea.core.infrastructure.db.DatabaseService
-import io.github.cactacea.core.infrastructure.queries.{CommentBlocksCountQuery, FeedBlocksCountQuery, RelationshipBlocksCountQuery}
+import io.github.cactacea.core.infrastructure.models.{CommentBlocksCountQuery, FeedBlocksCountQuery, RelationshipBlocksCountQuery}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class BlocksCountDAO @Inject()(db: DatabaseService) {
