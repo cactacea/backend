@@ -1,2 +1,1 @@
-sbt ++$TRAVIS_SCALA_VERSION
-sbt clean coverage test coverageReport -Denv=test
+sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport 'set concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)'
