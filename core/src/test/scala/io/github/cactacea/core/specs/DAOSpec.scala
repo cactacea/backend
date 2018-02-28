@@ -15,17 +15,21 @@ import org.scalatest.BeforeAndAfter
 
 class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
 
-    override val injector =
-      TestInjector(
-        modules = Seq(
-          DatabaseProviderModule,
-          FinatraJacksonModule
-        )
-      ).create
+  override val injector =
+    TestInjector(
+      modules = Seq(
+        DatabaseProviderModule,
+        FinatraJacksonModule
+      )
+    ).create
 
-    before {
-      DatabaseHelper.initialize()
-    }
+  before {
+    DatabaseHelper.initialize()
+  }
+
+  after {
+    DatabaseHelper.initialize()
+  }
 
   val db = injector.instance[DatabaseService]
 
