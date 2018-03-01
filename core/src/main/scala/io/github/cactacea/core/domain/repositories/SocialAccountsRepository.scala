@@ -3,7 +3,6 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.SocialAccountType
-import io.github.cactacea.core.domain.factories.SocialAccountFactory
 import io.github.cactacea.core.domain.models.SocialAccount
 import io.github.cactacea.core.infrastructure.dao.SocialAccountsDAO
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
@@ -17,7 +16,7 @@ class SocialAccountsRepository {
 
   def findAll(sessionId: SessionId): Future[List[SocialAccount]] = {
     socialAccountsDAO.findAll(sessionId).map(_.map(t =>
-      SocialAccountFactory.create(t)
+      SocialAccount(t)
     ))
   }
 

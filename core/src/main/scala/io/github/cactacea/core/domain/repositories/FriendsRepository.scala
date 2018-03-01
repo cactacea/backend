@@ -3,7 +3,6 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.GroupPrivacyType
-import io.github.cactacea.core.domain.factories.AccountFactory
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -46,12 +45,12 @@ class FriendsRepository {
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     val accountId = sessionId.toAccountId
     friendsDAO.findAll(accountId, since, offset, count, sessionId)
-      .map(_.map(t => AccountFactory.create(t._1, t._2)))
+      .map(_.map(t => Account(t._1, t._2)))
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     friendsDAO.findAll(accountId, since, offset, count, sessionId)
-      .map(_.map(t => AccountFactory.create(t._1, t._2)))
+      .map(_.map(t => Account(t._1, t._2)))
   }
 
 

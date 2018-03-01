@@ -2,7 +2,6 @@ package io.github.cactacea.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.responses.GroupCreated
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, ReportType}
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.domain.repositories._
@@ -17,7 +16,7 @@ class GroupsService @Inject()(db: DatabaseService) {
   @Inject var reportsRepository: ReportsRepository = _
   @Inject var messagesRepository: MessagesRepository = _
 
-  def create(name: String, byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupCreated] = {
+  def create(name: String, byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupId] = {
     db.transaction {
       groupsRepository.create(
         Some(name),
@@ -25,7 +24,7 @@ class GroupsService @Inject()(db: DatabaseService) {
         privacyType,
         authority,
         sessionId
-      ).map(GroupCreated(_))
+      )
     }
   }
 

@@ -3,7 +3,6 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.{GroupInviteStatusType, MessageType}
-import io.github.cactacea.core.domain.factories.AccountFactory
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
@@ -23,7 +22,7 @@ class GroupAccountsRepository {
     for {
       g <- validationDAO.findGroups(groupId)
       _ <- validationDAO.hasJoinAuthority(g, sessionId)
-      r <- groupAccountsDAO.findAll(groupId, since, offset, count, sessionId).map(_.map(t => AccountFactory.create(t._1, t._2, t._3)))
+      r <- groupAccountsDAO.findAll(groupId, since, offset, count, sessionId).map(_.map(t => Account(t._1, t._2, t._3)))
     } yield (r)
   }
 

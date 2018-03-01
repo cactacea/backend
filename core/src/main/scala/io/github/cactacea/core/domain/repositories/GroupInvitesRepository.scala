@@ -3,7 +3,6 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.{GroupInviteStatusType, MessageType}
-import io.github.cactacea.core.domain.factories.GroupInviteFactory
 import io.github.cactacea.core.domain.models.GroupInvite
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, GroupInviteId, SessionId}
@@ -42,7 +41,7 @@ class GroupInvitesRepository {
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[GroupInvite]] = {
     groupInvitesDAO.findAll(since, offset, count, sessionId).map(_.map(t =>
-      GroupInviteFactory.create(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8)
+      GroupInvite(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8)
     ))
   }
 

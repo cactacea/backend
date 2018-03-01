@@ -2,11 +2,11 @@ package io.github.cactacea.core.application.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.application.responses.MessageCreated
+import io.github.cactacea.core.application.interfaces.{PushNotificationService, QueueService}
 import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.domain.repositories.{DeliveryMessagesRepository, MessagesRepository}
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.services.{DatabaseService, PushNotificationService, QueueService}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 class MessagesService @Inject()(db: DatabaseService) {
@@ -16,11 +16,11 @@ class MessagesService @Inject()(db: DatabaseService) {
   @Inject var deliveryMessagesRepository: DeliveryMessagesRepository = _
   @Inject var pushNotificationService: PushNotificationService = _
 
-  def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageCreated] = {
+  def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
     for {
-      created <- db.transaction(messagesRepository.create(groupId, message, mediumId, sessionId).map(MessageCreated(_)))
-      _ <- queueService.enqueueDeliverMessage(created.id)
-    } yield (created)
+      id <- db.transaction(messagesRepository.create(groupId, message, mediumId, sessionId))
+      _ <- queueService.enqueueDeliverMessage(id)
+    } yield (id)
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {

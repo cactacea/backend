@@ -3,7 +3,6 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.core.domain.factories.GroupFactory
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, SessionId}
@@ -45,12 +44,12 @@ class GroupsRepository {
 
   def findAll(name: Option[String], byInvitation: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Group]] = {
     groupsDAO.findAll(name, byInvitation, privacyType, since, offset, count, sessionId)
-      .map(_.map(t => GroupFactory.create(t)))
+      .map(_.map(t => Group(t)))
   }
 
   def find(groupId: GroupId, sessionId: SessionId): Future[Group] = {
     groupsDAO.find(groupId, sessionId).flatMap(_ match {
-      case Some(t) => Future.value(GroupFactory.create(t))
+      case Some(t) => Future.value(Group(t))
       case None => Future.exception(CactaceaException(GroupNotFound))
     })
   }

@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.factories.MessageFactory
 import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, MediumId, MessageId, SessionId}
@@ -52,10 +51,10 @@ class MessagesRepository {
     } yield (Unit)).flatMap(_ =>
       if (ascending) {
         accountMessagesDAO.findOlder(groupId, since, offset, count, sessionId)
-          .map(l => l.map(t => MessageFactory.create(t._1, t._2, t._3, t._4, t._5)))
+          .map(l => l.map(t => Message(t._1, t._2, t._3, t._4, t._5)))
       } else {
         accountMessagesDAO.findEarlier(groupId, since, offset, count, sessionId)
-          .map(l => l.map(t => MessageFactory.create(t._1, t._2, t._3, t._4, t._5)))
+          .map(l => l.map(t => Message(t._1, t._2, t._3, t._4, t._5)))
       }
     )
   }

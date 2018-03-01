@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.factories.AccountFactory
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, SessionId}
@@ -33,7 +32,7 @@ class CommentFavoritesRepository {
     for {
       _ <- validationRepository.existComments(commentId, sessionId)
       r <- commentFavoritesDAO.findAll(commentId, since, offset, count, sessionId)
-        .map(_.map(t => AccountFactory.create(t._1, t._2)))
+        .map(_.map(t => Account(t._1, t._2)))
     } yield (r)
   }
 

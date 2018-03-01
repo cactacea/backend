@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.factories.PushNotificationSettingFactory
 import io.github.cactacea.core.domain.models.PushNotificationSetting
 import io.github.cactacea.core.infrastructure.dao.PushNotificationSettingsDAO
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
@@ -17,7 +16,7 @@ class PushNotificationSettingsRepository {
   def find(sessionId: SessionId): Future[PushNotificationSetting] = {
     notificationSettingsDAO.find(sessionId).flatMap(_ match {
       case Some(s) =>
-        Future.value(PushNotificationSettingFactory.create(s))
+        Future.value(PushNotificationSetting(s))
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })

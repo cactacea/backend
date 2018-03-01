@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.factories.AccountFactory
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, MediumsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
@@ -20,7 +19,7 @@ class AccountsRepository {
   def find(sessionId: SessionId) = {
     accountsDAO.find(sessionId).flatMap( _ match {
       case Some(t) =>
-        Future.value(AccountFactory.create(t))
+        Future.value(Account(t))
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })
@@ -29,7 +28,7 @@ class AccountsRepository {
   def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
     accountsDAO.find(accountId, sessionId).flatMap( _ match {
       case Some((u, r)) =>
-        Future.value(AccountFactory.create(u, r))
+        Future.value(Account(u, r))
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })
@@ -46,7 +45,7 @@ class AccountsRepository {
       offset,
       count,
       sessionId
-    ).map(_.map(t => AccountFactory.create(t._1, t._2)))
+    ).map(_.map(t => Account(t._1, t._2)))
   }
 
   def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {

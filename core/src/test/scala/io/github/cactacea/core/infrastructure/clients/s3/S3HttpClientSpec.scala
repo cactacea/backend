@@ -5,7 +5,7 @@ import java.nio.file.Files
 
 import com.twitter.finagle.http.MediaType
 import com.twitter.util.Await
-import io.github.cactacea.core.specs.DAOSpec
+import io.github.cactacea.core.helpers.DAOSpec
 
 class S3HttpClientSpec extends DAOSpec {
 

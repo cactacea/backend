@@ -2,8 +2,8 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.MediumType
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
-import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyUsed, AccountNotFound, MediumNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
@@ -145,8 +145,8 @@ class AccountsRepositorySpec extends RepositorySpec {
 
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
-    val medium = Await.result(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val result = Await.result(accountsRepository.updateProfileImage(Some(medium.id), session.id.toSessionId))
+    val (id, url) = Await.result(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val result = Await.result(accountsRepository.updateProfileImage(Some(id), session.id.toSessionId))
     // TODO : Check
 
   }
@@ -175,10 +175,10 @@ class AccountsRepositorySpec extends RepositorySpec {
 
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
-    val medium = Await.result(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, url) = Await.result(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(accountsRepository.updateProfileImage(Some(medium.id), SessionId(0L)))
+      Await.result(accountsRepository.updateProfileImage(Some(id), SessionId(0L)))
     }.error == AccountNotFound)
 
   }

@@ -2,8 +2,8 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums._
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, CommentNotFound, FeedNotFound, GroupNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
@@ -33,8 +33,8 @@ class ReportsRepositorySpec extends RepositorySpec {
     val user = signUp("user name", "user password", "user udid").account
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val medium = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums = Some(List(medium.id))
+    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val mediums = Some(List(id))
     val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, session.id.toSessionId))
     Await.result(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, user.id.toSessionId))
 

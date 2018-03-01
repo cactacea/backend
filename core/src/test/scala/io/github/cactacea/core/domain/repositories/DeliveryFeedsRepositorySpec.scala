@@ -2,8 +2,8 @@ package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, MediumType}
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.FeedId
-import io.github.cactacea.core.specs.RepositorySpec
 
 class DeliveryFeedsRepositorySpec extends RepositorySpec {
 
@@ -36,8 +36,8 @@ class DeliveryFeedsRepositorySpec extends RepositorySpec {
     // TODO : Check
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val medium = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums = Some(List(medium.id))
+    val (id, url) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val mediums = Some(List(id))
     val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, session.id.toSessionId))
 
     assert(Await.result(deliveryFeedsRepository.create(feedId)) == true)

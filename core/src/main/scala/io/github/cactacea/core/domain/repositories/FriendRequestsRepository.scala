@@ -3,7 +3,6 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.FriendRequestStatusType
-import io.github.cactacea.core.domain.factories.FriendRequestFactory
 import io.github.cactacea.core.domain.models.FriendRequest
 import io.github.cactacea.core.infrastructure.dao.{FriendRequestsDAO, FriendRequestsStatusDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
@@ -37,7 +36,7 @@ class FriendRequestsRepository {
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[FriendRequest]] = {
     friendRequestsDAO.findAll(since, offset, count, sessionId).map(_.map(t =>
-      FriendRequestFactory.create(t._1, t._2, t._3)
+      FriendRequest(t._1, t._2, t._3)
     ))
   }
 

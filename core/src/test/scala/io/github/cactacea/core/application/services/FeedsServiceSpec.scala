@@ -2,7 +2,7 @@ package io.github.cactacea.core.application.services
 
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.specs.ServiceSpec
+import io.github.cactacea.core.helpers.ServiceSpec
 
 class FeedsServiceSpec extends ServiceSpec {
 
@@ -11,10 +11,10 @@ class FeedsServiceSpec extends ServiceSpec {
   test("create a message feed") {
 
     val session = signUp("account name", "account password", "ffc1ded6f4570d557ad65f986684fc10c7f8d51f").account
-    val feedCreated = Await.result(feedsService.create("a message feed", None, Some(List("tag1, tag2, tag3, tag4")), FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feed = Await.result(feedsService.find(feedCreated.id, session.id.toSessionId))
+    val id = Await.result(feedsService.create("a message feed", None, Some(List("tag1, tag2, tag3, tag4")), FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feed = Await.result(feedsService.find(id, session.id.toSessionId))
 
-    assert(feed.id == feedCreated.id)
+    assert(feed.id == id)
     assert(feed.message == "a message feed")
     assert(feed.tags == Some(List("tag1, tag2, tag3, tag4")))
     assert(feed.account.forall(_.displayName == "account name"))

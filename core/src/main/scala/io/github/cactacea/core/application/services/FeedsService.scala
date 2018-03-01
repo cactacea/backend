@@ -2,12 +2,12 @@ package io.github.cactacea.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.responses.FeedCreated
+import io.github.cactacea.core.application.interfaces.{PushNotificationService, QueueService}
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.core.domain.models.Feed
 import io.github.cactacea.core.domain.repositories._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
-import io.github.cactacea.core.infrastructure.services.{DatabaseService, PushNotificationService, QueueService}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 @Singleton
@@ -35,12 +35,12 @@ class FeedsService @Inject()(db: DatabaseService) {
     )
   }
 
-  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[FeedCreated] = {
+  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[FeedId] = {
     db.transaction {
       for {
-        created <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, sessionId).map(FeedCreated(_))
-        _ <- queueService.enqueueDeliverFeed(created.id)
-      } yield (created)
+        id <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, sessionId)
+        _ <- queueService.enqueueDeliverFeed(id)
+      } yield (id)
     }
   }
 
