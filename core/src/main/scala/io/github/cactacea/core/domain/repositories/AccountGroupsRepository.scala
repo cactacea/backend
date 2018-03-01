@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.factories.GroupFactory
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, GroupsDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
@@ -26,18 +25,18 @@ class AccountGroupsRepository {
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Group]] = {
     accountGroupsDAO.findAll(accountId, since, offset, count, false, sessionId)
-      .map(l => l.map(t => GroupFactory.create(t._1, t._2, t._3, t._4, t._5)))
+      .map(l => l.map(t => Group(t._1, t._2, t._3, t._4, t._5)))
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
     accountGroupsDAO.findAll(sessionId.toAccountId, since, offset, count, hidden, sessionId)
-      .map(l => l.map(t => GroupFactory.create(t._1, t._2, t._3, t._4, t._5)))
+      .map(l => l.map(t => Group(t._1, t._2, t._3, t._4, t._5)))
   }
 
   def findOrCreate(accountId: AccountId, sessionId: SessionId): Future[Group] = {
     accountGroupsDAO.find(accountId, sessionId).flatMap(_ match {
       case Some(t) =>
-        Future.value(GroupFactory.create(t))
+        Future.value(Group(t))
       case None =>
         (for {
           groupId <- groupsDAO.create(sessionId)
@@ -45,7 +44,7 @@ class AccountGroupsRepository {
           _ <- accountGroupsDAO.create(sessionId.toAccountId, groupId, accountId.toSessionId)
           g <- accountGroupsDAO.find(accountId, sessionId)
         } yield (g.head)).flatMap(g =>
-          Future.value(GroupFactory.create(g))
+          Future.value(Group(g))
         )
     })
   }

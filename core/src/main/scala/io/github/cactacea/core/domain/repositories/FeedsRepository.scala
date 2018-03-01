@@ -3,7 +3,6 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.domain.factories.FeedFactory
 import io.github.cactacea.core.domain.models.Feed
 import io.github.cactacea.core.infrastructure.dao.{FeedsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
@@ -49,19 +48,19 @@ class FeedsRepository {
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
     for {
       _ <- validationDAO.existAccounts(accountId, sessionId)
-      r <- feedsDAO.findAll(accountId, since, offset, count, sessionId).map(_.map(t => FeedFactory.create(t._1, t._2, t._3)))
+      r <- feedsDAO.findAll(accountId, since, offset, count, sessionId).map(_.map(t => Feed(t._1, t._2, t._3)))
     } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
     feedsDAO.findAll(since, offset, count, sessionId)
-      .map(_.map(t => FeedFactory.create(t._1, t._2, t._3)))
+      .map(_.map(t => Feed(t._1, t._2, t._3)))
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {
     feedsDAO.find(feedId, sessionId).flatMap(_ match {
       case Some(t) =>
-        Future.value(FeedFactory.create(t._1, t._2, t._3, t._4, t._5))
+        Future.value(Feed(t._1, t._2, t._3, t._4, t._5))
       case None =>
         Future.exception(CactaceaException(FeedNotFound))
     })

@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.factories.AdvertisementSettingFactory
 import io.github.cactacea.core.domain.models.AdvertisementSetting
 import io.github.cactacea.core.infrastructure.dao.AdvertisementSettingsDAO
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
@@ -19,7 +18,7 @@ class AdvertisementSettingsRepository {
       sessionId
     ).flatMap(_ match {
       case Some(s) =>
-        Future.value(AdvertisementSettingFactory.create(s))
+        Future.value(AdvertisementSetting(s))
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })

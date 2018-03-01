@@ -3,7 +3,6 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.{AccountStatusType, SocialAccountType}
-import io.github.cactacea.core.domain.factories.AccountFactory
 import io.github.cactacea.core.domain.models._
 import io.github.cactacea.core.util.clients.facebook.FacebookHttpClient
 import io.github.cactacea.core.infrastructure.dao._
@@ -105,7 +104,7 @@ class SessionRepository {
     } yield (accountId, account)).flatMap( _ match {
       case (accountId, Some(a)) =>
         val accessToken = AuthTokenGenerator.generate(accountId.value, udid)
-        val session = AccountFactory.create(a)
+        val session = Account(a)
         Future.value(Authentication(session, accessToken))
       case (_, None) =>
         Future.exception(CactaceaException(AccountNotFound))
@@ -169,7 +168,7 @@ class SessionRepository {
         devicesDAO.create(udid, Some(userAgent), a.id.toSessionId)
     }).map({ _ =>
       val accessToken = AuthTokenGenerator.generate(a.id.value, udid)
-      val account = AccountFactory.create(a)
+      val account = Account(a)
       Authentication(account, accessToken)
     })
   }

@@ -1,6 +1,6 @@
 package io.github.cactacea.core.domain.repositories
 
-import io.github.cactacea.core.specs.RepositorySpec
+import io.github.cactacea.core.helpers.RepositorySpec
 
 class TimelineRepositorySpec extends RepositorySpec {
 

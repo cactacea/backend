@@ -27,9 +27,6 @@ lazy val backendLibrarySetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     "Maven central" at "http://central.maven.org/maven2/"
-  ),
-  libraryDependencies ++= Seq(
-    "com.jsuereth" %% "scala-arm" % "2.0"
   )
 )
 
@@ -78,6 +75,7 @@ lazy val coreLibrarySetting = Seq(
         "mysql" % "mysql-connector-java" % "6.0.6",
         "org.flywaydb" % "flyway-core" % "4.2.0",
 
+        "com.jsuereth" %% "scala-arm" % "2.0",
         "com.roundeights" %% "hasher" % "1.2.0",
         "com.drewnoakes" % "metadata-extractor" % "2.11.0"
 

@@ -2,11 +2,11 @@ package io.github.cactacea.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.responses.GroupInviteCreated
+import io.github.cactacea.core.application.interfaces.{PushNotificationService, QueueService}
 import io.github.cactacea.core.domain.models.GroupInvite
 import io.github.cactacea.core.domain.repositories.{DeliveryGroupInvitesRepository, GroupInvitesRepository}
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.services.{DatabaseService, PushNotificationService, QueueService}
+import io.github.cactacea.core.infrastructure.services.DatabaseService
 import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 @Singleton
@@ -18,18 +18,18 @@ class GroupInvitesService @Inject()(db: DatabaseService) {
   @Inject var deliveryGroupInvitesRepository: DeliveryGroupInvitesRepository = _
   @Inject var pushNotificationService: PushNotificationService = _
 
-  def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInviteCreated]] = {
+  def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInviteId]] = {
     for {
-      c <- db.transaction(groupInvitesRepository.create(accountIds, groupId, sessionId).map(_.map(GroupInviteCreated(_))))
-      _ <- Future.traverseSequentially(c.map(_.id)) {id => queueService.enqueueNoticeGroupInvite(id)}
-    } yield (c)
+      ids <- db.transaction(groupInvitesRepository.create(accountIds, groupId, sessionId))
+      _ <- Future.traverseSequentially(ids) {id => queueService.enqueueNoticeGroupInvite(id)}
+    } yield (ids)
   }
 
-  def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInviteCreated] = {
+  def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInviteId] = {
     for {
-      created <- db.transaction(groupInvitesRepository.create(accountId, groupId, sessionId).map(GroupInviteCreated(_)))
-      _ <- queueService.enqueueNoticeGroupInvite(created.id)
-    } yield (created)
+      id <- db.transaction(groupInvitesRepository.create(accountId, groupId, sessionId))
+      _ <- queueService.enqueueNoticeGroupInvite(id)
+    } yield (id)
   }
 
   def find(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[GroupInvite]] = {

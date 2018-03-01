@@ -3,9 +3,9 @@ package io.github.cactacea.core.domain.repositories
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, MediumType}
 import io.github.cactacea.core.domain.models.Message
+import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.MessagesDAO
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, MediumId}
-import io.github.cactacea.core.specs.RepositorySpec
 import io.github.cactacea.core.util.responses.CactaceaError.{GroupNotFound, MediumNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
@@ -32,8 +32,8 @@ class MessagesRepositorySpec extends RepositorySpec {
     Await.result(messagesRepository.delete(groupId, user.id.toSessionId))
     // TODO : Check
 
-    val mediumCreated = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
-    Await.result(messagesRepository.create(groupId, None, Some(mediumCreated.id), user.id.toSessionId))
+    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
+    Await.result(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
 
     assert(intercept[CactaceaException] {
       Await.result(messagesRepository.create(groupId, None, Some(MediumId(0L)), sessionUser.id.toSessionId))
@@ -55,8 +55,8 @@ class MessagesRepositorySpec extends RepositorySpec {
     val messageId = Await.result(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
     Await.result(deliveryMessagesRepository.create(messageId))
 
-    val mediumCreated = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
-    val messageId2 = Await.result(messagesRepository.create(groupId, None, Some(mediumCreated.id), user.id.toSessionId))
+    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
+    val messageId2 = Await.result(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
     Await.result(deliveryMessagesRepository.create(messageId2))
 
     val messages = Await.result(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))
