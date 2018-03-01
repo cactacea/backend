@@ -2,25 +2,24 @@ package io.github.cactacea.core.application.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.application.interfaces.{PushNotificationService, QueueService}
+import io.github.cactacea.core.application.components.interfaces.PublishService
 import io.github.cactacea.core.domain.models.Message
-import io.github.cactacea.core.domain.repositories.{DeliveryMessagesRepository, MessagesRepository}
+import io.github.cactacea.core.domain.repositories.{MessagesRepository}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.services.DatabaseService
-import io.github.cactacea.core.util.exceptions.PushNotificationException
 
 class MessagesService @Inject()(db: DatabaseService) {
 
   @Inject var messagesRepository: MessagesRepository = _
-  @Inject var queueService: QueueService = _
-  @Inject var deliveryMessagesRepository: DeliveryMessagesRepository = _
-  @Inject var pushNotificationService: PushNotificationService = _
+  @Inject var publishService: PublishService = _
 
   def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
-    for {
-      id <- db.transaction(messagesRepository.create(groupId, message, mediumId, sessionId))
-      _ <- queueService.enqueueDeliverMessage(id)
-    } yield (id)
+    db.transaction {
+      for {
+        id <- db.transaction(messagesRepository.create(groupId, message, mediumId, sessionId))
+        _ <- publishService.enqueueMessage(id)
+      } yield (id)
+    }
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
@@ -38,36 +37,44 @@ class MessagesService @Inject()(db: DatabaseService) {
     }
   }
 
-  def deliver(messageId: MessageId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- deliveryMessagesRepository.create(messageId)
-        a <- queueService.enqueueNoticeMessage(messageId)
-      } yield (a)
-    }
-  }
-
-  def notice(messageId: MessageId): Future[Unit] = {
-    deliveryMessagesRepository.findAll(messageId).flatMap(_ match {
-      case Some(messages) =>
-        Future.traverseSequentially(messages) { message =>
-          db.transaction {
-            for {
-              accountIds <- pushNotificationService.notifyMessage(message.accountId, message.displayName, message.tokens, message.messageId, message.message, message.mediumId, message.postedAt, message.show)
-              _ <- deliveryMessagesRepository.updateNotified(message.messageId, accountIds)
-            } yield (accountIds.size == message.tokens.size)
-          }
-        }.flatMap(_.filter(_ == false).size match {
-          case 0L =>
-            db.transaction {
-              deliveryMessagesRepository.updateNotified(messageId).flatMap(_ => Future.Unit)
-            }
-          case _ =>
-            Future.exception(PushNotificationException())
-        })
-      case None =>
-        Future.Unit
-    })
-  }
-
 }
+
+//  @Inject var deliveryMessagesRepository: DeliveryMessagesRepository = _
+//  @Inject var queueService: OldQueueService = _
+//  @Inject var pushNotificationService: OldPushNotificationService = _
+//    for {
+//      id <- db.transaction(messagesRepository.create(groupId, message, mediumId, sessionId))
+//      _ <- queueService.enqueueDeliverMessage(id)
+//    } yield (id)
+
+//  def deliver(messageId: MessageId): Future[Unit] = {
+//    db.transaction {
+//      for {
+//        _ <- deliveryMessagesRepository.create(messageId)
+//        a <- queueService.enqueueNoticeMessage(messageId)
+//      } yield (a)
+//    }
+//  }
+//
+//  def notice(messageId: MessageId): Future[Unit] = {
+//    deliveryMessagesRepository.findAll(messageId).flatMap(_ match {
+//      case Some(messages) =>
+//        Future.traverseSequentially(messages) { message =>
+//          db.transaction {
+//            for {
+//              accountIds <- pushNotificationService.notifyMessage(message.accountId, message.displayName, message.tokens, message.messageId, message.message, message.mediumId, message.postedAt, message.show)
+//              _ <- deliveryMessagesRepository.updateNotified(message.messageId, accountIds)
+//            } yield (accountIds.size == message.tokens.size)
+//          }
+//        }.flatMap(_.filter(_ == false).size match {
+//          case 0L =>
+//            db.transaction {
+//              deliveryMessagesRepository.updateNotified(messageId).flatMap(_ => Future.Unit)
+//            }
+//          case _ =>
+//            Future.exception(PushNotificationException())
+//        })
+//      case None =>
+//        Future.Unit
+//    })
+//  }

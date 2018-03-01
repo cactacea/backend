@@ -5,7 +5,6 @@ import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.AccountStatusType
 import io.github.cactacea.core.helpers.{DAOSpec, FactoryHelper}
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.core.util.PasswordHashGenerator
 
 class AccountsDAOSpec extends DAOSpec with Logging {
 
@@ -47,7 +46,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
       )
     ).get
 
-    assert(result.password == PasswordHashGenerator.create("password"))
+    assert(result.password == accountsDAO.createHashedPassword("password"))
 
   }
 
@@ -88,7 +87,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     )
 
     val result = Await.result(accountsDAO.find(sessionAccount.id.toSessionId)).get
-    assert(result.password == PasswordHashGenerator.create("password2"))
+    assert(result.password == accountsDAO.createHashedPassword("password2"))
 
   }
 

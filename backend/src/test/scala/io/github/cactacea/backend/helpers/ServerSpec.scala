@@ -6,7 +6,7 @@ import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.BackendServer
-import io.github.cactacea.core.components.modules.{DefaultPushNotificationModule, DefaultQueueModule, DefaultStorageModule}
+import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import io.github.cactacea.core.util.tokens.AuthTokenGenerator
@@ -33,9 +33,16 @@ class ServerSpec extends FeatureTest {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
+        DefaultActionModule,
+        DefaultConfigModule,
+        DefaultFanOutModule,
+        DefaultMessageModule,
+        DefaultNotificationModule,
+        DefaultPublishModule,
         DefaultPushNotificationModule,
-        DefaultQueueModule,
         DefaultStorageModule,
+        DefaultSubScribeModule,
+        DefaultTranscodeModule,
         FinatraJacksonModule
       )
     ).create

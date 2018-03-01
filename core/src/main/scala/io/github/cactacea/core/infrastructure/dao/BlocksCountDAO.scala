@@ -3,7 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, CommentId, FeedId, SessionId}
-import io.github.cactacea.core.infrastructure.models.{CommentBlocksCountQuery, FeedBlocksCountQuery, RelationshipBlocksCountQuery}
+import io.github.cactacea.core.infrastructure.results.{CommentBlocksCount, FeedBlocksCount, RelationshipBlocksCount}
 import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
@@ -11,9 +11,9 @@ class BlocksCountDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def findRelationshipBlocks(accountIds: List[AccountId], sessionId: SessionId): Future[List[RelationshipBlocksCountQuery]] = {
+  def findRelationshipBlocks(accountIds: List[AccountId], sessionId: SessionId): Future[List[RelationshipBlocksCount]] = {
     if (accountIds.size == 0) {
-      return Future.value(List[RelationshipBlocksCountQuery]())
+      return Future.value(List[RelationshipBlocksCount]())
     }
     val ids = accountIds.mkString(",")
     val q = quote { infix"""
@@ -31,14 +31,14 @@ class BlocksCountDAO @Inject()(db: DatabaseService) {
                        and b.`by` = ${lift(sessionId)}
                        group by
                        id
-      """.as[Query[RelationshipBlocksCountQuery]]
+      """.as[Query[RelationshipBlocksCount]]
     }
     run(q)
   }
 
-  def findCommentFavoriteBlocks(commentIds: List[CommentId], sessionId: SessionId): Future[List[CommentBlocksCountQuery]] = {
+  def findCommentFavoriteBlocks(commentIds: List[CommentId], sessionId: SessionId): Future[List[CommentBlocksCount]] = {
     if (commentIds.size == 0) {
-      return Future.value(List[CommentBlocksCountQuery]())
+      return Future.value(List[CommentBlocksCount]())
     }
     val ids = commentIds.mkString(",")
     val q = quote { infix"""
@@ -48,14 +48,14 @@ class BlocksCountDAO @Inject()(db: DatabaseService) {
                        where comment_id in (${lift(ids)})
                        and exists ( select * from blocks b where `by` = ${lift(sessionId)} and a.`by` = b.account_id )
                        group by id
-      """.as[Query[CommentBlocksCountQuery]]
+      """.as[Query[CommentBlocksCount]]
     }
     run(q)
   }
 
-  def findFeedFavoriteBlocks(feedIds: List[FeedId], sessionId: SessionId): Future[List[FeedBlocksCountQuery]] = {
+  def findFeedFavoriteBlocks(feedIds: List[FeedId], sessionId: SessionId): Future[List[FeedBlocksCount]] = {
     if (feedIds.size == 0) {
-      return Future.value(List[FeedBlocksCountQuery]())
+      return Future.value(List[FeedBlocksCount]())
     }
     val ids = feedIds.mkString(",")
     val q = quote { infix"""
@@ -65,14 +65,14 @@ class BlocksCountDAO @Inject()(db: DatabaseService) {
                        where feed_id in (${lift(ids)})
                        and exists ( select * from blocks b where `by` = ${lift(sessionId)} and a.`by` = b.account_id )
                        group by id
-      """.as[Query[FeedBlocksCountQuery]]
+      """.as[Query[FeedBlocksCount]]
     }
     run(q)
   }
 
-  def findFeedCommentBlocks(feedIds: List[FeedId], sessionId: SessionId): Future[List[FeedBlocksCountQuery]] = {
+  def findFeedCommentBlocks(feedIds: List[FeedId], sessionId: SessionId): Future[List[FeedBlocksCount]] = {
     if (feedIds.size == 0) {
-      return Future.value(List[FeedBlocksCountQuery]())
+      return Future.value(List[FeedBlocksCount]())
     }
     val ids = feedIds.mkString(",")
     val q = quote { infix"""
@@ -82,7 +82,7 @@ class BlocksCountDAO @Inject()(db: DatabaseService) {
                        where feed_id in (${lift(ids)})
                        and exists ( select * from blocks b where `by` = ${lift(sessionId)} and a.`by` = b.account_id )
                        group by id
-      """.as[Query[FeedBlocksCountQuery]]
+      """.as[Query[FeedBlocksCount]]
     }
     run(q)
   }

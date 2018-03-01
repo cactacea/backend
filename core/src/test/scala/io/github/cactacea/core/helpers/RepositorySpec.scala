@@ -5,6 +5,7 @@ import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
 import com.twitter.util.Await
 import com.twitter.util.logging.Logging
+import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.domain.repositories.SessionRepository
 import io.github.cactacea.core.infrastructure.services.{DatabaseProviderModule, DatabaseService}
 import org.scalatest.BeforeAndAfter
@@ -15,6 +16,16 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
+        DefaultActionModule,
+        DefaultConfigModule,
+        DefaultFanOutModule,
+        DefaultMessageModule,
+        DefaultNotificationModule,
+        DefaultPublishModule,
+        DefaultPushNotificationModule,
+        DefaultStorageModule,
+        DefaultSubScribeModule,
+        DefaultTranscodeModule,
         FinatraJacksonModule
       )
     ).create

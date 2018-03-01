@@ -2,11 +2,11 @@ package io.github.cactacea.backend
 
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
-import io.github.cactacea.core.components.DefaultServer
+import io.github.cactacea.core.application.components.CactaceaServer
 import io.github.cactacea.core.util.filters._
 import io.github.cactacea.core.util.handlers.DatabaseWarmupHandler
 
-class BackendServer extends DefaultServer {
+class BackendServer extends CactaceaServer {
 
   override def configureHttp(router: HttpRouter) = {
     router

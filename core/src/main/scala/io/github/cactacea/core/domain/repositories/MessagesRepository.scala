@@ -13,6 +13,7 @@ class MessagesRepository {
   @Inject var groupAccountsDAO: GroupAccountsDAO = _
   @Inject var messagesDAO:  MessagesDAO = _
   @Inject var accountMessagesDAO: AccountMessagesDAO = _
+  @Inject var accountGroupsDAO: AccountGroupsDAO = _
   @Inject var validationDAO: ValidationDAO = _
 
   def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
@@ -24,6 +25,8 @@ class MessagesRepository {
       accountCount  <- groupAccountsDAO.findCount(groupId)
       messageId     <- messagesDAO.create(groupId, message, accountCount, mediumId, sessionId)
       _             <- groupsDAO.update(groupId, Some(messageId), sessionId)
+      _             <- accountMessagesDAO.create(groupId, messageId, sessionId)
+      _             <- accountGroupsDAO.updateUnreadCount(groupId)
     } yield (messageId)
   }
 

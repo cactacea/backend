@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.domain.models.Feed
-import io.github.cactacea.core.infrastructure.dao.{FeedsDAO, ValidationDAO}
+import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
 import io.github.cactacea.core.util.responses.CactaceaError._
 import io.github.cactacea.core.util.exceptions.CactaceaException
@@ -13,14 +13,18 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 class FeedsRepository {
 
   @Inject var feedsDAO: FeedsDAO = _
+  @Inject var accountFeedsDAO: AccountFeedsDAO = _
+  @Inject var timelineDAO: TimeLineDAO = _
   @Inject var validationDAO: ValidationDAO = _
 
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[FeedId] = {
     val ids = mediumIds.map(_.distinct)
     for {
       _ <- validationDAO.existMediums(ids, sessionId)
-      r <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, sessionId)
-    } yield (r)
+      id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, sessionId)
+      _ <- accountFeedsDAO.create(id, sessionId)
+      _ <- timelineDAO.create(id, sessionId)
+    } yield (id)
   }
 
   def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[Unit] = {

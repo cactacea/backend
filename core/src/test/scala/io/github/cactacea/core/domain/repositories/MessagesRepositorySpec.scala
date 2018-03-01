@@ -15,7 +15,7 @@ class MessagesRepositorySpec extends RepositorySpec {
   var groupAccountsRepository = injector.instance[GroupAccountsRepository]
   var messagesRepository = injector.instance[MessagesRepository]
   var messagesDAO = injector.instance[MessagesDAO]
-  var deliveryMessagesRepository = injector.instance[DeliveryMessagesRepository]
+//  var deliveryMessagesRepository = injector.instance[DeliveryMessagesRepository]
   val mediumRepository = injector.instance[MediumsRepository]
 
   test("create and delete") {
@@ -27,7 +27,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
 
     val messageId = Await.result(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
-    Await.result(deliveryMessagesRepository.create(messageId))
+//    Await.result(deliveryMessagesRepository.create(messageId))
 
     Await.result(messagesRepository.delete(groupId, user.id.toSessionId))
     // TODO : Check
@@ -53,11 +53,11 @@ class MessagesRepositorySpec extends RepositorySpec {
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
     val messageId = Await.result(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
-    Await.result(deliveryMessagesRepository.create(messageId))
+//    Await.result(deliveryMessagesRepository.create(messageId))
 
     val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
     val messageId2 = Await.result(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
-    Await.result(deliveryMessagesRepository.create(messageId2))
+//    Await.result(deliveryMessagesRepository.create(messageId2))
 
     val messages = Await.result(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))
     assert(messages.size == 2)

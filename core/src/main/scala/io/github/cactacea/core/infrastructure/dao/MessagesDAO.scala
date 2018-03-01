@@ -34,7 +34,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.accountCount        -> lift(accountCount),
         _.readAccountCount    -> lift(0L),
         _.notified            -> lift(true),
-        _.delivered           -> lift(true),
+//        _.delivered           -> lift(true),
         _.postedAt            -> lift(postedAt)
       )
     }
@@ -67,7 +67,6 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.readAccountCount    -> lift(0L),
         _.mediumId            -> lift(mediumId),
         _.notified            -> lift(false),
-        _.delivered           -> lift(false),
         _.postedAt            -> lift(postedAt)
       )
     }
@@ -93,25 +92,6 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def findUndelivered(messageId: MessageId): Future[Option[Messages]] = {
-    val q = quote {
-      query[Messages]
-        .filter(_.id == lift(messageId))
-        .filter(_.delivered == lift(false))
-    }
-    run(q).map(_.headOption)
-  }
-
-  def findUnNotified(messageId: MessageId): Future[Option[Messages]] = {
-    val q = quote {
-      query[Messages]
-        .filter(_.id == lift(messageId))
-        .filter(_.notified == lift(false))
-    }
-    run(q).map(_.headOption)
-  }
-
-
   def updateReadAccountCount(messageIds: List[MessageId]): Future[Boolean] = {
     val q = quote {
       query[Messages]
@@ -130,13 +110,13 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def updateDelivered(messageId: MessageId): Future[Boolean] = {
-    val q = quote {
-      query[Messages]
-        .filter(_.id == lift(messageId))
-        .update(_.delivered -> lift(true))
-    }
-    run(q).map(_ == 1)
-  }
+//  def updateDelivered(messageId: MessageId): Future[Boolean] = {
+//    val q = quote {
+//      query[Messages]
+//        .filter(_.id == lift(messageId))
+//        .update(_.delivered -> lift(true))
+//    }
+//    run(q).map(_ == 1)
+//  }
 
 }

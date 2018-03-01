@@ -71,18 +71,4 @@ class MessagesDAOSpec extends DAOSpec {
 
   }
 
-  test("updateDelivered") {
-
-    val sessionAccount = this.createAccount(0L)
-    val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
-    assert(Await.result(messagesDAO.updateDelivered(messageId))== true)
-
-    val result2 = Await.result(db.run(quote(query[Messages].filter(_.id == lift(messageId)))))
-    assert(result2.size == 1)
-    val message = result2(0)
-    assert(message.delivered == true)
-
-  }
-
 }

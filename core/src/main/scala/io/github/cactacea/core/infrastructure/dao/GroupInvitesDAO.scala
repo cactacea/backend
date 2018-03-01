@@ -171,7 +171,7 @@ class GroupInvitesDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def updateNotified(groupInviteId: GroupInviteId, notified: Boolean): Future[Boolean] = {
+  def updateNotified(groupInviteId: GroupInviteId, notified: Boolean = true): Future[Boolean] = {
     val q = quote {
       query[GroupInvites]
         .filter(_.id == lift(groupInviteId))
