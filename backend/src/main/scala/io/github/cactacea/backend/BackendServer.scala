@@ -19,6 +19,7 @@ class BackendServer extends CactaceaServer {
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, GroupInvitesController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, MediumsController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, MessagesController]
+      .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, MutesController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, SessionController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, TimelineController]
       .add[ApplicationFilter, AuthFilter, ETagFilter, CorsFilter, SettingController]

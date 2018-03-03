@@ -65,29 +65,6 @@ class AccountsController extends Controller {
     )
   }
 
-
-
-
-
-
-  @Inject var mutesService: MutesService = _
-
-  post("/accounts/:id/mutes") { request: PostMute =>
-    mutesService.create(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  delete("/accounts/:id/mutes") { request: DeleteMute =>
-    mutesService.delete(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-
-
   @Inject var followsService: FollowsService = _
 
   get("/accounts/:id/follows") { request: GetFollows =>

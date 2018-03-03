@@ -59,19 +59,9 @@ class SessionController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  @Inject var mutesService: MutesService = _
   @Inject var followsService: FollowsService = _
   @Inject var followersService: FollowersService = _
   @Inject var friendsService: FriendsService = _
-
-  get("/session/mutes") { request: GetSessionMutes =>
-    mutesService.find(
-      request.since,
-      request.offset,
-      request.count,
-      request.session.id
-    )
-  }
 
   get("/session/follows") { request: GetSessionFollows =>
     followsService.find(
