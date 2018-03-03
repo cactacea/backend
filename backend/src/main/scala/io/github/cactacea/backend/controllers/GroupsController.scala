@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.group._
-import io.github.cactacea.backend.models.responses.{GroupCreated, GroupInviteCreated}
+import io.github.cactacea.backend.models.responses.GroupCreated
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.AuthUserContext._
 
@@ -64,14 +64,6 @@ class GroupsController extends Controller {
 
   @Inject var groupAccountsService: GroupAccountsService = _
 
-  post("/groups/:id/invites") { request: PostInviteAccounts =>
-    invitesService.create(
-      request.accountIds,
-      request.groupId,
-      request.session.id
-    ).map(_.map(GroupInviteCreated(_))).map(response.created(_))
-  }
-
   post("/groups/:id/joins") { request: PostJoinGroup =>
     groupAccountsService.create(
       request.groupId,
@@ -111,40 +103,6 @@ class GroupsController extends Controller {
       request.session.id
     ).map(_ => response.noContent)
   }
-
-  @Inject var invitesService: GroupInvitesService = _
-
-  get("/session/invites") { request: GetSessionInvites =>
-    invitesService.find(
-      request.since,
-      request.offset,
-      request.count,
-      request.session.id
-    )
-  }
-
-  post("/invites/:id/accept") { request: PostAcceptInvite =>
-    invitesService.accept(
-      request.groupInviteId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  post("/invites/:id/reject") { request: PostRejectInvite =>
-    invitesService.reject(
-      request.groupInviteId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  post("/accounts/:account_id/groups/:group_id/invites") { request: PostInviteAccount =>
-    invitesService.create(
-      request.accountId,
-      request.groupId,
-      request.session.id
-    ).map(GroupInviteCreated(_)).map(response.created(_))
-  }
-
 
   @Inject var accountGroupsService: AccountGroupsService = _
 
