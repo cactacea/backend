@@ -1,4 +1,4 @@
-package io.github.cactacea.core.application.components.thirdparties.onesignal
+package io.github.cactacea.core.application.components.thirdparties.s3
 
 import com.google.inject.Inject
 import com.twitter.util.Future

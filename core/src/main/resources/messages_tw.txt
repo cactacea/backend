@@ -1,6 +1,0 @@
-send_a_text={0} {1}
-sent_an_image={0} sent a image.
-you_have_got_a_message=Yous've got a message.
-posted_a_feed={0} posted a feed.
-posted_a_comment={0} posted a comment.
-invited_a_group={0} invited you to a group.

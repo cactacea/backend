@@ -71,21 +71,37 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], received: Boolean, sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
     val s = since.getOrElse(Long.MaxValue)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
-    val q = quote {
-      query[FriendRequests].filter(f => f.accountId == lift(by) && f.requestedAt < lift(s))
-        .sortBy(_.requestedAt)(Ord.descNullsLast)
-        .drop(lift(o))
-        .take(lift(c))
-        .join(query[Accounts]).on((f, a) => a.id == f.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+    if (received) {
+      val q = quote {
+        query[FriendRequests].filter(f => f.accountId == lift(by) && f.requestedAt < lift(s))
+          .sortBy(_.requestedAt)(Ord.descNullsLast)
+          .drop(lift(o))
+          .take(lift(c))
+          .join(query[Accounts]).on((f, a) => a.id == f.by)
+          .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+      }
+
+      run(q).map(_.map({ case ((f, a), r) => (f, a.copy(position = f.requestedAt), r)}))
+
+    } else {
+      val q = quote {
+        query[FriendRequests].filter(f => f.by == lift(by) && f.requestedAt < lift(s))
+          .sortBy(_.requestedAt)(Ord.descNullsLast)
+          .drop(lift(o))
+          .take(lift(c))
+          .join(query[Accounts]).on((f, a) => a.id == f.by)
+          .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+      }
+
+      run(q).map(_.map({ case ((f, a), r) => (f, a.copy(position = f.requestedAt), r)}))
+
     }
-    run(q).map(_.map({ case ((f, a), r) => (f, a.copy(position = f.requestedAt), r)}))
 
   }
 

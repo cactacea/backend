@@ -20,7 +20,7 @@ class DefaultFanOutService extends FanOutService {
       a <- pushNotificationService.send(p)
       u <- pushNotificationsRepository.updateFeeds(feedId, a)
       b <- notificationService.send(p)
-    } yield ((u && b))).map(_ match {
+    } yield ((u && b))).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -34,7 +34,7 @@ class DefaultFanOutService extends FanOutService {
       _ <- pushNotificationService.send(p)
       u <- pushNotificationsRepository.updateComments(commentId)
       b <- notificationService.send(p)
-    } yield ((u && b))).map(_ match {
+    } yield ((u && b))).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -48,7 +48,7 @@ class DefaultFanOutService extends FanOutService {
       a <- pushNotificationService.send(p)
       u <- pushNotificationsRepository.updateMessages(messageId, a)
       b <- notificationService.send(p)
-    } yield ((u && b))).map(_ match {
+    } yield ((u && b))).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -62,7 +62,7 @@ class DefaultFanOutService extends FanOutService {
       _ <- pushNotificationService.send(p)
       u <- pushNotificationsRepository.updateGroupInvites(groupInviteId)
       b <- notificationService.send(p)
-    } yield ((u && b))).map(_ match {
+    } yield ((u && b))).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>

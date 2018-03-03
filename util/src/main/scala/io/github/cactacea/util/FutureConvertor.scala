@@ -1,4 +1,4 @@
-package io.github.cactacea.core.util
+package io.github.cactacea.util
 
 import com.twitter.util.{Return, Throw, Future => TwitterFuture, Promise => TwitterPromise}
 

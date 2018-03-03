@@ -1,6 +1,7 @@
-send_a_text={0} {1}
-sent_an_image={0} 画像を送信しました。
-you_have_got_a_message=新着メッセージがあります。
-posted_a_feed={0} フィードを投稿しました。
-posted_a_comment={0} コメントを投稿しました。
-invited_a_group={0} がグループへ招待しました。
+send_message = {0} : {1}
+send_no_displayed_message = メッセージが届きました。
+send_image = {0}さんが画像を送信しました。
+send_group_invitation = {0}さんからグループへ招待が届きました。
+send_friend_request = {0}さんから友達リクエストが届きました。
+post_feed =  {0}さんがフィードを投稿しました。
+post_comment =  {0}さんがコメントを残しました。

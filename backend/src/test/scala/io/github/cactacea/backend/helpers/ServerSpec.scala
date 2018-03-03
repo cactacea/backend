@@ -36,7 +36,7 @@ class ServerSpec extends FeatureTest {
         DefaultActionModule,
         DefaultConfigModule,
         DefaultFanOutModule,
-        DefaultMessageModule,
+        DefaultPushNotificationMessagesModule,
         DefaultNotificationModule,
         DefaultPublishModule,
         DefaultPushNotificationModule,

@@ -13,7 +13,7 @@ class TwitterHttpClient extends SocialClient {
   val consumerToken = ConsumerToken(key = consumerTokenKey, secret = consumerTokenSecret)
 
   import scala.concurrent.ExecutionContext.Implicits.global
-  import io.github.cactacea.core.util.FutureConvertor._
+  import io.github.cactacea.util.FutureConvertor._
 
   override def get(accessTokenKey: String, accessTokenSecret: String): Future[Option[SocialAccount]] =  {
     val accessToken = AccessToken(accessTokenKey, accessTokenSecret)
