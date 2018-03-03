@@ -14,6 +14,30 @@ class FriendsController extends Controller {
   @Inject var friendRequestsService: FriendRequestsService = _
   @Inject var friendsService: FriendsService = _
 
+  get("/session/requests") { request: GetSessionFriendRequests =>
+    friendRequestsService.findAll(
+      request.since,
+      request.offset,
+      request.count,
+      request.received,
+      request.session.id
+    )
+  }
+
+  post("/session/requests/:id/accept") { request: PostAcceptFriendRequest =>
+    friendRequestsService.accept(
+      request.friendRequestId,
+      request.session.id
+    ).map(_ => response.noContent)
+  }
+
+  post("/session/requests/:id/reject") { request: PostRejectFriendRequest =>
+    friendRequestsService.reject(
+      request.friendRequestId,
+      request.session.id
+    ).map(_ => response.noContent)
+  }
+
   get("/accounts/:id/friends") { request: GetFriends =>
     friendsService.find(
       request.accountId,
@@ -41,30 +65,6 @@ class FriendsController extends Controller {
   delete("/accounts/:id/requests") { request: DeleteFriendRequest =>
     friendRequestsService.delete(
       request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  get("/session/requests") { request: GetSessionFriendRequests =>
-    friendRequestsService.findAll(
-      request.since,
-      request.offset,
-      request.count,
-      request.received,
-      request.session.id
-    )
-  }
-
-  post("/session/requests/:id/accept") { request: PostAcceptFriendRequest =>
-    friendRequestsService.accept(
-      request.friendRequestId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  post("/session/requests/:id/reject") { request: PostRejectFriendRequest =>
-    friendRequestsService.reject(
-      request.friendRequestId,
       request.session.id
     ).map(_ => response.noContent)
   }

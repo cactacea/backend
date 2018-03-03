@@ -64,14 +64,14 @@ class GroupsController extends Controller {
 
   @Inject var groupAccountsService: GroupAccountsService = _
 
-  post("/groups/:id/joins") { request: PostJoinGroup =>
+  post("/groups/:id/join") { request: PostJoinGroup =>
     groupAccountsService.create(
       request.groupId,
       request.session.id
     ).map(_ => response.noContent)
   }
 
-  post("/groups/:id/leaves") { request: PostLeaveGroup =>
+  post("/groups/:id/leave") { request: PostLeaveGroup =>
     groupAccountsService.delete(
       request.groupId,
       request.session.id
@@ -88,7 +88,7 @@ class GroupsController extends Controller {
     )
   }
 
-  post("/accounts/:account_id/groups/:group_id/joins") { request: PostAccountJoinGroup =>
+  post("/accounts/:account_id/groups/:group_id/join") { request: PostAccountJoinGroup =>
     groupAccountsService.create(
       request.accountId,
       request.groupId,
@@ -96,7 +96,7 @@ class GroupsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  post("/accounts/:account_id/groups/:group_id/leaves") { request: PostAccountLeaveGroup =>
+  post("/accounts/:account_id/groups/:group_id/leave") { request: PostAccountLeaveGroup =>
     groupAccountsService.delete(
       request.accountId,
       request.groupId,
