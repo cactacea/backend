@@ -2,10 +2,10 @@ package io.github.cactacea.core.domain.models
 
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId}
 
-case class DeliveryGroupInvite(
+case class DeliveryGroupInvitation(
                                          accountId: AccountId,
                                          displayName: String,
                                          groupId: GroupId,
-                                         invitedAt: Long,
+                                         invitationdAt: Long,
                                          tokens: List[(String, AccountId)]
                                        )

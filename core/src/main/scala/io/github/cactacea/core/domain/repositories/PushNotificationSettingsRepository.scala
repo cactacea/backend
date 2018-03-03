@@ -22,7 +22,7 @@ class PushNotificationSettingsRepository {
     })
   }
 
-  def update(groupInvite: Boolean,
+  def update(groupInvitation: Boolean,
              followerFeed: Boolean,
              feedComment: Boolean,
              groupMessage: Boolean,
@@ -30,7 +30,7 @@ class PushNotificationSettingsRepository {
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
     notificationSettingsDAO.update(
-      groupInvite,
+      groupInvitation,
       followerFeed,
       feedComment,
       groupMessage,

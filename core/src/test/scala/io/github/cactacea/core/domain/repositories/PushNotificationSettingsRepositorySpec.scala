@@ -17,7 +17,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
     assert(result.groupMessage == true)
     assert(result.directMessage == true)
     assert(result.feedComment == true)
-    assert(result.groupInvite == true)
+    assert(result.groupInvitation == true)
     assert(result.followerFeed == true)
 
   }
@@ -39,7 +39,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
     assert(result.groupMessage == false)
     assert(result.directMessage == false)
     assert(result.feedComment == false)
-    assert(result.groupInvite == false)
+    assert(result.groupInvitation == false)
     assert(result.followerFeed == false)
 
   }

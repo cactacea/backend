@@ -11,7 +11,7 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 class FriendsRepository {
 
   @Inject var friendsDAO: FriendsDAO = _
-  @Inject var groupInvitesDAO: GroupInvitesDAO = _
+  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
   @Inject var followsDAO: FollowsDAO = _
   @Inject var followersDAO: FollowersDAO = _
   @Inject var validationDAO: ValidationDAO = _
@@ -37,8 +37,8 @@ class FriendsRepository {
       _ <- validationDAO.existFriends(accountId, sessionId)
       _ <- friendsDAO.delete(accountId, sessionId)
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
-      _ <- groupInvitesDAO.delete(accountId, GroupPrivacyType.friends, sessionId)
-      _ <- groupInvitesDAO.delete(sessionId.toAccountId, GroupPrivacyType.friends, accountId.toSessionId)
+      _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.friends, sessionId)
+      _ <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.friends, accountId.toSessionId)
     } yield (Future.value(Unit))
   }
 

@@ -18,7 +18,7 @@ class PushNotificationSettingsService @Inject()(db: DatabaseService) {
   def edit(setting: PushNotificationSetting, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       notificationSettingsRepository.update(
-        setting.groupInvite,
+        setting.groupInvitation,
         setting.followerFeed,
         setting.feedComment,
         setting.groupMessage,

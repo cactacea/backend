@@ -3,7 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.models.{FriendRequests, GroupInvites, Groups}
+import io.github.cactacea.core.infrastructure.models.{FriendRequests, GroupInvitations, Groups}
 import io.github.cactacea.core.util.responses.CactaceaError._
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
@@ -23,7 +23,7 @@ class ValidationDAO {
   @Inject var feedFavoritesDAO: FeedFavoritesDAO = _
   @Inject var groupsDAO: GroupsDAO = _
   @Inject var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject var groupInvitesDAO: GroupInvitesDAO = _
+  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
   @Inject var groupAuthorityDAO: GroupAuthorityDAO = _
   @Inject var mediumsDAO: MediumsDAO = _
   @Inject var mutesDAO: MutesDAO = _
@@ -225,7 +225,7 @@ class ValidationDAO {
   def findNotInvitationOnlyGroups(groupId: GroupId): Future[Groups] = {
     groupsDAO.find(groupId).flatMap(_ match {
       case Some(g) =>
-        if (g.byInvitationOnly == true) {
+        if (g.invitationOnly == true) {
           Future.exception(CactaceaException(GroupIsInvitationOnly))
         } else {
           Future.value(g)
@@ -264,7 +264,7 @@ class ValidationDAO {
   }
 
   def notExistGroupInvites(accountId: AccountId, groupId: GroupId): Future[Unit] = {
-    groupInvitesDAO.exist(accountId, groupId).flatMap(_ match {
+    groupInvitationsDAO.exist(accountId, groupId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyInvited))
       case false =>
@@ -308,10 +308,10 @@ class ValidationDAO {
     })
   }
 
-  def findGroupsInvite(groupInviteId: GroupInviteId, sessionId: SessionId): Future[GroupInvites] = {
-    groupInvitesDAO.find(groupInviteId, sessionId).flatMap(_ match {
+  def findGroupsInvite(groupInvitationId: GroupInvitationId, sessionId: SessionId): Future[GroupInvitations] = {
+    groupInvitationsDAO.find(groupInvitationId, sessionId).flatMap(_ match {
       case None =>
-        Future.exception(CactaceaException(GroupInviteNotFound))
+        Future.exception(CactaceaException(GroupInvitationNotFound))
       case Some(i) =>
         Future.value(i)
     })

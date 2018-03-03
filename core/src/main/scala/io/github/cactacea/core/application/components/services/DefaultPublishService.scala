@@ -20,8 +20,8 @@ class DefaultPublishService @Inject()(subScribeService: SubScribeService) extend
     subScribeService.dequeueMessage(messageId)
   }
 
-  def enqueueGroupInvite(groupInviteId: GroupInviteId): Future[Unit] = {
-    subScribeService.dequeueGroupInvite(groupInviteId)
+  def enqueueGroupInvite(groupInvitationId: GroupInvitationId): Future[Unit] = {
+    subScribeService.dequeueGroupInvite(groupInvitationId)
   }
 
   def enqueueFriendRequest(friendRequestId: FriendRequestId): Future[Unit] = {

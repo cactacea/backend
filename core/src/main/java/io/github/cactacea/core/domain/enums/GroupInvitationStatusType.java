@@ -2,19 +2,19 @@ package io.github.cactacea.core.domain.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum GroupInviteStatusType {
+public enum GroupInvitationStatusType {
     @JsonProperty("0") noresponsed(0),
     @JsonProperty("1") accepted(1),
     @JsonProperty("2") rejected(2);
 
     private long value;
 
-    private GroupInviteStatusType(long value) {
+    private GroupInvitationStatusType(long value) {
         this.value = value;
     }
 
-    static public GroupInviteStatusType forName(long value) {
-        for (GroupInviteStatusType e : values()) {
+    static public GroupInvitationStatusType forName(long value) {
+        for (GroupInvitationStatusType e : values()) {
             if (e.value == value) {
                 return e;
             }

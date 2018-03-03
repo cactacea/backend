@@ -7,7 +7,7 @@ case class PushNotificationSetting(
                                     feedComment: Boolean,
                                     groupMessage: Boolean,
                                     directMessage: Boolean,
-                                    groupInvite: Boolean,
+                                    groupInvitation: Boolean,
                                     showMessage: Boolean
                                )
 
@@ -15,7 +15,7 @@ object PushNotificationSetting {
 
   def apply(s: PushNotificationSettings): PushNotificationSetting = {
     PushNotificationSetting(
-      groupInvite              = s.groupInvite,
+      groupInvitation              = s.groupInvitation,
       followerFeed        = s.followerFeed,
       feedComment         = s.feedComment,
       groupMessage        = s.groupMessage,

@@ -15,7 +15,7 @@ class GroupsController extends Controller {
   get("/groups") { request: GetGroups =>
     groupsService.find(
       request.groupName,
-      request.byInvitationOnly,
+      request.invitationOnly,
       request.privacyType,
       request.since,
       request.offset,
