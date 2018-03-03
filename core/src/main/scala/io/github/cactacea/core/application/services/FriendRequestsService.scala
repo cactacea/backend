@@ -18,6 +18,13 @@ class FriendRequestsService @Inject()(db: DatabaseService) {
     )
   }
 
+  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    friendRequestsRepository.delete(
+      accountId,
+      sessionId
+    )
+  }
+
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
     friendRequestsRepository.findAll(since, offset, count, received, sessionId)
   }

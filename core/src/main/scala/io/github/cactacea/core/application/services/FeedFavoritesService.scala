@@ -36,13 +36,4 @@ class FeedFavoritesService @Inject()(db: DatabaseService) {
     feedFavoritesRepository.findAccounts(feedId, since, offset, count, sessionId)
   }
 
-//  def notice(feedId: FeedId): Future[Unit] = {
-//    Future.Unit
-//  }
-  //  @Inject var queueService: OldQueueService = _
-  //  for {
-  //    a <- feedFavoritesRepository.create(feedId, sessionId)
-  //    //        _ <- queueService.enqueueNoticeFeedFavorite(feedId)
-  //  } yield (a)
-
 }

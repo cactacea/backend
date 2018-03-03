@@ -4,7 +4,7 @@ import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, AccountId}
 
-case class PostInviteAccount(
+case class PostInvitationAccount(
                                 @RouteParam accountId: AccountId,
                                 @RouteParam groupId: GroupId,
                                 session: Request

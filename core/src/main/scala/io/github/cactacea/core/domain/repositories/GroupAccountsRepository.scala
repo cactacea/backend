@@ -2,7 +2,7 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.enums.{GroupInviteStatusType, MessageType}
+import io.github.cactacea.core.domain.enums.{GroupInvitationStatusType, MessageType}
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
@@ -13,7 +13,7 @@ class GroupAccountsRepository {
   @Inject var accountMessagesDAO: AccountMessagesDAO = _
   @Inject var accountGroupsDAO: AccountGroupsDAO = _
   @Inject var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject var groupInvitesDAO: GroupInvitesDAO = _
+  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
   @Inject var messagesDAO: MessagesDAO = _
   @Inject var groupReportsDAO: GroupReportsDAO = _
   @Inject var validationDAO: ValidationDAO = _
@@ -34,7 +34,7 @@ class GroupAccountsRepository {
       _ <- validationDAO.hasJoinAuthority(g, sessionId)
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupsDAO.updateAccountCount(groupId, 1L)
-      _ <- groupInvitesDAO.update(accountId, groupId, GroupInviteStatusType.accepted)
+      _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
       _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.groupJoined, sessionId)
     } yield (Future.value(Unit))
   }
@@ -47,7 +47,7 @@ class GroupAccountsRepository {
       _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupsDAO.updateAccountCount(groupId, 1L)
-      _ <- groupInvitesDAO.update(accountId, groupId, GroupInviteStatusType.accepted)
+      _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
       _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.groupJoined, sessionId)
     } yield (Future.value(Unit))
   }
@@ -64,7 +64,7 @@ class GroupAccountsRepository {
         (for {
           _ <- messagesDAO.delete(groupId)
           _ <- groupReportsDAO.delete(groupId)
-          _ <- groupInvitesDAO.deleteByGroupId(groupId)
+          _ <- groupInvitationsDAO.deleteByGroupId(groupId)
           _ <- groupsDAO.delete(groupId)
         } yield (Future.value(Unit)))
       } else {
@@ -89,7 +89,7 @@ class GroupAccountsRepository {
         (for {
           _ <- messagesDAO.delete(groupId)
           _ <- groupReportsDAO.delete(groupId)
-          _ <- groupInvitesDAO.deleteByGroupId(groupId)
+          _ <- groupInvitationsDAO.deleteByGroupId(groupId)
           _ <- groupsDAO.delete(groupId)
         } yield (Future.value(Unit)))
       } else {

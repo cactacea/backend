@@ -1,7 +1,7 @@
 send_message = {0} : {1}
 send_no_displayed_message = Yous've got a message.
 send_image = {0} sent a image.
-send_group_invitation = {0}'ve invited you to a group.
+send_group_invitation = {0}'ve invitationd you to a group.
 send_friend_request = {0}'ve sent a friend request.
 post_feed = {0} posted a feed.
 post_comment = {0} posted a comment.

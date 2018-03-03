@@ -100,14 +100,14 @@ class GroupsDAOSpec extends DAOSpec {
     val group7 = Await.result(groupsDAO.find(groupId7, sessionAccount.id.toSessionId)).head
     val group8 = Await.result(groupsDAO.find(groupId8, sessionAccount.id.toSessionId)).head
 
-    assert((group1.id, group1.name, group1.byInvitationOnly, group1.privacyType, group1.authorityType) == (groupId1, Some("New Group Name1"),  true, GroupPrivacyType.everyone.toValue,       GroupAuthorityType.member.toValue))
-    assert((group2.id, group2.name, group2.byInvitationOnly, group2.privacyType, group2.authorityType) == (groupId2, Some("New Group Name2"),  true, GroupPrivacyType.followers.toValue,  GroupAuthorityType.member.toValue))
-    assert((group3.id, group3.name, group3.byInvitationOnly, group3.privacyType, group3.authorityType) == (groupId3, Some("New Group Name3"),  true, GroupPrivacyType.follows.toValue,    GroupAuthorityType.member.toValue))
-    assert((group4.id, group4.name, group4.byInvitationOnly, group4.privacyType, group4.authorityType) == (groupId4, Some("New Group Name4"),  true, GroupPrivacyType.friends.toValue,    GroupAuthorityType.member.toValue))
-    assert((group5.id, group5.name, group5.byInvitationOnly, group5.privacyType, group5.authorityType) == (groupId5, Some("New Group Name5"), false, GroupPrivacyType.everyone.toValue,       GroupAuthorityType.owner.toValue))
-    assert((group6.id, group6.name, group6.byInvitationOnly, group6.privacyType, group6.authorityType) == (groupId6, Some("New Group Name6"), false, GroupPrivacyType.followers.toValue,  GroupAuthorityType.owner.toValue))
-    assert((group7.id, group7.name, group7.byInvitationOnly, group7.privacyType, group7.authorityType) == (groupId7, Some("New Group Name7"), false, GroupPrivacyType.follows.toValue,    GroupAuthorityType.owner.toValue))
-    assert((group8.id, group8.name, group8.byInvitationOnly, group8.privacyType, group8.authorityType) == (groupId8, Some("New Group Name8"), false, GroupPrivacyType.friends.toValue,    GroupAuthorityType.owner.toValue))
+    assert((group1.id, group1.name, group1.invitationOnly, group1.privacyType, group1.authorityType) == (groupId1, Some("New Group Name1"),  true, GroupPrivacyType.everyone.toValue,       GroupAuthorityType.member.toValue))
+    assert((group2.id, group2.name, group2.invitationOnly, group2.privacyType, group2.authorityType) == (groupId2, Some("New Group Name2"),  true, GroupPrivacyType.followers.toValue,  GroupAuthorityType.member.toValue))
+    assert((group3.id, group3.name, group3.invitationOnly, group3.privacyType, group3.authorityType) == (groupId3, Some("New Group Name3"),  true, GroupPrivacyType.follows.toValue,    GroupAuthorityType.member.toValue))
+    assert((group4.id, group4.name, group4.invitationOnly, group4.privacyType, group4.authorityType) == (groupId4, Some("New Group Name4"),  true, GroupPrivacyType.friends.toValue,    GroupAuthorityType.member.toValue))
+    assert((group5.id, group5.name, group5.invitationOnly, group5.privacyType, group5.authorityType) == (groupId5, Some("New Group Name5"), false, GroupPrivacyType.everyone.toValue,       GroupAuthorityType.owner.toValue))
+    assert((group6.id, group6.name, group6.invitationOnly, group6.privacyType, group6.authorityType) == (groupId6, Some("New Group Name6"), false, GroupPrivacyType.followers.toValue,  GroupAuthorityType.owner.toValue))
+    assert((group7.id, group7.name, group7.invitationOnly, group7.privacyType, group7.authorityType) == (groupId7, Some("New Group Name7"), false, GroupPrivacyType.follows.toValue,    GroupAuthorityType.owner.toValue))
+    assert((group8.id, group8.name, group8.invitationOnly, group8.privacyType, group8.authorityType) == (groupId8, Some("New Group Name8"), false, GroupPrivacyType.friends.toValue,    GroupAuthorityType.owner.toValue))
 
   }
 
@@ -142,19 +142,19 @@ class GroupsDAOSpec extends DAOSpec {
     val group2 = result1(1)
     val group3 = result1(2)
     val group4 = result1(3)
-    assert((group1.id, group1.name, group1.byInvitationOnly, group1.privacyType, group1.authorityType) == (groupId8, Some("New Group Name8"), false, GroupPrivacyType.friends.toValue,    GroupAuthorityType.owner.toValue))
-    assert((group2.id, group2.name, group2.byInvitationOnly, group2.privacyType, group2.authorityType) == (groupId7, Some("New Group Name7"), false, GroupPrivacyType.follows.toValue,    GroupAuthorityType.owner.toValue))
-    assert((group3.id, group3.name, group3.byInvitationOnly, group3.privacyType, group3.authorityType) == (groupId6, Some("New Group Name6"), false, GroupPrivacyType.followers.toValue,  GroupAuthorityType.owner.toValue))
-    assert((group4.id, group4.name, group4.byInvitationOnly, group4.privacyType, group4.authorityType) == (groupId4, Some("New Group Name4"),  true, GroupPrivacyType.friends.toValue,    GroupAuthorityType.member.toValue))
+    assert((group1.id, group1.name, group1.invitationOnly, group1.privacyType, group1.authorityType) == (groupId8, Some("New Group Name8"), false, GroupPrivacyType.friends.toValue,    GroupAuthorityType.owner.toValue))
+    assert((group2.id, group2.name, group2.invitationOnly, group2.privacyType, group2.authorityType) == (groupId7, Some("New Group Name7"), false, GroupPrivacyType.follows.toValue,    GroupAuthorityType.owner.toValue))
+    assert((group3.id, group3.name, group3.invitationOnly, group3.privacyType, group3.authorityType) == (groupId6, Some("New Group Name6"), false, GroupPrivacyType.followers.toValue,  GroupAuthorityType.owner.toValue))
+    assert((group4.id, group4.name, group4.invitationOnly, group4.privacyType, group4.authorityType) == (groupId4, Some("New Group Name4"),  true, GroupPrivacyType.friends.toValue,    GroupAuthorityType.member.toValue))
 
     val result2 = Await.result(groupsDAO.findAll(None, None, None, Some(group4.organizedAt), None, Some(4), sessionAccount.id.toSessionId))
     assert(result2.size == 3)
     val group5 = result2(0)
     val group6 = result2(1)
     val group7 = result2(2)
-    assert((group5.id, group5.name, group5.byInvitationOnly, group5.privacyType, group5.authorityType) == (groupId3, Some("New Group Name3"),  true, GroupPrivacyType.follows.toValue,    GroupAuthorityType.member.toValue))
-    assert((group6.id, group6.name, group6.byInvitationOnly, group6.privacyType, group6.authorityType) == (groupId2, Some("New Group Name2"),  true, GroupPrivacyType.followers.toValue,  GroupAuthorityType.member.toValue))
-    assert((group7.id, group7.name, group7.byInvitationOnly, group7.privacyType, group7.authorityType) == (groupId1, Some("New Group Name1"),  true, GroupPrivacyType.everyone.toValue,       GroupAuthorityType.member.toValue))
+    assert((group5.id, group5.name, group5.invitationOnly, group5.privacyType, group5.authorityType) == (groupId3, Some("New Group Name3"),  true, GroupPrivacyType.follows.toValue,    GroupAuthorityType.member.toValue))
+    assert((group6.id, group6.name, group6.invitationOnly, group6.privacyType, group6.authorityType) == (groupId2, Some("New Group Name2"),  true, GroupPrivacyType.followers.toValue,  GroupAuthorityType.member.toValue))
+    assert((group7.id, group7.name, group7.invitationOnly, group7.privacyType, group7.authorityType) == (groupId1, Some("New Group Name1"),  true, GroupPrivacyType.everyone.toValue,       GroupAuthorityType.member.toValue))
 
   }
 
@@ -174,8 +174,8 @@ class GroupsDAOSpec extends DAOSpec {
     val group1 = Await.result(groupsDAO.find(groupId1, sessionAccount.id.toSessionId)).head
     val group2 = Await.result(groupsDAO.find(groupId2, sessionAccount.id.toSessionId)).head
 
-    assert((group1.id, group1.name, group1.byInvitationOnly, group1.privacyType, group1.authorityType) == (groupId1, Some("New Group Name11"),  false, GroupPrivacyType.followers.toValue, GroupAuthorityType.owner.toValue))
-    assert((group2.id, group2.name, group2.byInvitationOnly, group2.privacyType, group2.authorityType) == (groupId2, Some("New Group Name21"),  true,  GroupPrivacyType.follows.toValue,   GroupAuthorityType.member.toValue))
+    assert((group1.id, group1.name, group1.invitationOnly, group1.privacyType, group1.authorityType) == (groupId1, Some("New Group Name11"),  false, GroupPrivacyType.followers.toValue, GroupAuthorityType.owner.toValue))
+    assert((group2.id, group2.name, group2.invitationOnly, group2.privacyType, group2.authorityType) == (groupId2, Some("New Group Name21"),  true,  GroupPrivacyType.follows.toValue,   GroupAuthorityType.member.toValue))
 
   }
 

@@ -13,7 +13,7 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 class GroupsRepository {
 
   @Inject var groupsDAO: GroupsDAO = _
-  @Inject var groupInvitesDAO: GroupInvitesDAO = _
+  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
   @Inject var accountGroupsDAO: AccountGroupsDAO = _
 
   def create(name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupId] = {
@@ -26,12 +26,12 @@ class GroupsRepository {
   def update(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit] = {
     groupsDAO.find(groupId, sessionId).flatMap(_ match {
       case Some(g) =>
-        if (g.isDirectMessage) {
+        if (g.directMessage) {
           Future.exception(CactaceaException(DirectMessageGroupCanNotUpdated))
         } else {
           groupsDAO.update(groupId, name, byInvitationOnly, privacyType, authority, sessionId).flatMap(_ =>
             if (g.privacyType != privacyType.toValue) {
-              groupInvitesDAO.deleteByGroupId(groupId).flatMap(_ => Future.Unit)
+              groupInvitationsDAO.deleteByGroupId(groupId).flatMap(_ => Future.Unit)
             } else {
               Future.Unit
             }

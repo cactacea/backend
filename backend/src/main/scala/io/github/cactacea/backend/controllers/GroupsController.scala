@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.group._
-import io.github.cactacea.backend.models.responses.{GroupCreated, GroupInviteCreated}
+import io.github.cactacea.backend.models.responses.GroupCreated
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.AuthUserContext._
 
@@ -15,7 +15,7 @@ class GroupsController extends Controller {
   get("/groups") { request: GetGroups =>
     groupsService.find(
       request.groupName,
-      request.byInvitationOnly,
+      request.invitationOnly,
       request.privacyType,
       request.since,
       request.offset,
@@ -64,22 +64,14 @@ class GroupsController extends Controller {
 
   @Inject var groupAccountsService: GroupAccountsService = _
 
-  post("/groups/:id/invites") { request: PostInviteAccounts =>
-    invitesService.create(
-      request.accountIds,
-      request.groupId,
-      request.session.id
-    ).map(_.map(GroupInviteCreated(_))).map(response.created(_))
-  }
-
-  post("/groups/:id/joins") { request: PostJoinGroup =>
+  post("/groups/:id/join") { request: PostJoinGroup =>
     groupAccountsService.create(
       request.groupId,
       request.session.id
     ).map(_ => response.noContent)
   }
 
-  post("/groups/:id/leaves") { request: PostLeaveGroup =>
+  post("/groups/:id/leave") { request: PostLeaveGroup =>
     groupAccountsService.delete(
       request.groupId,
       request.session.id
@@ -96,7 +88,7 @@ class GroupsController extends Controller {
     )
   }
 
-  post("/accounts/:account_id/groups/:group_id/joins") { request: PostAccountJoinGroup =>
+  post("/accounts/:account_id/groups/:group_id/join") { request: PostAccountJoinGroup =>
     groupAccountsService.create(
       request.accountId,
       request.groupId,
@@ -104,47 +96,13 @@ class GroupsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  post("/accounts/:account_id/groups/:group_id/leaves") { request: PostAccountLeaveGroup =>
+  post("/accounts/:account_id/groups/:group_id/leave") { request: PostAccountLeaveGroup =>
     groupAccountsService.delete(
       request.accountId,
       request.groupId,
       request.session.id
     ).map(_ => response.noContent)
   }
-
-  @Inject var invitesService: GroupInvitesService = _
-
-  get("/session/invites") { request: GetSessionInvites =>
-    invitesService.find(
-      request.since,
-      request.offset,
-      request.count,
-      request.session.id
-    )
-  }
-
-  post("/invites/:id/accept") { request: PostAcceptInvite =>
-    invitesService.accept(
-      request.groupInviteId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  post("/invites/:id/reject") { request: PostRejectInvite =>
-    invitesService.reject(
-      request.groupInviteId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  post("/accounts/:account_id/groups/:group_id/invites") { request: PostInviteAccount =>
-    invitesService.create(
-      request.accountId,
-      request.groupId,
-      request.session.id
-    ).map(GroupInviteCreated(_)).map(response.created(_))
-  }
-
 
   @Inject var accountGroupsService: AccountGroupsService = _
 
@@ -165,13 +123,22 @@ class GroupsController extends Controller {
     )
   }
 
-
   get("/session/groups") { request: GetSessionGroups =>
     accountGroupsService.findAll(
       request.since,
       request.offset,
       request.count,
       true,
+      request.session.id
+    )
+  }
+
+  get("/session/hides") { request: GetSessionGroups =>
+    accountGroupsService.findAll(
+      request.since,
+      request.offset,
+      request.count,
+      false,
       request.session.id
     )
   }
@@ -197,14 +164,5 @@ class GroupsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  get("/hides") { request: GetSessionGroups =>
-    accountGroupsService.findAll(
-      request.since,
-      request.offset,
-      request.count,
-      false,
-      request.session.id
-    )
-  }
 }
 

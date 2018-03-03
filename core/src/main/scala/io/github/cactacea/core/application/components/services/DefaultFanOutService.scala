@@ -56,11 +56,11 @@ class DefaultFanOutService extends FanOutService {
     })
   }
 
-  def fanOutGroupInvite(groupInviteId: GroupInviteId): Future[Unit] = {
+  def fanOutGroupInvite(groupInvitationId: GroupInvitationId): Future[Unit] = {
     (for {
-      p <- pushNotificationsRepository.findGroupInvites(groupInviteId)
+      p <- pushNotificationsRepository.findGroupInvites(groupInvitationId)
       _ <- pushNotificationService.send(p)
-      u <- pushNotificationsRepository.updateGroupInvites(groupInviteId)
+      u <- pushNotificationsRepository.updateGroupInvites(groupInvitationId)
       b <- notificationService.send(p)
     } yield ((u && b))).flatMap(_ match {
       case true =>

@@ -11,12 +11,12 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(groupInvite: Boolean, followerFeed: Boolean, feedComment:Boolean, groupMessage: Boolean, direcrtMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def create(groupInvitation: Boolean, followerFeed: Boolean, feedComment:Boolean, groupMessage: Boolean, direcrtMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[PushNotificationSettings].insert(
         _.accountId           -> lift(accountId),
-        _.groupInvite         -> lift(groupInvite),
+        _.groupInvitation         -> lift(groupInvitation),
         _.followerFeed        -> lift(followerFeed),
         _.feedComment         -> lift(feedComment),
         _.groupMessage        -> lift(groupMessage),
@@ -27,13 +27,13 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def update(groupInvite: Boolean, followerFeed: Boolean, feedComment:Boolean, groupMessage: Boolean, directMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def update(groupInvitation: Boolean, followerFeed: Boolean, feedComment:Boolean, groupMessage: Boolean, directMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[PushNotificationSettings]
         .filter(_.accountId == lift(accountId))
         .update(
-          _.groupInvite         -> lift(groupInvite),
+          _.groupInvitation         -> lift(groupInvitation),
           _.followerFeed        -> lift(followerFeed),
           _.feedComment         -> lift(feedComment),
           _.groupMessage        -> lift(groupMessage),

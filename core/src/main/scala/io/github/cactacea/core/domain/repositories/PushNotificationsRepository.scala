@@ -37,12 +37,12 @@ class PushNotificationsRepository {
     accountFeedsDAO.update(feedId, accountIds)
   }
 
-  @Inject var groupInvitesDAO: GroupInvitesDAO = _
+  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
 
-  def findGroupInvites(groupInviteId: GroupInviteId) : Future[List[PushNotification]] = {
-    groupInvitesDAO.find(groupInviteId).flatMap(_ match {
+  def findGroupInvites(groupInvitationId: GroupInvitationId) : Future[List[PushNotification]] = {
+    groupInvitationsDAO.find(groupInvitationId).flatMap(_ match {
       case Some(i) if i.notified == false =>
-        pushNotificationsDAO.findGroupInvites(groupInviteId).map({ t =>
+        pushNotificationsDAO.findGroupInvites(groupInvitationId).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
               val pushType = PushNotificationType.sendGroupInvitation
@@ -57,8 +57,8 @@ class PushNotificationsRepository {
     })
   }
 
-  def updateGroupInvites(groupInviteId: GroupInviteId): Future[Boolean] = {
-    groupInvitesDAO.updateNotified(groupInviteId)
+  def updateGroupInvites(groupInvitationId: GroupInvitationId): Future[Boolean] = {
+    groupInvitationsDAO.updateNotified(groupInvitationId)
   }
 
 

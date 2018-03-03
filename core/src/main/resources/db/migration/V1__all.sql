@@ -153,8 +153,8 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`groups` (
   `id` BIGINT(20) NOT NULL,
   `name` VARCHAR(1000) NULL DEFAULT NULL,
   `privacy_type` INT(1) NOT NULL,
-  `by_invitation_only` TINYINT(1) NOT NULL,
-  `is_direct_message` TINYINT(1) NOT NULL,
+  `invitation_only` TINYINT(1) NOT NULL,
+  `direct_message` TINYINT(1) NOT NULL,
   `authority_type` INT(1) NOT NULL,
   `account_count` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
@@ -612,31 +612,31 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `cactacea`.`group_invites`
+-- Table `cactacea`.`group_invitations`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `cactacea`.`group_invites` (
+CREATE TABLE IF NOT EXISTS `cactacea`.`group_invitations` (
   `id` BIGINT(20) NOT NULL,
   `group_id` BIGINT(20) NOT NULL,
   `account_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `notified` TINYINT(1) NOT NULL,
-  `invite_status` INT(1) NOT NULL,
+  `invitation_status` INT(1) NOT NULL,
   `invited_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_invites_groups1_idx` (`group_id` ASC),
-  INDEX `fk_invites_accounts1_idx` (`account_id` ASC),
-  INDEX `fk_invites_accounts2_idx` (`by` ASC),
-  CONSTRAINT `fk_invites_accounts1`
+  INDEX `fk_invitations_groups1_idx` (`group_id` ASC),
+  INDEX `fk_invitations_accounts1_idx` (`account_id` ASC),
+  INDEX `fk_invitations_accounts2_idx` (`by` ASC),
+  CONSTRAINT `fk_invitations_accounts1`
     FOREIGN KEY (`account_id`)
     REFERENCES `cactacea`.`accounts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_invites_accounts2`
+  CONSTRAINT `fk_invitations_accounts2`
     FOREIGN KEY (`by`)
     REFERENCES `cactacea`.`accounts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_invites_groups1`
+  CONSTRAINT `fk_invitations_groups1`
     FOREIGN KEY (`group_id`)
     REFERENCES `cactacea`.`groups` (`id`)
     ON DELETE NO ACTION
@@ -671,7 +671,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`push_notification_settings` (
   `account_id` BIGINT(20) NOT NULL,
-  `group_invite` TINYINT(1) NOT NULL,
+  `group_invitation` TINYINT(1) NOT NULL,
   `follower_feed` TINYINT(1) NOT NULL,
   `feed_comment` TINYINT(1) NOT NULL,
   `group_message` TINYINT(1) NOT NULL,

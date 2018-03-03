@@ -11,7 +11,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var blocksCountDAO: BlocksCountDAO = _
+  @Inject var blocksCountDAO: BlockCountDAO = _
   @Inject var identifiesDAO: IdentifiesDAO = _
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {

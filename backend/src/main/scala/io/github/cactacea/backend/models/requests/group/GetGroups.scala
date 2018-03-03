@@ -7,7 +7,7 @@ import io.github.cactacea.core.domain.enums.GroupPrivacyType
 
 case class GetGroups(
                       @QueryParam @Size(min = 0, max = 1000) groupName: Option[String],
-                      @QueryParam byInvitationOnly: Option[Boolean],
+                      @QueryParam invitationOnly: Option[Boolean],
                       @QueryParam privacyType: Option[GroupPrivacyType],
                       @QueryParam since: Option[Long],
                       @QueryParam offset: Option[Int],

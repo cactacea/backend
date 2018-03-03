@@ -216,7 +216,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(result.isDefined == true)
     val group = result.get
 
-    assert((group.id, group.name, group.by, group.byInvitationOnly, group.privacyType, group.authorityType, group.accountCount) == (groupId1, Some("new group name1"), sessionAccount.id, true, GroupPrivacyType.everyone.toValue, GroupAuthorityType.member.toValue, 0))
+    assert((group.id, group.name, group.by, group.invitationOnly, group.privacyType, group.authorityType, group.accountCount) == (groupId1, Some("new group name1"), sessionAccount.id, true, GroupPrivacyType.everyone.toValue, GroupAuthorityType.member.toValue, 0))
 
   }
 

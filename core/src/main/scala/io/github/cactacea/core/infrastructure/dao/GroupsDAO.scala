@@ -29,10 +29,10 @@ class GroupsDAO @Inject()(db: DatabaseService) {
       query[Groups].insert(
         _.id                -> lift(id),
         _.name              -> lift(name),
-        _.byInvitationOnly  -> lift(true),
+        _.invitationOnly  -> lift(true),
         _.authorityType     -> lift(GroupAuthorityType.member.toValue),
         _.privacyType       -> lift(GroupPrivacyType.everyone.toValue),
-        _.isDirectMessage   -> lift(true),
+        _.directMessage   -> lift(true),
         _.accountCount      -> lift(0L),
         _.by                -> lift(by),
         _.organizedAt       -> lift(organizedAt)
@@ -56,10 +56,10 @@ class GroupsDAO @Inject()(db: DatabaseService) {
       query[Groups].insert(
         _.id                  -> lift(id),
         _.name                -> lift(name),
-        _.byInvitationOnly    -> lift(byInvitationOnly),
+        _.invitationOnly    -> lift(byInvitationOnly),
         _.authorityType       -> lift(authority.toValue),
         _.privacyType         -> lift(privacyType.toValue),
-        _.isDirectMessage     -> lift(false),
+        _.directMessage     -> lift(false),
         _.accountCount        -> lift(accountCount),
         _.by                  -> lift(by),
         _.organizedAt         -> lift(organizedAt)
@@ -85,7 +85,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         .filter(_.by == lift(by))
         .update(
         _.name                -> lift(name),
-        _.byInvitationOnly    -> lift(byInvitationOnly),
+        _.invitationOnly    -> lift(byInvitationOnly),
         _.privacyType         -> lift(privacyType.toValue),
         _.authorityType       -> lift(authority.toValue)
       )
@@ -127,9 +127,9 @@ class GroupsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[Groups]
         .filter(g => g.by != lift(by))
-        .filter(g => g.isDirectMessage == false)
+        .filter(g => g.directMessage == false)
         .filter(g => (g.name.forall(_ like lift(n)))  || lift(n) == "")
-        .filter(g => g.byInvitationOnly == lift(b)    || lift(i) == 0)
+        .filter(g => g.invitationOnly == lift(b)    || lift(i) == 0)
         .filter(g => g.privacyType == lift(p)         || lift(p) == -1)
         .filter(g => query[Blocks]
           .filter(_.accountId    == g.by)

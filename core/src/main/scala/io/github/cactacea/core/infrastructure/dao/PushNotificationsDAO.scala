@@ -37,10 +37,10 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def findGroupInvites(groupInviteId: GroupInviteId): Future[List[PushNotifications]] = {
+  def findGroupInvites(groupInvitationId: GroupInvitationId): Future[List[PushNotifications]] = {
     val q = quote {
-      query[GroupInvites].filter(g => g.id == lift(groupInviteId) && g.notified == false
-        && query[PushNotificationSettings].filter(p => p.accountId == g.accountId && p.groupInvite == true).nonEmpty)
+      query[GroupInvitations].filter(g => g.id == lift(groupInvitationId) && g.notified == false
+        && query[PushNotificationSettings].filter(p => p.accountId == g.accountId && p.groupInvitation == true).nonEmpty)
         .leftJoin(query[Relationships]).on((g, r) => r.accountId == g.by && r.by == g.accountId)
         .join(query[Accounts]).on({ case ((g, _), a) => a.id == g.by})
         .join(query[Devices]).on({ case (((g, _), _), d) => d.accountId == g.accountId && d.pushToken.isDefined})
@@ -61,7 +61,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         .filter(am => query[Relationships].filter(r => r.accountId == am.by && r.by == am.accountId && r.muted == true).isEmpty)
         .join(query[Groups]).on((am, g) => g.id == am.groupId)
         .join(query[PushNotificationSettings]).on({ case ((am, g), p) => p.accountId == am.accountId &&
-        ((p.directMessage == true && g.isDirectMessage == true) || (p.groupMessage == true && g.isDirectMessage == false))})
+        ((p.directMessage == true && g.directMessage == true) || (p.groupMessage == true && g.directMessage == false))})
         .leftJoin(query[Relationships]).on({ case (((am, g), _), r) =>  r.accountId == am.by && r.by == am.accountId })
         .join(query[Accounts]).on({ case ((((am, _), _), _), a) =>  a.id == am.by})
         .join(query[Devices]).on({ case (((((am, _), _), _), _), d) => d.accountId == am.accountId && d.pushToken.isDefined})
@@ -96,23 +96,5 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
     }}))
 
   }
-
-  //  def existFeeds(feedId: FeedId): Future[Option[Feeds]] = {
-//    val q = quote {
-//      query[Feeds]
-//        .filter(_.id == lift(feedId))
-//        .filter(_.notified == lift(false))
-//    }
-//    run(q).map(_.headOption)
-//  }
-//
-//  def updateNotified(feedId: FeedId, notified: Boolean): Future[Boolean] = {
-//    val q = quote {
-//      query[Feeds]
-//        .filter(_.id == lift(feedId))
-//        .update(_.notified -> lift(notified))
-//    }
-//    run(q).map(_ == 1)
-//  }
 
 }

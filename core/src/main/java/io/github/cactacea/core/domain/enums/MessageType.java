@@ -6,7 +6,7 @@ public enum MessageType {
     @JsonProperty("0") text(0),
     @JsonProperty("1") medium(1),
     @JsonProperty("2") stamp(2),
-    @JsonProperty("3") groupInvited(3),
+    @JsonProperty("3") groupInvitationd(3),
     @JsonProperty("4") groupJoined(4),
     @JsonProperty("5") groupLeft(5);
 

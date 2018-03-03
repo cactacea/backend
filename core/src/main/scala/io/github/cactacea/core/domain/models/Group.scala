@@ -36,7 +36,7 @@ object Group {
       name              = g.name,
       message           = message,
       groupPrivacyType  = g.privacyType,
-      byInvitationOnly  = g.byInvitationOnly,
+      byInvitationOnly  = g.invitationOnly,
       authorityType     = g.authorityType,
       accountCount      = g.accountCount,
       organizedAt       = g.organizedAt,

@@ -26,7 +26,7 @@ object DatabaseHelper {
         _ <- db.run(quote(query[FeedMediums].delete))
         _ <- db.run(quote(query[FeedTags].delete))
         _ <- db.run(quote(query[FriendRequests].delete))
-        _ <- db.run(quote(query[GroupInvites].delete))
+        _ <- db.run(quote(query[GroupInvitations].delete))
         _ <- db.run(quote(query[PushNotificationSettings].delete))
         _ <- db.run(quote(query[Relationships].delete))
         _ <- db.run(quote(query[SocialAccounts].delete))

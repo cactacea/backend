@@ -1,12 +1,12 @@
 package io.github.cactacea.backend.controllers
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account._
-import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.AuthUserContext._
 
+@Singleton
 class AccountsController extends Controller {
 
   @Inject var accountsService: AccountsService = _
@@ -53,26 +53,6 @@ class AccountsController extends Controller {
 
 
 
-
-  @Inject var blocksService: BlocksService = _
-
-  post("/accounts/:id/blocks") { request: PostBlock =>
-    blocksService.create(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  delete("/accounts/:id/blocks") { request: DeleteBlock =>
-    blocksService.delete(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-
-
-
   @Inject var feedsService: FeedsService = _
 
   get("/accounts/:id/feeds") { request: GetFeeds =>
@@ -84,40 +64,6 @@ class AccountsController extends Controller {
       request.session.id
     )
   }
-
-
-
-  @Inject var feedFavoritesService: FeedFavoritesService = _
-
-  get("/accounts/:id/favorites") { request: GetFavorites =>
-    feedFavoritesService.find(
-      request.accountId,
-      request.since,
-      request.offset,
-      request.count,
-      request.session.id
-    )
-  }
-
-
-
-  @Inject var mutesService: MutesService = _
-
-  post("/accounts/:id/mutes") { request: PostMute =>
-    mutesService.create(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  delete("/accounts/:id/mutes") { request: DeleteMute =>
-    mutesService.delete(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-
 
   @Inject var followsService: FollowsService = _
 
@@ -157,38 +103,5 @@ class AccountsController extends Controller {
       request.session.id
     )
   }
-
-  @Inject var friendsService: FriendsService = _
-
-  get("/accounts/:id/friends") { request: GetFriends =>
-    friendsService.find(
-      request.accountId,
-      request.since,
-      request.offset,
-      request.count,
-      request.session.id
-    )
-  }
-
-  delete("/accounts/:id/friends") { request: DeleteFriend =>
-    friendsService.delete(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-
-
-  @Inject var friendRequestsService: FriendRequestsService = _
-
-  post("/accounts/:id/requests") { request: PostFriendRequest =>
-    friendRequestsService.create(
-      request.accountId,
-      request.session.id
-    ).map(FriendRequestCreated(_)).map(response.created(_))
-  }
-
-
-
 
 }

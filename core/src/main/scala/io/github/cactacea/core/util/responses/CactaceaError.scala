@@ -20,7 +20,7 @@ object CactaceaError {
   final object FeedNotFound                     extends NotFound(40403, "Feed not found.")
   final object FriendRequestNotFound            extends NotFound(40404, "Request not found.")
   final object GroupNotFound                    extends NotFound(40405, "Group not found.")
-  final object GroupInviteNotFound              extends NotFound(40406, "Group invite not found.")
+  final object GroupInvitationNotFound              extends NotFound(40406, "Group invitation not found.")
 
   // 400 Bad Request
 
@@ -32,7 +32,7 @@ object CactaceaError {
   final object AccountNotMuted                  extends BadRequest(40005, "Account not muted.")
   final object AccountAlreadyFriend             extends BadRequest(40006, "Account already friend.")
   final object AccountNotFriend                 extends BadRequest(40007, "Account not friend.")
-  final object AccountAlreadyInvited            extends BadRequest(40008, "Account already invited.")
+  final object AccountAlreadyInvited            extends BadRequest(40008, "Account already invitationd.")
   final object AccountAlreadyRequested          extends BadRequest(40009, "Account already requested.")
   final object AccountAlreadyJoined             extends BadRequest(40010, "Account already joined.")
   final object AccountNotJoined                 extends BadRequest(40011, "Account not joined.")
