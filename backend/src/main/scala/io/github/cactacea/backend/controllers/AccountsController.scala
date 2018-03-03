@@ -53,26 +53,6 @@ class AccountsController extends Controller {
 
 
 
-
-  @Inject var blocksService: BlocksService = _
-
-  post("/accounts/:id/blocks") { request: PostBlock =>
-    blocksService.create(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  delete("/accounts/:id/blocks") { request: DeleteBlock =>
-    blocksService.delete(
-      request.accountId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-
-
-
   @Inject var feedsService: FeedsService = _
 
   get("/accounts/:id/feeds") { request: GetFeeds =>
