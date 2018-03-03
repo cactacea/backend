@@ -8,5 +8,6 @@ case class GetSessionFriendRequests(
                               @QueryParam since: Option[Long],
                               @QueryParam offset: Option[Int],
                               @QueryParam @Max(50) count: Option[Int],
+                              @QueryParam received: Boolean,
                               session: Request
                             )

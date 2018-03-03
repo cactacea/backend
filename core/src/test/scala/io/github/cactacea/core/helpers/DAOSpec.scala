@@ -22,7 +22,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultActionModule,
         DefaultConfigModule,
         DefaultFanOutModule,
-        DefaultMessageModule,
+        DefaultPushNotificationMessagesModule,
         DefaultNotificationModule,
         DefaultPublishModule,
         DefaultPushNotificationModule,

@@ -52,6 +52,7 @@ lazy val versions = new {
     val scalaCheck = "1.13.4"
     val scalaTest = "3.0.4"
     val specs2 = "3.8.6"
+    val aws = "1.11.289"
 }
 
 lazy val coreLibrarySetting = Seq(

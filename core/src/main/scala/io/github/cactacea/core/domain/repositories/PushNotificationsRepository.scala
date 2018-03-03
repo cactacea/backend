@@ -2,6 +2,7 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.domain.enums.PushNotificationType
 import io.github.cactacea.core.domain.models.PushNotification
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers._
@@ -20,11 +21,11 @@ class PushNotificationsRepository {
         pushNotificationsDAO.findFeeds(feedId).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
+              val pushType = PushNotificationType.postFeed
               val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
-              val message = s"${displayName} : フィードを投稿しました。"
-              val urlIos = s"cactacea://feeds/${f.id}"
-              val urlAndroid = s"cactacea://feeds/${f.id}"
-              PushNotification(message, urlIos, urlAndroid, f.postedAt, tokens, f.by.toSessionId)
+              val postedAt = f.postedAt
+              val sessionId = f.by.toSessionId
+              PushNotification(displayName, pushType, postedAt, tokens, sessionId, None, None, None)
           }).toList
         })
       case _ =>
@@ -44,11 +45,11 @@ class PushNotificationsRepository {
         pushNotificationsDAO.findGroupInvites(groupInviteId).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
+              val pushType = PushNotificationType.sendGroupInvitation
               val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
-              val message = s"${displayName} さんから招待されました。"
-              val urlIos = s"cactacea://invites/${i.id}"
-              val urlAndroid = s"cactacea://invites/${i.id}"
-              PushNotification(message, urlIos, urlAndroid, i.invitedAt, tokens, i.by.toSessionId)
+              val postedAt = i.invitedAt
+              val sessionId = i.by.toSessionId
+              PushNotification(displayName, pushType, postedAt, tokens, sessionId, None, None, None)
           }).toList
         })
       case _ =>
@@ -68,13 +69,18 @@ class PushNotificationsRepository {
     messagesDAO.find(messageId).flatMap(_ match {
       case Some(m) if m.notified == false =>
         pushNotificationsDAO.findMessages(messageId).map({ t =>
-          t.groupBy(_.displayName).map({
-            case (displayName, fanOuts) =>
+          t.groupBy({ g => (g.displayName, g.showContent)}).map({
+            case ((displayName, showContent), fanOuts) =>
+              val pushType = showContent match {
+                case true =>
+                  PushNotificationType.sendMessage
+                case false =>
+                  PushNotificationType.sendNoDisplayedMessage
+              }
               val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
-              val message = s"${displayName} さんからメッセージが到着しました。"
-              val urlIos = s"cactacea://groups/${m.groupId}/messages/${m.id}"
-              val urlAndroid = s"cactacea://groups/${m.groupId}/messages/${m.id}"
-              PushNotification(message, urlIos, urlAndroid, m.postedAt, tokens, m.by.toSessionId)
+              val postedAt = m.postedAt
+              val sessionId = m.by.toSessionId
+              PushNotification(displayName, pushType, postedAt, tokens, sessionId, None, None, None)
           }).toList
         })
       case _ =>
@@ -94,11 +100,11 @@ class PushNotificationsRepository {
         pushNotificationsDAO.findComments(commentId).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
+              val pushType = PushNotificationType.postComment
               val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
-              val message = s"${displayName} さんからコメントがきました。"
-              val urlIos = s"cactacea://invites/${c.id}"
-              val urlAndroid = s"cactacea://feeds/${c.id}"
-              PushNotification(message, urlIos, urlAndroid, c.postedAt, tokens, c.by.toSessionId)
+              val postedAt = c.postedAt
+              val sessionId = c.by.toSessionId
+              PushNotification(displayName, pushType, postedAt, tokens, sessionId, None, None, None)
           }).toList
         })
       case _ =>

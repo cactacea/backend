@@ -20,7 +20,7 @@ class CactaceaServer extends HttpServer {
   val actionModule = DefaultActionModule
   val configModule = DefaultConfigModule
   val fanOutModule = DefaultFanOutModule
-  val messageModule = DefaultMessageModule
+  val messageModule = DefaultPushNotificationMessagesModule
   val notificationModule = DefaultNotificationModule
   val publishModule = DefaultPublishModule
   val pushNotificationModule = DefaultPushNotificationModule

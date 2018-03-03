@@ -92,7 +92,12 @@ case class OneSignalNotification(
                     )
 
 object OneSignalNotification {
-  def apply(appId: String, includePlayerIds: List[String], en: String): OneSignalNotification = {
-    OneSignalNotification(appId = appId, includePlayerIds = includePlayerIds, en = en)
+  def apply(appId: String, includePlayerIds: List[String], en: String, jp: String): OneSignalNotification = {
+    OneSignalNotification(
+      appId = appId,
+      includePlayerIds = includePlayerIds,
+      en = en,
+      jp = jp
+    )
   }
 }

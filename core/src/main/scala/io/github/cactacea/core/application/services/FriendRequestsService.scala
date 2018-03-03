@@ -18,8 +18,8 @@ class FriendRequestsService @Inject()(db: DatabaseService) {
     )
   }
 
-  def find(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[FriendRequest]] = {
-    friendRequestsRepository.findAll(since, offset, count, sessionId)
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
+    friendRequestsRepository.findAll(since, offset, count, received, sessionId)
   }
 
   def accept(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {

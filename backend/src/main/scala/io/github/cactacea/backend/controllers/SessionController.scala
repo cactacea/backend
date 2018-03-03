@@ -113,10 +113,11 @@ class SessionController extends Controller {
   }
 
   get("/session/requests") { request: GetSessionFriendRequests =>
-    friendRequestsService.find(
+    friendRequestsService.findAll(
       request.since,
       request.offset,
       request.count,
+      request.received,
       request.session.id
     )
   }

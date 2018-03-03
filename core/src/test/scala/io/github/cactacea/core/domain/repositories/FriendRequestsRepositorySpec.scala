@@ -123,14 +123,14 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser4.id.toSessionId))
     Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser5.id.toSessionId))
 
-    val requests1 = Await.result(friendRequestsRepository.findAll(None, None, Some(3), sessionUser.id.toSessionId))
+    val requests1 = Await.result(friendRequestsRepository.findAll(None, None, Some(3), true, sessionUser.id.toSessionId))
     assert(requests1.size == 3)
     assert(requests1(0).account.id == requestingUser5.id)
     assert(requests1(0).account.id == requestingUser5.id)
     assert(requests1(1).account.id == requestingUser4.id)
     assert(requests1(2).account.id == requestingUser3.id)
 
-    val requests2 = Await.result(friendRequestsRepository.findAll(Some(requests1(2).next), None, Some(3), sessionUser.id.toSessionId))
+    val requests2 = Await.result(friendRequestsRepository.findAll(Some(requests1(2).next), None, Some(3), true, sessionUser.id.toSessionId))
     assert(requests2.size == 2)
     assert(requests2(0).account.id == requestingUser2.id)
     assert(requests2(1).account.id == requestingUser1.id)
