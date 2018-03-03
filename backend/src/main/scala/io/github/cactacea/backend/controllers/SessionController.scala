@@ -3,7 +3,6 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.Inject
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
-import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.AuthUserContext._
@@ -65,7 +64,6 @@ class SessionController extends Controller {
   @Inject var followsService: FollowsService = _
   @Inject var followersService: FollowersService = _
   @Inject var friendsService: FriendsService = _
-  @Inject var friendRequestsService: FriendRequestsService = _
 
   get("/session/blocks") { request: GetSessionBlocks =>
     blocksService.find(
@@ -112,28 +110,5 @@ class SessionController extends Controller {
     )
   }
 
-  get("/session/requests") { request: GetSessionFriendRequests =>
-    friendRequestsService.findAll(
-      request.since,
-      request.offset,
-      request.count,
-      request.received,
-      request.session.id
-    )
-  }
-
-  post("/session/requests/:id/accept") { request: PostAcceptFriendRequest =>
-    friendRequestsService.accept(
-      request.friendRequestId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
-
-  post("/session/requests/:id/reject") { request: PostRejectFriendRequest =>
-    friendRequestsService.reject(
-      request.friendRequestId,
-      request.session.id
-    ).map(_ => response.noContent)
-  }
 
 }
