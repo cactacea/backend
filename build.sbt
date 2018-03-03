@@ -34,6 +34,7 @@ lazy val core = (project in file("core"))
   .settings(coreSetting)
   .settings(coreLibrarySetting)
   .settings(testLibrarySetting)
+  .dependsOn(util)
 
 lazy val coreSetting = Seq(
     organization := "jp.github.cactacea.core",
@@ -59,7 +60,6 @@ lazy val coreLibrarySetting = Seq(
         "Maven central" at "http://central.maven.org/maven2/"
     ),
     libraryDependencies ++= Seq(
-        "com.twitter" %% "finagle-core" % versions.finatra,
         "com.twitter" %% "finatra-http" % versions.finatra,
         "com.twitter" %% "finatra-httpclient" % versions.finatra,
         "com.github.finagle" %% "finagle-oauth2" % versions.finatra,
@@ -128,6 +128,10 @@ lazy val utilLibrarySetting = Seq(
     "Maven central" at "http://central.maven.org/maven2/"
   ),
   libraryDependencies ++= Seq(
+    "com.typesafe" % "config" % "1.3.2",
+    "com.twitter" %% "finatra-http" % versions.finatra,
+    "com.twitter" %% "finatra-httpclient" % versions.finatra,
+    "com.twitter" %% "finagle-core" % "17.12.0",
     "com.github.seratch" %% "awscala" % "0.6.+"
   )
 )

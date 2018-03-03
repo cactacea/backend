@@ -953,10 +953,6 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId2 = Await.result(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, sessionAccount.id.toSessionId))
     val feedId3 = Await.result(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, sessionAccount.id.toSessionId))
 
-    Await.ready(feedsDAO.updateDelivered(feedId1, true))
-    Await.ready(feedsDAO.updateDelivered(feedId2, false))
-    Await.ready(feedsDAO.updateDelivered(feedId3, true))
-
     val result1 = Await.result(feedsDAO.find(feedId1))
     val result2 = Await.result(feedsDAO.find(feedId2))
     val result3 = Await.result(feedsDAO.find(feedId3))
@@ -964,14 +960,6 @@ class FeedsDAOSpec extends DAOSpec {
     assert(result1.isDefined == true)
     assert(result2.isDefined == true)
     assert(result3.isDefined == true)
-
-    val feed1 = result1.head
-    val feed2 = result2.head
-    val feed3 = result3.head
-
-    assert(feed1.delivered == true)
-    assert(feed2.delivered == false)
-    assert(feed3.delivered == true)
 
   }
 

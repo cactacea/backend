@@ -11,6 +11,5 @@ case class Feeds(
                   by: AccountId,
                   contentWarning: Boolean,
                   notified: Boolean,
-                  delivered: Boolean,
                   postedAt: Long
                   )

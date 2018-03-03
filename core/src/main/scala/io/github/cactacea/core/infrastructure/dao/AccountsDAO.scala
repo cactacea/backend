@@ -5,8 +5,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
+import io.github.cactacea.core.infrastructure.results.RelationshipBlocksCount
 import io.github.cactacea.core.infrastructure.services.DatabaseService
-import io.github.cactacea.core.util.PasswordHashGenerator
 import org.joda.time.DateTime
 
 @Singleton
@@ -26,7 +26,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   private def insert(id: AccountId, accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String]): Future[Long] = {
     val accountStatus = AccountStatusType.singedUp.toValue
-    val hashedPassword = PasswordHashGenerator.create(password)
+    val hashedPassword = createHashedPassword(password)
     val position = System.nanoTime()
     val q = quote {
       query[Accounts].insert(
@@ -88,8 +88,8 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
-    val hashedNewPassword = PasswordHashGenerator.create(newPassword)
-    val hashedOldPassword = PasswordHashGenerator.create(oldPassword)
+    val hashedNewPassword = createHashedPassword(newPassword)
+    val hashedOldPassword = createHashedPassword(oldPassword)
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
@@ -188,7 +188,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   }
 
   def find(accountName: String, password: String): Future[Option[Accounts]] = {
-    val hashedPassword = PasswordHashGenerator.create(password)
+    val hashedPassword = createHashedPassword(password)
     val q = quote {
       query[Accounts]
         .filter(_.accountName == lift(accountName))
@@ -225,7 +225,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
         accounts.map({ t =>
           val a = t._1
           val r = t._2
-          val b = blocksCount.filter(_.id == a.id).headOption.getOrElse(RelationshipBlocksCountQuery(a.id, 0L, 0L, 0L))
+          val b = blocksCount.filter(_.id == a.id).headOption.getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
           val displayName = r.flatMap(_.editedDisplayName).getOrElse(a.displayName)
           val friendCount = a.friendCount - b.friendCount
           val followCount = a.followCount - b.followCount
@@ -325,6 +325,12 @@ class AccountsDAO @Inject()(db: DatabaseService) {
         )
     }
     run(q).map(_ == 1)
+  }
+
+
+  def createHashedPassword(password: String) = {
+    import com.roundeights.hasher.Implicits._
+    "v1" + password.pbkdf2("cactacea", 1000, 128)
   }
 
 }

@@ -115,7 +115,6 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`feeds` (
   `privacy_type` INT(1) NOT NULL,
   `content_warning` TINYINT(1) NOT NULL,
   `notified` TINYINT(1) NOT NULL,
-  `delivered` TINYINT(1) NOT NULL,
   `posted_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
@@ -223,7 +222,6 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`messages` (
   `account_count` BIGINT(20) NOT NULL DEFAULT '0',
   `read_account_count` BIGINT(20) NOT NULL DEFAULT '0',
   `notified` TINYINT(1) NOT NULL,
-  `delivered` TINYINT(1) NOT NULL,
   `posted_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_messages_accounts2_idx` (`by` ASC),

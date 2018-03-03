@@ -22,7 +22,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ >= 0)
   }
 
-  def updateNotified(feedId: FeedId, accountIds: List[AccountId], notified: Boolean): Future[Boolean] = {
+  def update(feedId: FeedId, accountIds: List[AccountId], notified: Boolean = true): Future[Boolean] = {
     val q = quote {
       query[AccountFeeds]
         .filter(_.feedId == lift(feedId))

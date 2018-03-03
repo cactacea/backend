@@ -13,6 +13,5 @@ case class Messages(
                      accountCount: Long,
                      readAccountCount: Long,
                      notified: Boolean,
-                     delivered: Boolean,
                      postedAt: Long
                )

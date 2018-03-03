@@ -44,7 +44,6 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         _.privacyType         -> lift(privacy),
         _.contentWarning      -> lift(contentWarning),
         _.notified            -> lift(false),
-        _.delivered           -> lift(false),
         _.postedAt            -> lift(postedAt)
       )
     }
@@ -231,38 +230,11 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def findUndelivered(feedId: FeedId): Future[Option[Feeds]] = {
-    val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
-        .filter(_.delivered == lift(false))
-    }
-    run(q).map(_.headOption)
-  }
-
-  def findUnNotified(feedId: FeedId): Future[Option[Feeds]] = {
-    val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
-        .filter(_.notified == lift(false))
-    }
-    run(q).map(_.headOption)
-  }
-
   def updateNotified(feedId: FeedId, notified: Boolean): Future[Boolean] = {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
         .update(_.notified -> lift(notified))
-    }
-    run(q).map(_ == 1)
-  }
-
-  def updateDelivered(feedId: FeedId, delivered: Boolean): Future[Boolean] = {
-    val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
-        .update(_.delivered -> lift(delivered))
     }
     run(q).map(_ == 1)
   }

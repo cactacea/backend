@@ -5,6 +5,7 @@ import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
 import com.twitter.util.Await
 import com.twitter.util.logging.Logging
+import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, MediumsDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
@@ -18,6 +19,16 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
+        DefaultActionModule,
+        DefaultConfigModule,
+        DefaultFanOutModule,
+        DefaultMessageModule,
+        DefaultNotificationModule,
+        DefaultPublishModule,
+        DefaultPushNotificationModule,
+        DefaultStorageModule,
+        DefaultSubScribeModule,
+        DefaultTranscodeModule,
         FinatraJacksonModule
       )
     ).create

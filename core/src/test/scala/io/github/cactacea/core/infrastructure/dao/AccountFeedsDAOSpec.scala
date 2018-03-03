@@ -88,7 +88,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     )
 
     // update notified
-    Await.result(accountFeedsDAO.updateNotified(feedId, ids, true))
+    Await.result(accountFeedsDAO.update(feedId, ids, true))
 
     //
     val q = quote { query[AccountFeeds].filter(_.feedId == lift(feedId)).filter(_.notified == lift(true)).size}
