@@ -2,6 +2,7 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.Inject
 import com.twitter.finatra.http.Controller
+import io.github.cactacea.backend.models.requests.account.GetFavorites
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
 import io.github.cactacea.core.application.services._
@@ -112,10 +113,15 @@ class FeedsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-
-
-
-
+  get("/accounts/:id/favorites") { request: GetFavorites =>
+    feedFavoritesService.find(
+      request.accountId,
+      request.since,
+      request.offset,
+      request.count,
+      request.session.id
+    )
+  }
 
 }
 

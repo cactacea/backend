@@ -123,13 +123,22 @@ class GroupsController extends Controller {
     )
   }
 
-
   get("/session/groups") { request: GetSessionGroups =>
     accountGroupsService.findAll(
       request.since,
       request.offset,
       request.count,
       true,
+      request.session.id
+    )
+  }
+
+  get("/session/hides") { request: GetSessionGroups =>
+    accountGroupsService.findAll(
+      request.since,
+      request.offset,
+      request.count,
+      false,
       request.session.id
     )
   }
@@ -155,14 +164,5 @@ class GroupsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  get("/hides") { request: GetSessionGroups =>
-    accountGroupsService.findAll(
-      request.since,
-      request.offset,
-      request.count,
-      false,
-      request.session.id
-    )
-  }
 }
 

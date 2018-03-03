@@ -9,7 +9,7 @@ import io.github.cactacea.core.application.services.{FriendRequestsService, Frie
 import io.github.cactacea.core.util.auth.AuthUserContext._
 
 @Singleton
-class FriendRequestsController extends Controller {
+class FriendsController extends Controller {
 
   @Inject var friendRequestsService: FriendRequestsService = _
   @Inject var friendsService: FriendsService = _

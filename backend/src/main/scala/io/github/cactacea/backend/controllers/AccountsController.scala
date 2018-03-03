@@ -67,17 +67,6 @@ class AccountsController extends Controller {
 
 
 
-  @Inject var feedFavoritesService: FeedFavoritesService = _
-
-  get("/accounts/:id/favorites") { request: GetFavorites =>
-    feedFavoritesService.find(
-      request.accountId,
-      request.since,
-      request.offset,
-      request.count,
-      request.session.id
-    )
-  }
 
 
 
