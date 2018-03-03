@@ -14,7 +14,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var blocksCountDAO: BlocksCountDAO = _
+  @Inject var blocksCountDAO: BlockCountDAO = _
   @Inject var identifiesDAO: IdentifiesDAO = _
 
   def create(accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String]): Future[AccountId] = {

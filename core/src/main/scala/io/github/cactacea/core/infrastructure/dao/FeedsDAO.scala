@@ -16,7 +16,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   @Inject var feedReportsDAO: FeedReportsDAO = _
   @Inject var commentsDAO: CommentsDAO = _
   @Inject var timeLineDAO: TimeLineDAO = _
-  @Inject var blocksCountDAO: BlocksCountDAO = _
+  @Inject var blocksCountDAO: BlockCountDAO = _
   @Inject var identifiesDAO: IdentifiesDAO = _
 
   import db._

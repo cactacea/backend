@@ -7,7 +7,7 @@ import io.github.cactacea.core.infrastructure.results.{CommentBlocksCount, FeedB
 import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
-class BlocksCountDAO @Inject()(db: DatabaseService) {
+class BlockCountDAO @Inject()(db: DatabaseService) {
 
   import db._
 
