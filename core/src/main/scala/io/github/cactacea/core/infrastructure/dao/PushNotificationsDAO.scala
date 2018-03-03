@@ -97,22 +97,4 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
 
   }
 
-  //  def existFeeds(feedId: FeedId): Future[Option[Feeds]] = {
-//    val q = quote {
-//      query[Feeds]
-//        .filter(_.id == lift(feedId))
-//        .filter(_.notified == lift(false))
-//    }
-//    run(q).map(_.headOption)
-//  }
-//
-//  def updateNotified(feedId: FeedId, notified: Boolean): Future[Boolean] = {
-//    val q = quote {
-//      query[Feeds]
-//        .filter(_.id == lift(feedId))
-//        .update(_.notified -> lift(notified))
-//    }
-//    run(q).map(_ == 1)
-//  }
-
 }

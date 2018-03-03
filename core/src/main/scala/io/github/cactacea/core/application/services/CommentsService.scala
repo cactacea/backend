@@ -48,32 +48,5 @@ class CommentsService @Inject()(db: DatabaseService) {
 
 }
 
-//  @Inject var queueService: OldQueueService = _
-//  @Inject var deliveryCommentsRepository: DeliveryCommentsRepository = _
-//  @Inject var pushNotificationService: OldPushNotificationService = _
-//    for {
-//      id <- db.transaction(commentsRepository.create(feedId, message, sessionId))
-//      _ <- queueService.enqueueNoticeComment(id)
-//    } yield (id)
-//  def notice(commentId: CommentId): Future[Unit] = {
-//    deliveryCommentsRepository.findAll(commentId).flatMap(_ match {
-//      case Some(comments) =>
-//        Future.traverseSequentially(comments) { c =>
-//          db.transaction {
-//            for {
-//              accountIds <- pushNotificationService.notifyComment(c.accountId, c.displayName, c.tokens, c.commentId, c.postedAt)
-//            } yield (accountIds.size == c.tokens.size)
-//          }
-//        }.flatMap(_.filter(_ == false).size match {
-//          case 0L =>
-//            db.transaction {
-//              deliveryCommentsRepository.updateNotified(commentId).flatMap(_ => Future.Unit)
-//            }
-//          case _ =>
-//            Future.exception(PushNotificationException())
-//        })
-//      case None =>
-//        Future.Unit
-//    })
-//  }
+
 

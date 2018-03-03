@@ -110,13 +110,4 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-//  def updateDelivered(messageId: MessageId): Future[Boolean] = {
-//    val q = quote {
-//      query[Messages]
-//        .filter(_.id == lift(messageId))
-//        .update(_.delivered -> lift(true))
-//    }
-//    run(q).map(_ == 1)
-//  }
-
 }

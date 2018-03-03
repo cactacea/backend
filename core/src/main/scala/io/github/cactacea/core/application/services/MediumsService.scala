@@ -35,31 +35,3 @@ class MediumsService @Inject()(db: DatabaseService) {
 
 }
 
-
-//    val v = multiParams.map({ case (_, item) =>
-//      for {
-//        metadata <- MediumMetadataExtractor.extract(item)
-//        uri <- storageService.put(metadata.contentType, metadata.data)
-//        r <-  db.transaction(mediumsRepository.create(uri, uri, None, MediumType.image, metadata.width, metadata.height, metadata.data.length, sessionId))
-//      } yield (r)
-//    }).toSeq
-//    val b = Future.traverseSequentially(v)
-
-
-//    multiParams.headOption match {
-//      case Some((a, b)) => {
-//        storageService.put(Some("image/jpeg"), b.data).flatMap({ uri =>
-//          val key = uri
-//          val in = new ByteArrayInputStream(b.data)
-//          val image = ImageIO.read(in)
-//          val width = image.getWidth
-//          val height = image.getHeight
-//          db.transaction {
-//            mediumsRepository.create(key, uri, None, MediumType.image, width, height, b.data.length, sessionId)
-//          }
-//        })
-//      }
-//      case None =>
-//        Future.exception(ValidationException(FileUploadErrorOccurred))
-//    }
-//  }
