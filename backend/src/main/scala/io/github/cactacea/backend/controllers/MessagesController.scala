@@ -1,12 +1,13 @@
 package io.github.cactacea.backend.controllers
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.message._
 import io.github.cactacea.backend.models.responses.MessageCreated
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.AuthUserContext._
 
+@Singleton
 class MessagesController extends Controller {
 
   @Inject var messagesService: MessagesService = _

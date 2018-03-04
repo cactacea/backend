@@ -1,6 +1,6 @@
 package io.github.cactacea.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, MediumsDAO, ValidationDAO}
@@ -9,7 +9,7 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError._
 import org.joda.time.DateTime
 
-@Inject
+@Singleton
 class AccountsRepository {
 
   @Inject var accountsDAO: AccountsDAO = _

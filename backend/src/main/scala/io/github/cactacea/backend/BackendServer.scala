@@ -4,7 +4,7 @@ import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.core.application.components.CactaceaServer
 import io.github.cactacea.core.util.filters._
-import io.github.cactacea.core.util.handlers.DatabaseWarmupHandler
+import io.github.cactacea.core.util.warmups.DatabaseWarmupHandler
 
 class BackendServer extends CactaceaServer {
 
@@ -24,6 +24,9 @@ class BackendServer extends CactaceaServer {
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, TimelineController]
       .add[ApplicationFilter, AuthFilter, ETagFilter, CorsFilter, SettingController]
       .add[ApplicationFilter, CorsFilter, SessionsController]
+      .add[ApplicationFilter, CorsFilter, TwitterController]
+      .add[ApplicationFilter, CorsFilter, FacebookController]
+      .add[ApplicationFilter, CorsFilter, GoogleController]
       .add[CorsFilter, OAuthController]
       .add[ResourcesController]
       .add[HealthController]

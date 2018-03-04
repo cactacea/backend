@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.controllers
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.OAuth2
 import com.twitter.finagle.http.Request
 import com.twitter.finagle.oauth2.{OAuthError, OAuthErrorInJson, OAuthTokenInJson, RedirectUriMismatch}
@@ -14,6 +14,7 @@ import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, AuthDAO}
 import io.github.cactacea.core.util.oauth.{InvalidResponseType, OAuthHandler}
 import io.github.cactacea.core.util.tokens.OAuthTokenGenerator
 
+@Singleton
 class OAuthController @Inject()(authDAO: AuthDAO, accountsDAO: AccountsDAO, dataHandler: OAuthHandler) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
 
   get("/auth") { req: GetAuth =>

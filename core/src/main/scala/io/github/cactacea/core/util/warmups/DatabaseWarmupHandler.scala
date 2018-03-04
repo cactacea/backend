@@ -1,11 +1,12 @@
-package io.github.cactacea.core.util.handlers
+package io.github.cactacea.core.util.warmups
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.routing.HttpWarmup
 import com.twitter.inject.utils.Handler
 import com.typesafe.config.ConfigFactory
 import org.flywaydb.core.Flyway
 
+@Singleton
 class DatabaseWarmupHandler @Inject()(httpWarmup: HttpWarmup) extends Handler {
 
   override def handle() = {

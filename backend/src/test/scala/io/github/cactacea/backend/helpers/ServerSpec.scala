@@ -33,7 +33,7 @@ class ServerSpec extends FeatureTest {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
-        DefaultActionModule,
+        DefaultInjectionModule,
         DefaultConfigModule,
         DefaultFanOutModule,
         DefaultPushNotificationMessagesModule,
