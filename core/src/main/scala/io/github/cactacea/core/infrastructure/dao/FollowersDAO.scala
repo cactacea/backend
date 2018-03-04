@@ -1,11 +1,12 @@
 package io.github.cactacea.core.infrastructure.dao
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Relationships}
 import io.github.cactacea.core.infrastructure.services.DatabaseService
 
+@Singleton
 class FollowersDAO @Inject()(db: DatabaseService) {
 
   import db._

@@ -1,6 +1,6 @@
 package io.github.cactacea.core.util.filters
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.Future
@@ -8,6 +8,7 @@ import io.github.cactacea.core.domain.repositories.SessionRepository
 import io.github.cactacea.core.util.auth.{AuthUserContext, RequestContext}
 import io.github.cactacea.core.util.tokens.AuthTokenGenerator
 
+@Singleton
 class AuthFilter extends SimpleFilter[Request, Response] {
 
   @Inject var sessionRepository: SessionRepository = _

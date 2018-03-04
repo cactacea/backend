@@ -1,12 +1,13 @@
 package io.github.cactacea.backend.controllers
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.AuthUserContext._
 
+@Singleton
 class SessionController extends Controller {
 
   @Inject var accountsService: AccountsService = _

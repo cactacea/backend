@@ -1,6 +1,6 @@
 package io.github.cactacea.core.util.filters
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Method, Request, Response}
 import com.twitter.finagle.oauth2.{OAuthError, OAuthErrorInJson}
 import com.twitter.finagle.{OAuth2, Service, SimpleFilter}
@@ -13,6 +13,7 @@ import io.github.cactacea.core.util.auth.AuthUserContext
 import io.github.cactacea.core.util.auth.RequestContext
 import io.github.cactacea.core.util.oauth.OAuthHandler
 
+@Singleton
 class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Request, Response] with OAuth2 with OAuthErrorInJson with Logging {
 
   @Inject var sessionRepository: SessionRepository = _

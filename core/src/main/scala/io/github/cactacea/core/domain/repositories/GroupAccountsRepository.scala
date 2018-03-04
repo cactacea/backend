@@ -1,12 +1,13 @@
 package io.github.cactacea.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.{GroupInvitationStatusType, MessageType}
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 
+@Singleton
 class GroupAccountsRepository {
 
   @Inject var groupsDAO: GroupsDAO = _

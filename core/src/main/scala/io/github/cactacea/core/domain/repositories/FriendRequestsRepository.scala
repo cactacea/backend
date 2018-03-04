@@ -1,12 +1,13 @@
 package io.github.cactacea.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.core.domain.models.FriendRequest
 import io.github.cactacea.core.infrastructure.dao.{FriendRequestsDAO, FriendRequestsStatusDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
 
+@Singleton
 class FriendRequestsRepository {
 
   @Inject var friendRequestsStatusDAO: FriendRequestsStatusDAO = _
