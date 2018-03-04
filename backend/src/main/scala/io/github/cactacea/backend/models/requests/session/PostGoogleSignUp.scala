@@ -13,7 +13,7 @@ case class PostGoogleSignUp(
                          @Size(min = 1, max = 1024) accessTokenKey: String,
                          @Size(min = 1, max = 1024) accessTokenSecret: String,
                          @UUID udid: String,
-                         @Max(2038) web: Option[String],
+                         @Size(min = 0, max = 2038) web: Option[String],
                          @PastTime birthday: Option[DateTime],
                          @Size(min = 0, max = 255) location: Option[String],
                          @Size(min = 0, max = 1024) bio: Option[String],
