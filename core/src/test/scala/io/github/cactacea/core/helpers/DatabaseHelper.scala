@@ -12,6 +12,7 @@ object DatabaseHelper {
     import db._
     val r = db.transaction {
       for {
+        _ <- db.run(quote(query[Notifications].delete))
         _ <- db.run(quote(query[AccountFeeds].delete))
         _ <- db.run(quote(query[AccountGroups].delete))
         _ <- db.run(quote(query[AccountMessages].delete))

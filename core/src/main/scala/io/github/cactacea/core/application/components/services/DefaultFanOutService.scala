@@ -2,7 +2,7 @@ package io.github.cactacea.core.application.components.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.{FanOutService, NotificationService, PushNotificationService}
+import io.github.cactacea.core.application.components.interfaces.{FanOutService, PushNotificationService}
 import io.github.cactacea.core.domain.repositories.PushNotificationsRepository
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.util.exceptions.FanOutException
@@ -11,7 +11,6 @@ import io.github.cactacea.core.util.exceptions.FanOutException
 class DefaultFanOutService extends FanOutService {
 
   @Inject var pushNotificationService: PushNotificationService = _
-  @Inject var notificationService: NotificationService = _
   @Inject var pushNotificationsRepository: PushNotificationsRepository = _
 
   def fanOutFeed(feedId: FeedId): Future[Unit] = {
@@ -19,8 +18,7 @@ class DefaultFanOutService extends FanOutService {
       p <- pushNotificationsRepository.findFeeds(feedId)
       a <- pushNotificationService.send(p)
       u <- pushNotificationsRepository.updateFeeds(feedId, a)
-      b <- notificationService.send(p)
-    } yield ((u && b))).flatMap(_ match {
+    } yield (u)).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -33,8 +31,7 @@ class DefaultFanOutService extends FanOutService {
       p <- pushNotificationsRepository.findComments(commentId)
       _ <- pushNotificationService.send(p)
       u <- pushNotificationsRepository.updateComments(commentId)
-      b <- notificationService.send(p)
-    } yield ((u && b))).flatMap(_ match {
+    } yield (u)).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -47,8 +44,7 @@ class DefaultFanOutService extends FanOutService {
       p <- pushNotificationsRepository.findMessages(messageId)
       a <- pushNotificationService.send(p)
       u <- pushNotificationsRepository.updateMessages(messageId, a)
-      b <- notificationService.send(p)
-    } yield ((u && b))).flatMap(_ match {
+    } yield (u)).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -61,8 +57,7 @@ class DefaultFanOutService extends FanOutService {
       p <- pushNotificationsRepository.findGroupInvites(groupInvitationId)
       _ <- pushNotificationService.send(p)
       u <- pushNotificationsRepository.updateGroupInvites(groupInvitationId)
-      b <- notificationService.send(p)
-    } yield ((u && b))).flatMap(_ match {
+    } yield (u)).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>

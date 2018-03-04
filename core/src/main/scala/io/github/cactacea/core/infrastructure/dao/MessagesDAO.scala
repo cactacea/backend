@@ -34,7 +34,6 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.accountCount        -> lift(accountCount),
         _.readAccountCount    -> lift(0L),
         _.notified            -> lift(true),
-//        _.delivered           -> lift(true),
         _.postedAt            -> lift(postedAt)
       )
     }
@@ -101,6 +100,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == messageIds.size)
   }
 
+  // TODO
   def updateNotified(messageId: MessageId): Future[Boolean] = {
     val q = quote {
       query[Messages]

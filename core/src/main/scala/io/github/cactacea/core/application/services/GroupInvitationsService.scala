@@ -9,7 +9,11 @@ import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
-class GroupInvitationsService @Inject()(db: DatabaseService, groupInvitationsRepository: GroupInvitationsRepository, publishService: PublishService, injectionService: InjectionService) {
+class GroupInvitationsService @Inject()(
+                                         db: DatabaseService,
+                                         groupInvitationsRepository: GroupInvitationsRepository,
+                                         publishService: PublishService,
+                                         injectionService: InjectionService) {
 
   def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInvitationId]] = {
     for {

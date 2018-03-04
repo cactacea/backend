@@ -2,7 +2,7 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.enums.{GroupInvitationStatusType, MessageType}
+import io.github.cactacea.core.domain.enums.{GroupInvitationStatusType, MessageType, NotificationType}
 import io.github.cactacea.core.domain.models.GroupInvitation
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, GroupInvitationId, SessionId}
@@ -10,17 +10,18 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError
 
 @Singleton
-class GroupInvitationsRepository {
+class GroupInvitationsRepository @Inject()(
+                                            accountsDAO: AccountsDAO,
+                                            groupsDAO: GroupsDAO,
+                                            groupAccountsDAO: GroupAccountsDAO,
+                                            groupInvitationsDAO: GroupInvitationsDAO,
+                                            accountGroupsDAO: AccountGroupsDAO,
+                                            messagesDAO: MessagesDAO,
+                                            notificationsDAO: NotificationsDAO,
+                                            validationDAO: ValidationDAO
+                                          ) {
 
   import CactaceaError._
-
-  @Inject var accountsDAO: AccountsDAO = _
-  @Inject var groupsDAO: GroupsDAO = _
-  @Inject var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject var accountGroupsDAO: AccountGroupsDAO = _
-  @Inject var messagesDAO: MessagesDAO = _
-  @Inject var validationDAO: ValidationDAO = _
 
   def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInvitationId]] = {
     Future.traverseSequentially(accountIds) {
@@ -36,8 +37,9 @@ class GroupInvitationsRepository {
       _ <- validationDAO.notExistGroupInvites(accountId, groupId)
       _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
       _ <- validationDAO.checkGroupAccountsCount(groupId)
-      r <- groupInvitationsDAO.create(accountId, groupId, sessionId)
-    } yield (r)
+      id <- groupInvitationsDAO.create(accountId, groupId, sessionId)
+      _ <- notificationsDAO.create(accountId, NotificationType.groupInvitation, groupId.value)
+    } yield (id)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[GroupInvitation]] = {
