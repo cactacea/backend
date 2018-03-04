@@ -8,7 +8,7 @@ import io.github.cactacea.core.application.services._
 @Singleton
 class SessionsController extends Controller {
 
-  @Inject var sessionService: SessionService = _
+  @Inject var sessionService: SessionsService = _
 
   post("/sessions") { request: PostSignUp =>
     sessionService.signUp(

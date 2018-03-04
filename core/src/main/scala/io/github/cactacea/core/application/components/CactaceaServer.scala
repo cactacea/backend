@@ -17,7 +17,7 @@ class CactaceaServer extends HttpServer {
 
   protected  val databaseModule = DatabaseProviderModule
 
-  val actionModule = DefaultActionModule
+  val actionModule = DefaultInjectionModule
   val configModule = DefaultConfigModule
   val fanOutModule = DefaultFanOutModule
   val messageModule = DefaultPushNotificationMessagesModule

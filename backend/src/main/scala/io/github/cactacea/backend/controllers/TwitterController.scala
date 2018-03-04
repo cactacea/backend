@@ -3,13 +3,13 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.session.{GetTwitterSignIn, PostTwitterSignUp}
-import io.github.cactacea.core.application.services.SessionService
+import io.github.cactacea.core.application.services.SessionsService
 import io.github.cactacea.core.domain.enums.SocialAccountType
 
 @Singleton
 class TwitterController extends Controller {
 
-  @Inject var sessionService: SessionService = _
+  @Inject var sessionService: SessionsService = _
 
   post("/sessions/twitter") { request: PostTwitterSignUp =>
     sessionService.signUp(

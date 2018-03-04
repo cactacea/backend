@@ -11,7 +11,7 @@ import io.github.cactacea.core.util.auth.AuthUserContext._
 class SessionController extends Controller {
 
   @Inject var accountsService: AccountsService = _
-  @Inject var sessionService: SessionService = _
+  @Inject var sessionService: SessionsService = _
 
   get("/session") { request: GetSessionAccount =>
     accountsService.find(

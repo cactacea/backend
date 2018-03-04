@@ -1,5 +1,6 @@
 package io.github.cactacea.core.util.filters
 
+import com.google.inject.Singleton
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.Future
