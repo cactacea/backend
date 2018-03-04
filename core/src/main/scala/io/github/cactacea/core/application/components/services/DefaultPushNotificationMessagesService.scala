@@ -1,9 +1,11 @@
 package io.github.cactacea.core.application.components.services
 
+import com.google.inject.Singleton
 import com.osinka.i18n.{Lang, Messages}
 import io.github.cactacea.core.application.components.interfaces.PushNotificationMessagesService
 import io.github.cactacea.core.domain.enums.PushNotificationType
 
+@Singleton
 class DefaultPushNotificationMessagesService extends PushNotificationMessagesService {
 
   def get(pushNotificationType: PushNotificationType, lang: Lang, args : Any*): String = {
