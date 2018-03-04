@@ -644,6 +644,26 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`group_invitations` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+-- -----------------------------------------------------
+-- Table `cactacea`.`notifications`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cactacea`.`notifications` (
+  `id` BIGINT(20) NOT NULL,
+  `account_id` BIGINT(20) NOT NULL,
+  `notification_type` BIGINT(20) NOT NULL,
+  `content_id` BIGINT(20) NULL,
+  `message` VARCHAR(45) NULL,
+  `url` VARCHAR(2083) NULL,
+  `unread` TINYINT(1) NOT NULL,
+  `notified_at` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`id`, `notification_type`),
+  INDEX `fk_notifications_accounts1_idx` (`account_id` ASC),
+  CONSTRAINT `fk_notifications_accounts1`
+    FOREIGN KEY (`account_id`)
+    REFERENCES `cactacea`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `cactacea`.`group_reports`

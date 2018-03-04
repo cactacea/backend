@@ -15,7 +15,6 @@ class MessagesRepositorySpec extends RepositorySpec {
   var groupAccountsRepository = injector.instance[GroupAccountsRepository]
   var messagesRepository = injector.instance[MessagesRepository]
   var messagesDAO = injector.instance[MessagesDAO]
-//  var deliveryMessagesRepository = injector.instance[DeliveryMessagesRepository]
   val mediumRepository = injector.instance[MediumsRepository]
 
   test("create and delete") {
@@ -27,7 +26,6 @@ class MessagesRepositorySpec extends RepositorySpec {
     Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
 
     val messageId = Await.result(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
-//    Await.result(deliveryMessagesRepository.create(messageId))
 
     Await.result(messagesRepository.delete(groupId, user.id.toSessionId))
     // TODO : Check

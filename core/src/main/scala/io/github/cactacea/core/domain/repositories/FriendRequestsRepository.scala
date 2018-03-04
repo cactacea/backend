@@ -2,18 +2,19 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.enums.FriendRequestStatusType
+import io.github.cactacea.core.domain.enums.{FriendRequestStatusType, NotificationType}
 import io.github.cactacea.core.domain.models.FriendRequest
-import io.github.cactacea.core.infrastructure.dao.{FriendRequestsDAO, FriendRequestsStatusDAO, ValidationDAO}
+import io.github.cactacea.core.infrastructure.dao.{FriendRequestsDAO, FriendRequestsStatusDAO, NotificationsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
 
 @Singleton
-class FriendRequestsRepository {
-
-  @Inject var friendRequestsStatusDAO: FriendRequestsStatusDAO = _
-  @Inject var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject var friendsRepository: FriendsRepository = _
-  @Inject var validationDAO: ValidationDAO = _
+class FriendRequestsRepository @Inject()(
+                                          friendRequestsStatusDAO: FriendRequestsStatusDAO,
+                                          friendRequestsDAO: FriendRequestsDAO,
+                                          notificationsDAO: NotificationsDAO,
+                                          friendsRepository: FriendsRepository,
+                                          validationDAO: ValidationDAO
+                                        ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
     for {
@@ -22,6 +23,8 @@ class FriendRequestsRepository {
       _ <- validationDAO.notExistFriendRequests(accountId, sessionId)
       _ <-  friendRequestsStatusDAO.create(accountId, sessionId)
       id <- friendRequestsDAO.create(accountId, sessionId)
+      _ <- notificationsDAO.create(accountId, NotificationType.friendRequest, id.value)
+
     } yield (id)
   }
 

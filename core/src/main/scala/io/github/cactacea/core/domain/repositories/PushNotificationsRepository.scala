@@ -21,7 +21,7 @@ class PushNotificationsRepository {
         pushNotificationsDAO.findFeeds(feedId).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
-              val pushType = PushNotificationType.postFeed
+              val pushType = PushNotificationType.feed
               val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
               val postedAt = f.postedAt
               val sessionId = f.by.toSessionId
@@ -45,7 +45,7 @@ class PushNotificationsRepository {
         pushNotificationsDAO.findGroupInvites(groupInvitationId).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
-              val pushType = PushNotificationType.sendGroupInvitation
+              val pushType = PushNotificationType.groupInvitation
               val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
               val postedAt = i.invitedAt
               val sessionId = i.by.toSessionId
@@ -73,9 +73,9 @@ class PushNotificationsRepository {
             case ((displayName, showContent), fanOuts) =>
               val pushType = showContent match {
                 case true =>
-                  PushNotificationType.sendMessage
+                  PushNotificationType.message
                 case false =>
-                  PushNotificationType.sendNoDisplayedMessage
+                  PushNotificationType.noDisplayedMessage
               }
               val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
               val postedAt = m.postedAt
@@ -100,7 +100,7 @@ class PushNotificationsRepository {
         pushNotificationsDAO.findComments(commentId).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
-              val pushType = PushNotificationType.postComment
+              val pushType = PushNotificationType.comment
               val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
               val postedAt = c.postedAt
               val sessionId = c.by.toSessionId
