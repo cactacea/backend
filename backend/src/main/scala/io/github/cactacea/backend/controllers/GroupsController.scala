@@ -6,7 +6,7 @@ import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.group._
 import io.github.cactacea.backend.models.responses.GroupCreated
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class GroupsController extends Controller {

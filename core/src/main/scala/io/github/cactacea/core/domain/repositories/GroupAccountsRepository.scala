@@ -21,7 +21,7 @@ class GroupAccountsRepository {
 
   def findAll(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
     for {
-      g <- validationDAO.findGroups(groupId)
+      g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.hasJoinAuthority(g, sessionId)
       r <- groupAccountsDAO.findAll(groupId, since, offset, count, sessionId).map(_.map(t => Account(t._1, t._2, t._3)))
     } yield (r)
@@ -33,6 +33,7 @@ class GroupAccountsRepository {
       _ <- validationDAO.notExistGroupAccounts(accountId, groupId)
       g <- validationDAO.findNotInvitationOnlyGroups(groupId)
       _ <- validationDAO.hasJoinAuthority(g, sessionId)
+      _ <- validationDAO.checkGroupAccountsCount(groupId)
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupsDAO.updateAccountCount(groupId, 1L)
       _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
@@ -46,6 +47,7 @@ class GroupAccountsRepository {
       _ <- validationDAO.notExistGroupAccounts(accountId, groupId)
       g <- validationDAO.findNotInvitationOnlyGroups(groupId)
       _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
+      _ <- validationDAO.checkGroupAccountsCount(groupId)
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupsDAO.updateAccountCount(groupId, 1L)
       _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
@@ -56,7 +58,7 @@ class GroupAccountsRepository {
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     (for {
-      g <- validationDAO.findGroups(groupId)
+      g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.existGroupAccounts(accountId, groupId)
       _ <- accountMessagesDAO.delete(accountId, groupId)
       _ <- accountGroupsDAO.delete(accountId, groupId)
@@ -79,7 +81,7 @@ class GroupAccountsRepository {
 
   def delete(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     (for {
-      g <- validationDAO.findGroups(groupId)
+      g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.existAccounts(accountId, sessionId)
       _ <- validationDAO.existGroupAccounts(accountId, groupId)
       _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)

@@ -2,31 +2,33 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models.{FriendRequests, GroupInvitations, Groups}
-import io.github.cactacea.core.util.responses.CactaceaError._
 import io.github.cactacea.core.util.exceptions.CactaceaException
+import io.github.cactacea.core.util.responses.CactaceaError._
 
 @Singleton
-class ValidationDAO {
-
-  @Inject var accountsDAO: AccountsDAO = _
-  @Inject var accountGroupsDAO: AccountGroupsDAO = _
-  @Inject var blocksDAO: BlocksDAO = _
-  @Inject var commentsDAO: CommentsDAO = _
-  @Inject var commentFavoritesDAO: CommentFavoritesDAO = _
-  @Inject var followsDAO: FollowsDAO = _
-  @Inject var followersDAO: FollowersDAO = _
-  @Inject var friendsDAO: FriendsDAO = _
-  @Inject var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject var feedsDAO: FeedsDAO = _
-  @Inject var feedFavoritesDAO: FeedFavoritesDAO = _
-  @Inject var groupsDAO: GroupsDAO = _
-  @Inject var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject var groupAuthorityDAO: GroupAuthorityDAO = _
-  @Inject var mediumsDAO: MediumsDAO = _
-  @Inject var mutesDAO: MutesDAO = _
+class ValidationDAO @Inject()(
+                               accountsDAO: AccountsDAO,
+                               accountGroupsDAO: AccountGroupsDAO,
+                               blocksDAO: BlocksDAO,
+                               commentsDAO: CommentsDAO,
+                               commentFavoritesDAO: CommentFavoritesDAO,
+                               followsDAO: FollowsDAO,
+                               followersDAO: FollowersDAO,
+                               friendsDAO: FriendsDAO,
+                               friendRequestsDAO: FriendRequestsDAO,
+                               feedsDAO: FeedsDAO,
+                               feedFavoritesDAO: FeedFavoritesDAO,
+                               groupsDAO: GroupsDAO,
+                               groupAccountsDAO: GroupAccountsDAO,
+                               groupInvitationsDAO: GroupInvitationsDAO,
+                               groupAuthorityDAO: GroupAuthorityDAO,
+                               mediumsDAO: MediumsDAO,
+                               mutesDAO: MutesDAO,
+                               configService: ConfigService
+                             ) {
 
   def notSessionId(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
@@ -213,7 +215,7 @@ class ValidationDAO {
     })
   }
 
-  def findGroups(groupId: GroupId): Future[Groups] = {
+  def findGroup(groupId: GroupId): Future[Groups] = {
     groupsDAO.find(groupId).flatMap(_ match {
       case Some(g) =>
         Future.value(g)
@@ -315,6 +317,21 @@ class ValidationDAO {
       case Some(i) =>
         Future.value(i)
     })
+  }
+
+  def checkGroupAccountsCount(groupId: GroupId): Future[Unit] = {
+    Future.Unit
+//    if (configService.maxGroupAccountsCount > 0) {
+//      groupAccountsDAO.findCount(groupId).map({ count =>
+//        if (count >= configService.maxGroupAccountsCount) {
+//          Future.exception(CactaceaException(CactaceaError.GroupAccountsCountLimitError))
+//        } else {
+//          Future.Unit
+//        }
+//      })
+//    } else {
+//      Future.Unit
+//    }
   }
 
 }

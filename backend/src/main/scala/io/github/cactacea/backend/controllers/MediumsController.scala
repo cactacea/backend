@@ -6,7 +6,7 @@ import com.twitter.finatra.http.Controller
 import com.twitter.finatra.http.request.RequestUtils
 import io.github.cactacea.backend.models.responses.MediumCreated
 import io.github.cactacea.core.application.services.MediumsService
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class MediumsController extends Controller {

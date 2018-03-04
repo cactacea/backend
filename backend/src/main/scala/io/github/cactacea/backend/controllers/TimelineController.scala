@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.timeline.GetTimeline
 import io.github.cactacea.core.application.services.TimelineService
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class TimelineController extends Controller{

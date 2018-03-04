@@ -30,8 +30,6 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
 
   }
 
-
-
   def exist(accountId: AccountId, groupId: GroupId): Future[Boolean] = {
     val q = quote {
       query[AccountGroups]

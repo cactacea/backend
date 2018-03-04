@@ -6,7 +6,7 @@ import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.session.GetSessionFriendRequests
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.core.application.services.{FriendRequestsService, FriendsService}
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class FriendsController extends Controller {

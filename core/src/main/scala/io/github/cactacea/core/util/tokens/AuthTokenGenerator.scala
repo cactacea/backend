@@ -6,7 +6,7 @@ import com.twitter.util.Future
 import io.getquill.util.LoadConfig
 import io.jsonwebtoken._
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.core.util.auth.AuthUser
+import io.github.cactacea.core.util.auth.SessionUser
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError
 import io.github.cactacea.core.util.responses.CactaceaError._
@@ -38,7 +38,7 @@ object AuthTokenGenerator {
     token
   }
 
-  def parse(authorization: Option[String]): Future[AuthUser] = {
+  def parse(authorization: Option[String]): Future[SessionUser] = {
 
     authorization match {
       case None =>
@@ -67,7 +67,7 @@ object AuthTokenGenerator {
             Future.exception(CactaceaException(CactaceaError.SessionNotAuthorized))
 
           } else {
-            Future.value(AuthUser(SessionId(audience), udid, issuedAt))
+            Future.value(SessionUser(SessionId(audience), udid, issuedAt))
           }
 
         } catch {

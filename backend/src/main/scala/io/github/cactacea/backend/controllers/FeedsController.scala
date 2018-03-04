@@ -6,7 +6,7 @@ import io.github.cactacea.backend.models.requests.account.GetFavorites
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class FeedsController extends Controller {

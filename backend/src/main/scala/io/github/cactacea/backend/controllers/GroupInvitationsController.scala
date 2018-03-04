@@ -6,7 +6,7 @@ import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount
 import io.github.cactacea.backend.models.requests.group.{GetSessionInvitations, PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
 import io.github.cactacea.core.application.services.GroupInvitationsService
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class GroupInvitationsController extends Controller {

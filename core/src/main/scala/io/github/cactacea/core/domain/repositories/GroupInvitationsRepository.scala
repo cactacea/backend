@@ -31,10 +31,11 @@ class GroupInvitationsRepository {
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
     for {
       _ <- validationDAO.existAccounts(accountId, sessionId)
-      g <- validationDAO.findGroups(groupId)
+      g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.notExistGroupAccounts(accountId, groupId)
       _ <- validationDAO.notExistGroupInvites(accountId, groupId)
       _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
+      _ <- validationDAO.checkGroupAccountsCount(groupId)
       r <- groupInvitationsDAO.create(accountId, groupId, sessionId)
     } yield (r)
   }
@@ -48,8 +49,9 @@ class GroupInvitationsRepository {
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     (for {
       i <- validationDAO.findGroupsInvite(invitationId, sessionId)
-      g <- validationDAO.findGroups(i.groupId)
+      g <- validationDAO.findGroup(i.groupId)
       r <- groupAccountsDAO.exist(i.accountId, i.groupId)
+      _ <- validationDAO.checkGroupAccountsCount(i.groupId)
     } yield ((r, g, i))).flatMap(_ match {
       case (true, _, i) =>
         groupInvitationsDAO.update(i.accountId, i.groupId, GroupInvitationStatusType.accepted).flatMap(_ => Future.Unit)
