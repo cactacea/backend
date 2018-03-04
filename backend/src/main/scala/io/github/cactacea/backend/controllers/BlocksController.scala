@@ -5,7 +5,7 @@ import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
 import io.github.cactacea.core.application.services.BlocksService
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class BlocksController extends Controller {

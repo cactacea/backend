@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class SessionController extends Controller {

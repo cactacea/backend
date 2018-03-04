@@ -55,6 +55,7 @@ object CactaceaError {
   final object CanNotSpecifyMyself              extends BadRequest(40028, "Can not specify myself.")
   final object PasswordNotMatched               extends BadRequest(40029, "Password not matched.")
   final object InvalidAccountNameOrPassword     extends BadRequest(40030, "Invalid Account name or password.")
+  final object GroupAccountsCountLimitError     extends BadRequest(40031, "Maximum number of group accounts reached.")
 
   final object SessionNotAuthorized             extends Unauthorized(40100, "Session not authorized.")
   final object SessionTimeout                   extends Unauthorized(40101, "Access token expired.")

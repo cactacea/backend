@@ -9,8 +9,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.application.services.ScopesService
 import io.github.cactacea.core.domain.enums.PermissionType
 import io.github.cactacea.core.domain.repositories.SessionRepository
-import io.github.cactacea.core.util.auth.AuthUserContext
-import io.github.cactacea.core.util.auth.RequestContext
+import io.github.cactacea.core.util.auth.SessionContext
+import io.github.cactacea.core.util.auth.AuthenticationContext
 import io.github.cactacea.core.util.oauth.OAuthHandler
 
 @Singleton
@@ -20,15 +20,15 @@ class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Requ
   @Inject var scopesService: ScopesService = _
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
-    RequestContext.authorized match {
+    AuthenticationContext.authenticated match {
       case true =>
         service(request)
       case false =>
         authorize(request, dataHandler) flatMap { auth =>
           sessionRepository.checkAccountStatus(auth.user.accountId.toSessionId, auth.user.expiresIn).flatMap({_ =>
-            RequestContext.setAuthorized(true)
-            AuthUserContext.setId(request, auth.user.accountId.toSessionId)
-            AuthUserContext.setUdid(request, "")
+            AuthenticationContext.setAuthenticated(true)
+            SessionContext.setId(request, auth.user.accountId.toSessionId)
+            SessionContext.setUdid(request, "")
             val permission = request.method match {
               case Method.Get =>
                 PermissionType.readOnly

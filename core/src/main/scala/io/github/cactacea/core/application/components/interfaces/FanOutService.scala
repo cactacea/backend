@@ -9,6 +9,4 @@ trait FanOutService {
   def fanOutMessage(messageId: MessageId): Future[Unit]
   def fanOutGroupInvite(groupInvitationId: GroupInvitationId): Future[Unit]
   def fanOutFriendRequest(friendRequestId: FriendRequestId): Future[Unit]
-  //  def fanOutGroup(groupId: GroupId): Future[Unit]
-  //  def fanOutFavoriteFeed(feedId: FeedId): Future[Unit]
 }

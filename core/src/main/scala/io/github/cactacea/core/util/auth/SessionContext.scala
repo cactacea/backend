@@ -5,7 +5,7 @@ import java.util.Locale
 import com.twitter.finagle.http.Request
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 
-object AuthUserContext {
+object SessionContext {
 
   private val idFiled = Request.Schema.newField[SessionId]()
   implicit class IdContextSyntax(val request: Request) extends AnyVal {

@@ -5,7 +5,7 @@ import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
 import io.github.cactacea.backend.models.requests.session.GetSessionMutes
 import io.github.cactacea.core.application.services.MutesService
-import io.github.cactacea.core.util.auth.AuthUserContext._
+import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
 class MutesController extends Controller {
