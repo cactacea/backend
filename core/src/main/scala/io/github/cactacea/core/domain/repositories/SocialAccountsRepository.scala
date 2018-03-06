@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.enums.SocialAccountType
 import io.github.cactacea.core.domain.models.SocialAccount
 import io.github.cactacea.core.infrastructure.dao.SocialAccountsDAO
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
@@ -20,7 +19,7 @@ class SocialAccountsRepository {
     ))
   }
 
-  def create(socialAccountType: SocialAccountType, token: String, sessionId: SessionId): Future[Unit] = {
+  def create(socialAccountType: String, token: String, sessionId: SessionId): Future[Unit] = {
     socialAccountsDAO.exist(
       socialAccountType,
       sessionId
@@ -32,7 +31,7 @@ class SocialAccountsRepository {
     })
   }
 
-  def delete(socialAccountType: SocialAccountType, sessionId: SessionId): Future[Unit] = {
+  def delete(socialAccountType: String, sessionId: SessionId): Future[Unit] = {
     socialAccountsDAO.delete(
       socialAccountType,
       sessionId

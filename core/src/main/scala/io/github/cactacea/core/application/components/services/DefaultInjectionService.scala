@@ -3,7 +3,7 @@ package io.github.cactacea.core.application.components.services
 import com.google.inject.Singleton
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.InjectionService
-import io.github.cactacea.core.domain.enums.{ReportType, SocialAccountType}
+import io.github.cactacea.core.domain.enums.ReportType
 import io.github.cactacea.core.domain.models.Authentication
 import io.github.cactacea.core.infrastructure.identifiers._
 
@@ -189,11 +189,11 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  def socialAccountConnected(socialAccountType: SocialAccountType, sessionId: SessionId): Future[Unit] = {
+  def socialAccountConnected(socialAccountType: String, sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
-  def socialAccountDisconnected(socialAccountType: SocialAccountType, sessionId: SessionId): Future[Unit] = {
+  def socialAccountDisconnected(socialAccountType: String, sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 

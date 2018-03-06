@@ -70,7 +70,6 @@ lazy val coreLibrarySetting = Seq(
         "com.typesafe" % "config" % "1.3.2",
         "io.jsonwebtoken" % "jjwt" % "0.9.0",
         "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
-        "com.danielasfregola" %% "twitter4s" % "5.3",
         "com.github.seratch" %% "awscala" % "0.6.+",
 
         "mysql" % "mysql-connector-java" % "6.0.6",
@@ -133,6 +132,7 @@ lazy val utilLibrarySetting = Seq(
     "com.twitter" %% "finatra-http" % versions.finatra,
     "com.twitter" %% "finatra-httpclient" % versions.finatra,
     "com.twitter" %% "finagle-core" % "17.12.0",
+    "com.danielasfregola" %% "twitter4s" % "5.3",
     "com.github.seratch" %% "awscala" % "0.6.+"
   )
 )

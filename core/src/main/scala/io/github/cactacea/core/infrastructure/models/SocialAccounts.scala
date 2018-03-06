@@ -3,7 +3,7 @@ package io.github.cactacea.core.infrastructure.models
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
 
 case class SocialAccounts(
-                           socialAccountType: Long,
+                           socialAccountType: String,
                            socialAccountId: String,
                            accountId: AccountId
                     )

@@ -745,7 +745,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`social_accounts`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`social_accounts` (
-  `social_account_type` INT(1) NOT NULL,
+  `social_account_type` VARCHAR(30) NOT NULL,
   `account_id` BIGINT(20) NOT NULL,
   `social_account_id` VARCHAR(1024) NOT NULL,
   UNIQUE INDEX `UNIQUE` (`account_id` ASC, `social_account_type` ASC),

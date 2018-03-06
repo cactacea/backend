@@ -3,11 +3,12 @@ package io.github.cactacea.core.infrastructure.services
 import java.sql.Timestamp
 import java.util.Date
 
+import com.typesafe.config.Config
 import io.getquill._
 import io.github.cactacea.core.domain.enums.{AccountStatusType, NotificationType}
 import org.joda.time.DateTime
 
-class DatabaseService(config: String) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config) {
+class DatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config) {
 
   // java objects
   implicit val datetimeDecode = MappedEncoding[Date, DateTime] (date => new DateTime(date.getTime()))

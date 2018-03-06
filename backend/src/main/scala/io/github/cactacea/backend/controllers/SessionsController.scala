@@ -33,4 +33,31 @@ class SessionsController extends Controller {
     )
   }
 
+  get("/sessions/:social_account_type") { request: GetSocialAccountSignIn =>
+    sessionService.signIn(
+      request.socialAccountType,
+      request.accessTokenKey,
+      request.accessTokenSecret,
+      request.udid,
+      request.userAgent
+    )
+  }
+
+  post("/sessions/:social_account_type") { request: PostSocialAccountSignUp =>
+    sessionService.signUp(
+      request.socialAccountType,
+      request.accountName,
+      request.displayName,
+      request.password,
+      request.accessTokenKey,
+      request.accessTokenSecret,
+      request.udid,
+      request.web,
+      request.birthday,
+      request.location,
+      request.bio,
+      request.userAgent
+    )
+  }
+
 }

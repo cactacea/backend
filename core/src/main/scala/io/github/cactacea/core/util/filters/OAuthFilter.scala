@@ -8,7 +8,7 @@ import com.twitter.inject.Logging
 import com.twitter.util.Future
 import io.github.cactacea.core.application.services.ScopesService
 import io.github.cactacea.core.domain.enums.PermissionType
-import io.github.cactacea.core.domain.repositories.SessionRepository
+import io.github.cactacea.core.domain.repositories.SessionsRepository
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.auth.AuthenticationContext
 import io.github.cactacea.core.util.oauth.OAuthHandler
@@ -16,7 +16,7 @@ import io.github.cactacea.core.util.oauth.OAuthHandler
 @Singleton
 class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Request, Response] with OAuth2 with OAuthErrorInJson with Logging {
 
-  @Inject var sessionRepository: SessionRepository = _
+  @Inject var sessionsRepository: SessionsRepository = _
   @Inject var scopesService: ScopesService = _
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
@@ -25,7 +25,7 @@ class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Requ
         service(request)
       case false =>
         authorize(request, dataHandler) flatMap { auth =>
-          sessionRepository.checkAccountStatus(auth.user.accountId.toSessionId, auth.user.expiresIn).flatMap({_ =>
+          sessionsRepository.checkAccountStatus(auth.user.accountId.toSessionId, auth.user.expiresIn).flatMap({_ =>
             AuthenticationContext.setAuthenticated(true)
             SessionContext.setId(request, auth.user.accountId.toSessionId)
             SessionContext.setUdid(request, "")

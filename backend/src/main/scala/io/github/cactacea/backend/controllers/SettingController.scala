@@ -7,62 +7,55 @@ import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
-class SettingController extends Controller {
-
-  @Inject var socialAccountsService: SocialAccountsService = _
+class SettingController @Inject()(settingsService: SettingsService, deviceTokenService: DevicesService) extends Controller {
 
   get("/social_accounts") { request: GetSocialAccounts =>
-    socialAccountsService.find(
+    settingsService.findSocialAccounts(
       request.session.id
     )
   }
 
   post("/social_accounts/:account_type") { request: PostSocialAccount =>
-    socialAccountsService.connect(
+    settingsService.connectSocialAccount(
       request.socialAccountType,
-      request.session.id,
-      request.accessToken
+      request.accessTokenKey,
+      request.accessTokenSecret,
+      request.session.id
     ).map(_ => response.noContent)
   }
 
   delete("/social_accounts/:account_type") { request: DeleteSocialAccount =>
-    socialAccountsService.disconnect(
+    settingsService.disconnectSocialAccount(
       request.socialAccountType,
       request.session.id
     ).map(_ => response.noContent)
   }
 
-  @Inject var notificationSettingsService: PushNotificationSettingsService = _
-
   get("/push_notification") { request: GetPushNotificationSetting =>
-    notificationSettingsService.find(
+    settingsService.findPushNotificationSettings(
       request.session.id
     )
   }
 
   put("/push_notification") { request: PutNotificationSetting =>
-    notificationSettingsService.edit(
+    settingsService.updatePushNotificationSettings(
       request.notificationSetting,
       request.session.id
     ).map(_ => response.noContent)
   }
 
-  @Inject var advertisementSettingsService: AdvertisementSettingsService = _
-
   get("/advertisement") { request: GetAdvertisementSetting =>
-    advertisementSettingsService.find(
+    settingsService.findAdvertisementSettings(
       request.session.id
     )
   }
 
   put("/advertisement") { request: PutAdvertisementSetting =>
-    advertisementSettingsService.update(
+    settingsService.updateAdvertisementSettings(
       request.advertisementSetting,
       request.session.id
     ).map(_ => response.noContent)
   }
-
-  @Inject var deviceTokenService: DevicesService = _
 
   post("/devices") { request: PostDeviceToken =>
     deviceTokenService.update(

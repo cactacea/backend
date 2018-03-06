@@ -1,7 +1,7 @@
 package io.github.cactacea.core.application.components.interfaces
 
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.enums.{ReportType, SocialAccountType}
+import io.github.cactacea.core.domain.enums.{ReportType}
 import io.github.cactacea.core.domain.models.Authentication
 import io.github.cactacea.core.infrastructure.identifiers._
 
@@ -51,6 +51,6 @@ trait InjectionService {
   def mediumCreated(mediumId: MediumId, sessionId: SessionId): Future[Unit]
   def messageCreated(messageId: MessageId, sessionId: SessionId): Future[Unit]
   def messagesDeleted(groupId: GroupId, sessionId: SessionId): Future[Unit]
-  def socialAccountConnected(socialAccountType: SocialAccountType, sessionId: SessionId): Future[Unit]
-  def socialAccountDisconnected(socialAccountType: SocialAccountType, sessionId: SessionId): Future[Unit]
+  def socialAccountConnected(socialAccountType: String, sessionId: SessionId): Future[Unit]
+  def socialAccountDisconnected(socialAccountType: String, sessionId: SessionId): Future[Unit]
 }

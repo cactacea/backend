@@ -17,6 +17,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
+        DefaultSocialAccountsModule,
         DefaultInjectionModule,
         DefaultConfigModule,
         DefaultFanOutModule,

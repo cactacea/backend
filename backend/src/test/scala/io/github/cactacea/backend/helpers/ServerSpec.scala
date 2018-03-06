@@ -1,19 +1,23 @@
 package io.github.cactacea.backend.helpers
 
+import com.google.inject.Inject
 import com.twitter.finagle.http.Response
 import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.BackendServer
-import io.github.cactacea.core.application.components.modules._
+import io.github.cactacea.core.application.components.interfaces.ConfigService
+import io.github.cactacea.core.application.components.modules.{DefaultConfigModule, _}
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
-import io.github.cactacea.core.util.tokens.AuthTokenGenerator
+import io.github.cactacea.util.clients.onesignal.{OneSignalClientModule, OneSignalHttpClientModule}
 
 import scala.util.parsing.json.{JSONArray, JSONObject}
 
 class ServerSpec extends FeatureTest {
+
+  @Inject var configService: ConfigService = _
 
   override val server = new EmbeddedHttpServer(
     twitterServer = new BackendServer
@@ -33,6 +37,7 @@ class ServerSpec extends FeatureTest {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
+        DefaultSocialAccountsModule,
         DefaultInjectionModule,
         DefaultConfigModule,
         DefaultFanOutModule,
@@ -51,7 +56,7 @@ class ServerSpec extends FeatureTest {
     server.httpPost(
       path = "/sessions",
       headers = Map(
-        "X-API-KEY" -> AuthTokenGenerator.apiKey,
+        "X-API-KEY" -> configService.apiKey,
         "User-Agent" -> "ios"
       ),
       postBody = JSONObject(Map(
@@ -66,7 +71,7 @@ class ServerSpec extends FeatureTest {
     server.httpGet(
       path = s"/sessions?account_name=$accountName&password=$password&udid=$udid",
       headers = Map(
-        "X-API-KEY" -> AuthTokenGenerator.apiKey,
+        "X-API-KEY" -> configService.apiKey,
         "User-Agent" -> "ios"
       )
     )
@@ -76,7 +81,7 @@ class ServerSpec extends FeatureTest {
     server.httpDelete(
       path = "/session",
       headers = Map(
-        "X-API-KEY" -> AuthTokenGenerator.apiKey,
+        "X-API-KEY" -> configService.apiKey,
         "X-AUTHORIZATION" -> accessToken
       )
     )
@@ -86,7 +91,7 @@ class ServerSpec extends FeatureTest {
     server.httpPost(
       path = "/feeds",
       headers = Map(
-        "X-API-KEY" -> AuthTokenGenerator.apiKey,
+        "X-API-KEY" -> configService.apiKey,
         "X-AUTHORIZATION" -> accessToken
       ),
       postBody = JSONObject(Map(

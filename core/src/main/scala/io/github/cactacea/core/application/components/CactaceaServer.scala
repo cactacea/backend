@@ -17,6 +17,7 @@ class CactaceaServer extends HttpServer {
 
   protected  val databaseModule = DatabaseProviderModule
 
+  val socialAccountsModule = DefaultSocialAccountsModule
   val actionModule = DefaultInjectionModule
   val configModule = DefaultConfigModule
   val fanOutModule = DefaultFanOutModule
@@ -28,6 +29,7 @@ class CactaceaServer extends HttpServer {
   val transcodeModule =DefaultTranscodeModule
 
   addFrameworkModules(
+    socialAccountsModule,
     databaseModule,
     actionModule,
     configModule,
