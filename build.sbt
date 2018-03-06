@@ -1,5 +1,25 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
+
+lazy val backendLauncher = (project in file("exmaples/backend"))
+  .settings(
+    organization := "io.github.cactacea.exmaples.backend",
+    name := "backend",
+    scalaVersion := "2.12.4",
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+    mainClass in (Compile, run) := Some("io.github.cactacea.exmaples.backend.BackendServerApp")
+  )
+  .settings(
+    version in Docker := "latest",
+    maintainer in Docker := "Cactacea",
+    packageName in Docker := "backend",
+    dockerBaseImage := "robsonoduarte/8-jre-alpine-bash",
+    dockerExposedPorts := Seq(9000, 9001),
+    dockerRepository := Some("cactacea")
+  )
+  .dependsOn(backend)
+  .enablePlugins(JavaAppPackaging)
+
 lazy val backend = (project in file("backend"))
   .settings(
       organization := "io.github.cactacea.backend",
@@ -9,19 +29,9 @@ lazy val backend = (project in file("backend"))
       testOptions in Test += Tests.Argument("-oI"),
       mainClass in (Compile, run) := Some("io.github.cactacea.backend.server.DefaultServerApp")
   )
-  .settings(
-      version in Docker := "latest",
-      maintainer in Docker := "Cactacea",
-      packageName in Docker := "backend",
-      dockerBaseImage := "robsonoduarte/8-jre-alpine-bash",
-      dockerExposedPorts := Seq(9000, 9001),
-      dockerRepository := Some("cactacea"),
-      dockerEntrypoint := Seq("bin/%s" format executableScriptName.value, "-storage=s3")
-  )
   .dependsOn(core)
   .settings(backendLibrarySetting)
   .settings(testLibrarySetting)
-  .enablePlugins(JavaAppPackaging)
 
 lazy val backendLibrarySetting = Seq(
   resolvers ++= Seq(
