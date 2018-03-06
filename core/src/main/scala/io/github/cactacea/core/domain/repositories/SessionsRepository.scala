@@ -22,9 +22,6 @@ class SessionsRepository @Inject()(
                                    accountsDAO: AccountsDAO,
                                    socialAccountsDAO: SocialAccountsDAO,
                                    validationDAO: ValidationDAO,
-//                                   googlePlusHttpClient: GooglePlusHttpClient,
-//                                   twitterHttpClient: TwitterHttpClient,
-//                                   facebookHttpClient: FacebookHttpClient,
                                    authTokenGenerator: AuthTokenGenerator) {
 
   def signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
@@ -36,11 +33,11 @@ class SessionsRepository @Inject()(
 
   def signIn(accountName: String, password: String, udid: String, userAgent: String): Future[Authentication] = {
     accountsDAO.find(accountName, password).flatMap(_ match {
-      case Some(a) =>
-        if (a.isTerminated) {
+      case Some(account) =>
+        if (account.isTerminated) {
           Future.exception(CactaceaException(AccountTerminated))
         } else {
-          _signIn(a, udid, userAgent)
+          _signIn(account, udid, userAgent)
         }
       case None =>
         Future.exception(CactaceaException(InvalidAccountNameOrPassword))
@@ -59,11 +56,11 @@ class SessionsRepository @Inject()(
     socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
       case Some(sa) =>
         accountsDAO.find(sa.accountId.toSessionId).flatMap(_ match {
-          case Some(a) =>
-            if (a.isTerminated) {
+          case Some(account) =>
+            if (account.isTerminated) {
               Future.exception(CactaceaException(AccountTerminated))
             } else {
-              _signIn(a, udid, userAgent)
+              _signIn(account, udid, userAgent)
             }
           case None =>
             Future.exception(CactaceaException(AccountNotFound))
@@ -74,22 +71,7 @@ class SessionsRepository @Inject()(
         })
     })
 
-    //    _signUp(socialAccountType, accountName, displayName, password, socialAccountId, udid, web, birthday, location, bio, userAgent)
-//    val client = accountType match {
-//      case "facebook" => facebookHttpClient
-//      case "google" => googlePlusHttpClient
-//      case "twitter" => twitterHttpClient
-//    }
-//    client.get(accessTokenKey, accessTokenSecret).flatMap(_ match {
-//      case Some(p) =>
-//        _signUp(accountType, accountName, displayName, password, p.accountId, udid, web, birthday, location, bio, userAgent)
-//      case None =>
-//        Future.exception(CactaceaException(SessionTimeout))
-//    })
   }
-
-//  private def _signUp(socialAccountType: String, accountName: String, displayName: String, password: String, socialAccountId: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
-//  }
 
   private def _signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
     (for {
@@ -112,13 +94,13 @@ class SessionsRepository @Inject()(
 
   def signIn(socialAccountType: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, userAgent: String): Future[Authentication] = {
     socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
-      case Some(sa) =>
-        accountsDAO.find(sa.accountId.toSessionId).flatMap(_ match {
-          case Some(a) =>
-            if (a.isTerminated) {
+      case Some(socialAccount) =>
+        accountsDAO.find(socialAccount.accountId.toSessionId).flatMap(_ match {
+          case Some(account) =>
+            if (account.isTerminated) {
               Future.exception(CactaceaException(AccountTerminated))
             } else {
-              _signIn(a, udid, userAgent)
+              _signIn(account, udid, userAgent)
             }
           case None =>
             Future.exception(CactaceaException(AccountNotFound))
@@ -126,43 +108,18 @@ class SessionsRepository @Inject()(
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })
-//    socialAccountType match {
-//      case "facebook" =>
-//        facebookHttpClient.get(accessTokenKey, accessTokenSecret).flatMap(_ match {
-//          case Some(p) =>
-//            _signIn("facebook", p.accountId, udid, userAgent)
-//          case None =>
-//            Future.exception(CactaceaException(SessionTimeout))
-//        })
-//
-//      case "google" =>
-//        googlePlusHttpClient.get(accessTokenKey, accessTokenSecret).flatMap(_ match {
-//          case Some(p) =>
-//            _signIn("google", p.accountId, udid, userAgent)
-//          case None =>
-//            Future.exception(CactaceaException(SessionTimeout))
-//        })
-//
-//      case "twitter" =>
-//        twitterHttpClient.get(accessTokenSecret, accessTokenSecret).flatMap(_ match {
-//          case Some(p) =>
-//            _signIn("twitter", p.accountId, udid, userAgent)
-//          case None =>
-//            Future.exception(CactaceaException(SessionTimeout))
-//        })
-//    }
   }
 
 
-  private def _signIn(a: Accounts, udid: String, userAgent: String): Future[Authentication] = {
-    devicesDAO.exist(a.id.toSessionId, udid).flatMap(_ match {
+  private def _signIn(account: Accounts, udid: String, userAgent: String): Future[Authentication] = {
+    devicesDAO.exist(account.id.toSessionId, udid).flatMap(_ match {
       case true =>
         Future.True
       case false =>
-        devicesDAO.create(udid, Some(userAgent), a.id.toSessionId)
+        devicesDAO.create(udid, Some(userAgent), account.id.toSessionId)
     }).map({ _ =>
-      val accessToken = authTokenGenerator.generate(a.id.value, udid)
-      val account = Account(a)
+      val accessToken = authTokenGenerator.generate(account.id.value, udid)
+      val account = Account(account)
       Authentication(account, accessToken)
     })
   }
