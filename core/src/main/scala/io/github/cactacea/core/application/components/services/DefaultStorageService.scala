@@ -1,5 +1,6 @@
 package io.github.cactacea.core.application.components.services
 
+import java.nio.file.{Files, Paths}
 import java.util.UUID
 
 import com.google.inject.Singleton
@@ -8,23 +9,30 @@ import io.github.cactacea.core.application.components.interfaces.StorageService
 import resource._
 
 @Singleton
-class DefaultStorageService extends StorageService {
+class DefaultStorageService(val endpoint: String, val path: String) extends StorageService {
 
-  override def put(contentType: Option[String], data: Array[Byte]): Future[String] = {
+  override def put(contentType: Option[String], data: Array[Byte]): Future[(String, String)] = {
     FuturePool.unboundedPool {
       val uuid = UUID.randomUUID.toString
-      val filename = uuid
+      val url = endpoint + "/" + uuid
+      val filePath = path + uuid
       for {
-        out <- managed(new java.io.BufferedOutputStream(new java.io.FileOutputStream(filename)))
+        out <- managed(new java.io.BufferedOutputStream(new java.io.FileOutputStream(filePath)))
       } {
         out.write(data)
       }
-      "http://localhost:9000/images/" + filename
+      (url, filePath)
     }
   }
 
-  override def delete(uri: String): Future[Boolean] = {
-    Future.True
+  override def delete(key: String): Future[Boolean] = {
+    FuturePool.unboundedPool {
+      val path = Paths.get(key)
+      if (Files.exists(path)) {
+        Files.delete(path)
+      }
+      true
+    }
   }
 
 }

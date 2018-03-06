@@ -47,6 +47,15 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
+  def delete(id: MediumId): Future[Long] = {
+    val q = quote {
+      query[Mediums]
+        .filter(_.id == lift(id))
+        .delete
+    }
+    run(q)
+  }
+
   def exist(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {

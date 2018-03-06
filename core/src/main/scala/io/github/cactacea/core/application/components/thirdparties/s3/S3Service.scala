@@ -7,18 +7,17 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError.FileUploadErrorOccurred
 import io.github.cactacea.util.clients.s3.S3HttpClient
 
-class S3Service extends StorageService {
+class S3Service @Inject()(s3HttpClient: S3HttpClient) extends StorageService {
 
-  @Inject var s3HttpClient: S3HttpClient = _
-
-  override def put(contentType: Option[String], data: Array[Byte]): Future[String] = {
-    s3HttpClient.put(contentType, data).map(s => s._2).rescue {
+  override def put(contentType: Option[String], data: Array[Byte]): Future[(String, String)] = {
+    s3HttpClient.put(contentType, data).map({s => (s._1.key, s._2)})
+    .rescue {
       case _: Exception => Future.exception(CactaceaException(FileUploadErrorOccurred))
     }
   }
 
-  override def delete(uri: String): Future[Boolean] = {
-    Future.True
+  override def delete(key: String): Future[Boolean] = {
+    s3HttpClient.delete(key)
   }
 
 }
