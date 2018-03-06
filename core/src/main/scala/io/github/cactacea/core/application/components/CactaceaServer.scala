@@ -7,6 +7,7 @@ import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import io.github.cactacea.core.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
+import io.github.cactacea.core.util.warmups.DatabaseWarmupHandler
 
 class CactaceaServer extends HttpServer {
 
@@ -17,30 +18,21 @@ class CactaceaServer extends HttpServer {
 
   protected  val databaseModule = DatabaseProviderModule
 
-  val socialAccountsModule = DefaultSocialAccountsModule
-  val actionModule = DefaultInjectionModule
-  val configModule = DefaultConfigModule
-  val fanOutModule = DefaultFanOutModule
-  val messageModule = DefaultNotificationMessagesModule
-  val publishModule = DefaultPublishModule
-  val pushNotificationModule = DefaultPushNotificationModule
-  val storageModule = DefaultStorageModule
-  val subScribeModule = DefaultSubScribeModule
-  val transcodeModule =DefaultTranscodeModule
-
-  addFrameworkModules(
-    socialAccountsModule,
-    databaseModule,
-    actionModule,
-    configModule,
-    publishModule,
-    subScribeModule,
-    fanOutModule,
-    messageModule,
-    pushNotificationModule,
-    storageModule,
-    transcodeModule
+  def customModules = Seq(
+      DefaultSocialAccountsModule,
+      DefaultInjectionModule,
+      DefaultConfigModule,
+      DefaultFanOutModule,
+      DefaultNotificationMessagesModule,
+      DefaultPublishModule,
+      DefaultPushNotificationModule,
+      DefaultStorageModule,
+      DefaultSubScribeModule,
+      DefaultTranscodeModule
   )
+
+  addFrameworkModules(customModules:_*)
+  addFrameworkModules(databaseModule)
 
   override def configureHttp(router: HttpRouter) = {
     router
@@ -49,6 +41,10 @@ class CactaceaServer extends HttpServer {
       .filter[CommonFilters]
       .exceptionMapper[CaseClassExceptionMapper]
       .exceptionMapper[CactaceaExceptionMapper]
+  }
+
+  override def warmup() {
+    handle[DatabaseWarmupHandler]()
   }
 
 }

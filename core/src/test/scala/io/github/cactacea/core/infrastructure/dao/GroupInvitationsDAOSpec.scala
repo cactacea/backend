@@ -282,11 +282,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val invitation4 = Await.result(groupInvitationsDAO.find(groupInvitationId4, account1.id.toSessionId)).get
     val invitation5 = Await.result(groupInvitationsDAO.find(groupInvitationId5, sessionAccount.id.toSessionId)).get
 
-    assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected.toValue)
-    assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted.toValue)
-    assert(invitation3.invitationStatus == GroupInvitationStatusType.noresponsed.toValue)
-    assert(invitation4.invitationStatus == GroupInvitationStatusType.rejected.toValue)
-    assert(invitation5.invitationStatus == GroupInvitationStatusType.accepted.toValue)
+    assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected)
+    assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted)
+    assert(invitation3.invitationStatus == GroupInvitationStatusType.noresponsed)
+    assert(invitation4.invitationStatus == GroupInvitationStatusType.rejected)
+    assert(invitation5.invitationStatus == GroupInvitationStatusType.accepted)
 
   }
 
@@ -329,11 +329,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val invitation4 = Await.result(groupInvitationsDAO.find(groupInvitationId4, sessionAccount.id.toSessionId)).get
     val invitation5 = Await.result(groupInvitationsDAO.find(groupInvitationId5, sessionAccount.id.toSessionId)).get
 
-    assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected.toValue)
-    assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted.toValue)
-    assert(invitation3.invitationStatus == GroupInvitationStatusType.noresponsed.toValue)
-    assert(invitation4.invitationStatus == GroupInvitationStatusType.rejected.toValue)
-    assert(invitation5.invitationStatus == GroupInvitationStatusType.accepted.toValue)
+    assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected)
+    assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted)
+    assert(invitation3.invitationStatus == GroupInvitationStatusType.noresponsed)
+    assert(invitation4.invitationStatus == GroupInvitationStatusType.rejected)
+    assert(invitation5.invitationStatus == GroupInvitationStatusType.accepted)
 
   }
 

@@ -22,7 +22,7 @@ class AccountReportsDAOSpec extends DAOSpec {
     assert(result.id == userReportId)
     assert(result.by == sessionAccount.id)
     assert(result.accountId == reportedUser.id)
-    assert(result.reportType == ReportType.spam.toValue)
+    assert(result.reportType == ReportType.spam)
   }
 
 }

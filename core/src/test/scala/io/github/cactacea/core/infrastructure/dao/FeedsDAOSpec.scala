@@ -95,12 +95,12 @@ class FeedsDAOSpec extends DAOSpec {
     val feed4 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId4))))).head
     val feed5 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId5))))).head
     val feed6 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId6))))).head
-    assert((feed1.id, feed1.message, feed1.privacyType, feed1.contentWarning, feed1.by) == (feedId1, message1, privacyType1.toValue, contentWarning1, sessionAccount1.id))
-    assert((feed2.id, feed2.message, feed2.privacyType, feed2.contentWarning, feed2.by) == (feedId2, message2, privacyType2.toValue, contentWarning2, sessionAccount1.id))
-    assert((feed3.id, feed3.message, feed3.privacyType, feed3.contentWarning, feed3.by) == (feedId3, message3, privacyType3.toValue, contentWarning3, sessionAccount1.id))
-    assert((feed4.id, feed4.message, feed4.privacyType, feed4.contentWarning, feed4.by) == (feedId4, message4, privacyType4.toValue, contentWarning4, sessionAccount1.id))
-    assert((feed5.id, feed5.message, feed5.privacyType, feed5.contentWarning, feed5.by) == (feedId5, message5, privacyType5.toValue, contentWarning5, sessionAccount2.id))
-    assert((feed6.id, feed6.message, feed6.privacyType, feed6.contentWarning, feed6.by) == (feedId6, message6, privacyType6.toValue, contentWarning6, sessionAccount2.id))
+    assert((feed1.id, feed1.message, feed1.privacyType, feed1.contentWarning, feed1.by) == (feedId1, message1, privacyType1, contentWarning1, sessionAccount1.id))
+    assert((feed2.id, feed2.message, feed2.privacyType, feed2.contentWarning, feed2.by) == (feedId2, message2, privacyType2, contentWarning2, sessionAccount1.id))
+    assert((feed3.id, feed3.message, feed3.privacyType, feed3.contentWarning, feed3.by) == (feedId3, message3, privacyType3, contentWarning3, sessionAccount1.id))
+    assert((feed4.id, feed4.message, feed4.privacyType, feed4.contentWarning, feed4.by) == (feedId4, message4, privacyType4, contentWarning4, sessionAccount1.id))
+    assert((feed5.id, feed5.message, feed5.privacyType, feed5.contentWarning, feed5.by) == (feedId5, message5, privacyType5, contentWarning5, sessionAccount2.id))
+    assert((feed6.id, feed6.message, feed6.privacyType, feed6.contentWarning, feed6.by) == (feedId6, message6, privacyType6, contentWarning6, sessionAccount2.id))
 
     // create feed tags result
     val feedTags1 = Await.result(db.run(quote(query[FeedTags].filter(_.feedId == lift(feedId1)))))
@@ -207,12 +207,12 @@ class FeedsDAOSpec extends DAOSpec {
     val feed4 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId4))))).head
     val feed5 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId5))))).head
     val feed6 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId6))))).head
-    assert((feed1.id, feed1.message, feed1.privacyType, feed1.contentWarning, feed1.by) == (feedId1, message1, privacyType1.toValue, contentWarning1, sessionAccount1.id))
-    assert((feed2.id, feed2.message, feed2.privacyType, feed2.contentWarning, feed2.by) == (feedId2, message2, privacyType2.toValue, contentWarning2, sessionAccount1.id))
-    assert((feed3.id, feed3.message, feed3.privacyType, feed3.contentWarning, feed3.by) == (feedId3, message3, privacyType3.toValue, contentWarning3, sessionAccount1.id))
-    assert((feed4.id, feed4.message, feed4.privacyType, feed4.contentWarning, feed4.by) == (feedId4, message4, privacyType4.toValue, contentWarning4, sessionAccount1.id))
-    assert((feed5.id, feed5.message, feed5.privacyType, feed5.contentWarning, feed5.by) == (feedId5, message5, privacyType5.toValue, contentWarning5, sessionAccount2.id))
-    assert((feed6.id, feed6.message, feed6.privacyType, feed6.contentWarning, feed6.by) == (feedId6, message6, privacyType6.toValue, contentWarning6, sessionAccount2.id))
+    assert((feed1.id, feed1.message, feed1.privacyType, feed1.contentWarning, feed1.by) == (feedId1, message1, privacyType1, contentWarning1, sessionAccount1.id))
+    assert((feed2.id, feed2.message, feed2.privacyType, feed2.contentWarning, feed2.by) == (feedId2, message2, privacyType2, contentWarning2, sessionAccount1.id))
+    assert((feed3.id, feed3.message, feed3.privacyType, feed3.contentWarning, feed3.by) == (feedId3, message3, privacyType3, contentWarning3, sessionAccount1.id))
+    assert((feed4.id, feed4.message, feed4.privacyType, feed4.contentWarning, feed4.by) == (feedId4, message4, privacyType4, contentWarning4, sessionAccount1.id))
+    assert((feed5.id, feed5.message, feed5.privacyType, feed5.contentWarning, feed5.by) == (feedId5, message5, privacyType5, contentWarning5, sessionAccount2.id))
+    assert((feed6.id, feed6.message, feed6.privacyType, feed6.contentWarning, feed6.by) == (feedId6, message6, privacyType6, contentWarning6, sessionAccount2.id))
 
     // create feed tags result
     val feedTags1 = Await.result(db.run(quote(query[FeedTags].filter(_.feedId == lift(feedId1)))))
@@ -253,7 +253,7 @@ class FeedsDAOSpec extends DAOSpec {
     val newFeedTags6 = Await.result(db.run(quote(query[FeedTags].filter(_.feedId == lift(feedId6)))))
     val newFeedMediums6 = Await.result(db.run(quote(query[FeedMediums].filter(_.feedId == lift(feedId6)))))
     assert(editResult6 == true)
-    assert((newFeed6.id, newFeed6.message, newFeed6.privacyType, newFeed6.contentWarning, newFeed6.by) == (feedId6, newMessage6, newPrivacyType6.toValue, newContentWarning6, sessionAccount2.id))
+    assert((newFeed6.id, newFeed6.message, newFeed6.privacyType, newFeed6.contentWarning, newFeed6.by) == (feedId6, newMessage6, newPrivacyType6, newContentWarning6, sessionAccount2.id))
     assert((newFeedTags6.size, newFeedTags6.map(_.name)) == (newTags6.size, newTags6))
     assert((newFeedMediums6.size, newFeedMediums6.map(_.mediumId)) == (newMediums6.size, newMediums6))
 
@@ -338,12 +338,12 @@ class FeedsDAOSpec extends DAOSpec {
     val feed4 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId4))))).head
     val feed5 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId5))))).head
     val feed6 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId6))))).head
-    assert((feed1.id, feed1.message, feed1.privacyType, feed1.contentWarning, feed1.by) == (feedId1, message1, privacyType1.toValue, contentWarning1, sessionAccount1.id))
-    assert((feed2.id, feed2.message, feed2.privacyType, feed2.contentWarning, feed2.by) == (feedId2, message2, privacyType2.toValue, contentWarning2, sessionAccount1.id))
-    assert((feed3.id, feed3.message, feed3.privacyType, feed3.contentWarning, feed3.by) == (feedId3, message3, privacyType3.toValue, contentWarning3, sessionAccount1.id))
-    assert((feed4.id, feed4.message, feed4.privacyType, feed4.contentWarning, feed4.by) == (feedId4, message4, privacyType4.toValue, contentWarning4, sessionAccount1.id))
-    assert((feed5.id, feed5.message, feed5.privacyType, feed5.contentWarning, feed5.by) == (feedId5, message5, privacyType5.toValue, contentWarning5, sessionAccount2.id))
-    assert((feed6.id, feed6.message, feed6.privacyType, feed6.contentWarning, feed6.by) == (feedId6, message6, privacyType6.toValue, contentWarning6, sessionAccount2.id))
+    assert((feed1.id, feed1.message, feed1.privacyType, feed1.contentWarning, feed1.by) == (feedId1, message1, privacyType1, contentWarning1, sessionAccount1.id))
+    assert((feed2.id, feed2.message, feed2.privacyType, feed2.contentWarning, feed2.by) == (feedId2, message2, privacyType2, contentWarning2, sessionAccount1.id))
+    assert((feed3.id, feed3.message, feed3.privacyType, feed3.contentWarning, feed3.by) == (feedId3, message3, privacyType3, contentWarning3, sessionAccount1.id))
+    assert((feed4.id, feed4.message, feed4.privacyType, feed4.contentWarning, feed4.by) == (feedId4, message4, privacyType4, contentWarning4, sessionAccount1.id))
+    assert((feed5.id, feed5.message, feed5.privacyType, feed5.contentWarning, feed5.by) == (feedId5, message5, privacyType5, contentWarning5, sessionAccount2.id))
+    assert((feed6.id, feed6.message, feed6.privacyType, feed6.contentWarning, feed6.by) == (feedId6, message6, privacyType6, contentWarning6, sessionAccount2.id))
 
     // create feed tags result
     val feedTags1 = Await.result(db.run(quote(query[FeedTags].filter(_.feedId == lift(feedId1)))))
@@ -691,12 +691,12 @@ class FeedsDAOSpec extends DAOSpec {
     val feed4 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId4))))).head
     val feed5 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId5))))).head
     val feed6 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId6))))).head
-    assert((feed1.id, feed1.message, feed1.privacyType, feed1.contentWarning, feed1.by) == (feedId1, message1, privacyType1.toValue, contentWarning1, sessionAccount1.id))
-    assert((feed2.id, feed2.message, feed2.privacyType, feed2.contentWarning, feed2.by) == (feedId2, message2, privacyType2.toValue, contentWarning2, sessionAccount1.id))
-    assert((feed3.id, feed3.message, feed3.privacyType, feed3.contentWarning, feed3.by) == (feedId3, message3, privacyType3.toValue, contentWarning3, sessionAccount1.id))
-    assert((feed4.id, feed4.message, feed4.privacyType, feed4.contentWarning, feed4.by) == (feedId4, message4, privacyType4.toValue, contentWarning4, sessionAccount1.id))
-    assert((feed5.id, feed5.message, feed5.privacyType, feed5.contentWarning, feed5.by) == (feedId5, message5, privacyType5.toValue, contentWarning5, sessionAccount2.id))
-    assert((feed6.id, feed6.message, feed6.privacyType, feed6.contentWarning, feed6.by) == (feedId6, message6, privacyType6.toValue, contentWarning6, sessionAccount2.id))
+    assert((feed1.id, feed1.message, feed1.privacyType, feed1.contentWarning, feed1.by) == (feedId1, message1, privacyType1, contentWarning1, sessionAccount1.id))
+    assert((feed2.id, feed2.message, feed2.privacyType, feed2.contentWarning, feed2.by) == (feedId2, message2, privacyType2, contentWarning2, sessionAccount1.id))
+    assert((feed3.id, feed3.message, feed3.privacyType, feed3.contentWarning, feed3.by) == (feedId3, message3, privacyType3, contentWarning3, sessionAccount1.id))
+    assert((feed4.id, feed4.message, feed4.privacyType, feed4.contentWarning, feed4.by) == (feedId4, message4, privacyType4, contentWarning4, sessionAccount1.id))
+    assert((feed5.id, feed5.message, feed5.privacyType, feed5.contentWarning, feed5.by) == (feedId5, message5, privacyType5, contentWarning5, sessionAccount2.id))
+    assert((feed6.id, feed6.message, feed6.privacyType, feed6.contentWarning, feed6.by) == (feedId6, message6, privacyType6, contentWarning6, sessionAccount2.id))
 
     // create feed tags result
     val feedTags1 = Await.result(db.run(quote(query[FeedTags].filter(_.feedId == lift(feedId1)))))
@@ -736,8 +736,8 @@ class FeedsDAOSpec extends DAOSpec {
     val sessionFeedTags2 = sessionFeeds1(1)._2
     val sessionMediums1 = sessionFeeds1(0)._3
     val sessionMediums2 = sessionFeeds1(1)._3
-    assert((sessionFeed1.id, sessionFeed1.message, sessionFeed1.privacyType, sessionFeed1.contentWarning, sessionFeed1.by) == (feedId4, message4, privacyType4.toValue, contentWarning4, sessionAccount1.id))
-    assert((sessionFeed2.id, sessionFeed2.message, sessionFeed2.privacyType, sessionFeed2.contentWarning, sessionFeed1.by) == (feedId3, message3, privacyType3.toValue, contentWarning3, sessionAccount1.id))
+    assert((sessionFeed1.id, sessionFeed1.message, sessionFeed1.privacyType, sessionFeed1.contentWarning, sessionFeed1.by) == (feedId4, message4, privacyType4, contentWarning4, sessionAccount1.id))
+    assert((sessionFeed2.id, sessionFeed2.message, sessionFeed2.privacyType, sessionFeed2.contentWarning, sessionFeed1.by) == (feedId3, message3, privacyType3, contentWarning3, sessionAccount1.id))
     assert((sessionFeedTags1.size, sessionFeedTags1.map(_.name)) == (tags4.size, tags4))
     assert((sessionFeedTags2.size, sessionFeedTags2.map(_.name)) == (tags3.size, tags3))
     assert((sessionMediums1.size, sessionMediums1.map(_.id)) == (mediums4.size, mediums4))
@@ -752,8 +752,8 @@ class FeedsDAOSpec extends DAOSpec {
     val sessionFeedTags4 = sessionFeeds2(1)._2
     val sessionMediums3 = sessionFeeds2(0)._3
     val sessionMediums4 = sessionFeeds2(1)._3
-    assert((sessionFeed3.id, sessionFeed3.message, sessionFeed3.privacyType, sessionFeed3.contentWarning, sessionFeed3.by) == (feedId2, message2, privacyType2.toValue, contentWarning2, sessionAccount1.id))
-    assert((sessionFeed4.id, sessionFeed4.message, sessionFeed4.privacyType, sessionFeed4.contentWarning, sessionFeed4.by) == (feedId1, message1, privacyType1.toValue, contentWarning1, sessionAccount1.id))
+    assert((sessionFeed3.id, sessionFeed3.message, sessionFeed3.privacyType, sessionFeed3.contentWarning, sessionFeed3.by) == (feedId2, message2, privacyType2, contentWarning2, sessionAccount1.id))
+    assert((sessionFeed4.id, sessionFeed4.message, sessionFeed4.privacyType, sessionFeed4.contentWarning, sessionFeed4.by) == (feedId1, message1, privacyType1, contentWarning1, sessionAccount1.id))
     assert((sessionFeedTags3.size, sessionFeedTags3.map(_.name)) == (tags2.size, tags2))
     assert((sessionFeedTags4.size, sessionFeedTags4.map(_.name)) == (tags1.size, tags1))
     assert((sessionMediums3.size, sessionMediums3.map(_.id)) == (mediums2.size, mediums2))

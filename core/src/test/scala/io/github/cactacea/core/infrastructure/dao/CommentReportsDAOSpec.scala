@@ -26,7 +26,7 @@ class CommentReportsDAOSpec extends DAOSpec {
     assert(result.id == commentReportId)
     assert(result.by == sessionAccount2.id)
     assert(result.commentId == commentId)
-    assert(result.reportType == ReportType.spam.toValue)
+    assert(result.reportType == ReportType.spam)
   }
 
 }

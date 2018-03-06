@@ -1,6 +1,7 @@
 package io.github.cactacea.core.infrastructure.models
 
-import io.github.cactacea.core.infrastructure.identifiers.{GroupId, GroupInvitationId, AccountId}
+import io.github.cactacea.core.domain.enums.GroupInvitationStatusType
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, GroupInvitationId}
 
 case class GroupInvitations(
                              id: GroupInvitationId,
@@ -8,6 +9,6 @@ case class GroupInvitations(
                              accountId: AccountId,
                              by: AccountId,
                              notified: Boolean,
-                             invitationStatus: Long,
+                             invitationStatus: GroupInvitationStatusType,
                              invitedAt: Long
                    )

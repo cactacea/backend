@@ -24,7 +24,7 @@ class GroupReportsDAOSpec extends DAOSpec {
     assert(result.id == groupReportId)
     assert(result.by == reportedUser.id)
     assert(result.groupId == groupId)
-    assert(result.reportType == ReportType.spam.toValue)
+    assert(result.reportType == ReportType.spam)
 
   }
 

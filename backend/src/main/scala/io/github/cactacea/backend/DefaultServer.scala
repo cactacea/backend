@@ -4,9 +4,8 @@ import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.core.application.components.CactaceaServer
 import io.github.cactacea.core.util.filters._
-import io.github.cactacea.core.util.warmups.DatabaseWarmupHandler
 
-class BackendServer extends CactaceaServer {
+class DefaultServer extends CactaceaServer {
 
   override def configureHttp(router: HttpRouter) = {
     router
@@ -29,9 +28,4 @@ class BackendServer extends CactaceaServer {
       .add[HealthController]
   }
 
-  override def warmup() {
-    handle[DatabaseWarmupHandler]()
-  }
-
 }
-

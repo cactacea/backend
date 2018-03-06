@@ -39,7 +39,7 @@ class OAuthController @Inject()(
       case true =>
         accountsDAO.find(req.username, req.password).map(_ match {
           case Some(a) =>
-            if (a.accountStatus == AccountStatusType.singedUp.toValue) {
+            if (a.accountStatus == AccountStatusType.singedUp) {
               if (req.responseType == "code") {
                 val code = oAuthTokenGenerator.generateCode()
                 val created = AccessCodeCreated(code, None)

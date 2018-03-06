@@ -1,12 +1,13 @@
 package io.github.cactacea.core.domain.models
 
+import io.github.cactacea.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.core.infrastructure.identifiers.FriendRequestId
 import io.github.cactacea.core.infrastructure.models.{Accounts, FriendRequests, Relationships}
 
 case class FriendRequest (
                            id: FriendRequestId,
                            account: Account,
-                           requestStatus: Long,
+                           requestStatus: FriendRequestStatusType,
                            requestedAt: Long,
                            next: Long
                          )

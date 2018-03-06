@@ -30,7 +30,7 @@ class GroupsRepository {
           Future.exception(CactaceaException(DirectMessageGroupCanNotUpdated))
         } else {
           groupsDAO.update(groupId, name, byInvitationOnly, privacyType, authority, sessionId).flatMap(_ =>
-            if (g.privacyType != privacyType.toValue) {
+            if (g.privacyType != privacyType) {
               groupInvitationsDAO.deleteByGroupId(groupId).flatMap(_ => Future.Unit)
             } else {
               Future.Unit

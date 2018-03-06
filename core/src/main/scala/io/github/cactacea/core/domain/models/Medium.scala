@@ -1,5 +1,6 @@
 package io.github.cactacea.core.domain.models
 
+import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.infrastructure.identifiers.MediumId
 import io.github.cactacea.core.infrastructure.models.Mediums
 
@@ -10,7 +11,7 @@ case class Medium(
                    height: Long,
                    size: Long,
                    thumbnailUrl: Option[String],
-                   mediumType: Long
+                   mediumType: MediumType
                   )
 
 object Medium {

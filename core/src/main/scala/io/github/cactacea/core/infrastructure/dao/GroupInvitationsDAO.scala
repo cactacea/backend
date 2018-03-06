@@ -22,7 +22,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
   }
 
   private def insert(id: GroupInvitationId, accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Long] = {
-    val invitationdAt = System.nanoTime()
+    val invitedAt = System.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[GroupInvitations]
@@ -32,8 +32,8 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
           _.by            -> lift(by),
           _.groupId       -> lift(groupId),
           _.notified      -> lift(false),
-          _.invitationStatus  -> lift(GroupInvitationStatusType.noresponsed.toValue),
-          _.invitedAt     -> lift(invitationdAt)
+          _.invitationStatus  -> lift(GroupInvitationStatusType.noresponsed),
+          _.invitedAt     -> lift(invitedAt)
         )
     }
     run(q)
@@ -92,7 +92,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[GroupInvitations]
         .filter(_.groupId       == lift(groupId))
-        .filter(_.invitationStatus  == lift(GroupInvitationStatusType.noresponsed.toValue))
+        .filter(_.invitationStatus  == lift(GroupInvitationStatusType.noresponsed))
         .delete
     }
     run(q).map(_ >= 0)
@@ -118,12 +118,12 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[GroupInvitations]
         .filter(group_invitations => group_invitations.accountId        == lift(accountId))
-        .filter(group_invitations => group_invitations.invitationStatus  == lift(GroupInvitationStatusType.noresponsed.toValue))
+        .filter(group_invitations => group_invitations.invitationStatus  == lift(GroupInvitationStatusType.noresponsed))
         .filter(group_invitations => (
           query[Groups]
             .filter(_.id          == group_invitations.groupId)
             .filter(_.by          == lift(by))
-            .filter(_.privacyType == lift(groupPrivacyType.toValue))
+            .filter(_.privacyType == lift(groupPrivacyType))
             .nonEmpty)
         )
         .delete
@@ -137,7 +137,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
       query[GroupInvitations]
         .filter(_.groupId == lift(groupId))
         .filter(_.accountId == lift(accountId))
-        .update(_.invitationStatus -> lift(invitationStatus.toValue))
+        .update(_.invitationStatus -> lift(invitationStatus))
     }
     run(q).map(_ == 1)
   }
@@ -148,7 +148,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
       query[GroupInvitations]
         .filter(_.accountId == lift(by))
         .filter(_.id == lift(invitationId))
-        .update(_.invitationStatus -> lift(invitationStatus.toValue))
+        .update(_.invitationStatus -> lift(invitationStatus))
     }
     run(q).map(_ == 1)
 

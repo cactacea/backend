@@ -19,13 +19,13 @@ case class Accounts(
                      location: Option[String],
                      bio: Option[String],
                      position: Long,
-                     accountStatus: Long,
+                     accountStatus: AccountStatusType,
                      signedOutAt: Option[Long]
                  ) {
 
 
   def isTerminated: Boolean = {
-    this.accountStatus == AccountStatusType.terminated.toValue
+    this.accountStatus == AccountStatusType.terminated
   }
 
   def isExpired(expiredDate: Long): Boolean = {

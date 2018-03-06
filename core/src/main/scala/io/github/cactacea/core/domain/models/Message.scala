@@ -1,11 +1,12 @@
 package io.github.cactacea.core.domain.models
 
+import io.github.cactacea.core.domain.enums.MessageType
 import io.github.cactacea.core.infrastructure.identifiers.MessageId
 import io.github.cactacea.core.infrastructure.models._
 
 case class Message(
                     id: MessageId,
-                    messageType: Long,
+                    messageType: MessageType,
                     message: Option[String],
                     medium: Option[Medium],
                     by: Account,

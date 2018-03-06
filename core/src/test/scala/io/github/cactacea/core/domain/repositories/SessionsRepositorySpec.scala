@@ -115,7 +115,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     }.error == SessionTimeout)
 
     // Terminated user
-    val terminated = AccountStatusType.terminated.toValue
+    val terminated = AccountStatusType.terminated
     val sessionId = session.id
     val q1 = quote {
       query[Accounts]

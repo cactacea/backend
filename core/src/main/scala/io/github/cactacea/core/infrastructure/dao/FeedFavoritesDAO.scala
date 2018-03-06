@@ -116,7 +116,7 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
-    val status = AccountStatusType.singedUp.toValue
+    val status = AccountStatusType.singedUp
 
     val q = quote {
       query[FeedFavorites].filter(ff => ff.feedId == lift(feedId) && ff.postedAt < lift(s) &&
@@ -141,9 +141,9 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
       query[FeedFavorites].filter(ff => ff.by == lift(by) && ff.postedAt < lift(s))
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&
-        ((f.privacyType == lift(FeedPrivacyType.everyone.toValue))
-        || (f.privacyType == lift(FeedPrivacyType.followers.toValue) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
-        || (f.privacyType == lift(FeedPrivacyType.friends.toValue)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
+        ((f.privacyType == lift(FeedPrivacyType.everyone))
+        || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
+        || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
         .sortBy({ case (ff, _) => ff.postedAt })(Ord.descNullsLast)
         .drop(lift(o))
@@ -165,9 +165,9 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
       query[FeedFavorites].filter(ff => ff.by == lift(accountId) && ff.postedAt < lift(s))
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         (query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty) &&
-        ((f.privacyType == lift(FeedPrivacyType.everyone.toValue))
-        || (f.privacyType == lift(FeedPrivacyType.followers.toValue) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
-        || (f.privacyType == lift(FeedPrivacyType.friends.toValue)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
+        ((f.privacyType == lift(FeedPrivacyType.everyone))
+        || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
+        || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
         .sortBy({ case (ff, _) => ff.postedAt })(Ord.descNullsLast)
         .drop(lift(o))

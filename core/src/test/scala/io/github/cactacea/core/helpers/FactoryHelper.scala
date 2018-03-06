@@ -1,6 +1,6 @@
 package io.github.cactacea.core.helpers
 
-import io.github.cactacea.core.domain.enums.MediumType
+import io.github.cactacea.core.domain.enums.{AccountStatusType, MediumType}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Mediums}
 
@@ -15,7 +15,7 @@ object FactoryHelper {
       120,
       128L,
       Some("http://127.0.0.1/resource/thumnail_image.jpg"),
-      MediumType.image.toValue,
+      MediumType.image,
       accountId
     )
   }
@@ -29,7 +29,7 @@ object FactoryHelper {
       displayName = "displayname",
       password = "password",
       position = 0L,
-      accountStatus = 0L,
+      accountStatus = AccountStatusType.singedUp,
       followCount = 0L,
       followerCount = 0L,
       friendCount = 0L,

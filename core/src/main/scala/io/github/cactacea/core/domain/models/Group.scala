@@ -1,5 +1,6 @@
 package io.github.cactacea.core.domain.models
 
+import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers.GroupId
 import io.github.cactacea.core.infrastructure.models._
 
@@ -7,9 +8,9 @@ case class Group(
                   id: GroupId,
                   name: Option[String],
                   message: Option[Message],
-                  groupPrivacyType: Long,
-                  byInvitationOnly: Boolean,
-                  authorityType: Long,
+                  groupPrivacyType: GroupPrivacyType,
+                  invitationOnly: Boolean,
+                  authorityType: GroupAuthorityType,
                   accountCount: Long,
                   organizedAt: Long,
                   next: Long
@@ -36,7 +37,7 @@ object Group {
       name              = g.name,
       message           = message,
       groupPrivacyType  = g.privacyType,
-      byInvitationOnly  = g.invitationOnly,
+      invitationOnly    = g.invitationOnly,
       authorityType     = g.authorityType,
       accountCount      = g.accountCount,
       organizedAt       = g.organizedAt,
