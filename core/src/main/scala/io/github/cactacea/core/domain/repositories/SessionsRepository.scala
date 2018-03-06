@@ -119,8 +119,7 @@ class SessionsRepository @Inject()(
         devicesDAO.create(udid, Some(userAgent), account.id.toSessionId)
     }).map({ _ =>
       val accessToken = authTokenGenerator.generate(account.id.value, udid)
-      val account = Account(account)
-      Authentication(account, accessToken)
+      Authentication(Account(account), accessToken)
     })
   }
 
