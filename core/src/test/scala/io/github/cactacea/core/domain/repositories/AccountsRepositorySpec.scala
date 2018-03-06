@@ -10,7 +10,7 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 class AccountsRepositorySpec extends RepositorySpec {
 
   val accountsRepository = injector.instance[AccountsRepository]
-  val sessionRepository = injector.instance[SessionRepository]
+  val sessionsRepository = injector.instance[SessionsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
   val mediumRepository = injector.instance[MediumsRepository]
 

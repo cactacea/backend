@@ -15,7 +15,11 @@ import io.github.cactacea.core.util.oauth.{InvalidResponseType, OAuthHandler}
 import io.github.cactacea.core.util.tokens.OAuthTokenGenerator
 
 @Singleton
-class OAuthController @Inject()(authDAO: AuthDAO, accountsDAO: AccountsDAO, dataHandler: OAuthHandler) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
+class OAuthController @Inject()(
+                                 authDAO: AuthDAO,
+                                 accountsDAO: AccountsDAO,
+                                 oAuthTokenGenerator: OAuthTokenGenerator,
+                                 dataHandler: OAuthHandler) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
 
   get("/auth") { req: GetAuth =>
     authDAO.validateRedirectUri(req.clientId, req.redirectUri).map(_ match {
@@ -37,7 +41,7 @@ class OAuthController @Inject()(authDAO: AuthDAO, accountsDAO: AccountsDAO, data
           case Some(a) =>
             if (a.accountStatus == AccountStatusType.singedUp.toValue) {
               if (req.responseType == "code") {
-                val code = OAuthTokenGenerator.generateCode()
+                val code = oAuthTokenGenerator.generateCode()
                 val created = AccessCodeCreated(code, None)
                 response.created(created).location(req.redirectUri)
 

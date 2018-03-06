@@ -1,7 +1,6 @@
 package io.github.cactacea.core.domain.repositories
 
 import com.twitter.util.Await
-import io.github.cactacea.core.domain.enums.SocialAccountType
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.SocialAccountsDAO
 import io.github.cactacea.core.util.responses.CactaceaError.{SocialAccountAlreadyConnected, SocialAccountNotConnected}
@@ -15,17 +14,17 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
   test("connect a social account") {
 
     val sessionUser = signUp("session user name", "session user password", "session udid").account
-    Await.result(socialAccountsRepository.create(SocialAccountType.facebook, "session token", sessionUser.id.toSessionId))
-    assert(Await.result(socialAccountsDAO.exist(SocialAccountType.facebook, sessionUser.id.toSessionId)) == true)
+    Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
+    assert(Await.result(socialAccountsDAO.exist("facebook", sessionUser.id.toSessionId)) == true)
 
   }
 
   test("find social accounts") {
 
     val sessionUser = signUp("session user name", "session user password", "session udid").account
-    Await.result(socialAccountsRepository.create(SocialAccountType.facebook, "session token", sessionUser.id.toSessionId))
-    Await.result(socialAccountsRepository.create(SocialAccountType.google, "session token", sessionUser.id.toSessionId))
-    Await.result(socialAccountsRepository.create(SocialAccountType.twitter, "session token", sessionUser.id.toSessionId))
+    Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
+    Await.result(socialAccountsRepository.create("google", "session token", sessionUser.id.toSessionId))
+    Await.result(socialAccountsRepository.create("twitter", "session token", sessionUser.id.toSessionId))
 
     val result = Await.result(socialAccountsRepository.findAll(sessionUser.id.toSessionId))
     assert(result.size == 3)
@@ -35,10 +34,10 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
   test("connect connected social account") {
 
     val sessionUser = signUp("session user name", "session user password", "session udid").account
-    Await.result(socialAccountsRepository.create(SocialAccountType.facebook, "session token", sessionUser.id.toSessionId))
+    Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(socialAccountsRepository.create(SocialAccountType.facebook, "session token", sessionUser.id.toSessionId))
+      Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
     }.error == SocialAccountAlreadyConnected)
 
   }
@@ -46,9 +45,9 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
   test("disconnect a social account") {
 
     val sessionUser = signUp("session user name", "session user password", "session udid").account
-    Await.result(socialAccountsRepository.create(SocialAccountType.facebook, "session token", sessionUser.id.toSessionId))
-    Await.result(socialAccountsRepository.delete(SocialAccountType.facebook, sessionUser.id.toSessionId))
-    assert(Await.result(socialAccountsDAO.exist(SocialAccountType.facebook, sessionUser.id.toSessionId)) == false)
+    Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
+    Await.result(socialAccountsRepository.delete("facebook", sessionUser.id.toSessionId))
+    assert(Await.result(socialAccountsDAO.exist("facebook", sessionUser.id.toSessionId)) == false)
 
   }
 
@@ -57,7 +56,7 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("session user name", "session user password", "session udid").account
 
     assert(intercept[CactaceaException] {
-      Await.result(socialAccountsRepository.delete(SocialAccountType.facebook, sessionUser.id.toSessionId))
+      Await.result(socialAccountsRepository.delete("facebook", sessionUser.id.toSessionId))
     }.error == SocialAccountNotConnected)
 
   }

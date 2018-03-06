@@ -2,17 +2,13 @@ package io.github.cactacea.core.util.tokens
 
 import java.util.Date
 
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.getquill.util.LoadConfig
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.jsonwebtoken._
 
-object OAuthTokenGenerator {
-
-  private lazy val config = LoadConfig("auth")
-  private lazy val signingKey = config.getString("signingKey")
-  private lazy val issuer = config.getString("issuer")
-  private lazy val subject = config.getString("subject")
-  private lazy val algorithm = config.getString("algorithm")
+@Singleton
+class OAuthTokenGenerator @Inject()(config: ConfigService) {
 
   def generateCode(): String = {
     generate(60 * 3)
@@ -28,17 +24,17 @@ object OAuthTokenGenerator {
 
   private def generate(expireIn: Long): String = {
 
-    val signatureAlgorithm = SignatureAlgorithm.forName(algorithm)
+    val signatureAlgorithm = SignatureAlgorithm.forName(config.algorithm)
     val expired = new Date(System.nanoTime() + expireIn)
     val claims = new java.util.HashMap[String, Object]()
 
     Jwts.builder()
-      .setIssuer(issuer)
+      .setIssuer(config.issuer)
       .setIssuedAt(new Date())
-      .setSubject(subject)
+      .setSubject(config.subject)
       .setClaims(claims)
       .setExpiration(expired)
-      .signWith(signatureAlgorithm, signingKey)
+      .signWith(signatureAlgorithm, config.signingKey)
       .compact()
 
   }
@@ -47,9 +43,9 @@ object OAuthTokenGenerator {
 
     try {
 
-      val signatureAlgorithm = SignatureAlgorithm.forName(algorithm)
+      val signatureAlgorithm = SignatureAlgorithm.forName(config.algorithm)
       val jwtClaims = Jwts.parser()
-        .setSigningKey(signingKey)
+        .setSigningKey(config.signingKey)
         .parseClaimsJws(token)
       val header = jwtClaims.getHeader()
       val body = jwtClaims.getBody()
@@ -57,10 +53,10 @@ object OAuthTokenGenerator {
       if (header.getAlgorithm().equals(signatureAlgorithm.getValue) == false) {
         Future.None
 
-      } else if (body.getSubject.equals(subject) == false) {
+      } else if (body.getSubject.equals(config.subject) == false) {
         Future.None
 
-      } else if (body.getIssuer.equals(issuer) == false) {
+      } else if (body.getIssuer.equals(config.issuer) == false) {
         Future.None
 
       } else {

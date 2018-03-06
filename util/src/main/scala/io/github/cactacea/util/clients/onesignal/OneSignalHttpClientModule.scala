@@ -1,33 +1,37 @@
 package io.github.cactacea.util.clients.onesignal
 
-import java.io.File
-
 import com.google.inject.{Provides, Singleton}
+import com.twitter.conversions.time._
 import com.twitter.finagle.Http
 import com.twitter.finatra.httpclient.HttpClient
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.TwitterModule
 import com.typesafe.config.ConfigFactory
-import com.twitter.conversions.time._
+import io.github.cactacea.util.clients.OneSignalHttpClient
 
 object OneSignalHttpClientModule extends TwitterModule {
 
   @Singleton
   @Provides
   @OneSignalHttpClient
-  def provide(mapper: FinatraObjectMapper): HttpClient = {
-    val config = ConfigFactory.parseFile(new File("onesignal.conf")).atPath("onesignal")
-    val hostname = config.getString("host")
+  def provide(objectMapper: FinatraObjectMapper): HttpClient = {
+    val config = ConfigFactory.load("onesignal.conf").getConfig("onesignal")
+    val hostname = "onesignal.com"
     val key = "Basic " + config.getString("apiKey")
     val defaultHeaders = Map("Authorization" -> key)
+    val timeout = 864000
+    val minPoolSize = 10
+    val maxPoolSize = 30
+    val maxPoolWaiters = 100
     val httpService = Http.client
+      .withTls(hostname)
       .withLabel("OneSignal")
-      .withRequestTimeout(config.getInt("timeout") seconds)
-      .withSessionPool.minSize(config.getInt("minPoolSize"))
-      .withSessionPool.maxSize(config.getInt("maxPoolSize"))
-      .withSessionPool.maxWaiters(config.getInt("maxPoolWaiters"))
-      .newService(hostname)
-    new HttpClient(hostname = hostname, httpService = httpService, retryPolicy = None, defaultHeaders = defaultHeaders, mapper = mapper)
+      .withRequestTimeout(timeout seconds)
+      .withSessionPool.minSize(minPoolSize)
+      .withSessionPool.maxSize(maxPoolSize)
+      .withSessionPool.maxWaiters(maxPoolWaiters)
+      .newService(s"$hostname:443")
+    new HttpClient(hostname = hostname, httpService = httpService, retryPolicy = None, defaultHeaders = defaultHeaders, mapper = objectMapper)
   }
 
 }

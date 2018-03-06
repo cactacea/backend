@@ -58,10 +58,11 @@ import org.joda.time.DateTime
   * </ul>
   */
 
-class OAuthHandler extends DataHandler[OAuthUser] with Logging {
-
-  @Inject var accountsDAO: AccountsDAO = _
-  @Inject var authDAO: AuthDAO = _
+class OAuthHandler @Inject()(
+                              accountsDAO: AccountsDAO,
+                              authDAO: AuthDAO,
+                              oAuthTokenGenerator: OAuthTokenGenerator
+                            ) extends DataHandler[OAuthUser] with Logging {
 
   def validateClient(clientId: String, clientSecret: String, grantType: String): Future[Boolean] = {
     authDAO.validateClient(clientId, clientSecret, grantType)
@@ -76,7 +77,7 @@ class OAuthHandler extends DataHandler[OAuthUser] with Logging {
   }
 
   def findAuthInfoByCode(code: String): Future[Option[AuthInfo[OAuthUser]]] = {
-    OAuthTokenGenerator.parse(code).flatMap({ _ =>
+    oAuthTokenGenerator.parse(code).flatMap({ _ =>
       authDAO.findByCode(code).flatMap({ auth =>
         authDAO.deleteByCode(code).map({ _ =>
           auth.map(auth => AuthInfo(OAuthUser(auth.accountId, auth.expiresIn), auth.clientId, auth.scope, auth.redirectUri))
@@ -86,7 +87,7 @@ class OAuthHandler extends DataHandler[OAuthUser] with Logging {
   }
 
   def findAuthInfoByRefreshToken(refreshToken: String): Future[Option[AuthInfo[OAuthUser]]] = {
-    OAuthTokenGenerator.parse(refreshToken).flatMap({ _ =>
+    oAuthTokenGenerator.parse(refreshToken).flatMap({ _ =>
       authDAO.findByRefreshToken(refreshToken).flatMap({ auth =>
         authDAO.deleteByRefreshToken(refreshToken).map({ _ =>
           auth.map(auth => AuthInfo(OAuthUser(auth.accountId, auth.expiresIn), auth.clientId, auth.scope, None))
@@ -96,15 +97,15 @@ class OAuthHandler extends DataHandler[OAuthUser] with Logging {
   }
 
   def createAccessToken(authInfo: AuthInfo[OAuthUser]): Future[AccessToken] = {
-    val accessToken = OAuthTokenGenerator.generateAccessToken()
-    val refreshToken = OAuthTokenGenerator.generateRefreshToken()
+    val accessToken = oAuthTokenGenerator.generateAccessToken()
+    val refreshToken = oAuthTokenGenerator.generateRefreshToken()
     authDAO.createToken(accessToken, Some(refreshToken), authInfo.user.accountId, authInfo.clientId, authInfo.scope, 60 * 15, new DateTime().toDate).map({ _ =>
       AccessToken(accessToken, Some(refreshToken), None, None, DateTime.now().toDate)
     })
   }
 
   def refreshAccessToken(authInfo: AuthInfo[OAuthUser], refreshToken: String): Future[AccessToken] = {
-    val accessToken = OAuthTokenGenerator.generateAccessToken()
+    val accessToken = oAuthTokenGenerator.generateAccessToken()
     authDAO.createToken(accessToken, None, authInfo.user.accountId, authInfo.clientId, authInfo.scope, 60 * 15, new DateTime().toDate).map({ _ =>
       AccessToken(accessToken, None, None, None, DateTime.now().toDate)
     })

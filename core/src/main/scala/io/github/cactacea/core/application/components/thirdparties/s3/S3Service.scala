@@ -3,9 +3,9 @@ package io.github.cactacea.core.application.components.thirdparties.s3
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.StorageService
-import io.github.cactacea.core.infrastructure.clients.s3.S3HttpClient
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError.FileUploadErrorOccurred
+import io.github.cactacea.util.clients.s3.S3HttpClient
 
 class S3Service extends StorageService {
 
