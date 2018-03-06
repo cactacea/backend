@@ -6,12 +6,11 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
-import io.github.cactacea.backend.BackendServer
+import io.github.cactacea.backend.DefaultServer
 import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.components.modules.{DefaultConfigModule, _}
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
-import io.github.cactacea.util.clients.onesignal.{OneSignalClientModule, OneSignalHttpClientModule}
 
 import scala.util.parsing.json.{JSONArray, JSONObject}
 
@@ -20,7 +19,7 @@ class ServerSpec extends FeatureTest {
   @Inject var configService: ConfigService = _
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new BackendServer
+    twitterServer = new DefaultServer
   )
 
   override protected def beforeAll(): Unit = {

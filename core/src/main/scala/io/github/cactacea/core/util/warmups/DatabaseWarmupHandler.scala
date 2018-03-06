@@ -19,7 +19,6 @@ class DatabaseWarmupHandler @Inject()(httpWarmup: HttpWarmup) extends Handler {
     val flyway = new Flyway()
     flyway.setDataSource(url, user, password)
     flyway.setBaselineOnMigrate(true)
-    flyway.setLocations("filesystem:core/src/main/resources/db/migration")
     flyway.clean()
     flyway.migrate()
   }

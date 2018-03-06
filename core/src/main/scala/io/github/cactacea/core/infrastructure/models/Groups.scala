@@ -1,14 +1,15 @@
 package io.github.cactacea.core.infrastructure.models
 
-import io.github.cactacea.core.infrastructure.identifiers.{GroupId, MessageId, AccountId}
+import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, MessageId}
 
 case class Groups(
                    id: GroupId,
                    name: Option[String],
-                   privacyType: Long,
+                   privacyType: GroupPrivacyType,
                    invitationOnly: Boolean,
                    directMessage: Boolean,
-                   authorityType: Long,
+                   authorityType: GroupAuthorityType,
                    accountCount: Long,
                    messageId: Option[MessageId],
                    by: AccountId,

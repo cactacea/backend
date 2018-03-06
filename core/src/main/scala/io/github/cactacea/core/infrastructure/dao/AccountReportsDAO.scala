@@ -36,7 +36,7 @@ class AccountReportsDAO @Inject()(db: DatabaseService) {
         _.id          -> lift(id),
         _.accountId   -> lift(accountId),
         _.by          -> lift(by),
-        _.reportType  -> lift(reportType.toValue)
+        _.reportType  -> lift(reportType)
       )
     }
     run(q)

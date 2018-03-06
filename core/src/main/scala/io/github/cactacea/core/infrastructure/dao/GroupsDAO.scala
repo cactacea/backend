@@ -30,8 +30,8 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         _.id                -> lift(id),
         _.name              -> lift(name),
         _.invitationOnly  -> lift(true),
-        _.authorityType     -> lift(GroupAuthorityType.member.toValue),
-        _.privacyType       -> lift(GroupPrivacyType.everyone.toValue),
+        _.authorityType     -> lift(GroupAuthorityType.member),
+        _.privacyType       -> lift(GroupPrivacyType.everyone),
         _.directMessage   -> lift(true),
         _.accountCount      -> lift(0L),
         _.by                -> lift(by),
@@ -57,8 +57,8 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         _.id                  -> lift(id),
         _.name                -> lift(name),
         _.invitationOnly    -> lift(byInvitationOnly),
-        _.authorityType       -> lift(authority.toValue),
-        _.privacyType         -> lift(privacyType.toValue),
+        _.authorityType       -> lift(authority),
+        _.privacyType         -> lift(privacyType),
         _.directMessage     -> lift(false),
         _.accountCount        -> lift(accountCount),
         _.by                  -> lift(by),
@@ -86,8 +86,8 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         .update(
         _.name                -> lift(name),
         _.invitationOnly    -> lift(byInvitationOnly),
-        _.privacyType         -> lift(privacyType.toValue),
-        _.authorityType       -> lift(authority.toValue)
+        _.privacyType         -> lift(privacyType),
+        _.authorityType       -> lift(authority)
       )
     }
     run(r).map(_ == 1)
@@ -115,22 +115,19 @@ class GroupsDAO @Inject()(db: DatabaseService) {
     run(r).map(_ == 1)
   }
 
-  def findAll(name: Option[String], byInvitationOnly: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Groups]] = {
+  def findAll(name: Option[String], invitationOnly: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Groups]] = {
     val s = since.getOrElse(Long.MaxValue)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val n = name.fold("")(_ + "%")
-    val b = byInvitationOnly.getOrElse(false)
-    val i = byInvitationOnly.fold(0)(_ => 1)
-    val p = privacyType.fold(-1L)(_.toValue)
     val by = sessionId.toAccountId
     val q = quote {
       query[Groups]
         .filter(g => g.by != lift(by))
         .filter(g => g.directMessage == false)
-        .filter(g => (g.name.forall(_ like lift(n)))  || lift(n) == "")
-        .filter(g => g.invitationOnly == lift(b)    || lift(i) == 0)
-        .filter(g => g.privacyType == lift(p)         || lift(p) == -1)
+        .filter(g => (g.name.forall(_ like lift(n)))  || lift(name).isEmpty)
+        .filter(g => g.invitationOnly == lift(invitationOnly.getOrElse(false))    || lift(invitationOnly).isEmpty)
+        .filter(g => g.privacyType == lift(privacyType.getOrElse(GroupPrivacyType.everyone))         || lift(privacyType).isEmpty)
         .filter(g => query[Blocks]
           .filter(_.accountId    == g.by)
           .filter(_.by        == lift(by))

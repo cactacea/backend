@@ -24,7 +24,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
   private def insert(id: MessageId, groupId: GroupId, accountCount: Long, accountId: AccountId, messageType: MessageType, sessionId: SessionId): Future[Long] = {
     val by = sessionId.toAccountId
     val postedAt = System.nanoTime()
-    val mt = messageType.toValue
+    val mt = messageType
     val q = quote {
       query[Messages].insert(
         _.id                  -> lift(id),
@@ -51,9 +51,9 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
     val postedAt = System.nanoTime()
     val mt = if (message.isDefined) {
-      MessageType.text.toValue
+      MessageType.text
     } else {
-      MessageType.medium.toValue
+      MessageType.medium
     }
     val q = quote {
       query[Messages].insert(

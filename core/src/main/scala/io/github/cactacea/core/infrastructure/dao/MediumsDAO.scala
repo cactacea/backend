@@ -33,7 +33,7 @@ class MediumsDAO @Inject()(db: DatabaseService) {
         _.size          -> lift(size),
         _.by            -> lift(by),
         _.thumbnailUri  -> lift(thumbnailUri),
-        _.mediumType    -> lift(mediumType.toValue)
+        _.mediumType    -> lift(mediumType)
       )
     }
     run(q)

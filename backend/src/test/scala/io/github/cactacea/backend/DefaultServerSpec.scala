@@ -8,7 +8,7 @@ import io.github.cactacea.core.domain.enums.FeedPrivacyType
 
 import scala.util.parsing.json.JSON
 
-class BackendServerSpec extends ServerSpec {
+class DefaultServerSpec extends ServerSpec {
 
   test("sessions test") {
 

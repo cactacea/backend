@@ -53,7 +53,7 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
   private def _hasManagingAuthority(accountId: AccountId, g: Groups): Future[Boolean] = {
     if (accountId == g.by) {
       Future.True
-    } else if (g.authorityType == GroupAuthorityType.owner.toValue && g.by != accountId) {
+    } else if (g.authorityType == GroupAuthorityType.owner && g.by != accountId) {
       Future.value(false)
     } else {
       _exist(g.id, accountId)
@@ -66,13 +66,13 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
     val friend = r.fold(false)(_.friend)
     if (g.by.toSessionId == sessionId) {
       Future.True
-    } else if (g.privacyType == GroupPrivacyType.follows.toValue && followed) {
+    } else if (g.privacyType == GroupPrivacyType.follows && followed) {
       Future.True
-    } else if (g.privacyType == GroupPrivacyType.followers.toValue && follower) {
+    } else if (g.privacyType == GroupPrivacyType.followers && follower) {
       Future.True
-    } else if (g.privacyType == GroupPrivacyType.friends.toValue && friend) {
+    } else if (g.privacyType == GroupPrivacyType.friends && friend) {
       Future.True
-    } else if (g.privacyType == GroupPrivacyType.everyone.toValue) {
+    } else if (g.privacyType == GroupPrivacyType.everyone) {
       Future.True
     } else {
       Future.False

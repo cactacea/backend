@@ -28,7 +28,7 @@ class FeedReportsDAO @Inject()(db: DatabaseService) {
         _.id            -> lift(id),
         _.feedId        -> lift(feedId),
         _.by            -> lift(by),
-        _.reportType    -> lift(reportType.toValue)
+        _.reportType    -> lift(reportType)
       )
     }
     run(q)

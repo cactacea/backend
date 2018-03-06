@@ -25,7 +25,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   }
 
   private def insert(id: AccountId, accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String]): Future[Long] = {
-    val accountStatus = AccountStatusType.singedUp.toValue
+    val accountStatus = AccountStatusType.singedUp
     val hashedPassword = createHashedPassword(password)
     val position = System.nanoTime()
     val q = quote {
@@ -122,7 +122,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   def exist(accountId: AccountId, sessionId: SessionId, ignoreBlockedUser: Boolean = true): Future[Boolean] = {
     if (ignoreBlockedUser) {
       val by = sessionId.toAccountId
-      val status = AccountStatusType.singedUp.toValue
+      val status = AccountStatusType.singedUp
       val q = quote {
         query[Accounts]
           .filter(_.id == lift(accountId))
@@ -136,7 +136,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
       }
       run(q).map(_ == 1)
     } else {
-      val status = AccountStatusType.singedUp.toValue
+      val status = AccountStatusType.singedUp
       val q = quote {
         query[Accounts]
           .filter(_.id == lift(accountId))
@@ -150,7 +150,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   def exist(accountIds: List[AccountId], sessionId: SessionId): Future[Boolean] = {
 
     val by = sessionId.toAccountId
-    val status = AccountStatusType.singedUp.toValue
+    val status = AccountStatusType.singedUp
     val q = quote {
       query[Accounts]
         .filter(u => liftQuery(accountIds).contains(u.id))
@@ -172,10 +172,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
         .filter(_.id == lift(accountId))
         .map(a => (a.accountStatus, a.signedOutAt))
     }
-    run(q).map(_.headOption.map(t => {
-      val accountStatus = AccountStatusType.forName(t._1)
-      (accountStatus, t._2)
-    }))
+    run(q).map(_.headOption)
   }
 
   def find(sessionId: SessionId): Future[Option[Accounts]] = {
@@ -200,7 +197,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   def find(accountId: AccountId, sessionId: SessionId): Future[Option[(Accounts, Option[Relationships])]] = {
 
     val by = sessionId.toAccountId
-    val status = AccountStatusType.singedUp.toValue
+    val status = AccountStatusType.singedUp
     val q = quote {
       for {
         a <- query[Accounts]
@@ -246,7 +243,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
     val o = offset.getOrElse(0)
 
     val un = displayName.fold("") { _ + "%" }
-    val status = AccountStatusType.singedUp.toValue
+    val status = AccountStatusType.singedUp
 
     val q2 = quote {
       query[Accounts].filter({a => a.id != lift(by) && ((a.accountName like lift(un)) || (a.displayName like lift(un)) || (lift(un) == "")) &&
