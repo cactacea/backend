@@ -37,4 +37,11 @@ class S3HttpClient {
     }
   }
 
+  def delete(key: String): Future[Boolean] = {
+    FuturePool.unboundedPool {
+      Bucket(bucketName).get(key).foreach(s3.delete(_))
+      true
+    }
+  }
+
 }
