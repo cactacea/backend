@@ -1,13 +1,13 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 
-lazy val backendLauncher = (project in file("exmaples/backend"))
+lazy val demo = (project in file("demo"))
   .settings(
-    organization := "io.github.cactacea.exmaples.backend",
-    name := "backend",
+    organization := "io.github.cactacea.backend",
+    name := "demo",
     scalaVersion := "2.12.4",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    mainClass in (Compile, run) := Some("io.github.cactacea.exmaples.backend.BackendServerApp")
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.BackendServerApp")
   )
   .settings(
     version in Docker := "latest",
@@ -26,8 +26,7 @@ lazy val backend = (project in file("backend"))
       name := "backend",
       scalaVersion := "2.12.4",
       concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-      testOptions in Test += Tests.Argument("-oI"),
-      mainClass in (Compile, run) := Some("io.github.cactacea.backend.server.DefaultServerApp")
+      testOptions in Test += Tests.Argument("-oI")
   )
   .dependsOn(core)
   .settings(backendLibrarySetting)
@@ -47,7 +46,7 @@ lazy val core = (project in file("core"))
   .dependsOn(util)
 
 lazy val coreSetting = Seq(
-    organization := "jp.github.cactacea.core",
+    organization := "io.github.cactacea.core",
     scalaVersion := "2.12.4",
     name := "core",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
@@ -125,9 +124,9 @@ lazy val util = (project in file("util"))
   .settings(utilLibrarySetting)
 
 lazy val utilSetting = Seq(
-  organization := "jp.github.cactacea.util",
+  organization := "io.github.cactacea.util",
   scalaVersion := "2.12.4",
-  name := "core",
+  name := "util",
   concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
   testOptions in Test += Tests.Argument("-oI")
 )

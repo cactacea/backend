@@ -1,4 +1,4 @@
-package io.github.cactacea.exmaples.backend
+package io.github.cactacea.backend
 
 import io.github.cactacea.backend.DefaultServer
 import io.github.cactacea.core.application.components.modules._

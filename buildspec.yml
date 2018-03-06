@@ -25,7 +25,7 @@ phases:
   build:
     commands:
       - sbt compile
-      - sbt backendLauncher/docker:publish
+      - sbt demo/docker:publish
   post_build:
     commands:
       - echo Build completed on `date`

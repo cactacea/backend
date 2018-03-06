@@ -1,3 +1,3 @@
-package io.github.cactacea.exmaples.backend
+package io.github.cactacea.backend
 
 object BackendServerApp extends BackendServer
