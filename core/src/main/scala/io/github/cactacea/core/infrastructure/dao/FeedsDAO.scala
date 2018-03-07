@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
-import io.github.cactacea.core.domain.enums.{AccountStatusType, FeedPrivacyType}
+import io.github.cactacea.core.domain.enums.{AccountStatusType, ContentStatusType, FeedPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
 
@@ -44,6 +44,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         _.commentCount        -> 0L,
         _.privacyType         -> lift(privacy),
         _.contentWarning      -> lift(contentWarning),
+        _.contentStatus       -> lift(ContentStatusType.unchecked),
         _.notified            -> false,
         _.postedAt            -> lift(postedAt)
       )

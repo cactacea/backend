@@ -39,9 +39,9 @@ class FriendRequestsRepository {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
-    friendRequestsDAO.findAll(since, offset, count, received, sessionId).map(_.map(t =>
-      FriendRequest(t._1, t._2, t._3)
-    ))
+    friendRequestsDAO.findAll(since, offset, count, received, sessionId).map(_.map({ case (f, a, r) =>
+      FriendRequest(f, a, r)
+    }))
   }
 
   def accept(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {

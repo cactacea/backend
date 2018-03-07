@@ -154,10 +154,10 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val userGroup3 = accountGroups(2)
     val userGroup4 = accountGroups(3)
 
-    assert((userGroup1.accountId, userGroup1.groupId, userGroup1.hidden, userGroup1.toAccountId, userGroup1.unreadCount) == (account1.id, groupId, true, userGroup1.accountId, 0))
-    assert((userGroup2.accountId, userGroup2.groupId, userGroup2.hidden, userGroup2.toAccountId, userGroup2.unreadCount) == (account2.id, groupId, false, userGroup2.accountId, 0))
-    assert((userGroup3.accountId, userGroup3.groupId, userGroup3.hidden, userGroup3.toAccountId, userGroup3.unreadCount) == (account3.id, groupId, true, userGroup3.accountId, 0))
-    assert((userGroup4.accountId, userGroup4.groupId, userGroup4.hidden, userGroup4.toAccountId, userGroup4.unreadCount) == (account4.id, groupId, false, userGroup4.accountId, 0))
+    assert((userGroup1.accountId, userGroup1.groupId, userGroup1.hidden, userGroup1.toAccountId, userGroup1.unreadCount) == (account1.id, groupId, true,  account1.id, 0))
+    assert((userGroup2.accountId, userGroup2.groupId, userGroup2.hidden, userGroup2.toAccountId, userGroup2.unreadCount) == (account2.id, groupId, false, account2.id, 0))
+    assert((userGroup3.accountId, userGroup3.groupId, userGroup3.hidden, userGroup3.toAccountId, userGroup3.unreadCount) == (account3.id, groupId, true,  account3.id, 0))
+    assert((userGroup4.accountId, userGroup4.groupId, userGroup4.hidden, userGroup4.toAccountId, userGroup4.unreadCount) == (account4.id, groupId, false, account4.id, 0))
 
   }
 

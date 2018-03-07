@@ -12,9 +12,9 @@ class TimelineRepository {
   @Inject private var timelineDAO: TimeLineDAO = _
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[TimelineFeed]] = {
-    timelineDAO.findAll(since, offset, count, sessionId).map(_.map(t =>
-      TimelineFeed(t._1, t._2, t._3, t._4, t._5, t._6)
-    ))
+    timelineDAO.findAll(since, offset, count, sessionId).map(_.map({ case (tm, tt, ttg, i, a, r) =>
+      TimelineFeed(tm, tt, ttg, i, a, r)
+    }))
   }
 
 

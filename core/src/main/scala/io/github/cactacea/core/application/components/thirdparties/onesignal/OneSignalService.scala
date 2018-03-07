@@ -1,7 +1,8 @@
 package io.github.cactacea.core.application.components.thirdparties.onesignal
 
+import java.util.Locale
+
 import com.google.inject.Inject
-import com.osinka.i18n.Lang
 import com.twitter.util.{Future, Return, Throw}
 import io.github.cactacea.core.application.components.interfaces.{NotificationMessagesService, PushNotificationService}
 import io.github.cactacea.core.domain.models.PushNotification
@@ -19,8 +20,8 @@ class OneSignalService extends PushNotificationService {
         val displayName = fanOut.displayName
         val accountIds = fanOut.tokens.map(_._1)
         val message = fanOut.message.getOrElse("")
-        val en = messageService.get(fanOut.pushNotificationType, Lang("en"), displayName, message)
-        val jp = messageService.get(fanOut.pushNotificationType, Lang("en"), displayName, message)
+        val en = messageService.getPushNotification(fanOut.pushNotificationType, Seq(Locale.US), displayName, message)
+        val jp = messageService.getPushNotification(fanOut.pushNotificationType, Seq(Locale.JAPAN), displayName, message)
         val notification = OneSignalNotification(client.appId, tokens, en, jp)
         (notification, accountIds)
       })

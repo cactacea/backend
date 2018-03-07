@@ -1,6 +1,6 @@
 package io.github.cactacea.core.helpers
 
-import io.github.cactacea.core.domain.enums.{AccountStatusType, MediumType}
+import io.github.cactacea.core.domain.enums.{AccountStatusType, ContentStatusType, MediumType}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Mediums}
 
@@ -17,7 +17,8 @@ object FactoryHelper {
       Some("http://127.0.0.1/resource/thumnail_image.jpg"),
       MediumType.image,
       accountId,
-      false
+      false,
+      ContentStatusType.unchecked
     )
   }
 

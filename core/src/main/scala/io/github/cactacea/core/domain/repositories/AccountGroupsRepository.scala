@@ -24,12 +24,12 @@ class AccountGroupsRepository {
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Group]] = {
     accountGroupsDAO.findAll(accountId, since, offset, count, false, sessionId)
-      .map(l => l.map(t => Group(t._1, t._2, t._3, t._4, t._5)))
+      .map(l => l.map({ case (g, m, am, a, r) => Group(g, m, am, a, r)}))
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
     accountGroupsDAO.findAll(sessionId.toAccountId, since, offset, count, hidden, sessionId)
-      .map(l => l.map(t => Group(t._1, t._2, t._3, t._4, t._5)))
+      .map(l => l.map({ case (g, m, am, a, r) => Group(g, m, am, a, r)}))
   }
 
   def findOrCreate(accountId: AccountId, sessionId: SessionId): Future[Group] = {

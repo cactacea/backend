@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
-import io.github.cactacea.core.domain.enums.MediumType
+import io.github.cactacea.core.domain.enums.{ContentStatusType, MediumType}
 import io.github.cactacea.core.infrastructure.identifiers.{MediumId, SessionId}
 import io.github.cactacea.core.infrastructure.models.Mediums
 
@@ -35,7 +35,8 @@ class MediumsDAO @Inject()(db: DatabaseService) {
         _.by              -> lift(by),
         _.thumbnailUri    -> lift(thumbnailUri),
         _.mediumType      -> lift(mediumType),
-        _.contentWarning  -> false
+        _.contentWarning  -> false,
+        _.contentStatus   -> lift(ContentStatusType.unchecked)
       )
     }
     run(q)

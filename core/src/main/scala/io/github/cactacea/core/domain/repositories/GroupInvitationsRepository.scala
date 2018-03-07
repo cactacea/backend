@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.{GroupInvitationStatusType, MessageType, NotificationType}
 import io.github.cactacea.core.domain.models.GroupInvitation
 import io.github.cactacea.core.infrastructure.dao._
@@ -42,9 +41,9 @@ class GroupInvitationsRepository {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[GroupInvitation]] = {
-    groupInvitationsDAO.findAll(since, offset, count, sessionId).map(_.map(t =>
-      GroupInvitation(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8)
-    ))
+    groupInvitationsDAO.findAll(since, offset, count, sessionId).map(_.map({ case (gi, a1, r1, g, m, um, a2, r2) =>
+      GroupInvitation(gi, a1, r1, g, m, um, a2, r2)
+    }))
   }
 
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {

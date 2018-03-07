@@ -23,7 +23,7 @@ class GroupAccountsRepository {
     for {
       g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.hasJoinAuthority(g, sessionId)
-      r <- groupAccountsDAO.findAll(groupId, since, offset, count, sessionId).map(_.map(t => Account(t._1, t._2, t._3)))
+      r <- groupAccountsDAO.findAll(groupId, since, offset, count, sessionId).map(_.map({ case (a, r, ag) => Account(a, r, ag)}))
     } yield (r)
   }
 

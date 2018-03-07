@@ -1,6 +1,6 @@
 package io.github.cactacea.core.domain.models
 
-import io.github.cactacea.core.domain.enums.MessageType
+import io.github.cactacea.core.domain.enums.{ContentStatusType, MessageType}
 import io.github.cactacea.core.infrastructure.identifiers.MessageId
 import io.github.cactacea.core.infrastructure.models._
 
@@ -15,32 +15,54 @@ case class Message(
                     accountCount: Long,
                     readAccountCount: Long,
                     contentWarning: Boolean,
+                    contentDeleted: Boolean,
                     postedAt: Long
                   )
 
 object Message {
 
   def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships]): Message = {
-    apply(m, am, i, a, r, None, None)
+    _apply(m, am, i, a, r, None, None)
   }
 
-  def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], a2: Option[Accounts], r2: Option[Relationships]): Message = {
-    val images = i.map(Medium(_))
-    val by = Account(a, r)
-    val account = a2.map(Account(_, r2))
-    Message(
-      id                = m.id,
-      messageType       = m.messageType,
-      message           = m.message,
-      medium            = images,
-      by                = by,
-      account           = account,
-      unread            = am.unread,
-      accountCount      = m.accountCount,
-      readAccountCount  = m.readAccountCount,
-      contentWarning    = m.contentWarning,
-      postedAt          = m.postedAt
-    )
+  private def _apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], a2: Option[Accounts], r2: Option[Relationships]): Message = {
+    m.contentStatus match {
+      case ContentStatusType.rejected =>
+        val by = Account(a, r)
+        val account = a2.map(Account(_, r2))
+        Message(
+          id                = m.id,
+          messageType       = m.messageType,
+          message           = None,
+          medium            = None,
+          by                = by,
+          account           = account,
+          unread            = false,
+          accountCount      = 0L,
+          readAccountCount  = 0L,
+          contentWarning    = false,
+          contentDeleted   = true,
+          postedAt          = m.postedAt
+        )
+      case _ =>
+        val images = i.map(Medium(_))
+        val by = Account(a, r)
+        val account = a2.map(Account(_, r2))
+        Message(
+          id                = m.id,
+          messageType       = m.messageType,
+          message           = m.message,
+          medium            = images,
+          by                = by,
+          account           = account,
+          unread            = am.unread,
+          accountCount      = m.accountCount,
+          readAccountCount  = m.readAccountCount,
+          contentWarning    = m.contentWarning,
+          contentDeleted   = false,
+          postedAt          = m.postedAt
+        )
+    }
   }
 
 
