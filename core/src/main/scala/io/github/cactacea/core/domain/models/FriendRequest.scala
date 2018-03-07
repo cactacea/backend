@@ -14,8 +14,8 @@ case class FriendRequest (
 
 object FriendRequest {
 
-  def apply(f: FriendRequests, u: Accounts, r: Option[Relationships]): FriendRequest = {
-    val account = Account(u, r)
+  def apply(f: FriendRequests, a: Accounts, r: Option[Relationships]): FriendRequest = {
+    val account = Account(a, r)
     FriendRequest(
       id            = f.id,
       account          = account,

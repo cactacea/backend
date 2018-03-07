@@ -26,8 +26,8 @@ case class Account(id: AccountId,
 
 object Account {
 
-  def apply(u: Accounts, r: Option[Relationships]): Account = {
-    apply(u, r, None)
+  def apply(a: Accounts, r: Option[Relationships]): Account = {
+    apply(a, r, None)
   }
 
   def apply(a: Accounts, r: Option[Relationships], ag: AccountGroups): Account = {

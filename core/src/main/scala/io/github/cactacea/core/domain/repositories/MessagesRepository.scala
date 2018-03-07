@@ -54,10 +54,10 @@ class MessagesRepository {
     } yield (Unit)).flatMap(_ =>
       if (ascending) {
         accountMessagesDAO.findOlder(groupId, since, offset, count, sessionId)
-          .map(l => l.map(t => Message(t._1, t._2, t._3, t._4, t._5)))
+          .map(l => l.map({ case (m, am, i, a, r) => Message(m, am, i, a, r)}))
       } else {
         accountMessagesDAO.findEarlier(groupId, since, offset, count, sessionId)
-          .map(l => l.map(t => Message(t._1, t._2, t._3, t._4, t._5)))
+          .map(l => l.map({ case (m, am, i, a, r) => Message(m, am, i, a, r)}))
       }
     )
   }

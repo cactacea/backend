@@ -7,7 +7,7 @@ import io.github.cactacea.core.infrastructure.dao.{FeedFavoritesDAO, ValidationD
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
 
 @Singleton
-class FeedFavoritesRepository  {
+class FeedFavoritesRepository {
 
   @Inject private var feedFavoritesDAO: FeedFavoritesDAO = _
   @Inject private var validationDAO: ValidationDAO = _

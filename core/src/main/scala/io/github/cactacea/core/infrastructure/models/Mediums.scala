@@ -1,6 +1,6 @@
 package io.github.cactacea.core.infrastructure.models
 
-import io.github.cactacea.core.domain.enums.MediumType
+import io.github.cactacea.core.domain.enums.{ContentStatusType, MediumType}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId}
 
 case class Mediums(
@@ -13,5 +13,6 @@ case class Mediums(
                     thumbnailUri: Option[String],
                     mediumType: MediumType,
                     by: AccountId,
-                    contentWarning: Boolean
+                    contentWarning: Boolean,
+                    contentStatus: ContentStatusType
                   )

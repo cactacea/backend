@@ -1,5 +1,7 @@
 package io.github.cactacea.core.application.components.services
 
+import java.util.Locale
+
 import com.google.inject.Singleton
 import com.osinka.i18n.{Lang, Messages}
 import io.github.cactacea.core.application.components.interfaces.NotificationMessagesService
@@ -8,7 +10,12 @@ import io.github.cactacea.core.domain.enums.PushNotificationType
 @Singleton
 class DefaultNotificationMessagesService extends NotificationMessagesService {
 
-  def get(pushNotificationType: PushNotificationType, lang: Lang, args : Any*): String = {
+  private def validLanguage(locales: Seq[Locale]): Lang = {
+    val language = locales.filter(l => l == Locale.US || l == Locale.JAPAN).headOption.getOrElse(Locale.US)
+    Lang(language)
+  }
+
+  def getPushNotification(pushNotificationType: PushNotificationType, locales: Seq[Locale], args : Any*): String = {
     val message = pushNotificationType match {
       case PushNotificationType.`message` => "send_message"
       case PushNotificationType.`noDisplayedMessage` => "send_no_displayed_message"
@@ -18,6 +25,7 @@ class DefaultNotificationMessagesService extends NotificationMessagesService {
       case PushNotificationType.`feed` => "post_feed"
       case PushNotificationType.`comment` => "post_comment"
     }
+    val lang = validLanguage(locales)
     Messages(message)(lang).format(args)
   }
 

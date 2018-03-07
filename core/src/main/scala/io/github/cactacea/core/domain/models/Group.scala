@@ -21,8 +21,8 @@ object Group {
     apply(g, None, None, None, None, None)
   }
 
-  def apply(g: Groups, m: Option[Messages], um: Option[AccountMessages], u: Option[Accounts], r: Option[Relationships]): Group = {
-    apply(g, m, um, None, u, r)
+  def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], a: Option[Accounts], r: Option[Relationships]): Group = {
+    apply(g, m, am, None, a, r)
   }
 
   def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], i: Option[Mediums], a: Option[Accounts], r: Option[Relationships]): Group = {

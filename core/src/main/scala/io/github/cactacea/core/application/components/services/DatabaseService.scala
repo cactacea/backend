@@ -38,6 +38,8 @@ class DatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy
   implicit val PushNotificationTypeEncode: MappedEncoding[Long, PushNotificationType] = MappedEncoding[Long, PushNotificationType] (long => PushNotificationType.forName(long))
   implicit val ReportTypeDecode: MappedEncoding[ReportType, Long] = MappedEncoding[ReportType, Long] (enumValue => enumValue.toValue)
   implicit val ReportTypeEncode: MappedEncoding[Long, ReportType] = MappedEncoding[Long, ReportType] (long => ReportType.forName(long))
+  implicit val ContentStatusTypeDecode: MappedEncoding[ContentStatusType, Long] = MappedEncoding[ContentStatusType, Long] (enumValue => enumValue.toValue)
+  implicit val ContentStatusTypeEncode: MappedEncoding[Long, ContentStatusType] = MappedEncoding[Long, ContentStatusType] (long => ContentStatusType.forName(long))
 
   implicit class TimestampQuotes(left: Timestamp) {
     def >(right: Timestamp): Quoted[Boolean] = quote(infix"$left > $right".as[Boolean])

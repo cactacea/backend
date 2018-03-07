@@ -14,9 +14,9 @@ case class GroupInvitation(
 
 object GroupInvitation {
 
-  def apply(gi: GroupInvitations, u1: Accounts, r1: Option[Relationships], g: Groups, m: Option[Messages], um: Option[AccountMessages], u2: Option[Accounts], r2: Option[Relationships]): GroupInvitation = {
-    val by = Account(u1, r1)
-    val group = Group(g, m, um, u2, r2)
+  def apply(gi: GroupInvitations, a1: Accounts, r1: Option[Relationships], g: Groups, m: Option[Messages], um: Option[AccountMessages], a2: Option[Accounts], r2: Option[Relationships]): GroupInvitation = {
+    val by = Account(a1, r1)
+    val group = Group(g, m, um, a2, r2)
     GroupInvitation(
       id            = gi.id,
       group         = group,
@@ -27,4 +27,5 @@ object GroupInvitation {
   }
 
 }
+
 

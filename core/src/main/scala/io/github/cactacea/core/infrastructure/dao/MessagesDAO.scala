@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
-import io.github.cactacea.core.domain.enums.MessageType
+import io.github.cactacea.core.domain.enums.{ContentStatusType, MessageType}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
 
@@ -35,6 +35,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.accountCount        -> lift(accountCount),
         _.readAccountCount    -> 0L,
         _.contentWarning      -> false,
+        _.contentStatus       -> lift(ContentStatusType.unchecked),
         _.notified            -> false,
         _.postedAt            -> lift(postedAt)
       )
@@ -68,6 +69,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.readAccountCount    -> 0L,
         _.mediumId            -> lift(mediumId),
         _.contentWarning      -> false,
+        _.contentStatus       -> lift(ContentStatusType.unchecked),
         _.notified            -> false,
         _.postedAt            -> lift(postedAt)
       )

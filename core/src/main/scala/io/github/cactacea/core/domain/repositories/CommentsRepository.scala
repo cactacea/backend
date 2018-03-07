@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.models.Comment
 import io.github.cactacea.core.infrastructure.dao.{CommentsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
@@ -18,7 +17,7 @@ class CommentsRepository {
   def findAll(feedId: FeedId, since: Option[Long], count: Option[Int], sessionId: SessionId): Future[List[Comment]] = {
     for {
       _ <- validationDAO.existFeed(feedId, sessionId)
-      r <- commentsDAO.findAll(feedId, since, count, sessionId).map(_.map(t => Comment(t._1, t._2, t._3)))
+      r <- commentsDAO.findAll(feedId, since, count, sessionId).map(_.map({ case (c, a, r) => Comment(c, a, r)}))
     } yield (r)
   }
 
