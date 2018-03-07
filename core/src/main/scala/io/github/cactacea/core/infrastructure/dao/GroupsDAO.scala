@@ -30,11 +30,11 @@ class GroupsDAO @Inject()(db: DatabaseService) {
       query[Groups].insert(
         _.id                -> lift(id),
         _.name              -> lift(name),
-        _.invitationOnly  -> lift(true),
+        _.invitationOnly  -> true,
         _.authorityType     -> lift(GroupAuthorityType.member),
         _.privacyType       -> lift(GroupPrivacyType.everyone),
-        _.directMessage   -> lift(true),
-        _.accountCount      -> lift(0L),
+        _.directMessage   -> true,
+        _.accountCount      -> 0L,
         _.by                -> lift(by),
         _.organizedAt       -> lift(organizedAt)
       )
@@ -60,7 +60,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         _.invitationOnly    -> lift(byInvitationOnly),
         _.authorityType       -> lift(authority),
         _.privacyType         -> lift(privacyType),
-        _.directMessage     -> lift(false),
+        _.directMessage     -> false,
         _.accountCount        -> lift(accountCount),
         _.by                  -> lift(by),
         _.organizedAt         -> lift(organizedAt)
@@ -132,7 +132,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         .filter(g => query[Blocks]
           .filter(_.accountId    == g.by)
           .filter(_.by        == lift(by))
-          .filter(b => b.blocked == lift(true) || b.beingBlocked == lift(true))
+          .filter(b => b.blocked == true || b.beingBlocked == true)
           .isEmpty)
         .filter(_.organizedAt < lift(s))
         .sortBy(_.organizedAt)(Ord.descNullsLast)
@@ -160,7 +160,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         .filter(g => query[Blocks]
           .filter(_.accountId    == g.by)
           .filter(_.by        == lift(by))
-          .filter(b => b.blocked == lift(true) || b.beingBlocked == lift(true))
+          .filter(b => b.blocked == true || b.beingBlocked == true)
           .isEmpty)
     }
     run(q).map(_.headOption)

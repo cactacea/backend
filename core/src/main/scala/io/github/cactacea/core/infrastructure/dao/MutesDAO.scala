@@ -32,7 +32,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId          -> lift(accountId),
           _.by              -> lift(by),
-          _.muted           -> lift(true),
+          _.muted           -> true,
           _.mutedAt         -> lift(mutedAt)
         )
     }
@@ -47,7 +47,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.muted           -> lift(true),
+          _.muted           -> true,
           _.mutedAt         -> lift(mutedAt)
         )
     }
@@ -61,7 +61,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.muted           -> lift(false)
+          _.muted           -> false
         )
     }
     run(q).map(_ == 1)
@@ -73,7 +73,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
-        .filter(_.muted     == lift(true))
+        .filter(_.muted     == true)
         .size
     }
     run(q).map(_ == 1)

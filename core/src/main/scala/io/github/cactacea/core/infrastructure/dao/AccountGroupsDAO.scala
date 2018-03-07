@@ -43,11 +43,11 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId           -> lift(accountId),
           _.groupId             -> lift(groupId),
-          _.unreadCount         -> lift(0L),
+          _.unreadCount         -> 0L,
           _.joinedAt            -> lift(joinedAt),
           _.toAccountId         -> lift(toAccountId),
-          _.hidden              -> lift(false),
-          _.muted               -> lift(false)
+          _.hidden              -> false,
+          _.muted               -> false
         )
     }
     run(q).map(_ == 1)
@@ -68,7 +68,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
       query[AccountGroups]
         .filter(_.groupId == lift(groupId))
         .update(
-          ug => ug.hidden       -> lift(false),
+          ug => ug.hidden       -> false,
           ug => ug.unreadCount  -> (ug.unreadCount + lift(1))
         )
     }

@@ -15,7 +15,8 @@ class BackendServer extends DefaultServer {
     DefaultPushNotificationModule,
     S3ServiceModule,
     DefaultSubScribeModule,
-    DefaultTranscodeModule
+    DefaultTranscodeModule,
+    DefaultIdentifyModule
   )
 
 }

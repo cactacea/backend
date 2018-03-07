@@ -26,15 +26,16 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
     val q = quote {
       query[Mediums].insert(
-        _.id            -> lift(id),
-        _.key           -> lift(key),
-        _.uri           -> lift(uri),
-        _.width         -> lift(width),
-        _.height        -> lift(height),
-        _.size          -> lift(size),
-        _.by            -> lift(by),
-        _.thumbnailUri  -> lift(thumbnailUri),
-        _.mediumType    -> lift(mediumType)
+        _.id              -> lift(id),
+        _.key             -> lift(key),
+        _.uri             -> lift(uri),
+        _.width           -> lift(width),
+        _.height          -> lift(height),
+        _.size            -> lift(size),
+        _.by              -> lift(by),
+        _.thumbnailUri    -> lift(thumbnailUri),
+        _.mediumType      -> lift(mediumType),
+        _.contentWarning  -> false
       )
     }
     run(q)

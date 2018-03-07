@@ -8,6 +8,7 @@ case class Comments(
                      feedId: FeedId,
                      favoriteCount: Long,
                      by: AccountId,
+                     contentWarning: Boolean,
                      notified: Boolean,
                      postedAt: Long
                   )

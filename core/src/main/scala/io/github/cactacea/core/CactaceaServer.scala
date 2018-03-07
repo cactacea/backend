@@ -4,6 +4,7 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
+import com.twitter.inject.TwitterModule
 import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.core.util.warmups.DatabaseWarmupHandler
@@ -17,7 +18,8 @@ class CactaceaServer extends HttpServer {
 
   protected  val databaseModule = DatabaseProviderModule
 
-  def customModules = Seq(
+  def customModules: Seq[TwitterModule] = Seq(
+      DefaultIdentifyModule,
       DefaultSocialAccountsModule,
       DefaultInjectionModule,
       DefaultConfigModule,
@@ -27,8 +29,7 @@ class CactaceaServer extends HttpServer {
       DefaultPushNotificationModule,
       DefaultStorageModule,
       DefaultSubScribeModule,
-      DefaultTranscodeModule,
-      DefaultIdentifyModule
+      DefaultTranscodeModule
   )
 
   addFrameworkModules(customModules:_*)

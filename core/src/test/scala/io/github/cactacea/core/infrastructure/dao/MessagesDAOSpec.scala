@@ -23,6 +23,10 @@ class MessagesDAOSpec extends DAOSpec {
     assert(result.size == 1)
     val message = result(0)
     assert(message.id == messageId)
+    assert(message.message == Some("new message"))
+    assert(message.accountCount == 1L)
+    assert(message.contentWarning == false)
+    assert(message.notified == false)
 
     val mediumId2 = Await.result(mediumsDAO.create("key1", "http://example.com/test1.jpeg", Some("http://example.com/test1.jpeg"), MediumType.image, 1, 4, 100L, sessionAccount.id.toSessionId))
     Await.result(messagesDAO.create(groupId, None, 1, Some(mediumId2), sessionAccount.id.toSessionId))

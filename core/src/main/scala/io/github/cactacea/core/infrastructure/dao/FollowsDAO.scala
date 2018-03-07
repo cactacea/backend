@@ -62,7 +62,7 @@ class FollowsDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
-          _.followed        -> lift(true),
+          _.followed        -> true,
           _.followedAt      -> lift(followedAt)
         )
     }
@@ -77,7 +77,7 @@ class FollowsDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.followed        -> lift(true),
+          _.followed        -> true,
           _.followedAt      -> lift(followedAt)
         )
     }
@@ -91,7 +91,7 @@ class FollowsDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.followed          -> lift(false)
+          _.followed          -> false
         )
     }
     run(q).map(_ == 1)
@@ -103,7 +103,7 @@ class FollowsDAO @Inject()(db: DatabaseService) {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))
         .filter(_.by           == lift(by))
-        .filter(_.followed     == lift(true))
+        .filter(_.followed     == true)
         .size
     }
     run(q).map(_ == 1)
