@@ -15,7 +15,7 @@ case class Message(
                     accountCount: Long,
                     readAccountCount: Long,
                     contentWarning: Boolean,
-                    contentRejected: Boolean,
+                    contentDeleted: Boolean,
                     postedAt: Long
                   )
 
@@ -41,7 +41,7 @@ object Message {
           accountCount      = 0L,
           readAccountCount  = 0L,
           contentWarning    = false,
-          contentRejected   = true,
+          contentDeleted   = true,
           postedAt          = m.postedAt
         )
       case _ =>
@@ -59,7 +59,7 @@ object Message {
           accountCount      = m.accountCount,
           readAccountCount  = m.readAccountCount,
           contentWarning    = m.contentWarning,
-          contentRejected   = false,
+          contentDeleted   = false,
           postedAt          = m.postedAt
         )
     }

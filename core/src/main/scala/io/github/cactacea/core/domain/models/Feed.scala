@@ -15,7 +15,7 @@ case class Feed(
                  favoriteCount: Long,
                  commentCount: Long,
                  contentWarning: Boolean,
-                 contentRejected: Boolean,
+                 contentDeleted: Boolean,
                  postedAt: Long
                  )
 
@@ -47,7 +47,7 @@ object Feed {
           favoriteCount   = 0L,
           commentCount    = 0L,
           contentWarning  = false,
-          contentRejected = true,
+          contentDeleted = true,
           postedAt        = f.postedAt
         )
       }
@@ -64,7 +64,7 @@ object Feed {
           favoriteCount   = f.favoriteCount,
           commentCount    = f.commentCount,
           contentWarning  = f.contentWarning,
-          contentRejected = false,
+          contentDeleted = false,
           postedAt        = f.postedAt
         )
       }

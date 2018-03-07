@@ -10,7 +10,7 @@ case class Comment(
                     account: Account,
                     favoriteCount: Long,
                     contentWarning: Boolean,
-                    contentRejected: Boolean,
+                    contentDeleted: Boolean,
                     postedAt: Long)
 
 object Comment {
@@ -25,7 +25,7 @@ object Comment {
           account         = account,
           favoriteCount   = 0L,
           contentWarning  = false,
-          contentRejected = true,
+          contentDeleted = true,
           postedAt        = c.postedAt
         )
       case _ => {
@@ -35,7 +35,7 @@ object Comment {
           account         = account,
           favoriteCount   = c.favoriteCount,
           contentWarning  = c.contentWarning,
-          contentRejected = false,
+          contentDeleted = false,
           postedAt        = c.postedAt
         )
       }
