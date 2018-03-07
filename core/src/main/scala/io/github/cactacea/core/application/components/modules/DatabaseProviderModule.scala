@@ -1,8 +1,9 @@
-package io.github.cactacea.core.infrastructure.services
+package io.github.cactacea.core.application.components.modules
 
 import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.TwitterModule
 import com.typesafe.config.ConfigFactory
+import io.github.cactacea.core.application.components.services.DatabaseService
 
 object DatabaseProviderModule extends TwitterModule {
 

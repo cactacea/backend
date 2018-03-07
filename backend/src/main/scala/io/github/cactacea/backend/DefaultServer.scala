@@ -2,7 +2,7 @@ package io.github.cactacea.backend
 
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
-import io.github.cactacea.core.application.components.CactaceaServer
+import io.github.cactacea.core.CactaceaServer
 import io.github.cactacea.core.util.filters._
 
 class DefaultServer extends CactaceaServer {

@@ -3,11 +3,11 @@ package io.github.cactacea.core.application.services
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.InjectionService
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, ReportType}
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.domain.repositories._
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, SessionId}
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class GroupsService {

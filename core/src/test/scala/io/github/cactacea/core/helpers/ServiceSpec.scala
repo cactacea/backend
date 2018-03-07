@@ -8,7 +8,6 @@ import com.twitter.util.Await
 import com.twitter.util.logging.Logging
 import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.application.services.SessionsService
-import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import org.scalatest.BeforeAndAfter
 
 class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {

@@ -1,11 +1,10 @@
-package io.github.cactacea.core.application.components
+package io.github.cactacea.core
 
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.core.application.components.modules._
-import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import io.github.cactacea.core.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.core.util.warmups.DatabaseWarmupHandler
 

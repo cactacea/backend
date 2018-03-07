@@ -1,6 +1,5 @@
 package io.github.cactacea.backend
 
-import io.github.cactacea.backend.DefaultServer
 import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.application.components.thirdparties.s3.S3ServiceModule
 

@@ -3,11 +3,11 @@ package io.github.cactacea.core.application.services
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{InjectionService, PublishService}
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.enums.ReportType
 import io.github.cactacea.core.domain.models.Comment
 import io.github.cactacea.core.domain.repositories.{CommentsRepository, ReportsRepository}
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class CommentsService {

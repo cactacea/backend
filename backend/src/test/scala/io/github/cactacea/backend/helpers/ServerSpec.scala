@@ -10,7 +10,6 @@ import io.github.cactacea.backend.DefaultServer
 import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.components.modules.{DefaultConfigModule, _}
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 
 import scala.util.parsing.json.{JSONArray, JSONObject}
 

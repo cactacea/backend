@@ -3,10 +3,10 @@ package io.github.cactacea.core.application.services
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{InjectionService, SocialAccountsService}
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.models.{AdvertisementSetting, PushNotificationSetting, SocialAccount}
 import io.github.cactacea.core.domain.repositories.{AdvertisementSettingsRepository, PushNotificationSettingsRepository, SocialAccountsRepository}
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 class SettingsService {
 
