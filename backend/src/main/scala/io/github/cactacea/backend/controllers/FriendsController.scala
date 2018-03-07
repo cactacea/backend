@@ -11,8 +11,8 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class FriendsController extends Controller {
 
-  @Inject var friendRequestsService: FriendRequestsService = _
-  @Inject var friendsService: FriendsService = _
+  @Inject private var friendRequestsService: FriendRequestsService = _
+  @Inject private var friendsService: FriendsService = _
 
   get("/session/requests") { request: GetSessionFriendRequests =>
     friendRequestsService.findAll(

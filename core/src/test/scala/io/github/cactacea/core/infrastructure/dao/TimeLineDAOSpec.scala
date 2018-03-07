@@ -1,6 +1,7 @@
 package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, TimelineFeedId}
@@ -16,13 +17,14 @@ class TimeLineDAOSpec extends DAOSpec {
   val commentsDAO: CommentsDAO = injector.instance[CommentsDAO]
   val timeLineDAO: TimeLineDAO = injector.instance[TimeLineDAO]
   val blocksDAO: BlocksDAO = injector.instance[BlocksDAO]
-  val identifiesDAO: IdentifiesDAO = injector.instance[IdentifiesDAO]
+  val identifyService: IdentifyService = injector.instance[IdentifyService]
+
   import db._
 
   test("create") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
     val medium3 = this.createMedium(sessionAccount1.id)
@@ -54,9 +56,9 @@ class TimeLineDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
-    val sessionAccount3 = this.createAccount(2L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
+    val sessionAccount3 = createAccount("account2")
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
     val medium3 = this.createMedium(sessionAccount1.id)
@@ -91,9 +93,9 @@ class TimeLineDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
-    val sessionAccount3 = this.createAccount(2L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
+    val sessionAccount3 = createAccount("account2")
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
     val medium3 = this.createMedium(sessionAccount1.id)
@@ -118,7 +120,7 @@ class TimeLineDAOSpec extends DAOSpec {
     // create timeline
     Await.result(timeLineDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
-    val id = Await.result(identifiesDAO.create().map(TimelineFeedId(_)))
+    val id = Await.result(identifyService.generate().map(TimelineFeedId(_)))
     val by: Option[AccountId] = Some(sessionAccount1.id)
     val postedAt = System.currentTimeMillis()
     val accountId = sessionAccount3.id

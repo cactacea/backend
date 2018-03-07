@@ -11,9 +11,9 @@ class TimeLineDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var feedsDAO: FeedsDAO = _
-  @Inject var feedTagsDAO: FeedTagsDAO = _
-  @Inject var feedMediumDAO: FeedMediumDAO = _
+  @Inject private var feedsDAO: FeedsDAO = _
+  @Inject private var feedTagsDAO: FeedTagsDAO = _
+  @Inject private var feedMediumDAO: FeedMediumDAO = _
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId

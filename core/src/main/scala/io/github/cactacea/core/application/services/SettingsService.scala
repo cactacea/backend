@@ -8,12 +8,13 @@ import io.github.cactacea.core.domain.repositories.{AdvertisementSettingsReposit
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.core.infrastructure.services.DatabaseService
 
-class SettingsService @Inject()(
-                                 notificationSettingsRepository: PushNotificationSettingsRepository,
-                                 socialAccountsRepository: SocialAccountsRepository,
-                                 injectionService: InjectionService,
-                                 socialAccountsService: SocialAccountsService,
-                                 db: DatabaseService) {
+class SettingsService {
+
+  @Inject private var notificationSettingsRepository: PushNotificationSettingsRepository = _
+  @Inject private var socialAccountsRepository: SocialAccountsRepository = _
+  @Inject private var injectionService: InjectionService = _
+  @Inject private var socialAccountsService: SocialAccountsService = _
+  @Inject private var db: DatabaseService = _
 
   def findPushNotificationSettings(sessionId: SessionId): Future[PushNotificationSetting] = {
     notificationSettingsRepository.find(sessionId)
@@ -32,7 +33,7 @@ class SettingsService @Inject()(
     }
   }
 
-  @Inject var advertisementSettingsRepository: AdvertisementSettingsRepository = _
+  @Inject private var advertisementSettingsRepository: AdvertisementSettingsRepository = _
 
   def findAdvertisementSettings(sessionId: SessionId): Future[AdvertisementSetting] = {
     advertisementSettingsRepository.find(sessionId)

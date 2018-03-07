@@ -10,21 +10,31 @@ import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId, Se
 import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
-class CommentsService @Inject()(db: DatabaseService, commentsRepository: CommentsRepository, reportsRepository: ReportsRepository, publishService: PublishService, actionService: InjectionService) {
+class CommentsService {
+
+  @Inject private var db: DatabaseService = _
+  @Inject private var commentsRepository: CommentsRepository = _
+  @Inject private var reportsRepository: ReportsRepository = _
+  @Inject private var publishService: PublishService = _
+  @Inject private var actionService: InjectionService = _
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
-    for {
-      id <- db.transaction(commentsRepository.create(feedId, message, sessionId))
-      _ <- publishService.enqueueComment(id)
-      _ <- actionService.commentCreated(id, sessionId)
-    } yield (id)
+    db.transaction {
+      for {
+        id <- commentsRepository.create(feedId, message, sessionId)
+        _ <- publishService.enqueueComment(id)
+        _ <- actionService.commentCreated(id, sessionId)
+      } yield (id)
+    }
   }
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(commentsRepository.delete(commentId, sessionId))
-      _ <- actionService.commentDeleted(commentId, sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        r <- db.transaction(commentsRepository.delete(commentId, sessionId))
+        _ <- actionService.commentDeleted(commentId, sessionId)
+      } yield (r)
+    }
   }
 
   def findAll(feedId: FeedId, since: Option[Long], count: Option[Int], sessionId: SessionId): Future[List[Comment]] = {

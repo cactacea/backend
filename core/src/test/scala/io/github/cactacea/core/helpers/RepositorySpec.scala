@@ -26,6 +26,7 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultStorageModule,
         DefaultSubScribeModule,
         DefaultTranscodeModule,
+        DefaultIdentifyModule,
         FinatraJacksonModule
       )
     ).create

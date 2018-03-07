@@ -7,7 +7,7 @@ import com.twitter.finatra.http.Controller
 @Singleton
 class HealthController extends Controller {
 
-  get("/check") { request: Request =>
+  get("/check") { _: Request =>
     response.ok
   }
 

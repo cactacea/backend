@@ -16,8 +16,8 @@ import io.github.cactacea.core.util.oauth.OAuthHandler
 @Singleton
 class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Request, Response] with OAuth2 with OAuthErrorInJson with Logging {
 
-  @Inject var sessionsRepository: SessionsRepository = _
-  @Inject var scopesService: ScopesService = _
+  @Inject private var sessionsRepository: SessionsRepository = _
+  @Inject private var scopesService: ScopesService = _
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     AuthenticationContext.authenticated match {

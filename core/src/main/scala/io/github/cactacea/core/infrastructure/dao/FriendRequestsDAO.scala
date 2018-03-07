@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
@@ -12,11 +13,11 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
     for {
-      id <- identifiesDAO.create().map(FriendRequestId(_))
+      id <- identifyService.generate().map(FriendRequestId(_))
       _ <- insert(id, accountId, sessionId)
     } yield (id)
   }

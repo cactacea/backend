@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
@@ -12,11 +13,11 @@ class GroupsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(sessionId: SessionId): Future[GroupId] = {
     for {
-      id <- identifiesDAO.create().map(GroupId(_))
+      id <- identifyService.generate().map(GroupId(_))
       _ <- insert(id, sessionId)
     } yield (id)
   }
@@ -44,7 +45,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
 
   def create(name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, accountCount: Long, sessionId: SessionId): Future[GroupId] = {
     for {
-      id <- identifiesDAO.create().map(GroupId(_))
+      id <- identifyService.generate().map(GroupId(_))
       _ <- insert(id, name, byInvitationOnly, privacyType, authority, accountCount, sessionId)
     } yield (id)
   }

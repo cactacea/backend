@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.NotificationType
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models.Notifications
@@ -12,11 +13,11 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(accountId: AccountId, notificationType: NotificationType, contentId: Long): Future[NotificationId] = {
     for {
-      id <- identifiesDAO.create().map(NotificationId(_))
+      id <- identifyService.generate().map(NotificationId(_))
       _ <- _insertNotifications(id, accountId, notificationType, Some(contentId), None, None)
     } yield (id)
   }

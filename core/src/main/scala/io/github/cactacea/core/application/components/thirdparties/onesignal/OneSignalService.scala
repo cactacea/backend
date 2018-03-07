@@ -10,8 +10,8 @@ import io.github.cactacea.util.clients.onesignal.{OneSignalClient, OneSignalNoti
 
 class OneSignalService extends PushNotificationService {
 
-  @Inject var client: OneSignalClient = _
-  @Inject var messageService: NotificationMessagesService = _
+  @Inject private var client: OneSignalClient = _
+  @Inject private var messageService: NotificationMessagesService = _
 
   def send(fanOuts: List[PushNotification]): Future[List[AccountId]] = {
     val notifications = fanOuts.flatMap({ fanOut =>

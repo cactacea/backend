@@ -10,8 +10,8 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class SessionController extends Controller {
 
-  @Inject var accountsService: AccountsService = _
-  @Inject var sessionService: SessionsService = _
+  @Inject private var accountsService: AccountsService = _
+  @Inject private var sessionService: SessionsService = _
 
   get("/session") { request: GetSessionAccount =>
     accountsService.find(
@@ -60,9 +60,9 @@ class SessionController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  @Inject var followsService: FollowsService = _
-  @Inject var followersService: FollowersService = _
-  @Inject var friendsService: FriendsService = _
+  @Inject private var followsService: FollowsService = _
+  @Inject private var followersService: FollowersService = _
+  @Inject private var friendsService: FriendsService = _
 
   get("/session/follows") { request: GetSessionFollows =>
     followsService.find(

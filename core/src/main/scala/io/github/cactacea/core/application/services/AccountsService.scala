@@ -11,7 +11,12 @@ import io.github.cactacea.core.infrastructure.services.DatabaseService
 import org.joda.time.DateTime
 
 @Singleton
-class AccountsService @Inject()(db: DatabaseService, accountsRepository: AccountsRepository, reportsRepository: ReportsRepository, actionService: InjectionService) {
+class AccountsService {
+
+  @Inject private var db: DatabaseService = _
+  @Inject private var accountsRepository: AccountsRepository = _
+  @Inject private var reportsRepository: ReportsRepository = _
+  @Inject private var actionService: InjectionService = _
 
   def find(sessionId: SessionId): Future[Account] = {
     accountsRepository.find(sessionId)
@@ -30,48 +35,58 @@ class AccountsService @Inject()(db: DatabaseService, accountsRepository: Account
   }
 
   def update(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(accountsRepository.updateDisplayName(accountId, displayName, sessionId))
-      _ <- actionService.displayNameUpdated(sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        r <- accountsRepository.updateDisplayName(accountId, displayName, sessionId)
+        _ <- actionService.displayNameUpdated(sessionId)
+      } yield (r)
+    }
   }
 
   def update(accountName: String, sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(accountsRepository.updateAccountName(accountName, sessionId))
-      _ <- actionService.accountNameUpdated(sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        r <- accountsRepository.updateAccountName(accountName, sessionId)
+        _ <- actionService.accountNameUpdated(sessionId)
+      } yield (r)
+    }
   }
 
   def update(displayName: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId))
-      _ <- actionService.profileUpdated(sessionId)
-    } yield (r)
-
+    db.transaction {
+      for {
+        r <- accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId)
+        _ <- actionService.profileUpdated(sessionId)
+      } yield (r)
+    }
   }
 
   def update(profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(accountsRepository.updateProfileImage(profileImage, sessionId))
-      _ <- actionService.profileImageUpdated(sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        r <- accountsRepository.updateProfileImage(profileImage, sessionId)
+        _ <- actionService.profileImageUpdated(sessionId)
+      } yield (r)
+    }
   }
 
   def update(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(accountsRepository.updatePassword(oldPassword, newPassword, sessionId))
-      _ <- actionService.passwordUpdated(sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        r <- accountsRepository.updatePassword(oldPassword, newPassword, sessionId)
+        _ <- actionService.passwordUpdated(sessionId)
+      } yield (r)
+    }
   }
 
 
   def report(accountId: AccountId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(reportsRepository.createAccountReport(accountId, reportType, sessionId))
-      _ <- actionService.accountReported(accountId, reportType, sessionId)
-    } yield (r)
-
+    db.transaction {
+      for {
+        r <- reportsRepository.createAccountReport(accountId, reportType, sessionId)
+        _ <- actionService.accountReported(accountId, reportType, sessionId)
+      } yield (r)
+    }
   }
 
 }

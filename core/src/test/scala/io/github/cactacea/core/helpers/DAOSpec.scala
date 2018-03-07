@@ -28,6 +28,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultStorageModule,
         DefaultSubScribeModule,
         DefaultTranscodeModule,
+        DefaultIdentifyModule,
         FinatraJacksonModule
       )
     ).create
@@ -42,8 +43,8 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
 
   val db = injector.instance[DatabaseService]
 
-  def createAccount(userNo: Long): Accounts = {
-    val u: Accounts = FactoryHelper.createAccounts(userNo)
+  def createAccount(accountName: String): Accounts = {
+    val u: Accounts = FactoryHelper.createAccounts(accountName)
     val id: SessionId = insertAccounts(u).toSessionId
     u.copy(id = id.toAccountId)
   }

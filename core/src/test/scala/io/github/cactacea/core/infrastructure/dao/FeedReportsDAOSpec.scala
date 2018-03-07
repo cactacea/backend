@@ -14,9 +14,9 @@ class FeedReportsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
-    val sessionAccount3 = this.createAccount(2L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
+    val sessionAccount3 = createAccount("account2")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)

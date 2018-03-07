@@ -10,7 +10,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class MessagesController extends Controller {
 
-  @Inject var messagesService: MessagesService = _
+  @Inject private var messagesService: MessagesService = _
 
   get("/messages") { request: GetMessages =>
     messagesService.find(

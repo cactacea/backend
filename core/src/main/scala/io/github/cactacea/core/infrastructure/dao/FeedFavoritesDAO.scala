@@ -10,8 +10,6 @@ import io.github.cactacea.core.infrastructure.services.DatabaseService
 @Singleton
 class FeedFavoritesDAO @Inject()(db: DatabaseService) {
 
-  @Inject var feedsDAO: FeedsDAO = _
-
   import db._
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {

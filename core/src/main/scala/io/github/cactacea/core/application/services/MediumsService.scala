@@ -13,11 +13,12 @@ import io.github.cactacea.core.util.MediaMetadataExtractor
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError.NotAcceptableMimeTypeFound
 
-class MediumsService @Inject()(
-                                db: DatabaseService,
-                                storageService: StorageService,
-                                mediumsRepository: MediumsRepository,
-                                injectionService: InjectionService) {
+class MediumsService {
+
+  @Inject private var db: DatabaseService = _
+  @Inject private var injectionService: InjectionService = _
+  @Inject private var storageService: StorageService = _
+  @Inject private var mediumsRepository: MediumsRepository = _
 
   def create(multiParams: Map[String, MultipartItem], sessionId: SessionId): Future[Seq[(MediumId, String)]] = {
     val list = multiParams.toList.map({ case (_, item) => MediaMetadataExtractor.extract(item.contentType, item.data) })

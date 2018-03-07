@@ -9,14 +9,14 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 @Singleton
 class MutesRepository {
 
-  @Inject var mutesDAO: MutesDAO = _
-  @Inject var validationDAO: ValidationDAO = _
+  @Inject private var mutesDAO: MutesDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccounts(accountId, sessionId)
-      _ <- validationDAO.notExistMutes(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.notExistMute(accountId, sessionId)
       _ <- mutesDAO.create(accountId, sessionId)
     } yield (Future.value(Unit))
   }
@@ -24,8 +24,8 @@ class MutesRepository {
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccounts(accountId, sessionId)
-      _ <- validationDAO.existMutes(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existMute(accountId, sessionId)
       _ <- mutesDAO.delete(accountId, sessionId)
     } yield (Future.value(Unit))
   }

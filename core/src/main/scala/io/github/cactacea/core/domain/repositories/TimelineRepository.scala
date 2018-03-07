@@ -9,7 +9,7 @@ import io.github.cactacea.core.infrastructure.identifiers.SessionId
 @Singleton
 class TimelineRepository {
 
-  @Inject var timelineDAO: TimeLineDAO = _
+  @Inject private var timelineDAO: TimeLineDAO = _
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[TimelineFeed]] = {
     timelineDAO.findAll(since, offset, count, sessionId).map(_.map(t =>

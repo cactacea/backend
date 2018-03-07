@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.{AccountStatusType, FeedPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
@@ -10,21 +11,21 @@ import io.github.cactacea.core.infrastructure.services.DatabaseService
 @Singleton
 class FeedsDAO @Inject()(db: DatabaseService) {
 
-  @Inject var feedTagsDAO: FeedTagsDAO = _
-  @Inject var feedMediumDAO: FeedMediumDAO = _
-  @Inject var feedFavoritesDAO: FeedFavoritesDAO = _
-  @Inject var feedReportsDAO: FeedReportsDAO = _
-  @Inject var commentsDAO: CommentsDAO = _
-  @Inject var timeLineDAO: TimeLineDAO = _
-  @Inject var blocksCountDAO: BlockCountDAO = _
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var feedTagsDAO: FeedTagsDAO = _
+  @Inject private var feedMediumDAO: FeedMediumDAO = _
+  @Inject private var feedFavoritesDAO: FeedFavoritesDAO = _
+  @Inject private var feedReportsDAO: FeedReportsDAO = _
+  @Inject private var commentsDAO: CommentsDAO = _
+  @Inject private var timeLineDAO: TimeLineDAO = _
+  @Inject private var blocksCountDAO: BlockCountDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   import db._
 
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[FeedId] = {
     val by = sessionId.toAccountId
     for {
-      id <- identifiesDAO.create().map(FeedId(_))
+      id <- identifyService.generate().map(FeedId(_))
       _  <- _insertFeed(id, message, privacyType, contentWarning, by)
       _  <- feedTagsDAO.create(id, tags)
       _  <- feedMediumDAO.create(id, mediumIds)

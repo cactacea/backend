@@ -10,18 +10,20 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, Me
 import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
-class FeedsService @Inject()(db: DatabaseService) {
+class FeedsService {
 
-  @Inject var feedsRepository: FeedsRepository = _
-  @Inject var feedFavoritesRepository: FeedFavoritesRepository = _
-  @Inject var reportsRepository: ReportsRepository = _
-  @Inject var publishService: PublishService = _
+  @Inject private var db: DatabaseService = _
+  @Inject private var feedsRepository: FeedsRepository = _
+  @Inject private var reportsRepository: ReportsRepository = _
+  @Inject private var publishService: PublishService = _
 
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[FeedId] = {
-    for {
-      id <- db.transaction(feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, sessionId))
-      _ <- publishService.enqueueFeed(id)
-    } yield (id)
+    db.transaction {
+      for {
+        id <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, sessionId)
+        _ <- publishService.enqueueFeed(id)
+      } yield (id)
+    }
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {

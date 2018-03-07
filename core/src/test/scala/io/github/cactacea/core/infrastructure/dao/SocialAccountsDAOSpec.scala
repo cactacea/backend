@@ -10,9 +10,9 @@ class SocialAccountsDAOSpec extends DAOSpec {
   test("create find exist delete") {
 
     // create
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
-    val sessionAccount3 = this.createAccount(2L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
+    val sessionAccount3 = createAccount("account2")
     Await.result(socialAccountsDAO.create("facebook", "facebook", sessionAccount3.id.toSessionId))
     Await.result(socialAccountsDAO.create("google", "google", sessionAccount3.id.toSessionId))
     Await.result(socialAccountsDAO.create("twitter", "twitter", sessionAccount3.id.toSessionId))

@@ -9,28 +9,28 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, Se
 @Singleton
 class FeedFavoritesRepository  {
 
-  @Inject var feedFavoritesDAO: FeedFavoritesDAO = _
-  @Inject var validationDAO: ValidationDAO = _
+  @Inject private var feedFavoritesDAO: FeedFavoritesDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existFeeds(feedId, sessionId)
-      _ <- validationDAO.notExistFeedFavorites(feedId, sessionId)
+      _ <- validationDAO.existFeed(feedId, sessionId)
+      _ <- validationDAO.notExistFeedFavorite(feedId, sessionId)
       _ <- feedFavoritesDAO.create(feedId, sessionId)
     } yield (Future.value(Unit))
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existFeeds(feedId, sessionId)
-      _ <- validationDAO.existFeedFavorites(feedId, sessionId)
+      _ <- validationDAO.existFeed(feedId, sessionId)
+      _ <- validationDAO.existFeedFavorite(feedId, sessionId)
       _ <- feedFavoritesDAO.delete(feedId, sessionId)
     } yield (Future.value(Unit))
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
     for {
-      _ <- validationDAO.existAccounts(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
       r <- feedFavoritesDAO.findAll(accountId, since, offset, count, sessionId).map(_.map(t => Feed(t)))
     } yield (r)
   }
@@ -42,7 +42,7 @@ class FeedFavoritesRepository  {
 
   def findAccounts(feedId: FeedId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
     for {
-      _ <- validationDAO.existFeeds(feedId, sessionId)
+      _ <- validationDAO.existFeed(feedId, sessionId)
       r <- feedFavoritesDAO.findAccounts(feedId, since, offset, count, sessionId).map(_.map(t => Account(t._1, t._2)))
     } yield (r)
   }

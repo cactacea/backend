@@ -20,7 +20,7 @@ object FactoryHelper {
     )
   }
 
-  def createAccounts(accountName: Long): Accounts = {
+  def createAccounts(accountName: String): Accounts = {
     Accounts(
       id = AccountId(0L),
       profileImage = None,

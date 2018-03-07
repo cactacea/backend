@@ -16,7 +16,7 @@ import scala.util.parsing.json.{JSONArray, JSONObject}
 
 class ServerSpec extends FeatureTest {
 
-  @Inject var configService: ConfigService = _
+  @Inject private var configService: ConfigService = _
 
   override val server = new EmbeddedHttpServer(
     twitterServer = new DefaultServer
@@ -46,6 +46,7 @@ class ServerSpec extends FeatureTest {
         DefaultStorageModule,
         DefaultSubScribeModule,
         DefaultTranscodeModule,
+        DefaultIdentifyModule,
         FinatraJacksonModule
       )
     ).create

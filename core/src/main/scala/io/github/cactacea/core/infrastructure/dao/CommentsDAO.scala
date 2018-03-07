@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
 import io.github.cactacea.core.infrastructure.services.DatabaseService
@@ -11,12 +12,12 @@ class CommentsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var blocksCountDAO: BlockCountDAO = _
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var blocksCountDAO: BlockCountDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     for {
-      id <- identifiesDAO.create().map(CommentId(_))
+      id <- identifyService.generate().map(CommentId(_))
       _ <- _insertComments(id, feedId, message, sessionId)
       _ <- _updateCommentCount(feedId)
     } yield (id)

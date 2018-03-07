@@ -11,7 +11,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class GroupsController extends Controller {
 
-  @Inject var groupsService: GroupsService = _
+  @Inject private var groupsService: GroupsService = _
 
   get("/groups") { request: GetGroups =>
     groupsService.find(
@@ -63,7 +63,7 @@ class GroupsController extends Controller {
 
 
 
-  @Inject var groupAccountsService: GroupAccountsService = _
+  @Inject private var groupAccountsService: GroupAccountsService = _
 
   post("/groups/:id/join") { request: PostJoinGroup =>
     groupAccountsService.create(
@@ -105,7 +105,7 @@ class GroupsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  @Inject var accountGroupsService: AccountGroupsService = _
+  @Inject private var accountGroupsService: AccountGroupsService = _
 
   get("/accounts/:id/group") { request: GetAccountGroup =>
     accountGroupsService.find(

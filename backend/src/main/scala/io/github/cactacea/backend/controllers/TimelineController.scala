@@ -9,7 +9,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class TimelineController extends Controller{
 
-  @Inject var timelineService: TimelineService = _
+  @Inject private var timelineService: TimelineService = _
 
   get("/timeline") { request: GetTimeline =>
     timelineService.find(

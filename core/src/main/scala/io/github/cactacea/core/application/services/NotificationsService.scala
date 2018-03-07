@@ -7,7 +7,10 @@ import io.github.cactacea.core.domain.repositories.NotificationsRepository
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.core.infrastructure.services.DatabaseService
 
-class NotificationsService @Inject()(db: DatabaseService, notificationsRepository: NotificationsRepository) {
+class NotificationsService {
+
+  @Inject private var db: DatabaseService = _
+  @Inject private var notificationsRepository: NotificationsRepository = _
 
   def find(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Notification]] = {
     db.transaction {

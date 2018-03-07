@@ -10,17 +10,17 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 @Singleton
 class FriendsRepository {
 
-  @Inject var friendsDAO: FriendsDAO = _
-  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject var followsDAO: FollowsDAO = _
-  @Inject var followersDAO: FollowersDAO = _
-  @Inject var validationDAO: ValidationDAO = _
+  @Inject private var friendsDAO: FriendsDAO = _
+  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
+  @Inject private var followsDAO: FollowsDAO = _
+  @Inject private var followersDAO: FollowersDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccounts(accountId, sessionId)
-      _ <- validationDAO.notExistFriends(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.notExistFriend(accountId, sessionId)
       _ <- friendsDAO.create(accountId, sessionId)
       _ <- followsDAO.create(accountId, sessionId)
       _ <- followersDAO.create(accountId, sessionId)
@@ -33,8 +33,8 @@ class FriendsRepository {
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccounts(accountId, sessionId)
-      _ <- validationDAO.existFriends(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existFriend(accountId, sessionId)
       _ <- friendsDAO.delete(accountId, sessionId)
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.friends, sessionId)

@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.ReportType
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
@@ -12,7 +13,7 @@ class AccountReportsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def find(accountId: AccountId): Future[List[AccountReports]] = {
     val q = quote {
@@ -24,7 +25,7 @@ class AccountReportsDAO @Inject()(db: DatabaseService) {
 
   def create(accountId: AccountId, reportType: ReportType, sessionId: SessionId): Future[AccountReportId] = {
     for {
-      id <- identifiesDAO.create().map(AccountReportId(_))
+      id <- identifyService.generate().map(AccountReportId(_))
       _ <- insert(id, accountId, reportType, sessionId)
     } yield (id)
   }

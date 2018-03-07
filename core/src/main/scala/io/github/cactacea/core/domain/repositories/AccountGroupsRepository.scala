@@ -3,17 +3,16 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.Group
-import io.github.cactacea.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, GroupsDAO}
+import io.github.cactacea.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, GroupsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
-import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.GroupNotFound
 
 @Singleton
 class AccountGroupsRepository {
 
-  @Inject var groupsDAO: GroupsDAO = _
-  @Inject var accountGroupsDAO: AccountGroupsDAO = _
-  @Inject var accountMessagesDAO: AccountMessagesDAO = _
+  @Inject private var groupsDAO: GroupsDAO = _
+  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
+  @Inject private var accountMessagesDAO: AccountMessagesDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
@@ -39,9 +38,9 @@ class AccountGroupsRepository {
         Future.value(Group(t))
       case None =>
         (for {
-          groupId <- groupsDAO.create(sessionId)
-          _ <- accountGroupsDAO.create(accountId, groupId, sessionId)
-          _ <- accountGroupsDAO.create(sessionId.toAccountId, groupId, accountId.toSessionId)
+          id <- groupsDAO.create(sessionId)
+          _ <- accountGroupsDAO.create(accountId, id, sessionId)
+          _ <- accountGroupsDAO.create(sessionId.toAccountId, id, accountId.toSessionId)
           g <- accountGroupsDAO.find(accountId, sessionId)
         } yield (g.head)).flatMap(g =>
           Future.value(Group(g))
@@ -50,21 +49,17 @@ class AccountGroupsRepository {
   }
 
   def show(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountGroupsDAO.updateHidden(groupId, false, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(GroupNotFound))
-    })
+    for {
+      _ <- validationDAO.existsAccountGroup(groupId, sessionId)
+      _ <- accountGroupsDAO.updateHidden(groupId, false, sessionId)
+    } yield (Future.value(Unit))
   }
 
   def hide(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountGroupsDAO.updateHidden(groupId, true, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(GroupNotFound))
-    })
+    for {
+      _ <- validationDAO.existsAccountGroup(groupId, sessionId)
+      _ <- accountGroupsDAO.updateHidden(groupId, true, sessionId)
+    } yield (Future.value(Unit))
   }
 
 }

@@ -27,6 +27,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultStorageModule,
         DefaultSubScribeModule,
         DefaultTranscodeModule,
+        DefaultIdentifyModule,
         FinatraJacksonModule
       )
     ).create
@@ -39,7 +40,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
     DatabaseHelper.initialize()
   }
 
-  @Inject var sessionService: SessionsService = _
+  @Inject private var sessionService: SessionsService = _
 
   def signUp(accountName: String, password: String, udid: String) = {
     Await.result(sessionService.signUp(accountName, accountName, "account password", "ffc1ded6f4570d557ad65f986684fc10c7f8d51f", Some("test@example.com"), None, Some("location"), Some("bio"), "user-agent"))

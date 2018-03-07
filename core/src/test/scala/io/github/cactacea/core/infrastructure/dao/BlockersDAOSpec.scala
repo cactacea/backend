@@ -12,9 +12,9 @@ class BlockersDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
-    val account3 = this.createAccount(3L)
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
+    val account3 = createAccount("account3")
 
     // create
     Await.result(blockersDAO.create(account1.id, account2.id.toSessionId))
@@ -47,9 +47,9 @@ class BlockersDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
-    val account3 = this.createAccount(3L)
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
+    val account3 = createAccount("account3")
 
     // create
     Await.result(blockersDAO.create(account1.id, account2.id.toSessionId))

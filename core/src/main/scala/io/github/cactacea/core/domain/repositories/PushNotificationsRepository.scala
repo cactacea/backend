@@ -10,10 +10,14 @@ import io.github.cactacea.core.infrastructure.identifiers._
 @Singleton
 class PushNotificationsRepository {
 
-  @Inject var pushNotificationsDAO: PushNotificationsDAO = _
+  @Inject private var pushNotificationsDAO: PushNotificationsDAO = _
+  @Inject private var feedsDAO: FeedsDAO = _
+  @Inject private var accountFeedsDAO: AccountFeedsDAO = _
+  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
+  @Inject private var messagesDAO: MessagesDAO = _
+  @Inject private var accountMessagesDAO: AccountMessagesDAO = _
+  @Inject private var commentsDAO: CommentsDAO = _
 
-  @Inject var feedsDAO: FeedsDAO = _
-  @Inject var accountFeedsDAO: AccountFeedsDAO = _
 
   def findFeeds(feedId: FeedId) : Future[List[PushNotification]] = {
     feedsDAO.find(feedId).flatMap(_ match {
@@ -37,8 +41,6 @@ class PushNotificationsRepository {
     accountFeedsDAO.update(feedId, accountIds)
   }
 
-  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
-
   def findGroupInvites(groupInvitationId: GroupInvitationId) : Future[List[PushNotification]] = {
     groupInvitationsDAO.find(groupInvitationId).flatMap(_ match {
       case Some(i) if i.notified == false =>
@@ -60,10 +62,6 @@ class PushNotificationsRepository {
   def updateGroupInvites(groupInvitationId: GroupInvitationId): Future[Boolean] = {
     groupInvitationsDAO.updateNotified(groupInvitationId)
   }
-
-
-  @Inject var messagesDAO: MessagesDAO = _
-  @Inject var accountMessagesDAO: AccountMessagesDAO = _
 
   def findMessages(messageId: MessageId) : Future[List[PushNotification]] = {
     messagesDAO.find(messageId).flatMap(_ match {
@@ -91,8 +89,6 @@ class PushNotificationsRepository {
   def updateMessages(messageId: MessageId, accountIds: List[AccountId]): Future[Boolean] = {
     accountMessagesDAO.updateNotified(messageId, accountIds)
   }
-
-  @Inject var commentsDAO: CommentsDAO = _
 
   def findComments(commentId: CommentId) : Future[List[PushNotification]] = {
     commentsDAO.find(commentId).flatMap(_ match {

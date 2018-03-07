@@ -28,7 +28,8 @@ class CactaceaServer extends HttpServer {
       DefaultPushNotificationModule,
       DefaultStorageModule,
       DefaultSubScribeModule,
-      DefaultTranscodeModule
+      DefaultTranscodeModule,
+      DefaultIdentifyModule
   )
 
   addFrameworkModules(customModules:_*)

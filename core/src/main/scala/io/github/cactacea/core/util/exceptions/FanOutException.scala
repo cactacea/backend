@@ -5,7 +5,7 @@ import com.twitter.finatra.json.FinatraObjectMapper
 
 case class FanOutException() extends scala.Exception with scala.Product with scala.Serializable {
 
-  @Inject var om: FinatraObjectMapper = _
+  @Inject private var om: FinatraObjectMapper = _
 
   override def getMessage()  = {
     om.writePrettyString(this)

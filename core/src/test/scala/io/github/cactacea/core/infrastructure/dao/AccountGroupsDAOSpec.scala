@@ -15,8 +15,8 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   test("create one to one group") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
 
     val groupId = Await.result(groupsDAO.create(Some("new group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val result1 = Await.result(accountGroupsDAO.create(account1.id, groupId, sessionAccount.id.toSessionId))
@@ -33,11 +33,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
-    val account3 = this.createAccount(3L)
-    val account4 = this.createAccount(4L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
+    val account3 = createAccount("account3")
+    val account4 = createAccount("account4")
 
     val groupId = Await.result(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val result1 = Await.result(accountGroupsDAO.create(account1.id, groupId))
@@ -67,11 +67,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
-    val account3 = this.createAccount(3L)
-    val account4 = this.createAccount(4L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
+    val account3 = createAccount("account3")
+    val account4 = createAccount("account4")
 
     val groupId = Await.result(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     Await.result(accountGroupsDAO.create(account1.id, groupId))
@@ -99,11 +99,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   test("updateUnreadCount") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
-    val account3 = this.createAccount(3L)
-    val account4 = this.createAccount(4L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
+    val account3 = createAccount("account3")
+    val account4 = createAccount("account4")
 
     val groupId = Await.result(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     Await.result(accountGroupsDAO.create(account1.id, groupId))
@@ -116,25 +116,25 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
     assert(accountGroups.size == 4)
-    val userGroup1 = accountGroups(0)
-    val userGroup2 = accountGroups(1)
-    val userGroup3 = accountGroups(2)
-    val userGroup4 = accountGroups(3)
+    val group1 = accountGroups(0)
+    val group2 = accountGroups(1)
+    val group3 = accountGroups(2)
+    val group4 = accountGroups(3)
 
-    assert((userGroup1.accountId, userGroup1.groupId, userGroup1.hidden, userGroup1.toAccountId, userGroup1.unreadCount) == (account1.id, groupId, false, userGroup1.accountId, 1))
-    assert((userGroup2.accountId, userGroup2.groupId, userGroup2.hidden, userGroup2.toAccountId, userGroup2.unreadCount) == (account2.id, groupId, false, userGroup2.accountId, 1))
-    assert((userGroup3.accountId, userGroup3.groupId, userGroup3.hidden, userGroup3.toAccountId, userGroup3.unreadCount) == (account3.id, groupId, false, userGroup3.accountId, 1))
-    assert((userGroup4.accountId, userGroup4.groupId, userGroup4.hidden, userGroup4.toAccountId, userGroup4.unreadCount) == (account4.id, groupId, false, userGroup4.accountId, 1))
+    assert((group1.accountId, group1.groupId, group1.hidden, group1.toAccountId, group1.unreadCount) == (account1.id, groupId, false, group1.accountId, 1))
+    assert((group2.accountId, group2.groupId, group2.hidden, group2.toAccountId, group2.unreadCount) == (account2.id, groupId, false, group2.accountId, 1))
+    assert((group3.accountId, group3.groupId, group3.hidden, group3.toAccountId, group3.unreadCount) == (account3.id, groupId, false, group3.accountId, 1))
+    assert((group4.accountId, group4.groupId, group4.hidden, group4.toAccountId, group4.unreadCount) == (account4.id, groupId, false, group4.accountId, 1))
 
   }
 
   test("updateHidden") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
-    val account3 = this.createAccount(3L)
-    val account4 = this.createAccount(4L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
+    val account3 = createAccount("account3")
+    val account4 = createAccount("account4")
 
     val groupId = Await.result(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     Await.result(accountGroupsDAO.create(account1.id, groupId))
@@ -163,11 +163,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
-    val account3 = this.createAccount(3L)
-    val account4 = this.createAccount(4L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
+    val account3 = createAccount("account3")
+    val account4 = createAccount("account4")
 
     val groupId1 = Await.result(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -201,9 +201,9 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   test("find one to one group") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
 
     val groupId1 = Await.result(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -222,7 +222,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   test("find id by message") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val groupId1 = Await.result(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -250,9 +250,9 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
 
     val groupId1 = Await.result(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
