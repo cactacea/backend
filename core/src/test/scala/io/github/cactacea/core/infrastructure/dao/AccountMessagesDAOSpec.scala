@@ -213,7 +213,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
     )
     assert(Await.result(accountMessagesDAO.updateNotified(messageId, ids)) == true)
 
-    val result2 = Await.result(db.run(quote(query[AccountMessages].filter(_.messageId == lift(messageId)).filter(_.notified == lift(true))).size))
+    val result2 = Await.result(db.run(quote(query[AccountMessages].filter(_.messageId == lift(messageId)).filter(_.notified == true)).size))
     assert(result2 == ids.size)
 
   }

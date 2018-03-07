@@ -33,8 +33,9 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           _.feedId            -> lift(feedId),
           _.by                -> lift(by),
           _.message           -> lift(message),
-          _.favoriteCount     -> lift(0L),
-          _.notified          -> lift(false),
+          _.favoriteCount     -> 0L,
+          _.contentWarning    -> false,
+          _.notified          -> false,
           _.postedAt          -> lift(postedAt)
         )
     }
@@ -210,7 +211,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
-        .filter(_.notified == lift(false))
+        .filter(_.notified == false)
     }
     run(q).map(_.headOption)
   }
@@ -219,7 +220,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
-        .update(_.notified -> lift(true))
+        .update(_.notified -> true)
     }
     run(q).map(_ == 1)
   }

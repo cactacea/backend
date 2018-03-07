@@ -11,20 +11,22 @@ case class Medium(
                    height: Long,
                    size: Long,
                    thumbnailUrl: Option[String],
-                   mediumType: MediumType
+                   mediumType: MediumType,
+                   contentWarning: Boolean
                   )
 
 object Medium {
 
   def apply(i: Mediums): Medium = {
     Medium(
-      id            = i.id,
-      uri           = i.uri,
-      width         = i.width,
-      height        = i.height,
-      size          = i.size,
-      thumbnailUrl  = i.thumbnailUri,
-      mediumType    = i.mediumType
+      id              = i.id,
+      uri             = i.uri,
+      width           = i.width,
+      height          = i.height,
+      size            = i.size,
+      thumbnailUrl    = i.thumbnailUri,
+      mediumType      = i.mediumType,
+      contentWarning  = i.contentWarning
     )
   }
 

@@ -45,7 +45,7 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
       query[Notifications]
         .filter(_.accountId == lift(accountId))
         .filter(n => liftQuery(notificationIds).contains(n.id))
-        .update(_.unread -> lift(false))
+        .update(_.unread -> false)
     }
     run(q).map(_ == notificationIds.size)
   }

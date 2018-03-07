@@ -32,7 +32,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
           _.accountId     -> lift(accountId),
           _.by            -> lift(by),
           _.groupId       -> lift(groupId),
-          _.notified      -> lift(false),
+          _.notified      -> false,
           _.invitationStatus  -> lift(GroupInvitationStatusType.noresponsed),
           _.invitedAt     -> lift(invitedAt)
         )
@@ -167,7 +167,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[GroupInvitations]
         .filter(_.id == lift(groupInvitationId))
-        .filter(_.notified == lift(false))
+        .filter(_.notified == false)
     }
     run(q).map(_.headOption)
   }

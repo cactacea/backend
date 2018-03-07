@@ -31,7 +31,7 @@ class BlockersDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId -> lift(accountId),
           _.by        -> lift(by),
-          _.beingBlocked   -> lift(true)
+          _.beingBlocked   -> true
         )
     }
     run(q).map(_ == 1)

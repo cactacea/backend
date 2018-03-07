@@ -85,7 +85,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
       query[AccountMessages]
         .filter(_.accountId == lift(accountId))
         .filter(m => liftQuery(messageIds).contains(m.messageId))
-        .update(_.unread -> lift(false))
+        .update(_.unread -> false)
     }
     run(q).map(_ == messageIds.size)
   }
@@ -95,7 +95,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
       query[AccountMessages]
         .filter(_.messageId == lift(messageId))
         .filter(m => liftQuery(accountIds).contains(m.accountId))
-        .update(_.notified -> lift(true))
+        .update(_.notified -> true)
     }
     run(q).map(_ == accountIds.size)
   }

@@ -37,7 +37,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.follower          -> lift(true)
+          _.follower          -> true
         )
     }
     run(q).map(_ == 1)
@@ -72,7 +72,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.follower        -> lift(true)
+          _.follower        -> true
         )
     }
     run(q).map(_ == 1)
@@ -85,7 +85,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.follower        -> lift(false)
+          _.follower        -> false
         )
     }
     run(q).map(_ == 1)

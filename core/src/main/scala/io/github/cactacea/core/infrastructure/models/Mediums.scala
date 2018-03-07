@@ -12,5 +12,6 @@ case class Mediums(
                     size: Long,
                     thumbnailUri: Option[String],
                     mediumType: MediumType,
-                    by: AccountId
+                    by: AccountId,
+                    contentWarning: Boolean
                   )

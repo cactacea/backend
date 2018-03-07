@@ -9,6 +9,7 @@ case class Comment(
                     account: Account,
                     feed: Option[Feed],
                     favoriteCount: Long,
+                    contentWarning: Boolean,
                     postedAt: Long)
 
 object Comment {
@@ -17,12 +18,13 @@ object Comment {
     val account = Account(a, r)
     val feed: Option[Feed] = None
     Comment(
-      id            = c.id,
-      message       = c.message,
-      account       = account,
-      feed          = feed,
-      favoriteCount = c.favoriteCount,
-      postedAt      = c.postedAt
+      id              = c.id,
+      message         = c.message,
+      account         = account,
+      feed            = feed,
+      favoriteCount   = c.favoriteCount,
+      contentWarning  = c.contentWarning,
+      postedAt        = c.postedAt
     )
   }
 

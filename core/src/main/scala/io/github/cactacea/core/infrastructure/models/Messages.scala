@@ -13,6 +13,7 @@ case class Messages(
                      stampId: Option[StampId],
                      accountCount: Long,
                      readAccountCount: Long,
+                     contentWarning: Boolean,
                      notified: Boolean,
                      postedAt: Long
                )

@@ -14,6 +14,7 @@ case class Message(
                     unread: Boolean,
                     accountCount: Long,
                     readAccountCount: Long,
+                    contentWarning: Boolean,
                     postedAt: Long
                   )
 
@@ -37,6 +38,7 @@ object Message {
       unread            = am.unread,
       accountCount      = m.accountCount,
       readAccountCount  = m.readAccountCount,
+      contentWarning    = m.contentWarning,
       postedAt          = m.postedAt
     )
   }

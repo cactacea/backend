@@ -40,11 +40,11 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         _.id                  -> lift(id),
         _.by                  -> lift(by),
         _.message             -> lift(message),
-        _.favoriteCount       -> lift(0L),
-        _.commentCount        -> lift(0L),
+        _.favoriteCount       -> 0L,
+        _.commentCount        -> 0L,
         _.privacyType         -> lift(privacy),
         _.contentWarning      -> lift(contentWarning),
-        _.notified            -> lift(false),
+        _.notified            -> false,
         _.postedAt            -> lift(postedAt)
       )
     }
@@ -112,8 +112,8 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         .filter(_.id == lift(feedId))
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
-            || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == lift(true))).nonEmpty))
-            || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == lift(true))).nonEmpty))
+            || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
+            || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
         .filter(t => query[Blocks]
           .filter(_.accountId  == t.by)
@@ -155,8 +155,8 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         .filter(_.by == lift(accountId))
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
-            || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == lift(true))).nonEmpty))
-            || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == lift(true))).nonEmpty))
+            || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
+            || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
         .filter(_.postedAt < lift(s))
         .sortBy(_.postedAt)(Ord.descNullsLast)

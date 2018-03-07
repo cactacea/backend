@@ -33,7 +33,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId     -> lift(accountId),
           _.by            -> lift(by),
-          _.blocked      -> lift(true),
+          _.blocked      -> true,
           _.blockedAt     -> lift(blockedAt)
         )
     }
@@ -48,7 +48,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.blocked        -> lift(true),
+          _.blocked        -> true,
           _.blockedAt       -> lift(blockedAt)
         )
     }
@@ -62,7 +62,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.blocked        -> lift(false)
+          _.blocked        -> false
         )
     }
     run(q).map(_ == 1)
@@ -74,7 +74,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
       query[Blocks]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
-        .filter(_.blocked    == lift(true))
+        .filter(_.blocked    == true)
         .size
     }
     run(q).map(_ == 1)

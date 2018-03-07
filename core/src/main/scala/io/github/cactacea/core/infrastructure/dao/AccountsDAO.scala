@@ -131,7 +131,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
           .filter(u => query[Blocks]
             .filter(_.accountId    == u.id)
             .filter(_.by        == lift(by))
-            .filter(b => b.blocked == lift(true) || b.beingBlocked == lift(true))
+            .filter(b => b.blocked == true || b.beingBlocked == true)
             .isEmpty)
           .size
       }
@@ -159,7 +159,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
         .filter(u => query[Blocks]
           .filter(_.accountId    == u.id)
           .filter(_.by        == lift(by))
-          .filter(b => b.blocked == lift(true) || b.beingBlocked == lift(true))
+          .filter(b => b.blocked == true || b.beingBlocked == true)
           .isEmpty)
         .size
     }
@@ -207,7 +207,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
           .filter(a => query[Blocks]
             .filter(_.accountId == a.id)
             .filter(_.by        == lift(by))
-            .filter(b => b.blocked == lift(true) || b.beingBlocked == lift(true))
+            .filter(b => b.blocked == true || b.beingBlocked == true)
             .isEmpty)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))

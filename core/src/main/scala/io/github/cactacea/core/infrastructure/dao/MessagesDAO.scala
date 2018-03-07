@@ -33,8 +33,9 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.groupId             -> lift(groupId),
         _.messageType         -> lift(mt),
         _.accountCount        -> lift(accountCount),
-        _.readAccountCount    -> lift(0L),
-        _.notified            -> lift(true),
+        _.readAccountCount    -> 0L,
+        _.contentWarning      -> false,
+        _.notified            -> false,
         _.postedAt            -> lift(postedAt)
       )
     }
@@ -64,9 +65,10 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.messageType         -> lift(mt),
         _.message             -> lift(message),
         _.accountCount        -> lift(accountCount),
-        _.readAccountCount    -> lift(0L),
+        _.readAccountCount    -> 0L,
         _.mediumId            -> lift(mediumId),
-        _.notified            -> lift(false),
+        _.contentWarning      -> false,
+        _.notified            -> false,
         _.postedAt            -> lift(postedAt)
       )
     }
@@ -101,12 +103,11 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == messageIds.size)
   }
 
-  // TODO
   def updateNotified(messageId: MessageId): Future[Boolean] = {
     val q = quote {
       query[Messages]
         .filter(_.id == lift(messageId))
-        .update(_.notified -> lift(true))
+        .update(_.notified -> true)
     }
     run(q).map(_ == 1)
   }

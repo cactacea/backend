@@ -62,7 +62,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.friend          -> lift(true),
+          _.friend          -> true,
           _.friendedAt        -> lift(friendedAt)
         )
     }
@@ -77,7 +77,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.friend          -> lift(true),
+          _.friend          -> true,
           _.friendedAt        -> lift(friendedAt)
         )
     }
@@ -91,7 +91,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.friend          -> lift(false)
+          _.friend          -> false
         )
     }
     run(q).map(_ == 1)
@@ -103,7 +103,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
       query[Relationships]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
-        .filter(_.friend    == lift(true))
+        .filter(_.friend    == true)
         .size
     }
     run(q).map(_ == 1)

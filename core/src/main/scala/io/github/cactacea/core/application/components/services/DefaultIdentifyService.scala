@@ -9,10 +9,10 @@ import io.github.cactacea.core.application.components.interfaces.IdentifyService
 @Singleton
 class DefaultIdentifyService extends IdentifyService {
 
-  class IdentityDatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config)
+  private class IdentityDatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config)
 
-  val config = ConfigFactory.load("application.conf").getConfig("db.id")
-  val db = new IdentityDatabaseService(config)
+  private val config = ConfigFactory.load("application.conf").getConfig("db.id")
+  private val db = new IdentityDatabaseService(config)
 
   import db._
 

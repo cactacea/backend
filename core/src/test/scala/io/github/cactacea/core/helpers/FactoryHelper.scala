@@ -16,7 +16,8 @@ object FactoryHelper {
       128L,
       Some("http://127.0.0.1/resource/thumnail_image.jpg"),
       MediumType.image,
-      accountId
+      accountId,
+      false
     )
   }
 
