@@ -11,7 +11,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class FeedsController extends Controller {
 
-  @Inject var feedsService: FeedsService = _
+  @Inject private var feedsService: FeedsService = _
 
   get("/feeds") { request: GetFeeds =>
     feedsService.find(
@@ -79,7 +79,7 @@ class FeedsController extends Controller {
 
 
 
-  @Inject var feedFavoritesService: FeedFavoritesService = _
+  @Inject private var feedFavoritesService: FeedFavoritesService = _
 
   get("/session/favorites") { request: GetSessionFavoriteFeeds =>
     feedFavoritesService.find(

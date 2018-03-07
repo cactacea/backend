@@ -9,26 +9,26 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError._
 
 @Singleton
-class ValidationDAO @Inject()(
-                               accountsDAO: AccountsDAO,
-                               accountGroupsDAO: AccountGroupsDAO,
-                               blocksDAO: BlocksDAO,
-                               commentsDAO: CommentsDAO,
-                               commentFavoritesDAO: CommentFavoritesDAO,
-                               followsDAO: FollowsDAO,
-                               followersDAO: FollowersDAO,
-                               friendsDAO: FriendsDAO,
-                               friendRequestsDAO: FriendRequestsDAO,
-                               feedsDAO: FeedsDAO,
-                               feedFavoritesDAO: FeedFavoritesDAO,
-                               groupsDAO: GroupsDAO,
-                               groupAccountsDAO: GroupAccountsDAO,
-                               groupInvitationsDAO: GroupInvitationsDAO,
-                               groupAuthorityDAO: GroupAuthorityDAO,
-                               mediumsDAO: MediumsDAO,
-                               mutesDAO: MutesDAO,
-                               configService: ConfigService
-                             ) {
+class ValidationDAO {
+
+  @Inject private var accountsDAO: AccountsDAO = _
+  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
+  @Inject private var blocksDAO: BlocksDAO = _
+  @Inject private var commentsDAO: CommentsDAO = _
+  @Inject private var commentFavoritesDAO: CommentFavoritesDAO = _
+  @Inject private var followsDAO: FollowsDAO = _
+  @Inject private var followersDAO: FollowersDAO = _
+  @Inject private var friendsDAO: FriendsDAO = _
+  @Inject private var friendRequestsDAO: FriendRequestsDAO = _
+  @Inject private var feedsDAO: FeedsDAO = _
+  @Inject private var feedFavoritesDAO: FeedFavoritesDAO = _
+  @Inject private var groupsDAO: GroupsDAO = _
+  @Inject private var groupAccountsDAO: GroupAccountsDAO = _
+  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
+  @Inject private var groupAuthorityDAO: GroupAuthorityDAO = _
+  @Inject private var mediumsDAO: MediumsDAO = _
+  @Inject private var mutesDAO: MutesDAO = _
+  @Inject private var configService: ConfigService = _
 
   def notSessionId(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
@@ -48,7 +48,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existComments(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+  def existComment(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     commentsDAO.exist(commentId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
@@ -57,7 +57,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def notExistCommentFavorites(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+  def notExistCommentFavorite(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     commentFavoritesDAO.exist(commentId, sessionId).flatMap(_ match {
       case false =>
         Future.Unit
@@ -66,7 +66,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existCommentFavorites(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+  def existCommentFavorite(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     commentFavoritesDAO.exist(commentId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
@@ -75,7 +75,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existFeeds(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+  def existFeed(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     feedsDAO.exist(feedId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
@@ -84,7 +84,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existAccounts(accountId: AccountId): Future[Unit] = {
+  def existAccount(accountId: AccountId): Future[Unit] = {
     accountsDAO.exist(accountId).flatMap(_ match {
       case true =>
         Future.Unit
@@ -93,7 +93,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existAccounts(accountId: AccountId, sessionId: SessionId, ignoreBlockedUser: Boolean = true): Future[Unit] = {
+  def existAccount(accountId: AccountId, sessionId: SessionId, ignoreBlockedUser: Boolean = true): Future[Unit] = {
     accountsDAO.exist(accountId, sessionId, ignoreBlockedUser).flatMap(_ match {
       case true =>
         Future.Unit
@@ -102,7 +102,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existBlocks(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def existBlock(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     blocksDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
@@ -111,7 +111,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def notExistBlocks(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def notExistBlock(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     blocksDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyBlocked))
@@ -120,7 +120,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existFollows(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def existFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     followsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
@@ -129,7 +129,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def notExistFollows(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def notExistFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     followsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyFollowed))
@@ -138,7 +138,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existMediums(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
+  def existMedium(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
     mediumIdsOpt match {
       case Some(mediumIds) =>
         mediumsDAO.exist(mediumIds, sessionId).flatMap(_ match {
@@ -152,7 +152,7 @@ class ValidationDAO @Inject()(
     }
   }
 
-  def notExistFeedFavorites(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+  def notExistFeedFavorite(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     feedFavoritesDAO.exist(feedId, sessionId).flatMap(_ match {
       case false =>
         Future.Unit
@@ -161,7 +161,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existFeedFavorites(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+  def existFeedFavorite(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     feedFavoritesDAO.exist(feedId, sessionId).flatMap(_ match {
       case false =>
         Future.exception(CactaceaException(FeedNotFavorited))
@@ -170,7 +170,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existFriendRequests(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def existFriendRequest(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     friendRequestsDAO.exist(accountId, sessionId).flatMap(_ match {
       case false =>
         Future.exception(CactaceaException(FriendRequestNotFound))
@@ -179,7 +179,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def notExistFriendRequests(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def notExistFriendRequest(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     friendRequestsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyRequested))
@@ -188,7 +188,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def findFriendRequests(friendRequestId: FriendRequestId, sessionId: SessionId): Future[FriendRequests] = {
+  def findFriendRequest(friendRequestId: FriendRequestId, sessionId: SessionId): Future[FriendRequests] = {
     friendRequestsDAO.find(friendRequestId, sessionId).flatMap(_ match {
       case Some(r) =>
         Future.value(r)
@@ -197,7 +197,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def notExistFriends(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def notExistFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     friendsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyFriend))
@@ -206,7 +206,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existFriends(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def existFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     friendsDAO.exist(accountId, sessionId).flatMap(_ match {
       case false =>
         Future.exception(CactaceaException(AccountNotFriend))
@@ -224,7 +224,16 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def findNotInvitationOnlyGroups(groupId: GroupId): Future[Groups] = {
+  def existsAccountGroup(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    accountGroupsDAO.exist(groupId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(GroupNotFound))
+    })
+  }
+
+  def findNotInvitationOnlyGroup(groupId: GroupId): Future[Groups] = {
     groupsDAO.find(groupId).flatMap(_ match {
       case Some(g) =>
         if (g.invitationOnly == true) {
@@ -237,7 +246,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existGroups(groupId: GroupId): Future[Unit] = {
+  def existGroup(groupId: GroupId): Future[Unit] = {
     groupsDAO.exist(groupId).flatMap(_ match {
       case true =>
         Future.Unit
@@ -247,7 +256,7 @@ class ValidationDAO @Inject()(
   }
 
 
-  def existGroupAccounts(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+  def existGroupAccount(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     groupAccountsDAO.exist(accountId, groupId).flatMap(_ match {
       case true =>
         Future.Unit
@@ -256,7 +265,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def notExistGroupAccounts(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+  def notExistGroupAccount(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     groupAccountsDAO.exist(accountId, groupId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyJoined))
@@ -265,7 +274,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def notExistGroupInvites(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+  def notExistGroupInvite(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     groupInvitationsDAO.exist(accountId, groupId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyInvited))
@@ -274,7 +283,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def notExistMutes(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def notExistMute(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     mutesDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyMuted))
@@ -283,7 +292,7 @@ class ValidationDAO @Inject()(
     })
   }
 
-  def existMutes(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def existMute(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     mutesDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit

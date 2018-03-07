@@ -10,10 +10,10 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 @Singleton
 class FollowsRepository {
 
-  @Inject var followsDAO: FollowsDAO = _
-  @Inject var followersDAO: FollowersDAO = _
-  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject var validationDAO: ValidationDAO = _
+  @Inject private var followsDAO: FollowsDAO = _
+  @Inject private var followersDAO: FollowersDAO = _
+  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     followsDAO.findAll(accountId, since, offset, count, sessionId)
@@ -29,8 +29,8 @@ class FollowsRepository {
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccounts(accountId, sessionId)
-      _ <- validationDAO.notExistFollows(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.notExistFollow(accountId, sessionId)
       _ <- followsDAO.create(accountId, sessionId)
       _ <- followersDAO.create(accountId, sessionId)
     } yield (Future.value(Unit))
@@ -39,8 +39,8 @@ class FollowsRepository {
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccounts(accountId, sessionId)
-      _ <- validationDAO.existFollows(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existFollow(accountId, sessionId)
       _ <- followsDAO.delete(accountId, sessionId)
       _ <- followersDAO.delete(accountId, sessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.follows, sessionId)

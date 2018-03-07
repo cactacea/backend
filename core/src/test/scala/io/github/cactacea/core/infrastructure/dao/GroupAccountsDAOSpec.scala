@@ -12,12 +12,12 @@ class GroupAccountsDAOSpec extends DAOSpec {
 
   test("create user") {
 
-    val sessionAccount = this.createAccount(0L)
-    val member1 = this.createAccount(1L)
-    val member2 = this.createAccount(2L)
-    val member3 = this.createAccount(3L)
-    val member4 = this.createAccount(4L)
-    val member5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val member1 = createAccount("account1")
+    val member2 = createAccount("account2")
+    val member3 = createAccount("account3")
+    val member4 = createAccount("account4")
+    val member5 = createAccount("account5")
 
     val groupId = Await.result(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val result1 = Await.result(accountGroupsDAO.create(member1.id, groupId))
@@ -37,12 +37,12 @@ class GroupAccountsDAOSpec extends DAOSpec {
 
   test("create users") {
 
-    val sessionAccount = this.createAccount(0L)
-    val member1 = this.createAccount(1L)
-    val member2 = this.createAccount(2L)
-    val member3 = this.createAccount(3L)
-    val member4 = this.createAccount(4L)
-    val member5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val member1 = createAccount("account1")
+    val member2 = createAccount("account2")
+    val member3 = createAccount("account3")
+    val member4 = createAccount("account4")
+    val member5 = createAccount("account5")
 
     val accountIds = List(member1.id, member2.id, member3.id, member4.id, member5.id)
     val groupId = Await.result(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -53,12 +53,12 @@ class GroupAccountsDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount = this.createAccount(0L)
-    val member1 = this.createAccount(1L)
-    val member2 = this.createAccount(2L)
-    val member3 = this.createAccount(3L)
-    val member4 = this.createAccount(4L)
-    val member5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val member1 = createAccount("account1")
+    val member2 = createAccount("account2")
+    val member3 = createAccount("account3")
+    val member4 = createAccount("account4")
+    val member5 = createAccount("account5")
 
     val groupId = Await.result(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     Await.result(accountGroupsDAO.create(member1.id, groupId))
@@ -80,12 +80,12 @@ class GroupAccountsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = this.createAccount(0L)
-    val member1 = this.createAccount(1L)
-    val member2 = this.createAccount(2L)
-    val member3 = this.createAccount(3L)
-    val member4 = this.createAccount(4L)
-    val member5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val member1 = createAccount("account1")
+    val member2 = createAccount("account2")
+    val member3 = createAccount("account3")
+    val member4 = createAccount("account4")
+    val member5 = createAccount("account5")
 
     val accountIds = List(member1.id, member2.id, member3.id, member4.id, member5.id)
     val groupId = Await.result(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -103,12 +103,12 @@ class GroupAccountsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = this.createAccount(0L)
-    val member1 = this.createAccount(1L)
-    val member2 = this.createAccount(2L)
-    val member3 = this.createAccount(3L)
-    val member4 = this.createAccount(4L)
-    val member5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val member1 = createAccount("account1")
+    val member2 = createAccount("account2")
+    val member3 = createAccount("account3")
+    val member4 = createAccount("account4")
+    val member5 = createAccount("account5")
 
     val accountIds = List(member1.id, member2.id, member3.id, member4.id, member5.id)
     val groupId = Await.result(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -135,12 +135,12 @@ class GroupAccountsDAOSpec extends DAOSpec {
 
   test("findCount") {
 
-    val sessionAccount = this.createAccount(0L)
-    val member1 = this.createAccount(1L)
-    val member2 = this.createAccount(2L)
-    val member3 = this.createAccount(3L)
-    val member4 = this.createAccount(4L)
-    val member5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val member1 = createAccount("account1")
+    val member2 = createAccount("account2")
+    val member3 = createAccount("account3")
+    val member4 = createAccount("account4")
+    val member5 = createAccount("account5")
 
     val accountIds = List(member1.id, member2.id, member3.id, member4.id, member5.id)
     val groupId = Await.result(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))

@@ -3,7 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.twitter.inject.Logging
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.AccountStatusType
-import io.github.cactacea.core.helpers.{DAOSpec, FactoryHelper}
+import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 
 class AccountsDAOSpec extends DAOSpec with Logging {
@@ -17,9 +17,9 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
-    val newUser = FactoryHelper.createAccounts(1L)
+    val newUser = createAccount("account1")
     val accountId = Await.result(
       accountsDAO.create(newUser.accountName, newUser.displayName, newUser.password, newUser.web, newUser.birthday, newUser.location, newUser.bio)
     )
@@ -37,7 +37,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("exist by account name and password") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val result = Await.result(
       accountsDAO.find(
@@ -52,7 +52,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("exists by session id") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val result = Await.result(
       accountsDAO.find(sessionAccount.id.toSessionId)
@@ -64,9 +64,9 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("exists by account ids") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
 
     val result = Await.result(accountsDAO.exist(List(sessionAccount.id, account1.id, account2.id), sessionAccount.id.toSessionId))
 
@@ -76,7 +76,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("update password") {
 
-    val sessionAccount = this.createAccount(1L)
+    val sessionAccount = createAccount("account1")
 
     Await.result(
       accountsDAO.updatePassword(
@@ -93,9 +93,9 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("update account name") {
 
-    val sessionAccount = this.createAccount(1L)
+    val sessionAccount = createAccount("account1")
 
-    val newUser = FactoryHelper.createAccounts(0L)
+    val newUser = createAccount("account0")
     val accountId = this.insertAccounts(newUser)
 
     Await.result(
@@ -113,9 +113,9 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("update other user's userName") {
 
-    val sessionAccount = this.createAccount(0L)
-    val account1 = this.createAccount(1L)
-    val account2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val account1 = createAccount("account1")
+    val account2 = createAccount("account2")
 
     // update other user name
     Await.result(accountsDAO.updateDisplayName(account1.id, Some("newUserName1"), sessionAccount.id.toSessionId))
@@ -138,10 +138,10 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("exist") {
 
-    val sessionAccount = this.createAccount(0L)
-    val noBlockedUser = this.createAccount(1L)
-    val blockedAccount1 = this.createAccount(2L)
-    val blockedAccount2 = this.createAccount(3L)
+    val sessionAccount = createAccount("account0")
+    val noBlockedUser = createAccount("account1")
+    val blockedAccount1 = createAccount("account2")
+    val blockedAccount2 = createAccount("account3")
 
     val result1 = Await.result(accountsDAO.exist(blockedAccount1.id, sessionAccount.id.toSessionId))
     val result2 = Await.result(accountsDAO.exist(blockedAccount1.id, sessionAccount.id.toSessionId))
@@ -159,15 +159,15 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("find") {
 
-    val account1 = this.createAccount(1L)
-    val sessionAccount = this.createAccount(2L)
-    val user1 = this.createAccount(3L)
-    val user2 = this.createAccount(5L)
-    val user3 = this.createAccount(6L)
-    val user4 = this.createAccount(7L)
-    val friend1 = this.createAccount(8L)
-    val friend2 = this.createAccount(9L)
-    val blockedUser = this.createAccount(10L)
+    val account1 = createAccount("account1")
+    val sessionAccount = createAccount("account2")
+    val user1 = createAccount("account3")
+    val user2 = createAccount("account5")
+    val user3 = createAccount("account6")
+    val user4 = createAccount("account7")
+    val friend1 = createAccount("account8")
+    val friend2 = createAccount("account9")
+    val blockedUser = createAccount("account10")
 
     // account1 follow user1
     Await.result(followsDAO.create(user1.id, account1.id.toSessionId))
@@ -217,7 +217,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("find session user") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val userList = Await.result(accountsDAO.find(sessionAccount.id.toSessionId))
     val user = userList.head
@@ -233,13 +233,13 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("findAll") {
 
-    val sessionAccount = this.createAccount(0L)
-    val blockedUser = this.createAccount(1L)
-    val account1 = this.createAccount(2L)
-    val account2 = this.createAccount(3L)
-    val account3 = this.createAccount(4L)
-    val account4 = this.createAccount(5L)
-    val account5 = this.createAccount(6L)
+    val sessionAccount = createAccount("account0")
+    val blockedUser = createAccount("account1")
+    val account1 = createAccount("account2")
+    val account2 = createAccount("account3")
+    val account3 = createAccount("account4")
+    val account4 = createAccount("account5")
+    val account5 = createAccount("account6")
 
     Await.result(accountsDAO.updateAccountName("userName1", account1.id.toSessionId))
     Await.result(accountsDAO.updateAccountName("userName2", account2.id.toSessionId))
@@ -277,7 +277,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("signOut") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     Await.result(accountsDAO.signOut(sessionAccount.id.toSessionId))
     val result1 = Await.result(accountsDAO.find(sessionAccount.id.toSessionId))
@@ -287,7 +287,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("findStatus") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
     val result = Await.result(accountsDAO.findStatus(sessionAccount.id.toSessionId))
     assert(result.isDefined == true)
     val (accountStatus, signedOutAt) = result.get

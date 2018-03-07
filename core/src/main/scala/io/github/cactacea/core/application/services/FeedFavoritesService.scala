@@ -3,26 +3,34 @@ package io.github.cactacea.core.application.services
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.InjectionService
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.models.{Account, Feed}
 import io.github.cactacea.core.domain.repositories.FeedFavoritesRepository
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
-class FeedFavoritesService @Inject()(db: DatabaseService, feedFavoritesRepository: FeedFavoritesRepository, actionService: InjectionService) {
+class FeedFavoritesService {
+
+  @Inject private var db: DatabaseService = _
+  @Inject private var feedFavoritesRepository: FeedFavoritesRepository = _
+  @Inject private var actionService: InjectionService = _
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(feedFavoritesRepository.create(feedId, sessionId))
-      _ <- actionService.feedCreated(feedId, sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        r <- feedFavoritesRepository.create(feedId, sessionId)
+        _ <- actionService.feedCreated(feedId, sessionId)
+      } yield (r)
+    }
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(feedFavoritesRepository.delete(feedId, sessionId))
-      _ <- actionService.feedDeleted(feedId, sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        r <- feedFavoritesRepository.delete(feedId, sessionId)
+        _ <- actionService.feedDeleted(feedId, sessionId)
+      } yield (r)
+    }
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {

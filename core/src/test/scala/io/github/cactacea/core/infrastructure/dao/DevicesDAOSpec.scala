@@ -12,7 +12,7 @@ class DevicesDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val udid = "udid"
     val deviceId = Await.result(devicesDAO.create(udid, None, sessionAccount.id.toSessionId))
@@ -26,7 +26,7 @@ class DevicesDAOSpec extends DAOSpec {
 
   test("find") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val udid = "udid"
     val deviceId = Await.result(devicesDAO.create(udid, None, sessionAccount.id.toSessionId))
@@ -41,7 +41,7 @@ class DevicesDAOSpec extends DAOSpec {
 
   test("edit") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken = Some("0000000000000000000000000000000000000000000000000000000000000000")
@@ -57,7 +57,7 @@ class DevicesDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val udid = "udid"
     Await.result(devicesDAO.create(udid, None, sessionAccount.id.toSessionId))

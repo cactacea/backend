@@ -13,9 +13,9 @@ class FollowsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
-    val followAccount1 = this.createAccount(1L)
-    val followAccount2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val followAccount1 = createAccount("account1")
+    val followAccount2 = createAccount("account2")
 
     // create follows
     Await.result(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
@@ -50,9 +50,9 @@ class FollowsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = this.createAccount(0L)
-    val followAccount1 = this.createAccount(1L)
-    val followAccount2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val followAccount1 = createAccount("account1")
+    val followAccount2 = createAccount("account2")
     Await.result(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     Await.result(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
@@ -68,10 +68,10 @@ class FollowsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = this.createAccount(0L)
-    val followAccount1 = this.createAccount(1L)
-    val followAccount2 = this.createAccount(2L)
-    val followAccount3 = this.createAccount(3L)
+    val sessionAccount = createAccount("account0")
+    val followAccount1 = createAccount("account1")
+    val followAccount2 = createAccount("account2")
+    val followAccount3 = createAccount("account3")
     Await.result(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     Await.result(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
@@ -87,13 +87,13 @@ class FollowsDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
-    val sessionAccount3 = this.createAccount(2L)
-    val sessionAccount4 = this.createAccount(3L)
-    val sessionAccount5 = this.createAccount(4L)
-    val sessionAccount6 = this.createAccount(5L)
-    val followUser = this.createAccount(6L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
+    val sessionAccount3 = createAccount("account2")
+    val sessionAccount4 = createAccount("account3")
+    val sessionAccount5 = createAccount("account4")
+    val sessionAccount6 = createAccount("account5")
+    val followUser = createAccount("account6")
 
     Await.result(followsDAO.create(sessionAccount1.id, followUser.id.toSessionId))
     Await.result(followsDAO.create(sessionAccount2.id, followUser.id.toSessionId))

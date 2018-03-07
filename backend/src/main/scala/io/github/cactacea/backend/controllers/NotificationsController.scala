@@ -7,7 +7,9 @@ import io.github.cactacea.core.application.services.NotificationsService
 import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
-class NotificationsController @Inject()(notificationsService: NotificationsService) extends Controller {
+class NotificationsController extends Controller {
+
+  @Inject private var notificationsService: NotificationsService = _
 
   get("/comments") { request: GetNotifications =>
     notificationsService.find(

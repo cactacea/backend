@@ -7,7 +7,9 @@ import io.github.cactacea.core.infrastructure.dao.NotificationsDAO
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 
 @Singleton
-class NotificationsRepository @Inject()(notificationsDAO: NotificationsDAO) {
+class NotificationsRepository {
+
+  @Inject private var notificationsDAO: NotificationsDAO = _
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Notification]] = {
     notificationsDAO.findAll(since, offset, count, sessionId).map(_.map(Notification(_)))

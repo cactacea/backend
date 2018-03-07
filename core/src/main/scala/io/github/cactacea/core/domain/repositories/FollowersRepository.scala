@@ -9,7 +9,7 @@ import io.github.cactacea.core.infrastructure.identifiers.{SessionId, AccountId}
 @Singleton
 class FollowersRepository {
 
-  @Inject var followersDAO: FollowersDAO = _
+  @Inject private var followersDAO: FollowersDAO = _
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     val accountId = sessionId.toAccountId

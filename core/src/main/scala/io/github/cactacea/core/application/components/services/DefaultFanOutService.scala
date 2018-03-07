@@ -10,8 +10,8 @@ import io.github.cactacea.core.util.exceptions.FanOutException
 @Singleton
 class DefaultFanOutService extends FanOutService {
 
-  @Inject var pushNotificationService: PushNotificationService = _
-  @Inject var pushNotificationsRepository: PushNotificationsRepository = _
+  @Inject private var pushNotificationService: PushNotificationService = _
+  @Inject private var pushNotificationsRepository: PushNotificationsRepository = _
 
   def fanOutFeed(feedId: FeedId): Future[Unit] = {
     (for {

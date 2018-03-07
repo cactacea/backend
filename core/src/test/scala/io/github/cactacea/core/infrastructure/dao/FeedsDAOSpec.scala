@@ -22,8 +22,8 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -134,8 +134,8 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("edit") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -265,8 +265,8 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -398,10 +398,10 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = this.createAccount(0L)
-    val followerUser = this.createAccount(1L)
-    val friendUser = this.createAccount(2L)
-    val noRelationshipUser = this.createAccount(3L)
+    val sessionAccount = createAccount("account0")
+    val followerUser = createAccount("account1")
+    val friendUser = createAccount("account2")
+    val noRelationshipUser = createAccount("account3")
 
     val medium1 = this.createMedium(sessionAccount.id)
     val medium2 = this.createMedium(sessionAccount.id)
@@ -475,10 +475,10 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("find an account's feeds") {
 
-    val sessionAccount = this.createAccount(0L)
-    val followerUser = this.createAccount(1L)
-    val friendUser = this.createAccount(2L)
-    val noRelationshipUser = this.createAccount(3L)
+    val sessionAccount = createAccount("account0")
+    val followerUser = createAccount("account1")
+    val friendUser = createAccount("account2")
+    val noRelationshipUser = createAccount("account3")
 
     val medium1 = this.createMedium(sessionAccount.id)
     val medium2 = this.createMedium(sessionAccount.id)
@@ -531,10 +531,10 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("find") {
 
-    val sessionAccount = this.createAccount(0L)
-    val followerUser = this.createAccount(1L)
-    val friendUser = this.createAccount(2L)
-    val noRelationshipUser = this.createAccount(3L)
+    val sessionAccount = createAccount("account0")
+    val followerUser = createAccount("account1")
+    val friendUser = createAccount("account2")
+    val noRelationshipUser = createAccount("account3")
 
     val medium1 = this.createMedium(sessionAccount.id)
     val medium2 = this.createMedium(sessionAccount.id)
@@ -618,8 +618,8 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("find session's feeds") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -764,8 +764,8 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("find for push notification") {
 
-    val sessionAccount1 = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
+    val sessionAccount1 = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -845,7 +845,7 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("updateNotified") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val medium1 = this.createMedium(sessionAccount.id)
     val medium2 = this.createMedium(sessionAccount.id)
@@ -911,7 +911,7 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("updateDelivered") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
 
     val medium1 = this.createMedium(sessionAccount.id)
     val medium2 = this.createMedium(sessionAccount.id)

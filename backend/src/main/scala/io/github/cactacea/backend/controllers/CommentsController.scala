@@ -10,7 +10,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class CommentsController extends Controller {
 
-  @Inject var commentsService: CommentsService = _
+  @Inject private var commentsService: CommentsService = _
 
   get("/comments") { request: GetComments =>
     commentsService.findAll(
@@ -51,7 +51,7 @@ class CommentsController extends Controller {
     )
   }
 
-  @Inject var commentFavoritesService: CommentFavoritesService = _
+  @Inject private var commentFavoritesService: CommentFavoritesService = _
 
   get("/comments/:id/favorites") { request: GetCommentFavorites =>
     commentFavoritesService.findAccounts(

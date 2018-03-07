@@ -8,7 +8,6 @@ import com.twitter.util.Await
 import com.twitter.util.logging.Logging
 import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.application.services.SessionsService
-import io.github.cactacea.core.infrastructure.services.DatabaseProviderModule
 import org.scalatest.BeforeAndAfter
 
 class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
@@ -27,6 +26,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultStorageModule,
         DefaultSubScribeModule,
         DefaultTranscodeModule,
+        DefaultIdentifyModule,
         FinatraJacksonModule
       )
     ).create
@@ -39,7 +39,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
     DatabaseHelper.initialize()
   }
 
-  @Inject var sessionService: SessionsService = _
+  @Inject private var sessionService: SessionsService = _
 
   def signUp(accountName: String, password: String, udid: String) = {
     Await.result(sessionService.signUp(accountName, accountName, "account password", "ffc1ded6f4570d557ad65f986684fc10c7f8d51f", Some("test@example.com"), None, Some("location"), Some("bio"), "user-agent"))

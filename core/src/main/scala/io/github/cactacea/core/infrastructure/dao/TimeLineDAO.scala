@@ -2,18 +2,18 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class TimeLineDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var feedsDAO: FeedsDAO = _
-  @Inject var feedTagsDAO: FeedTagsDAO = _
-  @Inject var feedMediumDAO: FeedMediumDAO = _
+  @Inject private var feedsDAO: FeedsDAO = _
+  @Inject private var feedTagsDAO: FeedTagsDAO = _
+  @Inject private var feedMediumDAO: FeedMediumDAO = _
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId

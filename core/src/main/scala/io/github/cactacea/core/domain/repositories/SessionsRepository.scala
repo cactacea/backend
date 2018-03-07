@@ -13,16 +13,15 @@ import io.github.cactacea.core.util.tokens.AuthTokenGenerator
 import org.joda.time.DateTime
 
 @Singleton
-class SessionsRepository @Inject()(
-                                   advertisementSettingsDAO: AdvertisementSettingsDAO,
-                                   devicesDAO: DevicesDAO,
-                                   notificationSettingsDAO: PushNotificationSettingsDAO,
-                                   feedsDAO: FeedsDAO,
-                                   feedFavoritesDAO: FeedFavoritesDAO,
-                                   accountsDAO: AccountsDAO,
-                                   socialAccountsDAO: SocialAccountsDAO,
-                                   validationDAO: ValidationDAO,
-                                   authTokenGenerator: AuthTokenGenerator) {
+class SessionsRepository {
+
+  @Inject private var advertisementSettingsDAO: AdvertisementSettingsDAO = _
+  @Inject private var devicesDAO: DevicesDAO = _
+  @Inject private var notificationSettingsDAO: PushNotificationSettingsDAO = _
+  @Inject private var accountsDAO: AccountsDAO = _
+  @Inject private var socialAccountsDAO: SocialAccountsDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
+  @Inject private var authTokenGenerator: AuthTokenGenerator = _
 
   def signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
     for {

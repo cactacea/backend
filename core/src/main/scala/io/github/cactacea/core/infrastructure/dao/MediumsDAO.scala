@@ -2,21 +2,22 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.infrastructure.identifiers.{MediumId, SessionId}
 import io.github.cactacea.core.infrastructure.models.Mediums
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class MediumsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(key: String, uri: String, thumbnailUri: Option[String], mediumType: MediumType, width: Int, height: Int, size: Long, sessionId: SessionId): Future[MediumId] = {
     for {
-      id <- identifiesDAO.create().map(MediumId(_))
+      id <- identifyService.generate().map(MediumId(_))
       _ <- insert(id, key, uri, thumbnailUri, mediumType, width, height, size, sessionId)
     } yield (id)
   }

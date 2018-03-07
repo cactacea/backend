@@ -2,9 +2,9 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.core.infrastructure.models.AdvertisementSettings
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class AdvertisementSettingsDAO @Inject()(db: DatabaseService) {

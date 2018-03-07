@@ -9,16 +9,16 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 @Singleton
 class BlocksRepository {
 
-  @Inject var blocksDAO: BlocksDAO = _
-  @Inject var blockersDAO: BlockersDAO = _
-  @Inject var followsDAO: FollowsDAO = _
-  @Inject var followersDAO: FollowersDAO = _
-  @Inject var friendsDAO: FriendsDAO = _
-  @Inject var mutesDAO: MutesDAO = _
-  @Inject var timeLinesDAO: TimeLineDAO = _
-  @Inject var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject var feedFavoritesDAO: FeedFavoritesDAO = _
-  @Inject var validationDAO: ValidationDAO = _
+  @Inject private var blocksDAO: BlocksDAO = _
+  @Inject private var blockersDAO: BlockersDAO = _
+  @Inject private var followsDAO: FollowsDAO = _
+  @Inject private var followersDAO: FollowersDAO = _
+  @Inject private var friendsDAO: FriendsDAO = _
+  @Inject private var mutesDAO: MutesDAO = _
+  @Inject private var timeLinesDAO: TimeLineDAO = _
+  @Inject private var friendRequestsDAO: FriendRequestsDAO = _
+  @Inject private var feedFavoritesDAO: FeedFavoritesDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     blocksDAO.findAll(since, offset, count, sessionId)
@@ -28,8 +28,8 @@ class BlocksRepository {
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccounts(accountId, sessionId, false)
-      _ <- validationDAO.notExistBlocks(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId, false)
+      _ <- validationDAO.notExistBlock(accountId, sessionId)
       _ <- blocksDAO.create(accountId, sessionId)
       _ <- blockersDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- followsDAO.delete(accountId, sessionId)
@@ -52,8 +52,8 @@ class BlocksRepository {
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccounts(accountId, sessionId, false)
-      _ <- validationDAO.existBlocks(accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId, false)
+      _ <- validationDAO.existBlock(accountId, sessionId)
       _ <- blocksDAO.delete(accountId, sessionId)
       _ <- blockersDAO.delete(accountId, sessionId)
     } yield (Future.value(Unit))

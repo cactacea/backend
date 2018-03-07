@@ -13,9 +13,9 @@ class OutstandingFriendRequestsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
-    val followAccount1 = this.createAccount(1L)
-    val followAccount2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val followAccount1 = createAccount("account1")
+    val followAccount2 = createAccount("account2")
 
     // create friendRequestInProgresss
     Await.result(outstandingFriendRequestsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
@@ -41,9 +41,9 @@ class OutstandingFriendRequestsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = this.createAccount(0L)
-    val followAccount1 = this.createAccount(1L)
-    val followAccount2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val followAccount1 = createAccount("account1")
+    val followAccount2 = createAccount("account2")
     Await.result(outstandingFriendRequestsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     Await.result(outstandingFriendRequestsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 

@@ -11,7 +11,7 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 @Singleton
 class SocialAccountsRepository {
 
-  @Inject var socialAccountsDAO: SocialAccountsDAO = _
+  @Inject private var socialAccountsDAO: SocialAccountsDAO = _
 
   def findAll(sessionId: SessionId): Future[List[SocialAccount]] = {
     socialAccountsDAO.findAll(sessionId).map(_.map(t =>

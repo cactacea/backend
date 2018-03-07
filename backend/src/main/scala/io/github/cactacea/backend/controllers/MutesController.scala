@@ -10,7 +10,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class MutesController extends Controller {
 
-  @Inject var mutesService: MutesService = _
+  @Inject private var mutesService: MutesService = _
 
   get("/session/mutes") { request: GetSessionMutes =>
     mutesService.find(

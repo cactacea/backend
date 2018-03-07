@@ -14,7 +14,7 @@ class MediumsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
     val mediumId1 = Await.result(mediumsDAO.create("key1", "http://example.com/test1.jpeg", Some("http://example.com/test1.jpeg"), MediumType.image, 1, 4, 100L, sessionAccount.id.toSessionId))
     val mediumId2 = Await.result(mediumsDAO.create("key2", "http://example.com/test2.mov", Some("http://example.com/test2.mov"), MediumType.movie, 2, 5, 200L, sessionAccount.id.toSessionId))
     val mediumId3 = Await.result(mediumsDAO.create("key3", "http://example.com/test3.jpeg", Some("http://example.com/test3.jpeg"), MediumType.image, 3, 6, 300L, sessionAccount.id.toSessionId))
@@ -33,7 +33,7 @@ class MediumsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
     val mediumId1 = Await.result(mediumsDAO.create("key1", "http://example.com/test1.jpeg", Some("http://example.com/test1.jpeg"), MediumType.image, 1, 4, 100L, sessionAccount.id.toSessionId))
     val mediumId2 = Await.result(mediumsDAO.create("key2", "http://example.com/test2.mov", Some("http://example.com/test2.mov"), MediumType.movie, 2, 5, 200L, sessionAccount.id.toSessionId))
     val mediumId3 = Await.result(mediumsDAO.create("key3", "http://example.com/test3.jpeg", Some("http://example.com/test3.jpeg"), MediumType.image, 3, 6, 300L, sessionAccount.id.toSessionId))
@@ -53,7 +53,7 @@ class MediumsDAOSpec extends DAOSpec {
 
   test("exist ids") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
     val mediumId1 = Await.result(mediumsDAO.create("key1", "http://example.com/test1.jpeg", Some("http://example.com/test1.jpeg"), MediumType.image, 1, 4, 100L, sessionAccount.id.toSessionId))
     val mediumId2 = Await.result(mediumsDAO.create("key2", "http://example.com/test2.mov", Some("http://example.com/test2.mov"), MediumType.movie, 2, 5, 200L, sessionAccount.id.toSessionId))
     val mediumId3 = Await.result(mediumsDAO.create("key3", "http://example.com/test3.jpeg", Some("http://example.com/test3.jpeg"), MediumType.image, 3, 6, 300L, sessionAccount.id.toSessionId))

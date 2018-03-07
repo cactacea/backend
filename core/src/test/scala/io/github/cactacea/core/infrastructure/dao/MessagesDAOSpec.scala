@@ -15,7 +15,7 @@ class MessagesDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
 
@@ -33,7 +33,7 @@ class MessagesDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
 
@@ -44,7 +44,7 @@ class MessagesDAOSpec extends DAOSpec {
 
   test("updateReadStatus") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     val result1 = Await.result(messagesDAO.updateReadAccountCount(List(messageId)))
@@ -59,7 +59,7 @@ class MessagesDAOSpec extends DAOSpec {
 
   test("updateNotified") {
 
-    val sessionAccount = this.createAccount(0L)
+    val sessionAccount = createAccount("account0")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     assert(Await.result(messagesDAO.updateNotified(messageId))== true)

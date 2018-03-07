@@ -103,7 +103,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
 
     val session = signUp("session account", "password", "udid").account
     assert(intercept[CactaceaException] {
-      Await.result(accountGroupsRepository.show(GroupId(0L), session.id.toSessionId))
+      Await.result(accountGroupsRepository.show(GroupId(-1L), session.id.toSessionId))
     }.error == GroupNotFound)
 
   }
@@ -128,7 +128,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
 
     val session = signUp("session account", "password", "udid").account
     assert(intercept[CactaceaException] {
-      Await.result(accountGroupsRepository.hide(GroupId(0L), session.id.toSessionId))
+      Await.result(accountGroupsRepository.hide(GroupId(-1L), session.id.toSessionId))
     }.error == GroupNotFound)
 
   }

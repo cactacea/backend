@@ -5,12 +5,11 @@ import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.TimelineFeed
 import io.github.cactacea.core.domain.repositories.TimelineRepository
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
-class TimelineService @Inject()(db: DatabaseService) {
+class TimelineService {
 
-  @Inject var timelineRepository: TimelineRepository = _
+  @Inject private var timelineRepository: TimelineRepository = _
 
   def find(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[TimelineFeed]] = {
     timelineRepository.findAll(since, offset, count, sessionId)

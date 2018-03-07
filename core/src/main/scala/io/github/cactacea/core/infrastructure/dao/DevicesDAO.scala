@@ -2,16 +2,17 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.{DeviceId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class DevicesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def find(sessionId: SessionId): Future[List[Devices]] = {
     val accountId = sessionId.toAccountId
@@ -35,7 +36,7 @@ class DevicesDAO @Inject()(db: DatabaseService) {
 
   def create(udid: String, info: Option[String], sessionId: SessionId): Future[DeviceId] = {
     for {
-      id <- identifiesDAO.create().map(DeviceId(_))
+      id <- identifyService.generate().map(DeviceId(_))
       _ <- insert(id, udid, info, sessionId)
     } yield (id)
   }

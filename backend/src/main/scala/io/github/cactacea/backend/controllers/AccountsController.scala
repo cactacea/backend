@@ -9,7 +9,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class AccountsController extends Controller {
 
-  @Inject var accountsService: AccountsService = _
+  @Inject private var accountsService: AccountsService = _
 
   get("/accounts") { request: GetAccounts =>
     accountsService.find(
@@ -53,7 +53,7 @@ class AccountsController extends Controller {
 
 
 
-  @Inject var feedsService: FeedsService = _
+  @Inject private var feedsService: FeedsService = _
 
   get("/accounts/:id/feeds") { request: GetFeeds =>
     feedsService.find(
@@ -65,7 +65,7 @@ class AccountsController extends Controller {
     )
   }
 
-  @Inject var followsService: FollowsService = _
+  @Inject private var followsService: FollowsService = _
 
   get("/accounts/:id/follows") { request: GetFollows =>
     followsService.find(
@@ -92,7 +92,7 @@ class AccountsController extends Controller {
   }
 
 
-  @Inject var followersService: FollowersService = _
+  @Inject private var followersService: FollowersService = _
 
   get("/accounts/:id/followers") { request: GetFollowers =>
     followersService.find(

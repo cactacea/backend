@@ -11,7 +11,7 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 @Singleton
 class AdvertisementSettingsRepository {
 
-  @Inject var advertisementSettingsDAO: AdvertisementSettingsDAO = _
+  @Inject private var advertisementSettingsDAO: AdvertisementSettingsDAO = _
 
   def find(sessionId: SessionId): Future[AdvertisementSetting] = {
     advertisementSettingsDAO.find(

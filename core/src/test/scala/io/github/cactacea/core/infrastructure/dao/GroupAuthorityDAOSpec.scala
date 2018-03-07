@@ -16,8 +16,8 @@ class GroupAuthorityDAOSpec extends DAOSpec {
 
   test("hasInviteAuthority") {
 
-    val owner = this.createAccount(1L)
-    val member = this.createAccount(2L)
+    val owner = createAccount("account1")
+    val member = createAccount("account2")
 
     val groupId1 = Await.result(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.friends, GroupAuthorityType.member, 0L, owner.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.friends, GroupAuthorityType.member, 0L, owner.id.toSessionId))
@@ -42,11 +42,11 @@ class GroupAuthorityDAOSpec extends DAOSpec {
 
   test("hasJoinAuthority") {
 
-    val owner = this.createAccount(1L)
-    val user = this.createAccount(2L)
-    val follower = this.createAccount(3L)
-    val follow = this.createAccount(4L)
-    val friend = this.createAccount(5L)
+    val owner = createAccount("account1")
+    val user = createAccount("account2")
+    val follower = createAccount("account3")
+    val follow = createAccount("account4")
+    val friend = createAccount("account5")
 
     // create follow
     Await.result(followersDAO.create(owner.id, follow.id.toSessionId))

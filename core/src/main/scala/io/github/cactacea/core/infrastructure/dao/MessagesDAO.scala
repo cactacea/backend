@@ -2,21 +2,22 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.enums.MessageType
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class MessagesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(groupId: GroupId, accountCount: Long, accountId: AccountId, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
     for {
-      id <- identifiesDAO.create().map(MessageId(_))
+      id <- identifyService.generate().map(MessageId(_))
       _ <- insert(id, groupId, accountCount, accountId, messageType, sessionId)
     } yield (id)
   }
@@ -42,7 +43,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
 
   def create(groupId: GroupId, message: Option[String], accountCount: Long, mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
     for {
-      id <- identifiesDAO.create().map(MessageId(_))
+      id <- identifyService.generate().map(MessageId(_))
       _ <- insert(id, groupId, message, accountCount, mediumId, sessionId)
     } yield (id)
   }

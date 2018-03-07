@@ -11,7 +11,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class GroupInvitationsController extends Controller {
 
-  @Inject var invitationService: GroupInvitationsService = _
+  @Inject private var invitationService: GroupInvitationsService = _
 
   get("/session/invitations") { request: GetSessionInvitations =>
     invitationService.find(

@@ -4,9 +4,9 @@ import java.util.Date
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
 import io.github.cactacea.core.infrastructure.models._
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
 @Singleton
 class AuthDAO @Inject()(db: DatabaseService) {

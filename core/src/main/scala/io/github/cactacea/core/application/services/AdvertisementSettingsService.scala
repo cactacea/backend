@@ -2,14 +2,15 @@ package io.github.cactacea.core.application.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.models.AdvertisementSetting
 import io.github.cactacea.core.domain.repositories.AdvertisementSettingsRepository
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
-class AdvertisementSettingsService @Inject()(db: DatabaseService) {
+class AdvertisementSettingsService {
 
-  @Inject var advertisementSettingsRepository: AdvertisementSettingsRepository = _
+  @Inject private var advertisementSettingsRepository: AdvertisementSettingsRepository = _
+  @Inject private var db: DatabaseService = _
 
   def find(sessionId: SessionId): Future[AdvertisementSetting] = {
     advertisementSettingsRepository.find(sessionId)

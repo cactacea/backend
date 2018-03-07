@@ -2,11 +2,12 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.enums._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
 import io.github.cactacea.core.infrastructure.results.RelationshipBlocksCount
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 import org.joda.time.DateTime
 
 @Singleton
@@ -14,12 +15,12 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject var blocksCountDAO: BlockCountDAO = _
-  @Inject var identifiesDAO: IdentifiesDAO = _
+  @Inject private var blocksCountDAO: BlockCountDAO = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String]): Future[AccountId] = {
     for {
-      id <- identifiesDAO.create().map(AccountId(_))
+      id <- identifyService.generate().map(AccountId(_))
       _ <- insert(id, accountName, displayName, password, web, birthday, location, bio)
     } yield (id)
   }

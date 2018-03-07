@@ -13,11 +13,11 @@ class AdvertisementSettingsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount1 = this.createAccount(1L)
-    val sessionAccount2 = this.createAccount(2L)
-    val sessionAccount3 = this.createAccount(3L)
-    val sessionAccount4 = this.createAccount(4L)
-    val sessionAccount5 = this.createAccount(5L)
+    val sessionAccount1 = createAccount("account1")
+    val sessionAccount2 = createAccount("account2")
+    val sessionAccount3 = createAccount("account3")
+    val sessionAccount4 = createAccount("account4")
+    val sessionAccount5 = createAccount("account5")
 
     // create settings
     Await.result(advertisementSettingsDAO.create(true, false, false, false, false, sessionAccount1.id.toSessionId))
@@ -40,11 +40,11 @@ class AdvertisementSettingsDAOSpec extends DAOSpec {
 
   test("find") {
 
-    val sessionAccount1 = this.createAccount(1L)
-    val sessionAccount2 = this.createAccount(2L)
-    val sessionAccount3 = this.createAccount(3L)
-    val sessionAccount4 = this.createAccount(4L)
-    val sessionAccount5 = this.createAccount(5L)
+    val sessionAccount1 = createAccount("account1")
+    val sessionAccount2 = createAccount("account2")
+    val sessionAccount3 = createAccount("account3")
+    val sessionAccount4 = createAccount("account4")
+    val sessionAccount5 = createAccount("account5")
 
     // create settings
     Await.result(advertisementSettingsDAO.create(true, false, false, false, false, sessionAccount1.id.toSessionId))
@@ -67,11 +67,11 @@ class AdvertisementSettingsDAOSpec extends DAOSpec {
 
   test("edit") {
 
-    val sessionAccount1 = this.createAccount(1L)
-    val sessionAccount2 = this.createAccount(2L)
-    val sessionAccount3 = this.createAccount(3L)
-    val sessionAccount4 = this.createAccount(4L)
-    val sessionAccount5 = this.createAccount(5L)
+    val sessionAccount1 = createAccount("account1")
+    val sessionAccount2 = createAccount("account2")
+    val sessionAccount3 = createAccount("account3")
+    val sessionAccount4 = createAccount("account4")
+    val sessionAccount5 = createAccount("account5")
 
     // create settings
     Await.result(advertisementSettingsDAO.create(true, false, false, false, false, sessionAccount1.id.toSessionId))

@@ -6,15 +6,15 @@ import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyTyp
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, SessionId}
-import io.github.cactacea.core.util.responses.CactaceaError._
 import io.github.cactacea.core.util.exceptions.CactaceaException
+import io.github.cactacea.core.util.responses.CactaceaError._
 
 @Singleton
 class GroupsRepository {
 
-  @Inject var groupsDAO: GroupsDAO = _
-  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject var accountGroupsDAO: AccountGroupsDAO = _
+  @Inject private var groupsDAO: GroupsDAO = _
+  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
+  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
 
   def create(name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupId] = {
     for {

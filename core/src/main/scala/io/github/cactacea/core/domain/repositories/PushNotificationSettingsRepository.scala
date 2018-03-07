@@ -11,7 +11,7 @@ import io.github.cactacea.core.util.exceptions.CactaceaException
 @Singleton
 class PushNotificationSettingsRepository {
 
-  @Inject var notificationSettingsDAO: PushNotificationSettingsDAO = _
+  @Inject private var notificationSettingsDAO: PushNotificationSettingsDAO = _
 
   def find(sessionId: SessionId): Future[PushNotificationSetting] = {
     notificationSettingsDAO.find(sessionId).flatMap(_ match {

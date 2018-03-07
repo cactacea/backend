@@ -12,9 +12,9 @@ import org.joda.time.DateTime
 @Singleton
 class AccountsRepository {
 
-  @Inject var accountsDAO: AccountsDAO = _
-  @Inject var mediumsDAO: MediumsDAO = _
-  @Inject var validationDAO: ValidationDAO = _
+  @Inject private var accountsDAO: AccountsDAO = _
+  @Inject private var mediumsDAO: MediumsDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def find(sessionId: SessionId) = {
     accountsDAO.find(sessionId).flatMap( _ match {
@@ -61,7 +61,7 @@ class AccountsRepository {
 
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existAccounts(accountId)
+      _ <- validationDAO.existAccount(accountId)
       _ <- accountsDAO.updateDisplayName(accountId, userName, sessionId)
     } yield (Future.value(Unit))
   }

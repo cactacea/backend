@@ -10,7 +10,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class BlocksController extends Controller {
 
-  @Inject var blocksService: BlocksService = _
+  @Inject private var blocksService: BlocksService = _
 
   get("/session/blocks") { request: GetSessionBlocks =>
     blocksService.find(

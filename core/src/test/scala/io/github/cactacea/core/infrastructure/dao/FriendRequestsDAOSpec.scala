@@ -10,12 +10,12 @@ class FriendRequestsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
-    val requestedAccount1 = this.createAccount(1L)
-    val requestedAccount2 = this.createAccount(2L)
-    val requestedAccount3 = this.createAccount(3L)
-    val requestedAccount4 = this.createAccount(4L)
-    val requestedAccount5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val requestedAccount1 = createAccount("account1")
+    val requestedAccount2 = createAccount("account2")
+    val requestedAccount3 = createAccount("account3")
+    val requestedAccount4 = createAccount("account4")
+    val requestedAccount5 = createAccount("account5")
 
     val friendRequestId1 = Await.result(friendRequestsDAO.create(requestedAccount1.id, sessionAccount.id.toSessionId))
     val friendRequestId2 = Await.result(friendRequestsDAO.create(requestedAccount2.id, sessionAccount.id.toSessionId))
@@ -51,12 +51,12 @@ class FriendRequestsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = this.createAccount(0L)
-    val requestedAccount1 = this.createAccount(1L)
-    val requestedAccount2 = this.createAccount(2L)
-    val requestedAccount3 = this.createAccount(3L)
-    val requestedAccount4 = this.createAccount(4L)
-    val requestedAccount5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val requestedAccount1 = createAccount("account1")
+    val requestedAccount2 = createAccount("account2")
+    val requestedAccount3 = createAccount("account3")
+    val requestedAccount4 = createAccount("account4")
+    val requestedAccount5 = createAccount("account5")
 
     val friendRequestId1 = Await.result(friendRequestsDAO.create(requestedAccount1.id, sessionAccount.id.toSessionId))
     val friendRequestId2 = Await.result(friendRequestsDAO.create(requestedAccount2.id, sessionAccount.id.toSessionId))
@@ -80,12 +80,12 @@ class FriendRequestsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = this.createAccount(0L)
-    val requestedAccount1 = this.createAccount(1L)
-    val requestedAccount2 = this.createAccount(2L)
-    val requestedAccount3 = this.createAccount(3L)
-    val requestedAccount4 = this.createAccount(4L)
-    val requestedAccount5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val requestedAccount1 = createAccount("account1")
+    val requestedAccount2 = createAccount("account2")
+    val requestedAccount3 = createAccount("account3")
+    val requestedAccount4 = createAccount("account4")
+    val requestedAccount5 = createAccount("account5")
 
     Await.result(friendRequestsDAO.create(requestedAccount1.id, sessionAccount.id.toSessionId))
     Await.result(friendRequestsDAO.create(requestedAccount2.id, sessionAccount.id.toSessionId))
@@ -116,13 +116,13 @@ class FriendRequestsDAOSpec extends DAOSpec {
 
   test("find") {
 
-    val sessionAccount = this.createAccount(0L)
-    val sessionAccount2 = this.createAccount(1L)
-    val requestedAccount1 = this.createAccount(2L)
-    val requestedAccount2 = this.createAccount(3L)
-    val requestedAccount3 = this.createAccount(4L)
-    val requestedAccount4 = this.createAccount(5L)
-    val requestedAccount5 = this.createAccount(6L)
+    val sessionAccount = createAccount("account0")
+    val sessionAccount2 = createAccount("account1")
+    val requestedAccount1 = createAccount("account2")
+    val requestedAccount2 = createAccount("account3")
+    val requestedAccount3 = createAccount("account4")
+    val requestedAccount4 = createAccount("account5")
+    val requestedAccount5 = createAccount("account6")
 
     val friendRequestId1 = Await.result(friendRequestsDAO.create(requestedAccount1.id, sessionAccount.id.toSessionId))
     val friendRequestId2 = Await.result(friendRequestsDAO.create(requestedAccount2.id, sessionAccount.id.toSessionId))
@@ -157,12 +157,12 @@ class FriendRequestsDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount = this.createAccount(0L)
-    val requestedAccount1 = this.createAccount(1L)
-    val requestedAccount2 = this.createAccount(2L)
-    val requestedAccount3 = this.createAccount(3L)
-    val requestedAccount4 = this.createAccount(4L)
-    val requestedAccount5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val requestedAccount1 = createAccount("account1")
+    val requestedAccount2 = createAccount("account2")
+    val requestedAccount3 = createAccount("account3")
+    val requestedAccount4 = createAccount("account4")
+    val requestedAccount5 = createAccount("account5")
 
     Await.result(friendRequestsDAO.create(sessionAccount.id, requestedAccount1.id.toSessionId))
     Await.result(friendRequestsDAO.create(sessionAccount.id, requestedAccount2.id.toSessionId))
@@ -192,12 +192,12 @@ class FriendRequestsDAOSpec extends DAOSpec {
 
   test("update") {
 
-    val sessionAccount = this.createAccount(0L)
-    val requestedAccount1 = this.createAccount(1L)
-    val requestedAccount2 = this.createAccount(2L)
-    val requestedAccount3 = this.createAccount(3L)
-    val requestedAccount4 = this.createAccount(4L)
-    val requestedAccount5 = this.createAccount(5L)
+    val sessionAccount = createAccount("account0")
+    val requestedAccount1 = createAccount("account1")
+    val requestedAccount2 = createAccount("account2")
+    val requestedAccount3 = createAccount("account3")
+    val requestedAccount4 = createAccount("account4")
+    val requestedAccount5 = createAccount("account5")
 
     val friendRequestId1 = Await.result(friendRequestsDAO.create(sessionAccount.id, requestedAccount1.id.toSessionId))
     val friendRequestId2 = Await.result(friendRequestsDAO.create(sessionAccount.id, requestedAccount2.id.toSessionId))

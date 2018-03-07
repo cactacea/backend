@@ -12,9 +12,9 @@ class FriendRequestsStatusDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = this.createAccount(0L)
-    val requestingAccount1 = this.createAccount(1L)
-    val requestingAccount2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val requestingAccount1 = createAccount("account1")
+    val requestingAccount2 = createAccount("account2")
     Await.result(friendRequestsStatusDAO.create(sessionAccount.id, requestingAccount1.id.toSessionId))
     Await.result(friendRequestsStatusDAO.create(sessionAccount.id, requestingAccount2.id.toSessionId))
 
@@ -38,9 +38,9 @@ class FriendRequestsStatusDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = this.createAccount(0L)
-    val requestingAccount1 = this.createAccount(1L)
-    val requestingAccount2 = this.createAccount(2L)
+    val sessionAccount = createAccount("account0")
+    val requestingAccount1 = createAccount("account1")
+    val requestingAccount2 = createAccount("account2")
     Await.result(friendRequestsStatusDAO.create(sessionAccount.id, requestingAccount1.id.toSessionId))
     Await.result(friendRequestsStatusDAO.create(sessionAccount.id, requestingAccount2.id.toSessionId))
     Await.result(friendRequestsStatusDAO.delete(sessionAccount.id, requestingAccount1.id.toSessionId))

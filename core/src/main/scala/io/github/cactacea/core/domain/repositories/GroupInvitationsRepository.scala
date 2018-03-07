@@ -2,26 +2,25 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.{GroupInvitationStatusType, MessageType, NotificationType}
 import io.github.cactacea.core.domain.models.GroupInvitation
 import io.github.cactacea.core.infrastructure.dao._
-import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, GroupInvitationId, SessionId}
+import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError
+import io.github.cactacea.core.util.responses.CactaceaError._
 
 @Singleton
-class GroupInvitationsRepository @Inject()(
-                                            accountsDAO: AccountsDAO,
-                                            groupsDAO: GroupsDAO,
-                                            groupAccountsDAO: GroupAccountsDAO,
-                                            groupInvitationsDAO: GroupInvitationsDAO,
-                                            accountGroupsDAO: AccountGroupsDAO,
-                                            messagesDAO: MessagesDAO,
-                                            notificationsDAO: NotificationsDAO,
-                                            validationDAO: ValidationDAO
-                                          ) {
+class GroupInvitationsRepository {
 
-  import CactaceaError._
+  @Inject private var accountsDAO: AccountsDAO = _
+  @Inject private var groupsDAO: GroupsDAO = _
+  @Inject private var groupAccountsDAO: GroupAccountsDAO = _
+  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
+  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
+  @Inject private var messagesDAO: MessagesDAO = _
+  @Inject private var notificationsDAO: NotificationsDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInvitationId]] = {
     Future.traverseSequentially(accountIds) {
@@ -31,14 +30,14 @@ class GroupInvitationsRepository @Inject()(
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
     for {
-      _ <- validationDAO.existAccounts(accountId, sessionId)
-      g <- validationDAO.findGroup(groupId)
-      _ <- validationDAO.notExistGroupAccounts(accountId, groupId)
-      _ <- validationDAO.notExistGroupInvites(accountId, groupId)
-      _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
+      p <- validationDAO.findGroup(groupId)
+      _ <- validationDAO.notExistGroupAccount(accountId, groupId)
+      _ <- validationDAO.notExistGroupInvite(accountId, groupId)
+      _ <- validationDAO.hasJoinAndManagingAuthority(p, accountId, sessionId)
       _ <- validationDAO.checkGroupAccountsCount(groupId)
       id <- groupInvitationsDAO.create(accountId, groupId, sessionId)
-      _ <- notificationsDAO.create(accountId, NotificationType.groupInvitation, groupId.value)
+      _ <- notificationsDAO.create(accountId, NotificationType.groupInvitation, id.value)
     } yield (id)
   }
 

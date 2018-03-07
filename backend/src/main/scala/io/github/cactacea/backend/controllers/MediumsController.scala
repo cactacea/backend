@@ -12,7 +12,7 @@ import io.github.cactacea.core.util.auth.SessionContext._
 @Singleton
 class MediumsController extends Controller {
 
-  @Inject var mediumsService: MediumsService = _
+  @Inject private var mediumsService: MediumsService = _
 
   get("/mediums/:*") { request: Request =>
     response.ok.file(request.params("*"))

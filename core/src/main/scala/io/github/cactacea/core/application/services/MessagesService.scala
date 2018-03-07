@@ -3,17 +3,22 @@ package io.github.cactacea.core.application.services
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{InjectionService, PublishService}
+import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.domain.repositories.MessagesRepository
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.services.DatabaseService
 
-class MessagesService @Inject()(db: DatabaseService, messagesRepository: MessagesRepository, publishService: PublishService, injectionService: InjectionService) {
+class MessagesService {
+
+  @Inject private var db: DatabaseService = _
+  @Inject private var messagesRepository: MessagesRepository = _
+  @Inject private var publishService: PublishService = _
+  @Inject private var injectionService: InjectionService = _
 
   def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
     db.transaction {
       for {
-        id <- db.transaction(messagesRepository.create(groupId, message, mediumId, sessionId))
+        id <- messagesRepository.create(groupId, message, mediumId, sessionId)
         _ <- publishService.enqueueMessage(id)
         _ <- injectionService.messageCreated(id, sessionId)
       } yield (id)
@@ -21,10 +26,12 @@ class MessagesService @Inject()(db: DatabaseService, messagesRepository: Message
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- injectionService.messagesDeleted(groupId, sessionId)
-      _ <- db.transaction(messagesRepository.delete(groupId, sessionId).flatMap(_ => Future.Unit))
-    } yield (r)
+    db.transaction {
+      for {
+        r <- injectionService.messagesDeleted(groupId, sessionId)
+        _ <- messagesRepository.delete(groupId, sessionId)
+      } yield (r)
+    }
   }
 
   def find(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {

@@ -7,7 +7,10 @@ import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
-class SettingController @Inject()(settingsService: SettingsService, deviceTokenService: DevicesService) extends Controller {
+class SettingController extends Controller {
+
+  @Inject private var settingsService: SettingsService = _
+  @Inject private var deviceTokenService: DevicesService = _
 
   get("/social_accounts") { request: GetSocialAccounts =>
     settingsService.findSocialAccounts(
