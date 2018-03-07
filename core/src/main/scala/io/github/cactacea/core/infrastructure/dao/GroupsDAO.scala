@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
@@ -14,6 +15,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var identifyService: IdentifyService = _
+  @Inject private var timeService: TimeService = _
 
   def create(sessionId: SessionId): Future[GroupId] = {
     for {
@@ -23,7 +25,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
   }
 
   private def insert(id: GroupId, sessionId: SessionId): Future[Long] = {
-    val organizedAt = System.nanoTime()
+    val organizedAt = timeService.nanoTime()
     val name: Option[String] = None
     val by = sessionId.toAccountId
     val r = quote {
@@ -51,7 +53,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
   }
 
   private def insert(id: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, accountCount: Long, sessionId: SessionId): Future[Long] = {
-    val organizedAt = System.nanoTime()
+    val organizedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups].insert(

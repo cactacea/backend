@@ -7,5 +7,6 @@ trait ConfigService {
   val issuer: String
   val subject: String
   val algorithm: String
-  val maxGroupAccountsCount: Long
+  val maximumGroupAccountLimits: Long
+  val basePointInTime: Long
 }

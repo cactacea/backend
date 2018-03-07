@@ -13,17 +13,17 @@ USE `cactacea` ;
 -- Table `cactacea`.`mediums`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`mediums` (
-  `id` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
   `key` VARCHAR(1024) NOT NULL,
   `uri` VARCHAR(2048) NOT NULL,
   `width` INT(10) NOT NULL,
   `height` INT(10) NOT NULL,
-  `size` BIGINT(20) NOT NULL,
+  `size` BIGINT NOT NULL,
   `thumbnail_uri` VARCHAR(2048) NULL DEFAULT NULL,
-  `medium_type` INT(1) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `content_warning` TINYINT(1) NOT NULL,
-  `content_status` INT(1) NOT NULL,
+  `medium_type` TINYINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `content_warning` TINYINT NOT NULL,
+  `content_status` TINYINT NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -33,22 +33,22 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`accounts`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`accounts` (
-  `id` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
   `account_name` VARCHAR(30) NOT NULL,
   `display_name` VARCHAR(50) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
-  `follow_count` BIGINT(20) NOT NULL DEFAULT '0',
-  `profile_image` BIGINT(20) NULL DEFAULT NULL,
+  `follow_count` BIGINT NOT NULL DEFAULT 0,
+  `profile_image` BIGINT NULL DEFAULT NULL,
   `profile_image_url` VARCHAR(2083) NULL DEFAULT NULL,
-  `follower_count` BIGINT(20) NOT NULL DEFAULT '0',
-  `friend_count` BIGINT(20) NOT NULL DEFAULT '0',
+  `follower_count` BIGINT NOT NULL DEFAULT 0,
+  `friend_count` BIGINT NOT NULL DEFAULT 0,
   `web` VARCHAR(2083) NULL DEFAULT NULL,
   `birthday` DATE NULL DEFAULT NULL,
   `location` VARCHAR(255) NULL DEFAULT NULL,
   `bio` VARCHAR(1024) NULL DEFAULT NULL,
-  `position` BIGINT(20) NOT NULL DEFAULT '0',
-  `account_status` INT(1) NOT NULL DEFAULT '0',
-  `signed_out_at` BIGINT(20) NULL DEFAULT NULL,
+  `position` BIGINT NOT NULL DEFAULT 0,
+  `account_status` TINYINT NOT NULL DEFAULT 0,
+  `signed_out_at` BIGINT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `SEARCH_INDEX` (`account_name` ASC),
   INDEX `fk_accounts_mediums1_idx` (`profile_image` ASC),
@@ -81,10 +81,10 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `cactacea`.`access_tokens` (
   `access_token` VARCHAR(60) NOT NULL,
   `refresh_token` VARCHAR(60) NULL DEFAULT NULL,
-  `account_id` BIGINT(20) NOT NULL,
+  `account_id` BIGINT NOT NULL,
   `client_id` VARCHAR(80) NOT NULL,
   `scope` VARCHAR(2000) NULL DEFAULT NULL,
-  `expires_in` BIGINT(20) NULL DEFAULT NULL,
+  `expires_in` BIGINT NULL DEFAULT NULL,
   `created_at` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`access_token`),
   INDEX `fk_access_tokens_accounts1_idx` (`account_id` ASC),
@@ -107,16 +107,16 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`feeds`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`feeds` (
-  `id` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
   `message` VARCHAR(1000) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `favorite_count` BIGINT(20) NOT NULL,
-  `comment_count` BIGINT(20) NOT NULL,
-  `privacy_type` INT(1) NOT NULL,
-  `content_warning` TINYINT(1) NOT NULL,
-  `content_status` INT(1) NOT NULL,
-  `notified` TINYINT(1) NOT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
+  `by` BIGINT NOT NULL,
+  `favorite_count` BIGINT NOT NULL,
+  `comment_count` BIGINT NOT NULL,
+  `privacy_type` TINYINT NOT NULL,
+  `content_warning` TINYINT NOT NULL,
+  `content_status` TINYINT NOT NULL,
+  `notified` TINYINT NOT NULL,
+  `posted_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -126,11 +126,11 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`account_feeds`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`account_feeds` (
-  `account_id` BIGINT(20) NOT NULL,
-  `feed_id` BIGINT(20) NOT NULL,
-  `notified` TINYINT(1) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `feed_id` BIGINT NOT NULL,
+  `notified` TINYINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `posted_at` BIGINT NOT NULL,
   INDEX `fk_account_feeds_accounts1_idx` (`account_id` ASC),
   INDEX `fk_account_feeds_feeds1_idx` (`feed_id` ASC),
   CONSTRAINT `fk_account_feeds_accounts1`
@@ -151,16 +151,16 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`groups`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`groups` (
-  `id` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
   `name` VARCHAR(1000) NULL DEFAULT NULL,
-  `privacy_type` INT(1) NOT NULL,
-  `invitation_only` TINYINT(1) NOT NULL,
-  `direct_message` TINYINT(1) NOT NULL,
-  `authority_type` INT(1) NOT NULL,
-  `account_count` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `message_id` BIGINT(20) NULL DEFAULT NULL,
-  `organized_at` BIGINT(20) NOT NULL,
+  `privacy_type` TINYINT NOT NULL,
+  `invitation_only` TINYINT NOT NULL,
+  `direct_message` TINYINT NOT NULL,
+  `authority_type` TINYINT NOT NULL,
+  `account_count` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `message_id` BIGINT NULL DEFAULT NULL,
+  `organized_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_groups_messages1_idx` (`message_id` ASC),
@@ -178,13 +178,13 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`account_groups`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`account_groups` (
-  `account_id` BIGINT(20) NOT NULL,
-  `group_id` BIGINT(20) NOT NULL,
-  `unread_count` BIGINT(20) NOT NULL,
-  `hidden` TINYINT(1) NOT NULL,
-  `muted` TINYINT(1) NOT NULL,
-  `to_account_id` BIGINT(20) NOT NULL,
-  `joined_at` BIGINT(20) NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `group_id` BIGINT NOT NULL,
+  `unread_count` BIGINT NOT NULL,
+  `hidden` TINYINT NOT NULL,
+  `muted` TINYINT NOT NULL,
+  `to_account_id` BIGINT NOT NULL,
+  `joined_at` BIGINT NOT NULL,
   INDEX `fk_account_groups_groups1_idx` (`group_id` ASC),
   INDEX `fk_account_groups_accounts1` (`account_id` ASC),
   INDEX `fk_account_groups_accounts2_idx` (`to_account_id` ASC),
@@ -211,30 +211,22 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`messages`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`messages` (
-  `id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `group_id` BIGINT(20) NOT NULL,
-  `message_type` INT(1) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `group_id` BIGINT NOT NULL,
+  `message_type` TINYINT NOT NULL,
   `message` VARCHAR(1000) NULL DEFAULT NULL,
-  `medium_id` BIGINT(20) NULL DEFAULT NULL,
-  `stamp_id` BIGINT(20) NULL DEFAULT NULL,
-  `account_id` BIGINT(20) NULL DEFAULT NULL,
-  `account_name` VARCHAR(1000) NULL DEFAULT NULL,
-  `account_count` BIGINT(20) NOT NULL DEFAULT '0',
-  `read_account_count` BIGINT(20) NOT NULL DEFAULT '0',
-  `content_warning` TINYINT(1) NOT NULL,
-  `notified` TINYINT(1) NOT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
-  `content_status` INT(1) NULL,
+  `medium_id` BIGINT NULL DEFAULT NULL,
+  `stamp_id` BIGINT NULL DEFAULT NULL,
+  `account_count` BIGINT NOT NULL DEFAULT 0,
+  `read_account_count` BIGINT NOT NULL DEFAULT 0,
+  `content_warning` TINYINT NOT NULL,
+  `notified` TINYINT NOT NULL,
+  `posted_at` BIGINT NOT NULL,
+  `content_status` TINYINT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_messages_accounts2_idx` (`by` ASC),
   INDEX `fk_messages_groups1_idx` (`group_id` ASC),
-  INDEX `fk_messages_accounts1_idx` (`account_id` ASC),
-  CONSTRAINT `fk_messages_accounts1`
-    FOREIGN KEY (`account_id`)
-    REFERENCES `cactacea`.`accounts` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_messages_accounts2`
     FOREIGN KEY (`by`)
     REFERENCES `cactacea`.`accounts` (`id`)
@@ -253,13 +245,13 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`account_messages`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`account_messages` (
-  `account_id` BIGINT(20) NOT NULL,
-  `group_id` BIGINT(20) NOT NULL,
-  `message_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `unread` TINYINT(1) NOT NULL,
-  `notified` TINYINT(1) NOT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `group_id` BIGINT NOT NULL,
+  `message_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `unread` TINYINT NOT NULL,
+  `notified` TINYINT NOT NULL,
+  `posted_at` BIGINT NOT NULL,
   INDEX `fk_message_reads_messages1_idx` (`message_id` ASC),
   INDEX `fk_account_message_accounts1_idx` (`account_id` ASC),
   INDEX `fk_account_message_groups1_idx` (`group_id` ASC),
@@ -292,10 +284,10 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`account_reports`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`account_reports` (
-  `id` BIGINT(20) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `report_type` INT(1) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `report_type` TINYINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UNIQUE` (`account_id` ASC, `report_type` ASC, `by` ASC),
   INDEX `fk_account_reports_accounts1_idx` (`account_id` ASC),
@@ -318,12 +310,12 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`advertisement_settings`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`advertisement_settings` (
-  `account_id` BIGINT(20) NOT NULL,
-  `ad1` TINYINT(1) NOT NULL,
-  `ad2` TINYINT(1) NOT NULL,
-  `ad3` TINYINT(1) NOT NULL,
-  `ad4` TINYINT(1) NOT NULL,
-  `ad5` TINYINT(1) NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `ad1` TINYINT NOT NULL,
+  `ad2` TINYINT NOT NULL,
+  `ad3` TINYINT NOT NULL,
+  `ad4` TINYINT NOT NULL,
+  `ad5` TINYINT NOT NULL,
   INDEX `fk_advertisement_settings_accounts1_idx` (`account_id` ASC),
   CONSTRAINT `fk_advertisement_settings_accounts1`
     FOREIGN KEY (`account_id`)
@@ -339,12 +331,12 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`auth_codes` (
   `authorization_code` VARCHAR(40) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
+  `account_id` BIGINT NOT NULL,
   `redirect_uri` VARCHAR(2000) NULL DEFAULT NULL,
-  `created_at` BIGINT(20) NOT NULL,
+  `created_at` BIGINT NOT NULL,
   `scope` VARCHAR(2000) NULL DEFAULT NULL,
   `client_id` VARCHAR(80) NOT NULL,
-  `expires_in` BIGINT(20) NULL DEFAULT NULL,
+  `expires_in` BIGINT NULL DEFAULT NULL,
   PRIMARY KEY (`authorization_code`),
   INDEX `fk_auth_codes_accounts_idx` (`account_id` ASC),
   INDEX `fk_auth_codes_clients1_idx` (`client_id` ASC),
@@ -366,11 +358,11 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`blocks`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`blocks` (
-  `account_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `blocked` TINYINT(1) NOT NULL DEFAULT '0',
-  `being_blocked` TINYINT(1) NOT NULL DEFAULT '0',
-  `blocked_at` BIGINT(20) NOT NULL DEFAULT '0',
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `blocked` TINYINT NOT NULL DEFAULT 0,
+  `being_blocked` TINYINT NOT NULL DEFAULT 0,
+  `blocked_at` BIGINT NOT NULL DEFAULT 0,
   INDEX `fk_blocks_accounts1_idx` (`account_id` ASC),
   INDEX `fk_blocks_accounts2_idx` (`by` ASC),
   CONSTRAINT `fk_blocks_accounts1`
@@ -391,7 +383,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`grant_types`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`grant_types` (
-  `id` INT(11) NOT NULL,
+  `id` TINYINT NOT NULL,
   `grant_type` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
@@ -402,7 +394,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`client_grant_types`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`client_grant_types` (
-  `grant_type_id` INT(11) NOT NULL,
+  `grant_type_id` TINYINT NOT NULL,
   `client_id` VARCHAR(80) NOT NULL,
   INDEX `fk_oauth_client_grant_type_oauth_grant_type_idx` (`grant_type_id` ASC),
   INDEX `fk_oauth_client_grant_type_oauth_client1_idx` (`client_id` ASC),
@@ -424,15 +416,15 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`comments`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`comments` (
-  `id` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
   `message` VARCHAR(1000) NOT NULL,
-  `feed_id` BIGINT(20) NOT NULL,
-  `favorite_count` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `content_warning` TINYINT(1) NOT NULL,
-  `content_status` INT(1) NOT NULL,
-  `notified` TINYINT(1) NOT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
+  `feed_id` BIGINT NOT NULL,
+  `favorite_count` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `content_warning` TINYINT NOT NULL,
+  `content_status` TINYINT NOT NULL,
+  `notified` TINYINT NOT NULL,
+  `posted_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -442,9 +434,9 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`comment_favorites`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`comment_favorites` (
-  `comment_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
+  `comment_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `posted_at` BIGINT NOT NULL,
   UNIQUE INDEX `UNIQUE` (`comment_id` ASC, `by` ASC),
   INDEX `fk_comment_favorites_accounts1_idx` (`by` ASC),
   INDEX `fx_comment_favorites_idx` (`comment_id` ASC, `by` ASC, `posted_at` ASC),
@@ -466,10 +458,10 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`comment_reports`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`comment_reports` (
-  `id` BIGINT(20) NOT NULL,
-  `comment_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `report_type` INT(1) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `comment_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `report_type` TINYINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UNIQUE` (`comment_id` ASC, `by` ASC),
   INDEX `fk_comment_reports_accounts1_idx` (`by` ASC),
@@ -491,8 +483,8 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`devices`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`devices` (
-  `id` BIGINT(20) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `account_id` BIGINT NOT NULL,
   `udid` VARCHAR(255) NOT NULL,
   `push_token` VARCHAR(255) NULL DEFAULT NULL,
   `user_agent` VARCHAR(1000) NULL DEFAULT NULL,
@@ -511,9 +503,9 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`feed_favorites`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`feed_favorites` (
-  `feed_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
+  `feed_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `posted_at` BIGINT NOT NULL,
   INDEX `fk_feed_favorites_feeds1_idx` (`feed_id` ASC),
   INDEX `fk_feed_favorites_accounts1_idx` (`by` ASC),
   CONSTRAINT `fk_feed_favorites_accounts1`
@@ -534,9 +526,9 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`feed_mediums`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`feed_mediums` (
-  `feed_id` BIGINT(20) NOT NULL,
-  `medium_id` BIGINT(20) NOT NULL,
-  `register_at` BIGINT(20) NOT NULL,
+  `feed_id` BIGINT NOT NULL,
+  `medium_id` BIGINT NOT NULL,
+  `register_at` BIGINT NOT NULL,
   INDEX `fk_feed_mediums_feeds1_idx` (`feed_id` ASC),
   CONSTRAINT `fk_feed_mediums_feeds1`
     FOREIGN KEY (`feed_id`)
@@ -551,10 +543,10 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`feed_reports`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`feed_reports` (
-  `id` BIGINT(20) NOT NULL,
-  `feed_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `report_type` INT(1) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `feed_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `report_type` TINYINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UNIQUE` (`by` ASC),
   INDEX `fk_feed_reports_accounts_idx` (`by` ASC),
@@ -577,9 +569,9 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`feed_tags`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`feed_tags` (
-  `feed_id` BIGINT(20) NOT NULL,
+  `feed_id` BIGINT NOT NULL,
   `name` VARCHAR(1024) NOT NULL,
-  `register_at` BIGINT(20) NOT NULL,
+  `register_at` BIGINT NOT NULL,
   INDEX `fk_feed_tags_feeds1_idx` (`feed_id` ASC),
   CONSTRAINT `fk_feed_tags_feeds1`
     FOREIGN KEY (`feed_id`)
@@ -594,11 +586,11 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`friend_requests`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`friend_requests` (
-  `id` BIGINT(20) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `request_status` INT(1) NOT NULL,
-  `requested_at` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `request_status` TINYINT NOT NULL,
+  `requested_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_requests_accounts1_idx` (`account_id` ASC),
   INDEX `fk_requests_accounts2_idx` (`by` ASC),
@@ -620,13 +612,13 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`group_invitations`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`group_invitations` (
-  `id` BIGINT(20) NOT NULL,
-  `group_id` BIGINT(20) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `notified` TINYINT(1) NOT NULL,
-  `invitation_status` INT(1) NOT NULL,
-  `invited_at` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `group_id` BIGINT NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `notified` TINYINT NOT NULL,
+  `invitation_status` TINYINT NOT NULL,
+  `invited_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_invitations_groups1_idx` (`group_id` ASC),
   INDEX `fk_invitations_accounts1_idx` (`account_id` ASC),
@@ -654,10 +646,10 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`group_reports`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`group_reports` (
-  `id` BIGINT(20) NOT NULL,
-  `group_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
-  `report_type` INT(1) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `group_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `report_type` TINYINT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UNIQUE` (`report_type` ASC, `by` ASC),
   INDEX `fk_association_reports_accounts1_idx` (`by` ASC),
@@ -675,14 +667,14 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`notifications`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`notifications` (
-  `id` BIGINT(20) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
-  `notification_type` BIGINT(20) NOT NULL,
-  `content_id` BIGINT(20) NULL DEFAULT NULL,
+  `id` BIGINT NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `notification_type` BIGINT NOT NULL,
+  `content_id` BIGINT NULL DEFAULT NULL,
   `message` VARCHAR(45) NULL DEFAULT NULL,
   `url` VARCHAR(2083) NULL DEFAULT NULL,
-  `unread` TINYINT(1) NOT NULL,
-  `notified_at` BIGINT(20) NOT NULL,
+  `unread` TINYINT NOT NULL,
+  `notified_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `notification_type`),
   INDEX `fk_notifications_accounts1_idx` (`account_id` ASC),
   CONSTRAINT `fk_notifications_accounts1`
@@ -698,13 +690,13 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`push_notification_settings`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`push_notification_settings` (
-  `account_id` BIGINT(20) NOT NULL,
-  `group_invitation` TINYINT(1) NOT NULL,
-  `follower_feed` TINYINT(1) NOT NULL,
-  `feed_comment` TINYINT(1) NOT NULL,
-  `group_message` TINYINT(1) NOT NULL,
-  `direct_message` TINYINT(1) NOT NULL,
-  `show_message` TINYINT(1) NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `group_invitation` TINYINT NOT NULL,
+  `follower_feed` TINYINT NOT NULL,
+  `feed_comment` TINYINT NOT NULL,
+  `group_message` TINYINT NOT NULL,
+  `direct_message` TINYINT NOT NULL,
+  `show_message` TINYINT NOT NULL,
   INDEX `fk_account_notification_settings_accounts1_idx` (`account_id` ASC),
   CONSTRAINT `fk_account_notification_settings_accounts1`
     FOREIGN KEY (`account_id`)
@@ -719,17 +711,17 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`relationships`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`relationships` (
-  `account_id` BIGINT(20) NOT NULL,
-  `by` BIGINT(20) NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
   `edited_display_name` VARCHAR(30) NULL DEFAULT NULL,
-  `followed` TINYINT(1) NOT NULL DEFAULT '0',
-  `muted` TINYINT(1) NOT NULL DEFAULT '0',
-  `friend` TINYINT(1) NOT NULL DEFAULT '0',
-  `follower` TINYINT(1) NOT NULL DEFAULT '0',
-  `in_progress` TINYINT(1) NOT NULL DEFAULT '0',
-  `followed_at` BIGINT(20) NOT NULL DEFAULT '0',
-  `muted_at` BIGINT(20) NOT NULL DEFAULT '0',
-  `friended_at` BIGINT(20) NOT NULL DEFAULT '0',
+  `followed` TINYINT NOT NULL DEFAULT 0,
+  `muted` TINYINT NOT NULL DEFAULT 0,
+  `friend` TINYINT NOT NULL DEFAULT 0,
+  `follower` TINYINT NOT NULL DEFAULT 0,
+  `in_progress` TINYINT NOT NULL DEFAULT 0,
+  `followed_at` BIGINT NOT NULL DEFAULT 0,
+  `muted_at` BIGINT NOT NULL DEFAULT 0,
+  `friended_at` BIGINT NOT NULL DEFAULT 0,
   UNIQUE INDEX `unique` (`account_id` ASC, `by` ASC),
   INDEX `fk_account_relationships_accounts1_idx` (`account_id` ASC),
   INDEX `fk_account_relationships_accounts2_idx` (`by` ASC),
@@ -754,7 +746,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`social_accounts` (
   `social_account_type` VARCHAR(30) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
+  `account_id` BIGINT NOT NULL,
   `social_account_id` VARCHAR(1024) NOT NULL,
   UNIQUE INDEX `UNIQUE` (`account_id` ASC, `social_account_type` ASC),
   INDEX `fk_social_accounts_accounts1_idx` (`account_id` ASC),
@@ -771,7 +763,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`tickets`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`tickets` (
-  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `stub` VARCHAR(1) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `stub` (`stub` ASC))
@@ -784,11 +776,11 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`timelines`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`timelines` (
-  `id` BIGINT(20) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
-  `feed_id` BIGINT(20) NULL DEFAULT NULL,
-  `by` BIGINT(20) NULL DEFAULT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
+  `id` BIGINT NOT NULL,
+  `account_id` BIGINT NOT NULL,
+  `feed_id` BIGINT NULL DEFAULT NULL,
+  `by` BIGINT NULL DEFAULT NULL,
+  `posted_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_timeline_feeds_accounts1_idx` (`account_id` ASC),
   CONSTRAINT `fk_timeline_feeds_accounts1`
@@ -800,12 +792,15 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
+DROP FUNCTION IF EXISTS `cactacea`.`generateId`;
 -- -----------------------------------------------------
 -- function generateId
 -- -----------------------------------------------------
 
+-- https://engineering.instagram.com/sharding-ids-at-instagram-1cf5a71e5a5c
+
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` FUNCTION `generateId`() RETURNS bigint(20)
+CREATE FUNCTION `generateId`() RETURNS BIGINT
     DETERMINISTIC
 BEGIN
     DECLARE our_epoc BIGINT;
@@ -817,7 +812,7 @@ BEGIN
 	REPLACE INTO tickets (stub) VALUES ('a');
 	SET seq_id := LAST_INSERT_ID() % 1024;
     SET shard_id := IFNULL(@shard_id, 1);
-	SET our_epoc := 946684800;  # 2000/01/01 00:00:00
+	SET our_epoc := 1387263000;  # 2011/01/01 00:00:00
     SET now_millis := (UNIX_TIMESTAMP() - our_epoc) * 1000;
     SET result := now_millis << 23;
     SET result := result | (shard_id << 10);

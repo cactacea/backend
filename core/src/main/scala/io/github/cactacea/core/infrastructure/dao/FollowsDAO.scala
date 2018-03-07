@@ -3,6 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Relationships}
 
@@ -10,6 +11,8 @@ import io.github.cactacea.core.infrastructure.models.{Accounts, Relationships}
 class FollowsDAO @Inject()(db: DatabaseService) {
 
   import db._
+
+  @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     (for {
@@ -56,7 +59,7 @@ class FollowsDAO @Inject()(db: DatabaseService) {
 
   private def _insertFollow(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val followedAt = System.nanoTime()
+    val followedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .insert(
@@ -71,7 +74,7 @@ class FollowsDAO @Inject()(db: DatabaseService) {
 
   private def _updateFollow(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val followedAt = System.nanoTime()
+    val followedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))

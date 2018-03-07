@@ -2,12 +2,10 @@ package io.github.cactacea.core.application.components.services
 
 import java.util.Locale
 
-import com.google.inject.Singleton
 import com.osinka.i18n.{Lang, Messages}
 import io.github.cactacea.core.application.components.interfaces.NotificationMessagesService
 import io.github.cactacea.core.domain.enums.PushNotificationType
 
-@Singleton
 class DefaultNotificationMessagesService extends NotificationMessagesService {
 
   private def validLanguage(locales: Seq[Locale]): Lang = {

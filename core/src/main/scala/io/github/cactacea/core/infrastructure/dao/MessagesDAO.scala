@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums.{ContentStatusType, MessageType}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
@@ -14,6 +15,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var identifyService: IdentifyService = _
+  @Inject private var timeService: TimeService = _
 
   def create(groupId: GroupId, accountCount: Long, accountId: AccountId, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
     for {
@@ -24,7 +26,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
 
   private def insert(id: MessageId, groupId: GroupId, accountCount: Long, accountId: AccountId, messageType: MessageType, sessionId: SessionId): Future[Long] = {
     val by = sessionId.toAccountId
-    val postedAt = System.nanoTime()
+    val postedAt = timeService.nanoTime()
     val mt = messageType
     val q = quote {
       query[Messages].insert(
@@ -52,7 +54,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
 
   private def insert(id: MessageId, groupId: GroupId, message: Option[String], accountCount: Long, mediumId: Option[MediumId], sessionId: SessionId): Future[Long] = {
     val by = sessionId.toAccountId
-    val postedAt = System.nanoTime()
+    val postedAt = timeService.nanoTime()
     val mt = if (message.isDefined) {
       MessageType.text
     } else {

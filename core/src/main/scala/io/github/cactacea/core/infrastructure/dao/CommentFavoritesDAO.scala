@@ -3,6 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
 
@@ -10,6 +11,8 @@ import io.github.cactacea.core.infrastructure.models._
 class CommentFavoritesDAO @Inject()(db: DatabaseService) {
 
   import db._
+
+  @Inject private var timeService: TimeService = _
 
   def create(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     for {
@@ -20,7 +23,7 @@ class CommentFavoritesDAO @Inject()(db: DatabaseService) {
 
   private def _insertCommentFavorites(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val postedAt = System.nanoTime()
+    val postedAt = timeService.nanoTime()
     val q = quote {
       query[CommentFavorites]
         .insert(

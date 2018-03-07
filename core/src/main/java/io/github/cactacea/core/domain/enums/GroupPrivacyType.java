@@ -3,18 +3,18 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum GroupPrivacyType {
-    @JsonProperty("0")everyone(0),
-    @JsonProperty("1")follows(1),
-    @JsonProperty("2")followers(2),
-    @JsonProperty("3")friends(3);
+    @JsonProperty("0")everyone((byte)0),
+    @JsonProperty("1")follows((byte)1),
+    @JsonProperty("2")followers((byte)2),
+    @JsonProperty("3")friends((byte)3);
 
-    private long value;
+    private byte value;
 
-    private GroupPrivacyType(long value) {
+    private GroupPrivacyType(byte value) {
         this.value = value;
     }
 
-    static public GroupPrivacyType forName(long value) {
+    static public GroupPrivacyType forName(byte value) {
         for (GroupPrivacyType e : values()) {
             if (e.value == value) {
                 return e;
@@ -23,7 +23,7 @@ public enum GroupPrivacyType {
         throw new IllegalArgumentException();
     }
 
-    public long toValue() {
+    public byte toValue() {
         return value;
     }
 }

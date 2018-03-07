@@ -3,6 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Relationships}
 
@@ -10,6 +11,8 @@ import io.github.cactacea.core.infrastructure.models.{Accounts, Relationships}
 class MutesDAO @Inject()(db: DatabaseService) {
 
   import db._
+
+  @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     _updateMuted(accountId, sessionId).flatMap(_ match {
@@ -26,7 +29,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
 
   private def _insertMuted(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val mutedAt = System.nanoTime()
+    val mutedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .insert(
@@ -41,7 +44,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
 
   private def _updateMuted(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val mutedAt = System.nanoTime()
+    val mutedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))
