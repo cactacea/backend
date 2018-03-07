@@ -3,6 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, MessageId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
 
@@ -10,6 +11,8 @@ import io.github.cactacea.core.infrastructure.models._
 class AccountGroupsDAO @Inject()(db: DatabaseService) {
 
   import db._
+
+  @Inject private var timeService: TimeService = _
 
   def exist(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
@@ -27,7 +30,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
   }
 
   def create(accountIds: List[AccountId], groupId: GroupId): Future[Boolean] = {
-    val joinedAt = System.nanoTime()
+    val joinedAt = timeService.nanoTime()
     val groupUsers = accountIds.map(accountId => AccountGroups(accountId, groupId, 0L, false, false, accountId, joinedAt))
     val q = quote {
       liftQuery(groupUsers).foreach(m => query[AccountGroups].insert(m))
@@ -36,7 +39,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
   }
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
-    val joinedAt = System.nanoTime()
+    val joinedAt = timeService.nanoTime()
     val toAccountId = sessionId.toAccountId
     val q = quote {
       query[AccountGroups]

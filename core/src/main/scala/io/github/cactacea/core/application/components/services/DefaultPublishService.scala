@@ -1,11 +1,10 @@
 package io.github.cactacea.core.application.components.services
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{PublishService, SubScribeService}
 import io.github.cactacea.core.infrastructure.identifiers._
 
-@Singleton
 class DefaultPublishService @Inject()(subScribeService: SubScribeService) extends PublishService {
 
   def enqueueFeed(feedId: FeedId): Future[Unit] = {

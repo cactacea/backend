@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums.{AccountStatusType, ContentStatusType, FeedPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
@@ -19,6 +20,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   @Inject private var timeLineDAO: TimeLineDAO = _
   @Inject private var blocksCountDAO: BlockCountDAO = _
   @Inject private var identifyService: IdentifyService = _
+  @Inject private var timeService: TimeService = _
 
   import db._
 
@@ -34,7 +36,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
   private def _insertFeed(id: FeedId, message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, by: AccountId): Future[Long] = {
     val privacy = privacyType
-    val postedAt = System.nanoTime()
+    val postedAt = timeService.nanoTime()
     val q = quote {
       query[Feeds].insert(
         _.id                  -> lift(id),

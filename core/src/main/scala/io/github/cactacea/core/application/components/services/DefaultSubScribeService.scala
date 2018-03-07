@@ -1,12 +1,13 @@
 package io.github.cactacea.core.application.components.services
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{FanOutService, SubScribeService}
 import io.github.cactacea.core.infrastructure.identifiers._
 
-@Singleton
-class DefaultSubScribeService @Inject()(fanOutService: FanOutService) extends SubScribeService {
+class DefaultSubScribeService extends SubScribeService {
+
+  @Inject private var fanOutService: FanOutService = _
 
   def dequeueFeed(feedId: FeedId): Future[Unit] = {
     fanOutService.fanOutFeed(feedId)

@@ -3,17 +3,17 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum NotificationType {
-    @JsonProperty("0") operator(0),
-    @JsonProperty("1") groupInvitation(1),
-    @JsonProperty("2") friendRequest(2);
+    @JsonProperty("0") operator((byte)0),
+    @JsonProperty("1") groupInvitation((byte)1),
+    @JsonProperty("2") friendRequest((byte)2);
 
-    private long value;
+    private byte value;
 
-    private NotificationType(long value) {
+    private NotificationType(byte value) {
         this.value = value;
     }
 
-    static public NotificationType forName(long value) {
+    static public NotificationType forName(byte value) {
         for (NotificationType e : values()) {
             if (e.value == value) {
                 return e;
@@ -22,7 +22,7 @@ public enum NotificationType {
         throw new IllegalArgumentException();
     }
 
-    public long toValue() {
+    public byte toValue() {
         return value;
     }
 }

@@ -3,17 +3,17 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum ReportType {
-    @JsonProperty("0")none(0),
-    @JsonProperty("1")spam(1),
-    @JsonProperty("2")inappropriate(2);
+    @JsonProperty("0")none((byte)0),
+    @JsonProperty("1")spam((byte)1),
+    @JsonProperty("2")inappropriate((byte)2);
 
-    private long value;
+    private byte value;
 
-    private ReportType(long value) {
+    private ReportType(byte value) {
         this.value = value;
     }
 
-    static public ReportType forName(long value) {
+    static public ReportType forName(byte value) {
         for (ReportType e : values()) {
             if (e.value == value) {
                 return e;
@@ -22,7 +22,7 @@ public enum ReportType {
         throw new IllegalArgumentException();
     }
 
-    public long toValue() {
+    public byte toValue() {
         return value;
     }
 }

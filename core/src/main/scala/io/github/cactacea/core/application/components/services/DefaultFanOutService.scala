@@ -1,13 +1,12 @@
 package io.github.cactacea.core.application.components.services
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{FanOutService, PushNotificationService}
 import io.github.cactacea.core.domain.repositories.PushNotificationsRepository
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.util.exceptions.FanOutException
 
-@Singleton
 class DefaultFanOutService extends FanOutService {
 
   @Inject private var pushNotificationService: PushNotificationService = _

@@ -3,6 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums.{AccountStatusType, FeedPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{FeedFavorites, _}
@@ -12,6 +13,8 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
+  @Inject private var timeService: TimeService = _
+
   def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     for {
       _ <- _insertFeedFavorites(feedId, sessionId)
@@ -20,7 +23,7 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
   }
 
   private def _insertFeedFavorites(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
-    val postedAt = System.nanoTime()
+    val postedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[FeedFavorites]

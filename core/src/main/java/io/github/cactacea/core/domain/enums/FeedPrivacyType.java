@@ -3,18 +3,18 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum FeedPrivacyType {
-    @JsonProperty("0")everyone(0),
-    @JsonProperty("1")followers(1),
-    @JsonProperty("2")friends(2),
-    @JsonProperty("3")self(3);
+    @JsonProperty("0")everyone((byte)0),
+    @JsonProperty("1")followers((byte)1),
+    @JsonProperty("2")friends((byte)2),
+    @JsonProperty("3")self((byte)3);
 
-    private long value;
+    private byte value;
 
-    private FeedPrivacyType(long value) {
+    private FeedPrivacyType(byte value) {
         this.value = value;
     }
 
-    static public FeedPrivacyType forName(long value) {
+    static public FeedPrivacyType forName(byte value) {
         for (FeedPrivacyType e : values()) {
             if (e.value == value) {
                 return e;
@@ -23,7 +23,7 @@ public enum FeedPrivacyType {
         throw new IllegalArgumentException();
     }
 
-    public long toValue() {
+    public byte toValue() {
         return value;
     }
 }

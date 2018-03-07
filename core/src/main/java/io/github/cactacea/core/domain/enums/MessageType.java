@@ -3,20 +3,20 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum MessageType {
-    @JsonProperty("0") text(0),
-    @JsonProperty("1") medium(1),
-    @JsonProperty("2") stamp(2),
-    @JsonProperty("3") groupInvitationd(3),
-    @JsonProperty("4") groupJoined(4),
-    @JsonProperty("5") groupLeft(5);
+    @JsonProperty("0") text((byte)0),
+    @JsonProperty("1") medium((byte)1),
+    @JsonProperty("2") stamp((byte)2),
+    @JsonProperty("3") invitation((byte)3),
+    @JsonProperty("4") joined((byte)4),
+    @JsonProperty("5") left((byte)5);
 
-    private long value;
+    private byte value;
 
-    private MessageType(long value) {
+    private MessageType(byte value) {
         this.value = value;
     }
 
-    static public MessageType forName(long value) {
+    static public MessageType forName(byte value) {
         for (MessageType e : values()) {
             if (e.value == value) {
                 return e;
@@ -25,7 +25,7 @@ public enum MessageType {
         throw new IllegalArgumentException();
     }
 
-    public long toValue() {
+    public byte toValue() {
         return value;
     }
 }

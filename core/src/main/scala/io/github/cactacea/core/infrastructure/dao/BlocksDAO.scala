@@ -3,6 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums.AccountStatusType
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Blocks, Relationships}
@@ -11,6 +12,8 @@ import io.github.cactacea.core.infrastructure.models.{Accounts, Blocks, Relation
 class BlocksDAO @Inject()(db: DatabaseService) {
 
   import db._
+
+  @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     _updateBlocks(accountId, sessionId).flatMap(_ match {
@@ -27,7 +30,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
 
   private def _insertBlocks(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val blockedAt = System.nanoTime()
+    val blockedAt = timeService.nanoTime()
     val q = quote {
       query[Blocks]
         .insert(
@@ -42,7 +45,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
 
   private def _updateBlocks(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val blockedAt = System.nanoTime()
+    val blockedAt = timeService.nanoTime()
     val q = quote {
       query[Blocks]
         .filter(_.accountId == lift(accountId))

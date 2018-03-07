@@ -37,17 +37,17 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`accounts` (
   `account_name` VARCHAR(30) NOT NULL,
   `display_name` VARCHAR(50) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
-  `follow_count` BIGINT NOT NULL DEFAULT '0',
+  `follow_count` BIGINT NOT NULL DEFAULT 0,
   `profile_image` BIGINT NULL DEFAULT NULL,
   `profile_image_url` VARCHAR(2083) NULL DEFAULT NULL,
-  `follower_count` BIGINT NOT NULL DEFAULT '0',
-  `friend_count` BIGINT NOT NULL DEFAULT '0',
+  `follower_count` BIGINT NOT NULL DEFAULT 0,
+  `friend_count` BIGINT NOT NULL DEFAULT 0,
   `web` VARCHAR(2083) NULL DEFAULT NULL,
   `birthday` DATE NULL DEFAULT NULL,
   `location` VARCHAR(255) NULL DEFAULT NULL,
   `bio` VARCHAR(1024) NULL DEFAULT NULL,
-  `position` BIGINT NOT NULL DEFAULT '0',
-  `account_status` TINYINT NOT NULL DEFAULT '0',
+  `position` BIGINT NOT NULL DEFAULT 0,
+  `account_status` TINYINT NOT NULL DEFAULT 0,
   `signed_out_at` BIGINT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `SEARCH_INDEX` (`account_name` ASC),
@@ -218,10 +218,8 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`messages` (
   `message` VARCHAR(1000) NULL DEFAULT NULL,
   `medium_id` BIGINT NULL DEFAULT NULL,
   `stamp_id` BIGINT NULL DEFAULT NULL,
-  `account_id` BIGINT NULL DEFAULT NULL,
-  `account_name` VARCHAR(1000) NULL DEFAULT NULL,
-  `account_count` BIGINT NOT NULL DEFAULT '0',
-  `read_account_count` BIGINT NOT NULL DEFAULT '0',
+  `account_count` BIGINT NOT NULL DEFAULT 0,
+  `read_account_count` BIGINT NOT NULL DEFAULT 0,
   `content_warning` TINYINT NOT NULL,
   `notified` TINYINT NOT NULL,
   `posted_at` BIGINT NOT NULL,
@@ -229,12 +227,6 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`messages` (
   PRIMARY KEY (`id`),
   INDEX `fk_messages_accounts2_idx` (`by` ASC),
   INDEX `fk_messages_groups1_idx` (`group_id` ASC),
-  INDEX `fk_messages_accounts1_idx` (`account_id` ASC),
-  CONSTRAINT `fk_messages_accounts1`
-    FOREIGN KEY (`account_id`)
-    REFERENCES `cactacea`.`accounts` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_messages_accounts2`
     FOREIGN KEY (`by`)
     REFERENCES `cactacea`.`accounts` (`id`)
@@ -368,9 +360,9 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `cactacea`.`blocks` (
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
-  `blocked` TINYINT NOT NULL DEFAULT '0',
-  `being_blocked` TINYINT NOT NULL DEFAULT '0',
-  `blocked_at` BIGINT NOT NULL DEFAULT '0',
+  `blocked` TINYINT NOT NULL DEFAULT 0,
+  `being_blocked` TINYINT NOT NULL DEFAULT 0,
+  `blocked_at` BIGINT NOT NULL DEFAULT 0,
   INDEX `fk_blocks_accounts1_idx` (`account_id` ASC),
   INDEX `fk_blocks_accounts2_idx` (`by` ASC),
   CONSTRAINT `fk_blocks_accounts1`
@@ -722,14 +714,14 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`relationships` (
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `edited_display_name` VARCHAR(30) NULL DEFAULT NULL,
-  `followed` TINYINT NOT NULL DEFAULT '0',
-  `muted` TINYINT NOT NULL DEFAULT '0',
-  `friend` TINYINT NOT NULL DEFAULT '0',
-  `follower` TINYINT NOT NULL DEFAULT '0',
-  `in_progress` TINYINT NOT NULL DEFAULT '0',
-  `followed_at` BIGINT NOT NULL DEFAULT '0',
-  `muted_at` BIGINT NOT NULL DEFAULT '0',
-  `friended_at` BIGINT NOT NULL DEFAULT '0',
+  `followed` TINYINT NOT NULL DEFAULT 0,
+  `muted` TINYINT NOT NULL DEFAULT 0,
+  `friend` TINYINT NOT NULL DEFAULT 0,
+  `follower` TINYINT NOT NULL DEFAULT 0,
+  `in_progress` TINYINT NOT NULL DEFAULT 0,
+  `followed_at` BIGINT NOT NULL DEFAULT 0,
+  `muted_at` BIGINT NOT NULL DEFAULT 0,
+  `friended_at` BIGINT NOT NULL DEFAULT 0,
   UNIQUE INDEX `unique` (`account_id` ASC, `by` ASC),
   INDEX `fk_account_relationships_accounts1_idx` (`account_id` ASC),
   INDEX `fk_account_relationships_accounts2_idx` (`by` ASC),
@@ -800,9 +792,12 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
+DROP FUNCTION IF EXISTS `cactacea`.`generateId`;
 -- -----------------------------------------------------
 -- function generateId
 -- -----------------------------------------------------
+
+-- https://engineering.instagram.com/sharding-ids-at-instagram-1cf5a71e5a5c
 
 DELIMITER $$
 CREATE FUNCTION `generateId`() RETURNS BIGINT
@@ -817,7 +812,7 @@ BEGIN
 	REPLACE INTO tickets (stub) VALUES ('a');
 	SET seq_id := LAST_INSERT_ID() % 1024;
     SET shard_id := IFNULL(@shard_id, 1);
-	SET our_epoc := 978307200;  # 2001/01/01 00:00:00
+	SET our_epoc := 1387263000;  # 2011/01/01 00:00:00
     SET now_millis := (UNIX_TIMESTAMP() - our_epoc) * 1000;
     SET result := now_millis << 23;
     SET result := result | (shard_id << 10);

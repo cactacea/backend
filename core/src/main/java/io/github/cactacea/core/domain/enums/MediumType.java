@@ -3,16 +3,16 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum MediumType {
-    @JsonProperty("0")image(0),
-    @JsonProperty("1")movie(1);
+    @JsonProperty("0")image((byte)0),
+    @JsonProperty("1")movie((byte)1);
 
-    private long value;
+    private byte value;
 
-    private MediumType(long value) {
+    private MediumType(byte value) {
         this.value = value;
     }
 
-    static public MediumType forName(long value) {
+    static public MediumType forName(byte value) {
         for (MediumType e : values()) {
             if (e.value == value) {
                 return e;
@@ -21,7 +21,7 @@ public enum MediumType {
         throw new IllegalArgumentException();
     }
 
-    public long toValue() {
+    public byte toValue() {
         return value;
     }
 }

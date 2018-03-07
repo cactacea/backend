@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums.NotificationType
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models.Notifications
@@ -14,6 +15,7 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var identifyService: IdentifyService = _
+  @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, notificationType: NotificationType, contentId: Long): Future[NotificationId] = {
     for {
@@ -23,7 +25,7 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
   }
 
   private def _insertNotifications(id: NotificationId, accountId: AccountId, notificationType: NotificationType, contentId: Option[Long], message: Option[String], url: Option[String]): Future[Long] = {
-    val notifiedAt = System.nanoTime()
+    val notifiedAt = timeService.nanoTime()
     val q = quote {
       query[Notifications].insert(
         _.id                -> lift(id),

@@ -68,27 +68,7 @@ class FeedsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  get("/session/feeds") { request: GetSessionFeeds =>
-    feedsService.find(
-      request.since,
-      request.offset,
-      request.count,
-      request.session.id
-    )
-  }
-
-
-
   @Inject private var feedFavoritesService: FeedFavoritesService = _
-
-  get("/session/favorites") { request: GetSessionFavoriteFeeds =>
-    feedFavoritesService.find(
-      request.since,
-      request.offset,
-      request.count,
-      request.session.id
-    )
-  }
 
   get("/feeds/:id/favorites") { request: GetFeedFavorites =>
     feedFavoritesService.findAccounts(

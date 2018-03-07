@@ -1,13 +1,11 @@
 package io.github.cactacea.core.application.components.services
 
-import com.google.inject.Singleton
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.InjectionService
 import io.github.cactacea.core.domain.enums.ReportType
 import io.github.cactacea.core.domain.models.Authentication
 import io.github.cactacea.core.infrastructure.identifiers._
 
-@Singleton
 class DefaultInjectionService extends InjectionService {
 
   def signedUp(authentication: Authentication): Future[Unit] = {

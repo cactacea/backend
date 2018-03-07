@@ -60,7 +60,7 @@ class GroupInvitationsRepository {
           _ <- accountGroupsDAO.create(i.accountId, i.groupId)
           _ <- groupInvitationsDAO.update(i.accountId, i.groupId, GroupInvitationStatusType.accepted)
           _ <- groupsDAO.updateAccountCount(i.groupId, 1L)
-          _ <- messagesDAO.create(i.groupId, g.accountCount, i.accountId, MessageType.groupInvitationd, i.accountId.toSessionId)
+          _ <- messagesDAO.create(i.groupId, g.accountCount, i.accountId, MessageType.invitation, i.accountId.toSessionId)
         } yield (Future.value(Unit))
     })
   }

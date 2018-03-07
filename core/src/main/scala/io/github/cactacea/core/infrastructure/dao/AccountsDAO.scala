@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
@@ -15,6 +16,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
+  @Inject private var timeService: TimeService = _
   @Inject private var blocksCountDAO: BlockCountDAO = _
   @Inject private var identifyService: IdentifyService = _
 
@@ -28,7 +30,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   private def insert(id: AccountId, accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String]): Future[Long] = {
     val accountStatus = AccountStatusType.singedUp
     val hashedPassword = createHashedPassword(password)
-    val position = System.nanoTime()
+    val position = timeService.nanoTime()
     val q = quote {
       query[Accounts].insert(
         _.id                    -> lift(id),

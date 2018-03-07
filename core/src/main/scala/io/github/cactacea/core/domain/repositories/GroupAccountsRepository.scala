@@ -37,7 +37,7 @@ class GroupAccountsRepository {
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupsDAO.updateAccountCount(groupId, 1L)
       _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
-      _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.groupJoined, sessionId)
+      _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.joined, sessionId)
     } yield (Future.value(Unit))
   }
 
@@ -51,7 +51,7 @@ class GroupAccountsRepository {
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupsDAO.updateAccountCount(groupId, 1L)
       _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
-      _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.groupJoined, sessionId)
+      _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.joined, sessionId)
     } yield (Future.value(Unit))
   }
 
@@ -73,7 +73,7 @@ class GroupAccountsRepository {
       } else {
         (for {
           _ <- groupsDAO.updateAccountCount(groupId, -1L)
-          _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.groupLeft, accountId.toSessionId).map(_ => true)
+          _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.left, accountId.toSessionId).map(_ => true)
         } yield (Future.value(Unit)))
       }
     )
@@ -98,7 +98,7 @@ class GroupAccountsRepository {
       } else {
         (for {
           _ <- groupsDAO.updateAccountCount(groupId, -1L)
-          _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.groupLeft, accountId.toSessionId).map(_ => true)
+          _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.left, accountId.toSessionId).map(_ => true)
         } yield (Future.value(Unit)))
       }
     )

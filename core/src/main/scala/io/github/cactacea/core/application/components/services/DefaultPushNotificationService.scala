@@ -1,12 +1,10 @@
 package io.github.cactacea.core.application.components.services
 
-import com.google.inject.Singleton
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.PushNotificationService
 import io.github.cactacea.core.domain.models.PushNotification
 import io.github.cactacea.core.infrastructure.identifiers._
 
-@Singleton
 class DefaultPushNotificationService extends PushNotificationService {
 
   def send(fanOuts: List[PushNotification]): Future[List[AccountId]] = {
