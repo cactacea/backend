@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.core.application.services._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class SessionsController extends Controller {
@@ -20,7 +21,8 @@ class SessionsController extends Controller {
       request.birthday,
       request.location,
       request.bio,
-      request.userAgent
+      request.userAgent,
+      SessionContext.deviceType
     )
   }
 
@@ -29,7 +31,8 @@ class SessionsController extends Controller {
       request.accountName,
       request.password,
       request.udid,
-      request.userAgent
+      request.userAgent,
+      SessionContext.deviceType
     )
   }
 
@@ -39,7 +42,8 @@ class SessionsController extends Controller {
       request.accessTokenKey,
       request.accessTokenSecret,
       request.udid,
-      request.userAgent
+      request.userAgent,
+      SessionContext.deviceType
     )
   }
 
@@ -56,7 +60,8 @@ class SessionsController extends Controller {
       request.birthday,
       request.location,
       request.bio,
-      request.userAgent
+      request.userAgent,
+      SessionContext.deviceType
     )
   }
 

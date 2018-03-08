@@ -15,7 +15,8 @@ import scala.collection.JavaConverters._
 class ApplicationFilter @Inject()(authTokenGenerator: AuthTokenGenerator) extends SimpleFilter[Request, Response] {
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
-    authTokenGenerator.checkApiKey(request.headerMap.get("X-API-KEY")).flatMap({ _ =>
+    authTokenGenerator.check(request.headerMap.get("X-API-KEY")).flatMap({ deviceType =>
+      SessionContext.setDeviceType(deviceType)
       val locales = request.headerMap.get(Fields.AcceptLanguage).fold(Seq(Locale.getDefault())) { lang =>
         Locale.LanguageRange.parse(lang).asScala.map(f => Locale.forLanguageTag(f.getRange))
       }

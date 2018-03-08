@@ -5,6 +5,7 @@ import java.util.Date
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.ConfigService
+import io.github.cactacea.core.domain.enums.DeviceType
 import io.jsonwebtoken._
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.core.util.auth.SessionUser
@@ -79,11 +80,12 @@ class AuthTokenGenerator @Inject()(config: ConfigService) {
     }
   }
 
-  def checkApiKey(requestApiKey: Option[String]): Future[Unit] = {
-    if (requestApiKey == Some(config.apiKey)) {
-      Future.Unit
-    } else {
-      Future.exception(CactaceaException(APIKeyIsInValid))
+  def check(requestApiKey: Option[String]): Future[DeviceType] = {
+    requestApiKey.flatMap(key => config.apiKeys.filter(_._2 == key).headOption.map(_._1)) match {
+      case Some(t) =>
+        Future.value(t)
+      case _ =>
+        Future.exception(CactaceaException(APIKeyIsInValid))
     }
   }
 

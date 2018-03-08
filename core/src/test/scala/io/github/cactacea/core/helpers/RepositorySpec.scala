@@ -7,6 +7,7 @@ import com.twitter.util.Await
 import com.twitter.util.logging.Logging
 import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.domain.enums.DeviceType
 import io.github.cactacea.core.domain.repositories.SessionsRepository
 import org.scalatest.BeforeAndAfter
 
@@ -45,21 +46,21 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
   def signUp(accountName: String, password: String, udid: String) = {
 
     val sessionsRepository = injector.instance[SessionsRepository]
-    Await.result(sessionsRepository.signUp(accountName, accountName, password, udid,
+    Await.result(sessionsRepository.signUp(accountName, accountName, password, udid, DeviceType.ios,
       Some("test@example.com"),
       None,
       Some("location"),
       Some("bio"),
       "user agent"))
-    val authentication = Await.result(sessionsRepository.signIn(accountName, password, udid, "user agent"))
+    val authentication = Await.result(sessionsRepository.signIn(accountName, password, udid, DeviceType.ios, "user agent"))
     authentication
   }
 
   def signIn(displayName: String, password: String, udid: String) = {
 
     val sessionsRepository = injector.instance[SessionsRepository]
-    val result = Await.result(sessionsRepository.signIn(displayName, password, udid, "user agent"))
-    val authentication = Await.result(sessionsRepository.signIn(result.account.displayName, password, udid, "user agent"))
+    val result = Await.result(sessionsRepository.signIn(displayName, password, udid, DeviceType.ios, "user agent"))
+    val authentication = Await.result(sessionsRepository.signIn(result.account.displayName, password, udid, DeviceType.ios, "user agent"))
     authentication
 
   }

@@ -487,6 +487,7 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`devices` (
   `id` BIGINT NOT NULL,
   `account_id` BIGINT NOT NULL,
   `udid` VARCHAR(255) NOT NULL,
+  `device_type` TINYINT(4) NOT NULL,
   `push_token` VARCHAR(255) NULL DEFAULT NULL,
   `user_agent` VARCHAR(1000) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),

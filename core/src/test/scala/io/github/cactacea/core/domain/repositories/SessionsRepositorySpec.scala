@@ -26,7 +26,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
-    val authentication = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val authentication = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     // result user
     assert(authentication.account.accountName == accountName)
@@ -60,8 +60,8 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
-    val result = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
-    val authentication = Await.result(sessionsRepository.signIn(result.account.displayName, password, udid, userAgent))
+    val result = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val authentication = Await.result(sessionsRepository.signIn(result.account.displayName, password, udid,  DeviceType.ios, userAgent))
 
     assert(authentication.account.displayName == displayName)
     assert(authentication.accessToken != "")
@@ -76,10 +76,10 @@ class SessionsRepositorySpec extends RepositorySpec {
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
 
-    Await.result(sessionsRepository.signUp(accountName, displayName, password, udid, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     assert(intercept[CactaceaException] {
-      Await.result(sessionsRepository.signIn(displayName, "invalid password", udid, userAgent))
+      Await.result(sessionsRepository.signIn(displayName, "invalid password", udid,  DeviceType.ios, userAgent))
     }.error == InvalidAccountNameOrPassword)
 
   }
@@ -90,7 +90,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
-    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent)).account
+    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent)).account
     val result = Await.result(sessionsRepository.signOut(udid, session.id.toSessionId))
     assert(result == true)
 
@@ -103,7 +103,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
-    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent)).account
+    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent)).account
 
     val expired = System.nanoTime()
     assert(Await.result(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired)) == true)
@@ -140,6 +140,7 @@ class SessionsRepositorySpec extends RepositorySpec {
       "token key",
       "token secret",
       "udid",
+      DeviceType.ios,
       Some("test@example.com"),
       None,
       Some("location"),
@@ -153,7 +154,7 @@ class SessionsRepositorySpec extends RepositorySpec {
   test("social account signIn") {
 
     assert(intercept[CactaceaException] {
-      Await.result(sessionsRepository.signIn("tokenkey", "token secret", "udid", "user agent"))
+      Await.result(sessionsRepository.signIn("tokenkey", "token secret", "udid", DeviceType.ios, "user agent"))
     }.error == InvalidAccountNameOrPassword)
 
   }

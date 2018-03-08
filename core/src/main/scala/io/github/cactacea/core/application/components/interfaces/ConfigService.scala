@@ -1,7 +1,9 @@
 package io.github.cactacea.core.application.components.interfaces
 
+import io.github.cactacea.core.domain.enums.DeviceType
+
 trait ConfigService {
-  val apiKey: String
+  val apiKeys: List[(DeviceType, String)]
   val signingKey: String
   val expire: Long
   val issuer: String
