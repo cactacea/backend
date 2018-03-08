@@ -1,4 +1,4 @@
-package io.github.cactacea.util.clients;
+package io.github.cactacea.backend.onesignal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

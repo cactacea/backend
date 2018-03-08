@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.InjectionService
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.domain.enums.NotificationType
 import io.github.cactacea.core.domain.models.FriendRequest
 import io.github.cactacea.core.domain.repositories.{FriendRequestsRepository, NotificationsRepository}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
@@ -19,6 +20,7 @@ class FriendRequestsService {
     db.transaction {
       for {
         id <- friendRequestsRepository.create(accountId, sessionId)
+        _ <- notificationsRepository.create(accountId, NotificationType.friendRequest, id.value)
         _ <- actionService.friendRequestCreated(accountId, sessionId)
       } yield (id)
     }

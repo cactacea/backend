@@ -1,9 +1,9 @@
 package io.github.cactacea.backend
 
+import io.github.cactacea.backend.s3.S3ServiceModule
 import io.github.cactacea.core.application.components.modules._
-import io.github.cactacea.core.application.components.thirdparties.s3.S3ServiceModule
 
-class BackendServer extends DefaultServer {
+class DemoServer extends DefaultServer {
 
   override def customModules = Seq(
     DefaultSocialAccountsModule,

@@ -1,4 +1,4 @@
-package io.github.cactacea.util.clients.onesignal
+package io.github.cactacea.backend.onesignal
 
 import com.google.inject.Inject
 import com.twitter.finagle.http.{Method, Request, Response, Version}
@@ -6,7 +6,6 @@ import com.twitter.finatra.httpclient.HttpClient
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util.Future
 import com.typesafe.config.ConfigFactory
-import io.github.cactacea.util.clients.OneSignalHttpClient
 
 class OneSignalClient @Inject()(@OneSignalHttpClient httpClient: HttpClient, objectMapper: FinatraObjectMapper) {
 
