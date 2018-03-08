@@ -20,14 +20,14 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   @Inject private var blocksCountDAO: BlockCountDAO = _
   @Inject private var identifyService: IdentifyService = _
 
-  def create(accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String]): Future[AccountId] = {
+  def create(accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
     for {
       id <- identifyService.generate().map(AccountId(_))
       _ <- insert(id, accountName, displayName, password, web, birthday, location, bio)
     } yield (id)
   }
 
-  private def insert(id: AccountId, accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String]): Future[Long] = {
+  private def insert(id: AccountId, accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[Long] = {
     val accountStatus = AccountStatusType.singedUp
     val hashedPassword = createHashedPassword(password)
     val position = timeService.nanoTime()
@@ -48,7 +48,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def updateProfile(displayName: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Boolean] = {
+  def updateProfile(displayName: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]

@@ -23,7 +23,7 @@ class SessionsRepository {
   @Inject private var validationDAO: ValidationDAO = _
   @Inject private var authTokenGenerator: AuthTokenGenerator = _
 
-  def signUp(accountName: String, displayName: String, password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
+  def signUp(accountName: String, displayName: String, password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
     for {
       _ <- validationDAO.notExistAccountName(accountName)
       r <- _signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent)
@@ -51,7 +51,7 @@ class SessionsRepository {
   }
 
 
-  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
+  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
     socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
       case Some(sa) =>
         accountsDAO.find(sa.accountId.toSessionId).flatMap(_ match {
@@ -72,7 +72,7 @@ class SessionsRepository {
 
   }
 
-  private def _signUp(accountName: String, displayName: String, password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
+  private def _signUp(accountName: String, displayName: String, password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
     (for {
       accountId <- accountsDAO.create(accountName, displayName, password, web, birthday, location, bio)
       sessionId = accountId.toSessionId

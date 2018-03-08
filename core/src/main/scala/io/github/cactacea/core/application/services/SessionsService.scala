@@ -8,7 +8,6 @@ import io.github.cactacea.core.domain.enums.DeviceType
 import io.github.cactacea.core.domain.models._
 import io.github.cactacea.core.domain.repositories.SessionsRepository
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import org.joda.time.DateTime
 
 @Singleton
 class SessionsService {
@@ -18,7 +17,7 @@ class SessionsService {
   @Inject private var socialAccountsService: SocialAccountsService = _
   @Inject private var actionService: InjectionService = _
 
-  def signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Authentication] = {
+  def signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Authentication] = {
     db.transaction {
       for {
         a <- sessionsRepository.signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent)
@@ -45,7 +44,7 @@ class SessionsService {
     }
   }
 
-  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, accessTokenKey: String, accessTokenSecret: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Authentication] = {
+  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, accessTokenKey: String, accessTokenSecret: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Authentication] = {
     db.transaction {
       for {
         id <- socialAccountsService.get(socialAccountType, accessTokenKey, accessTokenSecret)
