@@ -19,8 +19,8 @@ class OneSignalService extends PushNotificationService {
         val displayName = fanOut.displayName
         val accountIds = fanOut.tokens.map(_._1)
         val message = fanOut.message.getOrElse("")
-        val en = messageService.getPushNotification(fanOut.pushNotificationType, Seq(Locale.US), displayName, message)
-        val jp = messageService.getPushNotification(fanOut.pushNotificationType, Seq(Locale.JAPAN), displayName, message)
+        val en = messageService.getPushNotificationMessage(fanOut.pushNotificationType, Seq(Locale.US), displayName, message)
+        val jp = messageService.getPushNotificationMessage(fanOut.pushNotificationType, Seq(Locale.JAPAN), displayName, message)
         val notification = OneSignalNotification(client.appId, tokens, en, jp)
         (notification, accountIds)
       })

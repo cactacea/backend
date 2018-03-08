@@ -9,7 +9,8 @@ public enum PushNotificationType {
     @JsonProperty("3") groupInvitation((byte)3),
     @JsonProperty("4") friendRequest((byte)4),
     @JsonProperty("5") feed((byte)5),
-    @JsonProperty("6") comment((byte)6);
+    @JsonProperty("5") feedReply((byte)6),
+    @JsonProperty("6") commentReply((byte)7);
 
     private byte value;
 

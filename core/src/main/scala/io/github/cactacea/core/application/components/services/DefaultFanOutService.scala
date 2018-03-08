@@ -49,16 +49,16 @@ class DefaultFanOutService @Inject()(db: DatabaseService) extends FanOutService 
       p <- pushNotificationsRepository.findByInvitationId(id)
       _ <- pushNotificationService.send(p)
       _ <- pushNotificationsRepository.updateInvitationNotified(id)
-      _ <- notificationsRepository.createGroupInvitation(id)
+      _ <- notificationsRepository.createInvitation(id)
     } yield (Future.value(Unit))
   }
 
   def fanOutFriendRequest(id: FriendRequestId): Future[Unit] = {
     for {
-      p <- pushNotificationsRepository.findByFriendRequestId(id)
+      p <- pushNotificationsRepository.findByRequestId(id)
       _ <- pushNotificationService.send(p)
       _ <- pushNotificationsRepository.updateFriendRequestNotified(id)
-      _ <- notificationsRepository.createFriendRequest(id)
+      _ <- notificationsRepository.createRequest(id)
     } yield (Future.value(Unit))
   }
 

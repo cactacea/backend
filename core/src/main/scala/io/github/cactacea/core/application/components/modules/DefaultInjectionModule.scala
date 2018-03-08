@@ -7,7 +7,7 @@ import io.github.cactacea.core.application.components.services.DefaultInjectionS
 object DefaultInjectionModule extends TwitterModule {
 
   override def configure() {
-    bindSingleton[InjectionService].to(classOf[DefaultInjectionService])
+    bindSingleton[InjectionService].to[DefaultInjectionService]
   }
 
 }

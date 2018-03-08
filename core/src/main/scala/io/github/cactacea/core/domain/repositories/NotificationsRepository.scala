@@ -2,6 +2,7 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.core.domain.enums.NotificationType
 import io.github.cactacea.core.domain.models.Notification
 import io.github.cactacea.core.infrastructure.dao._
@@ -15,11 +16,13 @@ class NotificationsRepository {
   @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
   @Inject private var feedsDAO: FeedsDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
+  @Inject private var deepLinkService: DeepLinkService = _
 
   def createFeed(id: FeedId, accountIds: List[AccountId]): Future[Unit] = {
+    val url = deepLinkService.getFeed(id)
     feedsDAO.find(id).flatMap(_ match {
       case Some(f) =>
-        notificationsDAO.create(accountIds, NotificationType.friendRequest, id.value)
+        notificationsDAO.create(accountIds, NotificationType.feed, id.value, url)
           .flatMap(_ => Future.Unit)
       case None =>
         Future.Unit
@@ -39,8 +42,8 @@ class NotificationsRepository {
             Future.value(a)
         }).flatMap(_ match {
           case Some((accountId, notificationType)) =>
-            notificationsDAO.create(accountId, notificationType, id.value)
-              .flatMap(_ => Future.Unit)
+            val url = deepLinkService.getComment(c.feedId, c.id)
+            notificationsDAO.create(accountId, notificationType, id.value, url).flatMap(_ => Future.Unit)
           case None =>
             Future.Unit
         })
@@ -49,19 +52,21 @@ class NotificationsRepository {
     })
   }
 
-  def createFriendRequest(id: FriendRequestId): Future[Unit] = {
+  def createRequest(id: FriendRequestId): Future[Unit] = {
+    val url = deepLinkService.getRequest(id)
     friendRequestsDAO.find(id).flatMap(_ match {
       case Some(f) =>
-        notificationsDAO.create(f.accountId, NotificationType.friendRequest, id.value).flatMap(_ => Future.Unit)
+        notificationsDAO.create(f.accountId, NotificationType.friendRequest, id.value, url).flatMap(_ => Future.Unit)
       case None =>
         Future.Unit
     })
   }
 
-  def createGroupInvitation(id: GroupInvitationId): Future[Unit] = {
+  def createInvitation(id: GroupInvitationId): Future[Unit] = {
+    val url = deepLinkService.getInvitation(id)
     groupInvitationsDAO.find(id).flatMap(_ match {
       case Some(i) =>
-        notificationsDAO.create(i.accountId, NotificationType.groupInvitation, id.value).flatMap(_ => Future.Unit)
+        notificationsDAO.create(i.accountId, NotificationType.groupInvitation, id.value, url).flatMap(_ => Future.Unit)
       case None =>
         Future.Unit
     })

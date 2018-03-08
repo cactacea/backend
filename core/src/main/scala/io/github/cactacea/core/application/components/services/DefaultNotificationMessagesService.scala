@@ -4,7 +4,7 @@ import java.util.Locale
 
 import com.osinka.i18n.{Lang, Messages}
 import io.github.cactacea.core.application.components.interfaces.NotificationMessagesService
-import io.github.cactacea.core.domain.enums.PushNotificationType
+import io.github.cactacea.core.domain.enums.{NotificationType, PushNotificationType}
 
 class DefaultNotificationMessagesService extends NotificationMessagesService {
 
@@ -13,15 +13,29 @@ class DefaultNotificationMessagesService extends NotificationMessagesService {
     Lang(language)
   }
 
-  def getPushNotification(pushNotificationType: PushNotificationType, locales: Seq[Locale], args : Any*): String = {
+  def getPushNotificationMessage(pushNotificationType: PushNotificationType, locales: Seq[Locale], args : Any*): String = {
     val message = pushNotificationType match {
-      case PushNotificationType.`message` => "send_message"
-      case PushNotificationType.`noDisplayedMessage` => "send_no_displayed_message"
-      case PushNotificationType.`image` => "send_image"
-      case PushNotificationType.`groupInvitation` => "send_group_invitation"
-      case PushNotificationType.`friendRequest` => "send_friend_request"
-      case PushNotificationType.`feed` => "post_feed"
-      case PushNotificationType.`comment` => "post_comment"
+      case PushNotificationType.message => "message"
+      case PushNotificationType.noDisplayedMessage => "no_displayed_message"
+      case PushNotificationType.image => "image"
+      case PushNotificationType.groupInvitation => "group_invitation"
+      case PushNotificationType.friendRequest => "friend_request"
+      case PushNotificationType.feed => "feed"
+      case PushNotificationType.feedReply => "feed_reply"
+      case PushNotificationType.commentReply => "comment_reply"
+    }
+    val lang = validLanguage(locales)
+    Messages(message)(lang).format(args)
+  }
+
+  def getNotificationMessage(notificationType: NotificationType, locales: Seq[Locale], args : Any*): String = {
+    val message = notificationType match {
+      case NotificationType.operator => "operator"
+      case NotificationType.groupInvitation => "group_invitation"
+      case NotificationType.friendRequest => "friend_request"
+      case NotificationType.feed => "feed"
+      case NotificationType.feedReply => "feed_reply"
+      case NotificationType.commentReply => "comment_reply"
     }
     val lang = validLanguage(locales)
     Messages(message)(lang).format(args)

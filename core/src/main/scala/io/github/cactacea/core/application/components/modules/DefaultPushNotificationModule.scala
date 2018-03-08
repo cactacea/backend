@@ -7,7 +7,7 @@ import io.github.cactacea.core.application.components.services.DefaultPushNotifi
 object DefaultPushNotificationModule extends TwitterModule {
 
   override def configure() {
-    bindSingleton[PushNotificationService].to(classOf[DefaultPushNotificationService])
+    bindSingleton[PushNotificationService].to[DefaultPushNotificationService]
   }
 
 }

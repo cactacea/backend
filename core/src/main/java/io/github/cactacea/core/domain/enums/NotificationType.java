@@ -6,8 +6,9 @@ public enum NotificationType {
     @JsonProperty("0") operator((byte)0),
     @JsonProperty("1") groupInvitation((byte)1),
     @JsonProperty("2") friendRequest((byte)2),
-    @JsonProperty("3") feedReply((byte)3),
-    @JsonProperty("4") commentReply((byte)4);
+    @JsonProperty("3") feed((byte)3),
+    @JsonProperty("4") feedReply((byte)4),
+    @JsonProperty("5") commentReply((byte)5);
 
     private byte value;
 

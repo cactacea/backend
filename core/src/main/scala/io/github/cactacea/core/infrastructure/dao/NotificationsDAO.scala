@@ -17,10 +17,10 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
   @Inject private var identifyService: IdentifyService = _
   @Inject private var timeService: TimeService = _
 
-  def create(accountIds: List[AccountId], notificationType: NotificationType, contentId: Long): Future[List[NotificationId]] = {
+  def create(accountIds: List[AccountId], notificationType: NotificationType, contentId: Long, url: String): Future[List[NotificationId]] = {
     for {
       a <- Future.traverseSequentially(accountIds) { accountId => identifyService.generate().map({id => (NotificationId(id), accountId) } ) }
-      _ <- _insertNotifications(a.toList, notificationType, Some(contentId), None, None)
+      _ <- _insertNotifications(a.toList, notificationType, Some(contentId), None, Some(url))
       ids = a.map(_._1).toList
     } yield (ids)
   }
@@ -44,10 +44,10 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def create(accountId: AccountId, notificationType: NotificationType, contentId: Long): Future[NotificationId] = {
+  def create(accountId: AccountId, notificationType: NotificationType, contentId: Long, url: String): Future[NotificationId] = {
     for {
       id <- identifyService.generate().map(NotificationId(_))
-      _ <- _insertNotifications(id, accountId, notificationType, Some(contentId), None, None)
+      _ <- _insertNotifications(id, accountId, notificationType, Some(contentId), None, Some(url))
     } yield (id)
   }
 

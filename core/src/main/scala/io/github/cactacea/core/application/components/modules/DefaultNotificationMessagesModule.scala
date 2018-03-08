@@ -7,7 +7,7 @@ import io.github.cactacea.core.application.components.services.DefaultNotificati
 object DefaultNotificationMessagesModule extends TwitterModule {
 
   override def configure(): Unit = {
-    bindSingleton[NotificationMessagesService].to(classOf[DefaultNotificationMessagesService])
+    bindSingleton[NotificationMessagesService].to[DefaultNotificationMessagesService]
   }
 
 }
