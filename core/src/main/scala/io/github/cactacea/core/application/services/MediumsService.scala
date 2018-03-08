@@ -10,8 +10,8 @@ import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.domain.repositories.MediumsRepository
 import io.github.cactacea.core.infrastructure.identifiers.{MediumId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.media.MediaMetadataExtractor
 import io.github.cactacea.core.util.responses.CactaceaError.NotAcceptableMimeTypeFound
+import io.github.cactacea.util.media.MediaExtractor
 
 class MediumsService {
 
@@ -21,7 +21,7 @@ class MediumsService {
   @Inject private var mediumsRepository: MediumsRepository = _
 
   def create(multiParams: Map[String, MultipartItem], sessionId: SessionId): Future[Seq[(MediumId, String)]] = {
-    val list = multiParams.toList.map({ case (_, item) => MediaMetadataExtractor.extract(item.contentType, item.data) })
+    val list = multiParams.toList.map({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) })
     Future.traverseSequentially(list) {
       _ match {
         case Some(metadata) =>

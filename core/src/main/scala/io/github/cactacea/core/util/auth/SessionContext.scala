@@ -3,6 +3,7 @@ package io.github.cactacea.core.util.auth
 import java.util.Locale
 
 import com.twitter.util.Local
+import io.github.cactacea.core.domain.enums.DeviceType
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError
@@ -45,20 +46,12 @@ object SessionContext {
   def setId(sessionId: SessionId) = localSessionId.update(sessionId)
   def clearId() = localSessionId.clear()
 
-  //  private val idFiled = Request.Schema.newField[SessionId]()
-//  implicit class IdContextSyntax(val request: Request) extends AnyVal {
-//    def id: SessionId = request.ctx(idFiled)
-//  }
-//  def setId(request: Request, id: SessionId): Unit = {
-//    request.ctx.update(idFiled, id)
-//  }
-//
-//  private val udidField = Request.Schema.newField[String]()
-//  implicit class UdidContextSyntax(val request: Request) extends AnyVal {
-//    def udid: String = request.ctx(udidField)
-//  }
-//  def setUdid(request: Request, udid: String): Unit = {
-//    request.ctx.update(udidField, udid)
-//  }
+  private[this] val localDeviceType = new Local[DeviceType]
+  def deviceType = localDeviceType() match {
+    case Some(deviceType) => deviceType
+    case None => throw new CactaceaException(CactaceaError.SessionNotAuthorized)
+  }
+  def setDeviceType(deviceType: DeviceType) = localDeviceType.update(deviceType)
+  def clearDeviceType() = localDeviceType.clear()
 
 }

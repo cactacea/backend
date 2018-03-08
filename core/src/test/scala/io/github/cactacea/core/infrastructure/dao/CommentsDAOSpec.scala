@@ -1,7 +1,7 @@
 package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
-import io.github.cactacea.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.core.domain.enums.{DeviceType, FeedPrivacyType}
 import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId}
 
@@ -63,7 +63,7 @@ class CommentsDAOSpec extends DAOSpec {
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 
     Await.result(pushNotificationSettingDAO.create(false, false, true, false, false, false, sessionAccount1.id.toSessionId))
-    Await.result(devicesDAO.create(udid, None, sessionAccount1.id.toSessionId))
+    Await.result(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount1.id.toSessionId))
     Await.result(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
     Await.result(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
 

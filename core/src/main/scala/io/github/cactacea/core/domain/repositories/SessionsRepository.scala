@@ -2,7 +2,7 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.enums.AccountStatusType
+import io.github.cactacea.core.domain.enums.{AccountStatusType, DeviceType}
 import io.github.cactacea.core.domain.models._
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
@@ -23,20 +23,20 @@ class SessionsRepository {
   @Inject private var validationDAO: ValidationDAO = _
   @Inject private var authTokenGenerator: AuthTokenGenerator = _
 
-  def signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
+  def signUp(accountName: String, displayName: String, password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
     for {
       _ <- validationDAO.notExistAccountName(accountName)
-      r <- _signUp(accountName, displayName, password, udid, web, birthday, location, bio, userAgent)
+      r <- _signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent)
     } yield (r)
   }
 
-  def signIn(accountName: String, password: String, udid: String, userAgent: String): Future[Authentication] = {
+  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: String): Future[Authentication] = {
     accountsDAO.find(accountName, password).flatMap(_ match {
       case Some(account) =>
         if (account.isTerminated) {
           Future.exception(CactaceaException(AccountTerminated))
         } else {
-          _signIn(account, udid, userAgent)
+          _signIn(account, udid, deviceType, userAgent)
         }
       case None =>
         Future.exception(CactaceaException(InvalidAccountNameOrPassword))
@@ -51,7 +51,7 @@ class SessionsRepository {
   }
 
 
-  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
+  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
     socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
       case Some(sa) =>
         accountsDAO.find(sa.accountId.toSessionId).flatMap(_ match {
@@ -59,24 +59,24 @@ class SessionsRepository {
             if (account.isTerminated) {
               Future.exception(CactaceaException(AccountTerminated))
             } else {
-              _signIn(account, udid, userAgent)
+              _signIn(account, udid, deviceType, userAgent)
             }
           case None =>
             Future.exception(CactaceaException(AccountNotFound))
         })
       case None =>
-        _signUp(accountName, displayName, password, udid, web, birthday, location, bio, userAgent).flatMap({ a =>
+        _signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent).flatMap({ a =>
           socialAccountsDAO.create(socialAccountType, socialAccountId, a.account.id.toSessionId).flatMap(_ => Future.value(a))
         })
     })
 
   }
 
-  private def _signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
+  private def _signUp(accountName: String, displayName: String, password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Authentication] = {
     (for {
       accountId <- accountsDAO.create(accountName, displayName, password, web, birthday, location, bio)
       sessionId = accountId.toSessionId
-      _             <- devicesDAO.create(udid, Some(userAgent), sessionId)
+      _             <- devicesDAO.create(udid, deviceType, Some(userAgent), sessionId)
       _             <- notificationSettingsDAO.create(true, true, true, true, true, true, sessionId)
       _             <- advertisementSettingsDAO.create(true, true, true, true, true, sessionId)
       account       <- accountsDAO.find(sessionId)
@@ -91,7 +91,7 @@ class SessionsRepository {
   }
 
 
-  def signIn(socialAccountType: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, userAgent: String): Future[Authentication] = {
+  def signIn(socialAccountType: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, userAgent: String): Future[Authentication] = {
     socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
       case Some(socialAccount) =>
         accountsDAO.find(socialAccount.accountId.toSessionId).flatMap(_ match {
@@ -99,7 +99,7 @@ class SessionsRepository {
             if (account.isTerminated) {
               Future.exception(CactaceaException(AccountTerminated))
             } else {
-              _signIn(account, udid, userAgent)
+              _signIn(account, udid, deviceType, userAgent)
             }
           case None =>
             Future.exception(CactaceaException(AccountNotFound))
@@ -110,12 +110,12 @@ class SessionsRepository {
   }
 
 
-  private def _signIn(account: Accounts, udid: String, userAgent: String): Future[Authentication] = {
+  private def _signIn(account: Accounts, udid: String, deviceType: DeviceType, userAgent: String): Future[Authentication] = {
     devicesDAO.exist(account.id.toSessionId, udid).flatMap(_ match {
       case true =>
         Future.True
       case false =>
-        devicesDAO.create(udid, Some(userAgent), account.id.toSessionId)
+        devicesDAO.create(udid, deviceType, Some(userAgent), account.id.toSessionId)
     }).map({ _ =>
       val accessToken = authTokenGenerator.generate(account.id.value, udid)
       Authentication(Account(account), accessToken)

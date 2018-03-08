@@ -4,12 +4,16 @@ import com.twitter.inject.TwitterModule
 import com.typesafe.config.ConfigFactory
 import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.components.services.DefaultConfigService
+import io.github.cactacea.core.domain.enums.DeviceType
 
 object DefaultConfigModule extends TwitterModule {
 
   private lazy val config = ConfigFactory.load("application.conf")
   private lazy val auth = config.getConfig("auth")
-  private lazy val apiKey = auth.getString("apiKey")
+  private lazy val apiKey = auth.getConfig("apiKey")
+  private lazy val ios = apiKey.getString("ios")
+  private lazy val android = apiKey.getString("android")
+  private lazy val web = apiKey.getString("web")
   private lazy val signingKey = auth.getString("signingKey")
   private lazy val expire = auth.getLong("expire")
   private lazy val issuer = auth.getString("issuer")
@@ -21,8 +25,12 @@ object DefaultConfigModule extends TwitterModule {
 
   override def configure(): Unit = {
     val max = maximumGroupAccountLimits.get.map(_.toLong).getOrElse(0L)
-    val time = 978307200 //pointInTime.get.map(_.toLong).getOrElse(0L)
-    val service = new DefaultConfigService(apiKey, signingKey, expire, issuer, subject, algorithm, max, time)
+    val time = basePointInTime.get.map(_.toLong).getOrElse(978307200L)
+    val apiKeys = List(
+      (DeviceType.ios, ios),
+      (DeviceType.android, android),
+      (DeviceType.web, web))
+    val service = new DefaultConfigService(apiKeys, signingKey, expire, issuer, subject, algorithm, max, time)
     bindSingleton[ConfigService].toInstance(service)
   }
 

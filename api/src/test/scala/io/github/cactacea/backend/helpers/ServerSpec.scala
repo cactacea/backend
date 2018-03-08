@@ -56,7 +56,7 @@ class ServerSpec extends FeatureTest {
     server.httpPost(
       path = "/sessions",
       headers = Map(
-        "X-API-KEY" -> configService.apiKey,
+        "X-API-KEY" -> configService.apiKeys.head._2,
         "User-Agent" -> "ios"
       ),
       postBody = JSONObject(Map(
@@ -71,7 +71,7 @@ class ServerSpec extends FeatureTest {
     server.httpGet(
       path = s"/sessions?account_name=$accountName&password=$password&udid=$udid",
       headers = Map(
-        "X-API-KEY" -> configService.apiKey,
+        "X-API-KEY" -> configService.apiKeys.head._2,
         "User-Agent" -> "ios"
       )
     )
@@ -81,7 +81,7 @@ class ServerSpec extends FeatureTest {
     server.httpDelete(
       path = "/session",
       headers = Map(
-        "X-API-KEY" -> configService.apiKey,
+        "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken
       )
     )
@@ -91,7 +91,7 @@ class ServerSpec extends FeatureTest {
     server.httpPost(
       path = "/feeds",
       headers = Map(
-        "X-API-KEY" -> configService.apiKey,
+        "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken
       ),
       postBody = JSONObject(Map(

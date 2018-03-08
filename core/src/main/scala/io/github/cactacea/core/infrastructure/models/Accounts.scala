@@ -15,7 +15,7 @@ case class Accounts(
                      followerCount: Long,
                      friendCount: Long,
                      web: Option[String],
-                     birthday: Option[DateTime],
+                     birthday: Option[Long],
                      location: Option[String],
                      bio: Option[String],
                      position: Long,

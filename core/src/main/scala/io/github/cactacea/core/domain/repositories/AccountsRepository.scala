@@ -75,7 +75,7 @@ class AccountsRepository {
     })
   }
 
-  def updateProfile(displayName: String, web: Option[String], birthday: Option[DateTime], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
+  def updateProfile(displayName: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
     accountsDAO.updateProfile(displayName, web, birthday, location, bio, sessionId).flatMap(_ match {
       case true =>
         Future.Unit

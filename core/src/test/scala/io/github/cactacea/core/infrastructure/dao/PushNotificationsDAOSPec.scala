@@ -1,7 +1,7 @@
 package io.github.cactacea.core.infrastructure.dao
 
 import com.twitter.util.Await
-import io.github.cactacea.core.domain.enums.{FeedPrivacyType, GroupAuthorityType, GroupPrivacyType}
+import io.github.cactacea.core.domain.enums.{DeviceType, FeedPrivacyType, GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.core.helpers.DAOSpec
 import io.github.cactacea.core.infrastructure.identifiers.MessageId
 
@@ -37,7 +37,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     Await.result(accountMessagesDAO.create(groupId, messageId, account1.id.toSessionId))
     Await.result(pushNotificationSettingDAO.create(false, false, false, false, true, false, account1.id.toSessionId))
-    Await.result(devicesDAO.create(udid, None, account1.id.toSessionId))
+    Await.result(devicesDAO.create(udid, DeviceType.ios, None, account1.id.toSessionId))
     Await.result(devicesDAO.update(udid, pushToken, account1.id.toSessionId))
     Await.result(accountsDAO.updateDisplayName(sessionAccount.id, displayName, account1.id.toSessionId))
 
@@ -67,7 +67,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     Await.result(accountMessagesDAO.create(groupId, messageId, account1.id.toSessionId))
     Await.result(pushNotificationSettingDAO.create(false, false, false, true, false, false, account1.id.toSessionId))
-    Await.result(devicesDAO.create(udid, None, account1.id.toSessionId))
+    Await.result(devicesDAO.create(udid, DeviceType.ios, None, account1.id.toSessionId))
     Await.result(devicesDAO.update(udid, pushToken, account1.id.toSessionId))
     Await.result(accountsDAO.updateDisplayName(sessionAccount.id, displayName, account1.id.toSessionId))
 
@@ -119,11 +119,11 @@ class PushNotificationsDAOSPec extends DAOSpec {
     Await.result(pushNotificationSettingDAO.create(false, true, false, false, false, false, sessionAccount5.id.toSessionId))
     Await.result(pushNotificationSettingDAO.create(false, true, false, false, false, false, sessionAccount6.id.toSessionId))
 
-    Await.result(devicesDAO.create(udid, None, sessionAccount1.id.toSessionId))
-    Await.result(devicesDAO.create(udid, None, sessionAccount3.id.toSessionId))
-    Await.result(devicesDAO.create(udid, None, sessionAccount4.id.toSessionId))
-    Await.result(devicesDAO.create(udid, None, sessionAccount5.id.toSessionId))
-    Await.result(devicesDAO.create(udid, None, sessionAccount6.id.toSessionId))
+    Await.result(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount1.id.toSessionId))
+    Await.result(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount3.id.toSessionId))
+    Await.result(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount4.id.toSessionId))
+    Await.result(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount5.id.toSessionId))
+    Await.result(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount6.id.toSessionId))
 
     Await.result(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
     Await.result(devicesDAO.update(udid, pushToken, sessionAccount3.id.toSessionId))

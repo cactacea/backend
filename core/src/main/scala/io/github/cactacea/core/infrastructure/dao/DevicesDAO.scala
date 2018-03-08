@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.domain.enums.DeviceType
 import io.github.cactacea.core.infrastructure.identifiers.{DeviceId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
 
@@ -34,21 +35,22 @@ class DevicesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def create(udid: String, info: Option[String], sessionId: SessionId): Future[DeviceId] = {
+  def create(udid: String, deviceType: DeviceType, info: Option[String], sessionId: SessionId): Future[DeviceId] = {
     for {
       id <- identifyService.generate().map(DeviceId(_))
-      _ <- insert(id, udid, info, sessionId)
+      _ <- insert(id, udid, deviceType, info, sessionId)
     } yield (id)
   }
 
-  private def insert(id: DeviceId, udid: String, info: Option[String], sessionId: SessionId): Future[Long] = {
+  private def insert(id: DeviceId, udid: String, deviceType: DeviceType, info: Option[String], sessionId: SessionId): Future[Long] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Devices].insert(
         _.id          -> lift(id),
         _.accountId   -> lift(accountId),
         _.udid        -> lift(udid),
-        _.userAgent        -> lift(info)
+        _.deviceType  -> lift(deviceType),
+        _.userAgent   -> lift(info)
       )
     }
     run(q)
