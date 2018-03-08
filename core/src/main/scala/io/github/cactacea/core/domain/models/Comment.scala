@@ -6,6 +6,7 @@ import io.github.cactacea.core.infrastructure.models.{Accounts, Comments, Relati
 
 case class Comment(
                     id: CommentId,
+                    replyId: Option[CommentId],
                     message: String,
                     account: Account,
                     favoriteCount: Long,
@@ -21,6 +22,7 @@ object Comment {
       case ContentStatusType.rejected =>
         Comment(
           id              = c.id,
+          replyId         = c.replyId,
           message         = "",
           account         = account,
           favoriteCount   = 0L,
@@ -31,6 +33,7 @@ object Comment {
       case _ => {
         Comment(
           id              = c.id,
+          replyId         = c.replyId,
           message         = c.message,
           account         = account,
           favoriteCount   = c.favoriteCount,

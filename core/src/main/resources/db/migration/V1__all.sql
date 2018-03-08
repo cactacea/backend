@@ -416,19 +416,19 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `cactacea`.`comments`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cactacea`.`comments` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT(20) NOT NULL,
   `message` VARCHAR(1000) NOT NULL,
-  `feed_id` BIGINT NOT NULL,
-  `favorite_count` BIGINT NOT NULL,
-  `by` BIGINT NOT NULL,
-  `content_warning` TINYINT NOT NULL,
-  `content_status` TINYINT NOT NULL,
-  `notified` TINYINT NOT NULL,
-  `posted_at` BIGINT NOT NULL,
+  `feed_id` BIGINT(20) NOT NULL,
+  `reply_id` BIGINT(20) NULL,
+  `favorite_count` BIGINT(20) NOT NULL,
+  `by` BIGINT(20) NOT NULL,
+  `content_warning` TINYINT(4) NOT NULL,
+  `content_status` TINYINT(4) NOT NULL,
+  `notified` TINYINT(4) NOT NULL,
+  `posted_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Table `cactacea`.`comment_favorites`
@@ -589,6 +589,7 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`friend_requests` (
   `id` BIGINT NOT NULL,
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
+  `notified` TINYINT NOT NULL,
   `request_status` TINYINT NOT NULL,
   `requested_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`),

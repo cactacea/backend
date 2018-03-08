@@ -17,12 +17,12 @@ class PushNotificationsRepository {
   @Inject private var messagesDAO: MessagesDAO = _
   @Inject private var accountMessagesDAO: AccountMessagesDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
+  @Inject private var friendRequestsDAO: FriendRequestsDAO = _
 
-
-  def findFeeds(feedId: FeedId) : Future[List[PushNotification]] = {
-    feedsDAO.find(feedId).flatMap(_ match {
+  def findByFeedId(id: FeedId) : Future[List[PushNotification]] = {
+    feedsDAO.find(id).flatMap(_ match {
       case Some(f) if f.notified == false =>
-        pushNotificationsDAO.findFeeds(feedId).map({ t =>
+        pushNotificationsDAO.findByFeed(id).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
               val pushType = PushNotificationType.feed
@@ -37,14 +37,10 @@ class PushNotificationsRepository {
     })
   }
 
-  def updateFeeds(feedId: FeedId, accountIds: List[AccountId]) : Future[Boolean] = {
-    accountFeedsDAO.update(feedId, accountIds)
-  }
-
-  def findGroupInvites(groupInvitationId: GroupInvitationId) : Future[List[PushNotification]] = {
-    groupInvitationsDAO.find(groupInvitationId).flatMap(_ match {
+  def findByInvitationId(id: GroupInvitationId) : Future[List[PushNotification]] = {
+    groupInvitationsDAO.find(id).flatMap(_ match {
       case Some(i) if i.notified == false =>
-        pushNotificationsDAO.findGroupInvites(groupInvitationId).map({ t =>
+        pushNotificationsDAO.findByInvitationId(id).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
               val pushType = PushNotificationType.groupInvitation
@@ -59,14 +55,28 @@ class PushNotificationsRepository {
     })
   }
 
-  def updateGroupInvites(groupInvitationId: GroupInvitationId): Future[Boolean] = {
-    groupInvitationsDAO.updateNotified(groupInvitationId)
+  def findByFriendRequestId(id: FriendRequestId) : Future[List[PushNotification]] = {
+    friendRequestsDAO.find(id).flatMap(_ match {
+      case Some(i) if i.notified == false =>
+        pushNotificationsDAO.findByFriendRequestId(id).map({ t =>
+          t.groupBy(_.displayName).map({
+            case (displayName, fanOuts) =>
+              val pushType = PushNotificationType.groupInvitation
+              val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
+              val postedAt = i.requestedAt
+              val sessionId = i.by.toSessionId
+              PushNotification(displayName, pushType, postedAt, tokens, sessionId, None, None, None)
+          }).toList
+        })
+      case _ =>
+        Future.value(List[PushNotification]())
+    })
   }
 
-  def findMessages(messageId: MessageId) : Future[List[PushNotification]] = {
-    messagesDAO.find(messageId).flatMap(_ match {
+  def findByMessageId(id: MessageId) : Future[List[PushNotification]] = {
+    messagesDAO.find(id).flatMap(_ match {
       case Some(m) if m.notified == false =>
-        pushNotificationsDAO.findMessages(messageId).map({ t =>
+        pushNotificationsDAO.findByMessageId(id).map({ t =>
           t.groupBy({ g => (g.displayName, g.showContent)}).map({
             case ((displayName, showContent), fanOuts) =>
               val pushType = showContent match {
@@ -86,14 +96,10 @@ class PushNotificationsRepository {
     })
   }
 
-  def updateMessages(messageId: MessageId, accountIds: List[AccountId]): Future[Boolean] = {
-    accountMessagesDAO.updateNotified(messageId, accountIds)
-  }
-
-  def findComments(commentId: CommentId) : Future[List[PushNotification]] = {
-    commentsDAO.find(commentId).flatMap(_ match {
+  def findByCommentId(id: CommentId) : Future[List[PushNotification]] = {
+    commentsDAO.find(id).flatMap(_ match {
       case Some(c) if c.notified == false =>
-        pushNotificationsDAO.findComments(commentId).map({ t =>
+        pushNotificationsDAO.findByCommentId(id).map({ t =>
           t.groupBy(_.displayName).map({
             case (displayName, fanOuts) =>
               val pushType = PushNotificationType.comment
@@ -108,8 +114,24 @@ class PushNotificationsRepository {
     })
   }
 
-  def updateComments(commentId: CommentId): Future[Boolean] = {
-    commentsDAO.updateNotified(commentId)
+  def updateFeedNotified(id: FeedId, accountIds: List[AccountId]) : Future[Boolean] = {
+    accountFeedsDAO.update(id, accountIds)
+  }
+
+  def updateInvitationNotified(id: GroupInvitationId): Future[Boolean] = {
+    groupInvitationsDAO.updateNotified(id)
+  }
+
+  def updateFriendRequestNotified(id: FriendRequestId): Future[Boolean] = {
+    friendRequestsDAO.updateNotified(id)
+  }
+
+  def updateMessageNotified(id: MessageId, accountIds: List[AccountId]): Future[Boolean] = {
+    accountMessagesDAO.updateNotified(id, accountIds)
+  }
+
+  def updateCommentNotified(id: CommentId): Future[Boolean] = {
+    commentsDAO.updateNotified(id)
   }
 
 }

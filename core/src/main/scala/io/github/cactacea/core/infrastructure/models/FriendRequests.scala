@@ -7,6 +7,7 @@ case class FriendRequests(
                            id: FriendRequestId,
                            accountId: AccountId,
                            by: AccountId,
+                           notified: Boolean,
                            requestStatus: FriendRequestStatusType,
                            requestedAt: Long
                          )

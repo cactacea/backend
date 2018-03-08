@@ -7,6 +7,6 @@ trait SubScribeService {
   def dequeueFeed(feedId: FeedId): Future[Unit]
   def dequeueComment(commentId: CommentId): Future[Unit]
   def dequeueMessage(messageId: MessageId): Future[Unit]
-  def dequeueGroupInvite(groupInvitationId: GroupInvitationId): Future[Unit]
+  def dequeueGroupInvitation(groupInvitationId: GroupInvitationId): Future[Unit]
   def dequeueFriendRequest(friendRequestId: FriendRequestId): Future[Unit]
 }

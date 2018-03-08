@@ -33,6 +33,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
           _.id              -> lift(id),
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
+          _.notified        -> false,
           _.requestStatus   -> lift(FriendRequestStatusType.noresponsed),
           _.requestedAt     -> lift(requestedAt)
         )
@@ -64,11 +65,19 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def find(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Option[FriendRequests]] = {
+  def find(id: FriendRequestId): Future[Option[FriendRequests]] = {
+    val q = quote {
+      query[FriendRequests]
+        .filter(_.id          == lift(id))
+    }
+    run(q).map(_.headOption)
+  }
+
+  def find(id: FriendRequestId, sessionId: SessionId): Future[Option[FriendRequests]] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
-        .filter(_.id          == lift(friendRequestId))
+        .filter(_.id          == lift(id))
         .filter(_.accountId   == lift(accountId))
     }
     run(q).map(_.headOption)
@@ -108,16 +117,25 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def update(friendRequestId: FriendRequestId, friendRequestStatus: FriendRequestStatusType, sessionId: SessionId): Future[Boolean] = {
+  def update(id: FriendRequestId, status: FriendRequestStatusType, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
-        .filter(_.id      == lift(friendRequestId))
+        .filter(_.id      == lift(id))
         .filter(_.accountId  == lift(accountId))
-        .update(_.requestStatus -> lift(friendRequestStatus))
+        .update(_.requestStatus -> lift(status))
     }
     run(q).map(_ == 1)
 
+  }
+
+  def updateNotified(id: FriendRequestId, notified: Boolean = true): Future[Boolean] = {
+    val q = quote {
+      query[FriendRequests]
+        .filter(_.id == lift(id))
+        .update(_.notified -> lift(notified))
+    }
+    run(q).map(_ == 1)
   }
 
 }

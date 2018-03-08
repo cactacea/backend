@@ -274,7 +274,7 @@ class ValidationDAO {
     })
   }
 
-  def notExistGroupInvite(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+  def notExistGroupInvitation(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     groupInvitationsDAO.exist(accountId, groupId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyInvited))
@@ -319,7 +319,7 @@ class ValidationDAO {
     })
   }
 
-  def findGroupsInvite(groupInvitationId: GroupInvitationId, sessionId: SessionId): Future[GroupInvitations] = {
+  def findGroupsInvitation(groupInvitationId: GroupInvitationId, sessionId: SessionId): Future[GroupInvitations] = {
     groupInvitationsDAO.find(groupInvitationId, sessionId).flatMap(_ match {
       case None =>
         Future.exception(CactaceaException(GroupInvitationNotFound))
