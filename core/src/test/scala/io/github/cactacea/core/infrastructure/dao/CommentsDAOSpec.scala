@@ -67,7 +67,7 @@ class CommentsDAOSpec extends DAOSpec {
     Await.result(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
     Await.result(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
 
-    val result = Await.result(pushNotificationsDAO.findByCommentId(commentId))
+    val result = Await.result(pushNotificationsDAO.findByCommentId(commentId, false))
 
     assert(result(0).accountId == sessionAccount1.id)
     assert(result(0).displayName == displayName.get)

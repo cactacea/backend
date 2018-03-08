@@ -29,6 +29,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultSubScribeModule,
         DefaultTranscodeModule,
         DefaultIdentifyModule,
+        DefaultDeepLinkModule,
         FinatraJacksonModule
       )
     ).create

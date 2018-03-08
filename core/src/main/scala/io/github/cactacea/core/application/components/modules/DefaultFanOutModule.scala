@@ -7,7 +7,7 @@ import io.github.cactacea.core.application.components.services.DefaultFanOutServ
 object DefaultFanOutModule extends TwitterModule {
 
   override def configure() {
-    bindSingleton[FanOutService].to(classOf[DefaultFanOutService])
+    bindSingleton[FanOutService].to[DefaultFanOutService]
   }
 
 }

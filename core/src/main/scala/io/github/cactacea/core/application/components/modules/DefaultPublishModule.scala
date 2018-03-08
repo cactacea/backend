@@ -7,7 +7,7 @@ import io.github.cactacea.core.application.components.services.DefaultPublishSer
 object DefaultPublishModule extends TwitterModule {
 
   override def configure() {
-    bindSingleton[PublishService].to(classOf[DefaultPublishService])
+    bindSingleton[PublishService].to[DefaultPublishService]
   }
 
 }

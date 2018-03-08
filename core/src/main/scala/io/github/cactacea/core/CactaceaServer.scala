@@ -16,24 +16,34 @@ class CactaceaServer extends HttpServer {
   override val defaultAdminPort = 9001
   override val defaultHttpServerName = "Backend Server"
 
-  protected  val databaseModule = DatabaseProviderModule
+  protected  def databaseModule = DatabaseProviderModule
 
-  def customModules: Seq[TwitterModule] = Seq(
-      DefaultIdentifyModule,
-      DefaultSocialAccountsModule,
-      DefaultInjectionModule,
-      DefaultConfigModule,
-      DefaultFanOutModule,
-      DefaultNotificationMessagesModule,
-      DefaultPublishModule,
-      DefaultPushNotificationModule,
-      DefaultStorageModule,
-      DefaultSubScribeModule,
-      DefaultTranscodeModule
-  )
+  def identifyModule: TwitterModule =  DefaultIdentifyModule
+  def socialAccountsModule: TwitterModule = DefaultSocialAccountsModule
+  def injectionModule: TwitterModule =  DefaultInjectionModule
+  def configModule: TwitterModule = DefaultConfigModule
+  def fanOutModule: TwitterModule = DefaultFanOutModule
+  def notificationMessagesModule: TwitterModule = DefaultNotificationMessagesModule
+  def publishModule: TwitterModule =  DefaultPublishModule
+  def pushNotificationModule: TwitterModule = DefaultPushNotificationModule
+  def storageModule: TwitterModule = DefaultStorageModule
+  def subScribeModule: TwitterModule = DefaultSubScribeModule
+  def deepLinkModule: TwitterModule = DefaultDeepLinkModule
+  def transcodeModule: TwitterModule = DefaultTranscodeModule
 
-  addFrameworkModules(customModules:_*)
-  addFrameworkModules(databaseModule)
+  addFrameworkModule(identifyModule)
+  addFrameworkModule(socialAccountsModule)
+  addFrameworkModule(injectionModule)
+  addFrameworkModule(configModule)
+  addFrameworkModule(fanOutModule)
+  addFrameworkModule(notificationMessagesModule)
+  addFrameworkModule(publishModule)
+  addFrameworkModule(pushNotificationModule)
+  addFrameworkModule(storageModule)
+  addFrameworkModule(subScribeModule)
+  addFrameworkModule(deepLinkModule)
+  addFrameworkModule(transcodeModule)
+  addFrameworkModule(databaseModule)
 
   override def configureHttp(router: HttpRouter) = {
     router

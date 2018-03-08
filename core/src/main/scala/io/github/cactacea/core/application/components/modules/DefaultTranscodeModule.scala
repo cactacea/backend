@@ -7,7 +7,7 @@ import io.github.cactacea.core.application.components.services.DefaultTranscodeS
 object DefaultTranscodeModule extends TwitterModule {
 
   override def configure() {
-    bindSingleton[TranscodeService].to(classOf[DefaultTranscodeService])
+    bindSingleton[TranscodeService].to[DefaultTranscodeService]
   }
 
 }

@@ -46,6 +46,7 @@ class ServerSpec extends FeatureTest {
         DefaultSubScribeModule,
         DefaultTranscodeModule,
         DefaultIdentifyModule,
+        DefaultDeepLinkModule,
         FinatraJacksonModule
       )
     ).create

@@ -7,7 +7,7 @@ import io.github.cactacea.core.application.components.services.DefaultSubScribeS
 object DefaultSubScribeModule extends TwitterModule {
 
   override def configure() {
-    bindSingleton[SubScribeService].to(classOf[DefaultSubScribeService])
+    bindSingleton[SubScribeService].to[DefaultSubScribeService]
   }
 
 }
