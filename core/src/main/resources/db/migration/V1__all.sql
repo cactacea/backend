@@ -115,6 +115,7 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`feeds` (
   `privacy_type` TINYINT NOT NULL,
   `content_warning` TINYINT NOT NULL,
   `content_status` TINYINT NOT NULL,
+  `expiration` BIGINT NULL DEFAULT NULL,
   `notified` TINYINT NOT NULL,
   `posted_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`))

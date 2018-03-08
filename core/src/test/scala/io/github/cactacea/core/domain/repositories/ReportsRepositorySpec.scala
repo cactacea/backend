@@ -35,7 +35,7 @@ class ReportsRepositorySpec extends RepositorySpec {
     val tags = Some(List("tag1", "tag2", "tag3"))
     val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
-    val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, user.id.toSessionId))
 
     assert(intercept[CactaceaException] {
@@ -48,7 +48,7 @@ class ReportsRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user = signUp("user name", "user password", "user udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     reportsRepository.createCommentReport(commentId, ReportType.inappropriate, user.id.toSessionId)
 

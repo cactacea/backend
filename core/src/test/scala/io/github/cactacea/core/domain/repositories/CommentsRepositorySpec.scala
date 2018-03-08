@@ -18,7 +18,7 @@ class CommentsRepositorySpec extends RepositorySpec {
   test("create a comment") {
 
     val session = signUp("session name", "session password", "udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     val result = Await.result(commentsDAO.exist(commentId, session.id.toSessionId))
     assert(result == true)
@@ -39,7 +39,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user = signUp("user name", "user password", "user udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     Await.result(reportsRepository.createCommentReport(commentId, ReportType.inappropriate, user.id.toSessionId))
     val result = Await.result(commentsRepository.delete(commentId, session.id.toSessionId))
@@ -60,7 +60,7 @@ class CommentsRepositorySpec extends RepositorySpec {
   test("find a comment") {
 
     val session = signUp("session name", "session password", "udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     val comment = Await.result(commentsRepository.find(commentId, session.id.toSessionId))
     assert(comment.id == commentId)
@@ -79,7 +79,7 @@ class CommentsRepositorySpec extends RepositorySpec {
   test("find everyone comments") {
 
     val session = signUp("session name", "session password", "udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId1 = Await.result(commentsRepository.create(feedId, "comment 1", session.id.toSessionId))
     val commentId2 = Await.result(commentsRepository.create(feedId, "comment 2", session.id.toSessionId))
     val commentId3 = Await.result(commentsRepository.create(feedId, "comment 3", session.id.toSessionId))

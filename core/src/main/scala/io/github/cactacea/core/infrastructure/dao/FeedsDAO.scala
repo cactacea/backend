@@ -24,17 +24,17 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[FeedId] = {
+  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
     val by = sessionId.toAccountId
     for {
       id <- identifyService.generate().map(FeedId(_))
-      _  <- _insertFeed(id, message, privacyType, contentWarning, by)
+      _  <- _insertFeed(id, message, privacyType, contentWarning, expiration, by)
       _  <- feedTagsDAO.create(id, tags)
       _  <- feedMediumDAO.create(id, mediumIds)
     } yield (id)
   }
 
-  private def _insertFeed(id: FeedId, message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, by: AccountId): Future[Long] = {
+  private def _insertFeed(id: FeedId, message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], by: AccountId): Future[Long] = {
     val privacy = privacyType
     val postedAt = timeService.nanoTime()
     val q = quote {
@@ -44,6 +44,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         _.message             -> lift(message),
         _.favoriteCount       -> 0L,
         _.commentCount        -> 0L,
+        _.expiration          -> lift(expiration),
         _.privacyType         -> lift(privacy),
         _.contentWarning      -> lift(contentWarning),
         _.contentStatus       -> lift(ContentStatusType.unchecked),
@@ -54,9 +55,9 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    _updateFeeds(feedId, message, privacyType, contentWarning, by).flatMap(_ match {
+    _updateFeeds(feedId, message, privacyType, contentWarning, expiration, by).flatMap(_ match {
       case true =>
         for {
           t1 <- feedTagsDAO.delete(feedId)
@@ -69,7 +70,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     })
   }
 
-  private def _updateFeeds(feedId: FeedId, message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, by: AccountId): Future[Boolean] = {
+  private def _updateFeeds(feedId: FeedId, message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], by: AccountId): Future[Boolean] = {
     val privacy = privacyType
     val q = quote {
       query[Feeds]
@@ -78,6 +79,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         .update(
           _.message         -> lift(message),
           _.contentWarning  -> lift(contentWarning),
+          _.expiration      -> lift(expiration),
           _.privacyType     -> lift(privacy)
         )
     }
@@ -109,10 +111,12 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
 
   def exist(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+    val e = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
+        .filter({ f => (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty)})
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
             || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
@@ -149,6 +153,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
 
+    val e = timeService.nanoTime()
     val s = since.getOrElse(Long.MaxValue)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
@@ -161,6 +166,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
             || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
             || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
+        .filter({ f => (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty)})
         .filter(_.postedAt < lift(s))
         .sortBy(_.postedAt)(Ord.descNullsLast)
         .drop(lift(o))
@@ -193,9 +199,9 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   def find(feedId: FeedId, sessionId: SessionId): Future[Option[(Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
     val by = sessionId.toAccountId
     val status = AccountStatusType.singedUp
-
+    val e = timeService.nanoTime()
     val q = quote {
-      query[Feeds].filter(f => f.id == lift(feedId) &&
+      query[Feeds].filter(f => f.id == lift(feedId) && (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty) &&
         query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
           || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))

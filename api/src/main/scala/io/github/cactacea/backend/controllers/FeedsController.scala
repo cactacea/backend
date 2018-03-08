@@ -30,6 +30,7 @@ class FeedsController extends Controller {
       request.tags,
       request.privacyType,
       request.contentWarning,
+      request.expiration,
       SessionContext.id
     ).map(FeedCreated(_)).map(response.created(_))
   }
@@ -49,6 +50,7 @@ class FeedsController extends Controller {
       request.tags,
       request.privacyType,
       request.contentWarning,
+      request.expiration,
       SessionContext.id
     ).map(_ => response.noContent)
   }

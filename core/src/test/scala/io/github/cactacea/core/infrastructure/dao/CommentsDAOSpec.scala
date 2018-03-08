@@ -22,7 +22,7 @@ class CommentsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = Await.result(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
     val commentId3 = Await.result(commentsDAO.create(feedId, "3" * 100, sessionAccount2.id.toSessionId))
@@ -55,7 +55,7 @@ class CommentsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
 
     val displayName = Some("Invitation Sender Name")
@@ -79,7 +79,7 @@ class CommentsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = Await.result(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
 
@@ -95,7 +95,7 @@ class CommentsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = Await.result(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
     Await.result(commentFavoritesDAO.create(commentId1, sessionAccount1.id.toSessionId))
@@ -130,7 +130,7 @@ class CommentsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = Await.result(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
 
@@ -150,7 +150,7 @@ class CommentsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = Await.result(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
     val commentId3 = Await.result(commentsDAO.create(feedId, "3" * 100, sessionAccount2.id.toSessionId))
@@ -194,7 +194,7 @@ class CommentsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = Await.result(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
 
@@ -214,7 +214,7 @@ class CommentsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = Await.result(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
 

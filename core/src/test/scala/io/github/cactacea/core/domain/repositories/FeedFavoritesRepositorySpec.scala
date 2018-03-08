@@ -16,7 +16,7 @@ class FeedFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user = signUp("user name", "user password", "user udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val result = Await.result(feedFavoritesRepository.create(feedId, user.id.toSessionId))
     // TODO : Check
 
@@ -35,7 +35,7 @@ class FeedFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user = signUp("user name", "user password", "user udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId, user.id.toSessionId))
     assert(intercept[CactaceaException] {
       Await.result(feedFavoritesRepository.create(feedId, user.id.toSessionId))
@@ -47,7 +47,7 @@ class FeedFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user = signUp("user name", "user password", "user udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId, user.id.toSessionId))
     val result = Await.result(feedFavoritesRepository.delete(feedId, user.id.toSessionId))
     // TODO : Check
@@ -68,7 +68,7 @@ class FeedFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user = signUp("user name", "user password", "user udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     assert(intercept[CactaceaException] {
       Await.result(feedFavoritesRepository.delete(feedId, user.id.toSessionId))
     }.error == FeedNotFavorited)
@@ -79,11 +79,11 @@ class FeedFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user1 = signUp("user name 1", "user password", "user udid").account
-    val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feedId4 = Await.result(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feedId5 = Await.result(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId4 = Await.result(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId5 = Await.result(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId1, user1.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId2, user1.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId3, user1.id.toSessionId))
@@ -101,11 +101,11 @@ class FeedFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user1 = signUp("user name 1", "user password", "user udid").account
-    val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, user1.id.toSessionId))
-    val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, user1.id.toSessionId))
-    val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, user1.id.toSessionId))
-    val feedId4 = Await.result(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, user1.id.toSessionId))
-    val feedId5 = Await.result(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, user1.id.toSessionId))
+    val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, user1.id.toSessionId))
+    val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, user1.id.toSessionId))
+    val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, user1.id.toSessionId))
+    val feedId4 = Await.result(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, user1.id.toSessionId))
+    val feedId5 = Await.result(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, user1.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId1, session.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId2, session.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId3, session.id.toSessionId))
@@ -123,11 +123,11 @@ class FeedFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user1 = signUp("user name 1", "user password", "user udid").account
-    val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feedId4 = Await.result(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
-    val feedId5 = Await.result(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId4 = Await.result(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId5 = Await.result(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId1, user1.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId2, user1.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId3, user1.id.toSessionId))
@@ -159,7 +159,7 @@ class FeedFavoritesRepositorySpec extends RepositorySpec {
     val user3 = signUp("user name 3", "user password 3", "user udid 3").account
     val user4 = signUp("user name 4", "user password 4", "user udid 4").account
     val user5 = signUp("user name 5", "user password 5", "user udid 5").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId, user1.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId, user2.id.toSessionId))
     Await.result(feedFavoritesRepository.create(feedId, user3.id.toSessionId))

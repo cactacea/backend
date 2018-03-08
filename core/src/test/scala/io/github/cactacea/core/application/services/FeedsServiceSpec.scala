@@ -7,11 +7,12 @@ import io.github.cactacea.core.helpers.ServiceSpec
 class FeedsServiceSpec extends ServiceSpec {
 
   val feedsService = injector.instance[FeedsService]
+  val timeService = injector.instance[TimeService]
 
   test("create a message feed") {
 
     val session = signUp("account name", "account password", "ffc1ded6f4570d557ad65f986684fc10c7f8d51f").account
-    val id = Await.result(feedsService.create("a message feed", None, Some(List("tag1, tag2, tag3, tag4")), FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val id = Await.result(feedsService.create("a message feed", None, Some(List("tag1, tag2, tag3, tag4")), FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feed = Await.result(feedsService.find(id, session.id.toSessionId))
 
     assert(feed.id == id)

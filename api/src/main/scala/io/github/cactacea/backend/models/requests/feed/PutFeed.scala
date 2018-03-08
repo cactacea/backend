@@ -11,5 +11,6 @@ case class PutFeed(
                     mediumIds : Option[List[MediumId]],
                     @Size(min = 0, max = 1000) tags : Option[List[String]],
                     privacyType : FeedPrivacyType,
-                    contentWarning : Boolean
+                    contentWarning : Boolean,
+                    expiration: Option[Long]
                     )
