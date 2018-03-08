@@ -6,7 +6,7 @@ import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.feed.{GetSessionFavoriteFeeds, GetSessionFeeds}
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.util.auth.SessionContext._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class SessionController extends Controller {
@@ -14,16 +14,16 @@ class SessionController extends Controller {
   @Inject private var accountsService: AccountsService = _
   @Inject private var sessionService: SessionsService = _
 
-  get("/session") { request: GetSessionAccount =>
+  get("/session") { request: Request =>
     accountsService.find(
-      request.session.id
+      SessionContext.id
     )
   }
 
   delete("/session") { request: Request =>
     sessionService.signOut(
-      request.udid,
-      request.id
+      SessionContext.udid,
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -31,7 +31,7 @@ class SessionController extends Controller {
   put("/session/account_name") { request: PutSessionAccountName =>
     accountsService.update(
       request.accountName,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -39,7 +39,7 @@ class SessionController extends Controller {
     accountsService.update(
       request.oldPassword,
       request.newPassword,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -50,14 +50,14 @@ class SessionController extends Controller {
       request.birthday,
       request.location,
       request.bio,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
   put("/session/profile_image") { request: PutSessionProfileImage =>
     accountsService.update(
       request.mediumId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -70,7 +70,7 @@ class SessionController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -79,7 +79,7 @@ class SessionController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -88,7 +88,7 @@ class SessionController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -99,7 +99,7 @@ class SessionController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -110,7 +110,7 @@ class SessionController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 

@@ -2,14 +2,16 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.DeepLinkService
+import io.github.cactacea.core.application.components.interfaces.{DeepLinkService, NotificationMessagesService}
 import io.github.cactacea.core.domain.enums.NotificationType
 import io.github.cactacea.core.domain.models.Notification
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class NotificationsRepository {
+
 
   @Inject private var notificationsDAO: NotificationsDAO = _
   @Inject private var friendRequestsDAO: FriendRequestsDAO = _
@@ -17,12 +19,13 @@ class NotificationsRepository {
   @Inject private var feedsDAO: FeedsDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
   @Inject private var deepLinkService: DeepLinkService = _
+  @Inject private var notificationMessagesService: NotificationMessagesService = _
 
   def createFeed(id: FeedId, accountIds: List[AccountId]): Future[Unit] = {
     val url = deepLinkService.getFeed(id)
     feedsDAO.find(id).flatMap(_ match {
       case Some(f) =>
-        notificationsDAO.create(accountIds, NotificationType.feed, id.value, url)
+        notificationsDAO.create(accountIds, f.by, NotificationType.feed, id.value, url)
           .flatMap(_ => Future.Unit)
       case None =>
         Future.Unit
@@ -43,7 +46,7 @@ class NotificationsRepository {
         }).flatMap(_ match {
           case Some((accountId, notificationType)) =>
             val url = deepLinkService.getComment(c.feedId, c.id)
-            notificationsDAO.create(accountId, notificationType, id.value, url).flatMap(_ => Future.Unit)
+            notificationsDAO.create(accountId, c.by, notificationType, id.value, url).flatMap(_ => Future.Unit)
           case None =>
             Future.Unit
         })
@@ -56,7 +59,7 @@ class NotificationsRepository {
     val url = deepLinkService.getRequest(id)
     friendRequestsDAO.find(id).flatMap(_ match {
       case Some(f) =>
-        notificationsDAO.create(f.accountId, NotificationType.friendRequest, id.value, url).flatMap(_ => Future.Unit)
+        notificationsDAO.create(f.accountId, f.by, NotificationType.friendRequest, id.value, url).flatMap(_ => Future.Unit)
       case None =>
         Future.Unit
     })
@@ -66,14 +69,18 @@ class NotificationsRepository {
     val url = deepLinkService.getInvitation(id)
     groupInvitationsDAO.find(id).flatMap(_ match {
       case Some(i) =>
-        notificationsDAO.create(i.accountId, NotificationType.groupInvitation, id.value, url).flatMap(_ => Future.Unit)
+        notificationsDAO.create(i.accountId, i.by, NotificationType.groupInvitation, id.value, url).flatMap(_ => Future.Unit)
       case None =>
         Future.Unit
     })
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Notification]] = {
-    notificationsDAO.findAll(since, offset, count, sessionId).map(_.map(Notification(_)))
+    notificationsDAO.findAll(since, offset, count, sessionId).map(_.map({ case (n, a, r) =>
+      val displayName = r.map(_.editedDisplayName).getOrElse(a.accountName)
+      val message = notificationMessagesService.getNotificationMessage(n.notificationType, SessionContext.locales, displayName)
+      Notification(n, message)
+    }))
   }
 
   def updateReadStatus(notifications: List[Notification], sessionId: SessionId): Future[Unit] = {

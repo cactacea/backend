@@ -6,7 +6,7 @@ import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount
 import io.github.cactacea.backend.models.requests.group.{GetSessionInvitations, PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
 import io.github.cactacea.core.application.services.GroupInvitationsService
-import io.github.cactacea.core.util.auth.SessionContext._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class GroupInvitationsController extends Controller {
@@ -18,21 +18,21 @@ class GroupInvitationsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
   post("/invitations/:id/accept") { request: PostAcceptInvitation =>
     invitationService.accept(
       request.groupInvitationId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
   post("/invitations/:id/reject") { request: PostRejectInvitation =>
     invitationService.reject(
       request.groupInvitationId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -40,7 +40,7 @@ class GroupInvitationsController extends Controller {
     invitationService.create(
       request.accountIds,
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(_.map(InvitationCreated(_))).map(response.created(_))
   }
 
@@ -48,7 +48,7 @@ class GroupInvitationsController extends Controller {
     invitationService.create(
       request.accountId,
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(InvitationCreated(_)).map(response.created(_))
   }
 

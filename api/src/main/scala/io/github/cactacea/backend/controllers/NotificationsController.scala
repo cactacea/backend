@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.notification.GetNotifications
 import io.github.cactacea.core.application.services.NotificationsService
-import io.github.cactacea.core.util.auth.SessionContext._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class NotificationsController extends Controller {
@@ -16,7 +16,7 @@ class NotificationsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 

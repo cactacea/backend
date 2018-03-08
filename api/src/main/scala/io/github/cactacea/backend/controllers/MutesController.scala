@@ -5,6 +5,7 @@ import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
 import io.github.cactacea.backend.models.requests.session.GetSessionMutes
 import io.github.cactacea.core.application.services.MutesService
+import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.auth.SessionContext._
 
 @Singleton
@@ -17,21 +18,21 @@ class MutesController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
   post("/accounts/:id/mutes") { request: PostMute =>
     mutesService.create(
       request.accountId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
   delete("/accounts/:id/mutes") { request: DeleteMute =>
     mutesService.delete(
       request.accountId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 

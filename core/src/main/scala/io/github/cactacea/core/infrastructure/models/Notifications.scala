@@ -6,10 +6,10 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, Notificati
 case class Notifications (
                            id: NotificationId,
                            accountId: AccountId,
+                           by: AccountId,
                            notificationType: NotificationType,
                            contentId: Option[Long],
-                           message: Option[String],
-                           url: Option[String],
+                           url: String,
                            unread: Boolean,
                            notifiedAt: Long
                          )

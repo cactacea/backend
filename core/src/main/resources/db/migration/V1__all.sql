@@ -670,22 +670,27 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `cactacea`.`notifications` (
   `id` BIGINT NOT NULL,
   `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
   `notification_type` BIGINT NOT NULL,
   `content_id` BIGINT NULL DEFAULT NULL,
-  `message` VARCHAR(45) NULL DEFAULT NULL,
-  `url` VARCHAR(2083) NULL DEFAULT NULL,
+  `url` VARCHAR(2083) NOT NULL,
   `unread` TINYINT NOT NULL,
   `notified_at` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `notification_type`),
   INDEX `fk_notifications_accounts1_idx` (`account_id` ASC),
+  INDEX `fk_notifications_accounts2_idx` (`by` ASC),
   CONSTRAINT `fk_notifications_accounts1`
     FOREIGN KEY (`account_id`)
+    REFERENCES `cactacea`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_notifications_accounts2`
+    FOREIGN KEY (`by`)
     REFERENCES `cactacea`.`accounts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Table `cactacea`.`push_notification_settings`

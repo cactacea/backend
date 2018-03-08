@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.models.requests.session
 
-import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.{Header, RouteParam}
 import com.twitter.finatra.validation._
 import io.github.cactacea.backend.models.requests.Validations
@@ -18,8 +17,7 @@ case class PostSocialAccountSignUp(
                                @PastTime birthday: Option[DateTime],
                                @Size(min = 0, max = 255) location: Option[String],
                                @Size(min = 0, max = 1024) bio: Option[String],
-                               @Header("user-agent") userAgent: String,
-                               session: Request
+                               @Header("user-agent") userAgent: String
                              ) {
 
   @MethodValidation

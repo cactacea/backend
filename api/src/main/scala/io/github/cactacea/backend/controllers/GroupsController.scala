@@ -6,7 +6,7 @@ import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.group._
 import io.github.cactacea.backend.models.responses.GroupCreated
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.util.auth.SessionContext._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class GroupsController extends Controller {
@@ -21,14 +21,14 @@ class GroupsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
   get("/groups/:id") { request: GetGroup =>
     groupsService.find(
       request.groupId,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -38,7 +38,7 @@ class GroupsController extends Controller {
       request.byInvitationOnly,
       request.privacyType,
       request.authorityType,
-      request.session.id
+      SessionContext.id
     ).map(GroupCreated(_)).map(response.created(_))
   }
 
@@ -49,7 +49,7 @@ class GroupsController extends Controller {
       request.byInvitationOnly,
       request.privacyType,
       request.authorityType,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -57,7 +57,7 @@ class GroupsController extends Controller {
     groupsService.report(
       request.groupId,
       request.reportType,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -68,14 +68,14 @@ class GroupsController extends Controller {
   post("/groups/:id/join") { request: PostJoinGroup =>
     groupAccountsService.create(
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
   post("/groups/:id/leave") { request: PostLeaveGroup =>
     groupAccountsService.delete(
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -85,7 +85,7 @@ class GroupsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -93,7 +93,7 @@ class GroupsController extends Controller {
     groupAccountsService.create(
       request.accountId,
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -101,7 +101,7 @@ class GroupsController extends Controller {
     groupAccountsService.delete(
       request.accountId,
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -110,7 +110,7 @@ class GroupsController extends Controller {
   get("/accounts/:id/group") { request: GetAccountGroup =>
     accountGroupsService.find(
       request.accountId,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -120,7 +120,7 @@ class GroupsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -130,7 +130,7 @@ class GroupsController extends Controller {
       request.offset,
       request.count,
       true,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -140,28 +140,28 @@ class GroupsController extends Controller {
       request.offset,
       request.count,
       false,
-      request.session.id
+      SessionContext.id
     )
   }
 
   delete("/groups/:id") { request: DeleteGroup =>
     accountGroupsService.delete(
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
   post("/groups/:id/hides") { request: PostHideGroup =>
     accountGroupsService.hide(
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
   delete("/groups/:id/hides") { request: DeleteHideGroup =>
     accountGroupsService.show(
       request.groupId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 

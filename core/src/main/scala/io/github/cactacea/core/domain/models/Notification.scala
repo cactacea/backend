@@ -8,19 +8,19 @@ case class Notification (
                            id: NotificationId,
                            notificationType: NotificationType,
                            contentId: Option[Long],
-                           message: Option[String],
-                           url: Option[String],
+                           message: String,
+                           url: String,
                            notifiedAt: Long
                          )
 
 object Notification {
 
-  def apply(n: Notifications): Notification = {
-    Notification(
+  def apply(n: Notifications, message: String): Notification = {
+    new Notification(
       n.id,
       n.notificationType,
       n.contentId,
-      n.message,
+      message,
       n.url,
       n.notifiedAt
     )
