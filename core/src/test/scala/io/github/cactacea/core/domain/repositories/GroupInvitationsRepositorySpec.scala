@@ -27,7 +27,11 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
     val user5 = signUp("user name 5", "user password 5", "user udid 5").account
 
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    Await.result(groupInvitationsRepository.create(List(user1.id, user2.id, user3.id, user4.id, user5.id), groupId, sessionUser.id.toSessionId))
+    Await.result(groupInvitationsRepository.create(user1.id, groupId, sessionUser.id.toSessionId))
+    Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
+    Await.result(groupInvitationsRepository.create(user3.id, groupId, sessionUser.id.toSessionId))
+    Await.result(groupInvitationsRepository.create(user4.id, groupId, sessionUser.id.toSessionId))
+    Await.result(groupInvitationsRepository.create(user5.id, groupId, sessionUser.id.toSessionId))
     val result1 = Await.result(groupInvitationsRepository.findAll(None, None, None, user1.id.toSessionId))
     val result2 = Await.result(groupInvitationsRepository.findAll(None, None, None, user2.id.toSessionId))
     val result3 = Await.result(groupInvitationsRepository.findAll(None, None, None, user3.id.toSessionId))

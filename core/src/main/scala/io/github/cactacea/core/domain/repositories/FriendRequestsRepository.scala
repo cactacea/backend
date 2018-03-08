@@ -13,7 +13,6 @@ class FriendRequestsRepository {
 
   @Inject private var friendRequestsStatusDAO: FriendRequestsStatusDAO = _
   @Inject private var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject private var notificationsDAO: NotificationsDAO = _
   @Inject private var friendsRepository: FriendsRepository = _
   @Inject private var validationDAO: ValidationDAO = _
 
@@ -24,7 +23,6 @@ class FriendRequestsRepository {
       _ <- validationDAO.notExistFriendRequest(accountId, sessionId)
       _ <- friendRequestsStatusDAO.create(accountId, sessionId)
       id <- friendRequestsDAO.create(accountId, sessionId)
-      _ <- notificationsDAO.create(accountId, NotificationType.friendRequest, id.value)
     } yield (id)
   }
 

@@ -2,7 +2,7 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.enums.{GroupInvitationStatusType, MessageType, NotificationType}
+import io.github.cactacea.core.domain.enums.{GroupInvitationStatusType, MessageType}
 import io.github.cactacea.core.domain.models.GroupInvitation
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers._
@@ -18,14 +18,7 @@ class GroupInvitationsRepository {
   @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
   @Inject private var accountGroupsDAO: AccountGroupsDAO = _
   @Inject private var messagesDAO: MessagesDAO = _
-  @Inject private var notificationsDAO: NotificationsDAO = _
   @Inject private var validationDAO: ValidationDAO = _
-
-  def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInvitationId]] = {
-    Future.traverseSequentially(accountIds) {
-      id => create(id, groupId, sessionId)
-    }.map(_.toList)
-  }
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
     for {
@@ -36,7 +29,6 @@ class GroupInvitationsRepository {
       _ <- validationDAO.hasJoinAndManagingAuthority(p, accountId, sessionId)
       _ <- validationDAO.checkGroupAccountsCount(groupId)
       id <- groupInvitationsDAO.create(accountId, groupId, sessionId)
-      _ <- notificationsDAO.create(accountId, NotificationType.groupInvitation, id.value)
     } yield (id)
   }
 

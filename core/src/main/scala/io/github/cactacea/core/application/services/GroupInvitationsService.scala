@@ -4,25 +4,25 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{InjectionService, PublishService}
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.domain.enums.NotificationType
 import io.github.cactacea.core.domain.models.GroupInvitation
-import io.github.cactacea.core.domain.repositories.GroupInvitationsRepository
+import io.github.cactacea.core.domain.repositories.{GroupInvitationsRepository, NotificationsRepository}
 import io.github.cactacea.core.infrastructure.identifiers._
 
 @Singleton
 class GroupInvitationsService {
 
-  @Inject private var groupInvitationsRepository: GroupInvitationsRepository = _
   @Inject private var db: DatabaseService = _
+  @Inject private var groupInvitationsRepository: GroupInvitationsRepository = _
+  @Inject private var notificationsRepository: NotificationsRepository = _
   @Inject private var publishService: PublishService = _
   @Inject private var injectionService: InjectionService = _
 
   def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInvitationId]] = {
     db.transaction {
-      for {
-        ids <- groupInvitationsRepository.create(accountIds, groupId, sessionId)
-        _ <- Future.traverseSequentially(ids) {id => publishService.enqueueGroupInvite(id)}
-        _ <- injectionService.groupInvitationCreated(accountIds, groupId, sessionId)
-      } yield (ids)
+      Future.traverseSequentially(accountIds) { id =>
+        create(id, groupId, sessionId)
+      }.map(_.toList)
     }
   }
 
@@ -30,6 +30,7 @@ class GroupInvitationsService {
     db.transaction {
       for {
         id <- groupInvitationsRepository.create(accountId, groupId, sessionId)
+        _ <- notificationsRepository.create(accountId, NotificationType.groupInvitation, id.value)
         _ <- injectionService.groupInvitationCreated(List(accountId), groupId, sessionId)
         _ <- publishService.enqueueGroupInvite(id)
       } yield (id)
