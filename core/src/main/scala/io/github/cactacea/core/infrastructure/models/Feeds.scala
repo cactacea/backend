@@ -12,6 +12,7 @@ case class Feeds(
                   by: AccountId,
                   contentWarning: Boolean,
                   contentStatus: ContentStatusType,
+                  expiration: Option[Long],
                   notified: Boolean,
                   postedAt: Long
                   )

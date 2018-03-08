@@ -19,7 +19,7 @@ class ApplicationFilter @Inject()(authTokenGenerator: AuthTokenGenerator) extend
       val locales = request.headerMap.get(Fields.AcceptLanguage).fold(Seq(Locale.getDefault())) { lang =>
         Locale.LanguageRange.parse(lang).asScala.map(f => Locale.forLanguageTag(f.getRange))
       }
-      SessionContext.setLocales(request, locales)
+      SessionContext.setLocales(locales)
       service(request)
     })
   }

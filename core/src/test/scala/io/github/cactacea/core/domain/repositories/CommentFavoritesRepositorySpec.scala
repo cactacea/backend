@@ -19,7 +19,7 @@ class CommentFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user  = signUp("user name", "user password", "udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", user.id.toSessionId))
     Await.result(commentFavoritesRepository.create(commentId, session.id.toSessionId))
     val result = Await.result(commentFavoritesDAO.exist(commentId, session.id.toSessionId))
@@ -31,7 +31,7 @@ class CommentFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user  = signUp("user name", "user password", "udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", user.id.toSessionId))
     Await.result(commentFavoritesRepository.create(commentId, session.id.toSessionId))
 
@@ -54,7 +54,7 @@ class CommentFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user  = signUp("user name", "user password", "udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", user.id.toSessionId))
     Await.result(commentFavoritesRepository.create(commentId, session.id.toSessionId))
     Await.result(commentFavoritesRepository.delete(commentId, session.id.toSessionId))
@@ -67,7 +67,7 @@ class CommentFavoritesRepositorySpec extends RepositorySpec {
 
     val session = signUp("session name", "session password", "udid").account
     val user  = signUp("user name", "user password", "udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", user.id.toSessionId))
     Await.result(commentFavoritesRepository.create(commentId, session.id.toSessionId))
     Await.result(commentFavoritesRepository.delete(commentId, session.id.toSessionId))
@@ -95,7 +95,7 @@ class CommentFavoritesRepositorySpec extends RepositorySpec {
     val user3  = signUp("user3 name", "user3 password", "udid").account
     val user4  = signUp("user4 name", "user4 password", "udid").account
     val user5  = signUp("user5 name", "user5 password", "udid").account
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, session.id.toSessionId))
+    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     Await.result(commentFavoritesRepository.create(commentId, user1.id.toSessionId))
     Await.result(commentFavoritesRepository.create(commentId, user2.id.toSessionId))

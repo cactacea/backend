@@ -97,7 +97,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     val contentWarning = true
 
     // create feed
-    val feedId = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, sessionAccount2.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
     // create follow
     Await.result(followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId))

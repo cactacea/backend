@@ -17,21 +17,21 @@ class FeedsRepository {
   @Inject private var timelineDAO: TimeLineDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
-  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[FeedId] = {
+  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
     val ids = mediumIds.map(_.distinct)
     for {
       _ <- validationDAO.existMedium(ids, sessionId)
-      id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, sessionId)
+      id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- accountFeedsDAO.create(id, sessionId)
       _ <- timelineDAO.create(id, sessionId)
     } yield (id)
   }
 
-  def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[Unit] = {
+  def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
     val ids = mediumIds.map(_.distinct)
     (for {
       _ <- validationDAO.existMedium(ids, sessionId)
-      r <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, sessionId)
+      r <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
     } yield (r)).flatMap(_ match {
       case true =>
         Future.Unit

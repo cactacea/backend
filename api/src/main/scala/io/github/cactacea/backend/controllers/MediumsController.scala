@@ -7,7 +7,7 @@ import com.twitter.finatra.http.request.RequestUtils
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
 import io.github.cactacea.core.application.services.MediumsService
-import io.github.cactacea.core.util.auth.SessionContext._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class MediumsController extends Controller {
@@ -21,14 +21,14 @@ class MediumsController extends Controller {
   post("/mediums") { request: Request =>
     mediumsService.create(
       RequestUtils.multiParams(request),
-      request.id
+      SessionContext.id
     ).map(_.map({case (id, url) => MediumCreated(id, url)}))
   }
 
   delete("/mediums/:id") { request: DeleteMedium =>
     mediumsService.delete(
       request.id,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 }

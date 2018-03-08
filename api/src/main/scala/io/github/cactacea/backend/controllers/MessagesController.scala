@@ -5,7 +5,7 @@ import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.message._
 import io.github.cactacea.backend.models.responses.MessageCreated
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.util.auth.SessionContext._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class MessagesController extends Controller {
@@ -19,14 +19,14 @@ class MessagesController extends Controller {
       request.offset,
       request.count,
       request.ascending,
-      request.session.id
+      SessionContext.id
     )
   }
 
   delete("/messages") { request: DeleteMessages =>
     messagesService.delete(
       request.groupId,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -35,7 +35,7 @@ class MessagesController extends Controller {
       request.groupId,
       request.groupMessage,
       request.mediumId,
-      request.session.id
+      SessionContext.id
     ).map(MessageCreated(_)).map(response.created(_))
   }
 

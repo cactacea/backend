@@ -16,11 +16,12 @@ class FeedsService {
   @Inject private var feedsRepository: FeedsRepository = _
   @Inject private var reportsRepository: ReportsRepository = _
   @Inject private var publishService: PublishService = _
+  @Inject private var timeService: TimeService = _
 
-  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[FeedId] = {
+  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
     db.transaction {
       for {
-        id <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, sessionId)
+        id <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
         _ <- publishService.enqueueFeed(id)
       } yield (id)
     }
@@ -32,7 +33,7 @@ class FeedsService {
     }
   }
 
-  def edit(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, sessionId: SessionId): Future[Unit] = {
+  def edit(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
     db.transaction {
       feedsRepository.update(
         feedId,
@@ -41,6 +42,7 @@ class FeedsService {
         tags,
         privacyType,
         contentWarning,
+        expiration,
         sessionId
       )
     }

@@ -34,7 +34,7 @@ class TimeLineDAOSpec extends DAOSpec {
     val privacyType = FeedPrivacyType.self
     val contentWarning = true
 
-    val feedId6 = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, sessionAccount2.id.toSessionId))
+    val feedId6 = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
@@ -68,7 +68,7 @@ class TimeLineDAOSpec extends DAOSpec {
     val privacyType = FeedPrivacyType.self
     val contentWarning = true
 
-    val feedId6 = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, sessionAccount2.id.toSessionId))
+    val feedId6 = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
@@ -105,7 +105,7 @@ class TimeLineDAOSpec extends DAOSpec {
     val privacyType = FeedPrivacyType.self
     val contentWarning = true
 
-    val feedId6 = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, sessionAccount2.id.toSessionId))
+    val feedId6 = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))

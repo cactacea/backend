@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.util.auth.SessionContext._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class AccountsController extends Controller {
@@ -17,14 +17,14 @@ class AccountsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
   get("/accounts/:id") { request: GetAccount =>
     accountsService.find(
       request.accountId,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -32,7 +32,7 @@ class AccountsController extends Controller {
     accountsService.update(
       request.accountId,
       request.displayName,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -40,7 +40,7 @@ class AccountsController extends Controller {
     accountsService.report(
       request.accountId,
       request.reportType,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -61,7 +61,7 @@ class AccountsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
@@ -73,21 +73,21 @@ class AccountsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
   post("/accounts/:id/follows") { request: PostFollow =>
     followsService.create(
       request.accountId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
   delete("/accounts/:id/follows") { request: DeleteFollow =>
     followsService.delete(
       request.accountId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
@@ -100,7 +100,7 @@ class AccountsController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 

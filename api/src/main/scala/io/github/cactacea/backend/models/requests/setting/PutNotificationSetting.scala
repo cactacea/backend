@@ -5,6 +5,5 @@ import com.twitter.finatra.request.FormParam
 import io.github.cactacea.core.domain.models.PushNotificationSetting
 
 case class PutNotificationSetting(
-                                   @FormParam notificationSetting: PushNotificationSetting,
-                                   session: Request
+                                   @FormParam notificationSetting: PushNotificationSetting
                                  )

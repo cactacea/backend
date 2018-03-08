@@ -22,7 +22,7 @@ class FeedReportsDAOSpec extends DAOSpec {
     val medium2 = this.createMedium(sessionAccount1.id)
     val mediums1 = List(medium1.id, medium2.id)
     val tags = List("tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10")
-    val feedId = Await.result(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, sessionAccount1.id.toSessionId))
+    val feedId = Await.result(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
     val reportId1 = Await.result(feedReportsDAO.create(feedId, ReportType.inappropriate, sessionAccount2.id.toSessionId))
     val reportId2 = Await.result(feedReportsDAO.create(feedId, ReportType.inappropriate, sessionAccount3.id.toSessionId))
     val result = Await.result(db.run(query[FeedReports].sortBy(_.id)))

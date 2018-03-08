@@ -14,7 +14,7 @@ class DevicesService {
   @Inject private var deviceTokensRepository: DevicesRepository = _
   @Inject private var actionService: InjectionService = _
 
-  def update(sessionId: SessionId, udid: String, token: Option[String]): Future[Unit] = {
+  def update(token: Option[String], sessionId: SessionId, udid: String): Future[Unit] = {
     db.transaction {
       for {
         r <- deviceTokensRepository.update(udid, token, sessionId)

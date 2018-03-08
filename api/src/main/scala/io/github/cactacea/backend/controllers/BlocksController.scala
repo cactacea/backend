@@ -5,7 +5,7 @@ import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
 import io.github.cactacea.core.application.services.BlocksService
-import io.github.cactacea.core.util.auth.SessionContext._
+import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class BlocksController extends Controller {
@@ -17,21 +17,21 @@ class BlocksController extends Controller {
       request.since,
       request.offset,
       request.count,
-      request.session.id
+      SessionContext.id
     )
   }
 
   post("/accounts/:id/blocks") { request: PostBlock =>
     blocksService.create(
       request.accountId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
   delete("/accounts/:id/blocks") { request: DeleteBlock =>
     blocksService.delete(
       request.accountId,
-      request.session.id
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
