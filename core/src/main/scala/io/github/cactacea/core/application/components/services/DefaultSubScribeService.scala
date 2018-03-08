@@ -21,8 +21,8 @@ class DefaultSubScribeService extends SubScribeService {
     fanOutService.fanOutMessage(messageId)
   }
 
-  def dequeueGroupInvite(groupInvitationId: GroupInvitationId): Future[Unit] = {
-    fanOutService.fanOutGroupInvite(groupInvitationId)
+  def dequeueGroupInvitation(groupInvitationId: GroupInvitationId): Future[Unit] = {
+    fanOutService.fanOutGroupInvitation(groupInvitationId)
   }
 
   def dequeueFriendRequest(friendRequestId: FriendRequestId): Future[Unit] = {

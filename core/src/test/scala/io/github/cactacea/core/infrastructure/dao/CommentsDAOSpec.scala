@@ -58,7 +58,7 @@ class CommentsDAOSpec extends DAOSpec {
     val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, sessionAccount1.id.toSessionId))
     val commentId = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
 
-    val displayName = Some("Invite Sender Name")
+    val displayName = Some("Invitation Sender Name")
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 
@@ -67,7 +67,7 @@ class CommentsDAOSpec extends DAOSpec {
     Await.result(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
     Await.result(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
 
-    val result = Await.result(pushNotificationsDAO.findComments(commentId))
+    val result = Await.result(pushNotificationsDAO.findByCommentId(commentId))
 
     assert(result(0).accountId == sessionAccount1.id)
     assert(result(0).displayName == displayName.get)

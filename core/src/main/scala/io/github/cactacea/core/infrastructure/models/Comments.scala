@@ -7,6 +7,7 @@ case class Comments(
                      id: CommentId,
                      message: String,
                      feedId: FeedId,
+                     replyId: Option[CommentId],
                      favoriteCount: Long,
                      by: AccountId,
                      contentWarning: Boolean,

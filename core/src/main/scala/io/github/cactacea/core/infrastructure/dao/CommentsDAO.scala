@@ -29,11 +29,13 @@ class CommentsDAO @Inject()(db: DatabaseService) {
   private def _insertComments(id: CommentId, feedId: FeedId, message: String, sessionId: SessionId): Future[Long] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.nanoTime()
+    val replyId: Option[CommentId] = None
     val q = quote {
       query[Comments]
         .insert(
           _.id                -> lift(id),
           _.feedId            -> lift(feedId),
+          _.replyId           -> lift(replyId),
           _.by                -> lift(by),
           _.message           -> lift(message),
           _.favoriteCount     -> 0L,

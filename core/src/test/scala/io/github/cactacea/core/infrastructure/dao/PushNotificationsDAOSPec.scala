@@ -25,7 +25,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     val sessionAccount = createAccount("account0")
     val account1 = createAccount("account1")
 
-    val displayName = Some("Invite Sender Name")
+    val displayName = Some("Invitation Sender Name")
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 
@@ -41,10 +41,10 @@ class PushNotificationsDAOSPec extends DAOSpec {
     Await.result(devicesDAO.update(udid, pushToken, account1.id.toSessionId))
     Await.result(accountsDAO.updateDisplayName(sessionAccount.id, displayName, account1.id.toSessionId))
 
-    val result1 = Await.result(pushNotificationsDAO.findMessages(messageId))
+    val result1 = Await.result(pushNotificationsDAO.findByMessageId(messageId))
     assert(result1.size == 1L)
 
-    val result2 = Await.result(pushNotificationsDAO.findMessages(MessageId(0L)))
+    val result2 = Await.result(pushNotificationsDAO.findByMessageId(MessageId(0L)))
     assert(result2.size == 0L)
 
   }
@@ -55,7 +55,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     val sessionAccount = createAccount("account0")
     val account1 = createAccount("account1")
 
-    val displayName = Some("Invite Sender Name")
+    val displayName = Some("Invitation Sender Name")
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 
@@ -71,10 +71,10 @@ class PushNotificationsDAOSPec extends DAOSpec {
     Await.result(devicesDAO.update(udid, pushToken, account1.id.toSessionId))
     Await.result(accountsDAO.updateDisplayName(sessionAccount.id, displayName, account1.id.toSessionId))
 
-    val result1 = Await.result(pushNotificationsDAO.findMessages(messageId))
+    val result1 = Await.result(pushNotificationsDAO.findByMessageId(messageId))
     assert(result1.size == 1L)
 
-    val result2 = Await.result(pushNotificationsDAO.findMessages(MessageId(0L)))
+    val result2 = Await.result(pushNotificationsDAO.findByMessageId(MessageId(0L)))
     assert(result2.size == 0L)
 
   }
@@ -109,7 +109,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     // create account feeds
     Await.result(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId))
 
-    val displayName = Some("Invite Sender Name")
+    val displayName = Some("Invitation Sender Name")
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 
@@ -137,7 +137,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     Await.result(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount6.id.toSessionId))
 
     // find account feed tokens
-    val result = Await.result(pushNotificationsDAO.findFeeds(feedId))
+    val result = Await.result(pushNotificationsDAO.findByFeed(feedId))
 
     assert(result.size == 4)
 

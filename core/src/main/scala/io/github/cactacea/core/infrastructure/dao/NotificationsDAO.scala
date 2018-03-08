@@ -17,6 +17,33 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
   @Inject private var identifyService: IdentifyService = _
   @Inject private var timeService: TimeService = _
 
+  def create(accountIds: List[AccountId], notificationType: NotificationType, contentId: Long): Future[List[NotificationId]] = {
+    for {
+      a <- Future.traverseSequentially(accountIds) { accountId => identifyService.generate().map({id => (NotificationId(id), accountId) } ) }
+      _ <- _insertNotifications(a.toList, notificationType, Some(contentId), None, None)
+      ids = a.map(_._1).toList
+    } yield (ids)
+  }
+
+  private def _insertNotifications(ids: List[(NotificationId, AccountId)], notificationType: NotificationType, contentId: Option[Long], message: Option[String], url: Option[String]): Future[List[Long]] = {
+    val notifiedAt = timeService.nanoTime()
+    val n = ids.map({ case (id, accountId) =>
+      Notifications(
+        id,
+        accountId,
+        notificationType,
+        contentId,
+        message,
+        url,
+        true,
+        notifiedAt
+      ) })
+    val q = quote {
+      liftQuery(n).foreach(e => query[Notifications].insert(e))
+    }
+    run(q)
+  }
+
   def create(accountId: AccountId, notificationType: NotificationType, contentId: Long): Future[NotificationId] = {
     for {
       id <- identifyService.generate().map(NotificationId(_))

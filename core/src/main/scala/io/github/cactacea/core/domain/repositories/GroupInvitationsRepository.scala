@@ -25,7 +25,7 @@ class GroupInvitationsRepository {
       _ <- validationDAO.existAccount(accountId, sessionId)
       p <- validationDAO.findGroup(groupId)
       _ <- validationDAO.notExistGroupAccount(accountId, groupId)
-      _ <- validationDAO.notExistGroupInvite(accountId, groupId)
+      _ <- validationDAO.notExistGroupInvitation(accountId, groupId)
       _ <- validationDAO.hasJoinAndManagingAuthority(p, accountId, sessionId)
       _ <- validationDAO.checkGroupAccountsCount(groupId)
       id <- groupInvitationsDAO.create(accountId, groupId, sessionId)
@@ -40,7 +40,7 @@ class GroupInvitationsRepository {
 
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     (for {
-      i <- validationDAO.findGroupsInvite(invitationId, sessionId)
+      i <- validationDAO.findGroupsInvitation(invitationId, sessionId)
       g <- validationDAO.findGroup(i.groupId)
       r <- groupAccountsDAO.exist(i.accountId, i.groupId)
       _ <- validationDAO.checkGroupAccountsCount(i.groupId)

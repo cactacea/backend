@@ -53,20 +53,20 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def exist(groupInvitationId: GroupInvitationId): Future[Boolean] = {
+  def exist(id: GroupInvitationId): Future[Boolean] = {
     val q = quote {
       query[GroupInvitations]
-        .filter(_.id == lift(groupInvitationId))
+        .filter(_.id == lift(id))
         .size
     }
     run(q).map(_ == 1)
   }
 
-  def find(groupInvitationId: GroupInvitationId, sessionId: SessionId): Future[Option[GroupInvitations]] = {
+  def find(id: GroupInvitationId, sessionId: SessionId): Future[Option[GroupInvitations]] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[GroupInvitations]
-        .filter(_.id        == lift(groupInvitationId))
+        .filter(_.id        == lift(id))
         .filter(_.accountId == lift(accountId))
     }
     run(q).map(_.headOption)
@@ -101,10 +101,10 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ >= 0)
   }
 
-  def delete(groupInvitationId: GroupInvitationId): Future[Boolean] = {
+  def delete(id: GroupInvitationId): Future[Boolean] = {
     val q = quote {
       query[GroupInvitations]
-        .filter(_.id       == lift(groupInvitationId))
+        .filter(_.id       == lift(id))
         .delete
     }
     run(q).map(_ >= 0)
@@ -145,39 +145,30 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def update(invitationId: GroupInvitationId, invitationStatus: GroupInvitationStatusType, sessionId: SessionId): Future[Boolean] = {
+  def update(id: GroupInvitationId, invitationStatus: GroupInvitationStatusType, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[GroupInvitations]
         .filter(_.accountId == lift(by))
-        .filter(_.id == lift(invitationId))
+        .filter(_.id == lift(id))
         .update(_.invitationStatus -> lift(invitationStatus))
     }
     run(q).map(_ == 1)
 
   }
 
-  def find(groupInvitationId: GroupInvitationId): Future[Option[GroupInvitations]] = {
+  def find(id: GroupInvitationId): Future[Option[GroupInvitations]] = {
     val q = quote {
       query[GroupInvitations]
-        .filter(_.id == lift(groupInvitationId))
+        .filter(_.id == lift(id))
     }
     run(q).map(_.headOption)
   }
 
-  def findUnNotified(groupInvitationId: GroupInvitationId): Future[Option[GroupInvitations]] = {
+  def updateNotified(id: GroupInvitationId, notified: Boolean = true): Future[Boolean] = {
     val q = quote {
       query[GroupInvitations]
-        .filter(_.id == lift(groupInvitationId))
-        .filter(_.notified == false)
-    }
-    run(q).map(_.headOption)
-  }
-
-  def updateNotified(groupInvitationId: GroupInvitationId, notified: Boolean = true): Future[Boolean] = {
-    val q = quote {
-      query[GroupInvitations]
-        .filter(_.id == lift(groupInvitationId))
+        .filter(_.id == lift(id))
         .update(_.notified -> lift(notified))
     }
     run(q).map(_ == 1)

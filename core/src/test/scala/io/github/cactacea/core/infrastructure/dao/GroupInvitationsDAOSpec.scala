@@ -382,8 +382,8 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(invitation4.notified == false)
     assert(invitation5.notified == true)
 
-    val result6 = Await.result(groupInvitationsDAO.findUnNotified(invitation2.id))
-    assert(result6.isDefined == true)
+    val result6 = Await.result(groupInvitationsDAO.find(invitation2.id))
+    assert(result6.get.notified == false)
 
   }
 

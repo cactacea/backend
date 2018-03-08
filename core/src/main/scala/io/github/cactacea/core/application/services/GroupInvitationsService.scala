@@ -14,7 +14,6 @@ class GroupInvitationsService {
 
   @Inject private var db: DatabaseService = _
   @Inject private var groupInvitationsRepository: GroupInvitationsRepository = _
-  @Inject private var notificationsRepository: NotificationsRepository = _
   @Inject private var publishService: PublishService = _
   @Inject private var injectionService: InjectionService = _
 
@@ -30,9 +29,8 @@ class GroupInvitationsService {
     db.transaction {
       for {
         id <- groupInvitationsRepository.create(accountId, groupId, sessionId)
-        _ <- notificationsRepository.create(accountId, NotificationType.groupInvitation, id.value)
         _ <- injectionService.groupInvitationCreated(List(accountId), groupId, sessionId)
-        _ <- publishService.enqueueGroupInvite(id)
+        _ <- publishService.enqueueGroupInvitation(id)
       } yield (id)
     }
   }
