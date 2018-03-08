@@ -1,4 +1,4 @@
-package io.github.cactacea.util.clients.onesignal
+package io.github.cactacea.backend.onesignal
 
 import com.google.inject.{Provides, Singleton}
 import com.twitter.conversions.time._
@@ -7,7 +7,6 @@ import com.twitter.finatra.httpclient.HttpClient
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.TwitterModule
 import com.typesafe.config.ConfigFactory
-import io.github.cactacea.util.clients.OneSignalHttpClient
 
 object OneSignalHttpClientModule extends TwitterModule {
 

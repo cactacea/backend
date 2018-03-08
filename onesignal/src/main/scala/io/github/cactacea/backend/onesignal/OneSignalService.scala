@@ -1,4 +1,4 @@
-package io.github.cactacea.core.application.components.thirdparties.onesignal
+package io.github.cactacea.backend.onesignal
 
 import java.util.Locale
 
@@ -6,8 +6,7 @@ import com.google.inject.Inject
 import com.twitter.util.{Future, Return, Throw}
 import io.github.cactacea.core.application.components.interfaces.{NotificationMessagesService, PushNotificationService}
 import io.github.cactacea.core.domain.models.PushNotification
-import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.util.clients.onesignal.{OneSignalClient, OneSignalNotification}
+import io.github.cactacea.core.infrastructure.identifiers.AccountId
 
 class OneSignalService extends PushNotificationService {
 
