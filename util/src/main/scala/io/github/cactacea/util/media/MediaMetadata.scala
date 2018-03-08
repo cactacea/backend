@@ -1,4 +1,4 @@
-package io.github.cactacea.core.util.media
+package io.github.cactacea.util.media
 
 case class MediaMetadata(
                            width: Int,

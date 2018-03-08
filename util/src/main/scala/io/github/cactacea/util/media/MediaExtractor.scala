@@ -1,4 +1,4 @@
-package io.github.cactacea.core.util.media
+package io.github.cactacea.util.media
 
 import java.io.ByteArrayInputStream
 
@@ -8,7 +8,7 @@ import com.drew.metadata.jpeg.JpegDirectory
 import com.drew.metadata.mp4.media.Mp4VideoDirectory
 import com.drew.metadata.png.PngDirectory
 
-object MediaMetadataExtractor {
+object MediaExtractor {
 
   def extract(contentType: Option[String], data: Array[Byte]): Option[MediaMetadata] = {
     contentType match {
