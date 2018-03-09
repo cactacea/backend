@@ -3,6 +3,7 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account._
+import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollows}
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext
 
@@ -35,6 +36,14 @@ class FollowersController extends Controller {
     ).map(_ => response.noContent)
   }
 
+  get("/session/follows") { request: GetSessionFollows =>
+    followsService.find(
+      request.since,
+      request.offset,
+      request.count,
+      SessionContext.id
+    )
+  }
 
   @Inject private var followersService: FollowersService = _
 
@@ -47,5 +56,15 @@ class FollowersController extends Controller {
       SessionContext.id
     )
   }
+
+  get("/session/followers") { request: GetSessionFollowers =>
+    followersService.find(
+      request.since,
+      request.offset,
+      request.count,
+      SessionContext.id
+    )
+  }
+
 
 }

@@ -8,32 +8,10 @@ import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
-class SettingController extends Controller {
+class SettingsController extends Controller {
 
   @Inject private var settingsService: SettingsService = _
   @Inject private var deviceTokenService: DevicesService = _
-
-  get("/social_accounts") { request: Request =>
-    settingsService.findSocialAccounts(
-      SessionContext.id
-    )
-  }
-
-  post("/social_accounts/:account_type") { request: PostSocialAccount =>
-    settingsService.connectSocialAccount(
-      request.socialAccountType,
-      request.accessTokenKey,
-      request.accessTokenSecret,
-      SessionContext.id
-    ).map(_ => response.noContent)
-  }
-
-  delete("/social_accounts/:account_type") { request: DeleteSocialAccount =>
-    settingsService.disconnectSocialAccount(
-      request.socialAccountType,
-      SessionContext.id
-    ).map(_ => response.noContent)
-  }
 
   get("/push_notification") { request: Request =>
     settingsService.findPushNotificationSettings(

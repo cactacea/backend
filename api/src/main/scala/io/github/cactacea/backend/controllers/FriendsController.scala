@@ -3,7 +3,7 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.account._
-import io.github.cactacea.backend.models.requests.session.GetSessionFriendRequests
+import io.github.cactacea.backend.models.requests.session.{GetSessionFriendRequests, GetSessionFriends}
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.core.application.services.{FriendRequestsService, FriendsService}
 import io.github.cactacea.core.util.auth.SessionContext
@@ -20,6 +20,15 @@ class FriendsController extends Controller {
       request.offset,
       request.count,
       request.received,
+      SessionContext.id
+    )
+  }
+
+  get("/session/friends") { request: GetSessionFriends =>
+    friendsService.find(
+      request.since,
+      request.offset,
+      request.count,
       SessionContext.id
     )
   }

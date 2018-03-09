@@ -117,6 +117,8 @@ lazy val commonLibrarySetting = Seq(
     "com.twitter" %% "finagle-core" % versions.finatra,
     "com.github.finagle" %% "finagle-oauth2" % versions.finatra,
 
+    "com.jakehschwartz" %% "finatra-swagger" % "17.11.0",
+
     "com.twitter" %% "finatra-http" % versions.finatra % "test",
     "com.twitter" %% "finatra-jackson" % versions.finatra % "test",
     "com.twitter" %% "inject-server" % versions.finatra % "test",

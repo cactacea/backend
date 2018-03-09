@@ -15,16 +15,16 @@ class DefaultSocialAccountsService extends SocialAccountsService {
   @Inject private var twitterClient: TwitterClient = _
   @Inject private var googleClient: GoogleClient = _
 
-  def get(socialAccountType: String, accessToken: String, accessTokenSecret: String): Future[String] = {
+  def get(socialAccountType: String, accessToken: String, accessTokenSecret: String): Future[Option[String]] = {
     socialAccountType match {
       case "facebook" =>
-        facebookClient.me(accessToken).map(_.id)
+        facebookClient.me(accessToken).map(s => Some(s.id))
       case "twitter" =>
-        twitterClient.me(accessToken, accessTokenSecret).map(_.id)
+        twitterClient.me(accessToken, accessTokenSecret).map(s => Some(s.id))
       case "google" =>
-        googleClient.me(accessToken).map(_.id)
+        googleClient.me(accessToken).map(s => Some(s.id))
       case _ =>
-        Future.exception(CactaceaException(InvalidValuesValidationError(s"socialAccountType : $socialAccountType")))
+        Future.None
     }
   }
 
