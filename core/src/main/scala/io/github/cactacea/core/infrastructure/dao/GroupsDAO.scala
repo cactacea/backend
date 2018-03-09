@@ -178,6 +178,21 @@ class GroupsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
+  def exist(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[Groups]
+        .filter(_.id == lift(groupId))
+        .filter(g => query[Blocks]
+          .filter(_.accountId    == g.by)
+          .filter(_.by        == lift(by))
+          .filter(b => b.blocked == true || b.beingBlocked == true)
+          .isEmpty)
+        .take(1)
+        .size
+    }
+    run(q).map(_ == 1)
+  }
 
 }
 

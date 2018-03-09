@@ -38,7 +38,7 @@ class ReportsRepository {
 
   def createGroupReport(groupId: GroupId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existGroup(groupId)
+      _ <- validationDAO.existGroup(groupId, sessionId)
       _ <- groupReportsDAO.create(groupId, reportType, sessionId)
     } yield (Future.value(Unit))
   }

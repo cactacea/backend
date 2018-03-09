@@ -138,7 +138,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   }
 
-  test("block a feed favorite user") (pending)
+  test("block a feed like user") (pending)
 
   test("unblock a user") {
 

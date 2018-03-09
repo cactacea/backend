@@ -3,14 +3,14 @@ package io.github.cactacea.core.infrastructure.dao
 import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.helpers.DAOSpec
-import io.github.cactacea.core.infrastructure.models.CommentFavorites
+import io.github.cactacea.core.infrastructure.models.CommentLikes
 
-class CommentFavoritesDAOSpec extends DAOSpec {
+class CommentLikesDAOSpec extends DAOSpec {
 
   import db._
 
   val commentsDAO: CommentsDAO = injector.instance[CommentsDAO]
-  val commentFavoritesDAO: CommentFavoritesDAO = injector.instance[CommentFavoritesDAO]
+  val commentLikesDAO: CommentLikesDAO = injector.instance[CommentLikesDAO]
   val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
 
   test("create") {
@@ -29,12 +29,12 @@ class CommentFavoritesDAOSpec extends DAOSpec {
     val commentId = Await.result(commentsDAO.create(feedId, "01234567890" * 10, sessionAccount2.id.toSessionId))
 
     // create
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount2.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount3.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount4.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount5.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount2.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount3.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount4.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount5.id.toSessionId))
 
-    val resultList1 = Await.result(db.run(query[CommentFavorites].filter(_.commentId == lift(commentId)).filter(_.by == lift(sessionAccount2.id))))
+    val resultList1 = Await.result(db.run(query[CommentLikes].filter(_.commentId == lift(commentId)).filter(_.by == lift(sessionAccount2.id))))
     assert(resultList1.size == 1)
     val result1 = resultList1.head
     assert(result1.commentId == commentId)
@@ -42,17 +42,17 @@ class CommentFavoritesDAOSpec extends DAOSpec {
     assert(result1.postedAt > 0)
 
     // create
-    Await.result(commentFavoritesDAO.delete(commentId, sessionAccount2.id.toSessionId))
-    Await.result(commentFavoritesDAO.delete(commentId, sessionAccount3.id.toSessionId))
-    Await.result(commentFavoritesDAO.delete(commentId, sessionAccount4.id.toSessionId))
-    Await.result(commentFavoritesDAO.delete(commentId, sessionAccount5.id.toSessionId))
+    Await.result(commentLikesDAO.delete(commentId, sessionAccount2.id.toSessionId))
+    Await.result(commentLikesDAO.delete(commentId, sessionAccount3.id.toSessionId))
+    Await.result(commentLikesDAO.delete(commentId, sessionAccount4.id.toSessionId))
+    Await.result(commentLikesDAO.delete(commentId, sessionAccount5.id.toSessionId))
 
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount2.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount3.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount4.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount5.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount2.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount3.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount4.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount5.id.toSessionId))
 
-    val resultList2 = Await.result(db.run(query[CommentFavorites].filter(_.commentId == lift(commentId)).filter(_.by == lift(sessionAccount2.id))))
+    val resultList2 = Await.result(db.run(query[CommentLikes].filter(_.commentId == lift(commentId)).filter(_.by == lift(sessionAccount2.id))))
     assert(resultList2.size == 1)
     val result3 = resultList2.head
     assert(result3.commentId == commentId)
@@ -77,16 +77,16 @@ class CommentFavoritesDAOSpec extends DAOSpec {
     val feedId = Await.result(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
     val commentId = Await.result(commentsDAO.create(feedId, "01234567890" * 10, sessionAccount2.id.toSessionId))
 
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount2.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount3.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount4.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount5.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount2.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount3.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount4.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount5.id.toSessionId))
 
     // delete
-    Await.result(commentFavoritesDAO.delete(commentId, sessionAccount2.id.toSessionId))
-    Await.result(commentFavoritesDAO.delete(commentId, sessionAccount3.id.toSessionId))
+    Await.result(commentLikesDAO.delete(commentId, sessionAccount2.id.toSessionId))
+    Await.result(commentLikesDAO.delete(commentId, sessionAccount3.id.toSessionId))
 
-    val resultList1 = Await.result(db.run(query[CommentFavorites].filter(_.commentId == lift(commentId))))
+    val resultList1 = Await.result(db.run(query[CommentLikes].filter(_.commentId == lift(commentId))))
     assert(resultList1.size == 2)
 
   }
@@ -106,18 +106,18 @@ class CommentFavoritesDAOSpec extends DAOSpec {
     val feedId = Await.result(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
     val commentId = Await.result(commentsDAO.create(feedId, "01234567890" * 10, sessionAccount2.id.toSessionId))
 
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount2.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount3.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount4.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount5.id.toSessionId))
-    Await.result(commentFavoritesDAO.delete(commentId, sessionAccount4.id.toSessionId))
-    Await.result(commentFavoritesDAO.delete(commentId, sessionAccount5.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount2.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount3.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount4.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount5.id.toSessionId))
+    Await.result(commentLikesDAO.delete(commentId, sessionAccount4.id.toSessionId))
+    Await.result(commentLikesDAO.delete(commentId, sessionAccount5.id.toSessionId))
 
     // exists
-    val result1 = Await.result(commentFavoritesDAO.exist(commentId, sessionAccount2.id.toSessionId))
-    val result2 = Await.result(commentFavoritesDAO.exist(commentId, sessionAccount3.id.toSessionId))
-    val result3 = Await.result(commentFavoritesDAO.exist(commentId, sessionAccount4.id.toSessionId))
-    val result4 = Await.result(commentFavoritesDAO.exist(commentId, sessionAccount5.id.toSessionId))
+    val result1 = Await.result(commentLikesDAO.exist(commentId, sessionAccount2.id.toSessionId))
+    val result2 = Await.result(commentLikesDAO.exist(commentId, sessionAccount3.id.toSessionId))
+    val result3 = Await.result(commentLikesDAO.exist(commentId, sessionAccount4.id.toSessionId))
+    val result4 = Await.result(commentLikesDAO.exist(commentId, sessionAccount5.id.toSessionId))
 
     assert(result1 == true)
     assert(result2 == true)
@@ -142,12 +142,12 @@ class CommentFavoritesDAOSpec extends DAOSpec {
     val commentId = Await.result(commentsDAO.create(feedId, "01234567890" * 10, sessionAccount2.id.toSessionId))
 
     // create
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount2.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount3.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount4.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId, sessionAccount5.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount2.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount3.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount4.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId, sessionAccount5.id.toSessionId))
 
-    val result = Await.result(commentFavoritesDAO.findAll(commentId, Some(Long.MaxValue), None, Some(4), sessionAccount2.id.toSessionId))
+    val result = Await.result(commentLikesDAO.findAll(commentId, Some(Long.MaxValue), None, Some(4), sessionAccount2.id.toSessionId))
     assert(result.size == 4)
 
   }

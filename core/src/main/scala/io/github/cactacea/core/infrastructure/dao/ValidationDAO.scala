@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.models.{FriendRequests, GroupInvitations, Groups}
+import io.github.cactacea.core.infrastructure.models._
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError._
 
@@ -15,13 +15,13 @@ class ValidationDAO {
   @Inject private var accountGroupsDAO: AccountGroupsDAO = _
   @Inject private var blocksDAO: BlocksDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
-  @Inject private var commentFavoritesDAO: CommentFavoritesDAO = _
+  @Inject private var commentLikesDAO: CommentLikesDAO = _
   @Inject private var followsDAO: FollowsDAO = _
   @Inject private var followersDAO: FollowersDAO = _
   @Inject private var friendsDAO: FriendsDAO = _
   @Inject private var friendRequestsDAO: FriendRequestsDAO = _
   @Inject private var feedsDAO: FeedsDAO = _
-  @Inject private var feedFavoritesDAO: FeedFavoritesDAO = _
+  @Inject private var feedLikesDAO: FeedLikesDAO = _
   @Inject private var groupsDAO: GroupsDAO = _
   @Inject private var groupAccountsDAO: GroupAccountsDAO = _
   @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
@@ -57,21 +57,21 @@ class ValidationDAO {
     })
   }
 
-  def notExistCommentFavorite(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    commentFavoritesDAO.exist(commentId, sessionId).flatMap(_ match {
+  def notExistCommentLike(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+    commentLikesDAO.exist(commentId, sessionId).flatMap(_ match {
       case false =>
         Future.Unit
       case true =>
-        Future.exception(CactaceaException(CommentAlreadyFavorited))
+        Future.exception(CactaceaException(CommentAlreadyLiked))
     })
   }
 
-  def existCommentFavorite(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    commentFavoritesDAO.exist(commentId, sessionId).flatMap(_ match {
+  def existCommentLike(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+    commentLikesDAO.exist(commentId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
-        Future.exception(CactaceaException(CommentNotFavorited))
+        Future.exception(CactaceaException(CommentNotLiked))
     })
   }
 
@@ -138,7 +138,25 @@ class ValidationDAO {
     })
   }
 
-  def existMedium(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
+  def findAccount(accountId: AccountId): Future[Accounts] = {
+    accountsDAO.find(accountId.toSessionId).flatMap( _ match {
+      case Some(a) =>
+        Future.value(a)
+      case None =>
+        Future.exception(CactaceaException(AccountNotFound))
+    })
+  }
+
+  def findMedium(mediumId: MediumId, sessionId: SessionId): Future[Mediums] = {
+    mediumsDAO.find(mediumId, sessionId).flatMap(_ match {
+      case Some(t) =>
+        Future.value(t)
+      case None =>
+        Future.exception(CactaceaException(MediumNotFound))
+    })
+  }
+
+  def existMediums(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
     mediumIdsOpt match {
       case Some(mediumIds) =>
         mediumsDAO.exist(mediumIds, sessionId).flatMap(_ match {
@@ -152,19 +170,19 @@ class ValidationDAO {
     }
   }
 
-  def notExistFeedFavorite(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    feedFavoritesDAO.exist(feedId, sessionId).flatMap(_ match {
+  def notExistFeedLike(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+    feedLikesDAO.exist(feedId, sessionId).flatMap(_ match {
       case false =>
         Future.Unit
       case true =>
-        Future.exception(CactaceaException(FeedAlreadyFavorited))
+        Future.exception(CactaceaException(FeedAlreadyLiked))
     })
   }
 
-  def existFeedFavorite(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    feedFavoritesDAO.exist(feedId, sessionId).flatMap(_ match {
+  def existFeedLike(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+    feedLikesDAO.exist(feedId, sessionId).flatMap(_ match {
       case false =>
-        Future.exception(CactaceaException(FeedNotFavorited))
+        Future.exception(CactaceaException(FeedNotLiked))
       case true =>
         Future.Unit
     })
@@ -246,8 +264,8 @@ class ValidationDAO {
     })
   }
 
-  def existGroup(groupId: GroupId): Future[Unit] = {
-    groupsDAO.exist(groupId).flatMap(_ match {
+  def existGroup(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    groupsDAO.exist(groupId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>

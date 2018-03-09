@@ -2,6 +2,6 @@ package io.github.cactacea.core.application.services
 
 import io.github.cactacea.core.helpers.ServiceSpec
 
-class CommentFavoritesServiceSpec extends ServiceSpec {
+class FeedLikesServiceSpec extends ServiceSpec {
 
 }

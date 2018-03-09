@@ -169,20 +169,6 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("update no exist account profile image") {
-
-    val session = signUp("session name", "session password", "udid").account
-
-    val key = "key"
-    val uri = "http://cactacea.io/test.jpeg"
-    val (id, url) = Await.result(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-
-    assert(intercept[CactaceaException] {
-      Await.result(accountsRepository.updateProfileImage(Some(id), SessionId(0L)))
-    }.error == AccountNotFound)
-
-  }
-
   test("update no exist other account'name") {
 
     val session = signUp("session account", "password", "udid").account

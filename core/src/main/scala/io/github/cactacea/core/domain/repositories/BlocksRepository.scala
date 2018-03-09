@@ -17,7 +17,7 @@ class BlocksRepository {
   @Inject private var mutesDAO: MutesDAO = _
   @Inject private var timeLinesDAO: TimeLineDAO = _
   @Inject private var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject private var feedFavoritesDAO: FeedFavoritesDAO = _
+  @Inject private var feedLikesDAO: FeedLikesDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
@@ -44,8 +44,8 @@ class BlocksRepository {
       _ <- timeLinesDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendRequestsDAO.delete(accountId, sessionId)
       _ <- friendRequestsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
-      _ <- feedFavoritesDAO.deleteFavorites(accountId, sessionId)
-      _ <- feedFavoritesDAO.deleteFavorites(sessionId.toAccountId, accountId.toSessionId)
+      _ <- feedLikesDAO.deleteLikes(accountId, sessionId)
+      _ <- feedLikesDAO.deleteLikes(sessionId.toAccountId, accountId.toSessionId)
     } yield (Future.value(Unit))
   }
 

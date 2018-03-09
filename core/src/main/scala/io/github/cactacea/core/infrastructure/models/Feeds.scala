@@ -7,7 +7,7 @@ case class Feeds(
                   id: FeedId,
                   message: String,
                   privacyType: FeedPrivacyType,
-                  favoriteCount: Long,
+                  likeCount: Long,
                   commentCount: Long,
                   by: AccountId,
                   contentWarning: Boolean,

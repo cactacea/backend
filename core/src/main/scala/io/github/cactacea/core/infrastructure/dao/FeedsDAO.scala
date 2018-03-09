@@ -14,7 +14,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
   @Inject private var feedTagsDAO: FeedTagsDAO = _
   @Inject private var feedMediumDAO: FeedMediumDAO = _
-  @Inject private var feedFavoritesDAO: FeedFavoritesDAO = _
+  @Inject private var feedLikesDAO: FeedLikesDAO = _
   @Inject private var feedReportsDAO: FeedReportsDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
   @Inject private var timeLineDAO: TimeLineDAO = _
@@ -42,7 +42,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         _.id                  -> lift(id),
         _.by                  -> lift(by),
         _.message             -> lift(message),
-        _.favoriteCount       -> 0L,
+        _.likeCount       -> 0L,
         _.commentCount        -> 0L,
         _.expiration          -> lift(expiration),
         _.privacyType         -> lift(privacy),
@@ -90,7 +90,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
     for {
       _ <- feedTagsDAO.delete(feedId)
-      _ <- feedFavoritesDAO.delete(feedId)
+      _ <- feedLikesDAO.delete(feedId)
       _ <- feedMediumDAO.delete(feedId)
       _ <- feedReportsDAO.delete(feedId)
       _ <- timeLineDAO.delete(feedId)
@@ -181,16 +181,16 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     (for {
       tags <- feedTagsDAO.findAll(feedIds)
       medium <- feedMediumDAO.findAll(feedIds)
-      favoriteBlocks <- blocksCountDAO.findFeedFavoriteBlocks(feedIds, sessionId)
+      likeBlocks <- blocksCountDAO.findFeedLikeBlocks(feedIds, sessionId)
       commentBlocks <- blocksCountDAO.findFeedCommentBlocks(feedIds, sessionId)
-    } yield (tags, medium, favoriteBlocks, commentBlocks)).map({
-      case (tags, medium, favoriteBlocks, commentBlocks) =>
+    } yield (tags, medium, likeBlocks, commentBlocks)).map({
+      case (tags, medium, likeBlocks, commentBlocks) =>
         feeds.map({ f =>
           val t = tags.filter(_.feedId == f.id)
           val m = medium.filter(_._1 == f.id).map(_._2)
-          val fb = favoriteBlocks.filter(_.id == f.id).map(_.count).headOption
+          val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
           val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
-          val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), favoriteCount = f.favoriteCount - fb.getOrElse(0L) )
+          val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
           (nf, t, m)
         })
     })
@@ -216,16 +216,16 @@ class FeedsDAO @Inject()(db: DatabaseService) {
       (for {
         tags <- feedTagsDAO.findAll(feedIds)
         medium <- feedMediumDAO.findAll(feedIds)
-        favoriteBlocks <- blocksCountDAO.findFeedFavoriteBlocks(feedIds, sessionId)
+        likeBlocks <- blocksCountDAO.findFeedLikeBlocks(feedIds, sessionId)
         commentBlocks <- blocksCountDAO.findFeedCommentBlocks(feedIds, sessionId)
-      } yield (tags, medium, favoriteBlocks, commentBlocks)).map({
-        case (tags, medium, favoriteBlocks, commentBlocks) =>
+      } yield (tags, medium, likeBlocks, commentBlocks)).map({
+        case (tags, medium, likeBlocks, commentBlocks) =>
           t.map({ case ((f, a), r) =>
             val t = tags.filter(_.feedId == f.id)
             val m = medium.filter(_._1 == f.id).map(_._2)
-            val fb = favoriteBlocks.filter(_.id == f.id).map(_.count).headOption
+            val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
             val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
-            val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), favoriteCount = f.favoriteCount - fb.getOrElse(0L) )
+            val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
             (nf, t, m, a, r)
           }).headOption
       })

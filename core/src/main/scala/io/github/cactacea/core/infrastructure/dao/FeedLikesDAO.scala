@@ -6,10 +6,10 @@ import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums.{AccountStatusType, FeedPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
-import io.github.cactacea.core.infrastructure.models.{FeedFavorites, _}
+import io.github.cactacea.core.infrastructure.models.{FeedLikes, _}
 
 @Singleton
-class FeedFavoritesDAO @Inject()(db: DatabaseService) {
+class FeedLikesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -17,16 +17,16 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     for {
-      _ <- _insertFeedFavorites(feedId, sessionId)
-      r <- _updateFavoriteCount(feedId)
+      _ <- _insertFeedLikes(feedId, sessionId)
+      r <- _updateLikeCount(feedId)
     } yield (r)
   }
 
-  private def _insertFeedFavorites(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertFeedLikes(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     val postedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
-      query[FeedFavorites]
+      query[FeedLikes]
         .insert(
           _.feedId   -> lift(feedId),
           _.postedAt -> lift(postedAt),
@@ -36,12 +36,12 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  private def _updateFavoriteCount(feedId: FeedId): Future[Boolean] = {
+  private def _updateLikeCount(feedId: FeedId): Future[Boolean] = {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
         .update(
-          a => a.favoriteCount -> (a.favoriteCount + 1)
+          a => a.likeCount -> (a.likeCount + 1)
         )
     }
     run(q).map(_ == 1)
@@ -49,7 +49,7 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
 
   def delete(feedId: FeedId) = {
     val q = quote {
-      query[FeedFavorites]
+      query[FeedLikes]
         .filter(_.feedId == lift(feedId))
         .delete
     }
@@ -58,15 +58,15 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     for {
-      _ <- _deleteFeedFavorites(feedId, sessionId)
-      r <- _updateUnfavoriteCount(feedId)
+      _ <- _deleteFeedLikes(feedId, sessionId)
+      r <- _updateUnlikeCount(feedId)
     } yield (r)
   }
 
-  private def _deleteFeedFavorites(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  private def _deleteFeedLikes(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
-      query[FeedFavorites]
+      query[FeedLikes]
         .filter(_.feedId  == lift(feedId))
         .filter(_.by      == lift(by))
         .delete
@@ -74,24 +74,24 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  private def _updateUnfavoriteCount(feedId: FeedId): Future[Boolean] = {
+  private def _updateUnlikeCount(feedId: FeedId): Future[Boolean] = {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
         .update(
-          a => a.favoriteCount -> (a.favoriteCount - 1)
+          a => a.likeCount -> (a.likeCount - 1)
         )
     }
     run(q).map(_ == 1)
   }
 
-  def deleteFavorites(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def deleteLikes(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
-      query[FeedFavorites]
-        .filter(feed_favorites => feed_favorites.by == lift(by))
-        .filter(feed_favorites => query[Feeds]
-          .filter(_.id      == feed_favorites.feedId)
+      query[FeedLikes]
+        .filter(feed_likes => feed_likes.by == lift(by))
+        .filter(feed_likes => query[Feeds]
+          .filter(_.id      == feed_likes.feedId)
           .filter(_.by      == lift(accountId))
           .nonEmpty)
         .delete
@@ -102,7 +102,7 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
   def exist(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
-      query[FeedFavorites]
+      query[FeedLikes]
         .filter(_.feedId  == lift(feedId))
         .filter(_.by      == lift(by))
         .take(1)
@@ -120,7 +120,7 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.singedUp
 
     val q = quote {
-      query[FeedFavorites].filter(ff => ff.feedId == lift(feedId) && ff.postedAt < lift(s) &&
+      query[FeedLikes].filter(ff => ff.feedId == lift(feedId) && ff.postedAt < lift(s) &&
         query[Blocks].filter(b => b.accountId == ff.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
@@ -139,7 +139,7 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedFavorites].filter(ff => ff.by == lift(by) && ff.postedAt < lift(s))
+      query[FeedLikes].filter(ff => ff.by == lift(by) && ff.postedAt < lift(s))
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
@@ -163,7 +163,7 @@ class FeedFavoritesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedFavorites].filter(ff => ff.by == lift(accountId) && ff.postedAt < lift(s))
+      query[FeedLikes].filter(ff => ff.by == lift(accountId) && ff.postedAt < lift(s))
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         (query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty) &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))

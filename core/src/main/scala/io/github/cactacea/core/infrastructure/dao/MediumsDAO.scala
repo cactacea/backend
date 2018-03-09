@@ -42,10 +42,12 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(id: MediumId): Future[Option[Mediums]] = {
+  def find(id: MediumId, sessionId: SessionId): Future[Option[Mediums]] = {
+    val by = sessionId.toAccountId
     val q = quote {
       query[Mediums]
         .filter(_.id == lift(id))
+        .filter(_.by == lift(by))
     }
     run(q).map(_.headOption)
   }

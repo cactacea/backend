@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.comment._
 import io.github.cactacea.backend.models.responses.CommentCreated
-import io.github.cactacea.core.application.services.{CommentFavoritesService, CommentsService}
+import io.github.cactacea.core.application.services.{CommentLikesService, CommentsService}
 import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
@@ -51,10 +51,10 @@ class CommentsController extends Controller {
     )
   }
 
-  @Inject private var commentFavoritesService: CommentFavoritesService = _
+  @Inject private var commentLikesService: CommentLikesService = _
 
-  get("/comments/:id/favorites") { request: GetCommentFavorites =>
-    commentFavoritesService.findAccounts(
+  get("/comments/:id/likes") { request: GetCommentLikes =>
+    commentLikesService.findAccounts(
       request.commentId,
       request.since,
       request.offset,
@@ -63,15 +63,15 @@ class CommentsController extends Controller {
     )
   }
 
-  post("/comments/:id/favorites") { request: PostCommentFavorite =>
-    commentFavoritesService.create(
+  post("/comments/:id/likes") { request: PostCommentLike =>
+    commentLikesService.create(
       request.commentId,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  delete("/comments/:id/favorites") { request: DeleteCommentFavorite =>
-    commentFavoritesService.delete(
+  delete("/comments/:id/likes") { request: DeleteCommentLike =>
+    commentLikesService.delete(
       request.commentId,
       SessionContext.id
     ).map(_ => response.noContent)

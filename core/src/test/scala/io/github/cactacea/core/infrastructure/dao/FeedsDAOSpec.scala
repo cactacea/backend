@@ -12,7 +12,7 @@ class FeedsDAOSpec extends DAOSpec {
   val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
   val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
   val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
-  val feedFavoritesDAO: FeedFavoritesDAO = injector.instance[FeedFavoritesDAO]
+  val feedLikesDAO: FeedLikesDAO = injector.instance[FeedLikesDAO]
   val feedReportsDAO: FeedReportsDAO = injector.instance[FeedReportsDAO]
   val commentsDAO: CommentsDAO = injector.instance[CommentsDAO]
   val timeLineDAO: TimeLineDAO = injector.instance[TimeLineDAO]
@@ -78,9 +78,9 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
 
-    // create feed favorites
-    Await.result(feedFavoritesDAO.create(feedId5, sessionAccount1.id.toSessionId))
-    Await.result(feedFavoritesDAO.create(feedId6, sessionAccount1.id.toSessionId))
+    // create feed likes
+    Await.result(feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId))
+    Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
     // create report
     Await.result(feedReportsDAO.create(feedId6, ReportType.spam, sessionAccount1.id.toSessionId))
@@ -190,9 +190,9 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
 
-    // create feed favorites
-    Await.result(feedFavoritesDAO.create(feedId5, sessionAccount1.id.toSessionId))
-    Await.result(feedFavoritesDAO.create(feedId6, sessionAccount1.id.toSessionId))
+    // create feed likes
+    Await.result(feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId))
+    Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
     // create report
     Await.result(feedReportsDAO.create(feedId6, ReportType.spam, sessionAccount1.id.toSessionId))
@@ -321,9 +321,9 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
 
-    // create feed favorites
-    Await.result(feedFavoritesDAO.create(feedId5, sessionAccount1.id.toSessionId))
-    Await.result(feedFavoritesDAO.create(feedId6, sessionAccount1.id.toSessionId))
+    // create feed likes
+    Await.result(feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId))
+    Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
     // create report
     Await.result(feedReportsDAO.create(feedId6, ReportType.spam, sessionAccount1.id.toSessionId))
@@ -378,12 +378,12 @@ class FeedsDAOSpec extends DAOSpec {
     assert(deleteResult1 == true)
     val deleteResultFeeds = Await.result(db.run(query[Feeds].filter(_.id == lift(feedId6)).size))
     val deleteResultTags = Await.result(db.run(query[FeedTags].filter(_.feedId == lift(feedId6)).size))
-    val deleteResultFavorites = Await.result(db.run(query[FeedFavorites].filter(_.feedId == lift(feedId6)).size))
+    val deleteResultLikes = Await.result(db.run(query[FeedLikes].filter(_.feedId == lift(feedId6)).size))
     val deleteResultReports = Await.result(db.run(query[FeedReports].filter(_.feedId == lift(feedId6)).size))
     val deleteResultTimelines = Await.result(db.run(query[Timelines].filter(_.feedId.forall(_ == lift(feedId6))).size))
     val deleteResultComments = Await.result(db.run(query[Comments].filter(_.feedId == lift(feedId6)).size))
     assert(deleteResultTags == 0L)
-    assert(deleteResultFavorites == 0L)
+    assert(deleteResultLikes == 0L)
     assert(deleteResultReports == 0L)
     assert(deleteResultTimelines == 0L)
     assert(deleteResultComments == 0L)
@@ -674,9 +674,9 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
     Await.result(commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
 
-    // create feed favorites
-    Await.result(feedFavoritesDAO.create(feedId5, sessionAccount1.id.toSessionId))
-    Await.result(feedFavoritesDAO.create(feedId6, sessionAccount1.id.toSessionId))
+    // create feed likes
+    Await.result(feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId))
+    Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
     // create report
     Await.result(feedReportsDAO.create(feedId6, ReportType.spam, sessionAccount1.id.toSessionId))
