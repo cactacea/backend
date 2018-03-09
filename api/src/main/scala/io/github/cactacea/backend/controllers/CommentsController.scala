@@ -43,14 +43,6 @@ class CommentsController extends Controller {
     )
   }
 
-  post("/comments/:id/reports") { request: PostCommentReport =>
-    commentsService.report(
-      request.commentId,
-      request.reportType,
-      SessionContext.id
-    )
-  }
-
   @Inject private var commentLikesService: CommentLikesService = _
 
   get("/comments/:id/likes") { request: GetCommentLikes =>

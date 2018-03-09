@@ -53,16 +53,6 @@ class GroupsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  post("/groups/:id/reports") { request: PostGroupReport =>
-    groupsService.report(
-      request.groupId,
-      request.reportType,
-      SessionContext.id
-    ).map(_ => response.noContent)
-  }
-
-
-
   @Inject private var groupAccountsService: GroupAccountsService = _
 
   post("/groups/:id/join") { request: PostJoinGroup =>
