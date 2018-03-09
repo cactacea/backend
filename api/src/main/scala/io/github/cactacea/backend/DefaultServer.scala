@@ -8,6 +8,7 @@ import io.github.cactacea.core.util.filters._
 class DefaultServer extends CactaceaServer {
 
   override def configureHttp(router: HttpRouter) = {
+    super.configureHttp(router)
     router
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, AccountsController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, BlocksController]
