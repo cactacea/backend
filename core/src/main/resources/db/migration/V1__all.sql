@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`feeds` (
   `id` BIGINT NOT NULL,
   `message` VARCHAR(1000) NOT NULL,
   `by` BIGINT NOT NULL,
-  `favorite_count` BIGINT NOT NULL,
+  `like_count` BIGINT NOT NULL,
   `comment_count` BIGINT NOT NULL,
   `privacy_type` TINYINT NOT NULL,
   `content_warning` TINYINT NOT NULL,
@@ -421,7 +421,7 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`comments` (
   `message` VARCHAR(1000) NOT NULL,
   `feed_id` BIGINT(20) NOT NULL,
   `reply_id` BIGINT(20) NULL,
-  `favorite_count` BIGINT(20) NOT NULL,
+  `like_count` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `content_warning` TINYINT(4) NOT NULL,
   `content_status` TINYINT(4) NOT NULL,
@@ -432,21 +432,21 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
--- Table `cactacea`.`comment_favorites`
+-- Table `cactacea`.`comment_likes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `cactacea`.`comment_favorites` (
+CREATE TABLE IF NOT EXISTS `cactacea`.`comment_likes` (
   `comment_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `posted_at` BIGINT NOT NULL,
   UNIQUE INDEX `UNIQUE` (`comment_id` ASC, `by` ASC),
-  INDEX `fk_comment_favorites_accounts1_idx` (`by` ASC),
-  INDEX `fx_comment_favorites_idx` (`comment_id` ASC, `by` ASC, `posted_at` ASC),
-  CONSTRAINT `fk_comment_favorites_accounts1`
+  INDEX `fk_comment_likes_accounts1_idx` (`by` ASC),
+  INDEX `fx_comment_likes_idx` (`comment_id` ASC, `by` ASC, `posted_at` ASC),
+  CONSTRAINT `fk_comment_likes_accounts1`
     FOREIGN KEY (`by`)
     REFERENCES `cactacea`.`accounts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_comment_favorites_comments1`
+  CONSTRAINT `fk_comment_likes_comments1`
     FOREIGN KEY (`comment_id`)
     REFERENCES `cactacea`.`comments` (`id`)
     ON DELETE NO ACTION
@@ -502,20 +502,20 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `cactacea`.`feed_favorites`
+-- Table `cactacea`.`feed_likes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `cactacea`.`feed_favorites` (
+CREATE TABLE IF NOT EXISTS `cactacea`.`feed_likes` (
   `feed_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `posted_at` BIGINT NOT NULL,
-  INDEX `fk_feed_favorites_feeds1_idx` (`feed_id` ASC),
-  INDEX `fk_feed_favorites_accounts1_idx` (`by` ASC),
-  CONSTRAINT `fk_feed_favorites_accounts1`
+  INDEX `fk_feed_likes_feeds1_idx` (`feed_id` ASC),
+  INDEX `fk_feed_likes_accounts1_idx` (`by` ASC),
+  CONSTRAINT `fk_feed_likes_accounts1`
     FOREIGN KEY (`by`)
     REFERENCES `cactacea`.`accounts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_feed_favorites_feeds1`
+  CONSTRAINT `fk_feed_likes_feeds1`
     FOREIGN KEY (`feed_id`)
     REFERENCES `cactacea`.`feeds` (`id`)
     ON DELETE NO ACTION

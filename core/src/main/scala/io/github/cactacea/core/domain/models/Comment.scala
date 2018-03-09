@@ -9,7 +9,7 @@ case class Comment(
                     replyId: Option[CommentId],
                     message: String,
                     account: Account,
-                    favoriteCount: Long,
+                    likeCount: Long,
                     contentWarning: Boolean,
                     contentDeleted: Boolean,
                     postedAt: Long)
@@ -25,7 +25,7 @@ object Comment {
           replyId         = c.replyId,
           message         = "",
           account         = account,
-          favoriteCount   = 0L,
+          likeCount   = 0L,
           contentWarning  = false,
           contentDeleted = true,
           postedAt        = c.postedAt
@@ -36,7 +36,7 @@ object Comment {
           replyId         = c.replyId,
           message         = c.message,
           account         = account,
-          favoriteCount   = c.favoriteCount,
+          likeCount   = c.likeCount,
           contentWarning  = c.contentWarning,
           contentDeleted = false,
           postedAt        = c.postedAt

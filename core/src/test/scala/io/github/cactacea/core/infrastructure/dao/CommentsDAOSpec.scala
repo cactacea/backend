@@ -7,7 +7,7 @@ import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId}
 
 class CommentsDAOSpec extends DAOSpec {
 
-  val commentFavoritesDAO = injector.instance[CommentFavoritesDAO]
+  val commentLikesDAO = injector.instance[CommentLikesDAO]
   val commentsDAO: CommentsDAO = injector.instance[CommentsDAO]
   val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
 
@@ -98,7 +98,7 @@ class CommentsDAOSpec extends DAOSpec {
     val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = Await.result(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = Await.result(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
-    Await.result(commentFavoritesDAO.create(commentId1, sessionAccount1.id.toSessionId))
+    Await.result(commentLikesDAO.create(commentId1, sessionAccount1.id.toSessionId))
 
     val exist1 = Await.result(commentsDAO.exist(commentId1, sessionAccount2.id.toSessionId))
     val exist2 = Await.result(commentsDAO.exist(commentId2, sessionAccount1.id.toSessionId))

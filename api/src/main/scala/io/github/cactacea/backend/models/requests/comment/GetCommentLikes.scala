@@ -4,7 +4,7 @@ import com.twitter.finatra.request.{QueryParam, RouteParam}
 import com.twitter.finatra.validation.Max
 import io.github.cactacea.core.infrastructure.identifiers.CommentId
 
-case class GetCommentFavorites(
+case class GetCommentLikes(
                                 @RouteParam commentId: CommentId,
                                 @QueryParam since: Option[Long],
                                 @QueryParam offset: Option[Int],

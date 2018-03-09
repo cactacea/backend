@@ -79,11 +79,11 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  def commentFavorited(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+  def commentLiked(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
-  def commentUnFavorited(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+  def commentUnLiked(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
@@ -99,11 +99,11 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  def feedFavorited(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+  def feedLiked(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
-  def feedUnFavorited(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+  def feedUnLiked(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 

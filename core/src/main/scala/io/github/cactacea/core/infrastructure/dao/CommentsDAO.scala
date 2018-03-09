@@ -38,7 +38,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           _.replyId           -> lift(replyId),
           _.by                -> lift(by),
           _.message           -> lift(message),
-          _.favoriteCount     -> 0L,
+          _.likeCount     -> 0L,
           _.contentWarning    -> false,
           _.contentStatus     -> lift(ContentStatusType.unchecked),
           _.notified          -> false,
@@ -66,7 +66,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
         for {
           _ <- _updateUnCommentCount(feedId)
           _ <- _deleteCommentReports(commentId)
-          _ <- _deleteCommentFavorites(commentId)
+          _ <- _deleteCommentLikes(commentId)
           _ <- _deleteComments(commentId, by)
         } yield (true)
       case None =>
@@ -84,9 +84,9 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  private def _deleteCommentFavorites(commentId: CommentId): Future[Long] = {
+  private def _deleteCommentLikes(commentId: CommentId): Future[Long] = {
     val q = quote {
-      query[CommentFavorites]
+      query[CommentLikes]
         .filter(_.commentId == lift(commentId))
         .delete
     }
@@ -160,7 +160,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     (for {
       comments <- run(q)
       ids = comments.map(_._1._1.id)
-      blocksCount <- blocksCountDAO.findCommentFavoriteBlocks(ids, sessionId)
+      blocksCount <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
     } yield (comments, blocksCount))
       .map({ case (accounts, blocksCount) =>
         accounts.map({ t =>
@@ -168,7 +168,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           val a = t._1._2
           val r = t._2
           val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          (c.copy(favoriteCount = c.favoriteCount - b.getOrElse(0L)), a, r)
+          (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         }).headOption
       })
   }
@@ -191,7 +191,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     (for {
       comments <- run(q)
       ids = comments.map(_._1._1.id)
-      blocksCount <- blocksCountDAO.findCommentFavoriteBlocks(ids, sessionId)
+      blocksCount <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
     } yield (comments, blocksCount))
       .map({ case (accounts, blocksCount) =>
         accounts.map({ t =>
@@ -199,7 +199,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           val a = t._1._2
           val r = t._2
           val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          (c.copy(favoriteCount = c.favoriteCount - b.getOrElse(0L)), a, r)
+          (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         })
       })
       .map(_.sortBy(_._1.postedAt).reverse)
