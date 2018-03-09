@@ -2,17 +2,15 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.domain.enums.MediumType
-import io.github.cactacea.core.infrastructure.dao.MediumsDAO
+import io.github.cactacea.core.infrastructure.dao.{MediumsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{MediumId, SessionId}
-import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.{MediumNotFound, OperationNotAllowed}
 
 @Singleton
 class MediumsRepository {
 
   @Inject private var mediumsDAO: MediumsDAO = _
+  @Inject private var validationDAO: ValidationDAO = _
 
   def create(key: String, url: String, thumbnailUri: Option[String], mediumType: MediumType, width: Int, height: Int, size: Long, sessionId: SessionId): Future[(MediumId, String)] = {
     for {
@@ -21,16 +19,10 @@ class MediumsRepository {
   }
 
   def delete(mediumId: MediumId, sessionId: SessionId): Future[String] = {
-    mediumsDAO.find(mediumId).flatMap(_ match {
-      case Some(m) =>
-        if (m.by == sessionId.toAccountId) {
-          mediumsDAO.delete(mediumId).map(_ => m.key)
-        } else {
-          Future.exception(CactaceaException(OperationNotAllowed))
-        }
-      case None =>
-        Future.exception(CactaceaException(MediumNotFound))
-    })
+    for {
+      m <- validationDAO.findMedium(mediumId, sessionId)
+      _ <- mediumsDAO.delete(mediumId)
+    } yield (m.key)
   }
 
 }

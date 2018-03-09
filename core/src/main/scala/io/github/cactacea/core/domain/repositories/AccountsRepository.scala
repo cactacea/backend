@@ -3,26 +3,19 @@ package io.github.cactacea.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.Account
-import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, MediumsDAO, ValidationDAO}
+import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError._
-import org.joda.time.DateTime
 
 @Singleton
 class AccountsRepository {
 
   @Inject private var accountsDAO: AccountsDAO = _
-  @Inject private var mediumsDAO: MediumsDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
   def find(sessionId: SessionId) = {
-    accountsDAO.find(sessionId).flatMap( _ match {
-      case Some(t) =>
-        Future.value(Account(t))
-      case None =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
+    validationDAO.findAccount(sessionId.toAccountId).map(Account(_))
   }
 
   def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
@@ -87,17 +80,10 @@ class AccountsRepository {
   def updateProfileImage(profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
     profileImage match {
       case Some(id) =>
-        mediumsDAO.find(id).flatMap(_ match {
-          case Some(m) =>
-            accountsDAO.updateProfileImageUri(Some(m.uri), profileImage, sessionId).flatMap(_ match {
-              case true =>
-                Future.Unit
-              case false =>
-                Future.exception(CactaceaException(AccountNotFound))
-            })
-          case None =>
-            Future.exception(CactaceaException(MediumNotFound))
-        })
+        for {
+          m <- validationDAO.findMedium(id, sessionId)
+          _ <- accountsDAO.updateProfileImageUri(Some(m.uri), profileImage, sessionId)
+        } yield (Future.value(Unit))
       case None =>
         accountsDAO.updateProfileImageUri(None, None, sessionId).flatMap(_ => Future.Unit)
     }

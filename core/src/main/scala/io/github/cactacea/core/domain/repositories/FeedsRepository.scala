@@ -20,7 +20,7 @@ class FeedsRepository {
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- validationDAO.existMedium(ids, sessionId)
+      _ <- validationDAO.existMediums(ids, sessionId)
       id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- accountFeedsDAO.create(id, sessionId)
       _ <- timelineDAO.create(id, sessionId)
@@ -30,7 +30,7 @@ class FeedsRepository {
   def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
     val ids = mediumIds.map(_.distinct)
     (for {
-      _ <- validationDAO.existMedium(ids, sessionId)
+      _ <- validationDAO.existMediums(ids, sessionId)
       r <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
     } yield (r)).flatMap(_ match {
       case true =>

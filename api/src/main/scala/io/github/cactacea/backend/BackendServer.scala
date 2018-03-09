@@ -5,7 +5,7 @@ import io.github.cactacea.backend.controllers._
 import io.github.cactacea.core.CactaceaServer
 import io.github.cactacea.core.util.filters._
 
-class DefaultServer extends CactaceaServer {
+class BackendServer extends CactaceaServer {
 
   override def configureHttp(router: HttpRouter) = {
     super.configureHttp(router)

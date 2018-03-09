@@ -19,9 +19,9 @@ class MessagesRepository {
   def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
     val ids = Some(mediumId.toList)
     for {
-      _  <- validationDAO.existGroup(groupId)
+      _  <- validationDAO.existGroup(groupId, sessionId)
       _  <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
-      _  <- validationDAO.existMedium(ids, sessionId)
+      _  <- validationDAO.existMediums(ids, sessionId)
       a  <- groupAccountsDAO.findCount(groupId)
       id  <- messagesDAO.create(groupId, message, a, mediumId, sessionId)
       _  <- groupsDAO.update(groupId, Some(id), sessionId)
@@ -49,7 +49,7 @@ class MessagesRepository {
 
   def findAll(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {
     (for {
-      _ <- validationDAO.existGroup(groupId)
+      _ <- validationDAO.existGroup(groupId, sessionId)
       _ <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
     } yield (Unit)).flatMap(_ =>
       if (ascending) {

@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.infrastructure.models.{FriendRequests, GroupInvitations, Groups}
+import io.github.cactacea.core.infrastructure.models._
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError._
 
@@ -138,7 +138,25 @@ class ValidationDAO {
     })
   }
 
-  def existMedium(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
+  def findAccount(accountId: AccountId): Future[Accounts] = {
+    accountsDAO.find(accountId.toSessionId).flatMap( _ match {
+      case Some(a) =>
+        Future.value(a)
+      case None =>
+        Future.exception(CactaceaException(AccountNotFound))
+    })
+  }
+
+  def findMedium(mediumId: MediumId, sessionId: SessionId): Future[Mediums] = {
+    mediumsDAO.find(mediumId, sessionId).flatMap(_ match {
+      case Some(t) =>
+        Future.value(t)
+      case None =>
+        Future.exception(CactaceaException(MediumNotFound))
+    })
+  }
+
+  def existMediums(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
     mediumIdsOpt match {
       case Some(mediumIds) =>
         mediumsDAO.exist(mediumIds, sessionId).flatMap(_ match {
@@ -246,8 +264,8 @@ class ValidationDAO {
     })
   }
 
-  def existGroup(groupId: GroupId): Future[Unit] = {
-    groupsDAO.exist(groupId).flatMap(_ match {
+  def existGroup(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    groupsDAO.exist(groupId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
