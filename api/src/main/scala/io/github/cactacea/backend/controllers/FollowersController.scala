@@ -7,13 +7,13 @@ import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
-class AccountsController extends Controller {
+class FollowersController extends Controller {
 
-  @Inject private var accountsService: AccountsService = _
+  @Inject private var followsService: FollowsService = _
 
-  get("/accounts") { request: GetAccounts =>
-    accountsService.find(
-      request.displayName,
+  get("/accounts/:id/follows") { request: GetFollows =>
+    followsService.find(
+      request.accountId,
       request.since,
       request.offset,
       request.count,
@@ -21,33 +21,25 @@ class AccountsController extends Controller {
     )
   }
 
-  get("/accounts/:id") { request: GetAccount =>
-    accountsService.find(
+  post("/accounts/:id/follows") { request: PostFollow =>
+    followsService.create(
       request.accountId,
-      SessionContext.id
-    )
-  }
-
-  put("/accounts/:id") { request: PutAccount =>
-    accountsService.update(
-      request.accountId,
-      request.displayName,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  get("/account/:account_name") { request: GetAccountName =>
-    accountsService.notExist(
-      request.accountName
+  delete("/accounts/:id/follows") { request: DeleteFollow =>
+    followsService.delete(
+      request.accountId,
+      SessionContext.id
     ).map(_ => response.noContent)
   }
 
 
+  @Inject private var followersService: FollowersService = _
 
-  @Inject private var feedsService: FeedsService = _
-
-  get("/accounts/:id/feeds") { request: GetFeeds =>
-    feedsService.find(
+  get("/accounts/:id/followers") { request: GetFollowers =>
+    followersService.find(
       request.accountId,
       request.since,
       request.offset,

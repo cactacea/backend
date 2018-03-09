@@ -62,14 +62,6 @@ class FeedsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  post("/feeds/:id/reports") { request: PostFeedReport =>
-    feedsService.report(
-      request.feedId,
-      request.reportType,
-      SessionContext.id
-    ).map(_ => response.noContent)
-  }
-
   @Inject private var feedLikesService: FeedLikesService = _
 
   get("/feeds/:id/likes") { request: GetFeedLikes =>
