@@ -36,7 +36,7 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def findCommentFavoriteBlocks(commentIds: List[CommentId], sessionId: SessionId): Future[List[CommentBlocksCount]] = {
+  def findCommentLikeBlocks(commentIds: List[CommentId], sessionId: SessionId): Future[List[CommentBlocksCount]] = {
     if (commentIds.size == 0) {
       return Future.value(List[CommentBlocksCount]())
     }
@@ -44,7 +44,7 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
     val q = quote { infix"""
                        select comment_id id,
                        count(*) count
-                       from comment_favorites a
+                       from comment_likes a
                        where comment_id in (${lift(ids)})
                        and exists ( select * from blocks b where `by` = ${lift(sessionId)} and a.`by` = b.account_id )
                        group by id
@@ -53,7 +53,7 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def findFeedFavoriteBlocks(feedIds: List[FeedId], sessionId: SessionId): Future[List[FeedBlocksCount]] = {
+  def findFeedLikeBlocks(feedIds: List[FeedId], sessionId: SessionId): Future[List[FeedBlocksCount]] = {
     if (feedIds.size == 0) {
       return Future.value(List[FeedBlocksCount]())
     }
@@ -61,7 +61,7 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
     val q = quote { infix"""
                        select feed_id id,
                        count(*) count
-                       from feed_favorites a
+                       from feed_likes a
                        where feed_id in (${lift(ids)})
                        and exists ( select * from blocks b where `by` = ${lift(sessionId)} and a.`by` = b.account_id )
                        group by id

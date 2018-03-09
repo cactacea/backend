@@ -8,7 +8,7 @@ import io.github.cactacea.core.infrastructure.identifiers.{CommentId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
 
 @Singleton
-class CommentFavoritesDAO @Inject()(db: DatabaseService) {
+class CommentLikesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -16,16 +16,16 @@ class CommentFavoritesDAO @Inject()(db: DatabaseService) {
 
   def create(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     for {
-      _ <- _insertCommentFavorites(commentId, sessionId)
-      r <- _updateFavoriteCount(commentId)
+      _ <- _insertCommentLikes(commentId, sessionId)
+      r <- _updateLikeCount(commentId)
     } yield (r)
   }
 
-  private def _insertCommentFavorites(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.nanoTime()
     val q = quote {
-      query[CommentFavorites]
+      query[CommentLikes]
         .insert(
           _.commentId   -> lift(commentId),
           _.by          -> lift(by),
@@ -35,12 +35,12 @@ class CommentFavoritesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  private def _updateFavoriteCount(commentId: CommentId): Future[Boolean] = {
+  private def _updateLikeCount(commentId: CommentId): Future[Boolean] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
         .update(
-          a => a.favoriteCount -> (a.favoriteCount + 1)
+          a => a.likeCount -> (a.likeCount + 1)
         )
     }
     run(q).map(_ == 1)
@@ -48,15 +48,15 @@ class CommentFavoritesDAO @Inject()(db: DatabaseService) {
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     for {
-      _ <- _deleteCommentFavorites(commentId, sessionId)
-      r <- _updateUnfavoriteCount(commentId)
+      _ <- _deleteCommentLikes(commentId, sessionId)
+      r <- _updateUnlikeCount(commentId)
     } yield (r)
   }
 
-  private def _deleteCommentFavorites(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  private def _deleteCommentLikes(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
-      query[CommentFavorites]
+      query[CommentLikes]
         .filter(_.by        == lift(by))
         .filter(_.commentId == lift(commentId))
         .delete
@@ -64,12 +64,12 @@ class CommentFavoritesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  private def _updateUnfavoriteCount(commentId: CommentId): Future[Boolean] = {
+  private def _updateUnlikeCount(commentId: CommentId): Future[Boolean] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
         .update(
-          a => a.favoriteCount -> (a.favoriteCount - 1)
+          a => a.likeCount -> (a.likeCount - 1)
         )
     }
     run(q).map(_ == 1)
@@ -78,7 +78,7 @@ class CommentFavoritesDAO @Inject()(db: DatabaseService) {
   def exist(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
-      query[CommentFavorites]
+      query[CommentLikes]
         .filter(_.commentId == lift(commentId))
         .filter(_.by      == lift(by)).size
     }
@@ -93,7 +93,7 @@ class CommentFavoritesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[CommentFavorites].filter(cf => cf.commentId == lift(commentId) && cf.postedAt < lift(s) &&
+      query[CommentLikes].filter(cf => cf.commentId == lift(commentId) && cf.postedAt < lift(s) &&
           query[Blocks].filter(b => b.accountId == cf.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})

@@ -3,7 +3,7 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
-import io.github.cactacea.backend.models.requests.feed.{GetSessionFavoriteFeeds, GetSessionFeeds}
+import io.github.cactacea.backend.models.requests.feed.{GetSessionLikedFeeds, GetSessionFeeds}
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext
@@ -103,10 +103,10 @@ class SessionController extends Controller {
     )
   }
 
-  @Inject private var feedFavoritesService: FeedFavoritesService = _
+  @Inject private var feedLikesService: FeedLikesService = _
 
-  get("/session/favorites") { request: GetSessionFavoriteFeeds =>
-    feedFavoritesService.find(
+  get("/session/likes") { request: GetSessionLikedFeeds =>
+    feedLikesService.find(
       request.since,
       request.offset,
       request.count,

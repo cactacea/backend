@@ -2,7 +2,7 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
-import io.github.cactacea.backend.models.requests.account.GetFavorites
+import io.github.cactacea.backend.models.requests.account.GetLikes
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
 import io.github.cactacea.core.application.services._
@@ -70,10 +70,10 @@ class FeedsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  @Inject private var feedFavoritesService: FeedFavoritesService = _
+  @Inject private var feedLikesService: FeedLikesService = _
 
-  get("/feeds/:id/favorites") { request: GetFeedFavorites =>
-    feedFavoritesService.findAccounts(
+  get("/feeds/:id/likes") { request: GetFeedLikes =>
+    feedLikesService.findAccounts(
       request.feedId,
       request.since,
       request.offset,
@@ -82,22 +82,22 @@ class FeedsController extends Controller {
     )
   }
 
-  post("/feeds/:id/favorites") { request: PostFeedFavorite =>
-    feedFavoritesService.delete(
+  post("/feeds/:id/likes") { request: PostFeedLike =>
+    feedLikesService.delete(
       request.feedId,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  delete("/feeds/:id/favorites") { request: DeleteFeedFavorite =>
-    feedFavoritesService.delete(
+  delete("/feeds/:id/likes") { request: DeleteFeedLike =>
+    feedLikesService.delete(
       request.feedId,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  get("/accounts/:id/favorites") { request: GetFavorites =>
-    feedFavoritesService.find(
+  get("/accounts/:id/likes") { request: GetLikes =>
+    feedLikesService.find(
       request.accountId,
       request.since,
       request.offset,
