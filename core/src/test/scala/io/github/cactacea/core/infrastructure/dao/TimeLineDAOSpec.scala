@@ -10,7 +10,7 @@ import io.github.cactacea.core.infrastructure.models.Timelines
 class TimeLineDAOSpec extends DAOSpec {
 
   val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
-  val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
+  val followingDAO: FollowingDAO = injector.instance[FollowingDAO]
   val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
   val feedLikesDAO: FeedLikesDAO = injector.instance[FeedLikesDAO]
   val feedReportsDAO: FeedReportsDAO = injector.instance[FeedReportsDAO]

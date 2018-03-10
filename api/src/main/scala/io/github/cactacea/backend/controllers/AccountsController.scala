@@ -14,9 +14,9 @@ import io.swagger.models.Swagger
 @Singleton
 class AccountsController @Inject()(s: Swagger) extends BackendController {
 
-  implicit protected val swagger = s
+  protected implicit val swagger = s
 
-  private val tagName = "Accounts"
+  protected val tagName = "Accounts"
 
   @Inject private var accountsService: AccountsService = _
 
@@ -67,6 +67,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
 
   getWithDoc("/account/:account_name") { o =>
     o.summary("Check a account name exist")
+      .tag(tagName)
       .request[GetAccountName]
       .responseWith[AccountNameNotExists](Status.Ok.code, "account name")
 

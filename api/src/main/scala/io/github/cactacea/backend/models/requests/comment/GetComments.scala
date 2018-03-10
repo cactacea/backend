@@ -5,7 +5,7 @@ import com.twitter.finatra.validation.Max
 import io.github.cactacea.core.infrastructure.identifiers.FeedId
 
 case class GetComments(
-                        @QueryParam feedId: FeedId,
+                        @QueryParam id: FeedId,
                         @QueryParam since: Option[Long],
                         @QueryParam offset: Option[Int],
                         @QueryParam @Max(50) count: Option[Int]

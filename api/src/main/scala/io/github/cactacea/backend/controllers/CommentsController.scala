@@ -1,53 +1,97 @@
 package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import com.twitter.finatra.http.Controller
+import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.comment._
 import io.github.cactacea.backend.models.responses.CommentCreated
+import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.{CommentLikesService, CommentsService}
+import io.github.cactacea.core.domain.models.Comment
 import io.github.cactacea.core.util.auth.SessionContext
+import io.github.cactacea.core.util.responses.BadRequest
+import io.github.cactacea.core.util.responses.CactaceaError.{CommentAlreadyLiked, CommentNotFound, CommentNotLiked}
+import io.swagger.models.Swagger
 
 @Singleton
-class CommentsController extends Controller {
+class CommentsController @Inject()(s: Swagger) extends BackendController {
+
+  protected implicit val swagger = s
+
+  protected val tagName = "Comments"
 
   @Inject private var commentsService: CommentsService = _
 
-  get("/comments") { request: GetComments =>
+  getWithDoc("/comments") { o =>
+    o.summary("Get comments")
+      .tag(tagName)
+      .request[GetComments]
+      .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetComments =>
     commentsService.findAll(
-      request.feedId,
+      request.id,
       request.since,
       request.count,
       SessionContext.id
     )
   }
 
-  post("/comments") { request: PostComment =>
+  postWithDoc("/comments") { o =>
+    o.summary("Post a comment")
+      .tag(tagName)
+      .request[PostComment]
+      .responseWith[CommentCreated](Status.Created.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: PostComment =>
     commentsService.create(
-      request.feedId,
+      request.id,
       request.commentMessage,
       SessionContext.id
     ).map(CommentCreated(_)).map(response.created(_))
   }
 
-  get("/comments/:id") { request: GetComment =>
+  getWithDoc("/comments/:id") { o =>
+    o.summary("Get a comment")
+      .tag(tagName)
+      .request[GetComment]
+      .responseWith[Comment](Status.Ok.code, successfulMessage)
+      .responseWith(Status.NotFound.code, CommentNotFound.message)
+
+  } { request: GetComment =>
     commentsService.find(
-      request.commentId,
+      request.id,
       SessionContext.id
     )
   }
 
-  delete("/comments/:id") { request: DeleteComment =>
+  deleteWithDoc("/comments/:id") { o =>
+    o.summary("Delete a comment")
+      .tag(tagName)
+      .request[DeleteComment]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith(Status.NotFound.code, CommentNotFound.message)
+
+  } { request: DeleteComment =>
     commentsService.delete(
-      request.commentId,
+      request.id,
       SessionContext.id
-    )
+    ).map(_ => response.noContent)
   }
 
   @Inject private var commentLikesService: CommentLikesService = _
 
-  get("/comments/:id/likes") { request: GetCommentLikes =>
+  getWithDoc("/comments/:id/likes") { o =>
+    o.summary("Get comment likes")
+      .tag(tagName)
+      .request[GetCommentLikes]
+      .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
+      .responseWith(Status.NotFound.code, CommentNotFound.message)
+
+  } { request: GetCommentLikes =>
     commentLikesService.findAccounts(
-      request.commentId,
+      request.id,
       request.since,
       request.offset,
       request.count,
@@ -55,16 +99,32 @@ class CommentsController extends Controller {
     )
   }
 
-  post("/comments/:id/likes") { request: PostCommentLike =>
+  postWithDoc("/comments/:id/likes") { o =>
+    o.summary("Post a comment like")
+      .tag(tagName)
+      .request[PostCommentLike]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith(Status.BadRequest.code, CommentAlreadyLiked.message)
+      .responseWith(Status.NotFound.code, CommentNotFound.message)
+
+  } { request: PostCommentLike =>
     commentLikesService.create(
-      request.commentId,
+      request.id,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  delete("/comments/:id/likes") { request: DeleteCommentLike =>
+  deleteWithDoc("/comments/:id/likes") { o =>
+    o.summary("Delete a comment like")
+      .tag(tagName)
+      .request[DeleteCommentLike]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith(Status.BadRequest.code, CommentNotLiked.message)
+      .responseWith(Status.NotFound.code, CommentNotFound.message)
+
+  } { request: DeleteCommentLike =>
     commentLikesService.delete(
-      request.commentId,
+      request.id,
       SessionContext.id
     ).map(_ => response.noContent)
   }

@@ -15,9 +15,9 @@ import io.swagger.models.Swagger
 @Singleton
 class BlocksController @Inject()(s: Swagger) extends BackendController {
 
-  implicit protected val swagger = s
+  protected implicit val swagger = s
 
-  private val tagName = "Blocks"
+  protected val tagName = "Blocks"
 
   @Inject private var blocksService: BlocksService = _
 

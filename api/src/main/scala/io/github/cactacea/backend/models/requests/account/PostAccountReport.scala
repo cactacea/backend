@@ -5,6 +5,6 @@ import io.github.cactacea.core.domain.enums._
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
 
 case class PostAccountReport(
-                              @RouteParam accountId: AccountId,
+                              @RouteParam id: AccountId,
                               reportType: ReportType
                      )

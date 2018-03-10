@@ -14,9 +14,9 @@ import io.swagger.models.Swagger
 @Singleton
 class SessionController @Inject()(s: Swagger) extends BackendController {
 
-  implicit protected val swagger = s
+  protected implicit val swagger = s
 
-  private val tagName = "Session"
+  protected val tagName = "Session"
 
   @Inject private var accountsService: AccountsService = _
   @Inject private var sessionService: SessionsService = _
@@ -107,7 +107,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
   }  { request: PutSessionProfileImage =>
     accountsService.updateProfileImage(
-      request.mediumId,
+      request.id,
       SessionContext.id
     ).map(_ => response.noContent)
   }

@@ -14,9 +14,9 @@ import io.swagger.models.Swagger
 @Singleton
 class SessionsController @Inject()(s: Swagger) extends BackendController {
 
-  implicit protected val swagger = s
+  protected implicit val swagger = s
 
-  private val tagName = "Sessions"
+  protected val tagName = "Sessions"
 
   @Inject private var sessionService: SessionsService = _
 

@@ -8,7 +8,7 @@ class FollowersDAOSpec extends DAOSpec {
 
   import db._
 
-  val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
+  val followingDAO: FollowingDAO = injector.instance[FollowingDAO]
   val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
   val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
 
@@ -68,12 +68,12 @@ class FollowersDAOSpec extends DAOSpec {
     val sessionAccount6 = createAccount("account5")
     val followUser = createAccount("account6")
 
-    Await.result(followsDAO.create(followUser.id, sessionAccount1.id.toSessionId))
-    Await.result(followsDAO.create(followUser.id, sessionAccount2.id.toSessionId))
-    Await.result(followsDAO.create(followUser.id, sessionAccount3.id.toSessionId))
-    Await.result(followsDAO.create(followUser.id, sessionAccount4.id.toSessionId))
-    Await.result(followsDAO.create(followUser.id, sessionAccount5.id.toSessionId))
-    Await.result(followsDAO.create(followUser.id, sessionAccount6.id.toSessionId))
+    Await.result(followingDAO.create(followUser.id, sessionAccount1.id.toSessionId))
+    Await.result(followingDAO.create(followUser.id, sessionAccount2.id.toSessionId))
+    Await.result(followingDAO.create(followUser.id, sessionAccount3.id.toSessionId))
+    Await.result(followingDAO.create(followUser.id, sessionAccount4.id.toSessionId))
+    Await.result(followingDAO.create(followUser.id, sessionAccount5.id.toSessionId))
+    Await.result(followingDAO.create(followUser.id, sessionAccount6.id.toSessionId))
 
     val result1 = Await.result(followersDAO.findAll(followUser.id, None, None, Some(3), sessionAccount1.id.toSessionId))
     assert(result1(0)._1.id == sessionAccount6.id)

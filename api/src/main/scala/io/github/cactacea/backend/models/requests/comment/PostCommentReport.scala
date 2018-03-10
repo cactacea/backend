@@ -5,6 +5,6 @@ import io.github.cactacea.core.domain.enums._
 import io.github.cactacea.core.infrastructure.identifiers.CommentId
 
 case class PostCommentReport(
-                              @RouteParam commentId: CommentId,
+                              @RouteParam id: CommentId,
                               reportType: ReportType
                      )

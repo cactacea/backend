@@ -1,21 +1,37 @@
 package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import com.twitter.finatra.http.Controller
+import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account.{GetFeeds, GetLikes}
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
+import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
+import io.github.cactacea.core.domain.models.Feed
 import io.github.cactacea.core.util.auth.SessionContext
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, FeedAlreadyLiked, FeedNotFound, FeedNotLiked}
+import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.swagger.models.Swagger
 
 @Singleton
-class FeedsController extends Controller {
+class FeedsController  @Inject()(s: Swagger)extends BackendController {
+
+  protected implicit val swagger = s
+
+  protected val tagName = "Feeds"
 
   @Inject private var feedsService: FeedsService = _
 
-  get("/feeds") { request: GetFeeds =>
+  getWithDoc("/feeds") { o =>
+    o.summary("Get feeds")
+      .tag(tagName)
+      .request[GetFeeds]
+      .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+      .responseWith(Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetFeeds =>
     feedsService.find(
-      request.accountId,
+      request.id,
       request.since,
       request.offset,
       request.count,
@@ -23,11 +39,18 @@ class FeedsController extends Controller {
     )
   }
 
-  post("/feeds") { request: PostFeed =>
+  postWithDoc("/feeds") { o =>
+    o.summary("Post a feed")
+      .tag(tagName)
+      .request[PostFeed]
+      .responseWith[FeedCreated](Status.Created.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: PostFeed =>
     feedsService.create(
       request.feedMessage,
-      request.mediumIds,
-      request.tags,
+      request.mediumIds.map(_.toList),
+      request.tags.map(_.toList),
       request.privacyType,
       request.contentWarning,
       request.expiration,
@@ -35,19 +58,33 @@ class FeedsController extends Controller {
     ).map(FeedCreated(_)).map(response.created(_))
   }
 
-  get("/feeds/:id") { request: GetFeed =>
+  getWithDoc("/feeds/:id") { o =>
+    o.summary("Get a feed")
+      .tag(tagName)
+      .request[GetFeed]
+      .responseWith[Feed](Status.Ok.code, successfulMessage)
+      .responseWith(Status.NotFound.code, FeedNotFound.message)
+
+  } { request: GetFeed =>
     feedsService.find(
-      request.feedId,
+      request.id,
       SessionContext.id
     )
   }
 
-  put("/feeds/:id") { request: PutFeed =>
+  putWithDoc("/feeds/:id") { o =>
+    o.summary("Update a feed")
+      .tag(tagName)
+      .request[PutFeed]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith(Status.NotFound.code, FeedNotFound.message)
+
+  } { request: PutFeed =>
     feedsService.edit(
-      request.feedId,
+      request.id,
       request.feedMessage,
-      request.mediumIds,
-      request.tags,
+      request.mediumIds.map(_.toList),
+      request.tags.map(_.toList),
       request.privacyType,
       request.contentWarning,
       request.expiration,
@@ -55,16 +92,30 @@ class FeedsController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  delete("/feeds/:id") { request: DeleteFeed =>
+  deleteWithDoc("/feeds/:id") { o =>
+    o.summary("Delete a feed")
+      .tag(tagName)
+      .request[DeleteFeed]
+      .responseWith(Status.NoContent.code, successfulMessage)
+
+  } { request: DeleteFeed =>
     feedsService.delete(
-      request.feedId,
+      request.id,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  get("/accounts/:id/feeds") { request: GetFeeds =>
+  getWithDoc("/accounts/:id/feeds") { o =>
+    o.summary("Get a account's feeds")
+      .tag(tagName)
+      .request[GetFeeds]
+      .responseWith[Feed](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+  } { request: GetFeeds =>
     feedsService.find(
-      request.accountId,
+      request.id,
       request.since,
       request.offset,
       request.count,
@@ -74,9 +125,17 @@ class FeedsController extends Controller {
 
   @Inject private var feedLikesService: FeedLikesService = _
 
-  get("/feeds/:id/likes") { request: GetFeedLikes =>
+  getWithDoc("/feeds/:id/likes") { o =>
+    o.summary("Get a feed likes")
+      .tag(tagName)
+      .request[GetFeedLikes]
+      .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith(Status.NotFound.code, FeedNotFound.message)
+
+  } { request: GetFeedLikes =>
     feedLikesService.findAccounts(
-      request.feedId,
+      request.id,
       request.since,
       request.offset,
       request.count,
@@ -84,23 +143,47 @@ class FeedsController extends Controller {
     )
   }
 
-  post("/feeds/:id/likes") { request: PostFeedLike =>
+  postWithDoc("/feeds/:id/likes") { o =>
+    o.summary("Like a feed")
+      .tag(tagName)
+      .request[PostFeedLike]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith(Status.BadRequest.code, FeedAlreadyLiked.message)
+      .responseWith[NotFound](Status.NotFound.code, FeedNotFound.message)
+
+  } { request: PostFeedLike =>
     feedLikesService.delete(
-      request.feedId,
+      request.id,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  delete("/feeds/:id/likes") { request: DeleteFeedLike =>
+  deleteWithDoc("/feeds/:id/likes") { o =>
+    o.summary("Unlike a feed")
+      .tag(tagName)
+      .request[DeleteFeedLike]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith(Status.BadRequest.code, FeedNotLiked.message)
+      .responseWith(Status.NotFound.code, FeedNotFound.message)
+
+  } { request: DeleteFeedLike =>
     feedLikesService.delete(
-      request.feedId,
+      request.id,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  get("/accounts/:id/likes") { request: GetLikes =>
+  getWithDoc("/accounts/:id/likes") { o =>
+    o.summary("Get account's liked feeds")
+      .tag(tagName)
+      .request[GetLikes]
+      .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+  } { request: GetLikes =>
     feedLikesService.find(
-      request.accountId,
+      request.id,
       request.since,
       request.offset,
       request.count,
@@ -108,7 +191,14 @@ class FeedsController extends Controller {
     )
   }
 
-  get("/session/feeds") { request: GetSessionFeeds =>
+  getWithDoc("/session/feeds") { o =>
+    o.summary("Get session's feeds")
+      .tag(tagName)
+      .request[GetSessionFeeds]
+      .responseWith[Feed](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetSessionFeeds =>
     feedsService.find(
       request.since,
       request.offset,
@@ -117,7 +207,14 @@ class FeedsController extends Controller {
     )
   }
 
-  get("/session/likes") { request: GetSessionLikedFeeds =>
+  getWithDoc("/session/likes") { o =>
+    o.summary("Get session's liked feeds")
+      .tag(tagName)
+      .request[GetSessionLikedFeeds]
+      .responseWith[Feed](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetSessionLikedFeeds =>
     feedLikesService.find(
       request.since,
       request.offset,

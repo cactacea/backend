@@ -4,5 +4,5 @@ import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.GroupInvitationId
 
 case class PostRejectInvitation(
-                                 @RouteParam groupInvitationId: GroupInvitationId
+                                 @RouteParam id: GroupInvitationId
                             )

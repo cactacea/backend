@@ -1,16 +1,14 @@
 package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import com.jakehschwartz.finatra.swagger.SwaggerController
 import com.twitter.finagle.http.Request
-import com.twitter.finatra.http.Controller
+import io.github.cactacea.backend.swagger.BackendController
 import io.swagger.models.Swagger
 
 @Singleton
-class HealthController @Inject()(s: Swagger) extends Controller with SwaggerController {
+class HealthController @Inject()(s: Swagger) extends BackendController {
 
-  implicit protected val swagger = s
-
+  protected implicit val swagger = s
   getWithDoc("/ping") { o =>
     o.summary("Health checking")
       .tag("System")

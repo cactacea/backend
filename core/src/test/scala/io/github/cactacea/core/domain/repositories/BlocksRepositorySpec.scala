@@ -11,12 +11,12 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   val friendRequestsRepository = injector.instance[FriendRequestsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
-  val followsRepository = injector.instance[FollowsRepository]
+  val followingRepository = injector.instance[FollowingRepository]
   val followersRepository = injector.instance[FollowersRepository]
   val friendsRepository = injector.instance[FriendsRepository]
   val mutesRepository = injector.instance[MutesRepository]
   val blocksDAO = injector.instance[BlocksDAO]
-  val followsDAO = injector.instance[FollowsDAO]
+  val followingDAO = injector.instance[FollowingDAO]
   val followersDAO = injector.instance[FollowersDAO]
   val friendsDAO = injector.instance[FriendsDAO]
   val mutesDAO = injector.instance[MutesDAO]
@@ -37,7 +37,7 @@ class BlocksRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("session user name", "session user password", "session udid").account
     val user = signUp("user name", "user password", "user udid").account
 
-    Await.result(followsRepository.create(sessionUser.id, user.id.toSessionId))
+    Await.result(followingRepository.create(sessionUser.id, user.id.toSessionId))
 
     Await.result(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
@@ -45,7 +45,7 @@ class BlocksRepositorySpec extends RepositorySpec {
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
-    assert(Await.result(followsDAO.exist(sessionUser.id, user.id.toSessionId)) == false)
+    assert(Await.result(followingDAO.exist(sessionUser.id, user.id.toSessionId)) == false)
 
   }
 
@@ -54,7 +54,7 @@ class BlocksRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("session user name", "session user password", "session udid").account
     val user = signUp("user name", "user password", "user udid").account
 
-    Await.result(followsRepository.create(user.id, sessionUser.id.toSessionId))
+    Await.result(followingRepository.create(user.id, sessionUser.id.toSessionId))
 
     Await.result(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
@@ -62,7 +62,7 @@ class BlocksRepositorySpec extends RepositorySpec {
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
-    assert(Await.result(followsDAO.exist(user.id, sessionUser.id.toSessionId)) == false)
+    assert(Await.result(followingDAO.exist(user.id, sessionUser.id.toSessionId)) == false)
 
   }
 

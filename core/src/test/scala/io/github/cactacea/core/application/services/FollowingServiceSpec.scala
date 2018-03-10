@@ -2,6 +2,6 @@ package io.github.cactacea.core.application.services
 
 import io.github.cactacea.core.helpers.ServiceSpec
 
-class FollowsServiceSpec extends ServiceSpec {
+class FollowingServiceSpec extends ServiceSpec {
 
 }

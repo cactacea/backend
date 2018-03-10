@@ -8,7 +8,7 @@ import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Relationships}
 
 @Singleton
-class FollowsDAO @Inject()(db: DatabaseService) {
+class FollowingDAO @Inject()(db: DatabaseService) {
 
   import db._
 

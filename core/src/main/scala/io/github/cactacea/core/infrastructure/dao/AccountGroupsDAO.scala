@@ -91,16 +91,30 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def find(accountId: AccountId, sessionId: SessionId): Future[Option[Groups]] = {
+  def findByGroupId(groupId: GroupId, sessionId: SessionId): Future[Option[(AccountGroups, Groups)]] = {
     val by = sessionId.toAccountId
     val q = quote {
       for {
-        ug <- query[AccountGroups]
+        ag <- query[AccountGroups]
+          .filter(_.groupId         == lift(groupId))
+          .filter(_.toAccountId == lift(by))
+        g <- query[Groups]
+          .filter(_.id == ag.groupId)
+      } yield ((ag, g))
+    }
+    run(q).map(_.headOption)
+  }
+
+  def findByAccountId(accountId: AccountId, sessionId: SessionId): Future[Option[(AccountGroups, Groups)]] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      for {
+        ag <- query[AccountGroups]
           .filter(_.accountId         == lift(accountId))
           .filter(_.toAccountId == lift(by))
         g <- query[Groups]
-          .filter(_.id == ug.groupId)
-      } yield (g)
+          .filter(_.id == ag.groupId)
+      } yield ((ag, g))
     }
     run(q).map(_.headOption)
   }

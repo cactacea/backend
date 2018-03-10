@@ -6,7 +6,7 @@ import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyTyp
 import io.github.cactacea.core.infrastructure.identifiers.GroupId
 
 case class PutGroup (
-                      @RouteParam groupId: GroupId,
+                      @RouteParam id: GroupId,
                       @Size(min = 1, max = 1000) groupName: String,
                       byInvitationOnly: Boolean,
                       privacyType: GroupPrivacyType,

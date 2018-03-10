@@ -11,7 +11,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
   val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
   val blocksDAO: BlocksDAO = injector.instance[BlocksDAO]
   val blockersDAO: BlockersDAO = injector.instance[BlockersDAO]
-  val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
+  val followingDAO: FollowingDAO = injector.instance[FollowingDAO]
   val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
   val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
 
@@ -170,13 +170,13 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     val blockedUser = createAccount("account10")
 
     // account1 follow user1
-    Await.result(followsDAO.create(user1.id, account1.id.toSessionId))
+    Await.result(followingDAO.create(user1.id, account1.id.toSessionId))
     Await.result(followersDAO.create(user1.id, account1.id.toSessionId))
 
     // user2, user3, user4 follow account1
-    Await.result(followsDAO.create(account1.id, user2.id.toSessionId))
-    Await.result(followsDAO.create(account1.id, user3.id.toSessionId))
-    Await.result(followsDAO.create(account1.id, user4.id.toSessionId))
+    Await.result(followingDAO.create(account1.id, user2.id.toSessionId))
+    Await.result(followingDAO.create(account1.id, user3.id.toSessionId))
+    Await.result(followingDAO.create(account1.id, user4.id.toSessionId))
 
     Await.result(followersDAO.create(account1.id, user2.id.toSessionId))
     Await.result(followersDAO.create(account1.id, user3.id.toSessionId))
