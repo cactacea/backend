@@ -39,8 +39,8 @@ class ValidationDAO {
     }
   }
 
-  def notExistAccountName(displayName: String): Future[Unit] = {
-    accountsDAO.exist(displayName).flatMap(_ match {
+  def notExistAccountName(accountName: String): Future[Unit] = {
+    accountsDAO.exist(accountName).flatMap(_ match {
       case false =>
         Future.Unit
       case true =>

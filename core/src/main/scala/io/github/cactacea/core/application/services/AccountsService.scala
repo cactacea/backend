@@ -8,7 +8,6 @@ import io.github.cactacea.core.domain.enums.ReportType
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.domain.repositories.{AccountsRepository, ReportsRepository}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
-import org.joda.time.DateTime
 
 @Singleton
 class AccountsService {
@@ -61,10 +60,19 @@ class AccountsService {
     }
   }
 
-  def update(profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
+  def updateProfileImage(profileImage: MediumId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- accountsRepository.updateProfileImage(profileImage, sessionId)
+        r <- accountsRepository.updateProfileImage(Some(profileImage), sessionId)
+        _ <- actionService.profileImageUpdated(sessionId)
+      } yield (r)
+    }
+  }
+
+  def deleteProfileImage(sessionId: SessionId): Future[Unit] = {
+    db.transaction {
+      for {
+        r <- accountsRepository.updateProfileImage(None, sessionId)
         _ <- actionService.profileImageUpdated(sessionId)
       } yield (r)
     }

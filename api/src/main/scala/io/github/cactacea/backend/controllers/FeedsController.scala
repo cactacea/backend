@@ -2,7 +2,7 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finatra.http.Controller
-import io.github.cactacea.backend.models.requests.account.GetLikes
+import io.github.cactacea.backend.models.requests.account.{GetFeeds, GetLikes}
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
 import io.github.cactacea.core.application.services._
@@ -60,6 +60,16 @@ class FeedsController extends Controller {
       request.feedId,
       SessionContext.id
     ).map(_ => response.noContent)
+  }
+
+  get("/accounts/:id/feeds") { request: GetFeeds =>
+    feedsService.find(
+      request.accountId,
+      request.since,
+      request.offset,
+      request.count,
+      SessionContext.id
+    )
   }
 
   @Inject private var feedLikesService: FeedLikesService = _

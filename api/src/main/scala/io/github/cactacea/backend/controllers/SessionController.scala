@@ -1,18 +1,18 @@
 package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import com.jakehschwartz.finatra.swagger.SwaggerController
 import com.twitter.finagle.http.{Request, Status}
-import com.twitter.finatra.http.Controller
 import io.github.cactacea.backend.models.requests.session._
+import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyUsed, MediumNotFound}
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.swagger.models.Swagger
 
 @Singleton
-class SessionController @Inject()(s: Swagger) extends Controller with SwaggerController {
+class SessionController @Inject()(s: Swagger) extends BackendController {
 
   implicit protected val swagger = s
 
@@ -24,7 +24,7 @@ class SessionController @Inject()(s: Swagger) extends Controller with SwaggerCon
   getWithDoc("/session") { o =>
     o.summary("Get session account")
       .tag(tagName)
-      .responseWith[Account](Status.Ok.code, "successful operation")
+      .responseWith[Account](Status.Ok.code, successfulMessage)
 
   } { _: Request =>
     accountsService.find(
@@ -36,7 +36,7 @@ class SessionController @Inject()(s: Swagger) extends Controller with SwaggerCon
   deleteWithDoc("/session") { o =>
     o.summary("Sign out current logged in user session")
       .tag(tagName)
-      .responseWith(Status.NoContent.code, "successful operation")
+      .responseWith(Status.NoContent.code, successfulMessage)
 
   } { _: Request =>
     sessionService.signOut(
@@ -49,10 +49,10 @@ class SessionController @Inject()(s: Swagger) extends Controller with SwaggerCon
   putWithDoc("/session/account_name") { o =>
     o.summary("Update session account name")
       .tag(tagName)
-      .bodyParam[PutSessionAccountName]("PutSessionAccountName", "new account name")
-      .responseWith(Status.NoContent.code, "successful operation")
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, "validation error occurred")
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, "account name already used")
+      .request[PutSessionAccountName]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountNameAlreadyUsed.message)
     
 
   } { request: PutSessionAccountName =>
@@ -66,9 +66,9 @@ class SessionController @Inject()(s: Swagger) extends Controller with SwaggerCon
   putWithDoc("/session/password") { o =>
     o.summary("Update session account password")
       .tag(tagName)
-      .bodyParam[PutSessionPassword]("PutSessionPassword", "old password and new password")
-      .responseWith(Status.NoContent.code, "successful operation")
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, "validation error occurred")
+      .request[PutSessionPassword]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: PutSessionPassword =>
     accountsService.update(
@@ -82,9 +82,9 @@ class SessionController @Inject()(s: Swagger) extends Controller with SwaggerCon
   putWithDoc("/session/profile") { o =>
     o.summary("Update session profile")
       .tag(tagName)
-      .bodyParam[PutSessionProfile]("PutSessionProfile", "new profile information")
-      .responseWith(Status.NoContent.code, "successful operation")
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, "validation error occurred")
+      .request[PutSessionProfile]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   }  { request: PutSessionProfile =>
     accountsService.update(
@@ -98,16 +98,27 @@ class SessionController @Inject()(s: Swagger) extends Controller with SwaggerCon
   }
 
   putWithDoc("/session/profile_image") { o =>
-    o.summary("Update session profile")
+    o.summary("Update session profile image")
       .tag(tagName)
-      .bodyParam[PutSessionProfileImage]("PutSessionProfileImage", "new profile image")
-      .responseWith(Status.NoContent.code, "successful operation")
-      .responseWith[Array[NotFound]](Status.NotFound.code, "image not found")
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, "validation error occurred")
+      .request[PutSessionProfileImage]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, MediumNotFound.message)
 
   }  { request: PutSessionProfileImage =>
-    accountsService.update(
+    accountsService.updateProfileImage(
       request.mediumId,
+      SessionContext.id
+    ).map(_ => response.noContent)
+  }
+
+  deleteWithDoc("/session/profile_image") { o =>
+    o.summary("Delete session profile image")
+      .tag(tagName)
+      .responseWith(Status.NoContent.code, successfulMessage)
+
+  }  { _: Request =>
+    accountsService.deleteProfileImage(
       SessionContext.id
     ).map(_ => response.noContent)
   }

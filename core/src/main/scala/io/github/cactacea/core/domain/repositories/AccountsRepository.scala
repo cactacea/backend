@@ -28,7 +28,7 @@ class AccountsRepository {
   }
 
   def notExist(accountName: String): Future[Boolean] = {
-    validationDAO.notExistAccountName(accountName).flatMap(_ => Future.True)
+    accountsDAO.exist(accountName)
   }
 
   def findAll(displayName: Option[String], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
