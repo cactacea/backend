@@ -5,6 +5,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, GroupsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
+import io.github.cactacea.core.util.exceptions.CactaceaException
+import io.github.cactacea.core.util.responses.CactaceaError.{GroupAlreadyHidden, GroupNotHidden}
 
 @Singleton
 class AccountGroupsRepository {
@@ -33,33 +35,37 @@ class AccountGroupsRepository {
   }
 
   def findOrCreate(accountId: AccountId, sessionId: SessionId): Future[Group] = {
-    accountGroupsDAO.find(accountId, sessionId).flatMap(_ match {
-      case Some(t) =>
-        Future.value(Group(t))
+    accountGroupsDAO.findByAccountId(accountId, sessionId).flatMap(_ match {
+      case Some((_, g)) =>
+        Future.value(Group(g))
       case None =>
         (for {
           id <- groupsDAO.create(sessionId)
           _ <- accountGroupsDAO.create(accountId, id, sessionId)
           _ <- accountGroupsDAO.create(sessionId.toAccountId, id, accountId.toSessionId)
-          g <- accountGroupsDAO.find(accountId, sessionId)
-        } yield (g.head)).flatMap(g =>
-          Future.value(Group(g))
-        )
+          t <- validationDAO.findAccountGroup(id, sessionId)
+        } yield (t._2)).map(Group(_))
     })
   }
 
   def show(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- validationDAO.existsAccountGroup(groupId, sessionId)
-      _ <- accountGroupsDAO.updateHidden(groupId, false, sessionId)
-    } yield (Future.value(Unit))
+    validationDAO.findAccountGroup(groupId, sessionId).flatMap({ case (ag, g) =>
+      if (ag.hidden) {
+        accountGroupsDAO.updateHidden(groupId, false, sessionId).map(_ => Unit)
+      } else {
+        Future.exception(CactaceaException(GroupNotHidden))
+      }
+    })
   }
 
   def hide(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- validationDAO.existsAccountGroup(groupId, sessionId)
-      _ <- accountGroupsDAO.updateHidden(groupId, true, sessionId)
-    } yield (Future.value(Unit))
+    validationDAO.findAccountGroup(groupId, sessionId).flatMap({ case (ag, g) =>
+      if (ag.hidden) {
+        Future.exception(CactaceaException(GroupAlreadyHidden))
+      } else {
+        accountGroupsDAO.updateHidden(groupId, true, sessionId).map(_ => Unit)
+      }
+    })
   }
 
 }

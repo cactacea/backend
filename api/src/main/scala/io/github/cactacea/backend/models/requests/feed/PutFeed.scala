@@ -6,10 +6,10 @@ import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.infrastructure.identifiers.{FeedId, MediumId}
 
 case class PutFeed(
-                    @RouteParam feedId: FeedId,
+                    @RouteParam id: FeedId,
                     @Size(min = 1, max = 1000) feedMessage : String,
-                    mediumIds : Option[List[MediumId]],
-                    @Size(min = 0, max = 1000) tags : Option[List[String]],
+                    mediumIds : Option[Array[MediumId]],
+                    @Size(min = 0, max = 1000) tags : Option[Array[String]],
                     privacyType : FeedPrivacyType,
                     contentWarning : Boolean,
                     expiration: Option[Long]

@@ -1,17 +1,33 @@
 package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import com.twitter.finatra.http.Controller
+import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account._
+import io.github.cactacea.backend.models.responses.AccountNameNotExists
+import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
+import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
+import io.github.cactacea.core.util.responses.BadRequest
+import io.swagger.models.Swagger
 
 @Singleton
-class AccountsController extends Controller {
+class AccountsController @Inject()(s: Swagger) extends BackendController {
+
+  protected implicit val swagger = s
+
+  protected val tagName = "Accounts"
 
   @Inject private var accountsService: AccountsService = _
 
-  get("/accounts") { request: GetAccounts =>
+  getWithDoc("/accounts") { o =>
+    o.summary("Get accounts list")
+      .tag(tagName)
+      .request[GetAccounts]
+      .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetAccounts =>
     accountsService.find(
       request.displayName,
       request.since,
@@ -21,39 +37,44 @@ class AccountsController extends Controller {
     )
   }
 
-  get("/accounts/:id") { request: GetAccount =>
+  getWithDoc("/accounts/:id") { o =>
+    o.summary("Get a account")
+      .tag(tagName)
+      .request[GetAccount]
+      .responseWith[Account](Status.Ok.code, successfulMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetAccount =>
     accountsService.find(
-      request.accountId,
+      request.id,
       SessionContext.id
     )
   }
 
-  put("/accounts/:id") { request: PutAccount =>
+  putWithDoc("/accounts/:id/display_name") { o =>
+    o.summary("Change account display name")
+      .tag(tagName)
+      .request[PutAccountDisplayName]
+      .responseWith(Status.NoContent.code, successfulMessage)
+
+  } { request: PutAccountDisplayName =>
     accountsService.update(
-      request.accountId,
+      request.id,
       request.displayName,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  get("/account/:account_name") { request: GetAccountName =>
+  getWithDoc("/account/:account_name") { o =>
+    o.summary("Check a account name exist")
+      .tag(tagName)
+      .request[GetAccountName]
+      .responseWith[AccountNameNotExists](Status.Ok.code, "account name")
+
+  } { request: GetAccountName =>
     accountsService.notExist(
       request.accountName
-    ).map(_ => response.noContent)
-  }
-
-
-
-  @Inject private var feedsService: FeedsService = _
-
-  get("/accounts/:id/feeds") { request: GetFeeds =>
-    feedsService.find(
-      request.accountId,
-      request.since,
-      request.offset,
-      request.count,
-      SessionContext.id
-    )
+    ).map(r => response.ok(AccountNameNotExists(request.accountName, r)))
   }
 
 }

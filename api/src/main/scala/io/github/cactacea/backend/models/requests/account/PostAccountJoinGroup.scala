@@ -4,6 +4,6 @@ import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId}
 
 case class PostAccountJoinGroup(
-                              @RouteParam accountId: AccountId,
-                              @RouteParam groupId: GroupId
+                                 @RouteParam accountId: AccountId,
+                                 @RouteParam groupId: GroupId
                          )

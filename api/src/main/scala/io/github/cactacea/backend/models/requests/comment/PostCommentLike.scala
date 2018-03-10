@@ -4,6 +4,6 @@ import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.CommentId
 
 case class PostCommentLike(
-                                @RouteParam commentId: CommentId
+                                @RouteParam id: CommentId
                               )
 

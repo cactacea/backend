@@ -4,6 +4,7 @@ import com.google.inject.Provides
 import com.jakehschwartz.finatra.swagger.SwaggerModule
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
 import io.swagger.models.{Info, Swagger}
+
 import scala.collection.JavaConverters._
 
 object BackendSwaggerModule extends SwaggerModule {

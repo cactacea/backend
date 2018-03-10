@@ -4,8 +4,8 @@ import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyUsed, AccountNotFound, MediumNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, MediumNotFound}
 
 class AccountsRepositorySpec extends RepositorySpec {
 
@@ -186,9 +186,8 @@ class AccountsRepositorySpec extends RepositorySpec {
     val notExistAccountNameResult = Await.result(accountsRepository.notExist("session account 2"))
     assert(notExistAccountNameResult == true)
 
-    assert(intercept[CactaceaException] {
-      Await.result(accountsRepository.notExist("session account"))
-    }.error == AccountNameAlreadyUsed)
+    val notExistAccountNameResult2 = Await.result(accountsRepository.notExist("session account"))
+    assert(notExistAccountNameResult2 == false)
 
   }
 

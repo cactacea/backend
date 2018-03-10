@@ -212,9 +212,9 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(result1 == true)
     assert(result2 == true)
 
-    val result = Await.result(accountGroupsDAO.find(account1.id, sessionAccount.id.toSessionId))
+    val result = Await.result(accountGroupsDAO.findByAccountId(account1.id, sessionAccount.id.toSessionId))
     assert(result.isDefined == true)
-    val group = result.get
+    val group = result.get._2
 
     assert((group.id, group.name, group.by, group.invitationOnly, group.privacyType, group.authorityType, group.accountCount) == (groupId1, Some("new group name1"), sessionAccount.id, true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0))
 

@@ -4,5 +4,5 @@ import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
 
 case class PostMute (
-                      @RouteParam accountId: AccountId
+                      @RouteParam id: AccountId
                      )

@@ -5,6 +5,6 @@ import io.github.cactacea.core.domain.enums._
 import io.github.cactacea.core.infrastructure.identifiers.FeedId
 
 case class PostFeedReport(
-                           @RouteParam feedId: FeedId,
+                           @RouteParam id: FeedId,
                            reportType: ReportType
                      )

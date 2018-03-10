@@ -4,5 +4,5 @@ import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.GroupId
 
 case class DeleteHideGroup (
-                             @RouteParam groupId: GroupId
+                             @RouteParam id: GroupId
                          )

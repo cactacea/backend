@@ -12,7 +12,7 @@ class FriendsRepository {
 
   @Inject private var friendsDAO: FriendsDAO = _
   @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var followsDAO: FollowsDAO = _
+  @Inject private var followingDAO: FollowingDAO = _
   @Inject private var followersDAO: FollowersDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
@@ -22,10 +22,10 @@ class FriendsRepository {
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.notExistFriend(accountId, sessionId)
       _ <- friendsDAO.create(accountId, sessionId)
-      _ <- followsDAO.create(accountId, sessionId)
+      _ <- followingDAO.create(accountId, sessionId)
       _ <- followersDAO.create(accountId, sessionId)
       _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
-      _ <- followsDAO.create(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followingDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
     } yield (Future.value(Unit))
   }

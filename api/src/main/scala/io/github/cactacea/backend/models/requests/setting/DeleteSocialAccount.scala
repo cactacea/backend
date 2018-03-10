@@ -4,5 +4,5 @@ import com.twitter.finatra.request.RouteParam
 
 
 case class DeleteSocialAccount(
-                             @RouteParam socialAccountType: String
-                        )
+                                @RouteParam socialAccountType: String
+                              )

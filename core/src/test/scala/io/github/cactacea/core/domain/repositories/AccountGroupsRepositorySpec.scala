@@ -4,8 +4,8 @@ import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.GroupId
-import io.github.cactacea.core.util.responses.CactaceaError.GroupNotFound
 import io.github.cactacea.core.util.exceptions.CactaceaException
+import io.github.cactacea.core.util.responses.CactaceaError.AccountNotJoined
 
 class AccountGroupsRepositorySpec extends RepositorySpec {
 
@@ -29,7 +29,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
     val user = signUp("user name", "session user password", "session user udid").account
     val groupId1 = Await.result(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, user.id.toSessionId))
     val groupId2 = Await.result(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.followers, GroupAuthorityType.member, user.id.toSessionId))
-    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.follows, GroupAuthorityType.member, user.id.toSessionId))
+    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.following, GroupAuthorityType.member, user.id.toSessionId))
     val groupId4 = Await.result(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.friends, GroupAuthorityType.member, user.id.toSessionId))
     val groupId5 = Await.result(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, user.id.toSessionId))
     val result = Await.result(accountGroupsRepository.findAll(user.id, None, None, None, sessionUser.id.toSessionId))
@@ -45,7 +45,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("session user name", "session user password", "session user udid").account
     val groupId1 = Await.result(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId2 = Await.result(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.follows, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.following, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId4 = Await.result(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.friends, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId5 = Await.result(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val result = Await.result(accountGroupsRepository.findAll(None, None, None, false, sessionUser.id.toSessionId))
@@ -83,7 +83,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("session user name", "session user password", "session user udid").account
     val groupId1 = Await.result(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId2 = Await.result(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.follows, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.following, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId4 = Await.result(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.friends, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId5 = Await.result(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(accountGroupsRepository.hide(groupId1, sessionUser.id.toSessionId))
@@ -104,7 +104,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
     val session = signUp("session account", "password", "udid").account
     assert(intercept[CactaceaException] {
       Await.result(accountGroupsRepository.show(GroupId(-1L), session.id.toSessionId))
-    }.error == GroupNotFound)
+    }.error == AccountNotJoined)
 
   }
 
@@ -112,7 +112,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("session user name", "session user password", "session user udid").account
     val groupId1 = Await.result(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId2 = Await.result(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.follows, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.following, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId4 = Await.result(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.friends, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId5 = Await.result(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(accountGroupsRepository.hide(groupId1, sessionUser.id.toSessionId))
@@ -129,7 +129,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
     val session = signUp("session account", "password", "udid").account
     assert(intercept[CactaceaException] {
       Await.result(accountGroupsRepository.hide(GroupId(-1L), session.id.toSessionId))
-    }.error == GroupNotFound)
+    }.error == AccountNotJoined)
 
   }
 

@@ -10,7 +10,7 @@ class GroupAuthorityDAOSpec extends DAOSpec {
   val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]
   val accountGroupsDAO: AccountGroupsDAO = injector.instance[AccountGroupsDAO]
   val groupAuthorityDAO: GroupAuthorityDAO = injector.instance[GroupAuthorityDAO]
-  val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
+  val followingDAO: FollowingDAO = injector.instance[FollowingDAO]
   val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
   val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
 
@@ -50,22 +50,22 @@ class GroupAuthorityDAOSpec extends DAOSpec {
 
     // create follow
     Await.result(followersDAO.create(owner.id, follow.id.toSessionId))
-    Await.result(followsDAO.create(follow.id, owner.id.toSessionId))
+    Await.result(followingDAO.create(follow.id, owner.id.toSessionId))
 
     // create follower
     Await.result(followersDAO.create(follower.id, owner.id.toSessionId))
-    Await.result(followsDAO.create(owner.id, follower.id.toSessionId))
+    Await.result(followingDAO.create(owner.id, follower.id.toSessionId))
 
     // create friend
-    Await.result(followsDAO.create(owner.id, friend.id.toSessionId))
-    Await.result(followsDAO.create(friend.id, owner.id.toSessionId))
+    Await.result(followingDAO.create(owner.id, friend.id.toSessionId))
+    Await.result(followingDAO.create(friend.id, owner.id.toSessionId))
     Await.result(followersDAO.create(friend.id, owner.id.toSessionId))
     Await.result(followersDAO.create(owner.id, friend.id.toSessionId))
     Await.result(friendsDAO.create(friend.id, owner.id.toSessionId))
     Await.result(friendsDAO.create(owner.id, friend.id.toSessionId))
 
     val groupId1 = Await.result(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.followers, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.follows, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
+    val groupId2 = Await.result(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.following, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
     val groupId3 = Await.result(groupsDAO.create(Some("new group name3"), true, GroupPrivacyType.friends, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
     val groupId4 = Await.result(groupsDAO.create(Some("new group name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
     val group1 = Await.result(groupsDAO.find(groupId1)).get

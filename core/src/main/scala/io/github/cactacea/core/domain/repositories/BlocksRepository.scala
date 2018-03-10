@@ -11,7 +11,7 @@ class BlocksRepository {
 
   @Inject private var blocksDAO: BlocksDAO = _
   @Inject private var blockersDAO: BlockersDAO = _
-  @Inject private var followsDAO: FollowsDAO = _
+  @Inject private var followingDAO: FollowingDAO = _
   @Inject private var followersDAO: FollowersDAO = _
   @Inject private var friendsDAO: FriendsDAO = _
   @Inject private var mutesDAO: MutesDAO = _
@@ -32,8 +32,8 @@ class BlocksRepository {
       _ <- validationDAO.notExistBlock(accountId, sessionId)
       _ <- blocksDAO.create(accountId, sessionId)
       _ <- blockersDAO.create(sessionId.toAccountId, accountId.toSessionId)
-      _ <- followsDAO.delete(accountId, sessionId)
-      _ <- followsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followingDAO.delete(accountId, sessionId)
+      _ <- followingDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.delete(accountId, sessionId)
       _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendsDAO.delete(accountId, sessionId)

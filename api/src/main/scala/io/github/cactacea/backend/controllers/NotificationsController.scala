@@ -1,17 +1,31 @@
 package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import com.twitter.finatra.http.Controller
+import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.notification.GetNotifications
+import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.NotificationsService
+import io.github.cactacea.core.domain.models.Notification
 import io.github.cactacea.core.util.auth.SessionContext
+import io.github.cactacea.core.util.responses.BadRequest
+import io.swagger.models.Swagger
 
 @Singleton
-class NotificationsController extends Controller {
+class NotificationsController @Inject()(s: Swagger) extends BackendController {
+
+  protected implicit val swagger = s
+
+  protected val tagName = "Notifications"
 
   @Inject private var notificationsService: NotificationsService = _
 
-  get("/comments") { request: GetNotifications =>
+  getWithDoc("/notifications") { o =>
+    o.summary("Get notifications")
+      .request[GetNotifications]
+      .responseWith[Array[Notification]](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetNotifications =>
     notificationsService.find(
       request.since,
       request.offset,

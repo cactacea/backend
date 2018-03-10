@@ -1,20 +1,37 @@
 package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import com.twitter.finatra.http.Controller
+import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account._
-import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollows}
+import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollowing}
+import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
+import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
+import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
+import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.swagger.models.Swagger
 
 @Singleton
-class FollowersController extends Controller {
+class FollowersController @Inject()(s: Swagger) extends BackendController {
 
-  @Inject private var followsService: FollowsService = _
+  protected implicit val swagger = s
 
-  get("/accounts/:id/follows") { request: GetFollows =>
-    followsService.find(
-      request.accountId,
+  @Inject private var followingService: FollowingService = _
+
+  protected val tagName = "Followers"
+
+  getWithDoc("/accounts/:id/following") { o =>
+    o.summary("Get account's following")
+      .tag(tagName)
+      .request[GetFollowing]
+      .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+  } { request: GetFollowing =>
+    followingService.find(
+      request.id,
       request.since,
       request.offset,
       request.count,
@@ -22,22 +39,43 @@ class FollowersController extends Controller {
     )
   }
 
-  post("/accounts/:id/follows") { request: PostFollow =>
-    followsService.create(
-      request.accountId,
+  postWithDoc("/accounts/:id/following") { o =>
+    o.summary("Follow a account")
+      .tag(tagName)
+      .request[PostFollowing]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+  } { request: PostFollowing =>
+    followingService.create(
+      request.id,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  delete("/accounts/:id/follows") { request: DeleteFollow =>
-    followsService.delete(
-      request.accountId,
+  deleteWithDoc("/accounts/:id/following") { o =>
+    o.summary("Unfollow a account")
+      .tag(tagName)
+      .request[DeleteFollowing]
+      .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith(Status.NotFound.code, AccountNotFound.message)
+
+  } { request: DeleteFollowing =>
+    followingService.delete(
+      request.id,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  get("/session/follows") { request: GetSessionFollows =>
-    followsService.find(
+  getWithDoc("/session/following") { o =>
+    o.summary("Get session's following")
+      .tag(tagName)
+      .request[GetSessionFollowing]
+      .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetSessionFollowing =>
+    followingService.find(
       request.since,
       request.offset,
       request.count,
@@ -47,9 +85,16 @@ class FollowersController extends Controller {
 
   @Inject private var followersService: FollowersService = _
 
-  get("/accounts/:id/followers") { request: GetFollowers =>
+  getWithDoc("/accounts/:id/followers") { o =>
+    o.summary("Get account's followers")
+      .tag(tagName)
+      .request[GetFollowers]
+      .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetFollowers =>
     followersService.find(
-      request.accountId,
+      request.id,
       request.since,
       request.offset,
       request.count,
@@ -57,7 +102,14 @@ class FollowersController extends Controller {
     )
   }
 
-  get("/session/followers") { request: GetSessionFollowers =>
+  getWithDoc("/session/followers") { o =>
+    o.summary("Get session's followers")
+      .tag(tagName)
+      .request[GetSessionFollowers]
+      .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+  } { request: GetSessionFollowers =>
     followersService.find(
       request.since,
       request.offset,

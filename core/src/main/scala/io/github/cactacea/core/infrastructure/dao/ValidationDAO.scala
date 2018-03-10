@@ -16,7 +16,7 @@ class ValidationDAO {
   @Inject private var blocksDAO: BlocksDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
   @Inject private var commentLikesDAO: CommentLikesDAO = _
-  @Inject private var followsDAO: FollowsDAO = _
+  @Inject private var followingDAO: FollowingDAO = _
   @Inject private var followersDAO: FollowersDAO = _
   @Inject private var friendsDAO: FriendsDAO = _
   @Inject private var friendRequestsDAO: FriendRequestsDAO = _
@@ -39,8 +39,8 @@ class ValidationDAO {
     }
   }
 
-  def notExistAccountName(displayName: String): Future[Unit] = {
-    accountsDAO.exist(displayName).flatMap(_ match {
+  def notExistAccountName(accountName: String): Future[Unit] = {
+    accountsDAO.exist(accountName).flatMap(_ match {
       case false =>
         Future.Unit
       case true =>
@@ -121,7 +121,7 @@ class ValidationDAO {
   }
 
   def existFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    followsDAO.exist(accountId, sessionId).flatMap(_ match {
+    followingDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -130,7 +130,7 @@ class ValidationDAO {
   }
 
   def notExistFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    followsDAO.exist(accountId, sessionId).flatMap(_ match {
+    followingDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyFollowed))
       case false =>
@@ -242,12 +242,12 @@ class ValidationDAO {
     })
   }
 
-  def existsAccountGroup(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountGroupsDAO.exist(groupId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(GroupNotFound))
+  def findAccountGroup(groupId: GroupId, sessionId: SessionId): Future[(AccountGroups, Groups)] = {
+    accountGroupsDAO.findByGroupId(groupId, sessionId).flatMap(_ match {
+      case Some(t) =>
+        Future.value(t)
+      case _ =>
+        Future.exception(CactaceaException(AccountNotJoined))
     })
   }
 

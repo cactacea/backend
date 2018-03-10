@@ -46,6 +46,8 @@ lazy val core = (project in file("core"))
   .settings(commonResolverSetting)
   .settings(commonLibrarySetting)
   .dependsOn(util)
+  .dependsOn(oauth2)
+  .dependsOn(swagger)
 
 
 lazy val util = (project in file("util"))
@@ -115,9 +117,6 @@ lazy val commonLibrarySetting = Seq(
     "com.twitter" %% "finatra-http" % versions.finatra,
     "com.twitter" %% "finatra-httpclient" % versions.finatra,
     "com.twitter" %% "finagle-core" % versions.finatra,
-    "com.github.finagle" %% "finagle-oauth2" % versions.finatra,
-
-    "com.jakehschwartz" %% "finatra-swagger" % "17.11.0",
 
     "com.twitter" %% "finatra-http" % versions.finatra % "test",
     "com.twitter" %% "finatra-jackson" % versions.finatra % "test",
@@ -162,3 +161,37 @@ lazy val commonResolverSetting = Seq(
   )
 )
 
+lazy val swagger = (project in file("swagger"))
+  .settings(
+    organization := "com.jakehschwartz.finatra.swagger",
+    scalaVersion := "2.12.4",
+    name := "swagger",
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+    testOptions in Test += Tests.Argument("-oI")
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "finatra-http" % versions.finatra,
+      "io.swagger" % "swagger-core" % "1.5.17",
+      "io.swagger" %% "swagger-scala-module" % "1.0.4",
+      "org.webjars" % "swagger-ui" % "3.10.0",
+      "net.bytebuddy" % "byte-buddy" % "1.7.11",
+      "org.scalatest" %% "scalatest" % versions.scalaTest % "test"
+    )
+  )
+
+lazy val oauth2 = (project in file("oauth2"))
+  .settings(
+    organization := "com.twitter.finagle.oauth2",
+    scalaVersion := "2.12.4",
+    name := "swagger",
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+    testOptions in Test += Tests.Argument("-oI")
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "finagle-http" % versions.finatra,
+      "org.scalacheck" %% "scalacheck" % "1.13.5" % Test,
+      "org.scalatest" %% "scalatest" % "3.0.5" % Test
+    )
+  )

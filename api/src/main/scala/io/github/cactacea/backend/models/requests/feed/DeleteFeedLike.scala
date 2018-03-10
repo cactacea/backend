@@ -4,5 +4,5 @@ import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.FeedId
 
 case class DeleteFeedLike(
-                               @RouteParam feedId: FeedId
+                               @RouteParam id: FeedId
                              )
