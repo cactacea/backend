@@ -3,7 +3,7 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account._
-import io.github.cactacea.backend.models.responses.AccountNameExists
+import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
@@ -68,12 +68,12 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
   getWithDoc("/account/:account_name") { o =>
     o.summary("Check a account name exist")
       .request[GetAccountName]
-      .responseWith[AccountNameExists](Status.Ok.code, "account name")
+      .responseWith[AccountNameNotExists](Status.Ok.code, "account name")
 
   } { request: GetAccountName =>
     accountsService.notExist(
       request.accountName
-    ).map(r => response.ok(AccountNameExists(request.accountName, r)))
+    ).map(r => response.ok(AccountNameNotExists(request.accountName, r)))
   }
 
 }
