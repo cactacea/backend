@@ -39,7 +39,12 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
 
   } { request: PutNotificationSetting =>
     settingsService.updatePushNotificationSettings(
-      request.notificationSetting,
+      request.groupInvitation,
+      request.followerFeed,
+      request.feedComment,
+      request.groupMessage,
+      request.directMessage,
+      request.showMessage,
       SessionContext.id
     ).map(_ => response.noContent)
   }
@@ -64,7 +69,11 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
 
   } { request: PutAdvertisementSetting =>
     settingsService.updateAdvertisementSettings(
-      request.advertisementSetting,
+      request.ad1,
+      request.ad2,
+      request.ad3,
+      request.ad4,
+      request.ad5,
       SessionContext.id
     ).map(_ => response.noContent)
   }

@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.models.requests.feed
 
+import com.twitter.finatra.request.FormParam
 import com.twitter.finatra.validation.Size
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.infrastructure.identifiers.MediumId

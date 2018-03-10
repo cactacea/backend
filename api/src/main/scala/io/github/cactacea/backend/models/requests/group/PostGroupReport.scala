@@ -7,4 +7,4 @@ import io.github.cactacea.core.infrastructure.identifiers.GroupId
 case class PostGroupReport(
                             @RouteParam id: GroupId,
                             reportType: ReportType
-                                )
+                          )

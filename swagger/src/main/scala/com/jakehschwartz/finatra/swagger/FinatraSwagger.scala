@@ -23,8 +23,8 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.reflect.runtime._
 import scala.reflect.runtime.universe._
-
 import SchemaUtil._
+import io.swagger.annotations.ApiModelProperty
 
 object FinatraSwagger {
   private val finatraRouteParamter = ":(\\w+)".r
@@ -159,34 +159,50 @@ class FinatraSwagger(swagger: Swagger) {
         val injectGuice = annotationExtractor(classOf[GInject])
         val header = annotationExtractor(classOf[HeaderParam])
         val form = annotationExtractor(classOf[FormParam])
+        val modelPropertyAnnotations = annotationExtractor(classOf[ApiModelProperty])
 
-        val (isRequired, innerOptionType) = field.getGenericType match {
+        val (isRequired, innerOptionType, innerOptionClassType) = field.getGenericType match {
           case parameterizedType: ParameterizedType =>
 
             val required = parameterizedType.getRawType.asInstanceOf[Class[_]] != classOf[Option[_]]
 
-            (required, Some(parameterizedType.getActualTypeArguments.apply(0)))
+            val actualType = Some(parameterizedType.getActualTypeArguments.apply(0))
+            val classType = Some(parameterizedType.getActualTypeArguments.apply(0).asInstanceOf[Class[_]])
+
+            (required, actualType, classType)
           case _ =>
-            (true, None)
+            (true, None, None)
+        }
+
+        val typ = innerOptionClassType.getOrElse(field.getType)
+
+        val modelProp = modelPropertyAnnotations.flatMap(_.headOption).map(_.asInstanceOf[ApiModelProperty])
+
+        val (name, description) = modelProp match {
+          case Some(p) =>
+            val n = if(!p.name().isEmpty) p.name() else field.getName
+            (n, p.value())
+          case None =>
+            (field.getName, "")
         }
 
         if (routeParam.isDefined) {
-          Some(RouteRequestParam(field.getName, typ = field.getType))
+          Some(RouteRequestParam(name, description = description, typ = typ))
         }
         else if (queryParam.isDefined) {
-          Some(QueryRequestParam(field.getName, typ = field.getType, required = isRequired))
+          Some(QueryRequestParam(name, description = description, typ = typ, required = isRequired))
         }
-        else if ((injectJavax.isDefined || injectGuice.isDefined) && field.getType.isAssignableFrom(classOf[Request])) {
-          Some(RequestInjectRequestParam(field.getName))
+        else if ((injectJavax.isDefined || injectGuice.isDefined) && typ.isAssignableFrom(classOf[Request])) {
+          Some(RequestInjectRequestParam(name))
         }
         else if (header.isDefined) {
-          Some(HeaderRequestParam(field.getName, typ = field.getType, required = isRequired))
+          Some(HeaderRequestParam(name, description = description, typ = typ, required = isRequired))
         }
         else if (form.isDefined) {
-          Some(FormRequestParam(field.getName, typ = field.getType, required = isRequired))
+          Some(FormRequestParam(name, description = description, typ = typ, required = isRequired))
         }
         else {
-          Some(BodyRequestParam(name = field.getName, typ = field.getType, innerOptionType = innerOptionType))
+          Some(BodyRequestParam(name = name, description = description, typ = typ, innerOptionType = innerOptionType))
         }
       }.toList
 

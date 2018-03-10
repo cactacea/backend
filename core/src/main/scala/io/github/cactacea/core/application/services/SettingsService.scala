@@ -20,15 +20,15 @@ class SettingsService {
     notificationSettingsRepository.find(sessionId)
   }
 
-  def updatePushNotificationSettings(setting: PushNotificationSetting, sessionId: SessionId): Future[Unit] = {
+  def updatePushNotificationSettings(groupInvitation: Boolean, followerFeed: Boolean, feedComment: Boolean, groupMessage: Boolean, directMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       notificationSettingsRepository.update(
-        setting.groupInvitation,
-        setting.followerFeed,
-        setting.feedComment,
-        setting.groupMessage,
-        setting.directMessage,
-        setting.showMessage,
+        groupInvitation,
+        followerFeed,
+        feedComment,
+        groupMessage,
+        directMessage,
+        showMessage,
         sessionId)
     }
   }
@@ -39,9 +39,15 @@ class SettingsService {
     advertisementSettingsRepository.find(sessionId)
   }
 
-  def updateAdvertisementSettings(setting: AdvertisementSetting, sessionId: SessionId): Future[Unit] = {
+  def updateAdvertisementSettings(ad1: Boolean, ad2: Boolean, ad3: Boolean, ad4: Boolean, ad5: Boolean, sessionId: SessionId): Future[Unit] = {
     db.transaction {
-      advertisementSettingsRepository.update(setting.ad1, setting.ad2, setting.ad3, setting.ad4, setting.ad5, sessionId)
+      advertisementSettingsRepository.update(
+        ad1,
+        ad2,
+        ad3,
+        ad4,
+        ad5,
+        sessionId)
     }
   }
 
