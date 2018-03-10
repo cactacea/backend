@@ -1,7 +1,8 @@
 package io.github.cactacea.backend.swagger
 
 import com.google.inject.Provides
-import com.jakehschwartz.finatra.swagger.SwaggerModule
+import com.jakehschwartz.finatra.swagger.{SnakeCaseConverter, SwaggerModule}
+import io.swagger.converter.ModelConverters
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
 import io.swagger.models.{Info, Swagger}
 
@@ -10,6 +11,8 @@ import scala.collection.JavaConverters._
 object BackendSwaggerModule extends SwaggerModule {
 
   val swaggerUI = new Swagger()
+
+  ModelConverters.getInstance().addConverter(new SnakeCaseConverter())
 
   @Provides
   def swagger: Swagger = {
