@@ -3,10 +3,8 @@ package io.github.cactacea.backend.models.requests.session
 import com.twitter.finatra.request.{Header, RouteParam}
 import com.twitter.finatra.validation._
 import io.github.cactacea.backend.models.requests.Validations
-import io.swagger.annotations.ApiModelProperty
 
 case class PostSocialAccountSignUp(
-                                    @ApiModelProperty(name = "social_account_type")
                                     @RouteParam socialAccountType: String,
                                     @Size(min = 2, max = 30) accountName: String,
                                     @Size(min = 1, max = 50) displayName: String,
