@@ -184,7 +184,7 @@ lazy val oauth2 = (project in file("oauth2"))
   .settings(
     organization := "com.twitter.finagle.oauth2",
     scalaVersion := "2.12.4",
-    name := "swagger",
+    name := "oauth2",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
   )
