@@ -20,7 +20,8 @@ object CactaceaError {
   final object FeedNotFound                     extends NotFound(40403, "Feed not found.")
   final object FriendRequestNotFound            extends NotFound(40404, "Request not found.")
   final object GroupNotFound                    extends NotFound(40405, "Group not found.")
-  final object GroupInvitationNotFound              extends NotFound(40406, "Group invitation not found.")
+  final object GroupInvitationNotFound          extends NotFound(40406, "Group invitation not found.")
+  final object SocialAccountNotFound            extends NotFound(40407, "Social account not found.")
 
   // 400 Bad Request
 

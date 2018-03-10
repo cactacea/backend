@@ -98,5 +98,23 @@ class FeedsController extends Controller {
     )
   }
 
+  get("/session/feeds") { request: GetSessionFeeds =>
+    feedsService.find(
+      request.since,
+      request.offset,
+      request.count,
+      SessionContext.id
+    )
+  }
+
+  get("/session/likes") { request: GetSessionLikedFeeds =>
+    feedLikesService.find(
+      request.since,
+      request.offset,
+      request.count,
+      SessionContext.id
+    )
+  }
+
 }
 

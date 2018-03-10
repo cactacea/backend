@@ -1,26 +1,44 @@
 package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import com.twitter.finagle.http.Request
+import com.jakehschwartz.finatra.swagger.SwaggerController
+import com.twitter.finagle.http.{Request, Status}
 import com.twitter.finatra.http.Controller
-import io.github.cactacea.backend.models.requests.feed.{GetSessionLikedFeeds, GetSessionFeeds}
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.core.application.services._
+import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
+import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.swagger.models.Swagger
 
 @Singleton
-class SessionController extends Controller {
+class SessionController @Inject()(s: Swagger) extends Controller with SwaggerController {
+
+  implicit protected val swagger = s
+
+  private val tagName = "Session"
 
   @Inject private var accountsService: AccountsService = _
   @Inject private var sessionService: SessionsService = _
 
-  get("/session") { request: Request =>
+  getWithDoc("/session") { o =>
+    o.summary("Get session account")
+      .tag(tagName)
+      .responseWith[Account](Status.Ok.code, "successful operation")
+
+  } { _: Request =>
     accountsService.find(
       SessionContext.id
     )
   }
 
-  delete("/session") { request: Request =>
+
+  deleteWithDoc("/session") { o =>
+    o.summary("Sign out current logged in user session")
+      .tag(tagName)
+      .responseWith(Status.NoContent.code, "successful operation")
+
+  } { _: Request =>
     sessionService.signOut(
       SessionContext.udid,
       SessionContext.id
@@ -28,14 +46,31 @@ class SessionController extends Controller {
   }
 
 
-  put("/session/account_name") { request: PutSessionAccountName =>
+  putWithDoc("/session/account_name") { o =>
+    o.summary("Update session account name")
+      .tag(tagName)
+      .bodyParam[PutSessionAccountName]("PutSessionAccountName", "new account name")
+      .responseWith(Status.NoContent.code, "successful operation")
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, "validation error occurred")
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, "account name already used")
+    
+
+  } { request: PutSessionAccountName =>
     accountsService.update(
       request.accountName,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  put("/session/password") { request: PutSessionPassword =>
+
+  putWithDoc("/session/password") { o =>
+    o.summary("Update session account password")
+      .tag(tagName)
+      .bodyParam[PutSessionPassword]("PutSessionPassword", "old password and new password")
+      .responseWith(Status.NoContent.code, "successful operation")
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, "validation error occurred")
+
+  } { request: PutSessionPassword =>
     accountsService.update(
       request.oldPassword,
       request.newPassword,
@@ -43,7 +78,15 @@ class SessionController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  put("/session/profile") { request: PutSessionProfile =>
+
+  putWithDoc("/session/profile") { o =>
+    o.summary("Update session profile")
+      .tag(tagName)
+      .bodyParam[PutSessionProfile]("PutSessionProfile", "new profile information")
+      .responseWith(Status.NoContent.code, "successful operation")
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, "validation error occurred")
+
+  }  { request: PutSessionProfile =>
     accountsService.update(
       request.displayName,
       request.web,
@@ -54,64 +97,19 @@ class SessionController extends Controller {
     ).map(_ => response.noContent)
   }
 
-  put("/session/profile_image") { request: PutSessionProfileImage =>
+  putWithDoc("/session/profile_image") { o =>
+    o.summary("Update session profile")
+      .tag(tagName)
+      .bodyParam[PutSessionProfileImage]("PutSessionProfileImage", "new profile image")
+      .responseWith(Status.NoContent.code, "successful operation")
+      .responseWith[Array[NotFound]](Status.NotFound.code, "image not found")
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, "validation error occurred")
+
+  }  { request: PutSessionProfileImage =>
     accountsService.update(
       request.mediumId,
       SessionContext.id
     ).map(_ => response.noContent)
-  }
-
-  @Inject private var followsService: FollowsService = _
-  @Inject private var followersService: FollowersService = _
-  @Inject private var friendsService: FriendsService = _
-
-  get("/session/follows") { request: GetSessionFollows =>
-    followsService.find(
-      request.since,
-      request.offset,
-      request.count,
-      SessionContext.id
-    )
-  }
-
-  get("/session/followers") { request: GetSessionFollowers =>
-    followersService.find(
-      request.since,
-      request.offset,
-      request.count,
-      SessionContext.id
-    )
-  }
-
-  get("/session/friends") { request: GetSessionFriends =>
-    friendsService.find(
-      request.since,
-      request.offset,
-      request.count,
-      SessionContext.id
-    )
-  }
-
-  @Inject private var feedsService: FeedsService = _
-
-  get("/session/feeds") { request: GetSessionFeeds =>
-    feedsService.find(
-      request.since,
-      request.offset,
-      request.count,
-      SessionContext.id
-    )
-  }
-
-  @Inject private var feedLikesService: FeedLikesService = _
-
-  get("/session/likes") { request: GetSessionLikedFeeds =>
-    feedLikesService.find(
-      request.since,
-      request.offset,
-      request.count,
-      SessionContext.id
-    )
   }
 
 }

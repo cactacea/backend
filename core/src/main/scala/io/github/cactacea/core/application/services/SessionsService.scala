@@ -8,6 +8,8 @@ import io.github.cactacea.core.domain.enums.DeviceType
 import io.github.cactacea.core.domain.models._
 import io.github.cactacea.core.domain.repositories.SessionsRepository
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
+import io.github.cactacea.core.util.exceptions.CactaceaException
+import io.github.cactacea.core.util.responses.CactaceaError.SocialAccountNotFound
 
 @Singleton
 class SessionsService {
@@ -47,7 +49,7 @@ class SessionsService {
   def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, accessTokenKey: String, accessTokenSecret: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Authentication] = {
     db.transaction {
       for {
-        id <- socialAccountsService.get(socialAccountType, accessTokenKey, accessTokenSecret)
+        id <- validateSocialAccount(socialAccountType, accessTokenKey, accessTokenSecret)
         a <- sessionsRepository.signUp(socialAccountType, accountName, displayName, password, id, accessTokenKey, accessTokenSecret, udid, deviceType, web, birthday, location, bio, userAgent)
         _ <- actionService.signedUp(a)
       } yield (a)
@@ -57,11 +59,20 @@ class SessionsService {
   def signIn(socialAccountType: String, accessTokenKey: String, accessTokenSecret: String, udid: String, userAgent: String, deviceType: DeviceType): Future[Authentication] = {
     db.transaction {
       for {
-        id <- socialAccountsService.get(socialAccountType, accessTokenKey, accessTokenSecret)
+        id <- validateSocialAccount(socialAccountType, accessTokenKey, accessTokenSecret)
         a <- sessionsRepository.signIn(socialAccountType, id, accessTokenKey, accessTokenSecret, udid, deviceType, userAgent)
         _ <- actionService.signedIn(a)
       } yield (a)
     }
+  }
+
+  private def validateSocialAccount(socialAccountType: String, accessTokenKey: String, accessTokenSecret: String): Future[String] = {
+    socialAccountsService.get(socialAccountType, accessTokenKey, accessTokenSecret).flatMap(_ match {
+      case Some(token) =>
+        Future.value(token)
+      case None =>
+        Future.exception(CactaceaException(SocialAccountNotFound))
+    })
   }
 
 }
