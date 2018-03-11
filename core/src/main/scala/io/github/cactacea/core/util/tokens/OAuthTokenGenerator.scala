@@ -25,7 +25,7 @@ class OAuthTokenGenerator @Inject()(config: ConfigService) {
   private def generate(expireIn: Long): String = {
 
     val signatureAlgorithm = SignatureAlgorithm.forName(config.algorithm)
-    val expired = new Date(System.nanoTime() + expireIn)
+    val expired = new Date(System.currentTimeMillis + expireIn)
     val claims = new java.util.HashMap[String, Object]()
 
     Jwts.builder()

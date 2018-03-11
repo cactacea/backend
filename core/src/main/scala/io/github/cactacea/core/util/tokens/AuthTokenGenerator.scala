@@ -50,7 +50,7 @@ class AuthTokenGenerator @Inject()(config: ConfigService) {
           val header = parsed.getHeader()
           val body = parsed.getBody()
           val udid = header.get("udid").asInstanceOf[String]
-          val issuedAt = body.getIssuedAt.getTime()
+          val expiration = body.getExpiration.getTime
           val audience = body.getAudience().toLong
 
           if (header.getAlgorithm().equals(signatureAlgorithm.getValue) == false) {
@@ -63,7 +63,7 @@ class AuthTokenGenerator @Inject()(config: ConfigService) {
             Future.exception(CactaceaException(CactaceaError.SessionNotAuthorized))
 
           } else {
-            Future.value(SessionUser(SessionId(audience), udid, issuedAt))
+            Future.value(SessionUser(SessionId(audience), udid, expiration))
           }
 
         } catch {

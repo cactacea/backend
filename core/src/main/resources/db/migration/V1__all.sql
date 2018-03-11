@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`account_groups` (
   `group_id` BIGINT NOT NULL,
   `unread_count` BIGINT NOT NULL,
   `hidden` TINYINT NOT NULL,
-  `muted` TINYINT NOT NULL,
+  `mute` TINYINT NOT NULL,
   `to_account_id` BIGINT NOT NULL,
   `joined_at` BIGINT NOT NULL,
   INDEX `fk_account_groups_groups1_idx` (`group_id` ASC),
@@ -722,8 +722,8 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`relationships` (
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `edited_display_name` VARCHAR(30) NULL DEFAULT NULL,
-  `followed` TINYINT NOT NULL DEFAULT 0,
-  `muted` TINYINT NOT NULL DEFAULT 0,
+  `follow` TINYINT NOT NULL DEFAULT 0,
+  `mute` TINYINT NOT NULL DEFAULT 0,
   `friend` TINYINT NOT NULL DEFAULT 0,
   `follower` TINYINT NOT NULL DEFAULT 0,
   `in_progress` TINYINT NOT NULL DEFAULT 0,
@@ -733,8 +733,8 @@ CREATE TABLE IF NOT EXISTS `cactacea`.`relationships` (
   UNIQUE INDEX `unique` (`account_id` ASC, `by` ASC),
   INDEX `fk_account_relationships_accounts1_idx` (`account_id` ASC),
   INDEX `fk_account_relationships_accounts2_idx` (`by` ASC),
-  INDEX `index4` (`account_id` ASC, `by` ASC, `followed` ASC, `follower` ASC, `muted` ASC, `friend` ASC, `in_progress` ASC),
-  INDEX `index5` (`account_id` ASC, `by` ASC, `follower` ASC, `followed` ASC, `friend` ASC),
+  INDEX `index4` (`account_id` ASC, `by` ASC, `follow` ASC, `follower` ASC, `mute` ASC, `friend` ASC, `in_progress` ASC),
+  INDEX `index5` (`account_id` ASC, `by` ASC, `follower` ASC, `follow` ASC, `friend` ASC),
   CONSTRAINT `fk_account_status_accounts1`
     FOREIGN KEY (`account_id`)
     REFERENCES `cactacea`.`accounts` (`id`)

@@ -117,7 +117,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
-    val status = AccountStatusType.singedUp
+    val status = AccountStatusType.normally
 
     val q = quote {
       query[FeedLikes].filter(ff => ff.feedId == lift(feedId) && ff.postedAt < lift(s) &&
@@ -143,7 +143,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
-        || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
+        || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
         || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
         .sortBy({ case (ff, _) => ff.postedAt })(Ord.descNullsLast)
@@ -167,7 +167,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         (query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty) &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
-        || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.followed == true)).nonEmpty))
+        || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
         || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
         .sortBy({ case (ff, _) => ff.postedAt })(Ord.descNullsLast)

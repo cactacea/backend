@@ -26,6 +26,7 @@ class MediumsController @Inject()(s: Swagger) extends BackendController {
 
   postWithDoc("/mediums") { o =>
     o.summary("Post a medium")
+      .tag(tagName)
 
   } { request: Request =>
     mediumsService.create(

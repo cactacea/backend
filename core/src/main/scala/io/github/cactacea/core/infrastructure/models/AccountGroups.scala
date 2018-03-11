@@ -7,7 +7,7 @@ case class AccountGroups(
                           groupId: GroupId,
                           unreadCount: Long,
                           hidden: Boolean,
-                          muted: Boolean,
+                          mute: Boolean,
                           toAccountId: AccountId,
                           joinedAt: Long
                         )

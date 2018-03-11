@@ -50,7 +50,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
           _.joinedAt            -> lift(joinedAt),
           _.toAccountId         -> lift(toAccountId),
           _.hidden              -> false,
-          _.muted               -> false
+          _.mute               -> false
         )
     }
     run(q).map(_ == 1)

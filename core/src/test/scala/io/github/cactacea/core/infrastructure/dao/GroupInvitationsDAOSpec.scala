@@ -272,7 +272,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
     Await.result(groupInvitationsDAO.update(groupInvitationId1, GroupInvitationStatusType.rejected,     sessionAccount.id.toSessionId))
     Await.result(groupInvitationsDAO.update(groupInvitationId2, GroupInvitationStatusType.accepted,     account1.id.toSessionId))
-    Await.result(groupInvitationsDAO.update(groupInvitationId3, GroupInvitationStatusType.noresponsed,  sessionAccount.id.toSessionId))
+    Await.result(groupInvitationsDAO.update(groupInvitationId3, GroupInvitationStatusType.noResponded,  sessionAccount.id.toSessionId))
     Await.result(groupInvitationsDAO.update(groupInvitationId4, GroupInvitationStatusType.rejected,     account1.id.toSessionId))
     Await.result(groupInvitationsDAO.update(groupInvitationId5, GroupInvitationStatusType.accepted,     sessionAccount.id.toSessionId))
 
@@ -284,7 +284,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
     assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected)
     assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted)
-    assert(invitation3.invitationStatus == GroupInvitationStatusType.noresponsed)
+    assert(invitation3.invitationStatus == GroupInvitationStatusType.noResponded)
     assert(invitation4.invitationStatus == GroupInvitationStatusType.rejected)
     assert(invitation5.invitationStatus == GroupInvitationStatusType.accepted)
 
@@ -314,7 +314,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
     val result1 = Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId1, GroupInvitationStatusType.rejected))
     val result2 = Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId2, GroupInvitationStatusType.accepted))
-    val result3 = Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId3, GroupInvitationStatusType.noresponsed))
+    val result3 = Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId3, GroupInvitationStatusType.noResponded))
     val result4 = Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId4, GroupInvitationStatusType.rejected))
     val result5 = Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId5, GroupInvitationStatusType.accepted))
     assert(result1 == true)
@@ -331,7 +331,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
     assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected)
     assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted)
-    assert(invitation3.invitationStatus == GroupInvitationStatusType.noresponsed)
+    assert(invitation3.invitationStatus == GroupInvitationStatusType.noResponded)
     assert(invitation4.invitationStatus == GroupInvitationStatusType.rejected)
     assert(invitation5.invitationStatus == GroupInvitationStatusType.accepted)
 

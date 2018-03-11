@@ -34,7 +34,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
           _.notified        -> false,
-          _.requestStatus   -> lift(FriendRequestStatusType.noresponsed),
+          _.requestStatus   -> lift(FriendRequestStatusType.noResponded),
           _.requestedAt     -> lift(requestedAt)
         )
     }
@@ -47,7 +47,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
       query[FriendRequests]
         .filter(_.accountId     == lift(accountId))
         .filter(_.by            == lift(by))
-        .filter(_.requestStatus == lift(FriendRequestStatusType.noresponsed))
+        .filter(_.requestStatus == lift(FriendRequestStatusType.noResponded))
         .delete
     }
     run(q).map(_ == 1)

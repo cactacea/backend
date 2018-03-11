@@ -99,7 +99,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Relationships].filter(r => r.accountId == lift(accountId) && r.followed  == true && r.followedAt < lift(s))
+      query[Relationships].filter(r => r.accountId == lift(accountId) && r.follow  == true && r.followedAt < lift(s))
         .sortBy(_.followedAt)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))

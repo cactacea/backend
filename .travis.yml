@@ -39,7 +39,7 @@ before_install:
 script:
   - bash ./scripts/travis_db_migrate.sh
   - sbt ++$TRAVIS_SCALA_VERSION
-  - sbt "project core" clean coverage test coverageReport
+  - sbt clean coverage test coverageReport
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

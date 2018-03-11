@@ -61,12 +61,12 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
   }
 
   private def _hasJoinAuthority(g: Groups, r: Option[Relationships], sessionId: SessionId): Future[Boolean] = {
-    val followed = r.fold(false)(_.followed)
+    val follow = r.fold(false)(_.follow)
     val follower = r.fold(false)(_.follower)
     val friend = r.fold(false)(_.friend)
     if (g.by.toSessionId == sessionId) {
       Future.True
-    } else if (g.privacyType == GroupPrivacyType.following && followed) {
+    } else if (g.privacyType == GroupPrivacyType.following && follow) {
       Future.True
     } else if (g.privacyType == GroupPrivacyType.followers && follower) {
       Future.True

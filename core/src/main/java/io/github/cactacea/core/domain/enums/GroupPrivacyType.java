@@ -3,10 +3,10 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum GroupPrivacyType {
-    @JsonProperty("0")everyone((byte)0),
-    @JsonProperty("1") following((byte)1),
-    @JsonProperty("2")followers((byte)2),
-    @JsonProperty("3")friends((byte)3);
+    everyone((byte)0),
+    following((byte)1),
+    followers((byte)2),
+    friends((byte)3);
 
     private byte value;
 

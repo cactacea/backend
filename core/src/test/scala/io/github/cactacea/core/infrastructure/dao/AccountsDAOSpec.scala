@@ -291,7 +291,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     val result = Await.result(accountsDAO.findStatus(sessionAccount.id.toSessionId))
     assert(result.isDefined == true)
     val (accountStatus, signedOutAt) = result.get
-    assert(accountStatus == AccountStatusType.singedUp)
+    assert(accountStatus == AccountStatusType.normally)
     assert(signedOutAt.isEmpty == true)
   }
 

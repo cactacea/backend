@@ -35,7 +35,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId          -> lift(accountId),
           _.by              -> lift(by),
-          _.muted           -> true,
+          _.mute           -> true,
           _.mutedAt         -> lift(mutedAt)
         )
     }
@@ -50,7 +50,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.muted           -> true,
+          _.mute           -> true,
           _.mutedAt         -> lift(mutedAt)
         )
     }
@@ -64,7 +64,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.muted           -> false
+          _.mute           -> false
         )
     }
     run(q).map(_ == 1)
@@ -76,7 +76,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
-        .filter(_.muted     == true)
+        .filter(_.mute     == true)
         .size
     }
     run(q).map(_ == 1)
@@ -90,7 +90,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Relationships].filter(r => r.by == lift(accountId) && r.muted  == true && r.mutedAt < lift(s))
+      query[Relationships].filter(r => r.by == lift(accountId) && r.mute  == true && r.mutedAt < lift(s))
         .sortBy(_.mutedAt)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))

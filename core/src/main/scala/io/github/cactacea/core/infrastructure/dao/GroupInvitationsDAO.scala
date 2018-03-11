@@ -35,7 +35,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
           _.by            -> lift(by),
           _.groupId       -> lift(groupId),
           _.notified      -> false,
-          _.invitationStatus  -> lift(GroupInvitationStatusType.noresponsed),
+          _.invitationStatus  -> lift(GroupInvitationStatusType.noResponded),
           _.invitedAt     -> lift(invitedAt)
         )
     }
@@ -95,7 +95,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[GroupInvitations]
         .filter(_.groupId       == lift(groupId))
-        .filter(_.invitationStatus  == lift(GroupInvitationStatusType.noresponsed))
+        .filter(_.invitationStatus  == lift(GroupInvitationStatusType.noResponded))
         .delete
     }
     run(q).map(_ >= 0)
@@ -121,7 +121,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[GroupInvitations]
         .filter(group_invitations => group_invitations.accountId        == lift(accountId))
-        .filter(group_invitations => group_invitations.invitationStatus  == lift(GroupInvitationStatusType.noresponsed))
+        .filter(group_invitations => group_invitations.invitationStatus  == lift(GroupInvitationStatusType.noResponded))
         .filter(group_invitations => (
           query[Groups]
             .filter(_.id          == group_invitations.groupId)

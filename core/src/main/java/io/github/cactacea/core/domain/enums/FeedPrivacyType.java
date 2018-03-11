@@ -3,10 +3,10 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum FeedPrivacyType {
-    @JsonProperty("0")everyone((byte)0),
-    @JsonProperty("1")followers((byte)1),
-    @JsonProperty("2")friends((byte)2),
-    @JsonProperty("3")self((byte)3);
+    everyone((byte)0),
+    followers((byte)1),
+    friends((byte)2),
+    self((byte)3);
 
     private byte value;
 

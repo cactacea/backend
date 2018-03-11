@@ -31,7 +31,7 @@ object FactoryHelper {
       displayName = "displayname",
       password = "password",
       position = 0L,
-      accountStatus = AccountStatusType.singedUp,
+      accountStatus = AccountStatusType.normally,
       followCount = 0L,
       followerCount = 0L,
       friendCount = 0L,

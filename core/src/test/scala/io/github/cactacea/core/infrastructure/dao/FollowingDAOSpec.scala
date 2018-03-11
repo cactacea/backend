@@ -22,8 +22,8 @@ class FollowingDAOSpec extends DAOSpec {
     Await.result(followingDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
     val result1 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result2 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.followed == true)
-    assert(result2.followed == true)
+    assert(result1.follow == true)
+    assert(result2.follow == true)
 
     assert(Await.result(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 1)
     assert(Await.result(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 1)
@@ -40,8 +40,8 @@ class FollowingDAOSpec extends DAOSpec {
     Await.result(followingDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
     val result3 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result4 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result3.followed == true)
-    assert(result4.followed == true)
+    assert(result3.follow == true)
+    assert(result4.follow == true)
 
     assert(Await.result(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 1)
     assert(Await.result(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 1)
@@ -61,8 +61,8 @@ class FollowingDAOSpec extends DAOSpec {
     Await.result(followingDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
     val result1 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result2 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.followed == false)
-    assert(result2.followed == false)
+    assert(result1.follow == false)
+    assert(result2.follow == false)
 
   }
 

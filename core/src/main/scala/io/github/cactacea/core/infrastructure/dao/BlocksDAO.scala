@@ -88,7 +88,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
     val by = sessionId.toAccountId
-    val status = AccountStatusType.singedUp
+    val status = AccountStatusType.normally
 
     val q = quote {
       query[Blocks].filter(b => b.by == lift(by) && b.blocked == true && b.blockedAt < lift(s))

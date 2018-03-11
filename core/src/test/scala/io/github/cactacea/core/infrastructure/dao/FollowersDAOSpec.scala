@@ -53,8 +53,8 @@ class FollowersDAOSpec extends DAOSpec {
     Await.result(followersDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
     val result1 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result2 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.followed == false)
-    assert(result2.followed == false)
+    assert(result1.follow == false)
+    assert(result2.follow == false)
 
   }
 

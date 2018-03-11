@@ -9,7 +9,6 @@ import io.github.cactacea.core.domain.enums._
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
 import io.github.cactacea.core.infrastructure.results.RelationshipBlocksCount
-import org.joda.time.DateTime
 
 @Singleton
 class AccountsDAO @Inject()(db: DatabaseService) {
@@ -28,7 +27,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   }
 
   private def insert(id: AccountId, accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[Long] = {
-    val accountStatus = AccountStatusType.singedUp
+    val accountStatus = AccountStatusType.normally
     val hashedPassword = createHashedPassword(password)
     val position = timeService.nanoTime()
     val q = quote {
@@ -125,7 +124,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   def exist(accountId: AccountId, sessionId: SessionId, ignoreBlockedUser: Boolean = true): Future[Boolean] = {
     if (ignoreBlockedUser) {
       val by = sessionId.toAccountId
-      val status = AccountStatusType.singedUp
+      val status = AccountStatusType.normally
       val q = quote {
         query[Accounts]
           .filter(_.id == lift(accountId))
@@ -139,7 +138,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
       }
       run(q).map(_ == 1)
     } else {
-      val status = AccountStatusType.singedUp
+      val status = AccountStatusType.normally
       val q = quote {
         query[Accounts]
           .filter(_.id == lift(accountId))
@@ -153,7 +152,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   def exist(accountIds: List[AccountId], sessionId: SessionId): Future[Boolean] = {
 
     val by = sessionId.toAccountId
-    val status = AccountStatusType.singedUp
+    val status = AccountStatusType.normally
     val q = quote {
       query[Accounts]
         .filter(u => liftQuery(accountIds).contains(u.id))
@@ -200,7 +199,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   def find(accountId: AccountId, sessionId: SessionId): Future[Option[(Accounts, Option[Relationships])]] = {
 
     val by = sessionId.toAccountId
-    val status = AccountStatusType.singedUp
+    val status = AccountStatusType.normally
     val q = quote {
       for {
         a <- query[Accounts]
@@ -246,7 +245,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
     val o = offset.getOrElse(0)
 
     val un = displayName.fold("") { _ + "%" }
-    val status = AccountStatusType.singedUp
+    val status = AccountStatusType.normally
 
     val q2 = quote {
       query[Accounts].filter({a => a.id != lift(by) && ((a.accountName like lift(un)) || (a.displayName like lift(un)) || (lift(un) == "")) &&
@@ -316,7 +315,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   def signOut(sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
-    val signedOutAt: Option[Long] = Some(System.nanoTime())
+    val signedOutAt: Option[Long] = Some(System.currentTimeMillis)
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))

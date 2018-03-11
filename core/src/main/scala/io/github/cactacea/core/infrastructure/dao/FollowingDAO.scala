@@ -65,7 +65,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
-          _.followed        -> true,
+          _.follow        -> true,
           _.followedAt      -> lift(followedAt)
         )
     }
@@ -80,7 +80,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.followed        -> true,
+          _.follow        -> true,
           _.followedAt      -> lift(followedAt)
         )
     }
@@ -94,7 +94,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.followed          -> false
+          _.follow          -> false
         )
     }
     run(q).map(_ == 1)
@@ -106,7 +106,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))
         .filter(_.by           == lift(by))
-        .filter(_.followed     == true)
+        .filter(_.follow     == true)
         .size
     }
     run(q).map(_ == 1)
@@ -120,7 +120,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Relationships].filter(r => r.by == lift(accountId) && r.followed  == true && r.followedAt < lift(s))
+      query[Relationships].filter(r => r.by == lift(accountId) && r.follow  == true && r.followedAt < lift(s))
         .sortBy(_.followedAt)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
