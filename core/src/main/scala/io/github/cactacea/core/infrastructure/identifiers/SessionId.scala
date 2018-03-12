@@ -1,8 +1,6 @@
 package io.github.cactacea.core.infrastructure.identifiers
 
-import com.twitter.inject.domain.WrappedValue
-
-case class SessionId(val value: Long) extends WrappedValue[Long] {
+case class SessionId(val value: Long) extends AnyVal {
   def toAccountId: AccountId = {
     AccountId(value)
   }
