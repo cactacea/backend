@@ -29,7 +29,7 @@ class CommentsDAOSpec extends DAOSpec {
     val commentId4 = Await.result(commentsDAO.create(feedId, "4" * 100, sessionAccount1.id.toSessionId))
     val commentId5 = Await.result(commentsDAO.create(feedId, "5" * 100, sessionAccount2.id.toSessionId))
 
-    val result1 = Await.result(commentsDAO.findAll(feedId, Some(Long.MaxValue), Some(4), sessionAccount1.id.toSessionId))
+    val result1 = Await.result(commentsDAO.findAll(feedId, Some(-1L), Some(4), sessionAccount1.id.toSessionId))
     assert(result1.size == 4)
     val comment1 = result1(0)._1
     val comment2 = result1(1)._1
@@ -40,7 +40,7 @@ class CommentsDAOSpec extends DAOSpec {
     assert((comment3.id, comment3.feedId, comment3.by, comment3.message) == (commentId3, feedId, sessionAccount2.id, "3" * 100))
     assert((comment4.id, comment4.feedId, comment4.by, comment4.message) == (commentId2, feedId, sessionAccount1.id, "2" * 100))
 
-    val result2 = Await.result(commentsDAO.findAll(feedId, Some(comment4.postedAt), Some(4), sessionAccount1.id.toSessionId))
+    val result2 = Await.result(commentsDAO.findAll(feedId, Some(comment4.id.value), Some(4), sessionAccount1.id.toSessionId))
     assert(result2.size == 1)
     val comment5 = result2(0)._1
     assert((comment5.id, comment5.feedId, comment5.by, comment5.message) == (commentId1, feedId, sessionAccount2.id, "1" * 100))
@@ -160,7 +160,7 @@ class CommentsDAOSpec extends DAOSpec {
     val commentId7 = Await.result(commentsDAO.create(feedId, "7" * 100, sessionAccount2.id.toSessionId))
     val commentId8 = Await.result(commentsDAO.create(feedId, "8" * 100, sessionAccount1.id.toSessionId))
 
-    val result1 = Await.result(commentsDAO.findAll(feedId, Some(Long.MaxValue), Some(3), sessionAccount1.id.toSessionId))
+    val result1 = Await.result(commentsDAO.findAll(feedId, Some(-1L), Some(3), sessionAccount1.id.toSessionId))
     assert(result1.size == 3)
     val comment1 = result1(0)._1
     val comment2 = result1(1)._1
@@ -169,7 +169,7 @@ class CommentsDAOSpec extends DAOSpec {
     assert(comment2.id == commentId7)
     assert(comment3.id == commentId6)
 
-    val result2 = Await.result(commentsDAO.findAll(feedId, Some(comment3.postedAt), Some(3), sessionAccount1.id.toSessionId))
+    val result2 = Await.result(commentsDAO.findAll(feedId, Some(comment3.id.value), Some(3), sessionAccount1.id.toSessionId))
     assert(result2.size == 3)
     val comment4 = result2(0)._1
     val comment5 = result2(1)._1
@@ -178,14 +178,14 @@ class CommentsDAOSpec extends DAOSpec {
     assert(comment5.id == commentId4)
     assert(comment6.id == commentId3)
 
-    val result3 = Await.result(commentsDAO.findAll(feedId, Some(comment6.postedAt), Some(3), sessionAccount1.id.toSessionId))
+    val result3 = Await.result(commentsDAO.findAll(feedId, Some(comment6.id.value), Some(3), sessionAccount1.id.toSessionId))
     assert(result3.size == 2)
     val comment7 = result3(0)._1
     val comment8 = result3(1)._1
     assert(comment7.id == commentId2)
     assert(comment8.id == commentId1)
 
-    val result4 = Await.result(commentsDAO.findAll(FeedId(0L), Some(Long.MaxValue), Some(3), sessionAccount1.id.toSessionId))
+    val result4 = Await.result(commentsDAO.findAll(FeedId(0L), Some(-1L), Some(3), sessionAccount1.id.toSessionId))
     assert(result4.size == 0)
   }
 

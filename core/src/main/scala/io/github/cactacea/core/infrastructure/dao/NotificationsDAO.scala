@@ -71,16 +71,16 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Notifications, Accounts, Option[Relationships])]] = {
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val accountId = sessionId.toAccountId
     val q = quote {
-      query[Notifications].filter(n => n.accountId == lift(accountId) && n.notifiedAt < lift(s) &&
+      query[Notifications].filter(n => n.accountId == lift(accountId) && (infix"n.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
         query[Blocks].filter(b => b.accountId == n.by && b.by == lift(accountId) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(accountId)})
-        .sortBy(_._1._1.notifiedAt)(Ord.descNullsLast)
+        .sortBy(_._1._1.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }

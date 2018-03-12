@@ -2,6 +2,8 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
+import io.swagger.models.Swagger
+
 import io.github.cactacea.backend.models.requests.message._
 import io.github.cactacea.backend.models.responses.MessageCreated
 import io.github.cactacea.backend.swagger.BackendController
@@ -10,7 +12,6 @@ import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotJoined, GroupNotFound, MediumNotFound}
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
-import io.swagger.models.Swagger
 
 @Singleton
 class MessagesController @Inject()(s: Swagger) extends BackendController {

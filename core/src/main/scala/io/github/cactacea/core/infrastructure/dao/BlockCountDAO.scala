@@ -20,17 +20,17 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
                        select
                        a.`by` id,
                        count(a.follower = true and a.account_id = b.account_id) follower_count,
-                       count(a.followed = true and a.`by` = b.account_id) follow_count,
+                       count(a.follow = true and a.`by` = b.account_id) follow_count,
                        count(a.friend = true and  a.`by` = b.account_id) friend_count
                        from
                        relationships a,
                        blocks b
                        where (a.account_id = b.account_id or a.`by` = b.account_id)
-                       and (a.follower = true or a.followed = true or a.friend = true)
+                       and (a.follower = true or a.follow = true or a.friend = true)
                        and a.`by` in (${lift(ids)})
                        and b.`by` = ${lift(sessionId)}
                        group by
-                       id
+                       a.`by`
       """.as[Query[RelationshipBlocksCount]]
     }
     run(q)

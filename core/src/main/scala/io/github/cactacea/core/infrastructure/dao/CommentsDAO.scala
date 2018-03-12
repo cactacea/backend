@@ -175,16 +175,16 @@ class CommentsDAO @Inject()(db: DatabaseService) {
 
   def findAll(feedId: FeedId, since: Option[Long], count: Option[Int], sessionId: SessionId): Future[List[(Comments, Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Comments].filter(c => c.feedId == lift(feedId) && c.postedAt < lift(s) &&
+      query[Comments].filter(c => c.feedId == lift(feedId) && (infix"c.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
         query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((c, _), _) => c.postedAt })(Ord.descNullsLast)
+        .sortBy({ case ((c, _), _) => c.id })(Ord.descNullsLast)
         .take(lift(c))
     }
 

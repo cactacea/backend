@@ -2,6 +2,8 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
+import io.swagger.models.Swagger
+
 import io.github.cactacea.backend.models.requests.account.{GetFeeds, GetLikes}
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
@@ -11,7 +13,6 @@ import io.github.cactacea.core.domain.models.Feed
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, FeedAlreadyLiked, FeedNotFound, FeedNotLiked}
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
-import io.swagger.models.Swagger
 
 @Singleton
 class FeedsController  @Inject()(s: Swagger)extends BackendController {

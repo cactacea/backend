@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -13,16 +14,18 @@ class FollowingDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     (for {
+      m <- identifyService.generate()
       _ <- _updateFollowCount(sessionId)
-      r <- _updateFollow(accountId, sessionId)
-    } yield (r)).flatMap(_ match {
-      case true =>
+      r <- _updateFollow(accountId, m, sessionId)
+    } yield ((m, r))).flatMap(_ match {
+      case (_, true) =>
         Future.True
-      case false =>
-        _insertFollow(accountId, sessionId)
+      case (m, false) =>
+        _insertFollow(accountId, m, sessionId)
     })
   }
 
@@ -57,30 +60,28 @@ class FollowingDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  private def _insertFollow(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertFollow(accountId: AccountId, followedAt: Long, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val followedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .insert(
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
-          _.followed        -> true,
+          _.follow        -> true,
           _.followedAt      -> lift(followedAt)
         )
     }
     run(q).map(_ == 1)
   }
 
-  private def _updateFollow(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _updateFollow(accountId: AccountId, followedAt: Long, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val followedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.followed        -> true,
+          _.follow        -> true,
           _.followedAt      -> lift(followedAt)
         )
     }
@@ -94,7 +95,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.followed          -> false
+          _.follow          -> false
         )
     }
     run(q).map(_ == 1)
@@ -106,28 +107,28 @@ class FollowingDAO @Inject()(db: DatabaseService) {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))
         .filter(_.by           == lift(by))
-        .filter(_.followed     == true)
+        .filter(_.follow     == true)
         .size
     }
     run(q).map(_ == 1)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
 
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Relationships].filter(r => r.by == lift(accountId) && r.followed  == true && r.followedAt < lift(s))
-        .sortBy(_.followedAt)(Ord.descNullsLast)
-        .drop(lift(o))
-        .take(lift(c))
+      query[Relationships].filter(r => r.by == lift(accountId) && r.follow  == true && (r.followedAt < lift(s) || lift(s) == -1L) )
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .sortBy({ case ((f, _), _) => f.followedAt})(Ord.descNullsLast)
+        .drop(lift(o))
+        .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a.copy(position = f.followedAt), r)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)}))
 
   }
 

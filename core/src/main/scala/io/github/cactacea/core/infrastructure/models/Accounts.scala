@@ -2,7 +2,6 @@ package io.github.cactacea.core.infrastructure.models
 
 import io.github.cactacea.core.domain.enums.AccountStatusType
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId}
-import org.joda.time.DateTime
 
 case class Accounts(
                      id: AccountId,
@@ -18,7 +17,6 @@ case class Accounts(
                      birthday: Option[Long],
                      location: Option[String],
                      bio: Option[String],
-                     position: Long,
                      accountStatus: AccountStatusType,
                      signedOutAt: Option[Long]
                  ) {

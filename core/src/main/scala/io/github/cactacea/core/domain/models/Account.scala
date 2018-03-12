@@ -2,7 +2,6 @@ package io.github.cactacea.core.domain.models
 
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
 import io.github.cactacea.core.infrastructure.models.{AccountGroups, Accounts, Relationships}
-import org.joda.time.DateTime
 
 case class Account(id: AccountId,
                    accountName: String,
@@ -10,12 +9,12 @@ case class Account(id: AccountId,
                    profileImageUrl: Option[String],
                    friend: Boolean,
                    friendRequestInProgress: Boolean,
-                   followed: Boolean,
+                   follow: Boolean,
                    follower: Boolean,
                    followCount: Option[Long],
                    followerCount: Option[Long],
                    friendCount: Option[Long],
-                   muted: Boolean,
+                   mute: Boolean,
                    web: Option[String],
                    birthday: Option[Long],
                    location: Option[String],
@@ -26,19 +25,27 @@ case class Account(id: AccountId,
 
 object Account {
 
-  def apply(a: Accounts, r: Option[Relationships]): Account = {
-    apply(a, r, None)
+  def apply(a: Accounts, r: Option[Relationships], next: Long): Account = {
+    apply(a, r, None, next)
   }
 
   def apply(a: Accounts, r: Option[Relationships], ag: AccountGroups): Account = {
-    apply(a, r, Some(ag))
+    apply(a, r, Some(ag), ag.id.value)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships]): Account = {
+    apply(a, None, None, a.id.value)
   }
 
   def apply(a: Accounts): Account = {
-    apply(a, None, None)
+    apply(a, None, None, a.id.value)
   }
 
-  def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups]): Account = {
+  def apply(a: Accounts, next: Long): Account = {
+    apply(a, None, None, next)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Long): Account = {
     Account(
       a.id,
       a.accountName,
@@ -46,18 +53,18 @@ object Account {
       a.profileImageUrl,
       r.map(_.friend).getOrElse(false),
       r.map(_.inProgress).getOrElse(false),
-      r.map(_.followed).getOrElse(false),
+      r.map(_.follow).getOrElse(false),
       r.map(_.follower).getOrElse(false),
       Some(a.followCount),
       Some(a.followerCount),
       Some(a.friendCount),
-      r.map(_.muted).getOrElse(false),
+      r.map(_.mute).getOrElse(false),
       a.web,
       a.birthday,
       a.location,
       a.bio,
       ag.map(_.joinedAt),
-      a.position
+      next
     )
   }  
 }

@@ -51,7 +51,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
       case true =>
         accountsDAO.find(req.username, req.password).map(_ match {
           case Some(a) =>
-            if (a.accountStatus == AccountStatusType.singedUp) {
+            if (a.accountStatus == AccountStatusType.normally) {
               if (req.responseType == "code") {
                 val code = oAuthTokenGenerator.generateCode()
                 val created = AccessCodeCreated(code, None)

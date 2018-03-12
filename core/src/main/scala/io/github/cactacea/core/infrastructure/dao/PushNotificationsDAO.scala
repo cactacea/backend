@@ -16,13 +16,13 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
   def findByFeed(id: FeedId): Future[List[PushNotifications]] = {
     val q = quote {
       query[AccountFeeds].filter(af => af.feedId == lift(id) && af.notified == false)
-        .filter(af => query[Relationships].filter(r => r.accountId == af.by && r.by == af.accountId && r.muted == true).isEmpty)
+        .filter(af => query[Relationships].filter(r => r.accountId == af.by && r.by == af.accountId && r.mute == true).isEmpty)
         .filter(af => query[PushNotificationSettings].filter(p => p.accountId == af.accountId && p.followerFeed == true).nonEmpty)
         .leftJoin(query[Relationships]).on((af, r) => r.accountId == af.by && r.by == af.accountId)
         .join(query[Feeds]).on({ case ((af, _), f) =>
         f.id == af.feedId &&
           ((f.privacyType == lift(FeedPrivacyType.everyone))
-            || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.followed == true)).nonEmpty))
+            || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.follow == true)).nonEmpty))
             || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.friend == true)).nonEmpty))
             || (f.by == af.accountId))})
         .join(query[Accounts]).on({ case (((af, _), _), a) =>  a.id == af.by})
@@ -76,7 +76,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[AccountMessages]
         .filter(am => am.messageId == lift(id) && am.notified == false)
-        .filter(am => query[Relationships].filter(r => r.accountId == am.by && r.by == am.accountId && r.muted == true).isEmpty)
+        .filter(am => query[Relationships].filter(r => r.accountId == am.by && r.by == am.accountId && r.mute == true).isEmpty)
         .join(query[Groups]).on((am, g) => g.id == am.groupId)
         .join(query[PushNotificationSettings]).on({ case ((am, g), p) => p.accountId == am.accountId &&
         ((p.directMessage == true && g.directMessage == true) || (p.groupMessage == true && g.directMessage == false))})
@@ -101,7 +101,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
       val q = quote {
         query[Comments].filter(c => c.id == lift(id) && c.notified == false)
           .join(query[Comments]).on((c, f) => f.replyId.forall(_ == c.id)
-          && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.muted == true).isEmpty
+          && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.mute == true).isEmpty
           && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.feedComment == true).nonEmpty)
           .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
           .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
@@ -120,7 +120,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
       val q = quote {
         query[Comments].filter(c => c.id == lift(id) && c.notified == false)
           .join(query[Feeds]).on((c, f) => c.feedId == f.id
-          && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.muted == true).isEmpty
+          && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.mute == true).isEmpty
           && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.feedComment == true).nonEmpty)
           .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
           .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})

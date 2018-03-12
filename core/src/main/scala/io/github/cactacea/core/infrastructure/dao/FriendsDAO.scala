@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -13,16 +14,18 @@ class FriendsDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     (for {
+      f <- identifyService.generate()
       _ <- _updateFriendCount(sessionId)
-      r <- _updateFriend(accountId, sessionId)
-    } yield (r)).flatMap(_ match {
-      case true =>
+      r <- _updateFriend(accountId, f, sessionId)
+    } yield ((f, r))).flatMap(_ match {
+      case (_ , true) =>
         Future.True
-      case false =>
-        _insertFriend(accountId, sessionId)
+      case (f, false)=>
+        _insertFriend(accountId, f, sessionId)
     })
   }
 
@@ -57,31 +60,29 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  private def _insertFriend(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertFriend(accountId: AccountId, friendedAt: Long, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val friendedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.friend          -> true,
+          _.friend            -> true,
           _.friendedAt        -> lift(friendedAt)
         )
     }
     run(q).map(_ == 1)
   }
 
-  private def _updateFriend(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _updateFriend(accountId: AccountId, friendedAt: Long, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val friendedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
           _.friend          -> true,
-          _.friendedAt        -> lift(friendedAt)
+          _.friendedAt      -> lift(friendedAt)
         )
     }
     run(q).map(_ == 1)
@@ -106,28 +107,28 @@ class FriendsDAO @Inject()(db: DatabaseService) {
       query[Relationships]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
-        .filter(_.friend    == true)
+        .filter(_.friend      == true)
         .size
     }
     run(q).map(_ == 1)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships])]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
 
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Relationships].filter(r => r.by == lift(accountId) && r.friend  == true && r.friendedAt < lift(s))
-        .sortBy(_.friendedAt)(Ord.descNullsLast)
-        .drop(lift(o))
-        .take(lift(c))
+      query[Relationships].filter(r => r.by == lift(accountId) && r.friend  == true && (r.friendedAt < lift(s) || lift(s) == -1L) )
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .sortBy({ case ((f, _), _) => f.friendedAt})(Ord.descNullsLast)
+        .drop(lift(o))
+        .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a.copy(position = f.friendedAt), r)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.friendedAt)}))
 
   }
 

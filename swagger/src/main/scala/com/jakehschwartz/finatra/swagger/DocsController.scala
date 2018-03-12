@@ -58,8 +58,8 @@ class DocsController @Inject()(swagger: Swagger,
                   .ok
                   .body(body)
                   .header("ETag", eTagName)
-                  .header("Expires", Message.httpDateFormat(new Date(System.currentTimeMillis() + defaultExpireTimeMillis)))
-                  .header("Last-Modified",  Message.httpDateFormat(new Date(System.currentTimeMillis())))
+                  .header("Expires", Message.httpDateFormat(new Date(System.currentTimeMillis + defaultExpireTimeMillis)))
+                  .header("Last-Modified",  Message.httpDateFormat(new Date(System.currentTimeMillis)))
                   .header("Cache-Control", s"max-age=${defaultExpireTimeMillis / 1000}, must-revalidate")
                   .contentType(getContentType(filename))
               } finally {

@@ -3,33 +3,22 @@ package io.github.cactacea.backend.helpers
 import com.google.inject.Inject
 import com.twitter.finagle.http.Response
 import com.twitter.finatra.http.EmbeddedHttpServer
+import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.BackendServer
 import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.components.modules.{DefaultConfigModule, _}
-import io.github.cactacea.core.domain.enums.FeedPrivacyType
-
-import scala.util.parsing.json.{JSONArray, JSONObject}
 
 class ServerSpec extends FeatureTest {
 
   @Inject private var configService: ConfigService = _
+  @Inject private var objectMapper: FinatraObjectMapper = _
 
   override val server = new EmbeddedHttpServer(
     twitterServer = new BackendServer
   )
-
-  override protected def beforeAll(): Unit = {
-    super.beforeAll()
-    DatabaseHelper.initialize()
-  }
-
-  override protected def afterAll() = {
-    super.afterAll()
-    DatabaseHelper.initialize()
-  }
 
   override val injector =
     TestInjector(
@@ -52,24 +41,48 @@ class ServerSpec extends FeatureTest {
     ).create
 
 
-  def signUp(accountName: String, displayName: String, password: String, udid: String) : Response = {
+
+
+  def signOut(accessToken: String) : Response = {
+    delete("/session", accessToken)
+  }
+
+
+  def post(path: String, postBody: String, accessToken: String): Response = {
+    server.httpPost(
+      path = path,
+      headers = Map(
+        "X-API-KEY" -> configService.apiKeys.head._2,
+        "X-AUTHORIZATION" -> accessToken
+      ),
+      postBody = postBody
+    )
+  }
+
+  def delete(path: String, accessToken: String): Response = {
+    server.httpDelete(
+      path = path,
+      headers = Map(
+        "X-API-KEY" -> configService.apiKeys.head._2,
+        "X-AUTHORIZATION" -> accessToken
+      )
+    )
+  }
+
+  def post(path: String, postBody: String) : Response = {
     server.httpPost(
       path = "/sessions",
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "User-Agent" -> "ios"
       ),
-      postBody = JSONObject(Map(
-        "account_name" -> accountName,
-        "display_name" -> displayName,
-        "password" -> password,
-        "udid" -> udid)).toString()
+      postBody = postBody
     )
   }
 
-  def signIn(accountName: String, password: String, udid: String) : Response = {
+  def get(path: String) : Response = {
     server.httpGet(
-      path = s"/sessions?account_name=$accountName&password=$password&udid=$udid",
+      path = path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "User-Agent" -> "ios"
@@ -77,29 +90,13 @@ class ServerSpec extends FeatureTest {
     )
   }
 
-  def signOut(accessToken: String) : Response = {
-    server.httpDelete(
-      path = "/session",
+  def get(path: String, accessToken: String): Response = {
+    server.httpGet(
+      path = path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken
       )
-    )
-  }
-
-  def postFeed(feedMessage: String, tags: List[String], feedPrivacyType: FeedPrivacyType, accessToken: String) : Response = {
-    server.httpPost(
-      path = "/feeds",
-      headers = Map(
-        "X-API-KEY" -> configService.apiKeys.head._2,
-        "X-AUTHORIZATION" -> accessToken
-      ),
-      postBody = JSONObject(Map(
-        "feed_message" -> feedMessage,
-        "tags" -> JSONArray(tags),
-        "privacy_type" -> 0,
-        "content_warning" -> 0
-      )).toString()
     )
   }
 

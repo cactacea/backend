@@ -169,7 +169,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     val result1 = Await.result(feedLikesDAO.findAccounts(feedId, None, None, Some(3), sessionAccount2.id.toSessionId))
     assert(result1.size == 3)
 
-    val result2 = Await.result(feedLikesDAO.findAccounts(feedId, Some(result1(2)._1.position), None, Some(3), sessionAccount2.id.toSessionId))
+    val result2 = Await.result(feedLikesDAO.findAccounts(feedId, Some(result1(2)._3), None, Some(3), sessionAccount2.id.toSessionId))
     assert(result2.size == 2)
 
   }

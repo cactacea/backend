@@ -105,7 +105,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val userAgent = "userAgent"
     val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent)).account
 
-    val expired = System.nanoTime()
+    val expired = System.currentTimeMillis
     assert(Await.result(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired)) == true)
 
     // Session Timeout

@@ -188,7 +188,7 @@ trait DataHandler[U] {
    */
   def isAccessTokenExpired(accessToken: AccessToken): Boolean = {
     accessToken.expiresIn.exists { expiresIn =>
-      val now = System.currentTimeMillis()
+      val now = System.currentTimeMillis
       accessToken.createdAt.getTime + expiresIn * 1000 <= now
     }
   }

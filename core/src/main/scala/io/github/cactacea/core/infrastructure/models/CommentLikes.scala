@@ -1,9 +1,10 @@
 package io.github.cactacea.core.infrastructure.models
 
-import io.github.cactacea.core.infrastructure.identifiers.{CommentId, AccountId}
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, CommentId, CommentLikeId}
 
 case class CommentLikes(
-                             commentId: CommentId,
-                             by: AccountId,
-                             postedAt: Long
-                           )
+                       id: CommentLikeId,
+                       commentId: CommentId,
+                       by: AccountId,
+                       postedAt: Long
+                       )

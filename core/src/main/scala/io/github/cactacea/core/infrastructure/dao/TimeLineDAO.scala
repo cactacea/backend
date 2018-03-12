@@ -20,7 +20,7 @@ class TimeLineDAO @Inject()(db: DatabaseService) {
     val q = quote {
         infix"""
            insert into timelines (id, account_id, feed_id, `by`, posted_at)
-           select generateId(), `by`, ${lift(feedId)}, account_id, CURRENT_TIMESTAMP from relationships where account_id = ${lift(by)} and friend = true and muted = false
+           select generateId(), `by`, ${lift(feedId)}, account_id, CURRENT_TIMESTAMP from relationships where account_id = ${lift(by)} and friend = true and mute = false
           """.as[Action[Long]]
     }
     run(q).map(_ >= 0)
@@ -47,17 +47,16 @@ class TimeLineDAO @Inject()(db: DatabaseService) {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Timelines, Option[Feeds], Option[List[FeedTags]], Option[List[Mediums]], Option[Accounts], Option[Relationships])]] = {
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
     val by = sessionId.toAccountId
-
     val q = quote {
       for {
         tl <- query[Timelines]
           .filter(_.accountId == lift(by))
-          .filter(_.postedAt < lift(s))
-          .sortBy(_.postedAt)(Ord.descNullsLast)
+          .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+          .sortBy(_.id)(Ord.descNullsLast)
           .take(lift(c))
         t <- query[Feeds]
           .leftJoin(p => tl.feedId.exists(_ == p.id))

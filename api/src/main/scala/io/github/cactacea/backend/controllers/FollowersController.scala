@@ -5,6 +5,7 @@ import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollowing}
 import io.github.cactacea.backend.swagger.BackendController
+
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext

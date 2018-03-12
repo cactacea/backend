@@ -53,8 +53,8 @@ class FollowersDAOSpec extends DAOSpec {
     Await.result(followersDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
     val result1 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result2 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.followed == false)
-    assert(result2.followed == false)
+    assert(result1.follow == false)
+    assert(result2.follow == false)
 
   }
 
@@ -80,7 +80,7 @@ class FollowersDAOSpec extends DAOSpec {
     assert(result1(1)._1.id == sessionAccount5.id)
     assert(result1(2)._1.id == sessionAccount4.id)
 
-    val result2 = Await.result(followersDAO.findAll(followUser.id, Some(result1(2)._1.position), None, Some(3), sessionAccount1.id.toSessionId))
+    val result2 = Await.result(followersDAO.findAll(followUser.id, Some(result1(2)._3), None, Some(3), sessionAccount1.id.toSessionId))
     assert(result2(0)._1.id == sessionAccount3.id)
     assert(result2(1)._1.id == sessionAccount2.id)
     assert(result2(2)._1.id == sessionAccount1.id)

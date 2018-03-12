@@ -3,9 +3,9 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum AccountStatusType {
-    @JsonProperty("0") singedUp((byte)0),
-    @JsonProperty("1") deleted((byte)1),
-    @JsonProperty("2") terminated((byte)2);
+    normally((byte)0),
+    deleted((byte)1),
+    terminated((byte)2);
 
     private byte value;
 

@@ -119,7 +119,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
   }
 
   def findAll(name: Option[String], invitationOnly: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Groups]] = {
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val n = name.fold("")(_ + "%")
@@ -136,8 +136,8 @@ class GroupsDAO @Inject()(db: DatabaseService) {
           .filter(_.by        == lift(by))
           .filter(b => b.blocked == true || b.beingBlocked == true)
           .isEmpty)
-        .filter(_.organizedAt < lift(s))
-        .sortBy(_.organizedAt)(Ord.descNullsLast)
+        .filter(_ => (infix"g.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        .sortBy(_.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }

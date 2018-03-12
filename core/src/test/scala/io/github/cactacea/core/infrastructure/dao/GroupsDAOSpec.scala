@@ -147,7 +147,7 @@ class GroupsDAOSpec extends DAOSpec {
     assert((group3.id, group3.name, group3.invitationOnly, group3.privacyType, group3.authorityType) == (groupId6, Some("New Group Name6"), false, GroupPrivacyType.followers,  GroupAuthorityType.owner))
     assert((group4.id, group4.name, group4.invitationOnly, group4.privacyType, group4.authorityType) == (groupId4, Some("New Group Name4"),  true, GroupPrivacyType.friends,    GroupAuthorityType.member))
 
-    val result2 = Await.result(groupsDAO.findAll(None, None, None, Some(group4.organizedAt), None, Some(4), sessionAccount.id.toSessionId))
+    val result2 = Await.result(groupsDAO.findAll(None, None, None, Some(group4.id.value), None, Some(4), sessionAccount.id.toSessionId))
     assert(result2.size == 3)
     val group5 = result2(0)
     val group6 = result2(1)

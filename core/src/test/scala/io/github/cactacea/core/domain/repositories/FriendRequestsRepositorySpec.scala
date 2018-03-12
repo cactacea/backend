@@ -126,7 +126,6 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val requests1 = Await.result(friendRequestsRepository.findAll(None, None, Some(3), true, sessionUser.id.toSessionId))
     assert(requests1.size == 3)
     assert(requests1(0).account.id == requestingUser5.id)
-    assert(requests1(0).account.id == requestingUser5.id)
     assert(requests1(1).account.id == requestingUser4.id)
     assert(requests1(2).account.id == requestingUser3.id)
 

@@ -10,7 +10,6 @@ import io.github.cactacea.core.infrastructure.models.Accounts
 import io.github.cactacea.core.util.exceptions.CactaceaException
 import io.github.cactacea.core.util.responses.CactaceaError._
 import io.github.cactacea.core.util.tokens.AuthTokenGenerator
-import org.joda.time.DateTime
 
 @Singleton
 class SessionsRepository {

@@ -59,7 +59,7 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
     assert(groupInvitation.get.groupId == groupId)
     assert(groupInvitation.get.accountId == user2.id)
     assert(groupInvitation.get.by == sessionUser.id)
-    assert(groupInvitation.get.invitationStatus == GroupInvitationStatusType.noresponsed)
+    assert(groupInvitation.get.invitationStatus == GroupInvitationStatusType.noResponded)
 
     assert(intercept[CactaceaException] {
       Await.result(groupInvitationsRepository.create(AccountId(0L), groupId, sessionUser.id.toSessionId))

@@ -1,10 +1,8 @@
 package io.github.cactacea.core.domain.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public enum MediumType {
-    @JsonProperty("0")image((byte)0),
-    @JsonProperty("1")movie((byte)1);
+    image((byte)0),
+    movie((byte)1);
 
     private byte value;
 

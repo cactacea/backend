@@ -18,10 +18,10 @@ object FriendRequest {
     val account = Account(a, r)
     FriendRequest(
       id            = f.id,
-      account          = account,
+      account       = account,
       requestStatus = f.requestStatus,
       requestedAt   = f.requestedAt,
-      next          = f.requestedAt
+      next          = f.id.value
     )
   }
 

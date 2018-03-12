@@ -91,22 +91,22 @@ class FollowersDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
 
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Relationships].filter(r => r.accountId == lift(accountId) && r.followed  == true && r.followedAt < lift(s))
-        .sortBy(_.followedAt)(Ord.descNullsLast)
-        .drop(lift(o))
-        .take(lift(c))
+      query[Relationships].filter(r => r.accountId == lift(accountId) && r.follow  == true && (r.followedAt < lift(s) || lift(s) == -1L) )
         .join(query[Accounts]).on((r, a) => a.id == r.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .sortBy({ case ((f, _), _) => f.followedAt})(Ord.descNullsLast)
+        .drop(lift(o))
+        .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a.copy(position = f.followedAt), r)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)}))
 
   }
 

@@ -2,6 +2,7 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
+import io.swagger.models.Swagger
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
 import io.github.cactacea.backend.swagger.BackendController
@@ -10,7 +11,6 @@ import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
-import io.swagger.models.Swagger
 
 @Singleton
 class BlocksController @Inject()(s: Swagger) extends BackendController {

@@ -92,7 +92,7 @@ class CommentsRepositorySpec extends RepositorySpec {
     assert(commentId5 == comment1.id)
     assert(commentId4 == comment2.id)
     assert(commentId3 == comment3.id)
-    val comments2 = Await.result(commentsRepository.findAll(feedId, Some(comment3.postedAt), Some(3), session.id.toSessionId))
+    val comments2 = Await.result(commentsRepository.findAll(feedId, Some(comment3.next), Some(3), session.id.toSessionId))
     val comment4 = comments2(0)
     val comment5 = comments2(1)
     assert(commentId2 == comment4.id)

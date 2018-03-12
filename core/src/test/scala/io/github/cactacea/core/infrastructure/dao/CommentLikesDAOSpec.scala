@@ -147,7 +147,7 @@ class CommentLikesDAOSpec extends DAOSpec {
     Await.result(commentLikesDAO.create(commentId, sessionAccount4.id.toSessionId))
     Await.result(commentLikesDAO.create(commentId, sessionAccount5.id.toSessionId))
 
-    val result = Await.result(commentLikesDAO.findAll(commentId, Some(Long.MaxValue), None, Some(4), sessionAccount2.id.toSessionId))
+    val result = Await.result(commentLikesDAO.findAll(commentId, Some(-1L), None, Some(4), sessionAccount2.id.toSessionId))
     assert(result.size == 4)
 
   }

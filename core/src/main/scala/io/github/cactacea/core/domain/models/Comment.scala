@@ -12,7 +12,8 @@ case class Comment(
                     likeCount: Long,
                     contentWarning: Boolean,
                     contentDeleted: Boolean,
-                    postedAt: Long)
+                    postedAt: Long,
+                    next: Long)
 
 object Comment {
 
@@ -25,10 +26,11 @@ object Comment {
           replyId         = c.replyId,
           message         = "",
           account         = account,
-          likeCount   = 0L,
+          likeCount       = 0L,
           contentWarning  = false,
-          contentDeleted = true,
-          postedAt        = c.postedAt
+          contentDeleted  = true,
+          postedAt        = c.postedAt,
+          next            = c.id.value
         )
       case _ => {
         Comment(
@@ -36,10 +38,11 @@ object Comment {
           replyId         = c.replyId,
           message         = c.message,
           account         = account,
-          likeCount   = c.likeCount,
+          likeCount       = c.likeCount,
           contentWarning  = c.contentWarning,
-          contentDeleted = false,
-          postedAt        = c.postedAt
+          contentDeleted  = false,
+          postedAt        = c.postedAt,
+          next            = c.id.value
         )
       }
     }

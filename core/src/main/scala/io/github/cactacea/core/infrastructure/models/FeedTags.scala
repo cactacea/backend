@@ -5,5 +5,5 @@ import io.github.cactacea.core.infrastructure.identifiers.{FeedId}
 case class FeedTags(
                      feedId: FeedId,
                      name: String,
-                     registerAt: Long
+                     orderNo: Long
                    )

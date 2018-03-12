@@ -265,7 +265,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     assert(resultAccount2.id == account4.id)
     assert(resultAccount3.id == account3.id)
 
-    val result16 = Await.result(accountsDAO.findAll(None, Some(resultAccount3.position), None, Some(3), sessionAccount.id.toSessionId))
+    val result16 = Await.result(accountsDAO.findAll(None, Some(resultAccount3.id.value), None, Some(3), sessionAccount.id.toSessionId))
     assert(result16.size == 2)
     val resultAccount4 = result16(0)._1
     val resultAccount5 = result16(1)._1
@@ -291,7 +291,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     val result = Await.result(accountsDAO.findStatus(sessionAccount.id.toSessionId))
     assert(result.isDefined == true)
     val (accountStatus, signedOutAt) = result.get
-    assert(accountStatus == AccountStatusType.singedUp)
+    assert(accountStatus == AccountStatusType.normally)
     assert(signedOutAt.isEmpty == true)
   }
 

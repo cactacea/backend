@@ -25,8 +25,8 @@ object CactaceaError {
 
   // 400 Bad Request
 
-  final object AccountAlreadyFollowed           extends BadRequest(40000, "Account already followed.")
-  final object AccountNotFollowed               extends BadRequest(40001, "Account not followed.")
+  final object AccountAlreadyFollowed           extends BadRequest(40000, "Account already follow.")
+  final object AccountNotFollowed               extends BadRequest(40001, "Account not follow.")
   final object AccountAlreadyBlocked            extends BadRequest(40002, "Account already blocked.")
   final object AccountNotBlocked                extends BadRequest(40003, "Account not blocked.")
   final object AccountAlreadyMuted              extends BadRequest(40004, "Account already muted.")

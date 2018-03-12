@@ -1,13 +1,14 @@
 package io.github.cactacea.core.infrastructure.models
 
-import io.github.cactacea.core.infrastructure.identifiers.{GroupId, AccountId}
+import io.github.cactacea.core.infrastructure.identifiers.{AccountGroupId, AccountId, GroupId}
 
 case class AccountGroups(
+                          id: AccountGroupId,
                           accountId: AccountId,
                           groupId: GroupId,
                           unreadCount: Long,
                           hidden: Boolean,
-                          muted: Boolean,
+                          mute: Boolean,
                           toAccountId: AccountId,
                           joinedAt: Long
                         )

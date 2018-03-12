@@ -122,7 +122,7 @@ class TimeLineDAOSpec extends DAOSpec {
 
     val id = Await.result(identifyService.generate().map(TimelineFeedId(_)))
     val by: Option[AccountId] = Some(sessionAccount1.id)
-    val postedAt = System.currentTimeMillis()
+    val postedAt = System.currentTimeMillis
     val accountId = sessionAccount3.id
     val q = quote {
       query[Timelines].insert(

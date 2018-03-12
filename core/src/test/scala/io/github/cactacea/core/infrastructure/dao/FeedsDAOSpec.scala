@@ -744,7 +744,7 @@ class FeedsDAOSpec extends DAOSpec {
     assert((sessionMediums2.size, sessionMediums2.map(_.id)) == (mediums3.size, mediums3))
 
     // find 2 page
-    val sessionFeeds2 = Await.result(feedsDAO.findAll(Some(sessionFeed2.postedAt), None, Some(count1), sessionAccount1.id.toSessionId))
+    val sessionFeeds2 = Await.result(feedsDAO.findAll(Some(sessionFeed2.id.value), None, Some(count1), sessionAccount1.id.toSessionId))
     assert(sessionFeeds2.size == count1)
     val sessionFeed3 = sessionFeeds2(0)._1
     val sessionFeed4 = sessionFeeds2(1)._1

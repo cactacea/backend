@@ -30,11 +30,11 @@ class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Requ
             SessionContext.setUdid("")
             val permission = request.method match {
               case Method.Get =>
-                PermissionType.readOnly
+                PermissionType.basic
               case _ =>
-                PermissionType.readOnly
+                PermissionType.basic
             }
-            scopesService.validate(PermissionType.readOnly, permission).flatMap({ _ =>
+            scopesService.validate(PermissionType.basic, permission).flatMap({ _ =>
               service(request)
             })
           })

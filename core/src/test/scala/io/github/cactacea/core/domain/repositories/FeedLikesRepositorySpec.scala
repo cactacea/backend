@@ -92,7 +92,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
     val feeds1 = Await.result(feedLikesRepository.findAll(None, None, Some(3), user1.id.toSessionId))
     assert(feeds1.size == 3)
     val feed3 = feeds1(2)
-    val feeds2 = Await.result(feedLikesRepository.findAll(Some(feed3.postedAt), None, Some(3), user1.id.toSessionId))
+    val feeds2 = Await.result(feedLikesRepository.findAll(Some(feed3.next), None, Some(3), user1.id.toSessionId))
     assert(feeds2.size == 2)
 
   }
@@ -114,7 +114,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
     val feeds1 = Await.result(feedLikesRepository.findAll(None, None, Some(3), session.id.toSessionId))
     assert(feeds1.size == 3)
     val feed3 = feeds1(2)
-    val feeds2 = Await.result(feedLikesRepository.findAll(Some(feed3.postedAt), None, Some(3), session.id.toSessionId))
+    val feeds2 = Await.result(feedLikesRepository.findAll(Some(feed3.next), None, Some(3), session.id.toSessionId))
     assert(feeds2.size == 2)
 
   }
@@ -140,7 +140,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
     assert(feeds1(2).id == feedId3)
 
     val feed3 = feeds1(2)
-    val feeds2 = Await.result(feedLikesRepository.findAll(user1.id, Some(feed3.postedAt), None, Some(3), session.id.toSessionId))
+    val feeds2 = Await.result(feedLikesRepository.findAll(user1.id, Some(feed3.next), None, Some(3), session.id.toSessionId))
     assert(feeds2.size == 2)
     assert(feeds2(0).id == feedId2)
     assert(feeds2(1).id == feedId1)

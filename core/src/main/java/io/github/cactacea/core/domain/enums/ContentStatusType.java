@@ -3,9 +3,9 @@ package io.github.cactacea.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum ContentStatusType {
-    @JsonProperty("0") unchecked((byte)0),
-    @JsonProperty("1") accepted((byte)1),
-    @JsonProperty("2") rejected((byte)2);
+    unchecked((byte)0),
+    accepted((byte)1),
+    rejected((byte)2);
 
     private byte value;
 

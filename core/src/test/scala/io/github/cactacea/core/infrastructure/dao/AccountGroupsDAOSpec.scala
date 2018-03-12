@@ -23,7 +23,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     assert(result1 == true)
 
-    val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
+    val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.id)(Ord.asc)))
     assert(accountGroups.size == 1)
     val userGroup1 = accountGroups(0)
 
@@ -50,7 +50,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(result3 == true)
     assert(result4 == true)
 
-    val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
+    val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.id)(Ord.asc)))
     assert(accountGroups.size == 4)
     val userGroup1 = accountGroups(0)
     val userGroup2 = accountGroups(1)
@@ -80,19 +80,19 @@ class AccountGroupsDAOSpec extends DAOSpec {
     Await.result(accountGroupsDAO.create(account4.id, groupId))
 
     Await.result(accountGroupsDAO.delete(account1.id, groupId))
-    val result1 = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
+    val result1 = Await.result(db.run(query[AccountGroups].sortBy(_.id)(Ord.asc)))
     assert(result1.size == 3)
 
     Await.result(accountGroupsDAO.delete(account2.id, groupId))
-    val result2 = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
+    val result2 = Await.result(db.run(query[AccountGroups].sortBy(_.id)(Ord.asc)))
     assert(result2.size == 2)
 
     Await.result(accountGroupsDAO.delete(account3.id, groupId))
-    val result3 = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
+    val result3 = Await.result(db.run(query[AccountGroups].sortBy(_.id)(Ord.asc)))
     assert(result3.size == 1)
 
     Await.result(accountGroupsDAO.delete(account4.id, groupId))
-    val result4 = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
+    val result4 = Await.result(db.run(query[AccountGroups].sortBy(_.id)(Ord.asc)))
     assert(result4.size == 0)
 
   }
@@ -114,7 +114,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val result1 = Await.result(accountGroupsDAO.updateUnreadCount(groupId))
     assert(result1 == true)
 
-    val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
+    val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.id)(Ord.asc)))
     assert(accountGroups.size == 4)
     val group1 = accountGroups(0)
     val group2 = accountGroups(1)
@@ -147,7 +147,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(result1 == true)
     assert(result2 == true)
 
-    val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.accountId)(Ord.asc)))
+    val accountGroups = Await.result(db.run(query[AccountGroups].sortBy(_.id)(Ord.asc)))
     assert(accountGroups.size == 4)
     val userGroup1 = accountGroups(0)
     val userGroup2 = accountGroups(1)

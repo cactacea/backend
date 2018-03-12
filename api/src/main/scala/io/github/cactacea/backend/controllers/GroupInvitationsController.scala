@@ -2,6 +2,8 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
+import io.swagger.models.Swagger
+
 import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount, PostInvitationAccounts}
 import io.github.cactacea.backend.models.requests.group.{GetSessionInvitations, PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
@@ -11,7 +13,6 @@ import io.github.cactacea.core.domain.models.GroupInvitation
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.core.util.responses.CactaceaError._
-import io.swagger.models.Swagger
 
 @Singleton
 class GroupInvitationsController @Inject()(s: Swagger) extends BackendController {
