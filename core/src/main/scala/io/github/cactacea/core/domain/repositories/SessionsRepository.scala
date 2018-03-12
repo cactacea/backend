@@ -131,18 +131,6 @@ class SessionsRepository {
         } else if (accountStatusType == AccountStatusType.terminated) {
           Future.exception(CactaceaException(AccountTerminated))
         } else if (signedOutAt.map(_ > expiresIn).getOrElse(false)) {
-          println("**************")
-          println("**************")
-          println("**************")
-          println("**************")
-          println("**************")
-          println("expiresIn " + expiresIn)
-          println("signedOutAt " + signedOutAt.get)
-          println("**************")
-          println("**************")
-          println("**************")
-          println("**************")
-          println("**************")
           Future.exception(CactaceaException(SessionTimeout))
         } else {
           Future.True

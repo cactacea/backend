@@ -73,19 +73,19 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(GroupInvitations, Accounts, Option[Relationships], Groups, Option[Messages], Option[AccountMessages], Option[Accounts], Option[Relationships])]] = {
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && gi.invitedAt < lift(s)})
-        .sortBy(_.invitedAt)(Ord.descNullsLast)
-        .drop(lift(o))
-        .take(lift(c))
+      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (infix"gi.id < ${lift(s)}".as[Boolean] || lift(s) == -1L)})
         .join(query[Groups]).on((gi, g) => g.id == gi.groupId)
         .join(query[Accounts]).on({ case ((gi, g), a) => a.id == gi.by})
         .leftJoin(query[Relationships]).on({ case (((_, g), a), r) => r.accountId == a.id && r.by == lift(by)})
+        .sortBy({ case (((gi, _), _), _) => gi.id })(Ord.descNullsLast)
+        .drop(lift(o))
+        .take(lift(c))
     }
     run(q).map(_.map({case (((gi, g), a), r) => (gi, a, r, g, None, None, None, None)}))
 

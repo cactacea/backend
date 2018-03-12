@@ -2,6 +2,7 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -13,13 +14,17 @@ class MutesDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    _updateMuted(accountId, sessionId).flatMap(_ match {
-      case true =>
+    (for {
+      m <- identifyService.generate()
+      r <- _updateMuted(accountId, m, sessionId)
+    } yield ((m, r))).flatMap(_ match {
+      case (_ , true) =>
         Future.True
-      case false =>
-        _insertMuted(accountId, sessionId)
+      case (m , false) =>
+        _insertMuted(accountId, m, sessionId)
     })
   }
 
@@ -27,30 +32,28 @@ class MutesDAO @Inject()(db: DatabaseService) {
     _updateUnMuted(accountId, sessionId).map(_ => true)
   }
 
-  private def _insertMuted(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertMuted(accountId: AccountId, mutedAt: Long, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val mutedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
         .insert(
-          _.accountId          -> lift(accountId),
+          _.accountId       -> lift(accountId),
           _.by              -> lift(by),
-          _.mute           -> true,
+          _.mute            -> true,
           _.mutedAt         -> lift(mutedAt)
         )
     }
     run(q).map(_ == 1)
   }
 
-  private def _updateMuted(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _updateMuted(accountId: AccountId, mutedAt: Long, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val mutedAt = timeService.nanoTime()
     val q = quote {
       query[Relationships]
-        .filter(_.accountId    == lift(accountId))
+        .filter(_.accountId == lift(accountId))
         .filter(_.by        == lift(by))
         .update(
-          _.mute           -> true,
+          _.mute            -> true,
           _.mutedAt         -> lift(mutedAt)
         )
     }
@@ -82,22 +85,22 @@ class MutesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
 
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Relationships].filter(r => r.by == lift(accountId) && r.mute  == true && r.mutedAt < lift(s))
-        .sortBy(_.mutedAt)(Ord.descNullsLast)
-        .drop(lift(o))
-        .take(lift(c))
+      query[Relationships].filter(r => r.by == lift(accountId) && r.mute  == true && (r.mutedAt < lift(s) || lift(s) == -1L) )
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .sortBy({ case ((f, _), _) => f.mutedAt })(Ord.descNullsLast)
+        .drop(lift(o))
+        .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a.copy(position = f.mutedAt), r)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.mutedAt)}))
 
   }
 

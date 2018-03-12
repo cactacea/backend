@@ -73,7 +73,7 @@ class GroupAccountsDAOSpec extends DAOSpec {
     val joinedAccount2 = result1(1)._3
     val joinedAccount3 = result1(2)._3
 
-    val result2 = Await.result(groupUsersDAO.findAll(groupId, Some(joinedAccount3.joinedAt), None, Some(3), sessionAccount.id.toSessionId))
+    val result2 = Await.result(groupUsersDAO.findAll(groupId, Some(result1(2)._3.id.value), None, Some(3), sessionAccount.id.toSessionId))
     assert(result2.size == 2)
 
   }

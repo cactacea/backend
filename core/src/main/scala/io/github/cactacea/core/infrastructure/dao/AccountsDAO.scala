@@ -29,7 +29,6 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   private def insert(id: AccountId, accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[Long] = {
     val accountStatus = AccountStatusType.normally
     val hashedPassword = createHashedPassword(password)
-    val position = timeService.nanoTime()
     val q = quote {
       query[Accounts].insert(
         _.id                    -> lift(id),
@@ -40,8 +39,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
         _.web                 -> lift(web),
         _.birthday              -> lift(birthday),
         _.location              -> lift(location),
-        _.bio                   -> lift(bio),
-        _.position              -> lift(position)
+        _.bio                   -> lift(bio)
       )
     }
     run(q)
@@ -240,7 +238,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
     val by = sessionId.toAccountId
 
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
 
@@ -249,10 +247,10 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
     val q2 = quote {
       query[Accounts].filter({a => a.id != lift(by) && ((a.accountName like lift(un)) || (a.displayName like lift(un)) || (lift(un) == "")) &&
-          a.accountStatus  == lift(status) && a.position < lift(s) &&
+          a.accountStatus  == lift(status) && (infix"a.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
           query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty})
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
-      .sortBy({ case (a, r) => a.position})(Ord.descNullsLast)
+      .sortBy({ case (a, r) => a.id})(Ord.descNullsLast)
       .drop(lift(o))
       .take(lift(c))
     }

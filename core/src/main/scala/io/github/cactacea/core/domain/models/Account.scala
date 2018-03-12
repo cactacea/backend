@@ -25,19 +25,27 @@ case class Account(id: AccountId,
 
 object Account {
 
-  def apply(a: Accounts, r: Option[Relationships]): Account = {
-    apply(a, r, None)
+  def apply(a: Accounts, r: Option[Relationships], next: Long): Account = {
+    apply(a, r, None, next)
   }
 
   def apply(a: Accounts, r: Option[Relationships], ag: AccountGroups): Account = {
-    apply(a, r, Some(ag))
+    apply(a, r, Some(ag), ag.id.value)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships]): Account = {
+    apply(a, None, None, a.id.value)
   }
 
   def apply(a: Accounts): Account = {
-    apply(a, None, None)
+    apply(a, None, None, a.id.value)
   }
 
-  def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups]): Account = {
+  def apply(a: Accounts, next: Long): Account = {
+    apply(a, None, None, next)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Long): Account = {
     Account(
       a.id,
       a.accountName,
@@ -56,7 +64,7 @@ object Account {
       a.location,
       a.bio,
       ag.map(_.joinedAt),
-      a.position
+      next
     )
   }  
 }

@@ -5,11 +5,12 @@ import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
 import io.github.cactacea.backend.models.requests.session.GetSessionMutes
 import io.github.cactacea.backend.swagger.BackendController
+
 import io.github.cactacea.core.application.services.MutesService
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
+import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.swagger.models.Swagger
 
 @Singleton

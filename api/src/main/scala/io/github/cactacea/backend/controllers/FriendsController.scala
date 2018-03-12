@@ -6,11 +6,12 @@ import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.session.{GetSessionFriendRequests, GetSessionFriends}
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.backend.swagger.BackendController
+
 import io.github.cactacea.core.application.services.{FriendRequestsService, FriendsService}
 import io.github.cactacea.core.domain.models.{Account, FriendRequest}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyRequested, AccountNotFound, FriendRequestNotFound}
+import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.swagger.models.Swagger
 
 @Singleton

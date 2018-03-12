@@ -84,34 +84,34 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], received: Boolean, sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     if (received) {
       val q = quote {
-        query[FriendRequests].filter(f => f.accountId == lift(by) && f.requestedAt < lift(s))
-          .sortBy(_.requestedAt)(Ord.descNullsLast)
-          .drop(lift(o))
-          .take(lift(c))
+        query[FriendRequests].filter(f => f.accountId == lift(by) && (infix"f.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+          .sortBy({ case ((f, _), _) => f.id})(Ord.descNullsLast)
+          .drop(lift(o))
+          .take(lift(c))
       }
 
-      run(q).map(_.map({ case ((f, a), r) => (f, a.copy(position = f.requestedAt), r)}))
+      run(q).map(_.map({ case ((f, a), r) => (f, a, r)}))
 
     } else {
       val q = quote {
         query[FriendRequests].filter(f => f.by == lift(by) && f.requestedAt < lift(s))
-          .sortBy(_.requestedAt)(Ord.descNullsLast)
-          .drop(lift(o))
-          .take(lift(c))
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+          .sortBy({ case ((f, _), _) => f.id})(Ord.descNullsLast)
+          .drop(lift(o))
+          .take(lift(c))
       }
 
-      run(q).map(_.map({ case ((f, a), r) => (f, a.copy(position = f.requestedAt), r)}))
+      run(q).map(_.map({ case ((f, a), r) => (f, a, r)}))
 
     }
 
@@ -121,8 +121,8 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
-        .filter(_.id      == lift(id))
-        .filter(_.accountId  == lift(accountId))
+        .filter(_.id            == lift(id))
+        .filter(_.accountId     == lift(accountId))
         .update(_.requestStatus -> lift(status))
     }
     run(q).map(_ == 1)

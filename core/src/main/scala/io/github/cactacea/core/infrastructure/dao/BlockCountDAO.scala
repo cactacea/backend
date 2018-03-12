@@ -30,7 +30,7 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
                        and a.`by` in (${lift(ids)})
                        and b.`by` = ${lift(sessionId)}
                        group by
-                       id
+                       a.`by`
       """.as[Query[RelationshipBlocksCount]]
     }
     run(q)

@@ -16,7 +16,8 @@ case class Feed(
                  commentCount: Long,
                  contentWarning: Boolean,
                  contentDeleted: Boolean,
-                 postedAt: Long
+                 postedAt: Long,
+                 next: Long
                  )
 
 object Feed {
@@ -24,18 +25,22 @@ object Feed {
   @Inject private var notificationMessagesService: NotificationMessagesService = _
 
   def apply(f: Feeds): Feed = {
-    _apply(f, None, None, None, None)
+    _apply(f, None, None, None, None, f.id.value)
+  }
+
+  def apply(f: Feeds, next: Long): Feed = {
+    _apply(f, None, None, None, None, next)
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums]): Feed = {
-    _apply(f, Some(ft), Some(m), None, None)
+    _apply(f, Some(ft), Some(m), None, None, f.id.value)
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
-    _apply(f, Some(ft), Some(m), Some(a), r)
+    _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
   }
 
-  private def _apply(f: Feeds, ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships]): Feed = {
+  private def _apply(f: Feeds, ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships], next: Long): Feed = {
     f.contentStatus match {
       case ContentStatusType.rejected => {
         Feed(
@@ -44,11 +49,12 @@ object Feed {
           mediums         = None,
           tags            = None,
           account         = None,
-          likeCount   = 0L,
+          likeCount       = 0L,
           commentCount    = 0L,
           contentWarning  = false,
-          contentDeleted = true,
-          postedAt        = f.postedAt
+          contentDeleted  = true,
+          postedAt        = f.postedAt,
+          next            = next
         )
       }
       case _ => {
@@ -61,11 +67,12 @@ object Feed {
           mediums         = images,
           tags            = tags,
           account         = account,
-          likeCount   = f.likeCount,
+          likeCount       = f.likeCount,
           commentCount    = f.commentCount,
           contentWarning  = f.contentWarning,
-          contentDeleted = false,
-          postedAt        = f.postedAt
+          contentDeleted  = false,
+          postedAt        = f.postedAt,
+          next            = next
         )
       }
     }

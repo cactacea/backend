@@ -42,7 +42,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         _.id                  -> lift(id),
         _.by                  -> lift(by),
         _.message             -> lift(message),
-        _.likeCount       -> 0L,
+        _.likeCount           -> 0L,
         _.commentCount        -> 0L,
         _.expiration          -> lift(expiration),
         _.privacyType         -> lift(privacy),
@@ -134,27 +134,26 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
         .filter(_.by        ==  lift(by))
-        .filter(_.postedAt  <   lift(s))
-        .sortBy(_.postedAt)(Ord.descNullsLast)
+        .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        .sortBy(_.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
     run(q).flatMap(f => _addTagsMedium(f, sessionId))
-      .map(_.sortBy(_._1.postedAt).reverse)
   }
 
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
 
     val e = timeService.nanoTime()
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
@@ -167,13 +166,12 @@ class FeedsDAO @Inject()(db: DatabaseService) {
             || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
         .filter({ f => (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty)})
-        .filter(_.postedAt < lift(s))
-        .sortBy(_.postedAt)(Ord.descNullsLast)
+        .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        .sortBy(_.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
     run(q).flatMap(f => _addTagsMedium(f, sessionId))
-      .map(_.sortBy(_._1.postedAt).reverse)
   }
 
   private def _addTagsMedium(feeds: List[Feeds], sessionId: SessionId) = {
@@ -193,7 +191,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
           val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
           (nf, t, m)
         })
-    })
+    }).map(_.sortBy(_._1.id.value).reverse)
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Option[(Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {

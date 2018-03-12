@@ -40,19 +40,20 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
 
   def findEarlier(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) = {
 
-    val s = since.getOrElse(0L)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val accountId = sessionId.toAccountId
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages].filter(am => am.accountId == lift(accountId) && am.groupId == lift(groupId) && am.postedAt > lift(s))
+      query[AccountMessages].filter(am => am.accountId == lift(accountId) && am.groupId == lift(groupId))
+        .filter(_ => infix"am.message_id > ${lift(s)}".as[Boolean] || lift(s) == -1L)
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.forall(_ == i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((((am, _), _), _), _) => am.postedAt})(Ord.ascNullsLast)
+        .sortBy({ case ((((am, _), _), _), _) => am.messageId})(Ord.ascNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -62,19 +63,20 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
 
   def findOlder(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) = {
 
-    val s = since.getOrElse(Long.MaxValue)
+    val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
     val accountId = sessionId.toAccountId
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages].filter(am => am.accountId == lift(accountId) && am.groupId == lift(groupId) && am.postedAt < lift(s))
+      query[AccountMessages].filter(am => am.accountId == lift(accountId) && am.groupId == lift(groupId) )
+        .filter(_ => infix"am.message_id < ${lift(s)}".as[Boolean] || lift(s) == -1L )
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.forall(_ == i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((((am, _), _), _), _) => am.postedAt})(Ord.descNullsLast)
+        .sortBy({ case ((((am, _), _), _), _) => am.messageId})(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }

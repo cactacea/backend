@@ -2,10 +2,11 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.domain.enums.AccountStatusType
-import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, BlockId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{Accounts, Blocks, Relationships}
 
 @Singleton
@@ -14,13 +15,17 @@ class BlocksDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
+  @Inject private var identifyService: IdentifyService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     _updateBlocks(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.True
       case false =>
-        _insertBlocks(accountId, sessionId)
+        for {
+          id <- identifyService.generate().map(BlockId(_))
+          r <- _insertBlocks(id, accountId, sessionId)
+        } yield (r)
     })
   }
 
@@ -28,15 +33,16 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     _updateUnblocks(accountId, sessionId)
   }
 
-  private def _insertBlocks(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertBlocks(id: BlockId, accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val blockedAt = timeService.nanoTime()
     val q = quote {
       query[Blocks]
         .insert(
+          _.id            -> lift(id),
           _.accountId     -> lift(accountId),
           _.by            -> lift(by),
-          _.blocked      -> true,
+          _.blocked       -> true,
           _.blockedAt     -> lift(blockedAt)
         )
     }
@@ -83,24 +89,24 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships])]] = {
-    val s = since.getOrElse(Long.MaxValue)
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
+    val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
 
     val q = quote {
-      query[Blocks].filter(b => b.by == lift(by) && b.blocked == true && b.blockedAt < lift(s))
+      query[Blocks].filter(b => b.by == lift(by) && b.blocked == true && (infix"b.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
-        .sortBy({ case ((b, _), _) => b.blockedAt})(Ord.descNullsLast)
+        .sortBy({ case ((b, _), _) => b.id})(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
 
     run(q)
-      .map(_.map({ case ((b, a), r) => (a.copy(position = b.blockedAt), r)}))
+      .map(_.map({ case ((b, a), r) => (a, r, b.id.value)}))
   }
 
 }

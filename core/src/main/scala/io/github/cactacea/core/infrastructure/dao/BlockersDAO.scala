@@ -2,8 +2,9 @@ package io.github.cactacea.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
-import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, BlockId, SessionId}
 import io.github.cactacea.core.infrastructure.models.Blocks
 
 @Singleton
@@ -11,12 +12,18 @@ class BlockersDAO @Inject()(db: DatabaseService) {
 
   import db._
 
+  @Inject private var identifyService: IdentifyService = _
+
   def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     _updateBlocks(accountId, sessionId, true).flatMap(_ match {
       case true =>
         Future.True
       case false =>
-        _insertBlocks(accountId, sessionId)
+        for {
+          id <- identifyService.generate().map(BlockId(_))
+          r <- _insertBlocks(id, accountId, sessionId)
+        } yield (r)
+
     })
   }
 
@@ -24,14 +31,15 @@ class BlockersDAO @Inject()(db: DatabaseService) {
     _updateBlocks(accountId, sessionId, false).map(_ => true)
   }
 
-  private def _insertBlocks(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertBlocks(id: BlockId, accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Blocks]
         .insert(
-          _.accountId -> lift(accountId),
-          _.by        -> lift(by),
-          _.beingBlocked   -> true
+          _.id            -> lift(id),
+          _.accountId     -> lift(accountId),
+          _.by            -> lift(by),
+          _.beingBlocked  -> true
         )
     }
     run(q).map(_ == 1)

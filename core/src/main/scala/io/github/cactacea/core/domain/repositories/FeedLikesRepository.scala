@@ -31,19 +31,19 @@ class FeedLikesRepository {
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
-      r <- feedLikesDAO.findAll(accountId, since, offset, count, sessionId).map(_.map(t => Feed(t)))
+      r <- feedLikesDAO.findAll(accountId, since, offset, count, sessionId).map(_.map({ case (f, n) => Feed(f, n)}))
     } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
     feedLikesDAO.findAll(since, offset, count, sessionId)
-      .map(_.map(t => Feed(t)))
+      .map(_.map({ case (f, n) => Feed(f, n)}))
   }
 
   def findAccounts(feedId: FeedId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
     for {
       _ <- validationDAO.existFeed(feedId, sessionId)
-      r <- feedLikesDAO.findAccounts(feedId, since, offset, count, sessionId).map(_.map(t => Account(t._1, t._2)))
+      r <- feedLikesDAO.findAccounts(feedId, since, offset, count, sessionId).map(_.map({ case (a, r, n) => Account(a, r, n)}))
     } yield (r)
   }
 

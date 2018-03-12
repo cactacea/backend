@@ -17,13 +17,13 @@ class FollowingRepository {
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     followingDAO.findAll(accountId, since, offset, count, sessionId)
-      .map(_.map(t => Account(t._1, t._2)))
+      .map(_.map({ case (a, r, n) => Account(a, r, n)}))
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     val accountId = sessionId.toAccountId
     followingDAO.findAll(accountId, since, offset, count, sessionId)
-      .map(_.map(t => Account(t._1, t._2)))
+      .map(_.map({ case (a, r, n) => Account(a, r, n)}))
   }
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

@@ -109,7 +109,7 @@ class FollowingDAOSpec extends DAOSpec {
     assert(result1(2)._1.id == sessionAccount4.id)
 
     // find following next page
-    val result2 = Await.result(followingDAO.findAll(followUser.id, Some(result1(2)._1.position), None, Some(3), sessionAccount1.id.toSessionId))
+    val result2 = Await.result(followingDAO.findAll(followUser.id, Some(result1(2)._3), None, Some(3), sessionAccount1.id.toSessionId))
     assert(result2(0)._1.id == sessionAccount3.id)
     assert(result2(1)._1.id == sessionAccount2.id)
     assert(result2(2)._1.id == sessionAccount1.id)

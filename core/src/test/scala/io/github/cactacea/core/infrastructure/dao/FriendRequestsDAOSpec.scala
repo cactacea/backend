@@ -181,7 +181,7 @@ class FriendRequestsDAOSpec extends DAOSpec {
     assert((friendRequested3.accountId, friendRequested3.by, friendRequested3.requestStatus) == (sessionAccount.id, requestedAccount3.id, FriendRequestStatusType.noResponded))
 
     // findALl next page
-    val result2 = Await.result(friendRequestsDAO.findAll(Some(friendRequested3.requestedAt), None, Some(3), true, sessionAccount.id.toSessionId))
+    val result2 = Await.result(friendRequestsDAO.findAll(Some(friendRequested3.id.value), None, Some(3), true, sessionAccount.id.toSessionId))
     assert(result2.size == 2)
     val friendRequested4 = result2(0)._1
     val friendRequested5 = result2(1)._1

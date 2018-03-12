@@ -1,3 +1,5 @@
 package io.github.cactacea.core.infrastructure.identifiers
 
-case class GroupId(val value: Long) extends AnyVal
+import com.twitter.inject.domain.WrappedValue
+
+case class GroupId(val value: Long) extends WrappedValue[Long]

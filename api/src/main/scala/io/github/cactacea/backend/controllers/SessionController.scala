@@ -11,6 +11,7 @@ import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyU
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.swagger.models.Swagger
 
+
 @Singleton
 class SessionController @Inject()(s: Swagger) extends BackendController {
 

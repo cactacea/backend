@@ -18,7 +18,7 @@ class FeedTagsDAO @Inject()(db: DatabaseService) {
       val q = quote {
         query[FeedTags]
           .filter(t => liftQuery(feedIds).contains(t.feedId))
-          .sortBy(_.registerAt)
+          .sortBy(_.orderNo)
       }
       run(q)
     }
