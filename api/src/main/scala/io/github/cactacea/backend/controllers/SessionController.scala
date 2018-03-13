@@ -5,7 +5,7 @@ import com.twitter.finagle.http.{Request, Status}
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.domain.models.Account
+import io.github.cactacea.core.domain.models.{Account, SocialAccount}
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyUsed, MediumNotFound}
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
@@ -122,6 +122,19 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
     accountsService.deleteProfileImage(
       SessionContext.id
     ).map(_ => response.noContent)
+  }
+
+  @Inject private var settingsService: SettingsService = _
+
+  getWithDoc("/social_accounts") { o =>
+    o.summary("Get status abount social accounts.")
+      .tag("Social Accounts")
+      .responseWith[Array[SocialAccount]](Status.Ok.code, successfulMessage)
+
+  } { _: Request =>
+    settingsService.findSocialAccounts(
+      SessionContext.id
+    )
   }
 
 }
