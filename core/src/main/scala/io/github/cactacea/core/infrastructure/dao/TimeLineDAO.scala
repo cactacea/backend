@@ -66,7 +66,7 @@ class TimeLineDAO @Inject()(db: DatabaseService) {
           .leftJoin(r => tl.by.exists(_ == r.accountId) && r.by == lift(by))
       } yield (tl, t, u, r)
     }
-    run(q).flatMap(findTagsAndImages(_, sessionId)).map(_.sortBy(_._1.postedAt).reverse)
+    run(q).flatMap(findTagsAndImages(_, sessionId))
 
   }
 
@@ -89,7 +89,7 @@ class TimeLineDAO @Inject()(db: DatabaseService) {
           val r = (t._1, t._2, tag, image, t._3, t._4)
           r
         })
-    }
+    }.map(_.sortBy(_._1.id).reverse)
   }
 
 }

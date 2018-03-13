@@ -38,7 +38,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           _.replyId           -> lift(replyId),
           _.by                -> lift(by),
           _.message           -> lift(message),
-          _.likeCount     -> 0L,
+          _.likeCount         -> 0L,
           _.contentWarning    -> false,
           _.contentStatus     -> lift(ContentStatusType.unchecked),
           _.notified          -> false,
@@ -202,7 +202,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         })
       })
-      .map(_.sortBy(_._1.postedAt).reverse)
+      .map(_.sortBy(_._1.id.value).reverse)
   }
 
   def find(commentId: CommentId): Future[Option[Comments]] = {
