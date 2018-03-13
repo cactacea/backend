@@ -2,55 +2,46 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
-import io.github.cactacea.backend.models.requests.setting.{DeleteSocialAccount, PostSocialAccount}
+import io.github.cactacea.backend.models.requests.setting.PostSocialAccount
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.domain.models.SocialAccount
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.BadRequest
 import io.swagger.models.Swagger
 
 @Singleton
-class SocialAccountSettingsController @Inject()(s: Swagger) extends BackendController {
+class FacebookSettingController @Inject()(s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
+  protected val accountType = "facebook"
 
   @Inject private var settingsService: SettingsService = _
 
-  getWithDoc("/social_accounts") { o =>
-    o.summary("Get social accounts")
-        .responseWith[Array[SocialAccount]](Status.Ok.code, successfulMessage)
-
-  } { _: Request =>
-    settingsService.findSocialAccounts(
-      SessionContext.id
-    )
-  }
-
-  postWithDoc("/social_accounts/:account_type") { o =>
-    o.summary("Connect a social account")
+  postWithDoc(s"/social_accounts/$accountType") { o =>
+    o.summary(s"Connect to $accountType.")
+      .tag("Social Accounts")
       .request[PostSocialAccount]
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith(Status.BadRequest.code, validationErrorMessage)
 
   } { request: PostSocialAccount =>
     settingsService.connectSocialAccount(
-      request.socialAccountType,
+      accountType,
       request.accessTokenKey,
       request.accessTokenSecret,
       SessionContext.id
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/social_accounts/:account_type") { o =>
-    o.summary("Disconnect a social connect")
-      .request[DeleteSocialAccount]
+  deleteWithDoc(s"/social_accounts/$accountType") { o =>
+    o.summary(s"Disconnect from $accountType.")
+      .tag("Social Accounts")
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
 
-  } { request: DeleteSocialAccount =>
+  } { _: Request =>
     settingsService.disconnectSocialAccount(
-      request.socialAccountType,
+      accountType,
       SessionContext.id
     ).map(_ => response.noContent)
   }

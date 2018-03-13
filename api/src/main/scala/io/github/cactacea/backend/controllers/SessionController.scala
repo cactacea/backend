@@ -5,7 +5,7 @@ import com.twitter.finagle.http.{Request, Status}
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.domain.models.Account
+import io.github.cactacea.core.domain.models.{Account, SocialAccount}
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyUsed, MediumNotFound}
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
@@ -23,7 +23,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
   @Inject private var sessionService: SessionsService = _
 
   getWithDoc("/session") { o =>
-    o.summary("Get session account")
+    o.summary("Get basic information about session account.")
       .tag(tagName)
       .responseWith[Account](Status.Ok.code, successfulMessage)
 
@@ -35,7 +35,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
 
   deleteWithDoc("/session") { o =>
-    o.summary("Sign out current logged in user session")
+    o.summary("Sign out.")
       .tag(tagName)
       .responseWith(Status.NoContent.code, successfulMessage)
 
@@ -48,7 +48,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
 
   putWithDoc("/session/account_name") { o =>
-    o.summary("Update session account name")
+    o.summary("Update the account name.")
       .tag(tagName)
       .request[PutSessionAccountName]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -65,7 +65,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
 
   putWithDoc("/session/password") { o =>
-    o.summary("Update session account password")
+    o.summary("Update the password.")
       .tag(tagName)
       .request[PutSessionPassword]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -81,7 +81,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
 
   putWithDoc("/session/profile") { o =>
-    o.summary("Update session profile")
+    o.summary("Update the profile.")
       .tag(tagName)
       .request[PutSessionProfile]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -99,7 +99,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
   }
 
   putWithDoc("/session/profile_image") { o =>
-    o.summary("Update session profile image")
+    o.summary("Update the profile image.")
       .tag(tagName)
       .request[PutSessionProfileImage]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -114,7 +114,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/session/profile_image") { o =>
-    o.summary("Delete session profile image")
+    o.summary("Remove the profile image")
       .tag(tagName)
       .responseWith(Status.NoContent.code, successfulMessage)
 
@@ -122,6 +122,19 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
     accountsService.deleteProfileImage(
       SessionContext.id
     ).map(_ => response.noContent)
+  }
+
+  @Inject private var settingsService: SettingsService = _
+
+  getWithDoc("/social_accounts") { o =>
+    o.summary("Get status abount social accounts.")
+      .tag("Social Accounts")
+      .responseWith[Array[SocialAccount]](Status.Ok.code, successfulMessage)
+
+  } { _: Request =>
+    settingsService.findSocialAccounts(
+      SessionContext.id
+    )
   }
 
 }

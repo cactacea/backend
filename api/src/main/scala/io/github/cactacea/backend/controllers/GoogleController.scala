@@ -7,31 +7,37 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.BadRequest
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountTerminated, InvalidAccountNameOrPassword}
+import io.github.cactacea.core.util.responses.CactaceaError.SocialAccountNotFound
+import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.swagger.models.Swagger
 
+
 @Singleton
-class SessionsController @Inject()(s: Swagger) extends BackendController {
+class GoogleController @Inject()(s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 
-  protected val tagName = "Sessions"
+  protected val tagName = "Social Accounts"
+  protected val accountType = "google"
 
   @Inject private var sessionService: SessionsService = _
 
-  postWithDoc("/sessions") { o =>
-    o.summary("Sign up.")
+  postWithDoc(s"/sessions/$accountType") { o =>
+    o.summary(s"Sign up by $accountType.")
       .tag(tagName)
-      .request[PostSignUp]
+      .request[PostSocialAccountSignUp]
       .responseWith[Account](Status.Ok.code, successfulMessage)
       .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, SocialAccountNotFound.message)
 
-  } { request: PostSignUp =>
+  } { request: PostSocialAccountSignUp =>
     sessionService.signUp(
+      accountType,
       request.accountName,
       request.displayName,
       request.password,
+      request.accessTokenKey,
+      request.accessTokenSecret,
       request.udid,
       request.web,
       request.birthday,
@@ -42,19 +48,19 @@ class SessionsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/sessions") { o =>
-    o.summary("Sign in.")
+  getWithDoc(s"/sessions/$accountType") { o =>
+    o.summary(s"Sign in by $accountType.")
       .tag(tagName)
-      .request[GetSignIn]
+      .request[GetSocialAccountSignIn]
       .responseWith[Account](Status.Ok.code, successfulMessage)
       .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, InvalidAccountNameOrPassword.message)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountTerminated.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, SocialAccountNotFound.message)
 
-  } { request: GetSignIn =>
+  } { request: GetSocialAccountSignIn =>
     sessionService.signIn(
-      request.accountName,
-      request.password,
+      accountType,
+      request.accessTokenKey,
+      request.accessTokenSecret,
       request.udid,
       request.userAgent,
       SessionContext.deviceType

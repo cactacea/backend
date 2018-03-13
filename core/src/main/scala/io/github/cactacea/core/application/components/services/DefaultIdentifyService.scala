@@ -17,7 +17,9 @@ class DefaultIdentifyService extends IdentifyService {
   override def generate(): Future[Long] = {
     db.transaction {
       val q = quote(infix"""select generateId()""".as[Query[Long]])
-      run(q).map(_.head)
+      run(q).map({a =>
+        a.head
+      })
     }
   }
 

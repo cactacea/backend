@@ -5,7 +5,6 @@ import com.twitter.finatra.validation._
 import io.github.cactacea.backend.models.requests.Validations
 
 case class PostSocialAccountSignUp(
-                                    @RouteParam socialAccountType: String,
                                     @Size(min = 2, max = 30) accountName: String,
                                     @Size(min = 1, max = 50) displayName: String,
                                     @Size(min = 8, max = 255) password: String,

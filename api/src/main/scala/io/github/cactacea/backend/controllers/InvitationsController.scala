@@ -15,16 +15,16 @@ import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.core.util.responses.CactaceaError._
 
 @Singleton
-class GroupInvitationsController @Inject()(s: Swagger) extends BackendController {
+class InvitationsController @Inject()(s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 
-  protected val tagName = "Group Invitations"
+  protected val tagName = "Invitations"
 
   @Inject private var invitationService: GroupInvitationsService = _
 
   getWithDoc("/session/invitations") { o =>
-    o.summary("Get sessions's invitations")
+    o.summary("Get invitations list session account received.")
       .tag(tagName)
       .request[GetSessionInvitations]
       .responseWith[Array[GroupInvitation]](Status.Ok.code, successfulMessage)
@@ -40,7 +40,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   }
 
   postWithDoc("/invitations/:id/accept") { o =>
-    o.summary("Accept a group invitation")
+    o.summary("Accept a invitation.")
       .tag(tagName)
       .request[PostAcceptInvitation]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -57,7 +57,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   }
 
   postWithDoc("/invitations/:id/reject") { o =>
-    o.summary("Reject a group invitation")
+    o.summary("Reject a invitation.")
       .tag(tagName)
       .request[PostRejectInvitation]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -72,7 +72,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   }
 
   postWithDoc("/groups/:id/invitations") { o =>
-    o.summary("Post a group invitation")
+    o.summary("Post a invitation to some accounts.")
       .tag(tagName)
       .request[PostInvitationAccounts]
       .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
@@ -88,7 +88,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   }
 
   postWithDoc("/accounts/:account_id/groups/:group_id/invitations") { o =>
-    o.summary("Post a group invitation")
+    o.summary("Create a invitation to this account.")
       .tag(tagName)
       .request[PostInvitationAccount]
       .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)

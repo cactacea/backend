@@ -66,13 +66,13 @@ class TimeLineDAO @Inject()(db: DatabaseService) {
           .leftJoin(r => tl.by.exists(_ == r.accountId) && r.by == lift(by))
       } yield (tl, t, u, r)
     }
-    run(q).flatMap(findTagsAndImages(_, sessionId)).map(_.sortBy(_._1.postedAt).reverse)
+    run(q).flatMap(findTagsAndImages(_, sessionId))
 
   }
 
   private def findTagsAndImages(feeds: List[(Timelines, Option[Feeds], Option[Accounts], Option[Relationships])], sessionId: SessionId) = {
     val feedIds = feeds.flatMap(_._2.map(_.id))
-    (for {
+    ((for {
       tags <- feedTagsDAO.findAll(feedIds)
       medium <- feedMediumDAO.findAll(feedIds)
     } yield (tags, medium)).map {
@@ -89,7 +89,7 @@ class TimeLineDAO @Inject()(db: DatabaseService) {
           val r = (t._1, t._2, tag, image, t._3, t._4)
           r
         })
-    }
+    }).map(_.sortBy(_._1.id.value).reverse)
   }
 
 }

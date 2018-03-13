@@ -13,16 +13,17 @@ import io.swagger.models.Swagger
 
 
 @Singleton
-class SocialAccountsController @Inject()(s: Swagger) extends BackendController {
+class FacebookController @Inject()(s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 
   protected val tagName = "Social Accounts"
+  protected val accountType = "facebook"
 
   @Inject private var sessionService: SessionsService = _
 
-  postWithDoc("/sessions/:account_type") { o =>
-    o.summary("Sign up by social account")
+  postWithDoc(s"/sessions/$accountType") { o =>
+    o.summary(s"Sign up by $accountType.")
       .tag(tagName)
       .request[PostSocialAccountSignUp]
       .responseWith[Account](Status.Ok.code, successfulMessage)
@@ -31,7 +32,7 @@ class SocialAccountsController @Inject()(s: Swagger) extends BackendController {
 
   } { request: PostSocialAccountSignUp =>
     sessionService.signUp(
-      request.socialAccountType,
+      accountType,
       request.accountName,
       request.displayName,
       request.password,
@@ -47,8 +48,8 @@ class SocialAccountsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/sessions/:account_type") { o =>
-    o.summary("Sign in by via social account")
+  getWithDoc(s"/sessions/$accountType") { o =>
+    o.summary(s"Sign in by $accountType.")
       .tag(tagName)
       .request[GetSocialAccountSignIn]
       .responseWith[Account](Status.Ok.code, successfulMessage)
@@ -57,7 +58,7 @@ class SocialAccountsController @Inject()(s: Swagger) extends BackendController {
 
   } { request: GetSocialAccountSignIn =>
     sessionService.signIn(
-      request.socialAccountType,
+      accountType,
       request.accessTokenKey,
       request.accessTokenSecret,
       request.udid,
