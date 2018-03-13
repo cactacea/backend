@@ -29,6 +29,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
 
   getWithDoc("/oauth2/authorize") { o =>
     o.summary("OAuth for authorization.")
+      .tag("OAuth2")
 
   } { req: GetAuthorizeCode =>
     authDAO.validateRedirectUri(req.clientId, req.redirectUri).map(_ match {
@@ -45,6 +46,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
 
   postWithDoc("/oauth2/authorize") { o =>
     o.summary("OAuth for authorization confirm.")
+      .tag("OAuth2")
 
   } { req: PostOAuthToken =>
     authDAO.validateRedirectUri(req.clientId, req.redirectUri).map(_ match {
@@ -79,6 +81,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
 
   postWithDoc("/oauth2/token") { o =>
     o.summary("OAuth for token requests.")
+      .tag("OAuth2")
 
   } {req: Request =>
     issueAccessToken(req, dataHandler) flatMap { token =>
