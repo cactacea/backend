@@ -24,7 +24,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   @Inject private var invitationService: GroupInvitationsService = _
 
   getWithDoc("/session/invitations") { o =>
-    o.summary("Get sessions's invitations")
+    o.summary("Get group invitations list session account received.")
       .tag(tagName)
       .request[GetSessionInvitations]
       .responseWith[Array[GroupInvitation]](Status.Ok.code, successfulMessage)
@@ -40,7 +40,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   }
 
   postWithDoc("/invitations/:id/accept") { o =>
-    o.summary("Accept a group invitation")
+    o.summary("Accept a group invitation.")
       .tag(tagName)
       .request[PostAcceptInvitation]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -57,7 +57,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   }
 
   postWithDoc("/invitations/:id/reject") { o =>
-    o.summary("Reject a group invitation")
+    o.summary("Reject a group invitation.")
       .tag(tagName)
       .request[PostRejectInvitation]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -72,7 +72,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   }
 
   postWithDoc("/groups/:id/invitations") { o =>
-    o.summary("Post a group invitation")
+    o.summary("Post a group invitation to some accounts.")
       .tag(tagName)
       .request[PostInvitationAccounts]
       .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
@@ -88,7 +88,7 @@ class GroupInvitationsController @Inject()(s: Swagger) extends BackendController
   }
 
   postWithDoc("/accounts/:account_id/groups/:group_id/invitations") { o =>
-    o.summary("Post a group invitation")
+    o.summary("Create a group invitation to this account.")
       .tag(tagName)
       .request[PostInvitationAccount]
       .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)

@@ -22,7 +22,7 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
   @Inject private var blocksService: BlocksService = _
 
   getWithDoc("/session/blocks") { o =>
-    o.summary("Get blocked account list")
+    o.summary("Get accounts list you blocked")
       .tag(tagName)
       .request[GetSessionBlocks]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)

@@ -23,7 +23,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var commentsService: CommentsService = _
 
   getWithDoc("/comments") { o =>
-    o.summary("Get comments")
+    o.summary("Search comments.")
       .tag(tagName)
       .request[GetComments]
       .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
@@ -39,7 +39,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/comments") { o =>
-    o.summary("Post a comment")
+    o.summary("Create a comment on a feed.")
       .tag(tagName)
       .request[PostComment]
       .responseWith[CommentCreated](Status.Created.code, successfulMessage)
@@ -54,7 +54,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/comments/:id") { o =>
-    o.summary("Get a comment")
+    o.summary("Get basic information about this comment.")
       .tag(tagName)
       .request[GetComment]
       .responseWith[Comment](Status.Ok.code, successfulMessage)
@@ -68,7 +68,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/comments/:id") { o =>
-    o.summary("Delete a comment")
+    o.summary("Remove a comment.")
       .tag(tagName)
       .request[DeleteComment]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -84,7 +84,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var commentLikesService: CommentLikesService = _
 
   getWithDoc("/comments/:id/likes") { o =>
-    o.summary("Get comment likes")
+    o.summary("Get accounts list who liked on a comment.")
       .tag(tagName)
       .request[GetCommentLikes]
       .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
@@ -101,7 +101,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/comments/:id/likes") { o =>
-    o.summary("Post a comment like")
+    o.summary("Set a like on this comment.")
       .tag(tagName)
       .request[PostCommentLike]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -116,7 +116,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/comments/:id/likes") { o =>
-    o.summary("Delete a comment like")
+    o.summary("Remove a like on this comment.")
       .tag(tagName)
       .request[DeleteCommentLike]
       .responseWith(Status.NoContent.code, successfulMessage)

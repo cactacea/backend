@@ -22,7 +22,7 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
   @Inject private var messagesService: MessagesService = _
 
   getWithDoc("/messages") { o =>
-    o.summary("Get messages")
+    o.summary("Search messages.")
       .tag(tagName)
       .request[GetMessages]
       .responseWith[Message](Status.Ok.code, successfulMessage)
@@ -41,7 +41,7 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/messages") { o =>
-    o.summary("Delete a group messages")
+    o.summary("Delete messages form a group.")
       .tag(tagName)
       .request[DeleteMessages]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -54,7 +54,7 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/messages") { o =>
-    o.summary("Post a message")
+    o.summary("Post a message to a group.")
       .tag(tagName)
       .request[PostMessage]
       .responseWith[MessageCreated](Status.Created.code, successfulMessage)

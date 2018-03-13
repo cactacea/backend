@@ -26,7 +26,7 @@ class MediumsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/mediums") { o =>
-    o.summary("Post a medium")
+    o.summary("Upload a medium.")
       .tag(tagName)
 
   } { request: Request =>
@@ -37,7 +37,7 @@ class MediumsController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/mediums/:id") { o =>
-    o.summary("Delele a medium")
+    o.summary("Remove this medium.")
       .tag(tagName)
       .request[DeleteMedium]
       .responseWith(Status.NoContent.code, MediumNotFound.message)

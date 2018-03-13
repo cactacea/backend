@@ -18,7 +18,7 @@ class SocialAccountSettingsController @Inject()(s: Swagger) extends BackendContr
   @Inject private var settingsService: SettingsService = _
 
   getWithDoc("/social_accounts") { o =>
-    o.summary("Get social accounts")
+    o.summary("Get status abount social accounts.")
         .responseWith[Array[SocialAccount]](Status.Ok.code, successfulMessage)
 
   } { _: Request =>
@@ -28,7 +28,7 @@ class SocialAccountSettingsController @Inject()(s: Swagger) extends BackendContr
   }
 
   postWithDoc("/social_accounts/:account_type") { o =>
-    o.summary("Connect a social account")
+    o.summary("Connect to a social account.")
       .request[PostSocialAccount]
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith(Status.BadRequest.code, validationErrorMessage)
@@ -43,7 +43,7 @@ class SocialAccountSettingsController @Inject()(s: Swagger) extends BackendContr
   }
 
   deleteWithDoc("/social_accounts/:account_type") { o =>
-    o.summary("Disconnect a social connect")
+    o.summary("Disconnect from a social connect.")
       .request[DeleteSocialAccount]
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)

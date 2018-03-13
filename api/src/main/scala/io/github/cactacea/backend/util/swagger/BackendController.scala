@@ -4,7 +4,7 @@ import com.jakehschwartz.finatra.swagger.SwaggerController
 
 trait BackendController extends SwaggerController {
 
-  protected val successfulMessage = "successful operation."
-  protected val validationErrorMessage = "validation error occurred."
+  protected val successfulMessage = "Successful operation."
+  protected val validationErrorMessage = "Validation error occurred."
 
 }

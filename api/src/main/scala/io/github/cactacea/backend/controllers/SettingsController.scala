@@ -21,7 +21,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var deviceTokenService: DevicesService = _
 
   getWithDoc("/push_notification") { o =>
-    o.summary("Get push notification settings")
+    o.summary("Get this push notification settings.")
       .tag(tagName)
       .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
 
@@ -32,7 +32,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
   }
 
   putWithDoc("/push_notification") { o =>
-    o.summary("Update push notification settings")
+    o.summary("Update ths push notification settings.")
       .tag(tagName)
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
@@ -50,7 +50,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/advertisement") { o =>
-    o.summary("Get advertisement settings")
+    o.summary("Get the advertisement settings.")
       .tag(tagName)
       .responseWith[AdvertisementSetting](Status.Ok.code, successfulMessage)
 
@@ -61,7 +61,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
   }
 
   putWithDoc("/advertisement") { o =>
-    o.summary("Update advertisement settings")
+    o.summary("Update the advertisement settings.")
       .tag(tagName)
       .request[PutAdvertisementSetting]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -79,7 +79,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/devices") { o =>
-    o.summary("Update devices")
+    o.summary("Update the device tokens.")
       .tag(tagName)
       .request[PostDeviceToken]
       .responseWith(Status.NoContent.code, successfulMessage)

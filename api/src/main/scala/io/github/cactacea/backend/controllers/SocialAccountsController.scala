@@ -22,7 +22,7 @@ class SocialAccountsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var sessionService: SessionsService = _
 
   postWithDoc("/sessions/:account_type") { o =>
-    o.summary("Sign up by social account")
+    o.summary("Sign up by social account.")
       .tag(tagName)
       .request[PostSocialAccountSignUp]
       .responseWith[Account](Status.Ok.code, successfulMessage)
@@ -48,7 +48,7 @@ class SocialAccountsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/sessions/:account_type") { o =>
-    o.summary("Sign in by via social account")
+    o.summary("Sign in by social account.")
       .tag(tagName)
       .request[GetSocialAccountSignIn]
       .responseWith[Account](Status.Ok.code, successfulMessage)

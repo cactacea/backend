@@ -24,7 +24,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var groupsService: GroupsService = _
 
   getWithDoc("/groups") { o =>
-    o.summary("Get groups")
+    o.summary("Search groups.")
       .tag(tagName)
       .request[GetGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
@@ -43,7 +43,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/groups/:id") { o =>
-    o.summary("Get a group")
+    o.summary("Get basic information about this group.")
       .tag(tagName)
       .request[GetGroup]
       .responseWith[Group](Status.Ok.code, successfulMessage)
@@ -58,7 +58,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/groups") { o =>
-    o.summary("Create a group")
+    o.summary("Create a group.")
       .tag(tagName)
       .request[PostGroup]
       .responseWith[GroupCreated](Status.NoContent.code, successfulMessage)
@@ -75,7 +75,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   putWithDoc("/groups/:id") { o =>
-    o.summary("Update a group")
+    o.summary("Update this group.")
       .tag(tagName)
       .request[PutGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -96,7 +96,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var groupAccountsService: GroupAccountsService = _
 
   postWithDoc("/groups/:id/join") { o =>
-    o.summary("Join a group")
+    o.summary("Join to this group,")
       .tag(tagName)
       .request[PostJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -113,7 +113,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/groups/:id/leave") { o =>
-    o.summary("Leave a group")
+    o.summary("Leave from this group.")
       .tag(tagName)
       .request[PostLeaveGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -130,7 +130,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/groups/:id/accounts") { o =>
-    o.summary("Get a group accounts")
+    o.summary("Get acounts list of this group.")
       .tag(tagName)
       .request[GetGroupAccounts]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
@@ -148,7 +148,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/accounts/:account_id/groups/:group_id/join") { o =>
-    o.summary("Join a account to a group")
+    o.summary("Join this account in this group.")
       .tag(tagName)
       .request[PostAccountJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -165,7 +165,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/accounts/:account_id/groups/:group_id/leave") { o =>
-    o.summary("Leave a account from a group")
+    o.summary("Leave this account from this group.")
       .tag(tagName)
       .request[PostAccountJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -184,7 +184,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var accountGroupsService: AccountGroupsService = _
 
   getWithDoc("/accounts/:id/group") { o =>
-    o.summary("Get a direct message group")
+    o.summary("Get a direct message group to this account.")
       .tag(tagName)
       .request[GetAccountGroup]
       .responseWith[Group](Status.Ok.code, successfulMessage)
@@ -199,7 +199,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/accounts/:id/groups") { o =>
-    o.summary("Get a account joined groups")
+    o.summary("Get groups list this account joined.")
       .tag(tagName)
       .request[GetAccountGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
@@ -217,7 +217,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/session/groups") { o =>
-    o.summary("Get session groups")
+    o.summary("Get groups list session account joined.")
       .tag(tagName)
       .request[GetSessionGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
@@ -234,7 +234,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/session/hides") { o =>
-    o.summary("Get session hidden groups")
+    o.summary("Get hidden groups list session account joined.")
       .tag(tagName)
       .request[GetSessionGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
@@ -251,7 +251,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/groups/:id") { o =>
-    o.summary("Get a group messages")
+    o.summary("Hide this group and delete all messages.")
       .tag(tagName)
       .request[DeleteGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -265,7 +265,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/groups/:id/hides") { o =>
-    o.summary("Hide a group")
+    o.summary("Hide this group.")
       .tag(tagName)
       .request[PostHideGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -280,7 +280,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/groups/:id/hides") { o =>
-    o.summary("Hide a group")
+    o.summary("Show this group.")
       .tag(tagName)
       .request[DeleteHideGroup]
       .responseWith(Status.NoContent.code, successfulMessage)

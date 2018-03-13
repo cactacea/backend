@@ -18,7 +18,7 @@ class TimelineController @Inject()(s: Swagger) extends BackendController {
   @Inject private var timelineService: TimelineService = _
 
   getWithDoc("/timeline") { o =>
-    o.summary("Get timeline")
+    o.summary("Get timeline.")
       .request[GetTimeline]
       .responseWith[Array[TimelineFeed]](Status.Ok.code, successfulMessage)
       .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
