@@ -18,7 +18,6 @@ class DefaultIdentifyService extends IdentifyService {
     db.transaction {
       val q = quote(infix"""select generateId()""".as[Query[Long]])
       run(q).map({a =>
-        println(a)
         a.head
       })
     }
