@@ -188,13 +188,14 @@ class CommentsDAO @Inject()(db: DatabaseService) {
         .take(lift(c))
     }
 
+
     (for {
       comments <- run(q)
       ids = comments.map(_._1._1.id)
       blocksCount <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
     } yield (comments, blocksCount))
       .map({ case (accounts, blocksCount) =>
-        accounts.map({ t =>
+        accounts.sortBy(_._1._1.id.value).reverse.map({ t =>
           val c = t._1._1
           val a = t._1._2
           val r = t._2
@@ -202,6 +203,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         })
       })
+      // TODO : Fix me
       .map(_.sortBy(_._1.id.value).reverse)
   }
 

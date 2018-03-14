@@ -191,7 +191,9 @@ class FeedsDAO @Inject()(db: DatabaseService) {
           val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
           (nf, t, m)
         })
-    }).map(_.sortBy(_._1.id.value).reverse)
+          // TODO : Fix me
+          .sortBy(_._1.id.value).reverse
+    })
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Option[(Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {

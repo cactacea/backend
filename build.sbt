@@ -100,7 +100,7 @@ lazy val s3 = (project in file("s3"))
 
 
 lazy val versions = new {
-  val finatra = "17.12.0"
+  val finatra = "18.2.0"
   val guice = "4.0"
   val logback = "1.2.3"
   val mockito = "1.10.19"
@@ -140,7 +140,7 @@ lazy val commonLibrarySetting = Seq(
 
     "ch.qos.logback" % "logback-classic" % versions.logback,
     "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
-    "io.getquill" %% "quill-finagle-mysql" % "2.3.2",
+    "io.getquill" %% "quill-finagle-mysql" % "2.3.3",
     "io.jsonwebtoken" % "jjwt" % "0.9.0",
     "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
 

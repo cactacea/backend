@@ -87,7 +87,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({case (((gi, g), a), r) => (gi, a, r, g, None, None, None, None)}))
+    run(q).map(_.sortBy(_._1._1._1.id.value).reverse.map({case (((gi, g), a), r) => (gi, a, r, g, None, None, None, None)}))
 
   }
 

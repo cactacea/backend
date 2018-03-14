@@ -98,17 +98,19 @@ class FollowersDAO @Inject()(db: DatabaseService) {
     val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
+
     val q = quote {
-      query[Relationships].filter(r => r.accountId == lift(accountId) && r.follow  == true && (r.followedAt < lift(s) || lift(s) == -1L) )
-        .join(query[Accounts]).on((r, a) => a.id == r.by)
+      query[Relationships].filter(f => f.accountId == lift(accountId) && f.follow  == true && (f.followedAt < lift(s) || lift(s) == -1L) )
+        .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .sortBy({ case ((f, _), _) => f.followedAt})(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)})
+      // TODO : Fix me
+      .sortBy(_._3).reverse)
 
   }
-
 
 }

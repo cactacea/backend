@@ -128,7 +128,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a, r, f.friendedAt)}))
+    run(q).map(_.sortBy(_._1._1.friendedAt).reverse.map({ case ((f, a), r) => (a, r, f.friendedAt)}))
 
   }
 

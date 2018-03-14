@@ -121,14 +121,14 @@ class FollowingDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Relationships].filter(r => r.by == lift(accountId) && r.follow  == true && (r.followedAt < lift(s) || lift(s) == -1L) )
-        .join(query[Accounts]).on((r, a) => a.id == r.accountId)
+      query[Relationships].filter(f => f.by == lift(accountId) && f.follow  == true && (f.followedAt < lift(s) || lift(s) == -1L) )
+        .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .sortBy({ case ((f, _), _) => f.followedAt})(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)}))
+    run(q).map(_.sortBy(_._1._1.followedAt).reverse.map({ case ((f, a), r) => (a, r, f.followedAt)}))
 
   }
 

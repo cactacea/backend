@@ -132,7 +132,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((ff, a), r) => (a, r, ff.id.value)}))
+    run(q).map(_.sortBy(_._1._1.id.value).reverse.map({ case ((ff, a), r) => (a, r, ff.id.value)}))
 
   }
 
@@ -155,7 +155,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         .take(lift(c))
     }
 
-    run(q).map(_.map({case (ff, f) => (f, ff.id.value)}))
+    run(q).map(_.sortBy(_._1.id.value).reverse.map({case (ff, f) => (f, ff.id.value)}))
 
   }
 
@@ -179,7 +179,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         .take(lift(c))
     }
 
-    run(q).map(_.map({case (ff, f) => (f, ff.id.value)}))
+    run(q).map(_.sortBy(_._1.id.value).reverse.map({case (ff, f) => (f, ff.id.value)}))
 
   }
 

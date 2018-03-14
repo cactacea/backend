@@ -41,6 +41,7 @@ class MutesController @Inject()(s: Swagger) extends BackendController {
   postWithDoc("/accounts/:id/mutes") { o =>
     o.summary("Mute this account")
       .tag(tagName)
+      .request[PostMute]
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
 
