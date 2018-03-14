@@ -21,7 +21,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var accountsService: AccountsService = _
 
   getWithDoc("/accounts") { o =>
-    o.summary("Search accounts.")
+    o.summary("Search accounts")
       .tag(tagName)
       .request[GetAccounts]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
@@ -38,7 +38,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/accounts/:id") { o =>
-    o.summary("Get information about this account.")
+    o.summary("Get information about this account")
       .tag(tagName)
       .request[GetAccount]
       .responseWith[Account](Status.Ok.code, successfulMessage)
@@ -52,7 +52,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
   }
 
   putWithDoc("/accounts/:id/display_name") { o =>
-    o.summary("Change display name to session account.")
+    o.summary("Change display name to session account")
       .tag(tagName)
       .request[PutAccountDisplayName]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -66,7 +66,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/account/:account_name") { o =>
-    o.summary("Confirm account name exists.")
+    o.summary("Confirm account name exists")
       .tag(tagName)
       .request[GetAccountName]
       .responseWith[AccountNameNotExists](Status.Ok.code, "account name")

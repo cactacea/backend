@@ -23,7 +23,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
   protected val tagName = "Followers"
 
   getWithDoc("/accounts/:id/following") { o =>
-    o.summary("Get accounts list this user followed.")
+    o.summary("Get accounts list this user followed")
       .tag(tagName)
       .request[GetFollowing]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
@@ -41,7 +41,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/accounts/:id/following") { o =>
-    o.summary("Follow this account.")
+    o.summary("Follow this account")
       .tag(tagName)
       .request[PostFollowing]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -55,7 +55,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/accounts/:id/following") { o =>
-    o.summary("UnFollow this account.")
+    o.summary("UnFollow this account")
       .tag(tagName)
       .request[DeleteFollowing]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -69,7 +69,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/session/following") { o =>
-    o.summary("Get accounts list session account followed.")
+    o.summary("Get accounts list session account followed")
       .tag(tagName)
       .request[GetSessionFollowing]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
@@ -87,7 +87,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
   @Inject private var followersService: FollowersService = _
 
   getWithDoc("/accounts/:id/followers") { o =>
-    o.summary("Get accounts list this account is followed by.")
+    o.summary("Get accounts list this account is followed by")
       .tag(tagName)
       .request[GetFollowers]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
@@ -104,7 +104,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/session/followers") { o =>
-    o.summary("Get accounts list session account is followed by.")
+    o.summary("Get accounts list session account is followed by")
       .tag(tagName)
       .request[GetSessionFollowers]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)

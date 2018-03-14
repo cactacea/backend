@@ -24,7 +24,7 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var accountsService: AccountsService = _
 
   postWithDoc("/accounts/:id/reports") { o =>
-    o.summary("Report this account.")
+    o.summary("Report this account")
       .tag(tagName)
       .request[PostAccountReport]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -42,7 +42,7 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var feedsService: FeedsService = _
 
   postWithDoc("/feeds/:id/reports") { o =>
-    o.summary("Report this feed.")
+    o.summary("Report this feed")
       .tag(tagName)
       .request[PostFeedReport]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -60,7 +60,7 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var commentsService: CommentsService = _
 
   postWithDoc("/comments/:id/reports") { o =>
-    o.summary("Report this comment.")
+    o.summary("Report this comment")
       .tag(tagName)
       .request[PostCommentReport]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -78,7 +78,7 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var groupsService: GroupsService = _
 
   postWithDoc("/groups/:id/reports") { o =>
-    o.summary("Report this group.")
+    o.summary("Report this group")
       .tag(tagName)
       .request[PostGroupReport]
       .responseWith(Status.NoContent.code, successfulMessage)

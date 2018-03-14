@@ -24,7 +24,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   @Inject private var feedsService: FeedsService = _
 
   getWithDoc("/feeds") { o =>
-    o.summary("Search feeds.")
+    o.summary("Search feeds")
       .tag(tagName)
       .request[GetFeeds]
       .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
@@ -41,7 +41,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   postWithDoc("/feeds") { o =>
-    o.summary("Post a feed.")
+    o.summary("Post a feed")
       .tag(tagName)
       .request[PostFeed]
       .responseWith[FeedCreated](Status.Created.code, successfulMessage)
@@ -60,7 +60,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   getWithDoc("/feeds/:id") { o =>
-    o.summary("Get basic information about this feed.")
+    o.summary("Get basic information about this feed")
       .tag(tagName)
       .request[GetFeed]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
@@ -74,7 +74,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   putWithDoc("/feeds/:id") { o =>
-    o.summary("Update this feed.")
+    o.summary("Update this feed")
       .tag(tagName)
       .request[PutFeed]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -94,7 +94,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   deleteWithDoc("/feeds/:id") { o =>
-    o.summary("Delete this feed.")
+    o.summary("Delete this feed")
       .tag(tagName)
       .request[DeleteFeed]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -107,7 +107,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   getWithDoc("/accounts/:id/feeds") { o =>
-    o.summary("Get feeds list this account posted.")
+    o.summary("Get feeds list this account posted")
       .tag(tagName)
       .request[GetFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
@@ -127,7 +127,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   @Inject private var feedLikesService: FeedLikesService = _
 
   getWithDoc("/feeds/:id/likes") { o =>
-    o.summary("Get accounts list who set a like to this feed.")
+    o.summary("Get accounts list who set a like to this feed")
       .tag(tagName)
       .request[GetFeedLikes]
       .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
@@ -145,7 +145,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   postWithDoc("/feeds/:id/likes") { o =>
-    o.summary("Set a like on this feed.")
+    o.summary("Set a like on this feed")
       .tag(tagName)
       .request[PostFeedLike]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -160,7 +160,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   deleteWithDoc("/feeds/:id/likes") { o =>
-    o.summary("Remove a like on this feed.")
+    o.summary("Remove a like on this feed")
       .tag(tagName)
       .request[DeleteFeedLike]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -193,7 +193,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   getWithDoc("/session/feeds") { o =>
-    o.summary("Get feeds list session account posted.")
+    o.summary("Get feeds list session account posted")
       .tag(tagName)
       .request[GetSessionFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
@@ -209,7 +209,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   }
 
   getWithDoc("/session/likes") { o =>
-    o.summary("Get feeds list session account set a like.")
+    o.summary("Get feeds list session account set a like")
       .tag(tagName)
       .request[GetSessionLikedFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)

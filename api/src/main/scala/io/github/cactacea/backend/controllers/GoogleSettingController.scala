@@ -18,7 +18,7 @@ class GoogleSettingController @Inject()(s: Swagger) extends BackendController {
   @Inject private var settingsService: SettingsService = _
 
   postWithDoc(s"/social_accounts/$accountType") { o =>
-    o.summary(s"Connect to $accountType.")
+    o.summary(s"Connect to $accountType")
       .tag("Social Accounts")
       .request[PostSocialAccount]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -34,7 +34,7 @@ class GoogleSettingController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc(s"/social_accounts/$accountType") { o =>
-    o.summary(s"Disconnect from $accountType.")
+    o.summary(s"Disconnect from $accountType")
       .tag("Social Accounts")
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)

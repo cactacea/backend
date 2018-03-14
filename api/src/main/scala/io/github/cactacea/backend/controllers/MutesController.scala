@@ -23,7 +23,7 @@ class MutesController @Inject()(s: Swagger) extends BackendController {
   @Inject private var mutesService: MutesService = _
 
   getWithDoc("/session/mutes") { o =>
-    o.summary("Get accounts list session account muted.")
+    o.summary("Get accounts list session account muted")
       .tag(tagName)
       .request[GetSessionMutes]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
@@ -39,7 +39,7 @@ class MutesController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/accounts/:id/mutes") { o =>
-    o.summary("Mute this account.")
+    o.summary("Mute this account")
       .tag(tagName)
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
@@ -52,7 +52,7 @@ class MutesController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/accounts/:id/mutes") { o =>
-    o.summary("UnMute this account.")
+    o.summary("UnMute this account")
       .tag(tagName)
       .request[DeleteMute]
       .responseWith(Status.NoContent.code, successfulMessage)
