@@ -1,9 +1,8 @@
 package com.jakehschwartz.finatra.swagger
 
 import java.lang.annotation.Annotation
-import java.lang.reflect.{Field, Modifier, ParameterizedType}
+import java.lang.reflect.ParameterizedType
 import java.util
-import java.util.stream.Collectors
 import javax.inject.{Inject => JInject}
 
 import com.fasterxml.jackson.databind.{JavaType, ObjectMapper}
@@ -18,7 +17,7 @@ import io.swagger.jackson.ModelResolver
 import io.swagger.models._
 import io.swagger.models.parameters._
 import io.swagger.models.properties.Property
-import io.swagger.util.{Json, PrimitiveType}
+import io.swagger.util.Json
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.`type`.TypeDescription
 import net.bytebuddy.description.modifier.Visibility
@@ -83,7 +82,6 @@ object Resolvers {
   }
 
   def register(objectMapper: ObjectMapper = Json.mapper): Unit = {
-    objectMapper.registerModule(WrappedValueModule)
     ModelConverters.getInstance().addConverter(new ScalaOptionResolver(objectMapper))
   }
 
@@ -178,7 +176,7 @@ class FinatraSwagger(swagger: Swagger) {
         val (isRequired, innerOptionType, innerOptionClassType) = field.getGenericType match {
           case parameterizedType: ParameterizedType =>
 
-            val required = parameterizedType.getRawType.asInstanceOf[Class[_]] == classOf[Option[_]]
+            val required = parameterizedType.getRawType.asInstanceOf[Class[_]] != classOf[Option[_]]
 
             val actualType = Some(parameterizedType.getActualTypeArguments.apply(0))
             val classType = Some(parameterizedType.getActualTypeArguments.apply(0).asInstanceOf[Class[_]])
