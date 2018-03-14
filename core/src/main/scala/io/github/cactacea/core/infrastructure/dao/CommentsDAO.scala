@@ -202,7 +202,6 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         })
       })
-      .map(_.sortBy(_._1.id.value).reverse)
   }
 
   def find(commentId: CommentId): Future[Option[Comments]] = {
