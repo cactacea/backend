@@ -2,7 +2,7 @@ package io.github.cactacea.backend.swagger
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.google.inject.Provides
-import com.jakehschwartz.finatra.swagger.{Resolvers, SwaggerModule, SwaggerTypeRegister}
+import com.jakehschwartz.finatra.swagger.{SwaggerModule, SwaggerTypeRegister}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
 import io.swagger.models.{Info, Swagger}
@@ -12,8 +12,6 @@ import scala.collection.JavaConverters._
 
 object SampleSwagger extends Swagger {
   Json.mapper().setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy)
-
-  Resolvers.register()
 
   val map: Map[Class[_], PrimitiveType] = Map(
     classOf[AccountId] -> PrimitiveType.LONG,
