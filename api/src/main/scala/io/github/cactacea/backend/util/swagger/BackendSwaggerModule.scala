@@ -61,7 +61,6 @@ object BackendSwaggerModule extends SwaggerModule {
       "groups" -> "to create and delete groups",
       "follower_list" -> "to read the list of followers and followed-by users",
       "likes" -> "to read any public profile info and media on a user’s behalf",
-      "public_content" -> "to read a user's profile info and media (granted by default)",
       "relationships" -> "to follow and unfollow accounts on a user's behalf"
     )
 
