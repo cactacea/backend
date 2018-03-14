@@ -250,7 +250,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
           a.accountStatus  == lift(status) && (infix"a.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
           query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty})
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
-      .sortBy({ case (a, r) => a.id})(Ord.descNullsLast)
+      .sortBy({ case (a, _) => a.id})(Ord.descNullsLast)
       .drop(lift(o))
       .take(lift(c))
     }
@@ -261,7 +261,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
       blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
     } yield (accounts, blocksCount))
       .map({ case (accounts, blocksCount) =>
-        accounts.map({ t =>
+        accounts.sortBy(_._1.id.value).reverse.map({ t =>
           val a = t._1
           val r = t._2
           val b = blocksCount.filter(_.id == a.id).headOption

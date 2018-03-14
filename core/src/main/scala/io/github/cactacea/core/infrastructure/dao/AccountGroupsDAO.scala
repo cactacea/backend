@@ -142,11 +142,11 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
         .leftJoin(query[Messages]).on({ case ((_, g), m) => g.messageId.exists(_ == m.id) })
         .leftJoin(query[AccountMessages]).on({ case (((_, g), _), am) => g.messageId.exists(_ == am.messageId) && am.accountId == lift(accountId) })
-        .sortBy({ case (((ag, g), _), _) => ag.id })(Ord.descNullsLast)
+        .sortBy({ case (((ag, _), _), _) => ag.id })(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case (((ag, g), m), am) => (g, m, am, None, None, ag.id)}))
+    run(q).map(_.sortBy(_._1._1._1.id.value).reverse.map({ case (((ag, g), m), am) => (g, m, am, None, None, ag.id)}))
 
   }
 

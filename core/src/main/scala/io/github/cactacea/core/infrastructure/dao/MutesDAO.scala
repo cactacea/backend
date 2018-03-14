@@ -100,7 +100,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a, r, f.mutedAt)}))
+    run(q).map(_.sortBy(_._1._1.mutedAt).reverse.map({ case ((f, a), r) => (a, r, f.mutedAt)}))
 
   }
 

@@ -195,7 +195,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
       blocksCount <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
     } yield (comments, blocksCount))
       .map({ case (accounts, blocksCount) =>
-        accounts.map({ t =>
+        accounts.sortBy(_._1._1.id.value).reverse.map({ t =>
           val c = t._1._1
           val a = t._1._2
           val r = t._2

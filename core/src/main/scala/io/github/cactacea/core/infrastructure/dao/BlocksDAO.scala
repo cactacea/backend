@@ -106,7 +106,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     }
 
     run(q)
-      .map(_.map({ case ((b, a), r) => (a, r, b.id.value)}))
+      .map(_.sortBy(_._1._1.id.value).reverse.map({ case ((b, a), r) => (a, r, b.id.value)}))
   }
 
 }
