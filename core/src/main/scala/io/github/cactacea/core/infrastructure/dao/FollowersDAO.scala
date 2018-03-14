@@ -107,7 +107,9 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)})
+      // TODO : Fix me
+      .sortBy(_._3).reverse)
 
   }
 

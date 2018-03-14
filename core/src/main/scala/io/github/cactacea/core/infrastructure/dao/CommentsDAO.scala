@@ -188,6 +188,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
         .take(lift(c))
     }
 
+
     (for {
       comments <- run(q)
       ids = comments.map(_._1._1.id)
@@ -202,6 +203,8 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         })
       })
+      // TODO : Fix me
+      .map(_.sortBy(_._1.id.value).reverse)
   }
 
   def find(commentId: CommentId): Future[Option[Comments]] = {

@@ -191,6 +191,8 @@ class FeedsDAO @Inject()(db: DatabaseService) {
           val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
           (nf, t, m)
         })
+          // TODO : Fix me
+          .sortBy(_._1.id.value).reverse
     })
   }
 
