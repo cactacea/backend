@@ -21,7 +21,7 @@ class SessionsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var sessionService: SessionsService = _
 
   postWithDoc("/sessions") { o =>
-    o.summary("Sign up.")
+    o.summary("Sign up")
       .tag(tagName)
       .request[PostSignUp]
       .responseWith[Account](Status.Ok.code, successfulMessage)
@@ -43,7 +43,7 @@ class SessionsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/sessions") { o =>
-    o.summary("Sign in.")
+    o.summary("Sign in")
       .tag(tagName)
       .request[GetSignIn]
       .responseWith[Account](Status.Ok.code, successfulMessage)

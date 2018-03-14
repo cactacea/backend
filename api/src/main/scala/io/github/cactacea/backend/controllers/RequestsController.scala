@@ -24,7 +24,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var friendsService: FriendsService = _
 
   getWithDoc("/session/requests") { o =>
-    o.summary("Get friend requests list session account created or received.")
+    o.summary("Get friend requests list session account created or received")
       .tag(tagName)
       .request[GetSessionFriendRequests]
       .responseWith[Array[FriendRequest]](Status.Ok.code, successfulMessage)
@@ -41,7 +41,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/session/requests/:id/accept") { o =>
-    o.summary("Accept a friend request.")
+    o.summary("Accept a friend request")
       .tag(tagName)
       .request[PostAcceptFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -56,7 +56,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/session/requests/:id/reject") { o =>
-    o.summary("Reject a friend request.")
+    o.summary("Reject a friend request")
       .tag(tagName)
       .request[PostRejectFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -71,7 +71,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
   }
 
   postWithDoc("/accounts/:id/requests") { o =>
-    o.summary("Create a friend request to this account.")
+    o.summary("Create a friend request to this account")
       .tag(tagName)
       .request[PostFriendRequest]
       .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
@@ -87,7 +87,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/accounts/:id/requests") { o =>
-    o.summary("Remove a friend request to this account.")
+    o.summary("Remove a friend request to this account")
       .tag(tagName)
       .request[DeleteFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)

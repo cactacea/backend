@@ -11,7 +11,7 @@ class ResourcesController @Inject()(s: Swagger) extends BackendController  {
   protected implicit val swagger = s
 
   getWithDoc("/assets/:*") { o =>
-    o.summary("Get a asset file.")
+    o.summary("Get a asset file")
       .tag("Resources")
 
   } { request: Request =>

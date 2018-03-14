@@ -24,7 +24,7 @@ class FriendsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var friendsService: FriendsService = _
 
   getWithDoc("/session/friends") { o =>
-    o.summary("Get friends list.")
+    o.summary("Get friends list")
       .tag(tagName)
       .request[GetSessionFriends]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
@@ -40,7 +40,7 @@ class FriendsController @Inject()(s: Swagger) extends BackendController {
   }
 
   getWithDoc("/accounts/:id/friends") { o =>
-    o.summary("Get this account's friends list.")
+    o.summary("Get this account's friends list")
       .tag(tagName)
       .request[GetFriends]
       .responseWith[Account](Status.Ok.code, successfulMessage)
@@ -58,7 +58,7 @@ class FriendsController @Inject()(s: Swagger) extends BackendController {
   }
 
   deleteWithDoc("/accounts/:id/friends") { o =>
-    o.summary("Remove friendship to this account.")
+    o.summary("Remove friendship to this account")
       .tag(tagName)
       .request[DeleteFriend]
       .responseWith(Status.NoContent.code, successfulMessage)

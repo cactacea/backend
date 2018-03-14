@@ -23,7 +23,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
   @Inject private var sessionService: SessionsService = _
 
   getWithDoc("/session") { o =>
-    o.summary("Get basic information about session account.")
+    o.summary("Get basic information about session account")
       .tag(tagName)
       .responseWith[Account](Status.Ok.code, successfulMessage)
 
@@ -35,7 +35,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
 
   deleteWithDoc("/session") { o =>
-    o.summary("Sign out.")
+    o.summary("Sign out")
       .tag(tagName)
       .responseWith(Status.NoContent.code, successfulMessage)
 
@@ -48,7 +48,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
 
   putWithDoc("/session/account_name") { o =>
-    o.summary("Update the account name.")
+    o.summary("Update the account name")
       .tag(tagName)
       .request[PutSessionAccountName]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -65,7 +65,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
 
   putWithDoc("/session/password") { o =>
-    o.summary("Update the password.")
+    o.summary("Update the password")
       .tag(tagName)
       .request[PutSessionPassword]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -81,7 +81,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
 
   putWithDoc("/session/profile") { o =>
-    o.summary("Update the profile.")
+    o.summary("Update the profile")
       .tag(tagName)
       .request[PutSessionProfile]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -99,7 +99,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
   }
 
   putWithDoc("/session/profile_image") { o =>
-    o.summary("Update the profile image.")
+    o.summary("Update the profile image")
       .tag(tagName)
       .request[PutSessionProfileImage]
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -127,7 +127,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
   @Inject private var settingsService: SettingsService = _
 
   getWithDoc("/social_accounts") { o =>
-    o.summary("Get status abount social accounts.")
+    o.summary("Get status abount social accounts")
       .tag("Social Accounts")
       .responseWith[Array[SocialAccount]](Status.Ok.code, successfulMessage)
 

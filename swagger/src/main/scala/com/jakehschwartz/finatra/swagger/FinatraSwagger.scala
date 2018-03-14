@@ -2,19 +2,17 @@ package com.jakehschwartz.finatra.swagger
 
 import java.lang.annotation.Annotation
 import java.lang.reflect.ParameterizedType
-import java.util
 import javax.inject.{Inject => JInject}
 
-import com.fasterxml.jackson.databind.{JavaType, ObjectMapper}
 import com.google.inject.{Inject => GInject}
+import com.jakehschwartz.finatra.swagger.SchemaUtil._
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.{FormParam, QueryParam, RouteParam, Header => HeaderParam}
-import io.swagger.converter.{ModelConverter, ModelConverterContext, ModelConverters}
-import io.swagger.jackson.ModelResolver
+import io.swagger.annotations.ApiModelProperty
+import io.swagger.converter.ModelConverters
 import io.swagger.models._
 import io.swagger.models.parameters._
 import io.swagger.models.properties.Property
-import io.swagger.util.Json
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.`type`.TypeDescription
 import net.bytebuddy.description.modifier.Visibility
@@ -23,8 +21,6 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.reflect.runtime._
 import scala.reflect.runtime.universe._
-import SchemaUtil._
-import io.swagger.annotations.ApiModelProperty
 
 object FinatraSwagger {
   private val finatraRouteParamter = ":(\\w+)".r
@@ -51,29 +47,6 @@ case class BodyRequestParam(description: String = "", name: String, typ: Class[_
 case class RequestInjectRequestParam(name: String) extends FinatraRequestParam
 case class HeaderRequestParam(name: String, required: Boolean = true, description: String = "", typ: Class[_]) extends FinatraRequestParam with ModelParam
 case class FormRequestParam(name: String, description: String = "", required: Boolean = true, typ: Class[_]) extends FinatraRequestParam with ModelParam
-
-object Resolvers {
-  class ScalaOptionResolver(objectMapper: ObjectMapper) extends ModelResolver(objectMapper) {
-    override def resolveProperty(
-      propType: JavaType,
-      context: ModelConverterContext,
-      annotations: Array[Annotation],
-      next: util.Iterator[ModelConverter]): Property = {
-      if (propType.getRawClass == classOf[Option[_]]) {
-        try {
-          super.resolveProperty(propType.containedType(0), context, annotations, next)
-        } catch {
-          case _: Exception =>
-            super.resolveProperty(propType, context, annotations, next)
-        }
-      } else super.resolveProperty(propType, context, annotations, next)
-    }
-  }
-
-  def register(objectMapper: ObjectMapper = Json.mapper): Unit = {
-    ModelConverters.getInstance().addConverter(new ScalaOptionResolver(objectMapper))
-  }
-}
 
 class FinatraSwagger(swagger: Swagger) {
 
@@ -266,6 +239,7 @@ class FinatraSwagger(swagger: Swagger) {
   private def registerModel(typeClass: Class[_], name: Option[String] = None) = {
     val modelConverters = ModelConverters.getInstance()
     val models = modelConverters.readAll(typeClass)
+
     for (entry <- models.entrySet().asScala) {
       swagger.addDefinition(entry.getKey, entry.getValue)
     }

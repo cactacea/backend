@@ -28,7 +28,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
   @Inject private var dataHandler: OAuthHandler = _
 
   getWithDoc("/oauth2/authorize") { o =>
-    o.summary("OAuth for authorization.")
+    o.summary("OAuth for authorization")
       .tag("OAuth2")
 
   } { req: GetAuthorizeCode =>
@@ -45,7 +45,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
   }
 
   postWithDoc("/oauth2/authorize") { o =>
-    o.summary("OAuth for authorization confirm.")
+    o.summary("OAuth for authorization confirm")
       .tag("OAuth2")
 
   } { req: PostOAuthToken =>
@@ -80,7 +80,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
   }
 
   postWithDoc("/oauth2/token") { o =>
-    o.summary("OAuth for token requests.")
+    o.summary("OAuth for token requests")
       .tag("OAuth2")
 
   } {req: Request =>
