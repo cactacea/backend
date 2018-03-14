@@ -7,8 +7,11 @@ import javax.inject.{Inject => JInject}
 
 import com.fasterxml.jackson.databind.{JavaType, ObjectMapper}
 import com.google.inject.{Inject => GInject}
+import com.jakehschwartz.finatra.swagger.SchemaUtil._
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.{FormParam, QueryParam, RouteParam, Header => HeaderParam}
+import com.twitter.inject.domain.WrappedValue
+import io.swagger.annotations.ApiModelProperty
 import io.swagger.converter.{ModelConverter, ModelConverterContext, ModelConverters}
 import io.swagger.jackson.ModelResolver
 import io.swagger.models._
@@ -23,8 +26,6 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.reflect.runtime._
 import scala.reflect.runtime.universe._
-import SchemaUtil._
-import io.swagger.annotations.ApiModelProperty
 
 object FinatraSwagger {
   private val finatraRouteParamter = ":(\\w+)".r
@@ -66,7 +67,11 @@ object Resolvers {
           case _: Exception =>
             super.resolveProperty(propType, context, annotations, next)
         }
-      } else super.resolveProperty(propType, context, annotations, next)
+      } else if (propType.getRawClass == classOf[WrappedValue[_]]) {
+        super.resolveProperty(propType.containedType(0), context, annotations, next)
+      } else {
+        super.resolveProperty(propType, context, annotations, next)
+      }
     }
   }
 
@@ -164,7 +169,7 @@ class FinatraSwagger(swagger: Swagger) {
         val (isRequired, innerOptionType, innerOptionClassType) = field.getGenericType match {
           case parameterizedType: ParameterizedType =>
 
-            val required = parameterizedType.getRawType.asInstanceOf[Class[_]] != classOf[Option[_]]
+            val required = parameterizedType.getRawType.asInstanceOf[Class[_]] == classOf[Option[_]]
 
             val actualType = Some(parameterizedType.getActualTypeArguments.apply(0))
             val classType = Some(parameterizedType.getActualTypeArguments.apply(0).asInstanceOf[Class[_]])
@@ -266,6 +271,7 @@ class FinatraSwagger(swagger: Swagger) {
   private def registerModel(typeClass: Class[_], name: Option[String] = None) = {
     val modelConverters = ModelConverters.getInstance()
     val models = modelConverters.readAll(typeClass)
+
     for (entry <- models.entrySet().asScala) {
       swagger.addDefinition(entry.getKey, entry.getValue)
     }

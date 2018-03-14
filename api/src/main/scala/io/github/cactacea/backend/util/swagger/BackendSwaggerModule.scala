@@ -1,18 +1,23 @@
 package io.github.cactacea.backend.swagger
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.google.inject.Provides
-import com.jakehschwartz.finatra.swagger.{SnakeCaseConverter, SwaggerModule}
-import io.swagger.converter.ModelConverters
+import com.jakehschwartz.finatra.swagger.{Resolvers, SwaggerModule}
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
 import io.swagger.models.{Info, Swagger}
+import io.swagger.util.Json
 
 import scala.collection.JavaConverters._
 
+object SampleSwagger extends Swagger {
+  Json.mapper().setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy)
+
+  Resolvers.register()
+}
+
 object BackendSwaggerModule extends SwaggerModule {
 
-  val swaggerUI = new Swagger()
-
-  ModelConverters.getInstance().addConverter(new SnakeCaseConverter())
+  val swaggerUI = SampleSwagger
 
   @Provides
   def swagger: Swagger = {
