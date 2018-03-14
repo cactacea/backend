@@ -2,10 +2,11 @@ package io.github.cactacea.backend.swagger
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.google.inject.Provides
-import com.jakehschwartz.finatra.swagger.{Resolvers, SwaggerModule}
+import com.jakehschwartz.finatra.swagger.{Resolvers, SwaggerModule, SwaggerTypeRegister}
+import io.github.cactacea.core.infrastructure.identifiers._
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
 import io.swagger.models.{Info, Swagger}
-import io.swagger.util.Json
+import io.swagger.util.{Json, PrimitiveType}
 
 import scala.collection.JavaConverters._
 
@@ -13,6 +14,33 @@ object SampleSwagger extends Swagger {
   Json.mapper().setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy)
 
   Resolvers.register()
+
+  val map: Map[Class[_], PrimitiveType] = Map(
+    classOf[AccountId] -> PrimitiveType.LONG,
+    classOf[AccountGroupId] -> PrimitiveType.LONG,
+    classOf[AccountId] -> PrimitiveType.LONG,
+    classOf[AccountReportId] -> PrimitiveType.LONG,
+    classOf[BlockId] -> PrimitiveType.LONG,
+    classOf[CommentId] -> PrimitiveType.LONG,
+    classOf[CommentLikeId] -> PrimitiveType.LONG,
+    classOf[CommentReportId] -> PrimitiveType.LONG,
+    classOf[DeviceId] -> PrimitiveType.LONG,
+    classOf[FeedId] -> PrimitiveType.LONG,
+    classOf[FeedLikeId] -> PrimitiveType.LONG,
+    classOf[FeedReportId] -> PrimitiveType.LONG,
+    classOf[FriendRequestId] -> PrimitiveType.LONG,
+    classOf[GroupId] -> PrimitiveType.LONG,
+    classOf[GroupInvitationId] -> PrimitiveType.LONG,
+    classOf[GroupReportId] -> PrimitiveType.LONG,
+    classOf[MediumId] -> PrimitiveType.LONG,
+    classOf[MessageId] -> PrimitiveType.LONG,
+    classOf[NotificationId] -> PrimitiveType.LONG,
+    classOf[SessionId] -> PrimitiveType.LONG,
+    classOf[StampId] -> PrimitiveType.LONG,
+    classOf[TimelineFeedId] -> PrimitiveType.LONG
+  )
+  SwaggerTypeRegister.setExternalTypes(map.asJava)
+
 }
 
 object BackendSwaggerModule extends SwaggerModule {

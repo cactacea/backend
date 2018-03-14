@@ -1,8 +1,9 @@
 package com.jakehschwartz.finatra.swagger
 
 import java.lang.annotation.Annotation
-import java.lang.reflect.ParameterizedType
+import java.lang.reflect.{Field, Modifier, ParameterizedType}
 import java.util
+import java.util.stream.Collectors
 import javax.inject.{Inject => JInject}
 
 import com.fasterxml.jackson.databind.{JavaType, ObjectMapper}
@@ -17,7 +18,7 @@ import io.swagger.jackson.ModelResolver
 import io.swagger.models._
 import io.swagger.models.parameters._
 import io.swagger.models.properties.Property
-import io.swagger.util.Json
+import io.swagger.util.{Json, PrimitiveType}
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.`type`.TypeDescription
 import net.bytebuddy.description.modifier.Visibility
@@ -60,6 +61,12 @@ object Resolvers {
       context: ModelConverterContext,
       annotations: Array[Annotation],
       next: util.Iterator[ModelConverter]): Property = {
+      if (propType.getInterfaces.size() > 0) {
+        val b = propType.getInterfaces.get(0).getRawClass
+        if (b == classOf[WrappedValue[_]]) {
+          return super.resolveProperty(propType, context, annotations, next)
+        }
+      }
       if (propType.getRawClass == classOf[Option[_]]) {
         try {
           super.resolveProperty(propType.containedType(0), context, annotations, next)
@@ -76,8 +83,10 @@ object Resolvers {
   }
 
   def register(objectMapper: ObjectMapper = Json.mapper): Unit = {
+    objectMapper.registerModule(WrappedValueModule)
     ModelConverters.getInstance().addConverter(new ScalaOptionResolver(objectMapper))
   }
+
 }
 
 class FinatraSwagger(swagger: Swagger) {
