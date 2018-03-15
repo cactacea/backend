@@ -33,7 +33,7 @@ class TwitterController @Inject()(s: Swagger) extends BackendController {
   } { request: PostSocialAccountSignUp =>
     sessionService.signUp(
       accountType,
-      request.accountName,
+      request.name,
       request.displayName,
       request.password,
       request.accessTokenKey,

@@ -23,7 +23,7 @@ class NotificationsController @Inject()(s: Swagger) extends BackendController {
     o.summary("Search notifications")
       .request[GetNotifications]
       .responseWith[Array[Notification]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: GetNotifications =>
     notificationsService.find(

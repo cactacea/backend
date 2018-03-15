@@ -1,10 +1,10 @@
-package io.github.cactacea.backend.models.requests.account
+package io.github.cactacea.backend.models.requests.group
 
 import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
 import io.swagger.annotations.ApiModelProperty
 
-case class DeleteFollowing(
-                            @ApiModelProperty(value = "Account Identifier.")
+case class GetAccountGroup(
+                            @ApiModelProperty(value = "Account identifier.")
                             @RouteParam id: AccountId
-                       )
+                    )

@@ -9,7 +9,8 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.BadRequest
+import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
 
 @Singleton
 class AccountsController @Inject()(s: Swagger) extends BackendController {
@@ -43,6 +44,8 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
       .request[GetAccount]
       .responseWith[Account](Status.Ok.code, successfulMessage)
       .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+
 
   } { request: GetAccount =>
     accountsService.find(
@@ -56,6 +59,8 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PutAccountDisplayName]
       .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: PutAccountDisplayName =>
     accountsService.update(

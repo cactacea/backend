@@ -28,7 +28,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionInvitations]
       .responseWith[Array[GroupInvitation]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: GetSessionInvitations =>
     invitationService.find(
@@ -44,10 +44,10 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostAcceptInvitation]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
       .responseWith[BadRequest](Status.BadRequest.code, AuthorityNotFound.message)
       .responseWith[BadRequest](Status.BadRequest.code, AccountAlreadyJoined.message)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, GroupNotFound.message)
 
   } { request: PostAcceptInvitation =>
     invitationService.accept(
@@ -61,8 +61,8 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostRejectInvitation]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupInvitationNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, GroupInvitationNotFound.message)
 
   } { request: PostRejectInvitation =>
     invitationService.reject(
@@ -76,8 +76,8 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostInvitationAccounts]
       .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, GroupNotFound.message)
 
   } { request: PostInvitationAccounts =>
     invitationService.create(
@@ -92,9 +92,9 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostInvitationAccount]
       .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, GroupNotFound.message)
 
   }  { request: PostInvitationAccount =>
     invitationService.create(

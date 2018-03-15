@@ -52,7 +52,7 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
-        val signInRes = get(s"/sessions?account_name=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 
@@ -76,7 +76,7 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
-        val signInRes = get(s"/sessions?account_name=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 
@@ -113,7 +113,7 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
-        val signInRes = get(s"/sessions?account_name=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 

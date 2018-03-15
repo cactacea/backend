@@ -16,13 +16,14 @@ class FollowingRepository {
   @Inject private var validationDAO: ValidationDAO = _
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
-    followingDAO.findAll(accountId, since, offset, count, sessionId)
-      .map(_.map({ case (a, r, n) => Account(a, r, n)}))
+    for {
+      _ <- validationDAO.existAccount(accountId)
+      r <- followingDAO.findAll(accountId, since, offset, count, sessionId).map(_.map({ case (a, r, n) => Account(a, r, n)}))
+    } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
-    val accountId = sessionId.toAccountId
-    followingDAO.findAll(accountId, since, offset, count, sessionId)
+    followingDAO.findAll(since, offset, count, sessionId)
       .map(_.map({ case (a, r, n) => Account(a, r, n)}))
   }
 

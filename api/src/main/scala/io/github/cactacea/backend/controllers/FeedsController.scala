@@ -3,15 +3,14 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import io.swagger.models.Swagger
-
-import io.github.cactacea.backend.models.requests.account.{GetFeeds, GetLikes}
+import io.github.cactacea.backend.models.requests.account.GetLikes
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.domain.models.Feed
+import io.github.cactacea.core.domain.models.{Account, Feed}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, FeedAlreadyLiked, FeedNotFound, FeedNotLiked}
+import io.github.cactacea.core.util.responses.CactaceaError._
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 
 @Singleton
@@ -26,11 +25,12 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   getWithDoc("/feeds") { o =>
     o.summary("Search feeds")
       .tag(tagName)
-      .request[GetFeeds]
+      .request[GetAccountFeeds]
       .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-      .responseWith(Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
-  } { request: GetFeeds =>
+  } { request: GetAccountFeeds =>
     feedsService.find(
       request.id,
       request.since,
@@ -45,11 +45,12 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[PostFeed]
       .responseWith[FeedCreated](Status.Created.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, MediumNotFound.message)
 
   } { request: PostFeed =>
     feedsService.create(
-      request.feedMessage,
+      request.message,
       request.mediumIds.map(_.toList),
       request.tags.map(_.toList),
       request.privacyType,
@@ -64,7 +65,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetFeed]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
-      .responseWith(Status.NotFound.code, FeedNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
 
   } { request: GetFeed =>
     feedsService.find(
@@ -78,12 +79,13 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[PutFeed]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith(Status.NotFound.code, FeedNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, MediumNotFound.message)
 
   } { request: PutFeed =>
     feedsService.edit(
       request.id,
-      request.feedMessage,
+      request.message,
       request.mediumIds.map(_.toList),
       request.tags.map(_.toList),
       request.privacyType,
@@ -98,6 +100,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[DeleteFeed]
       .responseWith(Status.NoContent.code, successfulMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
 
   } { request: DeleteFeed =>
     feedsService.delete(
@@ -109,12 +112,12 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
   getWithDoc("/accounts/:id/feeds") { o =>
     o.summary("Get feeds list this account posted")
       .tag(tagName)
-      .request[GetFeeds]
+      .request[GetAccountFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
-  } { request: GetFeeds =>
+  } { request: GetAccountFeeds =>
     feedsService.find(
       request.id,
       request.since,
@@ -130,9 +133,9 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     o.summary("Get accounts list who set a like to this feed")
       .tag(tagName)
       .request[GetFeedLikes]
-      .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith(Status.NotFound.code, FeedNotFound.message)
+      .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
 
   } { request: GetFeedLikes =>
     feedLikesService.findAccounts(
@@ -149,11 +152,11 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[PostFeedLike]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith(Status.BadRequest.code, FeedAlreadyLiked.message)
-      .responseWith[NotFound](Status.NotFound.code, FeedNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, FeedAlreadyLiked.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
 
   } { request: PostFeedLike =>
-    feedLikesService.delete(
+    feedLikesService.create(
       request.id,
       SessionContext.id
     ).map(_ => response.noContent)
@@ -164,8 +167,8 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[DeleteFeedLike]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith(Status.BadRequest.code, FeedNotLiked.message)
-      .responseWith(Status.NotFound.code, FeedNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, FeedNotLiked.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
 
   } { request: DeleteFeedLike =>
     feedLikesService.delete(
@@ -179,8 +182,8 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetLikes]
       .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: GetLikes =>
     feedLikesService.find(
@@ -197,7 +200,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetSessionFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: GetSessionFeeds =>
     feedsService.find(
@@ -213,7 +216,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetSessionLikedFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: GetSessionLikedFeeds =>
     feedLikesService.find(

@@ -22,7 +22,7 @@ class TimelineController @Inject()(s: Swagger) extends BackendController {
       .tag("Timeline")
       .request[GetTimeline]
       .responseWith[Array[TimelineFeed]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: GetTimeline =>
     timelineService.find(
