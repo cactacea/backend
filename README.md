@@ -19,23 +19,23 @@ Cactacea provides the following features.
 
 
 
-## Components ##
+## Serivces ##
 
-Cactacea consists of four main components.
+Cactacea consists of the following injectable services.
 
-- `PushNotification` - push notifications to users.
-- `Storage` - store uploaded images.
-- `Message` - define notifidation messages.
-- `Queue` - queue to fan out feeds, messages and etc.
+- `Config Service`
+- `DeepLink Service`
+- `FanOut Service`
+- `Identify Service`
+- `Injection`
+- `Notification Messages Service`
+- `Publish Service`
+- `Push Notifications Service`
+- `Social Accounts Service`
+- `Storage Service`
+- `SubScribe Service`
+- `Transcode Service`
 
+## Documentation ##
 
-## Modules ##
-
-Modules are implements of above components and the following modules are provided.
-
-- [`DefaultPushNotificationModule`](https://github.com/cactacea/backend/blob/master/backend/src/main/scala/io/github/cactacea/backend/modules/DefaultPushNotificationModule.scala) - no push notifications module.
-- [`DefaultStorateModule`](https://github.com/cactacea/backend/blob/master/backend/src/main/scala/io/github/cactacea/backend/modules/DefaultStorageModule.scala) - store files to local volumes.
-- DefaultMessagingModule - define default messages.
-- [`DefaultQueueModule`](https://github.com/cactacea/backend/blob/master/backend/src/main/scala/io/github/cactacea/backend/modules/DefaultQueueModule.scala) - no queue module.
-- `OneSignalModule` - push notifications via [OneSignal](https://onesignal.com/).
-- `S3Module` - store files to Amazon [S3](https://aws.amazon.com/s3/).
+- [`REST API`](https://rebilly.github.io/ReDoc/?url=http://backend.cactacea.io/swagger.yaml)
