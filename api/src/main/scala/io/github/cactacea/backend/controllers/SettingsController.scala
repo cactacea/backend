@@ -20,7 +20,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var settingsService: SettingsService = _
   @Inject private var deviceTokenService: DevicesService = _
 
-  getWithDoc("/push_notification") { o =>
+  getWithDoc("/session/push_notification") { o =>
     o.summary("Get this push notification settings")
       .tag(tagName)
       .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
@@ -31,11 +31,11 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  putWithDoc("/push_notification") { o =>
+  putWithDoc("/session/push_notification") { o =>
     o.summary("Update ths push notification settings")
       .tag(tagName)
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: PutNotificationSetting =>
     settingsService.updatePushNotificationSettings(
@@ -49,7 +49,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/advertisement") { o =>
+  getWithDoc("/session/advertisement") { o =>
     o.summary("Get the advertisement settings")
       .tag(tagName)
       .responseWith[AdvertisementSetting](Status.Ok.code, successfulMessage)
@@ -60,12 +60,12 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  putWithDoc("/advertisement") { o =>
+  putWithDoc("/session/advertisement") { o =>
     o.summary("Update the advertisement settings")
       .tag(tagName)
       .request[PutAdvertisementSetting]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: PutAdvertisementSetting =>
     settingsService.updateAdvertisementSettings(
@@ -78,12 +78,12 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/devices") { o =>
+  postWithDoc("/session/devices") { o =>
     o.summary("Update the device tokens")
       .tag(tagName)
       .request[PostDeviceToken]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: PostDeviceToken =>
     deviceTokenService.update(

@@ -170,6 +170,15 @@ class ValidationDAO {
     }
   }
 
+  def existMediums(mediumId: MediumId, sessionId: SessionId): Future[Unit] = {
+    mediumsDAO.exist(mediumId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(MediumNotFound))
+    })
+  }
+
   def notExistFeedLike(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     feedLikesDAO.exist(feedId, sessionId).flatMap(_ match {
       case false =>

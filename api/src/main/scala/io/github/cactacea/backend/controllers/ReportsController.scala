@@ -28,8 +28,8 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostAccountReport]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: PostAccountReport =>
     accountsService.report(
@@ -46,8 +46,8 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostFeedReport]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, FeedNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
 
   } { request: PostFeedReport =>
     feedsService.report(
@@ -64,8 +64,8 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostCommentReport]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, CommentNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, CommentNotFound.message)
 
   } { request: PostCommentReport =>
     commentsService.report(
@@ -82,8 +82,8 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostGroupReport]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, GroupNotFound.message)
 
   } { request: PostGroupReport =>
     groupsService.report(

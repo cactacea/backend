@@ -28,7 +28,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionFriendRequests]
       .responseWith[Array[FriendRequest]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: GetSessionFriendRequests =>
     friendRequestsService.findAll(
@@ -45,8 +45,8 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostAcceptFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, FriendRequestNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FriendRequestNotFound.message)
 
   } { request: PostAcceptFriendRequest =>
     friendRequestsService.accept(
@@ -60,8 +60,8 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostRejectFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, FriendRequestNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, FriendRequestNotFound.message)
 
   } { request: PostRejectFriendRequest =>
     friendRequestsService.reject(
@@ -75,9 +75,9 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostFriendRequest]
       .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
       .responseWith[BadRequest](Status.BadRequest.code, AccountAlreadyRequested.message)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: PostFriendRequest =>
     friendRequestsService.create(
@@ -91,9 +91,9 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
       .responseWith[BadRequest](Status.BadRequest.code, FriendRequestNotFound.message)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: DeleteFriendRequest =>
     friendRequestsService.delete(

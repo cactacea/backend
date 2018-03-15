@@ -29,7 +29,7 @@ class SessionsController @Inject()(s: Swagger) extends BackendController {
 
   } { request: PostSignUp =>
     sessionService.signUp(
-      request.accountName,
+      request.name,
       request.displayName,
       request.password,
       request.udid,
@@ -53,7 +53,7 @@ class SessionsController @Inject()(s: Swagger) extends BackendController {
 
   } { request: GetSignIn =>
     sessionService.signIn(
-      request.accountName,
+      request.name,
       request.password,
       request.udid,
       request.userAgent,

@@ -5,11 +5,10 @@ import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollowing}
 import io.github.cactacea.backend.swagger.BackendController
-
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyFollowed, AccountNotFollowed, AccountNotFound}
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
 import io.swagger.models.Swagger
 
@@ -27,8 +26,8 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetFollowing]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: GetFollowing =>
     followingService.find(
@@ -45,7 +44,8 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostFollowing]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountAlreadyFollowed.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: PostFollowing =>
     followingService.create(
@@ -59,7 +59,8 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteFollowing]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith(Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountNotFollowed.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: DeleteFollowing =>
     followingService.delete(
@@ -73,7 +74,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionFollowing]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: GetSessionFollowing =>
     followingService.find(
@@ -91,7 +92,8 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetFollowers]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: GetFollowers =>
     followersService.find(
@@ -108,7 +110,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionFollowers]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
 
   } { request: GetSessionFollowers =>
     followersService.find(

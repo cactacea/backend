@@ -2,15 +2,15 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
-import io.swagger.models.Swagger
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.BlocksService
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyBlocked, AccountNotBlocked, AccountNotFound, CanNotSpecifyMyself}
 import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.swagger.models.Swagger
 
 @Singleton
 class BlocksController @Inject()(s: Swagger) extends BackendController {
@@ -42,8 +42,10 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostBlock]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, CanNotSpecifyMyself.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountAlreadyBlocked.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: PostBlock =>
     blocksService.create(
@@ -57,7 +59,10 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
         .tag(tagName)
       .request[DeleteBlock]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, CanNotSpecifyMyself.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountNotBlocked.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
 
   } { request: DeleteBlock =>
     blocksService.delete(

@@ -7,6 +7,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.BadRequest
+import io.github.cactacea.core.util.responses.CactaceaError.{SocialAccountAlreadyConnected, SocialAccountNotConnected}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -22,7 +23,8 @@ class FacebookSettingController @Inject()(s: Swagger) extends BackendController 
       .tag("Social Accounts")
       .request[PostSocialAccount]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith(Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, SocialAccountAlreadyConnected.message)
 
   } { request: PostSocialAccount =>
     settingsService.connectSocialAccount(
@@ -37,7 +39,8 @@ class FacebookSettingController @Inject()(s: Swagger) extends BackendController 
     o.summary(s"Disconnect from $accountType")
       .tag("Social Accounts")
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, SocialAccountNotConnected.message)
 
   } { _: Request =>
     settingsService.disconnectSocialAccount(

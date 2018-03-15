@@ -26,8 +26,8 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetMessages]
       .responseWith[Message](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[NotFound]](Status.NotFound.code, GroupNotFound.message)
 
   } { request: GetMessages =>
     messagesService.find(
@@ -58,14 +58,14 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostMessage]
       .responseWith[MessageCreated](Status.Created.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotJoined.message)
-      .responseWith[NotFound](Status.NotFound.code, MediumNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, GroupNotFound.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotJoined.message)
+      .responseWith[Array[NotFound]](Status.NotFound.code, MediumNotFound.message)
 
   } { request: PostMessage =>
     messagesService.create(
       request.id,
-      request.groupMessage,
+      request.message,
       request.mediumId,
       SessionContext.id
     ).map(MessageCreated(_)).map(response.created(_))

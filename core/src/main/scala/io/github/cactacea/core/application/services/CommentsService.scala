@@ -31,7 +31,7 @@ class CommentsService {
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- db.transaction(commentsRepository.delete(commentId, sessionId))
+        r <- commentsRepository.delete(commentId, sessionId)
         _ <- actionService.commentDeleted(commentId, sessionId)
       } yield (r)
     }

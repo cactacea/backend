@@ -2,7 +2,9 @@ package io.github.cactacea.backend.models.requests.feed
 
 import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.core.infrastructure.identifiers.FeedId
+import io.swagger.annotations.ApiModelProperty
 
 case class PostFeedLike(
-                             @RouteParam id: FeedId
-  )
+                         @ApiModelProperty(value = "Feed identifier.")
+                         @RouteParam id: FeedId
+                       )

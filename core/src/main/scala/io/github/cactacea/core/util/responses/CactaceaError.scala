@@ -1,9 +1,7 @@
 package io.github.cactacea.core.util.responses
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.twitter.finagle.http.Status
 
-@JsonIgnoreProperties(Array("status"))
 trait CactaceaError {
   val code: Long
   val message: String

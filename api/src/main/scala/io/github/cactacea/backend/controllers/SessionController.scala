@@ -58,7 +58,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
 
   } { request: PutSessionAccountName =>
     accountsService.update(
-      request.accountName,
+      request.name,
       SessionContext.id
     ).map(_ => response.noContent)
   }
