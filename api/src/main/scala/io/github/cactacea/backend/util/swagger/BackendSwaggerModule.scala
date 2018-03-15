@@ -5,7 +5,7 @@ import com.google.inject.Provides
 import com.jakehschwartz.finatra.swagger.{SwaggerModule, SwaggerTypeRegister}
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
-import io.swagger.models.{Info, Swagger}
+import io.swagger.models.{Info, Swagger, Tag}
 import io.swagger.util.{Json, PrimitiveType}
 
 import scala.collection.JavaConverters._
@@ -74,6 +74,28 @@ object BackendSwaggerModule extends SwaggerModule {
     swaggerUI.addSecurityDefinition("api_key", apiKey)
     swaggerUI.addSecurityDefinition("cactacea_oauth", oauth)
 
+    swaggerUI.addTag(new Tag().name("Accounts").description("Manage accounts"))
+    swaggerUI.addTag(new Tag().name("Blocks").description("Manage blocks"))
+    swaggerUI.addTag(new Tag().name("Comments").description("Manage comments"))
+    swaggerUI.addTag(new Tag().name("Feeds").description("Manage feeds"))
+    swaggerUI.addTag(new Tag().name("Friends").description("Manage friends"))
+    swaggerUI.addTag(new Tag().name("Followers").description("Manage followers"))
+    swaggerUI.addTag(new Tag().name("Groups").description("Manage groups"))
+    swaggerUI.addTag(new Tag().name("Invitations").description("Manage group invitations"))
+    swaggerUI.addTag(new Tag().name("Mediums").description("Manage media"))
+    swaggerUI.addTag(new Tag().name("Messages").description("Manage messages"))
+    swaggerUI.addTag(new Tag().name("Mutes").description("Manage mutes"))
+    swaggerUI.addTag(new Tag().name("Reports").description("Manage reports"))
+    swaggerUI.addTag(new Tag().name("Friend Requests").description("Manage friend requests"))
+    swaggerUI.addTag(new Tag().name("Session").description("Manage session"))
+    swaggerUI.addTag(new Tag().name("Sessions").description("Manage sessions"))
+    swaggerUI.addTag(new Tag().name("Social Accounts").description("Manage social accounts"))
+    swaggerUI.addTag(new Tag().name("Timeline").description("Manage timeline"))
+    swaggerUI.addTag(new Tag().name("Settings").description("Manage session settings"))
+    swaggerUI.addTag(new Tag().name("OAuth2").description("Provide Oauth2 features"))
+    swaggerUI.addTag(new Tag().name("Resource").description("Manage resources"))
+    swaggerUI.addTag(new Tag().name("System").description("Health checking and etc"))
     swaggerUI
   }
+
 }
