@@ -17,7 +17,7 @@ class MutesController @Inject()(s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 
-  protected val tagName = "Mute"
+  protected val tagName = "Mutes"
 
   @Inject private var mutesService: MutesService = _
 
