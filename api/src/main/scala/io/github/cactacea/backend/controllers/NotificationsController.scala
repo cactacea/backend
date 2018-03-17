@@ -7,7 +7,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.NotificationsService
 import io.github.cactacea.core.domain.models.Notification
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.BadRequest
+import io.github.cactacea.core.util.responses.CactaceaError._
 import io.swagger.models.Swagger
 
 @Singleton
@@ -23,7 +23,7 @@ class NotificationsController @Inject()(s: Swagger) extends BackendController {
     o.summary("Search notifications")
       .request[GetNotifications]
       .responseWith[Array[Notification]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: GetNotifications =>
     notificationsService.find(

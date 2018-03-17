@@ -8,8 +8,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.BlocksService
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyBlocked, AccountNotBlocked, AccountNotFound, CanNotSpecifyMyself}
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyBlocked, AccountNotBlocked, _}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -26,7 +25,7 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionBlocks]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: GetSessionBlocks =>
     blocksService.find(
@@ -42,10 +41,10 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostBlock]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, CanNotSpecifyMyself.message)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountAlreadyBlocked.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[CanNotSpecifyMyselfType]](CanNotSpecifyMyself.status.code, CanNotSpecifyMyself.message)
+      .responseWith[Array[AccountAlreadyBlockedType]](AccountAlreadyBlocked.status.code, AccountAlreadyBlocked.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: PostBlock =>
     blocksService.create(
@@ -59,10 +58,10 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
         .tag(tagName)
       .request[DeleteBlock]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, CanNotSpecifyMyself.message)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountNotBlocked.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[CanNotSpecifyMyselfType]](CanNotSpecifyMyself.status.code, CanNotSpecifyMyself.message)
+      .responseWith[Array[AccountNotBlockedType]](AccountNotBlocked.status.code, AccountNotBlocked.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: DeleteBlock =>
     blocksService.delete(

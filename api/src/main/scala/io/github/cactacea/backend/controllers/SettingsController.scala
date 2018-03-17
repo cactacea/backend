@@ -7,7 +7,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.{AdvertisementSetting, PushNotificationSetting}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.BadRequest
+import io.github.cactacea.core.util.responses.CactaceaError._
 import io.swagger.models.Swagger
 
 @Singleton
@@ -35,7 +35,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     o.summary("Update ths push notification settings")
       .tag(tagName)
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: PutNotificationSetting =>
     settingsService.updatePushNotificationSettings(
@@ -65,7 +65,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PutAdvertisementSetting]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: PutAdvertisementSetting =>
     settingsService.updateAdvertisementSettings(
@@ -83,7 +83,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostDeviceToken]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: PostDeviceToken =>
     deviceTokenService.update(

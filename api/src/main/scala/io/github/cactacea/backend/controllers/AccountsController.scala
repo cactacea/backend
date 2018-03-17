@@ -2,15 +2,14 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
-import io.swagger.models.Swagger
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
-import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
+import io.github.cactacea.core.util.responses.CactaceaError._
+import io.swagger.models.Swagger
 
 @Singleton
 class AccountsController @Inject()(s: Swagger) extends BackendController {
@@ -26,7 +25,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetAccounts]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: GetAccounts =>
     accountsService.find(
@@ -43,9 +42,8 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetAccount]
       .responseWith[Account](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
-
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetAccount =>
     accountsService.find(
@@ -59,8 +57,8 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PutAccountDisplayName]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: PutAccountDisplayName =>
     accountsService.update(

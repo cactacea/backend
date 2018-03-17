@@ -7,4 +7,5 @@ trait BackendController extends SwaggerController {
   protected val successfulMessage = "Successful operation."
   protected val validationErrorMessage = "Validation error occurred."
 
+
 }

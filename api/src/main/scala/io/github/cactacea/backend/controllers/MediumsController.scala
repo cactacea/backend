@@ -6,10 +6,9 @@ import com.twitter.finatra.http.request.RequestUtils
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
 import io.github.cactacea.backend.swagger.BackendController
-
 import io.github.cactacea.core.application.services.MediumsService
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.MediumNotFound
+import io.github.cactacea.core.util.responses.CactaceaError._
 import io.swagger.models.Swagger
 
 @Singleton

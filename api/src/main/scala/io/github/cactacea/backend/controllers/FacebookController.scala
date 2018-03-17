@@ -7,8 +7,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.SocialAccountNotFound
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaError._
 import io.swagger.models.Swagger
 
 
@@ -27,8 +26,8 @@ class FacebookController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostSocialAccountSignUp]
       .responseWith[Account](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, SocialAccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[SocialAccountNotFoundType]](SocialAccountNotFound.status.code, SocialAccountNotFound.message)
 
   } { request: PostSocialAccountSignUp =>
     sessionService.signUp(
@@ -53,8 +52,8 @@ class FacebookController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSocialAccountSignIn]
       .responseWith[Account](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, SocialAccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[SocialAccountNotFoundType]](SocialAccountNotFound.status.code, SocialAccountNotFound.message)
 
   } { request: GetSocialAccountSignIn =>
     sessionService.signIn(

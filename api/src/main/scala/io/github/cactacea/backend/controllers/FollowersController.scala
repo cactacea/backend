@@ -8,8 +8,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyFollowed, AccountNotFollowed, AccountNotFound}
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFollowed, _}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -26,8 +25,8 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetFollowing]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetFollowing =>
     followingService.find(
@@ -44,8 +43,8 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostFollowing]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountAlreadyFollowed.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[AccountAlreadyFollowedType]](AccountAlreadyFollowed.status.code, AccountAlreadyFollowed.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: PostFollowing =>
     followingService.create(
@@ -59,8 +58,8 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteFollowing]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountNotFollowed.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[AccountNotFollowedType]](AccountNotFollowed.status.code, AccountNotFollowed.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: DeleteFollowing =>
     followingService.delete(
@@ -74,7 +73,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionFollowing]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: GetSessionFollowing =>
     followingService.find(
@@ -92,8 +91,8 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetFollowers]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetFollowers =>
     followersService.find(
@@ -110,7 +109,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionFollowers]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: GetSessionFollowers =>
     followersService.find(

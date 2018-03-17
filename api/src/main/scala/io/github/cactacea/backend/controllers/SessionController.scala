@@ -7,8 +7,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.{Account, SocialAccount}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyUsed, MediumNotFound}
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaError.{AccountNameAlreadyUsed, _}
 import io.swagger.models.Swagger
 
 
@@ -52,8 +51,8 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PutSessionAccountName]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountNameAlreadyUsed.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[AccountNameAlreadyUsedType]](AccountNameAlreadyUsed.status.code, AccountNameAlreadyUsed.message)
     
 
   } { request: PutSessionAccountName =>
@@ -69,7 +68,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PutSessionPassword]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   } { request: PutSessionPassword =>
     accountsService.update(
@@ -85,7 +84,7 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PutSessionProfile]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   }  { request: PutSessionProfile =>
     accountsService.update(
@@ -103,8 +102,8 @@ class SessionController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PutSessionProfileImage]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, MediumNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
 
   }  { request: PutSessionProfileImage =>
     accountsService.updateProfileImage(

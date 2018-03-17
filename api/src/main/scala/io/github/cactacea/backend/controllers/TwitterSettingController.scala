@@ -6,8 +6,7 @@ import io.github.cactacea.backend.models.requests.setting.PostSocialAccount
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.BadRequest
-import io.github.cactacea.core.util.responses.CactaceaError.{SocialAccountAlreadyConnected, SocialAccountNotConnected}
+import io.github.cactacea.core.util.responses.CactaceaError._
 import io.swagger.models.Swagger
 
 @Singleton
@@ -23,8 +22,8 @@ class TwitterSettingController @Inject()(s: Swagger) extends BackendController {
       .tag("Social Accounts")
       .request[PostSocialAccount]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, SocialAccountAlreadyConnected.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[SocialAccountAlreadyConnectedType]](SocialAccountAlreadyConnected.status.code, SocialAccountAlreadyConnected.message)
 
   } { request: PostSocialAccount =>
     settingsService.connectSocialAccount(
@@ -39,8 +38,8 @@ class TwitterSettingController @Inject()(s: Swagger) extends BackendController {
     o.summary(s"Disconnect from $accountType")
       .tag("Social Accounts")
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, SocialAccountNotConnected.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[SocialAccountNotConnectedType]](SocialAccountNotConnected.status.code, SocialAccountNotConnected.message)
 
   } { _: Request =>
     settingsService.disconnectSocialAccount(

@@ -8,8 +8,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.{FriendRequestsService, FriendsService}
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, AccountNotFriend}
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaError._
 import io.swagger.models.Swagger
 
 @Singleton
@@ -27,7 +26,7 @@ class FriendsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionFriends]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
 
   }  { request: GetSessionFriends =>
     friendsService.find(
@@ -43,8 +42,8 @@ class FriendsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetFriends]
       .responseWith[Account](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetFriends =>
     friendsService.find(
@@ -61,9 +60,9 @@ class FriendsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteFriend]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, AccountNotFriend.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+      .responseWith[Array[AccountNotFriendType]](AccountNotFriend.status.code, AccountNotFriend.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: DeleteFriend =>
     friendsService.delete(
