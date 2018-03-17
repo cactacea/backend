@@ -51,7 +51,11 @@ case class FormRequestParam(name: String, description: String = "", required: Bo
 class FinatraSwagger(swagger: Swagger) {
 
   import FinatraSwagger._
+  import com.google.common.base.CaseFormat
 
+  private def convertName(name: String): String = {
+    CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name)
+  }
   /**
    * Register a request object that contains body information/route information/etc
    *
@@ -69,25 +73,25 @@ class FinatraSwagger(swagger: Swagger) {
       }.map {
         case param @ (x: RouteRequestParam) =>
           new PathParameter().
-            name(param.name).
+            name(convertName(param.name)).
             description(param.description).
             required(param.required).
             property(registerModel(param.typ))
         case param @ (x: QueryRequestParam) =>
           new QueryParameter().
-            name(param.name).
+            name(convertName(param.name)).
             description(param.description).
             required(param.required).
             property(registerModel(param.typ))
         case param @ (x: HeaderRequestParam) =>
           new HeaderParameter().
-            name(param.name).
+            name(convertName(param.name)).
             description(param.description).
             required(param.required).
             property(registerModel(param.typ))
         case param @ (x: FormRequestParam) =>
           new FormParameter().
-            name(param.name).
+            name(convertName(param.name)).
             description(param.description).
             required(param.required).
             property(registerModel(param.typ))
@@ -153,10 +157,13 @@ class FinatraSwagger(swagger: Swagger) {
 
         val (name, description) = modelProp match {
           case Some(p) =>
-            val n = if(!p.name().isEmpty) p.name() else field.getName
+            val n = if(!p.name().isEmpty) p.name() else {
+              convertName(field.getName)
+            }
             (n, p.value())
           case None =>
-            (field.getName, "")
+            val name = convertName(field.getName)
+            (name, "")
         }
 
         if (routeParam.isDefined) {

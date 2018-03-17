@@ -6,7 +6,7 @@ import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, MediumId, MessageId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError
+import io.github.cactacea.core.util.responses.CactaceaErrors
 
 @Singleton
 class MessagesRepository {
@@ -25,7 +25,7 @@ class MessagesRepository {
       case (_, Some(m)) =>
         create(groupId, m, sessionId)
       case _ =>
-        Future.exception(CactaceaException(CactaceaError.RequiredFieldMissingValidationError("Message or Medium Id required.")))
+        Future.exception(CactaceaException(CactaceaErrors.RequiredFieldMissingValidationError("Message or Medium Id required.")))
     }
   }
 

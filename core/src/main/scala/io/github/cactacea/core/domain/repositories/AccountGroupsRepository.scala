@@ -6,7 +6,7 @@ import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, GroupsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.{GroupAlreadyHidden, GroupNotHidden}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{GroupAlreadyHidden, GroupNotHidden}
 
 @Singleton
 class AccountGroupsRepository {

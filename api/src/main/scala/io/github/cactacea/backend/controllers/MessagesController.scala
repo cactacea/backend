@@ -10,8 +10,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotJoined, GroupNotFound, MediumNotFound}
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class MessagesController @Inject()(s: Swagger) extends BackendController {
@@ -26,8 +25,8 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetMessages]
       .responseWith[Message](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: GetMessages =>
     messagesService.find(
@@ -58,9 +57,9 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostMessage]
       .responseWith[MessageCreated](Status.Created.code, successfulMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, GroupNotFound.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, AccountNotJoined.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, MediumNotFound.message)
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+      .responseWith[Array[AccountNotJoinedType]](AccountNotJoined.status.code, AccountNotJoined.message)
+      .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
 
   } { request: PostMessage =>
     messagesService.create(

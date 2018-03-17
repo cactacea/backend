@@ -6,7 +6,7 @@ import com.twitter.util.Local
 import io.github.cactacea.core.domain.enums.DeviceType
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError
+import io.github.cactacea.core.util.responses.CactaceaErrors
 
 object SessionContext {
 
@@ -41,7 +41,7 @@ object SessionContext {
   private[this] val localSessionId = new Local[SessionId]
   def id = localSessionId() match {
     case Some(sessionId) => sessionId
-    case None => throw new CactaceaException(CactaceaError.SessionNotAuthorized)
+    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
   }
   def setId(sessionId: SessionId) = localSessionId.update(sessionId)
   def clearId() = localSessionId.clear()
@@ -49,7 +49,7 @@ object SessionContext {
   private[this] val localDeviceType = new Local[DeviceType]
   def deviceType = localDeviceType() match {
     case Some(deviceType) => deviceType
-    case None => throw new CactaceaException(CactaceaError.SessionNotAuthorized)
+    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
   }
   def setDeviceType(deviceType: DeviceType) = localDeviceType.update(deviceType)
   def clearDeviceType() = localDeviceType.clear()

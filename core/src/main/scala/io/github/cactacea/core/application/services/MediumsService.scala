@@ -10,7 +10,7 @@ import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.domain.repositories.MediumsRepository
 import io.github.cactacea.core.infrastructure.identifiers.{MediumId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.NotAcceptableMimeTypeFound
+import io.github.cactacea.core.util.responses.CactaceaErrors.NotAcceptableMimeTypeFound
 import io.github.cactacea.util.media.MediaExtractor
 
 class MediumsService {

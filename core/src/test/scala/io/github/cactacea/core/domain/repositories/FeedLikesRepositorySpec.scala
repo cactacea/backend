@@ -4,7 +4,7 @@ import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId}
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, FeedAlreadyLiked, FeedNotLiked, FeedNotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountNotFound, FeedAlreadyLiked, FeedNotLiked, FeedNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
 class FeedLikesRepositorySpec extends RepositorySpec {

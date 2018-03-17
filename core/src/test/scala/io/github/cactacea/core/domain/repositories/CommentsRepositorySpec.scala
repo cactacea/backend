@@ -5,7 +5,7 @@ import io.github.cactacea.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.CommentsDAO
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId}
-import io.github.cactacea.core.util.responses.CactaceaError.{CommentNotFound, FeedNotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{CommentNotFound, FeedNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
 class CommentsRepositorySpec extends RepositorySpec {

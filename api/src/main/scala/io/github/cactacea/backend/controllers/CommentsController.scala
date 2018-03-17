@@ -8,8 +8,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.{CommentLikesService, CommentsService}
 import io.github.cactacea.core.domain.models.{Account, Comment}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
-import io.github.cactacea.core.util.responses.CactaceaError.{CommentAlreadyLiked, CommentNotFound, CommentNotLiked, FeedNotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{CommentAlreadyLiked, CommentNotFound, CommentNotLiked, _}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -26,8 +25,8 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetComments]
       .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
+
+      .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
 
   } { request: GetComments =>
     commentsService.findAll(
@@ -43,8 +42,8 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostComment]
       .responseWith[CommentCreated](Status.Created.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, FeedNotFound.message)
+
+      .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
 
   } { request: PostComment =>
     commentsService.create(
@@ -59,7 +58,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetComment]
       .responseWith[Comment](Status.Ok.code, successfulMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, CommentNotFound.message)
+      .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
 
   } { request: GetComment =>
     commentsService.find(
@@ -73,7 +72,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteComment]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, CommentNotFound.message)
+      .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
 
   } { request: DeleteComment =>
     commentsService.delete(
@@ -89,7 +88,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetCommentLikes]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[NotFound]](Status.NotFound.code, CommentNotFound.message)
+      .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
 
   } { request: GetCommentLikes =>
     commentLikesService.findAccounts(
@@ -106,8 +105,8 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostCommentLike]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, CommentAlreadyLiked.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, CommentNotFound.message)
+      .responseWith[Array[CommentAlreadyLikedType]](CommentAlreadyLiked.status.code, CommentAlreadyLiked.message)
+      .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
 
   } { request: PostCommentLike =>
     commentLikesService.create(
@@ -121,8 +120,8 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteCommentLike]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, CommentNotLiked.message)
-      .responseWith[Array[NotFound]](Status.NotFound.code, CommentNotFound.message)
+      .responseWith[Array[CommentNotLikedType]](CommentNotLiked.status.code, CommentNotLiked.message)
+      .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
 
   } { request: DeleteCommentLike =>
     commentLikesService.delete(

@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.SocialAccountsService
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.github.cactacea.util.clients.facebook.FacebookClient
 import io.github.cactacea.util.clients.google.GoogleClient
 import io.github.cactacea.util.clients.twitter.TwitterClient

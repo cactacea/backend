@@ -6,7 +6,7 @@ import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 import io.github.cactacea.core.infrastructure.models.{AccountGroups, Groups, Relationships}
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.github.cactacea.core.util.responses.CactaceaError
 
 @Singleton

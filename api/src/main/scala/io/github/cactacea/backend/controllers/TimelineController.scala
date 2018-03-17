@@ -7,7 +7,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.TimelineService
 import io.github.cactacea.core.domain.models.TimelineFeed
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.BadRequest
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
@@ -22,7 +22,7 @@ class TimelineController @Inject()(s: Swagger) extends BackendController {
       .tag("Timeline")
       .request[GetTimeline]
       .responseWith[Array[TimelineFeed]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: GetTimeline =>
     timelineService.find(

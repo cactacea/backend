@@ -6,7 +6,7 @@ import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class AccountsRepository {

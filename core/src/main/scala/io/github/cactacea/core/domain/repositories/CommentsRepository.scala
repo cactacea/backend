@@ -6,7 +6,7 @@ import io.github.cactacea.core.domain.models.Comment
 import io.github.cactacea.core.infrastructure.dao.{CommentsDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class CommentsRepository {
