@@ -2,6 +2,7 @@ import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val demo = (project in file("demo"))
   .settings(
+    version      := "0.1.0-SNAPSHOT",
     organization := "io.github.cactacea.backend",
     name := "demo",
     scalaVersion := "2.12.4",
@@ -24,6 +25,7 @@ lazy val demo = (project in file("demo"))
 
 lazy val api = (project in file("api"))
   .settings(
+    version      := "0.1.0-SNAPSHOT",
       organization := "io.github.cactacea.backend.api",
       name := "api",
       scalaVersion := "2.12.4",
@@ -37,6 +39,7 @@ lazy val api = (project in file("api"))
 
 lazy val core = (project in file("core"))
   .settings(
+    version      := "0.1.0-SNAPSHOT",
     organization := "io.github.cactacea.backend.core",
     scalaVersion := "2.12.4",
     name := "core",
@@ -52,6 +55,7 @@ lazy val core = (project in file("core"))
 
 lazy val util = (project in file("util"))
   .settings(
+    version      := "0.1.0-SNAPSHOT",
     organization := "io.github.cactacea.backend.util",
     scalaVersion := "2.12.4",
     name := "util",
