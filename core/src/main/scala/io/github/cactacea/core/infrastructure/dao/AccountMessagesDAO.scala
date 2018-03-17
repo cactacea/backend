@@ -56,7 +56,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.sortBy(_._1._1._1._1.messageId.value).sortBy.map({ case ((((am, m), a), i), r) => (m, am, i, a, r) }))
+    run(q).map(_.sortBy(_._1._1._1._1.messageId.value).map({ case ((((am, m), a), i), r) => (m, am, i, a, r) }))
 
   }
 
