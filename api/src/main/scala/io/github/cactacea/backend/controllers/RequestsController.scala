@@ -9,7 +9,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.{FriendRequestsService, FriendsService}
 import io.github.cactacea.core.domain.models.FriendRequest
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
@@ -27,7 +27,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionFriendRequests]
       .responseWith[Array[FriendRequest]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetSessionFriendRequests =>
     friendRequestsService.findAll(
@@ -44,7 +44,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostAcceptFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[FriendRequestNotFoundType]](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
 
   } { request: PostAcceptFriendRequest =>
@@ -59,7 +59,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostRejectFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[FriendRequestNotFoundType]](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
 
   } { request: PostRejectFriendRequest =>
@@ -74,7 +74,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostFriendRequest]
       .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[AccountAlreadyRequestedType](AccountAlreadyRequested.status.code, AccountAlreadyRequested.message)
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
@@ -90,7 +90,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteFriendRequest]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[FriendRequestNotFoundType](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 

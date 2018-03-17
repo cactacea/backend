@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.models.requests.session
 
 import com.twitter.finatra.validation.Size
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.annotations.{ApiImplicitParam, ApiImplicitParams, ApiModelProperty}
 
 case class PutSessionProfile (
                                @ApiModelProperty(value = "Display name.")

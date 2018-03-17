@@ -11,7 +11,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class GroupsController @Inject()(s: Swagger) extends BackendController {
@@ -27,7 +27,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetGroups =>
     groupsService.find(
@@ -47,7 +47,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .request[GetGroup]
       .responseWith[Group](Status.Ok.code, successfulMessage)
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetGroup =>
     groupsService.find(
@@ -61,7 +61,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostGroup]
       .responseWith[GroupCreated](Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: PostGroup =>
     groupsService.create(
@@ -79,7 +79,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .request[PutGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: PutGroup =>
     groupsService.update(
@@ -99,7 +99,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[AuthorityNotFoundType](AuthorityNotFound.status.code, AuthorityNotFound.message)
       .responseWith[AccountAlreadyJoinedType](AccountAlreadyJoined.status.code, AccountAlreadyJoined.message)
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
@@ -116,7 +116,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostLeaveGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[AuthorityNotFoundType](AuthorityNotFound.status.code, AuthorityNotFound.message)
       .responseWith[AccountNotJoinedType](AccountNotJoined.status.code, AccountNotJoined.message)
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
@@ -133,7 +133,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetGroupAccounts]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: GetGroupAccounts =>
@@ -151,7 +151,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostAccountJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
@@ -168,7 +168,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostAccountJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
@@ -187,7 +187,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetAccountGroup]
       .responseWith[Group](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetAccountGroup =>
@@ -202,7 +202,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetAccountGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetAccountGroups =>
@@ -220,7 +220,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetSessionGroups =>
     accountGroupsService.findAll(
@@ -237,7 +237,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetSessionGroups =>
     accountGroupsService.findAll(
@@ -254,7 +254,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: DeleteGroup =>
@@ -269,7 +269,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostHideGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: PostHideGroup =>
@@ -284,7 +284,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[DeleteHideGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: DeleteHideGroup =>

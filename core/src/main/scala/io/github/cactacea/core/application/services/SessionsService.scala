@@ -9,7 +9,7 @@ import io.github.cactacea.core.domain.models._
 import io.github.cactacea.core.domain.repositories.SessionsRepository
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.SocialAccountNotFound
+import io.github.cactacea.core.util.responses.CactaceaErrors.SocialAccountNotFound
 
 @Singleton
 class SessionsService {

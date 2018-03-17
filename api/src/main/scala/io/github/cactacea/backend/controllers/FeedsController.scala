@@ -10,7 +10,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.{Account, Feed}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class FeedsController  @Inject()(s: Swagger)extends BackendController {
@@ -26,7 +26,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetAccountFeeds]
       .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetAccountFeeds =>
@@ -44,7 +44,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[PostFeed]
       .responseWith[FeedCreated](Status.Created.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
 
   } { request: PostFeed =>
@@ -113,7 +113,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetAccountFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetAccountFeeds =>
@@ -133,7 +133,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetFeedLikes]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
 
   } { request: GetFeedLikes =>
@@ -181,7 +181,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetLikes]
       .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetLikes =>
@@ -199,7 +199,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetSessionFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetSessionFeeds =>
     feedsService.find(
@@ -215,7 +215,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
       .tag(tagName)
       .request[GetSessionLikedFeeds]
       .responseWith[Feed](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetSessionLikedFeeds =>
     feedLikesService.find(

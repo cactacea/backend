@@ -10,8 +10,8 @@ import io.jsonwebtoken._
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.core.util.auth.SessionUser
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class AuthTokenGenerator @Inject()(config: ConfigService) {
@@ -54,13 +54,13 @@ class AuthTokenGenerator @Inject()(config: ConfigService) {
           val audience = body.getAudience().toLong
 
           if (header.getAlgorithm().equals(signatureAlgorithm.getValue) == false) {
-            Future.exception(CactaceaException(CactaceaError.SessionNotAuthorized))
+            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
           } else if (body.getSubject.equals(config.subject) == false) {
-            Future.exception(CactaceaException(CactaceaError.SessionNotAuthorized))
+            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
           } else if (body.getIssuer.equals(config.issuer) == false) {
-            Future.exception(CactaceaException(CactaceaError.SessionNotAuthorized))
+            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
           } else {
             Future.value(SessionUser(SessionId(audience), udid, expiration))
@@ -68,13 +68,13 @@ class AuthTokenGenerator @Inject()(config: ConfigService) {
 
         } catch {
           case _: ExpiredJwtException =>
-            Future.exception(CactaceaException(CactaceaError.SessionTimeout))
+            Future.exception(CactaceaException(CactaceaErrors.SessionTimeout))
 
           case _: JwtException =>
-            Future.exception(CactaceaException(CactaceaError.SessionNotAuthorized))
+            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
           case _: Exception =>
-            Future.exception(CactaceaException(CactaceaError.SessionNotAuthorized))
+            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
         }
     }

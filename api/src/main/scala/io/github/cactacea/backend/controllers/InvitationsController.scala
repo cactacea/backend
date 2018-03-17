@@ -10,7 +10,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.GroupInvitationsService
 import io.github.cactacea.core.domain.models.GroupInvitation
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyJoined, AuthorityNotFound, GroupInvitationNotFound, GroupNotFound, _}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountAlreadyJoined, AuthorityNotFound, GroupInvitationNotFound, GroupNotFound, _}
 import io.github.cactacea.core.util.responses.NotFound
 
 @Singleton
@@ -27,7 +27,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionInvitations]
       .responseWith[Array[GroupInvitation]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetSessionInvitations =>
     invitationService.find(
@@ -43,7 +43,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostAcceptInvitation]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[AuthorityNotFoundType](AuthorityNotFound.status.code, AuthorityNotFound.message)
       .responseWith[AccountAlreadyJoinedType](AccountAlreadyJoined.status.code, AccountAlreadyJoined.message)
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
@@ -60,7 +60,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostRejectInvitation]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[GroupInvitationNotFoundType]](GroupInvitationNotFound.status.code, GroupInvitationNotFound.message)
 
   } { request: PostRejectInvitation =>
@@ -75,7 +75,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostInvitationAccounts]
       .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: PostInvitationAccounts =>
@@ -91,7 +91,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostInvitationAccount]
       .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 

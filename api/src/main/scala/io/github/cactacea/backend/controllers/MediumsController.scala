@@ -8,7 +8,7 @@ import io.github.cactacea.backend.models.responses.MediumCreated
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.MediumsService
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton

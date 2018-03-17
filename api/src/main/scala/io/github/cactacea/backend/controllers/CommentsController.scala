@@ -8,7 +8,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.{CommentLikesService, CommentsService}
 import io.github.cactacea.core.domain.models.{Account, Comment}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{CommentAlreadyLiked, CommentNotFound, CommentNotLiked, _}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{CommentAlreadyLiked, CommentNotFound, CommentNotLiked, _}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -25,7 +25,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetComments]
       .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
 
   } { request: GetComments =>
@@ -42,7 +42,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[PostComment]
       .responseWith[CommentCreated](Status.Created.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
 
   } { request: PostComment =>

@@ -10,7 +10,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class MessagesController @Inject()(s: Swagger) extends BackendController {
@@ -25,7 +25,7 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetMessages]
       .responseWith[Message](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
       .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: GetMessages =>

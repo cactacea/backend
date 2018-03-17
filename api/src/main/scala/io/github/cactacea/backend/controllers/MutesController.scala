@@ -8,7 +8,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.services.MutesService
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyBlocked, AccountNotBlocked, _}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountAlreadyBlocked, AccountNotBlocked, _}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -25,7 +25,7 @@ class MutesController @Inject()(s: Swagger) extends BackendController {
       .tag(tagName)
       .request[GetSessionMutes]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[ValidationErrorType]](ValidationError.status.code, ValidationError.message)
+
 
   } { request: GetSessionMutes =>
     mutesService.find(

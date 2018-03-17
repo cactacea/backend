@@ -6,7 +6,7 @@ import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.models.Accounts
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountTerminated, InvalidAccountNameOrPassword, SessionTimeout}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountTerminated, InvalidAccountNameOrPassword, SessionTimeout}
 
 class SessionsRepositorySpec extends RepositorySpec {
 

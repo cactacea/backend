@@ -5,7 +5,6 @@ import com.twitter.finagle.http.{Request, Status}
 import com.twitter.finatra.http.exceptions.ExceptionMapper
 import com.twitter.finatra.http.response.ResponseBuilder
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.Errors
 
 @Singleton
 class CactaceaExceptionMapper @Inject()(response: ResponseBuilder) extends ExceptionMapper[CactaceaException] {
