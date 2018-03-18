@@ -5,7 +5,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import io.getquill._
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 
-class DefaultIdentifyService extends IdentifyService {
+class InstagramDesignIdentifyService extends IdentifyService {
 
   private class IdentityDatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config)
 

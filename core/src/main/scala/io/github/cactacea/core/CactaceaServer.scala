@@ -18,18 +18,18 @@ class CactaceaServer extends HttpServer {
 
   protected  def databaseModule = DatabaseProviderModule
 
-  def identifyModule: TwitterModule =  DefaultIdentifyModule
-  def socialAccountsModule: TwitterModule = DefaultSocialAccountsModule
-  def injectionModule: TwitterModule =  DefaultInjectionModule
+  def identifyModule: TwitterModule =  InstagramDesignIdentifyModule
+  def socialAccountsModule: TwitterModule = FGTSocialAccountsModule
+  def injectionModule: TwitterModule =  NoActionInjectionModule
   def configModule: TwitterModule = DefaultConfigModule
-  def fanOutModule: TwitterModule = DefaultFanOutModule
+  def fanOutModule: TwitterModule = DefaultNotificationModule
   def notificationMessagesModule: TwitterModule = DefaultNotificationMessagesModule
-  def publishModule: TwitterModule =  DefaultPublishModule
-  def pushNotificationModule: TwitterModule = DefaultPushNotificationModule
-  def storageModule: TwitterModule = DefaultStorageModule
-  def subScribeModule: TwitterModule = DefaultSubScribeModule
+  def publishModule: TwitterModule =  NoQueuePublishModule
+  def pushNotificationModule: TwitterModule = NoPushNotificationModule
+  def storageModule: TwitterModule = LocalStorageModule
+  def subScribeModule: TwitterModule = NoQueueSubScribeModule
   def deepLinkModule: TwitterModule = DefaultDeepLinkModule
-  def transcodeModule: TwitterModule = DefaultTranscodeModule
+  def transcodeModule: TwitterModule = ImageTranscodeModule
 
   addFrameworkModule(identifyModule)
   addFrameworkModule(socialAccountsModule)

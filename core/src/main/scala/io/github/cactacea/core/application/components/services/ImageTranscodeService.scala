@@ -6,7 +6,7 @@ import io.github.cactacea.core.application.components.interfaces.TranscodeServic
 import io.github.cactacea.core.infrastructure.identifiers.MediumId
 
 @Singleton
-class DefaultTranscodeService extends TranscodeService {
+class ImageTranscodeService extends TranscodeService {
 
   def translate(mediumId: MediumId): Future[Unit] = {
     Future.Unit

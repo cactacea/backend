@@ -2,11 +2,11 @@ package io.github.cactacea.core.application.components.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.{FanOutService, PushNotificationService}
+import io.github.cactacea.core.application.components.interfaces.{NotificationService, PushNotificationService}
 import io.github.cactacea.core.domain.repositories.{NotificationsRepository, PushNotificationsRepository}
 import io.github.cactacea.core.infrastructure.identifiers._
 
-class DefaultFanOutService @Inject()(db: DatabaseService) extends FanOutService {
+class DefaultNotificationService @Inject()(db: DatabaseService) extends NotificationService {
 
   @Inject private var pushNotificationService: PushNotificationService = _
   @Inject private var pushNotificationsRepository: PushNotificationsRepository = _

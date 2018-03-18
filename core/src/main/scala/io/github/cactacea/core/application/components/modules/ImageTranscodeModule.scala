@@ -2,12 +2,12 @@ package io.github.cactacea.core.application.components.modules
 
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.core.application.components.interfaces.TranscodeService
-import io.github.cactacea.core.application.components.services.DefaultTranscodeService
+import io.github.cactacea.core.application.components.services.ImageTranscodeService
 
-object DefaultTranscodeModule extends TwitterModule {
+object ImageTranscodeModule extends TwitterModule {
 
   override def configure() {
-    bindSingleton[TranscodeService].to[DefaultTranscodeService]
+    bindSingleton[TranscodeService].to[ImageTranscodeService]
   }
 
 }
