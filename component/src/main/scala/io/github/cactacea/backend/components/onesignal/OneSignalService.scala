@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.onesignal
+package io.github.cactacea.backend.components.onesignal
 
 import java.util.Locale
 

@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.s3
+package io.github.cactacea.backend.components.s3
 
 import awscala.s3.{Bucket, PutObjectResult, S3}
 import awscala.{Region, Region0}

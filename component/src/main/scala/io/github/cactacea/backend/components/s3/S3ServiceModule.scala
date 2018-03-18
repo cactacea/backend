@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.s3
+package io.github.cactacea.backend.components.s3
 
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.core.application.components.interfaces.StorageService
