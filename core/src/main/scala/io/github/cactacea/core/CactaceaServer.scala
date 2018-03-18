@@ -7,7 +7,7 @@ import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.core.application.components.modules._
 import io.github.cactacea.core.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
-import io.github.cactacea.core.util.warmups.DatabaseWarmupHandler
+import io.github.cactacea.core.util.warmups.DatabaseMigrationHandler
 
 class CactaceaServer extends HttpServer {
 
@@ -55,7 +55,7 @@ class CactaceaServer extends HttpServer {
   }
 
   override def warmup() {
-    handle[DatabaseWarmupHandler]()
+    handle[DatabaseMigrationHandler]()
   }
 
 }

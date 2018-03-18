@@ -6,8 +6,10 @@ import com.twitter.inject.utils.Handler
 import com.typesafe.config.ConfigFactory
 import org.flywaydb.core.Flyway
 
+import scala.collection.JavaConverters._
+
 @Singleton
-class DatabaseWarmupHandler @Inject()(httpWarmup: HttpWarmup) extends Handler {
+class DatabaseMigrationHandler @Inject()(httpWarmup: HttpWarmup) extends Handler {
 
   override def handle() = {
     val config = ConfigFactory.load()
@@ -19,6 +21,7 @@ class DatabaseWarmupHandler @Inject()(httpWarmup: HttpWarmup) extends Handler {
     val flyway = new Flyway()
     flyway.setDataSource(url, user, password)
     flyway.setBaselineOnMigrate(true)
+    flyway.setPlaceholders(Map("schema" -> database).asJava)
     flyway.clean()
     flyway.migrate()
   }
