@@ -25,7 +25,6 @@ phases:
       - docker login --username="$DOCKER_HUB_USERNAME" --password="$DOCKER_HUB_PASSWORD"
   build:
     commands:
-      - cp -r ~/.sbt/preloaded/ ~/.ivy2/local
       - export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
       - sbt compile
       - sbt demo/docker:publish
