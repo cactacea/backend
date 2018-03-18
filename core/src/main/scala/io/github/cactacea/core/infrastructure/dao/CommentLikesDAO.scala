@@ -106,7 +106,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
         .take(lift(c))
     }
 
-    run(q).map(_.sortBy(_._1._1.id.value).reverse.map({ case ((c, a), r) => (a, r, c.id.value)}))
+    run(q).map(_.map({ case ((c, a), r) => (a, r, c.id.value)}).sortBy(_._3).reverse)
 
   }
 

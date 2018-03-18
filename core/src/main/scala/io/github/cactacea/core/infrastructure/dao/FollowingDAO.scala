@@ -128,7 +128,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.sortBy(_._1._1.followedAt).reverse.map({ case ((f, a), r) => (a, r, f.followedAt)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)}).sortBy(_._3).reverse)
 
   }
 
@@ -152,7 +152,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.sortBy(_._1._1.followedAt).reverse.map({ case ((f, a), r) => (a, r, f.followedAt)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.followedAt)}).sortBy(_._3).reverse)
 
   }
 

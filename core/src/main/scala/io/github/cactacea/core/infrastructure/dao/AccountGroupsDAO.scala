@@ -143,7 +143,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.sortBy(_._1._1._1.id.value).reverse.map({ case (((ag, g), m), am) => (g, m, am, None, None, ag.id)}))
+    run(q).map(_.map({ case (((ag, g), m), am) => (g, m, am, None, None, ag.id)}).sortBy(_._6.value).reverse)
 
   }
 

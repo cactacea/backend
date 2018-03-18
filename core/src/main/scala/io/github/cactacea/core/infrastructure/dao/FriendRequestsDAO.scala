@@ -99,7 +99,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
           .take(lift(c))
       }
 
-      run(q).map(_.sortBy(_._1._1.id.value).reverse.map({ case ((f, a), r) => (f, a, r)}))
+      run(q).map(_.map({ case ((f, a), r) => (f, a, r)}).sortBy(_._1.id.value).reverse)
 
     } else {
       val q = quote {
@@ -111,7 +111,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
           .take(lift(c))
       }
 
-      run(q).map(_.sortBy(_._1._1.id.value).reverse.map({ case ((f, a), r) => (f, a, r)}))
+      run(q).map(_.map({ case ((f, a), r) => (f, a, r)}).sortBy(_._1.id.value).reverse)
 
     }
 
