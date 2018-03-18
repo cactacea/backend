@@ -83,5 +83,7 @@ class DatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy
   implicit val contentStatusTypeEncode: MappedEncoding[Byte, ContentStatusType] = MappedEncoding[Byte, ContentStatusType] (long => ContentStatusType.forName(long))
   implicit val deviceTypeDecode: MappedEncoding[DeviceType, Byte] = MappedEncoding[DeviceType, Byte] (enumValue => enumValue.toValue)
   implicit val deviceTypeEncode: MappedEncoding[Byte, DeviceType] = MappedEncoding[Byte, DeviceType] (long => DeviceType.forName(long))
+  implicit val activeStatusTypeDecode: MappedEncoding[ActiveStatus, Byte] = MappedEncoding[ActiveStatus, Byte] (enumValue => enumValue.toValue)
+  implicit val activeStatusTypeEncode: MappedEncoding[Byte, ActiveStatus] = MappedEncoding[Byte, ActiveStatus] (long => ActiveStatus.forName(long))
 
 }

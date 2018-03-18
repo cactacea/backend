@@ -107,9 +107,14 @@ class NoActionInjectionService extends InjectionService {
     Future.Unit
   }
 
-  def deviceUpdated(sessionId: SessionId): Future[Unit] = {
+  def devicePushTokenUpdated(sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
+
+  def deviceStatusUpdated(sessionId: SessionId): Future[Unit] = {
+    Future.Unit
+  }
+
 
   def friendRequestCreated(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     Future.Unit
