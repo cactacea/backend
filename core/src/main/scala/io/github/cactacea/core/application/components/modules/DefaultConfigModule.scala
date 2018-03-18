@@ -22,15 +22,17 @@ object DefaultConfigModule extends TwitterModule {
 
   private val maximumGroupAccountLimits = flag(name = "maximumGroupAccountLimits", default = "0", help = "Number of max account count per group")
   private val basePointInTime = flag("basePointInTime", default = "978307200", help = "Default value is # 2001/01/01 00:00:00")
+  private val rootPath = flag("rootPath", default = "/api", help = "REST API root path.")
 
   override def configure(): Unit = {
-    val max = maximumGroupAccountLimits.get.map(_.toLong).getOrElse(0L)
-    val time = basePointInTime.get.map(_.toLong).getOrElse(978307200L)
+    val max = maximumGroupAccountLimits.getWithDefault.map(_.toLong).getOrElse(0L)
+    val time = basePointInTime.getWithDefault.map(_.toLong).getOrElse(978307200L)
+    val path = rootPath.getWithDefault.getOrElse("")
     val apiKeys = List(
       (DeviceType.ios, ios),
       (DeviceType.android, android),
       (DeviceType.web, web))
-    val service = new DefaultConfigService(apiKeys, signingKey, expire, issuer, subject, algorithm, max, time)
+    val service = new DefaultConfigService(path, apiKeys, signingKey, expire, issuer, subject, algorithm, max, time)
     bindSingleton[ConfigService].toInstance(service)
   }
 

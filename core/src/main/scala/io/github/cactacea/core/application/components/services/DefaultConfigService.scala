@@ -5,6 +5,7 @@ import io.github.cactacea.core.domain.enums.DeviceType
 
 
 class DefaultConfigService(
+                            val rootPath: String,
                             val apiKeys: List[(DeviceType, String)],
                             val signingKey: String,
                             val expire: Long,

@@ -5,6 +5,7 @@ import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollowing}
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
@@ -12,7 +13,7 @@ import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountNotFollowed
 import io.swagger.models.Swagger
 
 @Singleton
-class FollowersController @Inject()(s: Swagger) extends BackendController {
+class FollowersController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -20,7 +21,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
 
   protected val tagName = "Followers"
 
-  getWithDoc("/accounts/:id/following") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/following") { o =>
     o.summary("Get accounts list this user followed")
       .tag(tagName)
       .request[GetFollowing]
@@ -38,7 +39,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/accounts/:id/following") { o =>
+  postWithDoc(c.rootPath + "/accounts/:id/following") { o =>
     o.summary("Follow this account")
       .tag(tagName)
       .request[PostFollowing]
@@ -53,7 +54,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/accounts/:id/following") { o =>
+  deleteWithDoc(c.rootPath + "/accounts/:id/following") { o =>
     o.summary("UnFollow this account")
       .tag(tagName)
       .request[DeleteFollowing]
@@ -68,7 +69,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/session/following") { o =>
+  getWithDoc(c.rootPath + "/session/following") { o =>
     o.summary("Get accounts list session account followed")
       .tag(tagName)
       .request[GetSessionFollowing]
@@ -86,7 +87,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var followersService: FollowersService = _
 
-  getWithDoc("/accounts/:id/followers") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/followers") { o =>
     o.summary("Get accounts list this account is followed by")
       .tag(tagName)
       .request[GetFollowers]
@@ -104,7 +105,7 @@ class FollowersController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/session/followers") { o =>
+  getWithDoc(c.rootPath + "/session/followers") { o =>
     o.summary("Get accounts list session account is followed by")
       .tag(tagName)
       .request[GetSessionFollowers]

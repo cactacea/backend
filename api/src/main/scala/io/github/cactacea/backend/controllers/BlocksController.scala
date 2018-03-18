@@ -5,6 +5,7 @@ import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services.BlocksService
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
@@ -12,7 +13,7 @@ import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountAlreadyBloc
 import io.swagger.models.Swagger
 
 @Singleton
-class BlocksController @Inject()(s: Swagger) extends BackendController {
+class BlocksController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -20,7 +21,7 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var blocksService: BlocksService = _
 
-  getWithDoc("/session/blocks") { o =>
+  getWithDoc(c.rootPath + "/session/blocks") { o =>
     o.summary("Get blocking accounts list")
       .tag(tagName)
       .request[GetSessionBlocks]
@@ -36,7 +37,7 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/accounts/:id/blocks") { o =>
+  postWithDoc(c.rootPath + "/accounts/:id/blocks") { o =>
     o.summary("Block a account")
       .tag(tagName)
       .request[PostBlock]
@@ -53,7 +54,7 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/accounts/:id/blocks") { o =>
+  deleteWithDoc(c.rootPath + "/accounts/:id/blocks") { o =>
     o.summary("Unblock a account")
         .tag(tagName)
       .request[DeleteBlock]

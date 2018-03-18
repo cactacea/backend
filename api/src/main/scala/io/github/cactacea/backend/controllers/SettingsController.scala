@@ -4,14 +4,14 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import io.github.cactacea.backend.models.requests.setting._
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.{AdvertisementSetting, PushNotificationSetting}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class SettingsController @Inject()(s: Swagger) extends BackendController {
+class SettingsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -20,7 +20,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var settingsService: SettingsService = _
   @Inject private var deviceTokenService: DevicesService = _
 
-  getWithDoc("/session/push_notification") { o =>
+  getWithDoc(c.rootPath + "/session/push_notification") { o =>
     o.summary("Get this push notification settings")
       .tag(tagName)
       .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
@@ -31,7 +31,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  putWithDoc("/session/push_notification") { o =>
+  putWithDoc(c.rootPath + "/session/push_notification") { o =>
     o.summary("Update ths push notification settings")
       .tag(tagName)
       .responseWith(Status.NoContent.code, successfulMessage)
@@ -49,7 +49,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/session/advertisement") { o =>
+  getWithDoc(c.rootPath + "/session/advertisement") { o =>
     o.summary("Get the advertisement settings")
       .tag(tagName)
       .responseWith[AdvertisementSetting](Status.Ok.code, successfulMessage)
@@ -60,7 +60,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  putWithDoc("/session/advertisement") { o =>
+  putWithDoc(c.rootPath + "/session/advertisement") { o =>
     o.summary("Update the advertisement settings")
       .tag(tagName)
       .request[PutAdvertisementSetting]
@@ -78,7 +78,7 @@ class SettingsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/session/devices") { o =>
+  postWithDoc(c.rootPath + "/session/devices") { o =>
     o.summary("Update the device tokens")
       .tag(tagName)
       .request[PostDeviceToken]

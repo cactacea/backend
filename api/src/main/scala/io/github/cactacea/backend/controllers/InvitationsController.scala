@@ -7,6 +7,7 @@ import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount
 import io.github.cactacea.backend.models.requests.group.{GetSessionInvitations, PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services.GroupInvitationsService
 import io.github.cactacea.core.domain.models.GroupInvitation
 import io.github.cactacea.core.util.auth.SessionContext
@@ -14,7 +15,7 @@ import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountAlreadyJoin
 import io.github.cactacea.core.util.responses.NotFound
 
 @Singleton
-class InvitationsController @Inject()(s: Swagger) extends BackendController {
+class InvitationsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -22,7 +23,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var invitationService: GroupInvitationsService = _
 
-  getWithDoc("/session/invitations") { o =>
+  getWithDoc(c.rootPath + "/session/invitations") { o =>
     o.summary("Get invitations list session account received")
       .tag(tagName)
       .request[GetSessionInvitations]
@@ -38,7 +39,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/invitations/:id/accept") { o =>
+  postWithDoc(c.rootPath + "/invitations/:id/accept") { o =>
     o.summary("Accept a invitation")
       .tag(tagName)
       .request[PostAcceptInvitation]
@@ -55,7 +56,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/invitations/:id/reject") { o =>
+  postWithDoc(c.rootPath + "/invitations/:id/reject") { o =>
     o.summary("Reject a invitation")
       .tag(tagName)
       .request[PostRejectInvitation]
@@ -70,7 +71,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/groups/:id/invitations") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/invitations") { o =>
     o.summary("Post a invitation to some accounts")
       .tag(tagName)
       .request[PostInvitationAccounts]
@@ -86,7 +87,7 @@ class InvitationsController @Inject()(s: Swagger) extends BackendController {
     ).map(_.map(InvitationCreated(_))).map(response.created(_))
   }
 
-  postWithDoc("/accounts/:account_id/groups/:group_id/invitations") { o =>
+  postWithDoc(c.rootPath + "/accounts/:account_id/groups/:group_id/invitations") { o =>
     o.summary("Create a invitation to this account")
       .tag(tagName)
       .request[PostInvitationAccount]

@@ -3,18 +3,18 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import io.swagger.models.Swagger
-
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.group._
 import io.github.cactacea.backend.models.responses.GroupCreated
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
-class GroupsController @Inject()(s: Swagger) extends BackendController {
+class GroupsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -22,7 +22,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var groupsService: GroupsService = _
 
-  getWithDoc("/groups") { o =>
+  getWithDoc(c.rootPath + "/groups") { o =>
     o.summary("Search groups")
       .tag(tagName)
       .request[GetGroups]
@@ -41,7 +41,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/groups/:id") { o =>
+  getWithDoc(c.rootPath + "/groups/:id") { o =>
     o.summary("Get basic information about this group")
       .tag(tagName)
       .request[GetGroup]
@@ -56,7 +56,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/groups") { o =>
+  postWithDoc(c.rootPath + "/groups") { o =>
     o.summary("Create a group")
       .tag(tagName)
       .request[PostGroup]
@@ -73,7 +73,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(GroupCreated(_)).map(response.created(_))
   }
 
-  putWithDoc("/groups/:id") { o =>
+  putWithDoc(c.rootPath + "/groups/:id") { o =>
     o.summary("Update this group")
       .tag(tagName)
       .request[PutGroup]
@@ -94,7 +94,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var groupAccountsService: GroupAccountsService = _
 
-  postWithDoc("/groups/:id/join") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/join") { o =>
     o.summary("Join to this group,")
       .tag(tagName)
       .request[PostJoinGroup]
@@ -111,7 +111,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/groups/:id/leave") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/leave") { o =>
     o.summary("Leave from this group")
       .tag(tagName)
       .request[PostLeaveGroup]
@@ -128,7 +128,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/groups/:id/accounts") { o =>
+  getWithDoc(c.rootPath + "/groups/:id/accounts") { o =>
     o.summary("Get acounts list of this group")
       .tag(tagName)
       .request[GetGroupAccounts]
@@ -146,7 +146,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/accounts/:account_id/groups/:group_id/join") { o =>
+  postWithDoc(c.rootPath + "/accounts/:account_id/groups/:group_id/join") { o =>
     o.summary("Join this account in this group")
       .tag(tagName)
       .request[PostAccountJoinGroup]
@@ -163,7 +163,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/accounts/:account_id/groups/:group_id/leave") { o =>
+  postWithDoc(c.rootPath + "/accounts/:account_id/groups/:group_id/leave") { o =>
     o.summary("Leave this account from this group")
       .tag(tagName)
       .request[PostAccountJoinGroup]
@@ -182,7 +182,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var accountGroupsService: AccountGroupsService = _
 
-  getWithDoc("/accounts/:id/group") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/group") { o =>
     o.summary("Get a direct message group to this account")
       .tag(tagName)
       .request[GetAccountGroup]
@@ -197,7 +197,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/accounts/:id/groups") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/groups") { o =>
     o.summary("Get groups list this account joined")
       .tag(tagName)
       .request[GetAccountGroups]
@@ -215,7 +215,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/session/groups") { o =>
+  getWithDoc(c.rootPath + "/session/groups") { o =>
     o.summary("Get groups list session account joined")
       .tag(tagName)
       .request[GetSessionGroups]
@@ -232,7 +232,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/session/hides") { o =>
+  getWithDoc(c.rootPath + "/session/hides") { o =>
     o.summary("Get hidden groups list session account joined")
       .tag(tagName)
       .request[GetSessionGroups]
@@ -249,7 +249,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  deleteWithDoc("/groups/:id") { o =>
+  deleteWithDoc(c.rootPath + "/groups/:id") { o =>
     o.summary("Hide this group and delete all messages")
       .tag(tagName)
       .request[DeleteGroup]
@@ -264,7 +264,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/groups/:id/hides") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/hides") { o =>
     o.summary("Hide this group")
       .tag(tagName)
       .request[PostHideGroup]
@@ -279,7 +279,7 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/groups/:id/hides") { o =>
+  deleteWithDoc(c.rootPath + "/groups/:id/hides") { o =>
     o.summary("Show this group")
       .tag(tagName)
       .request[DeleteHideGroup]

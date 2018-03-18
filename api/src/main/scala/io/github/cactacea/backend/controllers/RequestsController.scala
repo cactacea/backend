@@ -6,6 +6,7 @@ import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.session.GetSessionFriendRequests
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services.{FriendRequestsService, FriendsService}
 import io.github.cactacea.core.domain.models.FriendRequest
 import io.github.cactacea.core.util.auth.SessionContext
@@ -13,7 +14,7 @@ import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class RequestsController @Inject()(s: Swagger) extends BackendController {
+class RequestsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -22,7 +23,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
   @Inject private var friendRequestsService: FriendRequestsService = _
   @Inject private var friendsService: FriendsService = _
 
-  getWithDoc("/session/requests") { o =>
+  getWithDoc(c.rootPath + "/session/requests") { o =>
     o.summary("Get friend requests list session account created or received")
       .tag(tagName)
       .request[GetSessionFriendRequests]
@@ -39,7 +40,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/session/requests/:id/accept") { o =>
+  postWithDoc(c.rootPath + "/session/requests/:id/accept") { o =>
     o.summary("Accept a friend request")
       .tag(tagName)
       .request[PostAcceptFriendRequest]
@@ -54,7 +55,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/session/requests/:id/reject") { o =>
+  postWithDoc(c.rootPath + "/session/requests/:id/reject") { o =>
     o.summary("Reject a friend request")
       .tag(tagName)
       .request[PostRejectFriendRequest]
@@ -69,7 +70,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/accounts/:id/requests") { o =>
+  postWithDoc(c.rootPath + "/accounts/:id/requests") { o =>
     o.summary("Create a friend request to this account")
       .tag(tagName)
       .request[PostFriendRequest]
@@ -85,7 +86,7 @@ class RequestsController @Inject()(s: Swagger) extends BackendController {
     ).map(FriendRequestCreated(_)).map(response.created(_))
   }
 
-  deleteWithDoc("/accounts/:id/requests") { o =>
+  deleteWithDoc(c.rootPath + "/accounts/:id/requests") { o =>
     o.summary("Remove a friend request to this account")
       .tag(tagName)
       .request[DeleteFriendRequest]
