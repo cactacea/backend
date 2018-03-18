@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.s3
+package io.github.cactacea.backend.components.s3
 
 import com.google.inject.Inject
 import com.twitter.util.Future

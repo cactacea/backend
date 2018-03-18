@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.onesignal
+package io.github.cactacea.backend.components.onesignal
 
 case class OneSignalNotificationContent (
                                           en: Option[String],

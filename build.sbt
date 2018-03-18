@@ -18,8 +18,7 @@ lazy val demo = (project in file("demo"))
     dockerRepository := Some("cactacea")
   )
   .dependsOn(api)
-  .dependsOn(onesignal)
-  .dependsOn(s3)
+  .dependsOn(component)
   .enablePlugins(JavaAppPackaging)
 
 
@@ -72,24 +71,11 @@ lazy val util = (project in file("util"))
   .settings(commonLibrarySetting)
 
 
-lazy val onesignal = (project in file("onesignal"))
+lazy val component = (project in file("component"))
   .settings(
-    organization := "io.github.cactacea.backend.onesignal",
+    organization := "io.github.cactacea.backend.components",
     scalaVersion := "2.12.4",
-    name := "onesignal",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
-  )
-  .settings(commonResolverSetting)
-  .settings(commonLibrarySetting)
-  .dependsOn(core)
-
-
-lazy val s3 = (project in file("s3"))
-  .settings(
-    organization := "io.github.cactacea.backend.s3",
-    scalaVersion := "2.12.4",
-    name := "s3",
+    name := "component",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
   )
