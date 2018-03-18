@@ -14,7 +14,6 @@ class FeedsRepository {
 
   @Inject private var feedsDAO: FeedsDAO = _
   @Inject private var accountFeedsDAO: AccountFeedsDAO = _
-  @Inject private var timelineDAO: TimeLineDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
@@ -23,7 +22,6 @@ class FeedsRepository {
       _ <- validationDAO.existMediums(ids, sessionId)
       id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- accountFeedsDAO.create(id, sessionId)
-      _ <- timelineDAO.create(id, sessionId)
     } yield (id)
   }
 

@@ -54,8 +54,6 @@ class DatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy
   implicit val sessionIdEncode: MappedEncoding[Long, SessionId] = MappedEncoding[Long, SessionId] (long => SessionId(long))
   implicit val stampIdDecode: MappedEncoding[StampId, Long] = MappedEncoding[StampId, Long] (id => id.onlyValue)
   implicit val stampIdEncode: MappedEncoding[Long, StampId] = MappedEncoding[Long, StampId] (long => StampId(long))
-  implicit val timelineFeedIdDecode: MappedEncoding[TimelineFeedId, Long] = MappedEncoding[TimelineFeedId, Long] (id => id.onlyValue)
-  implicit val timelineFeedIdEncode: MappedEncoding[Long, TimelineFeedId] = MappedEncoding[Long, TimelineFeedId] (long => TimelineFeedId(long))
 
   implicit val accountStatusDecode: MappedEncoding[AccountStatusType, Byte] = MappedEncoding[AccountStatusType, Byte] (enumValue => enumValue.toValue)
   implicit val accountStatusEncode: MappedEncoding[Byte, AccountStatusType] = MappedEncoding[Byte, AccountStatusType] (long => AccountStatusType.forName(long))

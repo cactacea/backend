@@ -117,8 +117,6 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   }
 
-  test("block a timeline user") (pending)
-
   test("block a friend request user") {
 
     val sessionUser = signUp("session user name", "session user password", "session udid").account

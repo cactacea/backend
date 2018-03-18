@@ -788,26 +788,6 @@ AUTO_INCREMENT = 17083
 DEFAULT CHARACTER SET = utf8;
 
 
--- -----------------------------------------------------
--- Table `cactacea`.`timelines`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `cactacea`.`timelines` (
-  `id` BIGINT(20) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
-  `feed_id` BIGINT(20) NULL DEFAULT NULL,
-  `by` BIGINT(20) NULL DEFAULT NULL,
-  `posted_at` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_timeline_feeds_accounts1_idx` (`account_id` ASC),
-  CONSTRAINT `fk_timeline_feeds_accounts1`
-    FOREIGN KEY (`account_id`)
-    REFERENCES `cactacea`.`accounts` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-
 DROP FUNCTION IF EXISTS `cactacea`.`generateId`;
 -- -----------------------------------------------------
 -- function generateId
