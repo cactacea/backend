@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.InjectionService
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.domain.enums.ActiveStatus
 import io.github.cactacea.core.domain.repositories.DevicesRepository
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
 
@@ -14,11 +15,20 @@ class DevicesService {
   @Inject private var deviceTokensRepository: DevicesRepository = _
   @Inject private var actionService: InjectionService = _
 
-  def update(token: Option[String], sessionId: SessionId, udid: String): Future[Unit] = {
+  def update(pushToken: Option[String], sessionId: SessionId, udid: String): Future[Unit] = {
     db.transaction {
       for {
-        r <- deviceTokensRepository.update(udid, token, sessionId)
-        _ <- actionService.deviceUpdated(sessionId)
+        r <- deviceTokensRepository.update(udid, pushToken, sessionId)
+        _ <- actionService.devicePushTokenUpdated(sessionId)
+      } yield (r)
+    }
+  }
+
+  def update(deviceStatus: ActiveStatus, sessionId: SessionId, udid: String): Future[Unit] = {
+    db.transaction {
+      for {
+        r <- deviceTokensRepository.update(udid, deviceStatus, sessionId)
+        _ <- actionService.deviceStatusUpdated(sessionId)
       } yield (r)
     }
   }

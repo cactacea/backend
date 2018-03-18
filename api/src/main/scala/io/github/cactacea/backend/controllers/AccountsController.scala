@@ -7,7 +7,7 @@ import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.domain.models.Account
+import io.github.cactacea.core.domain.models.{Account, AccountStatus}
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
@@ -48,6 +48,21 @@ class AccountsController @Inject()(s: Swagger, c: ConfigService) extends Backend
 
   } { request: GetAccount =>
     accountsService.find(
+      request.id,
+      SessionContext.id
+    )
+  }
+
+  getWithDoc(c.rootPath + "/accounts/:id/status") { o =>
+    o.summary("Get account on")
+      .tag(tagName)
+      .request[GetAccountStatus]
+      .responseWith[AccountStatus](Status.Ok.code, successfulMessage)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+
+  } { request: GetAccountStatus =>
+    accountsService.findAccountStatus(
       request.id,
       SessionContext.id
     )

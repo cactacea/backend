@@ -4,8 +4,8 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
-import io.github.cactacea.core.domain.enums.DeviceType
-import io.github.cactacea.core.infrastructure.identifiers.{DeviceId, SessionId}
+import io.github.cactacea.core.domain.enums.{ActiveStatus, DeviceType}
+import io.github.cactacea.core.infrastructure.identifiers.{AccountId, DeviceId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
 
 @Singleton
@@ -30,9 +30,19 @@ class DevicesDAO @Inject()(db: DatabaseService) {
       query[Devices]
         .filter(_.udid == lift(udid))
         .filter(_.accountId == lift(accountId))
+        .take(1)
         .size
     }
     run(q).map(_ == 1)
+  }
+
+  def findActiveStatus(accountId: AccountId): Future[Option[ActiveStatus]] = {
+    val q = quote {
+      query[Devices]
+        .filter(_.accountId == lift(accountId))
+        .map(_.activeStatus)
+    }
+    run(q).map(_.headOption)
   }
 
   def create(udid: String, deviceType: DeviceType, info: Option[String], sessionId: SessionId): Future[DeviceId] = {
@@ -46,11 +56,12 @@ class DevicesDAO @Inject()(db: DatabaseService) {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Devices].insert(
-        _.id          -> lift(id),
-        _.accountId   -> lift(accountId),
-        _.udid        -> lift(udid),
-        _.deviceType  -> lift(deviceType),
-        _.userAgent   -> lift(info)
+        _.id            -> lift(id),
+        _.accountId     -> lift(accountId),
+        _.udid          -> lift(udid),
+        _.deviceType    -> lift(deviceType),
+        _.activeStatus  -> lift(ActiveStatus.inactive),
+        _.userAgent     -> lift(info)
       )
     }
     run(q)
@@ -67,6 +78,19 @@ class DevicesDAO @Inject()(db: DatabaseService) {
     run(r).map(_ == 1)
   }
 
+  def update(udid: String, deviceStatus: ActiveStatus, sessionId: SessionId): Future[Boolean] = {
+    val accountId = sessionId.toAccountId
+    val r = quote {
+      query[Devices]
+        .filter(_.accountId   == lift(accountId))
+        .filter(_.udid        == lift(udid))
+        .update(
+          _.activeStatus   -> lift(deviceStatus)
+        )
+    }
+    run(r).map(_ >= 1)
+  }
+
   def update(udid: String, pushToken: Option[String], sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val r = quote {
@@ -77,7 +101,7 @@ class DevicesDAO @Inject()(db: DatabaseService) {
           _.pushToken   -> lift(pushToken)
         )
     }
-    run(r).map(_ == 1)
+    run(r).map(_ >= 1)
   }
 
 

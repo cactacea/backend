@@ -78,14 +78,14 @@ class SettingsController @Inject()(s: Swagger, c: ConfigService) extends Backend
     ).map(_ => response.noContent)
   }
 
-  postWithDoc(c.rootPath + "/session/devices") { o =>
-    o.summary("Update the device tokens")
+  postWithDoc(c.rootPath + "/session/push_token") { o =>
+    o.summary("Update device push token")
       .tag(tagName)
-      .request[PostDeviceToken]
+      .request[PostDevicePushToken]
       .responseWith(Status.NoContent.code, successfulMessage)
 
 
-  } { request: PostDeviceToken =>
+  } { request: PostDevicePushToken =>
     deviceTokenService.update(
       request.pushToken,
       SessionContext.id,
@@ -93,6 +93,20 @@ class SettingsController @Inject()(s: Swagger, c: ConfigService) extends Backend
     ).map(_ => response.noContent)
   }
 
+  postWithDoc(c.rootPath + "/session/status") { o =>
+    o.summary("Update device status")
+      .tag(tagName)
+      .request[PostActiveStatus]
+      .responseWith(Status.NoContent.code, successfulMessage)
+
+
+  } { request: PostActiveStatus =>
+    deviceTokenService.update(
+      request.status,
+      SessionContext.id,
+      SessionContext.udid
+    ).map(_ => response.noContent)
+  }
 
 }
 
