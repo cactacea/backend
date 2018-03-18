@@ -135,7 +135,7 @@ lazy val commonLibrarySetting = Seq(
     "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
 
     "mysql" % "mysql-connector-java" % "6.0.6",
-    "org.flywaydb" % "flyway-core" % "4.2.0",
+    "org.flywaydb" % "flyway-core" % "5.0.7",
 
     "com.jsuereth" %% "scala-arm" % "2.0",
     "com.roundeights" %% "hasher" % "1.2.0",
