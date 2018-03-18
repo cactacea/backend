@@ -13,10 +13,6 @@ phases:
       - add-apt-repository -y ppa:openjdk-r/ppa
       - sudo apt-get update -y
       - apt-get install -y openjdk-8-jdk
-      - echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-      - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-      - apt-get update -y
-      - apt-get install -y sbt
       - pip install --upgrade awscli
   pre_build:
     commands:
@@ -24,7 +20,10 @@ phases:
       - docker login --username="$DOCKER_HUB_USERNAME" --password="$DOCKER_HUB_PASSWORD"
   build:
     commands:
-      - cp -r ~/.sbt/preloaded/ ~/.ivy2/local
+      - echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+      - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+      - apt-get update -y
+      - apt-get install -y sbt
       - export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
       - sbt compile
       - sbt demo/docker:publish
