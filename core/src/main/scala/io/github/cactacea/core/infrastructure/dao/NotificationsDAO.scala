@@ -84,7 +84,7 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.sortBy(_._1._1.id.value).reverse.map({ case ((n, a), r) => (n, a, r)}))
+    run(q).map(_.map({ case ((n, a), r) => (n, a, r)}).sortBy(_._1.id.value).reverse)
   }
 
 }

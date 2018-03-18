@@ -3,31 +3,30 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import io.swagger.models.Swagger
-
 import io.github.cactacea.backend.models.requests.message._
 import io.github.cactacea.backend.models.responses.MessageCreated
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotJoined, GroupNotFound, MediumNotFound}
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
-class MessagesController @Inject()(s: Swagger) extends BackendController {
+class MessagesController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
   protected val tagName = "Messages"
 
   @Inject private var messagesService: MessagesService = _
 
-  getWithDoc("/messages") { o =>
+  getWithDoc(c.rootPath + "/messages") { o =>
     o.summary("Search messages")
       .tag(tagName)
       .request[GetMessages]
       .responseWith[Message](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: GetMessages =>
     messagesService.find(
@@ -40,7 +39,7 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  deleteWithDoc("/messages") { o =>
+  deleteWithDoc(c.rootPath + "/messages") { o =>
     o.summary("Delete messages form a group")
       .tag(tagName)
       .request[DeleteMessages]
@@ -53,19 +52,19 @@ class MessagesController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/messages") { o =>
+  postWithDoc(c.rootPath + "/messages") { o =>
     o.summary("Post a message to a group")
       .tag(tagName)
       .request[PostMessage]
       .responseWith[MessageCreated](Status.Created.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotJoined.message)
-      .responseWith[NotFound](Status.NotFound.code, MediumNotFound.message)
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+      .responseWith[Array[AccountNotJoinedType]](AccountNotJoined.status.code, AccountNotJoined.message)
+      .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
 
   } { request: PostMessage =>
     messagesService.create(
       request.id,
-      request.groupMessage,
+      request.message,
       request.mediumId,
       SessionContext.id
     ).map(MessageCreated(_)).map(response.created(_))

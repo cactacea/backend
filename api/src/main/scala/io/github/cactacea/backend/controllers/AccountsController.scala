@@ -2,17 +2,18 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
-import io.swagger.models.Swagger
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
-import io.github.cactacea.core.domain.models.Account
+import io.github.cactacea.core.domain.models.{Account, AccountStatus}
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.BadRequest
+import io.github.cactacea.core.util.responses.CactaceaErrors._
+import io.swagger.models.Swagger
 
 @Singleton
-class AccountsController @Inject()(s: Swagger) extends BackendController {
+class AccountsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -20,12 +21,12 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var accountsService: AccountsService = _
 
-  getWithDoc("/accounts") { o =>
+  getWithDoc(c.rootPath + "/accounts") { o =>
     o.summary("Search accounts")
       .tag(tagName)
       .request[GetAccounts]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: GetAccounts =>
     accountsService.find(
@@ -37,12 +38,13 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/accounts/:id") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id") { o =>
     o.summary("Get information about this account")
       .tag(tagName)
       .request[GetAccount]
       .responseWith[Account](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetAccount =>
     accountsService.find(
@@ -51,11 +53,28 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  putWithDoc("/accounts/:id/display_name") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/status") { o =>
+    o.summary("Get account on")
+      .tag(tagName)
+      .request[GetAccountStatus]
+      .responseWith[AccountStatus](Status.Ok.code, successfulMessage)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+
+  } { request: GetAccountStatus =>
+    accountsService.findAccountStatus(
+      request.id,
+      SessionContext.id
+    )
+  }
+
+  putWithDoc(c.rootPath + "/accounts/:id/display_name") { o =>
     o.summary("Change display name to session account")
       .tag(tagName)
       .request[PutAccountDisplayName]
       .responseWith(Status.NoContent.code, successfulMessage)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: PutAccountDisplayName =>
     accountsService.update(
@@ -65,7 +84,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/account/:account_name") { o =>
+  getWithDoc(c.rootPath + "/account/:account_name") { o =>
     o.summary("Confirm account name exists")
       .tag(tagName)
       .request[GetAccountName]

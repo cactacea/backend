@@ -7,15 +7,15 @@ import io.github.cactacea.backend.models.requests.comment.PostCommentReport
 import io.github.cactacea.backend.models.requests.feed.PostFeedReport
 import io.github.cactacea.backend.models.requests.group.PostGroupReport
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, CommentNotFound, FeedNotFound, GroupNotFound}
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 
 @Singleton
-class ReportsController @Inject()(s: Swagger) extends BackendController {
+class ReportsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -23,13 +23,13 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var accountsService: AccountsService = _
 
-  postWithDoc("/accounts/:id/reports") { o =>
+  postWithDoc(c.rootPath + "/accounts/:id/reports") { o =>
     o.summary("Report this account")
       .tag(tagName)
       .request[PostAccountReport]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: PostAccountReport =>
     accountsService.report(
@@ -41,13 +41,13 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var feedsService: FeedsService = _
 
-  postWithDoc("/feeds/:id/reports") { o =>
+  postWithDoc(c.rootPath + "/feeds/:id/reports") { o =>
     o.summary("Report this feed")
       .tag(tagName)
       .request[PostFeedReport]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, FeedNotFound.message)
+
+      .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
 
   } { request: PostFeedReport =>
     feedsService.report(
@@ -59,13 +59,13 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var commentsService: CommentsService = _
 
-  postWithDoc("/comments/:id/reports") { o =>
+  postWithDoc(c.rootPath + "/comments/:id/reports") { o =>
     o.summary("Report this comment")
       .tag(tagName)
       .request[PostCommentReport]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, CommentNotFound.message)
+
+      .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
 
   } { request: PostCommentReport =>
     commentsService.report(
@@ -77,13 +77,13 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var groupsService: GroupsService = _
 
-  postWithDoc("/groups/:id/reports") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/reports") { o =>
     o.summary("Report this group")
       .tag(tagName)
       .request[PostGroupReport]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: PostGroupReport =>
     groupsService.report(

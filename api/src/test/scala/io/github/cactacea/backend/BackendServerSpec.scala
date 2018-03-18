@@ -9,11 +9,13 @@ import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.helpers.ServerSpec
 import io.github.cactacea.backend.models.requests.account.GetAccounts
 import io.github.cactacea.backend.models.requests.session.{GetSignIn, PostSignUp}
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.domain.models.{Account, Authentication}
 
 class BackendServerSpec extends ServerSpec {
 
   @Inject private var mapper: FinatraObjectMapper = _
+  @Inject private var configService: ConfigService = _
 
   val accountsCount = 10
 
@@ -32,9 +34,7 @@ class BackendServerSpec extends ServerSpec {
 
         val signUpAuth = mapper.parse[Authentication](signUpResponse.contentString)
 
-        // SignOut
-        val signOutRes = signOut(signUpAuth.accessToken)
-        assert(signOutRes.statusCode == Status.NoContent.code)
+        assert(delete("/session", signUpAuth.accessToken).statusCode == Status.NoContent.code)
 
       }
     })
@@ -52,13 +52,12 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
-        val signInRes = get(s"/sessions?account_name=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 
         // SignOut
-        val signOutRes = signOut(signInAuth.accessToken)
-        assert(signOutRes.statusCode == Status.NoContent.code)
+        assert(delete("/session", signInAuth.accessToken).statusCode == Status.NoContent.code)
 
       }
     })
@@ -76,7 +75,7 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
-        val signInRes = get(s"/sessions?account_name=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 
@@ -113,7 +112,7 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
-        val signInRes = get(s"/sessions?account_name=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 

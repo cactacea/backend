@@ -24,33 +24,26 @@ class ServerSpec extends FeatureTest {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
-        DefaultSocialAccountsModule,
-        DefaultInjectionModule,
+        FGTSocialAccountsModule,
+        NoActionInjectionModule,
         DefaultConfigModule,
-        DefaultFanOutModule,
+        DefaultNotificationModule,
         DefaultNotificationMessagesModule,
-        DefaultPublishModule,
-        DefaultPushNotificationModule,
-        DefaultStorageModule,
-        DefaultSubScribeModule,
-        DefaultTranscodeModule,
-        DefaultIdentifyModule,
+        NoQueuePublishModule,
+        NoPushNotificationModule,
+        LocalStorageModule,
+        NoQueueSubScribeModule,
+        ImageTranscodeModule,
+        InstagramDesignIdentifyModule,
         DefaultDeepLinkModule,
         FinatraJacksonModule
       )
     ).create
 
 
-
-
-  def signOut(accessToken: String) : Response = {
-    delete("/session", accessToken)
-  }
-
-
   def post(path: String, postBody: String, accessToken: String): Response = {
     server.httpPost(
-      path = path,
+      path = configService.rootPath + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken
@@ -61,7 +54,7 @@ class ServerSpec extends FeatureTest {
 
   def delete(path: String, accessToken: String): Response = {
     server.httpDelete(
-      path = path,
+      path = configService.rootPath + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken
@@ -71,7 +64,7 @@ class ServerSpec extends FeatureTest {
 
   def post(path: String, postBody: String) : Response = {
     server.httpPost(
-      path = "/sessions",
+      path = configService.rootPath + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "User-Agent" -> "ios"
@@ -82,7 +75,7 @@ class ServerSpec extends FeatureTest {
 
   def get(path: String) : Response = {
     server.httpGet(
-      path = path,
+      path = configService.rootPath + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "User-Agent" -> "ios"
@@ -92,7 +85,7 @@ class ServerSpec extends FeatureTest {
 
   def get(path: String, accessToken: String): Response = {
     server.httpGet(
-      path = path,
+      path = configService.rootPath + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken

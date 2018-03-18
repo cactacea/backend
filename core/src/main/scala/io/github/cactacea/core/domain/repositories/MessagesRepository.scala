@@ -5,6 +5,8 @@ import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.Message
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.{GroupId, MediumId, MessageId, SessionId}
+import io.github.cactacea.core.util.exceptions.CactaceaException
+import io.github.cactacea.core.util.responses.CactaceaErrors
 
 @Singleton
 class MessagesRepository {
@@ -17,13 +19,35 @@ class MessagesRepository {
   @Inject private var validationDAO: ValidationDAO = _
 
   def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
-    val ids = Some(mediumId.toList)
+    (message, mediumId) match {
+      case (Some(m), _) =>
+        create(groupId, m, sessionId)
+      case (_, Some(m)) =>
+        create(groupId, m, sessionId)
+      case _ =>
+        Future.exception(CactaceaException(CactaceaErrors.RequiredFieldMissingValidationError("Message or Medium Id required.")))
+    }
+  }
+
+  private def create(groupId: GroupId, message: String, sessionId: SessionId): Future[MessageId] = {
     for {
       _  <- validationDAO.existGroup(groupId, sessionId)
       _  <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
-      _  <- validationDAO.existMediums(ids, sessionId)
       a  <- groupAccountsDAO.findCount(groupId)
-      id  <- messagesDAO.create(groupId, message, a, mediumId, sessionId)
+      id  <- messagesDAO.create(groupId, Some(message), a, None, sessionId)
+      _  <- groupsDAO.update(groupId, Some(id), sessionId)
+      _  <- accountMessagesDAO.create(groupId, id, sessionId)
+      _  <- accountGroupsDAO.updateUnreadCount(groupId)
+    } yield (id)
+  }
+
+  private def create(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[MessageId] = {
+    for {
+      _  <- validationDAO.existGroup(groupId, sessionId)
+      _  <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
+      _  <- validationDAO.existMediums(mediumId, sessionId)
+      a  <- groupAccountsDAO.findCount(groupId)
+      id  <- messagesDAO.create(groupId, None, a, Some(mediumId), sessionId)
       _  <- groupsDAO.update(groupId, Some(id), sessionId)
       _  <- accountMessagesDAO.create(groupId, id, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)

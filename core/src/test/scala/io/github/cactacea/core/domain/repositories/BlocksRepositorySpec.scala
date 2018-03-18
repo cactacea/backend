@@ -4,7 +4,7 @@ import com.twitter.util.Await
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountAlreadyBlocked, AccountNotBlocked, AccountNotFound, CanNotSpecifyMyself}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountAlreadyBlocked, AccountNotBlocked, AccountNotFound, CanNotSpecifyMyself}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
 class BlocksRepositorySpec extends RepositorySpec {
@@ -116,8 +116,6 @@ class BlocksRepositorySpec extends RepositorySpec {
     assert(Await.result(mutesDAO.exist(sessionUser.id, user.id.toSessionId)) == false)
 
   }
-
-  test("block a timeline user") (pending)
 
   test("block a friend request user") {
 

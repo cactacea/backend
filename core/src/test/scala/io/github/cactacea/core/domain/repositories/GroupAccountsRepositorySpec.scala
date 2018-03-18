@@ -4,7 +4,7 @@ import com.twitter.util.Await
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, ReportType}
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, GroupId}
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
 class GroupAccountsRepositorySpec extends RepositorySpec {

@@ -127,14 +127,11 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean, sessionId: SessionId): Future[List[(Groups, Option[Messages], Option[AccountMessages], Option[Accounts], Option[Relationships], AccountGroupId)]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean): Future[List[(Groups, Option[Messages], Option[AccountMessages], Option[Accounts], Option[Relationships], AccountGroupId)]] = {
 
     val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
-
-    // TODO : Check Blocks
-//    val by = sessionId.toAccountId
 
     val q = quote {
       query[AccountGroups].filter(ag => ag.accountId == lift(accountId) && ag.hidden == lift(hidden))
@@ -146,7 +143,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.sortBy(_._1._1._1.id.value).reverse.map({ case (((ag, g), m), am) => (g, m, am, None, None, ag.id)}))
+    run(q).map(_.map({ case (((ag, g), m), am) => (g, m, am, None, None, ag.id)}).sortBy(_._6.value).reverse)
 
   }
 

@@ -43,11 +43,10 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
-    val accountId = sessionId.toAccountId
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages].filter(am => am.accountId == lift(accountId) && am.groupId == lift(groupId))
+      query[AccountMessages].filter(am => am.accountId == lift(by) && am.groupId == lift(groupId))
         .filter(_ => infix"am.message_id > ${lift(s)}".as[Boolean] || lift(s) == -1L)
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
@@ -57,7 +56,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((((am, m), a), i), r) => (m, am, i, a, r) }))
+    run(q).map(_.map({ case ((((am, m), a), i), r) => (m, am, i, a, r) }).sortBy(_._2.messageId.value))
 
   }
 
@@ -66,11 +65,10 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
-    val accountId = sessionId.toAccountId
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages].filter(am => am.accountId == lift(accountId) && am.groupId == lift(groupId) )
+      query[AccountMessages].filter(am => am.accountId == lift(by) && am.groupId == lift(groupId) )
         .filter(_ => infix"am.message_id < ${lift(s)}".as[Boolean] || lift(s) == -1L )
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
@@ -80,7 +78,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.sortBy(_._1._1._1._1.messageId.value).reverse.map({ case ((((am, m), a), i), r) => (m, am, i, a, r) }))
+    run(q).map(_.map({ case ((((am, m), a), i), r) => (m, am, i, a, r) }).sortBy(_._2.messageId.value).reverse)
 
   }
 

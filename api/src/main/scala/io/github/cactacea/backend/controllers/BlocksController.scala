@@ -2,18 +2,18 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
-import io.swagger.models.Swagger
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services.BlocksService
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountAlreadyBlocked, AccountNotBlocked, _}
+import io.swagger.models.Swagger
 
 @Singleton
-class BlocksController @Inject()(s: Swagger) extends BackendController {
+class BlocksController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -21,12 +21,12 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var blocksService: BlocksService = _
 
-  getWithDoc("/session/blocks") { o =>
-    o.summary("Get accounts list you blocked")
+  getWithDoc(c.rootPath + "/session/blocks") { o =>
+    o.summary("Get blocking accounts list")
       .tag(tagName)
       .request[GetSessionBlocks]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[Array[BadRequest]](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: GetSessionBlocks =>
     blocksService.find(
@@ -37,13 +37,15 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/accounts/:id/blocks") { o =>
+  postWithDoc(c.rootPath + "/accounts/:id/blocks") { o =>
     o.summary("Block a account")
       .tag(tagName)
       .request[PostBlock]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+      .responseWith[Array[CanNotSpecifyMyselfType]](CanNotSpecifyMyself.status.code, CanNotSpecifyMyself.message)
+      .responseWith[Array[AccountAlreadyBlockedType]](AccountAlreadyBlocked.status.code, AccountAlreadyBlocked.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: PostBlock =>
     blocksService.create(
@@ -52,12 +54,15 @@ class BlocksController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/accounts/:id/blocks") { o =>
+  deleteWithDoc(c.rootPath + "/accounts/:id/blocks") { o =>
     o.summary("Unblock a account")
         .tag(tagName)
       .request[DeleteBlock]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+      .responseWith[Array[CanNotSpecifyMyselfType]](CanNotSpecifyMyself.status.code, CanNotSpecifyMyself.message)
+      .responseWith[Array[AccountNotBlockedType]](AccountNotBlocked.status.code, AccountNotBlocked.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: DeleteBlock =>
     blocksService.delete(

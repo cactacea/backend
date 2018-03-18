@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.InjectionService
 import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.enums.ReportType
-import io.github.cactacea.core.domain.models.Account
+import io.github.cactacea.core.domain.models.{Account, AccountStatus}
 import io.github.cactacea.core.domain.repositories.{AccountsRepository, ReportsRepository}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 
@@ -87,6 +87,9 @@ class AccountsService {
     }
   }
 
+  def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
+    accountsRepository.findAccountStatus(accountId, sessionId)
+  }
 
   def report(accountId: AccountId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
     db.transaction {

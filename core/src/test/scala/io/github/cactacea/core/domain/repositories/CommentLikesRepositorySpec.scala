@@ -5,7 +5,7 @@ import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.dao.CommentLikesDAO
 import io.github.cactacea.core.infrastructure.identifiers.CommentId
-import io.github.cactacea.core.util.responses.CactaceaError.{CommentAlreadyLiked, CommentNotLiked, CommentNotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{CommentAlreadyLiked, CommentNotLiked, CommentNotFound}
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
 class CommentLikesRepositorySpec extends RepositorySpec {

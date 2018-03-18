@@ -5,7 +5,7 @@ import io.github.cactacea.core.domain.enums.MediumType
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.{AccountNotFound, MediumNotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountNotFound, MediumNotFound}
 
 class AccountsRepositorySpec extends RepositorySpec {
 

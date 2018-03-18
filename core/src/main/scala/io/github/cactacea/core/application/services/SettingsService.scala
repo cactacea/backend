@@ -53,18 +53,22 @@ class SettingsService {
 
 
   def connectSocialAccount(socialAccountType: String, accessTokenKey: String, accessTokenSecret: String, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- socialAccountsService.get(socialAccountType, accessTokenKey, accessTokenSecret)
-      r <- db.transaction(socialAccountsRepository.create(socialAccountType, accessTokenKey, sessionId))
-      _ <- injectionService.socialAccountConnected(socialAccountType, sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        _ <- socialAccountsService.get(socialAccountType, accessTokenKey, accessTokenSecret)
+        r <- socialAccountsRepository.create(socialAccountType, accessTokenKey, sessionId)
+        _ <- injectionService.socialAccountConnected(socialAccountType, sessionId)
+      } yield (r)
+    }
   }
 
   def disconnectSocialAccount(socialAccountType: String, sessionId: SessionId): Future[Unit] = {
-    for {
-      r <- db.transaction(socialAccountsRepository.delete(socialAccountType, sessionId))
-      _ <- injectionService.socialAccountDisconnected(socialAccountType, sessionId)
-    } yield (r)
+    db.transaction {
+      for {
+        r <- socialAccountsRepository.delete(socialAccountType, sessionId)
+        _ <- injectionService.socialAccountDisconnected(socialAccountType, sessionId)
+      } yield (r)
+    }
   }
 
   def findSocialAccounts(sessionId: SessionId): Future[List[SocialAccount]] = {

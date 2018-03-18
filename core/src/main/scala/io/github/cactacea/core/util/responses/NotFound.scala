@@ -2,7 +2,9 @@ package io.github.cactacea.core.util.responses
 
 import com.twitter.finagle.http.Status
 
-case class NotFound(code: Long, message: String) extends CactaceaError {
+trait NotFound extends CactaceaError {
+  val code: Int
+  val message: String
   override def status = {
     Status.NotFound
   }

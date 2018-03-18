@@ -6,7 +6,7 @@ import io.github.cactacea.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.application.services.TimeService
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, SessionId}
-import io.github.cactacea.core.infrastructure.models.{Accounts, Relationships}
+import io.github.cactacea.core.infrastructure.models.{Accounts, Blocks, Relationships}
 
 @Singleton
 class MutesDAO @Inject()(db: DatabaseService) {
@@ -85,6 +85,25 @@ class MutesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
+
+    val s = since.getOrElse(-1L)
+    val c = count.getOrElse(20)
+    val o = offset.getOrElse(0)
+    val by = sessionId.toAccountId
+
+    val q = quote {
+      query[Relationships].filter(f => f.by == lift(by) && f.mute  == true && (f.mutedAt < lift(s) || lift(s) == -1L) )
+        .join(query[Accounts]).on((f, a) => a.id == f.accountId)
+        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .sortBy({ case ((f, _), _) => f.mutedAt })(Ord.descNullsLast)
+        .drop(lift(o))
+        .take(lift(c))
+    }
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.mutedAt)}).sortBy(_._3).reverse)
+
+  }
+
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
 
     val s = since.getOrElse(-1L)
@@ -94,13 +113,18 @@ class MutesDAO @Inject()(db: DatabaseService) {
 
     val q = quote {
       query[Relationships].filter(f => f.by == lift(accountId) && f.mute  == true && (f.mutedAt < lift(s) || lift(s) == -1L) )
+        .filter(r => query[Blocks]
+          .filter(_.accountId == r.accountId)
+          .filter(_.by        == lift(by))
+          .filter(b => b.blocked == true || b.beingBlocked == true)
+          .isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .sortBy({ case ((f, _), _) => f.mutedAt })(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.sortBy(_._1._1.mutedAt).reverse.map({ case ((f, a), r) => (a, r, f.mutedAt)}))
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.mutedAt)}).sortBy(_._3).reverse)
 
   }
 

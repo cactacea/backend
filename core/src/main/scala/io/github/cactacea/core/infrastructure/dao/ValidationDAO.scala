@@ -6,7 +6,7 @@ import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.infrastructure.identifiers._
 import io.github.cactacea.core.infrastructure.models._
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class ValidationDAO {
@@ -168,6 +168,15 @@ class ValidationDAO {
       case None =>
         Future.Unit
     }
+  }
+
+  def existMediums(mediumId: MediumId, sessionId: SessionId): Future[Unit] = {
+    mediumsDAO.exist(mediumId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(MediumNotFound))
+    })
   }
 
   def notExistFeedLike(feedId: FeedId, sessionId: SessionId): Future[Unit] = {

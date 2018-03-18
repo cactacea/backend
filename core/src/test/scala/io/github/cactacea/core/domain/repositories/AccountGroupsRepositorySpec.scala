@@ -5,7 +5,7 @@ import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyTyp
 import io.github.cactacea.core.helpers.RepositorySpec
 import io.github.cactacea.core.infrastructure.identifiers.GroupId
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError.AccountNotJoined
+import io.github.cactacea.core.util.responses.CactaceaErrors.AccountNotJoined
 
 class AccountGroupsRepositorySpec extends RepositorySpec {
 

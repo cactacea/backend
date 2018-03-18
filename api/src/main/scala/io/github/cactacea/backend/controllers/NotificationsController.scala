@@ -4,14 +4,15 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.notification.GetNotifications
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services.NotificationsService
 import io.github.cactacea.core.domain.models.Notification
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.BadRequest
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class NotificationsController @Inject()(s: Swagger) extends BackendController {
+class NotificationsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -19,11 +20,11 @@ class NotificationsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var notificationsService: NotificationsService = _
 
-  getWithDoc("/notifications") { o =>
+  getWithDoc(c.rootPath + "/notifications") { o =>
     o.summary("Search notifications")
       .request[GetNotifications]
       .responseWith[Array[Notification]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: GetNotifications =>
     notificationsService.find(

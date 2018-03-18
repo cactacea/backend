@@ -2,6 +2,7 @@ import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val demo = (project in file("demo"))
   .settings(
+    version      := "0.1.0-SNAPSHOT",
     organization := "io.github.cactacea.backend",
     name := "demo",
     scalaVersion := "2.12.4",
@@ -17,13 +18,13 @@ lazy val demo = (project in file("demo"))
     dockerRepository := Some("cactacea")
   )
   .dependsOn(api)
-  .dependsOn(onesignal)
-  .dependsOn(s3)
+  .dependsOn(component)
   .enablePlugins(JavaAppPackaging)
 
 
 lazy val api = (project in file("api"))
   .settings(
+    version      := "0.1.0-SNAPSHOT",
       organization := "io.github.cactacea.backend.api",
       name := "api",
       scalaVersion := "2.12.4",
@@ -37,6 +38,7 @@ lazy val api = (project in file("api"))
 
 lazy val core = (project in file("core"))
   .settings(
+    version      := "0.1.0-SNAPSHOT",
     organization := "io.github.cactacea.backend.core",
     scalaVersion := "2.12.4",
     name := "core",
@@ -52,6 +54,7 @@ lazy val core = (project in file("core"))
 
 lazy val util = (project in file("util"))
   .settings(
+    version      := "0.1.0-SNAPSHOT",
     organization := "io.github.cactacea.backend.util",
     scalaVersion := "2.12.4",
     name := "util",
@@ -68,24 +71,11 @@ lazy val util = (project in file("util"))
   .settings(commonLibrarySetting)
 
 
-lazy val onesignal = (project in file("onesignal"))
+lazy val component = (project in file("component"))
   .settings(
-    organization := "io.github.cactacea.backend.onesignal",
+    organization := "io.github.cactacea.backend.components",
     scalaVersion := "2.12.4",
-    name := "onesignal",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
-  )
-  .settings(commonResolverSetting)
-  .settings(commonLibrarySetting)
-  .dependsOn(core)
-
-
-lazy val s3 = (project in file("s3"))
-  .settings(
-    organization := "io.github.cactacea.backend.s3",
-    scalaVersion := "2.12.4",
-    name := "s3",
+    name := "component",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
   )
@@ -145,7 +135,7 @@ lazy val commonLibrarySetting = Seq(
     "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
 
     "mysql" % "mysql-connector-java" % "6.0.6",
-    "org.flywaydb" % "flyway-core" % "4.2.0",
+    "org.flywaydb" % "flyway-core" % "5.0.7",
 
     "com.jsuereth" %% "scala-arm" % "2.0",
     "com.roundeights" %% "hasher" % "1.2.0",

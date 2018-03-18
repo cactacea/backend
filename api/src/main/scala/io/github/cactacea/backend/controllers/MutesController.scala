@@ -5,29 +5,28 @@ import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
 import io.github.cactacea.backend.models.requests.session.GetSessionMutes
 import io.github.cactacea.backend.swagger.BackendController
-
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services.MutesService
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError.AccountNotFound
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors.{AccountAlreadyBlocked, AccountNotBlocked, _}
 import io.swagger.models.Swagger
 
 @Singleton
-class MutesController @Inject()(s: Swagger) extends BackendController {
+class MutesController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
-  protected val tagName = "Mute"
+  protected val tagName = "Mutes"
 
   @Inject private var mutesService: MutesService = _
 
-  getWithDoc("/session/mutes") { o =>
+  getWithDoc(c.rootPath + "/session/mutes") { o =>
     o.summary("Get accounts list session account muted")
       .tag(tagName)
       .request[GetSessionMutes]
       .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: GetSessionMutes =>
     mutesService.find(
@@ -38,12 +37,13 @@ class MutesController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/accounts/:id/mutes") { o =>
+  postWithDoc(c.rootPath + "/accounts/:id/mutes") { o =>
     o.summary("Mute this account")
       .tag(tagName)
       .request[PostMute]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[AccountAlreadyBlockedType]](AccountAlreadyBlocked.status.code, AccountAlreadyBlocked.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: PostMute =>
     mutesService.create(
@@ -52,12 +52,13 @@ class MutesController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/accounts/:id/mutes") { o =>
+  deleteWithDoc(c.rootPath + "/accounts/:id/mutes") { o =>
     o.summary("UnMute this account")
       .tag(tagName)
       .request[DeleteMute]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+      .responseWith[Array[AccountNotBlockedType]](AccountNotBlocked.status.code, AccountNotBlocked.message)
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: DeleteMute =>
     mutesService.delete(

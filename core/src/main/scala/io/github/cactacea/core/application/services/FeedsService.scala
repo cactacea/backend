@@ -2,7 +2,7 @@ package io.github.cactacea.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.PublishService
+import io.github.cactacea.core.application.components.interfaces.{InjectionService, PublishService}
 import io.github.cactacea.core.application.components.services.DatabaseService
 import io.github.cactacea.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.core.domain.models.Feed
@@ -17,11 +17,13 @@ class FeedsService {
   @Inject private var reportsRepository: ReportsRepository = _
   @Inject private var publishService: PublishService = _
   @Inject private var timeService: TimeService = _
+  @Inject private var actionService: InjectionService = _
 
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
     db.transaction {
       for {
         id <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
+        _ <- actionService.feedCreated(id, sessionId)
         _ <- publishService.enqueueFeed(id)
       } yield (id)
     }
@@ -29,7 +31,10 @@ class FeedsService {
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
-      feedsRepository.delete(feedId, sessionId)
+      for {
+        r <- feedsRepository.delete(feedId, sessionId)
+        _ <- actionService.feedDeleted(feedId, sessionId)
+      } yield (r)
     }
   }
 

@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.core.domain.models.PushNotificationSetting
 import io.github.cactacea.core.infrastructure.dao.PushNotificationSettingsDAO
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.github.cactacea.core.util.exceptions.CactaceaException
 
 @Singleton

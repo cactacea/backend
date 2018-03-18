@@ -3,19 +3,18 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import io.swagger.models.Swagger
-
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.group._
 import io.github.cactacea.backend.models.responses.GroupCreated
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Group
 import io.github.cactacea.core.util.auth.SessionContext
-import io.github.cactacea.core.util.responses.CactaceaError._
-import io.github.cactacea.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
-class GroupsController @Inject()(s: Swagger) extends BackendController {
+class GroupsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -23,12 +22,12 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var groupsService: GroupsService = _
 
-  getWithDoc("/groups") { o =>
+  getWithDoc(c.rootPath + "/groups") { o =>
     o.summary("Search groups")
       .tag(tagName)
       .request[GetGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: GetGroups =>
     groupsService.find(
@@ -42,13 +41,13 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/groups/:id") { o =>
+  getWithDoc(c.rootPath + "/groups/:id") { o =>
     o.summary("Get basic information about this group")
       .tag(tagName)
       .request[GetGroup]
       .responseWith[Group](Status.Ok.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+
 
   } { request: GetGroup =>
     groupsService.find(
@@ -57,16 +56,16 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/groups") { o =>
+  postWithDoc(c.rootPath + "/groups") { o =>
     o.summary("Create a group")
       .tag(tagName)
       .request[PostGroup]
       .responseWith[GroupCreated](Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: PostGroup =>
     groupsService.create(
-      request.groupName,
+      request.name,
       request.byInvitationOnly,
       request.privacyType,
       request.authorityType,
@@ -74,18 +73,18 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(GroupCreated(_)).map(response.created(_))
   }
 
-  putWithDoc("/groups/:id") { o =>
+  putWithDoc(c.rootPath + "/groups/:id") { o =>
     o.summary("Update this group")
       .tag(tagName)
       .request[PutGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+
 
   } { request: PutGroup =>
     groupsService.update(
       request.id,
-      request.groupName,
+      request.name,
       request.byInvitationOnly,
       request.privacyType,
       request.authorityType,
@@ -95,15 +94,15 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var groupAccountsService: GroupAccountsService = _
 
-  postWithDoc("/groups/:id/join") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/join") { o =>
     o.summary("Join to this group,")
       .tag(tagName)
       .request[PostJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, AuthorityNotFound.message)
-      .responseWith[BadRequest](Status.BadRequest.code, AccountAlreadyJoined.message)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[AuthorityNotFoundType](AuthorityNotFound.status.code, AuthorityNotFound.message)
+      .responseWith[AccountAlreadyJoinedType](AccountAlreadyJoined.status.code, AccountAlreadyJoined.message)
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: PostJoinGroup =>
     groupAccountsService.create(
@@ -112,15 +111,15 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/groups/:id/leave") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/leave") { o =>
     o.summary("Leave from this group")
       .tag(tagName)
       .request[PostLeaveGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, AuthorityNotFound.message)
-      .responseWith[BadRequest](Status.BadRequest.code, AccountNotJoined.message)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[AuthorityNotFoundType](AuthorityNotFound.status.code, AuthorityNotFound.message)
+      .responseWith[AccountNotJoinedType](AccountNotJoined.status.code, AccountNotJoined.message)
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: PostLeaveGroup =>
     groupAccountsService.delete(
@@ -129,13 +128,13 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/groups/:id/accounts") { o =>
+  getWithDoc(c.rootPath + "/groups/:id/accounts") { o =>
     o.summary("Get acounts list of this group")
       .tag(tagName)
       .request[GetGroupAccounts]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: GetGroupAccounts =>
     groupAccountsService.find(
@@ -147,14 +146,14 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/accounts/:account_id/groups/:group_id/join") { o =>
+  postWithDoc(c.rootPath + "/accounts/:account_id/groups/:group_id/join") { o =>
     o.summary("Join this account in this group")
       .tag(tagName)
       .request[PostAccountJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: PostAccountJoinGroup =>
     groupAccountsService.create(
@@ -164,14 +163,14 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/accounts/:account_id/groups/:group_id/leave") { o =>
+  postWithDoc(c.rootPath + "/accounts/:account_id/groups/:group_id/leave") { o =>
     o.summary("Leave this account from this group")
       .tag(tagName)
       .request[PostAccountJoinGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: PostAccountLeaveGroup =>
     groupAccountsService.delete(
@@ -183,13 +182,13 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var accountGroupsService: AccountGroupsService = _
 
-  getWithDoc("/accounts/:id/group") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/group") { o =>
     o.summary("Get a direct message group to this account")
       .tag(tagName)
       .request[GetAccountGroup]
       .responseWith[Group](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetAccountGroup =>
     accountGroupsService.find(
@@ -198,13 +197,13 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/accounts/:id/groups") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/groups") { o =>
     o.summary("Get groups list this account joined")
       .tag(tagName)
       .request[GetAccountGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, AccountNotFound.message)
+
+      .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
   } { request: GetAccountGroups =>
     accountGroupsService.findAll(
@@ -216,12 +215,12 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/session/groups") { o =>
+  getWithDoc(c.rootPath + "/session/groups") { o =>
     o.summary("Get groups list session account joined")
       .tag(tagName)
       .request[GetSessionGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: GetSessionGroups =>
     accountGroupsService.findAll(
@@ -233,12 +232,12 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/session/hides") { o =>
+  getWithDoc(c.rootPath + "/session/hides") { o =>
     o.summary("Get hidden groups list session account joined")
       .tag(tagName)
       .request[GetSessionGroups]
       .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
 
   } { request: GetSessionGroups =>
     accountGroupsService.findAll(
@@ -250,12 +249,13 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  deleteWithDoc("/groups/:id") { o =>
+  deleteWithDoc(c.rootPath + "/groups/:id") { o =>
     o.summary("Hide this group and delete all messages")
       .tag(tagName)
       .request[DeleteGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
+
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: DeleteGroup =>
     accountGroupsService.delete(
@@ -264,13 +264,13 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  postWithDoc("/groups/:id/hides") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/hides") { o =>
     o.summary("Hide this group")
       .tag(tagName)
       .request[PostHideGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: PostHideGroup =>
     accountGroupsService.hide(
@@ -279,13 +279,13 @@ class GroupsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/groups/:id/hides") { o =>
+  deleteWithDoc(c.rootPath + "/groups/:id/hides") { o =>
     o.summary("Show this group")
       .tag(tagName)
       .request[DeleteHideGroup]
       .responseWith(Status.NoContent.code, successfulMessage)
-      .responseWith[BadRequest](Status.BadRequest.code, validationErrorMessage)
-      .responseWith[NotFound](Status.NotFound.code, GroupNotFound.message)
+
+      .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
 
   } { request: DeleteHideGroup =>
     accountGroupsService.show(

@@ -2,16 +2,18 @@ package io.github.cactacea.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.models.Account
-import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, ValidationDAO}
+import io.github.cactacea.core.domain.enums.ActiveStatus
+import io.github.cactacea.core.domain.models.{Account, AccountStatus}
+import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, DevicesDAO, ValidationDAO}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaError._
+import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
 class AccountsRepository {
 
   @Inject private var accountsDAO: AccountsDAO = _
+  @Inject private var devicesDAO: DevicesDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
   def find(sessionId: SessionId) = {
@@ -41,6 +43,17 @@ class AccountsRepository {
     ).map(_.map(t => Account(t._1, t._2)))
   }
 
+  def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
+    validationDAO.existAccount(accountId, sessionId).flatMap(_ =>
+      devicesDAO.findActiveStatus(accountId).map(_ match {
+        case Some(s) =>
+          AccountStatus(accountId, s)
+        case None =>
+          AccountStatus(accountId, ActiveStatus.inactive)
+      })
+    )
+  }
+
   def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
     validationDAO.notExistAccountName(accountName).flatMap(_ =>
       accountsDAO.updateAccountName(accountName, sessionId).flatMap(_ match {
@@ -54,7 +67,7 @@ class AccountsRepository {
 
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existAccount(accountId)
+      _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- accountsDAO.updateDisplayName(accountId, userName, sessionId)
     } yield (Future.value(Unit))
   }
