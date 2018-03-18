@@ -3,13 +3,11 @@ package io.github.cactacea.core.application.components.services
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.SocialAccountsService
-import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.github.cactacea.util.clients.facebook.FacebookClient
 import io.github.cactacea.util.clients.google.GoogleClient
 import io.github.cactacea.util.clients.twitter.TwitterClient
 
-class DefaultSocialAccountsService extends SocialAccountsService {
+class FGTSocialAccountsService extends SocialAccountsService {
 
   @Inject private var facebookClient: FacebookClient = _
   @Inject private var twitterClient: TwitterClient = _

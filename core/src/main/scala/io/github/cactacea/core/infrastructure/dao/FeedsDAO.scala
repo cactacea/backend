@@ -17,7 +17,6 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   @Inject private var feedLikesDAO: FeedLikesDAO = _
   @Inject private var feedReportsDAO: FeedReportsDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
-  @Inject private var timeLineDAO: TimeLineDAO = _
   @Inject private var blocksCountDAO: BlockCountDAO = _
   @Inject private var identifyService: IdentifyService = _
   @Inject private var timeService: TimeService = _
@@ -93,7 +92,6 @@ class FeedsDAO @Inject()(db: DatabaseService) {
       _ <- feedLikesDAO.delete(feedId)
       _ <- feedMediumDAO.delete(feedId)
       _ <- feedReportsDAO.delete(feedId)
-      _ <- timeLineDAO.delete(feedId)
       _ <- commentsDAO.delete(feedId)
       r <- _deleteFeeds(feedId, by)
     } yield (r)

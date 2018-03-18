@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
@@ -12,7 +13,7 @@ import io.swagger.models.Swagger
 
 
 @Singleton
-class GoogleController @Inject()(s: Swagger) extends BackendController {
+class GoogleController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -21,7 +22,7 @@ class GoogleController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var sessionService: SessionsService = _
 
-  postWithDoc(s"/sessions/$accountType") { o =>
+  postWithDoc(c.rootPath + s"/sessions/$accountType") { o =>
     o.summary(s"Sign up by $accountType")
       .tag(tagName)
       .request[PostSocialAccountSignUp]
@@ -47,7 +48,7 @@ class GoogleController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc(s"/sessions/$accountType") { o =>
+  getWithDoc(c.rootPath + s"/sessions/$accountType") { o =>
     o.summary(s"Sign in by $accountType")
       .tag(tagName)
       .request[GetSocialAccountSignIn]

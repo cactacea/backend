@@ -31,7 +31,6 @@ object DatabaseHelper {
         _ <- db.run(quote(query[PushNotificationSettings].delete))
         _ <- db.run(quote(query[Relationships].delete))
         _ <- db.run(quote(query[SocialAccounts].delete))
-        _ <- db.run(quote(query[Timelines].delete))
         _ <- db.run(quote(query[Devices].delete))
         _ <- db.run(quote(query[Comments].delete))
         _ <- db.run(quote(query[Feeds].delete))

@@ -5,6 +5,7 @@ import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.comment._
 import io.github.cactacea.backend.models.responses.CommentCreated
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services.{CommentLikesService, CommentsService}
 import io.github.cactacea.core.domain.models.{Account, Comment}
 import io.github.cactacea.core.util.auth.SessionContext
@@ -12,7 +13,7 @@ import io.github.cactacea.core.util.responses.CactaceaErrors.{CommentAlreadyLike
 import io.swagger.models.Swagger
 
 @Singleton
-class CommentsController @Inject()(s: Swagger) extends BackendController {
+class CommentsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -20,7 +21,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var commentsService: CommentsService = _
 
-  getWithDoc("/comments") { o =>
+  getWithDoc(c.rootPath + "/comments") { o =>
     o.summary("Search comments")
       .tag(tagName)
       .request[GetComments]
@@ -37,7 +38,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/comments") { o =>
+  postWithDoc(c.rootPath + "/comments") { o =>
     o.summary("Create a comment on a feed")
       .tag(tagName)
       .request[PostComment]
@@ -53,7 +54,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
     ).map(CommentCreated(_)).map(response.created(_))
   }
 
-  getWithDoc("/comments/:id") { o =>
+  getWithDoc(c.rootPath + "/comments/:id") { o =>
     o.summary("Get basic information about this comment")
       .tag(tagName)
       .request[GetComment]
@@ -67,7 +68,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  deleteWithDoc("/comments/:id") { o =>
+  deleteWithDoc(c.rootPath + "/comments/:id") { o =>
     o.summary("Remove a comment")
       .tag(tagName)
       .request[DeleteComment]
@@ -83,7 +84,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var commentLikesService: CommentLikesService = _
 
-  getWithDoc("/comments/:id/likes") { o =>
+  getWithDoc(c.rootPath + "/comments/:id/likes") { o =>
     o.summary("Get accounts list who liked on a comment")
       .tag(tagName)
       .request[GetCommentLikes]
@@ -100,7 +101,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  postWithDoc("/comments/:id/likes") { o =>
+  postWithDoc(c.rootPath + "/comments/:id/likes") { o =>
     o.summary("Set a like on this comment")
       .tag(tagName)
       .request[PostCommentLike]
@@ -115,7 +116,7 @@ class CommentsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/comments/:id/likes") { o =>
+  deleteWithDoc(c.rootPath + "/comments/:id/likes") { o =>
     o.summary("Remove a like on this comment")
       .tag(tagName)
       .request[DeleteCommentLike]

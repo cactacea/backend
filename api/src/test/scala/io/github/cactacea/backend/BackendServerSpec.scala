@@ -9,11 +9,13 @@ import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.helpers.ServerSpec
 import io.github.cactacea.backend.models.requests.account.GetAccounts
 import io.github.cactacea.backend.models.requests.session.{GetSignIn, PostSignUp}
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.domain.models.{Account, Authentication}
 
 class BackendServerSpec extends ServerSpec {
 
   @Inject private var mapper: FinatraObjectMapper = _
+  @Inject private var configService: ConfigService = _
 
   val accountsCount = 10
 
@@ -32,9 +34,7 @@ class BackendServerSpec extends ServerSpec {
 
         val signUpAuth = mapper.parse[Authentication](signUpResponse.contentString)
 
-        // SignOut
-        val signOutRes = signOut(signUpAuth.accessToken)
-        assert(signOutRes.statusCode == Status.NoContent.code)
+        assert(delete("/session", signUpAuth.accessToken).statusCode == Status.NoContent.code)
 
       }
     })
@@ -57,8 +57,7 @@ class BackendServerSpec extends ServerSpec {
         assert(signInRes.statusCode == Status.Ok.code)
 
         // SignOut
-        val signOutRes = signOut(signInAuth.accessToken)
-        assert(signOutRes.statusCode == Status.NoContent.code)
+        assert(delete("/session", signInAuth.accessToken).statusCode == Status.NoContent.code)
 
       }
     })

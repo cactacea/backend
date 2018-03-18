@@ -5,6 +5,7 @@ import com.twitter.finagle.http.Status
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.util.auth.SessionContext
@@ -12,7 +13,7 @@ import io.github.cactacea.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class AccountsController @Inject()(s: Swagger) extends BackendController {
+class AccountsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -20,7 +21,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var accountsService: AccountsService = _
 
-  getWithDoc("/accounts") { o =>
+  getWithDoc(c.rootPath + "/accounts") { o =>
     o.summary("Search accounts")
       .tag(tagName)
       .request[GetAccounts]
@@ -37,7 +38,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  getWithDoc("/accounts/:id") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id") { o =>
     o.summary("Get information about this account")
       .tag(tagName)
       .request[GetAccount]
@@ -52,7 +53,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
     )
   }
 
-  putWithDoc("/accounts/:id/display_name") { o =>
+  putWithDoc(c.rootPath + "/accounts/:id/display_name") { o =>
     o.summary("Change display name to session account")
       .tag(tagName)
       .request[PutAccountDisplayName]
@@ -68,7 +69,7 @@ class AccountsController @Inject()(s: Swagger) extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/account/:account_name") { o =>
+  getWithDoc(c.rootPath + "/account/:account_name") { o =>
     o.summary("Confirm account name exists")
       .tag(tagName)
       .request[GetAccountName]

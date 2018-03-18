@@ -35,7 +35,6 @@ object SampleSwagger extends Swagger {
     classOf[NotificationId]     -> PrimitiveType.LONG,
     classOf[SessionId]          -> PrimitiveType.LONG,
     classOf[StampId]            -> PrimitiveType.LONG,
-    classOf[TimelineFeedId]     -> PrimitiveType.LONG
   )
   SwaggerTypeRegister.setExternalTypes(map.asJava)
 
@@ -90,7 +89,6 @@ object BackendSwaggerModule extends SwaggerModule {
     swaggerUI.addTag(new Tag().name("Session").description("Manage session"))
     swaggerUI.addTag(new Tag().name("Sessions").description("Manage sessions"))
     swaggerUI.addTag(new Tag().name("Social Accounts").description("Manage social accounts"))
-    swaggerUI.addTag(new Tag().name("Timeline").description("Manage timeline"))
     swaggerUI.addTag(new Tag().name("Settings").description("Manage session settings"))
     swaggerUI.addTag(new Tag().name("OAuth2").description("Provide Oauth2 features"))
     swaggerUI.addTag(new Tag().name("Resource").description("Manage resources"))

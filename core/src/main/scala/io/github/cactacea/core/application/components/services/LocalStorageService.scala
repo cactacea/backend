@@ -7,7 +7,7 @@ import com.twitter.util.{Future, FuturePool}
 import io.github.cactacea.core.application.components.interfaces.StorageService
 import resource._
 
-class DefaultStorageService(val endpoint: String, val path: String) extends StorageService {
+class LocalStorageService(val endpoint: String, val path: String) extends StorageService {
 
   override def put(contentType: Option[String], data: Array[Byte]): Future[(String, String)] = {
     FuturePool.unboundedPool {

@@ -15,7 +15,6 @@ class BlocksRepository {
   @Inject private var followersDAO: FollowersDAO = _
   @Inject private var friendsDAO: FriendsDAO = _
   @Inject private var mutesDAO: MutesDAO = _
-  @Inject private var timeLinesDAO: TimeLineDAO = _
   @Inject private var friendRequestsDAO: FriendRequestsDAO = _
   @Inject private var feedLikesDAO: FeedLikesDAO = _
   @Inject private var validationDAO: ValidationDAO = _
@@ -40,8 +39,6 @@ class BlocksRepository {
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- mutesDAO.delete(accountId, sessionId)
       _ <- mutesDAO.delete(sessionId.toAccountId, accountId.toSessionId)
-      _ <- timeLinesDAO.delete(accountId, sessionId)
-      _ <- timeLinesDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendRequestsDAO.delete(accountId, sessionId)
       _ <- friendRequestsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- feedLikesDAO.deleteLikes(accountId, sessionId)

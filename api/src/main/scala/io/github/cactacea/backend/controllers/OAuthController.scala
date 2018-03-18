@@ -9,6 +9,7 @@ import io.github.cactacea.backend.models.requests.auth.{GetAuthorizeCode, PostOA
 import io.github.cactacea.backend.models.responses.AccessCodeCreated
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.backend.views.SignInView
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.domain.enums.AccountStatusType
 import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, AuthDAO}
 import io.github.cactacea.core.util.oauth.{InvalidResponseType, OAuthHandler}
@@ -16,7 +17,7 @@ import io.github.cactacea.core.util.tokens.OAuthTokenGenerator
 import io.swagger.models.Swagger
 
 @Singleton
-class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
+class OAuthController @Inject()(s: Swagger, c: ConfigService) extends BackendController with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
 
   protected implicit val swagger = s
 
@@ -27,7 +28,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
   @Inject private var oAuthTokenGenerator: OAuthTokenGenerator = _
   @Inject private var dataHandler: OAuthHandler = _
 
-  getWithDoc("/oauth2/authorize") { o =>
+  getWithDoc(c.rootPath + "/oauth2/authorize") { o =>
     o.summary("OAuth for authorization")
       .tag("OAuth2")
 
@@ -44,7 +45,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
     })
   }
 
-  postWithDoc("/oauth2/authorize") { o =>
+  postWithDoc(c.rootPath + "/oauth2/authorize") { o =>
     o.summary("OAuth for authorization confirm")
       .tag("OAuth2")
 
@@ -79,7 +80,7 @@ class OAuthController @Inject()(s: Swagger) extends BackendController with OAuth
     })
   }
 
-  postWithDoc("/oauth2/token") { o =>
+  postWithDoc(c.rootPath + "/oauth2/token") { o =>
     o.summary("OAuth for token requests")
       .tag("OAuth2")
 

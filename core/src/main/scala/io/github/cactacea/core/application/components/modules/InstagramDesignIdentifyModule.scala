@@ -2,12 +2,12 @@ package io.github.cactacea.core.application.components.modules
 
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.core.application.components.interfaces.IdentifyService
-import io.github.cactacea.core.application.components.services.DefaultIdentifyService
+import io.github.cactacea.core.application.components.services.InstagramDesignIdentifyService
 
-object DefaultIdentifyModule extends TwitterModule {
+object InstagramDesignIdentifyModule extends TwitterModule {
 
   override def configure(): Unit = {
-    bindSingleton[IdentifyService].to[DefaultIdentifyService]
+    bindSingleton[IdentifyService].to[InstagramDesignIdentifyService]
   }
 
 }

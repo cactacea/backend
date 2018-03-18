@@ -2,12 +2,12 @@ package io.github.cactacea.core.application.components.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.{FanOutService, SubScribeService}
+import io.github.cactacea.core.application.components.interfaces.{NotificationService, SubScribeService}
 import io.github.cactacea.core.infrastructure.identifiers._
 
-class DefaultSubScribeService extends SubScribeService {
+class NoQueueSubScribeService extends SubScribeService {
 
-  @Inject private var fanOutService: FanOutService = _
+  @Inject private var fanOutService: NotificationService = _
 
   def dequeueFeed(feedId: FeedId): Future[Unit] = {
     fanOutService.fanOutFeed(feedId)

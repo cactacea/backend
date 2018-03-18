@@ -7,6 +7,7 @@ import io.github.cactacea.backend.models.requests.comment.PostCommentReport
 import io.github.cactacea.backend.models.requests.feed.PostFeedReport
 import io.github.cactacea.backend.models.requests.group.PostGroupReport
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaErrors._
@@ -14,7 +15,7 @@ import io.swagger.models.Swagger
 
 
 @Singleton
-class ReportsController @Inject()(s: Swagger) extends BackendController {
+class ReportsController @Inject()(s: Swagger, c: ConfigService) extends BackendController {
 
   protected implicit val swagger = s
 
@@ -22,7 +23,7 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var accountsService: AccountsService = _
 
-  postWithDoc("/accounts/:id/reports") { o =>
+  postWithDoc(c.rootPath + "/accounts/:id/reports") { o =>
     o.summary("Report this account")
       .tag(tagName)
       .request[PostAccountReport]
@@ -40,7 +41,7 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var feedsService: FeedsService = _
 
-  postWithDoc("/feeds/:id/reports") { o =>
+  postWithDoc(c.rootPath + "/feeds/:id/reports") { o =>
     o.summary("Report this feed")
       .tag(tagName)
       .request[PostFeedReport]
@@ -58,7 +59,7 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var commentsService: CommentsService = _
 
-  postWithDoc("/comments/:id/reports") { o =>
+  postWithDoc(c.rootPath + "/comments/:id/reports") { o =>
     o.summary("Report this comment")
       .tag(tagName)
       .request[PostCommentReport]
@@ -76,7 +77,7 @@ class ReportsController @Inject()(s: Swagger) extends BackendController {
 
   @Inject private var groupsService: GroupsService = _
 
-  postWithDoc("/groups/:id/reports") { o =>
+  postWithDoc(c.rootPath + "/groups/:id/reports") { o =>
     o.summary("Report this group")
       .tag(tagName)
       .request[PostGroupReport]

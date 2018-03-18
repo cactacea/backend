@@ -7,13 +7,14 @@ import io.github.cactacea.backend.models.requests.account.GetLikes
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
 import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.application.services._
 import io.github.cactacea.core.domain.models.{Account, Feed}
 import io.github.cactacea.core.util.auth.SessionContext
 import io.github.cactacea.core.util.responses.CactaceaErrors._
 
 @Singleton
-class FeedsController  @Inject()(s: Swagger)extends BackendController {
+class FeedsController  @Inject()(s: Swagger, c: ConfigService)extends BackendController {
 
   protected implicit val swagger = s
 
@@ -21,7 +22,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
 
   @Inject private var feedsService: FeedsService = _
 
-  getWithDoc("/feeds") { o =>
+  getWithDoc(c.rootPath + "/feeds") { o =>
     o.summary("Search feeds")
       .tag(tagName)
       .request[GetAccountFeeds]
@@ -39,7 +40,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     )
   }
 
-  postWithDoc("/feeds") { o =>
+  postWithDoc(c.rootPath + "/feeds") { o =>
     o.summary("Post a feed")
       .tag(tagName)
       .request[PostFeed]
@@ -59,7 +60,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     ).map(FeedCreated(_)).map(response.created(_))
   }
 
-  getWithDoc("/feeds/:id") { o =>
+  getWithDoc(c.rootPath + "/feeds/:id") { o =>
     o.summary("Get basic information about this feed")
       .tag(tagName)
       .request[GetFeed]
@@ -73,7 +74,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     )
   }
 
-  putWithDoc("/feeds/:id") { o =>
+  putWithDoc(c.rootPath + "/feeds/:id") { o =>
     o.summary("Update this feed")
       .tag(tagName)
       .request[PutFeed]
@@ -94,7 +95,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/feeds/:id") { o =>
+  deleteWithDoc(c.rootPath + "/feeds/:id") { o =>
     o.summary("Delete this feed")
       .tag(tagName)
       .request[DeleteFeed]
@@ -108,7 +109,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/accounts/:id/feeds") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/feeds") { o =>
     o.summary("Get feeds list this account posted")
       .tag(tagName)
       .request[GetAccountFeeds]
@@ -128,7 +129,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
 
   @Inject private var feedLikesService: FeedLikesService = _
 
-  getWithDoc("/feeds/:id/likes") { o =>
+  getWithDoc(c.rootPath + "/feeds/:id/likes") { o =>
     o.summary("Get accounts list who set a like to this feed")
       .tag(tagName)
       .request[GetFeedLikes]
@@ -146,7 +147,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     )
   }
 
-  postWithDoc("/feeds/:id/likes") { o =>
+  postWithDoc(c.rootPath + "/feeds/:id/likes") { o =>
     o.summary("Set a like on this feed")
       .tag(tagName)
       .request[PostFeedLike]
@@ -161,7 +162,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  deleteWithDoc("/feeds/:id/likes") { o =>
+  deleteWithDoc(c.rootPath + "/feeds/:id/likes") { o =>
     o.summary("Remove a like on this feed")
       .tag(tagName)
       .request[DeleteFeedLike]
@@ -176,7 +177,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     ).map(_ => response.noContent)
   }
 
-  getWithDoc("/accounts/:id/likes") { o =>
+  getWithDoc(c.rootPath + "/accounts/:id/likes") { o =>
     o.summary("Get account's liked feeds")
       .tag(tagName)
       .request[GetLikes]
@@ -194,7 +195,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     )
   }
 
-  getWithDoc("/session/feeds") { o =>
+  getWithDoc(c.rootPath + "/session/feeds") { o =>
     o.summary("Get feeds list session account posted")
       .tag(tagName)
       .request[GetSessionFeeds]
@@ -210,7 +211,7 @@ class FeedsController  @Inject()(s: Swagger)extends BackendController {
     )
   }
 
-  getWithDoc("/session/likes") { o =>
+  getWithDoc(c.rootPath + "/session/likes") { o =>
     o.summary("Get feeds list session account set a like")
       .tag(tagName)
       .request[GetSessionLikedFeeds]

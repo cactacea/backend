@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{PublishService, SubScribeService}
 import io.github.cactacea.core.infrastructure.identifiers._
 
-class DefaultPublishService @Inject()(subScribeService: SubScribeService) extends PublishService {
+class NoQueuePublishService @Inject()(subScribeService: SubScribeService) extends PublishService {
 
   def enqueueFeed(feedId: FeedId): Future[Unit] = {
     subScribeService.dequeueFeed(feedId)

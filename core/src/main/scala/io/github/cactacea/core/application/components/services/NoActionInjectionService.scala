@@ -6,7 +6,7 @@ import io.github.cactacea.core.domain.enums.ReportType
 import io.github.cactacea.core.domain.models.Authentication
 import io.github.cactacea.core.infrastructure.identifiers._
 
-class DefaultInjectionService extends InjectionService {
+class NoActionInjectionService extends InjectionService {
 
   def signedUp(authentication: Authentication): Future[Unit] = {
     Future.Unit
