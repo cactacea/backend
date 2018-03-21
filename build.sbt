@@ -50,6 +50,7 @@ lazy val core = (project in file("core"))
   .dependsOn(util)
   .dependsOn(oauth2)
   .dependsOn(swagger)
+  .enablePlugins(FlywayPlugin)
 
 
 lazy val util = (project in file("util"))
@@ -64,7 +65,8 @@ lazy val util = (project in file("util"))
   .settings(
     libraryDependencies ++= Seq(
       "com.danielasfregola" %% "twitter4s" % "5.3",
-      "com.github.seratch" %% "awscala" % "0.6.+"
+      "com.github.seratch" %% "awscala" % "0.6.+",
+      "com.google.inject" % "guice" % versions.guice
     )
   )
   .settings(commonResolverSetting)
