@@ -44,6 +44,7 @@ object BackendSwaggerModule extends SwaggerModule {
 
   val swaggerUI = SampleSwagger
 
+
   @Provides
   def swagger: Swagger = {
 

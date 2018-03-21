@@ -25,6 +25,9 @@ import scala.reflect.runtime.universe._
 object FinatraSwagger {
   private val finatraRouteParamter = ":(\\w+)".r
 
+  val converter = ModelConverters.getInstance()
+  converter.addConverter(new SwaggerScalaModelConverter)
+
   /**
    * Cache of dynamically generated class bodies keyed by qualified names
    */
