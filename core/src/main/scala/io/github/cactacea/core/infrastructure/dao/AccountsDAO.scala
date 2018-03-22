@@ -261,7 +261,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
       blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
     } yield (accounts, blocksCount))
       .map({ case (accounts, blocksCount) =>
-        accounts.sortBy(_._1.id.value).reverse.map({ t =>
+        accounts.map({ t =>
           val a = t._1
           val r = t._2
           val b = blocksCount.filter(_.id == a.id).headOption

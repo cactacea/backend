@@ -80,11 +80,12 @@ class NotificationsDAO @Inject()(db: DatabaseService) {
         query[Blocks].filter(b => b.accountId == n.by && b.by == lift(accountId) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(accountId)})
-        .sortBy(_._1._1.id)(Ord.descNullsLast)
+        .map({ case ((n, a), r) => (n, a, r)})
+        .sortBy(_._1.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((n, a), r) => (n, a, r)}).sortBy(_._1.id.value).reverse)
+    run(q)
   }
 
 }

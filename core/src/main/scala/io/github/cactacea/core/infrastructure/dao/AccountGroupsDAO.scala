@@ -127,7 +127,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean): Future[List[(Groups, Option[Messages], Option[AccountMessages], Option[Accounts], Option[Relationships], AccountGroupId)]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean): Future[List[(AccountGroups, Groups, Option[Messages], Option[AccountMessages])]] = {
 
     val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
@@ -139,11 +139,12 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
         .leftJoin(query[Messages]).on({ case ((_, g), m) => g.messageId.exists(_ == m.id) })
         .leftJoin(query[AccountMessages]).on({ case (((_, g), _), am) => g.messageId.exists(_ == am.messageId) && am.accountId == lift(accountId) })
-        .sortBy({ case (((ag, _), _), _) => ag.id })(Ord.descNullsLast)
+        .map({ case (((ag, g), m), am) => (ag, g, m, am) })
+        .sortBy(_._1.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case (((ag, g), m), am) => (g, m, am, None, None, ag.id)}).sortBy(_._6.value).reverse)
+    run(q)
 
   }
 

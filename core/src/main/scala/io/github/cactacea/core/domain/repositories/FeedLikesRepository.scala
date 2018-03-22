@@ -43,7 +43,8 @@ class FeedLikesRepository {
   def findAccounts(feedId: FeedId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
     for {
       _ <- validationDAO.existFeed(feedId, sessionId)
-      r <- feedLikesDAO.findAccounts(feedId, since, offset, count, sessionId).map(_.map({ case (a, r, n) => Account(a, r, n)}))
+      r <- feedLikesDAO.findAccounts(feedId, since, offset, count, sessionId)
+        .map(_.map( t => Account(t._1, t._2, t._3)))
     } yield (r)
   }
 

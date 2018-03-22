@@ -89,7 +89,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Blocks)]] = {
     val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
@@ -100,13 +100,12 @@ class BlocksDAO @Inject()(db: DatabaseService) {
       query[Blocks].filter(b => b.by == lift(by) && b.blocked == true && (infix"b.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
-        .sortBy({ case ((b, _), _) => b.id})(Ord.descNullsLast)
+        .map({ case ((b, a), r) => (a, r, b)})
+        .sortBy(_._3.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-
     run(q)
-      .map(_.map({ case ((b, a), r) => (a, r, b.id.value)}).sortBy(_._1.id.value).reverse)
   }
 
 }

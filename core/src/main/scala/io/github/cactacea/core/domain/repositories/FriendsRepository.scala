@@ -44,12 +44,12 @@ class FriendsRepository {
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     friendsDAO.findAll(since, offset, count, sessionId)
-      .map(_.map({ case (a, r, n) => Account(a, r, n)}))
+      .map(_.map({ case (a, r, n) => Account(a, r, n.friendedAt)}))
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     friendsDAO.findAll(accountId, since, offset, count, sessionId)
-      .map(_.map({ case (a, r, n) => Account(a, r, n)}))
+      .map(_.map({ case (a, r, n) => Account(a, r, n.friendedAt)}))
   }
 
 

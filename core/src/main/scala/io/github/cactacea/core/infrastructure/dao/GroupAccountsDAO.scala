@@ -26,7 +26,7 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((ag, a), r) => (a, r, ag)}).sortBy(_._3.id.value).reverse)
+    run(q).map(_.map({ case ((ag, a), r) => (a, r, ag)}).sortWith(_._3.id.value > _._3.id.value))
 
   }
 

@@ -28,8 +28,8 @@ object Feed {
     _apply(f, None, None, None, None, f.id.value)
   }
 
-  def apply(f: Feeds, next: Long): Feed = {
-    _apply(f, None, None, None, None, next)
+  def apply(f: Feeds, fl: FeedLikes): Feed = {
+    _apply(f, None, None, None, None, fl.id.value)
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums]): Feed = {

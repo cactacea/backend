@@ -178,8 +178,8 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val result1 = Await.result(accountGroupsDAO.findAll(sessionAccount.id, None, None, Some(2), false))
     assert(result1.size == 2)
-    assert(result1(0)._1.id == groupId2)
-    assert(result1(0)._2.isDefined == false)
+    assert(result1(0)._2.id == groupId2)
+    assert(result1(0)._4.isDefined == false)
 
     val messageId1 = Await.result(messagesDAO.create(groupId1, Some("New Message1"), 2, None, sessionAccount.id.toSessionId))
     Await.result(messagesDAO.create(groupId1, Some("New Message2"), 2, None, sessionAccount.id.toSessionId))
@@ -189,11 +189,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val result2 = Await.result(accountGroupsDAO.findAll(sessionAccount.id, None, None, Some(2), false))
     assert(result2.size == 2)
-    assert(result2(0)._1.id == groupId2)
-    assert(result2(0)._2.isDefined == true)
-    assert(result2(0)._2.forall(_.id == messageId3) == true)
+    assert(result2(0)._1.groupId == groupId2)
+    assert(result2(0)._3.isDefined == true)
+    assert(result2(0)._3.forall(_.id == messageId3) == true)
 
-    val message = result2(0)._2.get
+    val message = result2(0)._3.get
     assert(message.message == Some("New Message3"))
 
   }

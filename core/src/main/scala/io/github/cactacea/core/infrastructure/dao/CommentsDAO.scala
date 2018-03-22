@@ -204,7 +204,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
         })
       })
       // TODO : Fix me
-      .map(_.sortBy(_._1.id.value).reverse)
+      .map(_.sortWith(_._1.id.value > _._1.id.value))
   }
 
   def find(commentId: CommentId): Future[Option[Comments]] = {

@@ -89,7 +89,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def findAll(commentId: CommentId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
+  def findAll(commentId: CommentId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
@@ -101,12 +101,13 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
           query[Blocks].filter(b => b.accountId == cf.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((cf, _), _) => cf.id })(Ord.descNullsLast)
+        .map({ case ((c, a), r) => (a, r, c)})
+        .sortBy(_._3.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
 
-    run(q).map(_.map({ case ((c, a), r) => (a, r, c.id.value)}).sortBy(_._3).reverse)
+    run(q)
 
   }
 

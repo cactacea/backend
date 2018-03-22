@@ -141,7 +141,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q) //.map(_.sortBy(_.id.value).reverse)
+    run(q)
   }
 
   def find(groupId: GroupId): Future[Option[Groups]] = {

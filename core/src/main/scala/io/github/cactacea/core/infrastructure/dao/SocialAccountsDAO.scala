@@ -55,7 +55,7 @@ class SocialAccountsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-    def findAll(sessionId: SessionId): Future[List[SocialAccounts]] = {
+  def findAll(sessionId: SessionId): Future[List[SocialAccounts]] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[SocialAccounts]

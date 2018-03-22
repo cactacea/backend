@@ -94,24 +94,24 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
         query[FriendRequests].filter(f => f.accountId == lift(by) && (infix"f.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-          .sortBy({ case ((f, _), _) => f.id})(Ord.descNullsLast)
+          .map({ case ((f, a), r) => (f, a, r)})
+          .sortBy(_._1.id)(Ord.descNullsLast)
           .drop(lift(o))
           .take(lift(c))
       }
-
-      run(q).map(_.map({ case ((f, a), r) => (f, a, r)}).sortBy(_._1.id.value).reverse)
+      run(q)
 
     } else {
       val q = quote {
         query[FriendRequests].filter(f => f.by == lift(by) && f.requestedAt < lift(s))
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-          .sortBy({ case ((f, _), _) => f.id})(Ord.descNullsLast)
+          .map({ case ((f, a), r) => (f, a, r)})
+          .sortBy(_._1.id)(Ord.descNullsLast)
           .drop(lift(o))
           .take(lift(c))
       }
-
-      run(q).map(_.map({ case ((f, a), r) => (f, a, r)}).sortBy(_._1.id.value).reverse)
+      run(q)
 
     }
 

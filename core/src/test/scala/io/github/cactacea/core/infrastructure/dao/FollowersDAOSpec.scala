@@ -76,14 +76,22 @@ class FollowersDAOSpec extends DAOSpec {
     Await.result(followingDAO.create(followUser.id, sessionAccount6.id.toSessionId))
 
     val result1 = Await.result(followersDAO.findAll(followUser.id, None, None, Some(3), sessionAccount1.id.toSessionId))
-    assert(result1(0)._1.id == sessionAccount6.id)
-    assert(result1(1)._1.id == sessionAccount5.id)
-    assert(result1(2)._1.id == sessionAccount4.id)
+    val account1 = result1(0)._1
+    val account2 = result1(1)._1
+    val account3 = result1(2)._1
+    val follower1 = result1(2)._3
+    assert(account1.id == sessionAccount6.id)
+    assert(account2.id == sessionAccount5.id)
+    assert(account3.id == sessionAccount4.id)
 
-    val result2 = Await.result(followersDAO.findAll(followUser.id, Some(result1(2)._3), None, Some(3), sessionAccount1.id.toSessionId))
-    assert(result2(0)._1.id == sessionAccount3.id)
-    assert(result2(1)._1.id == sessionAccount2.id)
-    assert(result2(2)._1.id == sessionAccount1.id)
+    val result2 = Await.result(followersDAO.findAll(followUser.id, Some(follower1.followedAt), None, Some(3), sessionAccount1.id.toSessionId))
+    val account4 = result2(0)._1
+    val account5 = result2(1)._1
+    val account6 = result2(2)._1
+    assert(account4.id == sessionAccount3.id)
+    assert(account5.id == sessionAccount2.id)
+    assert(account6.id == sessionAccount1.id)
+
   }
 
 }

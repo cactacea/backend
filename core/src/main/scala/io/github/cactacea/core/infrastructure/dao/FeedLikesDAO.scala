@@ -115,7 +115,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def findAccounts(feedId: FeedId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
+  def findAccounts(feedId: FeedId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], FeedLikes)]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
@@ -128,15 +128,16 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         query[Blocks].filter(b => b.accountId == ff.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((ff, _), _) => ff.id })(Ord.descNullsLast)
+        .map({ case ((ff, a), r) => (a, r, ff)})
+        .sortBy(_._3.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((ff, a), r) => (a, r, ff.id.value)}).sortBy(_._3).reverse)
+    run(q)
 
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, Long)]] = {
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, FeedLikes)]] = {
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
@@ -150,16 +151,16 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
         || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
+        .map({case (ff, f) => (f, ff)})
         .sortBy({ case (ff, _) => ff.id })(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-
-    run(q).map(_.map({case (ff, f) => (f, ff.id.value)}).sortBy(_._2).reverse)
+    run(q)
 
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, Long)]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, FeedLikes)]] = {
 
     val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
@@ -174,12 +175,12 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
         || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
+        .map({case (ff, f) => (f, ff)})
         .sortBy({ case (ff, _) => ff.id })(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-
-    run(q).map(_.map({case (ff, f) => (f, ff.id.value)}).sortBy(_._2).reverse)
+    run(q)
 
   }
 

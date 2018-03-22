@@ -100,11 +100,11 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a, r, f.mutedAt)}).sortBy(_._3).reverse)
+    run(q).map(_.map({ case ((f, a), r) => (a, r, f.mutedAt)}).sortWith(_._3 > _._3))
 
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Long)]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Relationships)]] = {
 
     val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
@@ -120,11 +120,12 @@ class MutesDAO @Inject()(db: DatabaseService) {
           .isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((f, _), _) => f.mutedAt })(Ord.descNullsLast)
+        .map({ case ((f, a), r) => (a, r, f)})
+        .sortBy(_._3.mutedAt)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((f, a), r) => (a, r, f.mutedAt)}).sortBy(_._3).reverse)
+    run(q)
 
   }
 

@@ -1,7 +1,7 @@
 package io.github.cactacea.core.domain.models
 
 import io.github.cactacea.core.infrastructure.identifiers.AccountId
-import io.github.cactacea.core.infrastructure.models.{AccountGroups, Accounts, Relationships}
+import io.github.cactacea.core.infrastructure.models._
 
 case class Account(id: AccountId,
                    accountName: String,
@@ -25,12 +25,20 @@ case class Account(id: AccountId,
 
 object Account {
 
-  def apply(a: Accounts, r: Option[Relationships], next: Long): Account = {
-    apply(a, r, None, next)
+  def apply(a: Accounts, r: Option[Relationships], b: Blocks): Account = {
+    apply(a, r, None, b.id.value)
   }
 
   def apply(a: Accounts, r: Option[Relationships], ag: AccountGroups): Account = {
     apply(a, r, Some(ag), ag.id.value)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships], fl: FeedLikes): Account = {
+    apply(a, r, None, fl.id.value)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships], c: CommentLikes): Account = {
+    apply(a, r, None, c.id.value)
   }
 
   def apply(a: Accounts, r: Option[Relationships]): Account = {
@@ -41,11 +49,11 @@ object Account {
     apply(a, None, None, a.id.value)
   }
 
-  def apply(a: Accounts, next: Long): Account = {
+  def apply(a: Accounts, r: Option[Relationships], next: Long): Account = {
     apply(a, None, None, next)
   }
 
-  def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Long): Account = {
+  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Long): Account = {
     Account(
       a.id,
       a.accountName,

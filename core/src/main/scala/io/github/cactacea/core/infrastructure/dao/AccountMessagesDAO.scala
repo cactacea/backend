@@ -52,11 +52,12 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.forall(_ == i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((((am, _), _), _), _) => am.messageId})(Ord.ascNullsLast)
+        .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
+        .sortBy(_._2.messageId)(Ord.ascNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((((am, m), a), i), r) => (m, am, i, a, r) }).sortBy(_._2.messageId.value))
+    run(q)
 
   }
 
@@ -74,11 +75,12 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.forall(_ == i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((((am, _), _), _), _) => am.messageId})(Ord.descNullsLast)
+        .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
+        .sortBy(_._2.messageId)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((((am, m), a), i), r) => (m, am, i, a, r) }).sortBy(_._2.messageId.value).reverse)
+    run(q)
 
   }
 
