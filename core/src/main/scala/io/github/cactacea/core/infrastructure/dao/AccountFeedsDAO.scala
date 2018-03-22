@@ -35,50 +35,5 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == accountIds.size)
   }
 
-//  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Timelines, Option[Feeds], Option[List[FeedTags]], Option[List[Mediums]], Option[Accounts], Option[Relationships])]] = {
-//    val s = since.getOrElse(-1L)
-//    val c = count.getOrElse(20)
-//    val o = offset.getOrElse(0)
-//    val by = sessionId.toAccountId
-//    val q = quote {
-//      for {
-//        tl <- query[Timelines]
-//          .filter(_.accountId == lift(by))
-//          .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
-//          .sortBy(_.id)(Ord.descNullsLast)
-//          .take(lift(c))
-//        t <- query[Feeds]
-//          .leftJoin(p => tl.feedId.exists(_ == p.id))
-//        u <- query[Accounts]
-//          .leftJoin(u => tl.by.exists(_ == u.id))
-//        r <- query[Relationships]
-//          .leftJoin(r => tl.by.exists(_ == r.accountId) && r.by == lift(by))
-//      } yield (tl, t, u, r)
-//    }
-//    run(q).flatMap(findTagsAndImages(_, sessionId))
-//
-//  }
-//
-//  private def findTagsAndImages(feeds: List[(Timelines, Option[Feeds], Option[Accounts], Option[Relationships])], sessionId: SessionId) = {
-//    val feedIds = feeds.flatMap(_._2.map(_.id))
-//    ((for {
-//      tags <- feedTagsDAO.findAll(feedIds)
-//      medium <- feedMediumDAO.findAll(feedIds)
-//    } yield (tags, medium)).map {
-//      case (tags, medium) =>
-//        feeds.map(t => {
-//          val tag = t._2 match {
-//            case Some(t) => Some(tags.filter(_.feedId == t.id))
-//            case None => None
-//          }
-//          val image = t._2 match {
-//            case Some(t) => Some(medium.filter(_._1 == t.id).map(_._2))
-//            case None => None
-//          }
-//          val r = (t._1, t._2, tag, image, t._3, t._4)
-//          r
-//        })
-//    })
-//  }
 
 }

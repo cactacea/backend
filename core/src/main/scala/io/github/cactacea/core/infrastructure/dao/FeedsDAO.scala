@@ -147,7 +147,36 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     run(q).flatMap(f => _addTagsMedium(f, sessionId).map(_.sortWith(_._1.id.value > _._1.id.value)))
   }
 
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: FeedPrivacyType, sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
+    val s = since.getOrElse(-1L)
+    val o = offset.getOrElse(0)
+    val c = count.getOrElse(20)
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[AccountFeeds]
+        .filter(af => (infix"af.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        .join(query[Feeds]).on({ case (af, f) => af.feedId == f.id && (f.privacyType == lift(privacyType) || lift(privacyType) == lift(FeedPrivacyType.everyone)) })
+        .sortBy(_._1.feedId)(Ord.descNullsLast)
+        .drop(lift(o))
+        .take(lift(c))
+    }
+    run(q).flatMap(f => findTagsAndImages(f, sessionId))
+  }
 
+  private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds)], sessionId: SessionId) = {
+    val feedIds = feeds.map(_._2.id)
+    ((for {
+      tags <- feedTagsDAO.findAll(feedIds)
+      medium <- feedMediumDAO.findAll(feedIds)
+    } yield (tags, medium)).map {
+      case (tags, medium) =>
+        feeds.map(t => {
+          val tag = tags.filter(_.feedId == t._1.feedId)
+          val image = medium.filter(_._1 == t._1.feedId).map(_._2)
+          (t._2, tag, image)
+        })
+    })
+  }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
 
@@ -170,7 +199,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).flatMap(f => _addTagsMedium(f, sessionId).map(_.sortWith(_._1.id.value > _._1.id.value)))
+    run(q).flatMap(f => _addTagsMedium(f, sessionId)) // .map(_.sortWith(_._1.id.value > _._1.id.value)))
   }
 
   private def _addTagsMedium(feeds: List[Feeds], sessionId: SessionId) = {

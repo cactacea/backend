@@ -54,6 +54,12 @@ class FeedsRepository {
     } yield (r)
   }
 
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: FeedPrivacyType, sessionId: SessionId): Future[List[Feed]] = {
+    for {
+      r <- feedsDAO.findAll(since, offset, count, privacyType, sessionId).map(_.map({ case (f, ft, m) => Feed(f, ft, m)}))
+    } yield (r)
+  }
+
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
     feedsDAO.findAll(since, offset, count, sessionId)
       .map(_.map({ case (f, ft, m) => Feed(f, ft, m)}))

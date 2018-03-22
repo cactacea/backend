@@ -53,6 +53,10 @@ class FeedsService {
     }
   }
 
+  def find(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: FeedPrivacyType, sessionId: SessionId): Future[List[Feed]] = {
+    feedsRepository.findAll(since, offset, count, privacyType, sessionId)
+  }
+
   def find(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
     feedsRepository.findAll(accountId, since, offset, count, sessionId)
   }
