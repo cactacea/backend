@@ -10,13 +10,13 @@ class FollowersRepositorySpec extends RepositorySpec {
 
   test("find a user's followers") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val user = signUp("user name", "user password", "user udid").account
-    val followedUser1 = signUp("followed1 user name", "followed1 user password", "followed1 user udid").account
-    val followedUser2 = signUp("followed2 user name", "followed2 user password", "followed2 user udid").account
-    val followedUser3 = signUp("followed3 user name", "followed3 user password", "followed3 user udid").account
-    val followedUser4 = signUp("followed4 user name", "followed4 user password", "followed4 user udid").account
-    val followedUser5 = signUp("followed5 user name", "followed5 user password", "followed5 user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val user = signUp("user name", "user password", "user udid")
+    val followedUser1 = signUp("followed1 user name", "followed1 user password", "followed1 user udid")
+    val followedUser2 = signUp("followed2 user name", "followed2 user password", "followed2 user udid")
+    val followedUser3 = signUp("followed3 user name", "followed3 user password", "followed3 user udid")
+    val followedUser4 = signUp("followed4 user name", "followed4 user password", "followed4 user udid")
+    val followedUser5 = signUp("followed5 user name", "followed5 user password", "followed5 user udid")
 
     Await.result(followingRepository.create(user.id, followedUser1.id.toSessionId))
     Await.result(followingRepository.create(user.id, followedUser2.id.toSessionId))
@@ -39,12 +39,12 @@ class FollowersRepositorySpec extends RepositorySpec {
 
   test("find session's followers") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val followedUser1 = signUp("followed1 user name", "followed1 user password", "followed1 user udid").account
-    val followedUser2 = signUp("followed2 user name", "followed2 user password", "followed2 user udid").account
-    val followedUser3 = signUp("followed3 user name", "followed3 user password", "followed3 user udid").account
-    val followedUser4 = signUp("followed4 user name", "followed4 user password", "followed4 user udid").account
-    val followedUser5 = signUp("followed5 user name", "followed5 user password", "followed5 user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val followedUser1 = signUp("followed1 user name", "followed1 user password", "followed1 user udid")
+    val followedUser2 = signUp("followed2 user name", "followed2 user password", "followed2 user udid")
+    val followedUser3 = signUp("followed3 user name", "followed3 user password", "followed3 user udid")
+    val followedUser4 = signUp("followed4 user name", "followed4 user password", "followed4 user udid")
+    val followedUser5 = signUp("followed5 user name", "followed5 user password", "followed5 user udid")
 
     Await.result(followingRepository.create(sessionUser.id, followedUser1.id.toSessionId))
     Await.result(followingRepository.create(sessionUser.id, followedUser2.id.toSessionId))

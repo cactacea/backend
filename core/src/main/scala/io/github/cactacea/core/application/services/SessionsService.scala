@@ -19,7 +19,7 @@ class SessionsService {
   @Inject private var socialAccountsService: SocialAccountsService = _
   @Inject private var actionService: InjectionService = _
 
-  def signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Authentication] = {
+  def signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Account] = {
     db.transaction {
       for {
         a <- sessionsRepository.signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent)
@@ -28,7 +28,7 @@ class SessionsService {
     }
   }
 
-  def signIn(accountName: String, password: String, udid: String, userAgent: String, deviceType: DeviceType): Future[Authentication] = {
+  def signIn(accountName: String, password: String, udid: String, userAgent: String, deviceType: DeviceType): Future[Account] = {
     db.transaction {
       for {
         a <- sessionsRepository.signIn(accountName, password, udid, deviceType, userAgent)
@@ -46,7 +46,7 @@ class SessionsService {
     }
   }
 
-  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, accessTokenKey: String, accessTokenSecret: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Authentication] = {
+  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, accessTokenKey: String, accessTokenSecret: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Account] = {
     db.transaction {
       for {
         id <- validateSocialAccount(socialAccountType, accessTokenKey, accessTokenSecret)
@@ -56,7 +56,7 @@ class SessionsService {
     }
   }
 
-  def signIn(socialAccountType: String, accessTokenKey: String, accessTokenSecret: String, udid: String, userAgent: String, deviceType: DeviceType): Future[Authentication] = {
+  def signIn(socialAccountType: String, accessTokenKey: String, accessTokenSecret: String, udid: String, userAgent: String, deviceType: DeviceType): Future[Account] = {
     db.transaction {
       for {
         id <- validateSocialAccount(socialAccountType, accessTokenKey, accessTokenSecret)

@@ -1,5 +1,7 @@
 package io.github.cactacea.core.domain.repositories
 
+import java.util.Locale
+
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.interfaces.{DeepLinkService, NotificationMessagesService}
@@ -7,7 +9,6 @@ import io.github.cactacea.core.domain.enums.NotificationType
 import io.github.cactacea.core.domain.models.Notification
 import io.github.cactacea.core.infrastructure.dao._
 import io.github.cactacea.core.infrastructure.identifiers._
-import io.github.cactacea.core.util.auth.SessionContext
 
 @Singleton
 class NotificationsRepository {
@@ -75,10 +76,10 @@ class NotificationsRepository {
     })
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Notification]] = {
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], locales: Seq[Locale], sessionId: SessionId): Future[List[Notification]] = {
     notificationsDAO.findAll(since, offset, count, sessionId).map(_.map({ case (n, a, r) =>
       val displayName = r.map(_.editedDisplayName).getOrElse(a.accountName)
-      val message = notificationMessagesService.getNotificationMessage(n.notificationType, SessionContext.locales, displayName)
+      val message = notificationMessagesService.getNotificationMessage(n.notificationType, locales, displayName)
       Notification(n, message)
     }))
   }

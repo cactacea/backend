@@ -18,7 +18,7 @@ class GroupsRepositorySpec extends RepositorySpec {
 
   test("create a group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     assert(Await.result(groupsDAO.exist(groupId)) == true)
 
@@ -26,7 +26,7 @@ class GroupsRepositorySpec extends RepositorySpec {
 
   test("update a group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val result = Await.result(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     // TODO : Check
@@ -35,7 +35,7 @@ class GroupsRepositorySpec extends RepositorySpec {
 
   test("update privacy type") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val result = Await.result(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
     // TODO : Check
@@ -44,8 +44,8 @@ class GroupsRepositorySpec extends RepositorySpec {
 
   test("update a direct message group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val user = signUp("user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val user = signUp("user name", "session user password", "session user udid")
     val group = Await.result(accountGroupsRepository.findOrCreate(user.id, sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
@@ -56,7 +56,7 @@ class GroupsRepositorySpec extends RepositorySpec {
 
   test("find a exist group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val group = Await.result(groupsRepository.find(groupId, sessionUser.id.toSessionId))
     assert(group.id == groupId)
@@ -65,7 +65,7 @@ class GroupsRepositorySpec extends RepositorySpec {
 
   test("find no exist group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(groupsRepository.find(GroupId(0L), sessionUser.id.toSessionId))
@@ -75,7 +75,7 @@ class GroupsRepositorySpec extends RepositorySpec {
 
   test("update no exist group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(groupsRepository.update(GroupId(0L), Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
@@ -85,12 +85,12 @@ class GroupsRepositorySpec extends RepositorySpec {
 
   test("find all groups") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val user1 = signUp("user name 1", "user password 1", "user udid 1").account
-    val user2 = signUp("user name 2", "user password 2", "user udid 2").account
-    val user3 = signUp("user name 3", "user password 3", "user udid 3").account
-    val user4 = signUp("user name 4", "user password 4", "user udid 4").account
-    val user5 = signUp("user name 5", "user password 5", "user udid 5").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val user1 = signUp("user name 1", "user password 1", "user udid 1")
+    val user2 = signUp("user name 2", "user password 2", "user udid 2")
+    val user3 = signUp("user name 3", "user password 3", "user udid 3")
+    val user4 = signUp("user name 4", "user password 4", "user udid 4")
+    val user5 = signUp("user name 5", "user password 5", "user udid 5")
 
     val groupId10 = Await.result(groupsRepository.create(Some("group name 10"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId11 = Await.result(groupsRepository.create(Some("group name 11"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))

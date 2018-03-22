@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Sign up for Cactacea</title>
+
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/signin.css" rel="stylesheet">
+  </head>
+
+  <input type="hidden" id="response_type" value="{{responseType}}">
+  <input type="hidden" id="client_id" value="{{clientId}}">
+  <input type="hidden" id="scope" value="{{scope}}">
+
+  <body class="text-center">
+    <form action="/auth/sinin" class="form-signin" action="GET">
+      <h1 class="h3 mb-3 font-weight-normal">Authorize for this Application to use your account?</h1>
+
+      <label for="username" class="sr-only">Username</label>
+      <input type="username" id="username" class="form-control" placeholder="Username" data-required-error="must be required"  required>
+      <input type="password" id="password" class="form-control" placeholder="Password" data-required-error="must be required" required>
+
+
+      <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+      <div class="alert alert-danger" role="alert">{{error}}</div>
+
+    </form>
+  </body>
+</html>
+
+
+
+

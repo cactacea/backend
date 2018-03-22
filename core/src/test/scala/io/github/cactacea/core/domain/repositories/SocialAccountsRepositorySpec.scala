@@ -13,7 +13,7 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
 
   test("connect a social account") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid").account
+    val sessionUser = signUp("session user name", "session user password", "session udid")
     Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
     assert(Await.result(socialAccountsDAO.exist("facebook", sessionUser.id.toSessionId)) == true)
 
@@ -21,7 +21,7 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
 
   test("find social accounts") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid").account
+    val sessionUser = signUp("session user name", "session user password", "session udid")
     Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
     Await.result(socialAccountsRepository.create("google", "session token", sessionUser.id.toSessionId))
     Await.result(socialAccountsRepository.create("twitter", "session token", sessionUser.id.toSessionId))
@@ -33,7 +33,7 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
 
   test("connect connected social account") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid").account
+    val sessionUser = signUp("session user name", "session user password", "session udid")
     Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
@@ -44,7 +44,7 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
 
   test("disconnect a social account") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid").account
+    val sessionUser = signUp("session user name", "session user password", "session udid")
     Await.result(socialAccountsRepository.create("facebook", "session token", sessionUser.id.toSessionId))
     Await.result(socialAccountsRepository.delete("facebook", sessionUser.id.toSessionId))
     assert(Await.result(socialAccountsDAO.exist("facebook", sessionUser.id.toSessionId)) == false)
@@ -53,7 +53,7 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
 
   test("disconnect not connected social account") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid").account
+    val sessionUser = signUp("session user name", "session user password", "session udid")
 
     assert(intercept[CactaceaException] {
       Await.result(socialAccountsRepository.delete("facebook", sessionUser.id.toSessionId))

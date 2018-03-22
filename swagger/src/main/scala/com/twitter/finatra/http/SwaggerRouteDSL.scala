@@ -84,7 +84,7 @@ trait SwaggerRouteDSL extends RouteDSL {
     options(route, name, admin, routeIndex)(callback)
   }
 
-  private def registerOperation(path: String, method: String)(doc: Operation => Operation): Unit = {
+  protected def registerOperation(path: String, method: String)(doc: Operation => Operation): Unit = {
     FinatraSwagger
       .convert(swagger)
       .registerOperation(prefixRoute(path), method, doc(new Operation))

@@ -2,74 +2,88 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.OAuth2
-import com.twitter.finagle.http.Request
-import com.twitter.finagle.oauth2.{OAuthError, OAuthErrorInJson, OAuthTokenInJson, RedirectUriMismatch}
+import com.twitter.finagle.http.{Request, Status}
+import com.twitter.finagle.oauth2._
 import com.twitter.finatra.http.Controller
+import com.twitter.inject.annotations.Flag
 import com.twitter.util.Future
-import io.github.cactacea.backend.models.requests.auth.{GetAuthorizeCode, PostOAuthToken}
-import io.github.cactacea.backend.models.responses.AccessCodeCreated
-import io.github.cactacea.backend.views.SignInView
-import io.github.cactacea.core.application.components.interfaces.ConfigService
-import io.github.cactacea.core.domain.enums.AccountStatusType
-import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, AuthDAO}
-import io.github.cactacea.core.util.oauth.{InvalidResponseType, OAuthHandler}
-import io.github.cactacea.core.util.tokens.OAuthTokenGenerator
+import io.github.cactacea.backend.models.requests.auth.GetAuthorize
+import io.github.cactacea.backend.util.oauth.{OAuthCodeGenerator, OAuthHandler, OAuthService, OAuthTokenGenerator}
+import io.github.cactacea.backend.views.{ErrorView, SignInView}
 
 @Singleton
-class OAuthController @Inject()(c: ConfigService) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
+class OAuthController @Inject()(@Flag("api.prefix") apiPrefix: String) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
 
   protected val tagName = "OAuth"
 
-  @Inject private var authDAO: AuthDAO = _
-  @Inject private var accountsDAO: AccountsDAO = _
-  @Inject private var oAuthTokenGenerator: OAuthTokenGenerator = _
+  @Inject private var oauthService: OAuthService = _
+  @Inject private var tokenGenerator: OAuthTokenGenerator = _
+  @Inject private var codeGenerator: OAuthCodeGenerator = _
   @Inject private var dataHandler: OAuthHandler = _
 
-  get(c.rootPath + "/oauth2/authorize") { req: GetAuthorizeCode =>
-    authDAO.validateRedirectUri(req.clientId, req.redirectUri).map(_ match {
-      case true =>
-        if (req.responseType == "code" || req.responseType == "token") {
-          SignInView(req.responseType, req.clientId, req.redirectUri, req.scope, req.state, req.codeChallenge, req.codeChallengeMethod)
-        } else {
-          handleError(new InvalidResponseType())
-        }
-      case false =>
-        handleError(new RedirectUriMismatch())
-    })
-  }
+  private val applicationName = "Cactacea"
 
-  post(c.rootPath + "/oauth2/authorize") { req: PostOAuthToken =>
-    authDAO.validateRedirectUri(req.clientId, req.redirectUri).map(_ match {
-      case true =>
-        accountsDAO.find(req.username, req.password).map(_ match {
-          case Some(a) =>
-            if (a.accountStatus == AccountStatusType.normally) {
-              if (req.responseType == "code") {
-                val code = oAuthTokenGenerator.generateCode()
-                val created = AccessCodeCreated(code, None)
-                response.created(created).location(req.redirectUri)
+  prefix(apiPrefix) {
 
-              } else if (req.responseType == "token") {
-                issueAccessToken(req.request, dataHandler) flatMap { token =>
-                  Future(convertToken(token))
-                } handle {
-                  case e: OAuthError => handleError(e)
-                }
-              } else {
-                handleError(new InvalidResponseType())
+    get("/oauth2/authorize") { req: GetAuthorize =>
+      oauthService.validateResponseType(req.responseType) match {
+        case Right(_) =>
+          oauthService.validateClient(req.clientId).map(_ match {
+            case Right((_, permissions)) =>
+              oauthService.validateScope(req.scope, permissions) match {
+                case Right(_) =>
+                  val scope = req.scope.map({ s => s"&scope=${s}"}).getOrElse("")
+                  val location = s"/oauth2/authenticate?response_type=${req.responseType}&client_id=${req.clientId}${scope}"
+                  response.status(Status.SeeOther).location(location)
+                case Left(e) =>
+                  handleError(e)
               }
-            } else {
-              SignInView(req.responseType, req.clientId, req.redirectUri, req.scope, req.state, req.codeChallenge, req.codeChallengeMethod)
-            }
-          case None =>
-            SignInView(req.responseType, req.clientId, req.redirectUri, req.scope, req.state, req.codeChallenge, req.codeChallengeMethod)
-        })
-      case false =>
-        handleError(new RedirectUriMismatch())
-    })
+            case Left(e) =>
+              handleError(e)
+          })
+        case Left(e) =>
+          handleError(e)
+      }
+    }
+
+    get("/oauth2/authenticate") { req: GetAuthorize =>
+      oauthService.validateClient(req.clientId).map(_ match {
+        case Right((client, permissions)) =>
+          oauthService.validateScope(req.scope, permissions) match {
+            case Right(permissions) =>
+              (req.username, req.password) match {
+                case (Some(username), Some(password)) =>
+                  oauthService.signIn(username, password).map(_ match {
+                    case Some(a) =>
+                      req.responseType match {
+                        case "code" =>
+                          val scope = req.scope.mkString(",")
+                          val code = codeGenerator.generateCode(a.id.value, req.clientId, scope)
+                          val location = client.redirectUri + s"?code=${code}"
+                          response.status(Status.SeeOther).location(location)
+                        case "token" =>
+                          val scope = req.scope.mkString(",")
+                          val token = tokenGenerator.generateToken(a.id.value, req.clientId, scope)
+                          val location = client.redirectUri + s"?access_token=${token}&token_type=Bearer"
+                          response.status(Status.SeeOther).location(location)
+                      }
+                    case None =>
+                  })
+                case _ =>
+                  val scope = permissions.map(_.value).mkString(",")
+                  SignInView(req.responseType, req.clientId, scope, None)
+              }
+            case Left(e) =>
+              ErrorView(applicationName, e.description)
+          }
+        case Left(e) =>
+          ErrorView(applicationName, e.description)
+      })
+    }
+
   }
 
-  post(c.rootPath + "/oauth2/token") {req: Request =>
+  post("/oauth2/token") { req: Request =>
     issueAccessToken(req, dataHandler) flatMap { token =>
       Future(convertToken(token))
     } handle {

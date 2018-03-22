@@ -9,8 +9,9 @@ import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.helpers.ServerSpec
 import io.github.cactacea.backend.models.requests.account.GetAccounts
 import io.github.cactacea.backend.models.requests.session.{GetSignIn, PostSignUp}
+import io.github.cactacea.backend.models.responses.Authentication
 import io.github.cactacea.core.application.components.interfaces.ConfigService
-import io.github.cactacea.core.domain.models.{Account, Authentication}
+import io.github.cactacea.core.domain.models.Account
 
 class BackendServerSpec extends ServerSpec {
 

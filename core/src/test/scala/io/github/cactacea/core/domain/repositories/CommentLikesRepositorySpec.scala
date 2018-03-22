@@ -17,8 +17,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
   test("create a comment like") {
 
-    val session = signUp("session name", "session password", "udid").account
-    val user  = signUp("user name", "user password", "udid").account
+    val session = signUp("session name", "session password", "udid")
+    val user  = signUp("user name", "user password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", user.id.toSessionId))
     Await.result(commentLikesRepository.create(commentId, session.id.toSessionId))
@@ -29,8 +29,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
   test("create a comment like twice") {
 
-    val session = signUp("session name", "session password", "udid").account
-    val user  = signUp("user name", "user password", "udid").account
+    val session = signUp("session name", "session password", "udid")
+    val user  = signUp("user name", "user password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", user.id.toSessionId))
     Await.result(commentLikesRepository.create(commentId, session.id.toSessionId))
@@ -43,7 +43,7 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
   test("create a like to no exist comment") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(commentLikesRepository.create(CommentId(0L), session.id.toSessionId))
     }.error == CommentNotFound)
@@ -52,8 +52,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
   test("delete a comment like") {
 
-    val session = signUp("session name", "session password", "udid").account
-    val user  = signUp("user name", "user password", "udid").account
+    val session = signUp("session name", "session password", "udid")
+    val user  = signUp("user name", "user password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", user.id.toSessionId))
     Await.result(commentLikesRepository.create(commentId, session.id.toSessionId))
@@ -65,8 +65,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
   test("delete a comment like twice") {
 
-    val session = signUp("session name", "session password", "udid").account
-    val user  = signUp("user name", "user password", "udid").account
+    val session = signUp("session name", "session password", "udid")
+    val user  = signUp("user name", "user password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", user.id.toSessionId))
     Await.result(commentLikesRepository.create(commentId, session.id.toSessionId))
@@ -80,7 +80,7 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
   test("delete a comment like to no exist comment") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(commentLikesRepository.delete(CommentId(0L), session.id.toSessionId))
     }.error == CommentNotFound)
@@ -89,12 +89,12 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
   test("find users") {
 
-    val session = signUp("session name", "session password", "udid").account
-    val user1  = signUp("user1 name", "user1 password", "udid").account
-    val user2  = signUp("user2 name", "user2 password", "udid").account
-    val user3  = signUp("user3 name", "user3 password", "udid").account
-    val user4  = signUp("user4 name", "user4 password", "udid").account
-    val user5  = signUp("user5 name", "user5 password", "udid").account
+    val session = signUp("session name", "session password", "udid")
+    val user1  = signUp("user1 name", "user1 password", "udid")
+    val user2  = signUp("user2 name", "user2 password", "udid")
+    val user3  = signUp("user3 name", "user3 password", "udid")
+    val user4  = signUp("user4 name", "user4 password", "udid")
+    val user5  = signUp("user5 name", "user5 password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     Await.result(commentLikesRepository.create(commentId, user1.id.toSessionId))
@@ -112,7 +112,7 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
   test("find no exist comment") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(commentLikesRepository.findAccounts(CommentId(0L), None, None, Some(3), session.id.toSessionId))
     }.error == CommentNotFound)

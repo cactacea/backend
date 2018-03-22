@@ -1,13 +1,13 @@
 package io.github.cactacea.core.application.components.interfaces
 
 import com.twitter.util.Future
-import io.github.cactacea.core.domain.enums.{ReportType}
-import io.github.cactacea.core.domain.models.Authentication
+import io.github.cactacea.core.domain.enums.ReportType
+import io.github.cactacea.core.domain.models.Account
 import io.github.cactacea.core.infrastructure.identifiers._
 
 trait InjectionService {
-  def signedUp(authentication: Authentication): Future[Unit]
-  def signedIn(authentication: Authentication): Future[Unit]
+  def signedUp(authentication: Account): Future[Unit]
+  def signedIn(authentication: Account): Future[Unit]
   def signedOut(sessionId: SessionId): Future[Unit]
   def displayNameUpdated(sessionId: SessionId): Future[Unit]
   def accountNameUpdated(sessionId: SessionId): Future[Unit]

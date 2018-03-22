@@ -15,7 +15,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("create") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
     val key = "key"
@@ -38,7 +38,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("create with no exist medium") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
     val mediums = Some(List(MediumId(0L)))
@@ -51,7 +51,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("update") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
     val (id1, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
@@ -68,7 +68,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("update no exist feed") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
     val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
@@ -83,7 +83,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("update with no exist medium") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
     val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
@@ -98,8 +98,8 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("delete") {
 
-    val session = signUp("session name", "session password", "udid").account
-    val user = signUp("user name", "user password", "user udid").account
+    val session = signUp("session name", "session password", "udid")
+    val user = signUp("user name", "user password", "user udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
     val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
@@ -113,7 +113,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("delete no exist feed") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
 
     assert(intercept[CactaceaException] {
       Await.result(feedsRepository.delete(FeedId(0L), session.id.toSessionId))
@@ -123,7 +123,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("find feeds by a user") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
     val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
@@ -136,8 +136,8 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("findAll a account's feeds") {
 
-    val session = signUp("session name", "session password", "udid").account
-    val user = signUp("user name", "user password", "udid").account
+    val session = signUp("session name", "session password", "udid")
+    val user = signUp("user name", "user password", "udid")
     val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
@@ -164,7 +164,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("findAll no exist account's feeds") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
 
     assert(intercept[CactaceaException] {
       Await.result(feedsRepository.findAll(AccountId(0L), None, None, Some(3), session.id.toSessionId))
@@ -175,7 +175,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("find session's feeds") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
     val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
@@ -202,7 +202,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("find a feed") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val result = Await.result(feedsRepository.find(feedId, session.id.toSessionId))
     assert(result.id == feedId)
@@ -211,7 +211,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   test("find no exist feed") {
 
-    val session = signUp("session name", "session password", "udid").account
+    val session = signUp("session name", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(feedsRepository.find(FeedId(0L), session.id.toSessionId))
     }.error == FeedNotFound)

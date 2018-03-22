@@ -22,6 +22,10 @@ case class Accounts(
                  ) {
 
 
+  def isNormally: Boolean = {
+    this.accountStatus == AccountStatusType.normally
+  }
+
   def isTerminated: Boolean = {
     this.accountStatus == AccountStatusType.terminated
   }
