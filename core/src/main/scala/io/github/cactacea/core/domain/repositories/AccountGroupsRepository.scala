@@ -28,14 +28,14 @@ class AccountGroupsRepository {
     for {
       _ <- validationDAO.existAccount(accountId)
       r <- accountGroupsDAO.findAll(accountId, since, offset, count, false)
-        .map(l => l.map({ case (g, m, am, a, r, id) => Group(g, m, am, a, r, id)}))
+        .map(_.map({ t => Group(t._1, t._2, t._3, t._4)}))
     } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
     val accountId = sessionId.toAccountId
     accountGroupsDAO.findAll(accountId, since, offset, count, hidden)
-      .map(l => l.map({ case (g, m, am, a, r, id) => Group(g, m, am, a, r, id)}))
+      .map(_.map({ t => Group(t._1, t._2, t._3, t._4)}))
   }
 
   def findOrCreate(accountId: AccountId, sessionId: SessionId): Future[Group] = {

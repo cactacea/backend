@@ -3,6 +3,7 @@ package io.github.cactacea.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.core.application.components.services.DatabaseService
+import io.github.cactacea.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
 import io.github.cactacea.core.infrastructure.models._
 
@@ -35,50 +36,44 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == accountIds.size)
   }
 
-//  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Timelines, Option[Feeds], Option[List[FeedTags]], Option[List[Mediums]], Option[Accounts], Option[Relationships])]] = {
-//    val s = since.getOrElse(-1L)
-//    val c = count.getOrElse(20)
-//    val o = offset.getOrElse(0)
-//    val by = sessionId.toAccountId
-//    val q = quote {
-//      for {
-//        tl <- query[Timelines]
-//          .filter(_.accountId == lift(by))
-//          .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
-//          .sortBy(_.id)(Ord.descNullsLast)
-//          .take(lift(c))
-//        t <- query[Feeds]
-//          .leftJoin(p => tl.feedId.exists(_ == p.id))
-//        u <- query[Accounts]
-//          .leftJoin(u => tl.by.exists(_ == u.id))
-//        r <- query[Relationships]
-//          .leftJoin(r => tl.by.exists(_ == r.accountId) && r.by == lift(by))
-//      } yield (tl, t, u, r)
-//    }
-//    run(q).flatMap(findTagsAndImages(_, sessionId))
-//
-//  }
-//
-//  private def findTagsAndImages(feeds: List[(Timelines, Option[Feeds], Option[Accounts], Option[Relationships])], sessionId: SessionId) = {
-//    val feedIds = feeds.flatMap(_._2.map(_.id))
-//    ((for {
-//      tags <- feedTagsDAO.findAll(feedIds)
-//      medium <- feedMediumDAO.findAll(feedIds)
-//    } yield (tags, medium)).map {
-//      case (tags, medium) =>
-//        feeds.map(t => {
-//          val tag = t._2 match {
-//            case Some(t) => Some(tags.filter(_.feedId == t.id))
-//            case None => None
-//          }
-//          val image = t._2 match {
-//            case Some(t) => Some(medium.filter(_._1 == t.id).map(_._2))
-//            case None => None
-//          }
-//          val r = (t._1, t._2, tag, image, t._3, t._4)
-//          r
-//        })
-//    })
-//  }
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: FeedPrivacyType, sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
+    val s = since.getOrElse(-1L)
+    val c = count.getOrElse(20)
+    val o = offset.getOrElse(0)
+    val by = sessionId.toAccountId
+    val q = quote {
+      for {
+        af <- query[AccountFeeds]
+          .filter(_.accountId == lift(by))
+          .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+          .sortBy(_.feedId)(Ord.descNullsLast)
+          .take(lift(c))
+        f <- query[Feeds]
+          .join(f => f.id == af.feedId && (f.privacyType == lift(privacyType) || lift(privacyType) == lift(FeedPrivacyType.everyone)) )
+        a <- query[Accounts]
+          .join(a => a.id == f.by)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == f.by && r.by == lift(by))
+      } yield (af, f, a, r)
+    }
+    run(q).flatMap(findTagsAndImages(_, sessionId))
+
+  }
+
+  private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds, Accounts, Option[Relationships])], sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
+    val feedIds = feeds.map(_._2.id)
+
+    ((for {
+      tags <- feedTagsDAO.findAll(feedIds)
+      medium <- feedMediumDAO.findAll(feedIds)
+    } yield (tags, medium)).map {
+      case (tags, medium) =>
+        feeds.map(t => {
+          val tag = tags.filter(_.feedId == t._2.id)
+          val image = medium.filter(_._1 == t._2.id).map(_._2)
+          (t._1, t._2, tag, image, t._3, t._4)
+        })
+    })
+  }
 
 }

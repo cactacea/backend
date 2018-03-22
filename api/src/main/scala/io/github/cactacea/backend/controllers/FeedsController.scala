@@ -25,17 +25,17 @@ class FeedsController  @Inject()(s: Swagger, c: ConfigService)extends BackendCon
   getWithDoc(c.rootPath + "/feeds") { o =>
     o.summary("Search feeds")
       .tag(tagName)
-      .request[GetAccountFeeds]
+      .request[GetFeeds]
       .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
 
       .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
 
-  } { request: GetAccountFeeds =>
+  } { request: GetFeeds =>
     feedsService.find(
-      request.id,
       request.since,
       request.offset,
       request.count,
+      request.privacyType,
       SessionContext.id
     )
   }

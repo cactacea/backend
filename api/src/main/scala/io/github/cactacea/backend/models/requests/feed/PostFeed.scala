@@ -15,7 +15,7 @@ case class PostFeed(
                      @ApiModelProperty(value = "Tags of feed.")
                      @Size(min = 0, max = 1000) tags : Option[Array[String]],
 
-                     @ApiModelProperty(value = "Group privacy type.")
+                     @ApiModelProperty(value = "Feed privacy type.")
                      privacyType : FeedPrivacyType,
 
                      @ApiModelProperty(value = "Content warning.")

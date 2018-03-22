@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import io.github.cactacea.core.application.components.interfaces.NotificationMessagesService
 import io.github.cactacea.core.domain.enums.ContentStatusType
 import io.github.cactacea.core.infrastructure.identifiers.FeedId
-import io.github.cactacea.core.infrastructure.models._
+import io.github.cactacea.core.infrastructure.models.{AccountFeeds, Feeds, _}
 
 case class Feed(
                  id: FeedId,
@@ -28,8 +28,8 @@ object Feed {
     _apply(f, None, None, None, None, f.id.value)
   }
 
-  def apply(f: Feeds, next: Long): Feed = {
-    _apply(f, None, None, None, None, next)
+  def apply(f: Feeds, fl: FeedLikes): Feed = {
+    _apply(f, None, None, None, None, fl.id.value)
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums]): Feed = {
@@ -37,6 +37,10 @@ object Feed {
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
+    _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
+  }
+
+  def apply(af: AccountFeeds, f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
     _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
   }
 

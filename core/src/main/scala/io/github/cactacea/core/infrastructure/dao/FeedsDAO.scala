@@ -144,7 +144,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).flatMap(f => _addTagsMedium(f, sessionId))
+    run(q).flatMap(f => _addTagsMedium(f, sessionId).map(_.sortWith(_._1.id.value > _._1.id.value)))
   }
 
 
@@ -169,7 +169,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).flatMap(f => _addTagsMedium(f, sessionId))
+    run(q).flatMap(f => _addTagsMedium(f, sessionId)) // .map(_.sortWith(_._1.id.value > _._1.id.value)))
   }
 
   private def _addTagsMedium(feeds: List[Feeds], sessionId: SessionId) = {
@@ -189,8 +189,6 @@ class FeedsDAO @Inject()(db: DatabaseService) {
           val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
           (nf, t, m)
         })
-          // TODO : Fix me
-          .sortBy(_._1.id.value).reverse
     })
   }
 

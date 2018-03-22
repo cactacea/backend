@@ -50,7 +50,15 @@ class FeedsRepository {
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
-      r <- feedsDAO.findAll(accountId, since, offset, count, sessionId).map(_.map({ case (f, ft, m) => Feed(f, ft, m)}))
+      r <- feedsDAO.findAll(accountId, since, offset, count, sessionId)
+        .map(_.map({ case (f, ft, m) => Feed(f, ft, m)}))
+    } yield (r)
+  }
+
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: FeedPrivacyType, sessionId: SessionId): Future[List[Feed]] = {
+    for {
+      r <- accountFeedsDAO.findAll(since, offset, count, privacyType, sessionId)
+        .map(_.map(t => Feed(t._1, t._2, t._3, t._4, t._5, t._6)))
     } yield (r)
   }
 

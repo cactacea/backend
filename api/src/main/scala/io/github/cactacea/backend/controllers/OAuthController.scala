@@ -4,22 +4,19 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.OAuth2
 import com.twitter.finagle.http.Request
 import com.twitter.finagle.oauth2.{OAuthError, OAuthErrorInJson, OAuthTokenInJson, RedirectUriMismatch}
+import com.twitter.finatra.http.Controller
 import com.twitter.util.Future
 import io.github.cactacea.backend.models.requests.auth.{GetAuthorizeCode, PostOAuthToken}
 import io.github.cactacea.backend.models.responses.AccessCodeCreated
-import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.backend.views.SignInView
 import io.github.cactacea.core.application.components.interfaces.ConfigService
 import io.github.cactacea.core.domain.enums.AccountStatusType
 import io.github.cactacea.core.infrastructure.dao.{AccountsDAO, AuthDAO}
 import io.github.cactacea.core.util.oauth.{InvalidResponseType, OAuthHandler}
 import io.github.cactacea.core.util.tokens.OAuthTokenGenerator
-import io.swagger.models.Swagger
 
 @Singleton
-class OAuthController @Inject()(s: Swagger, c: ConfigService) extends BackendController with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
-
-  protected implicit val swagger = s
+class OAuthController @Inject()(c: ConfigService) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
 
   protected val tagName = "OAuth"
 
@@ -28,11 +25,7 @@ class OAuthController @Inject()(s: Swagger, c: ConfigService) extends BackendCon
   @Inject private var oAuthTokenGenerator: OAuthTokenGenerator = _
   @Inject private var dataHandler: OAuthHandler = _
 
-  getWithDoc(c.rootPath + "/oauth2/authorize") { o =>
-    o.summary("OAuth for authorization")
-      .tag("OAuth2")
-
-  } { req: GetAuthorizeCode =>
+  get(c.rootPath + "/oauth2/authorize") { req: GetAuthorizeCode =>
     authDAO.validateRedirectUri(req.clientId, req.redirectUri).map(_ match {
       case true =>
         if (req.responseType == "code" || req.responseType == "token") {
@@ -45,11 +38,7 @@ class OAuthController @Inject()(s: Swagger, c: ConfigService) extends BackendCon
     })
   }
 
-  postWithDoc(c.rootPath + "/oauth2/authorize") { o =>
-    o.summary("OAuth for authorization confirm")
-      .tag("OAuth2")
-
-  } { req: PostOAuthToken =>
+  post(c.rootPath + "/oauth2/authorize") { req: PostOAuthToken =>
     authDAO.validateRedirectUri(req.clientId, req.redirectUri).map(_ match {
       case true =>
         accountsDAO.find(req.username, req.password).map(_ match {
@@ -80,11 +69,7 @@ class OAuthController @Inject()(s: Swagger, c: ConfigService) extends BackendCon
     })
   }
 
-  postWithDoc(c.rootPath + "/oauth2/token") { o =>
-    o.summary("OAuth for token requests")
-      .tag("OAuth2")
-
-  } {req: Request =>
+  post(c.rootPath + "/oauth2/token") {req: Request =>
     issueAccessToken(req, dataHandler) flatMap { token =>
       Future(convertToken(token))
     } handle {

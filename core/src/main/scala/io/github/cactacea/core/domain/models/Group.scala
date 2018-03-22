@@ -2,7 +2,7 @@ package io.github.cactacea.core.domain.models
 
 import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.core.infrastructure.identifiers.{AccountGroupId, GroupId}
-import io.github.cactacea.core.infrastructure.models._
+import io.github.cactacea.core.infrastructure.models.{AccountGroups, Groups, _}
 
 case class Group(
                   id: GroupId,
@@ -19,6 +19,10 @@ case class Group(
 object Group {
   def apply(g: Groups): Group = {
     apply(g, None, None, None, None, None, None)
+  }
+
+  def apply(ag: AccountGroups, g: Groups, m: Option[Messages], am: Option[AccountMessages]): Group = {
+    apply(g, m, am, None, None, None, Some(ag.id))
   }
 
   def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], a: Option[Accounts], r: Option[Relationships]): Group = {

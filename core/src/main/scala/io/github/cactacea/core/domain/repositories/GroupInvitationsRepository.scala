@@ -33,9 +33,8 @@ class GroupInvitationsRepository {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[GroupInvitation]] = {
-    groupInvitationsDAO.findAll(since, offset, count, sessionId).map(_.map({ case (gi, a1, r1, g, m, um, a2, r2) =>
-      GroupInvitation(gi, a1, r1, g, m, um, a2, r2)
-    }))
+    groupInvitationsDAO.findAll(since, offset, count, sessionId)
+      .map(_.map( t => GroupInvitation(t._1, t._2, t._3, t._4)))
   }
 
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
