@@ -52,11 +52,12 @@ class SettingsService {
   }
 
 
-  def connectSocialAccount(socialAccountType: String, accessTokenKey: String, accessTokenSecret: String, sessionId: SessionId): Future[Unit] = {
+  def connectSocialAccount(socialAccountType: String, socialAccountIdentifier: String, authenticationCode: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        _ <- socialAccountsService.get(socialAccountType, accessTokenKey, accessTokenSecret)
-        r <- socialAccountsRepository.create(socialAccountType, accessTokenKey, sessionId)
+        s <- socialAccountsService.getService(socialAccountType)
+        _ <- s.validateCode(socialAccountIdentifier, authenticationCode)
+        r <- socialAccountsRepository.create(socialAccountType, socialAccountIdentifier, sessionId)
         _ <- injectionService.socialAccountConnected(socialAccountType, sessionId)
       } yield (r)
     }

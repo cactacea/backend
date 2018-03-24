@@ -110,14 +110,18 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
   }
 
   protected def createCallback[RequestType: Manifest, ResponseType: Manifest](scopes: Seq[Permission])(callback: RequestType => ResponseType) = {
-    val createCallback: RequestType => ResponseType = { request =>
-      if (validatePermission(scopes.toList) == true) {
-        callback(request)
-      } else {
-        throw CactaceaException(OperationNotAllowed)
+    if (scopes.size > 0) {
+      val createCallback: RequestType => ResponseType = { request =>
+        if (validatePermission(scopes.toList) == true) {
+          callback(request)
+        } else {
+          throw CactaceaException(OperationNotAllowed)
+        }
       }
+      createCallback
+    } else {
+      callback
     }
-    createCallback
   }
 
   private def validatePermission(requireScopes: List[Permission]): Boolean = {

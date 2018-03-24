@@ -11,15 +11,29 @@ class SocialAccountsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(socialAccountType: String, socialAccountId: String, sessionId: SessionId): Future[Boolean] = {
+  def create(socialAccountType: String, socialAccountId: String, authenticationCode: Option[String], verified: Boolean, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[SocialAccounts]
         .insert(
           _.accountId           -> lift(accountId),
           _.socialAccountId     -> lift(socialAccountId),
-          _.socialAccountType   -> lift(socialAccountType)
+          _.socialAccountType   -> lift(socialAccountType),
+          _.verified            -> lift(verified)
         )
+    }
+    run(q).map(_ == 1)
+  }
+
+  def update(socialAccountType: String, verified: Boolean, sessionId: SessionId): Future[Boolean] = {
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[SocialAccounts]
+          .filter(_.socialAccountType == lift(socialAccountType))
+          .filter(_.accountId == lift(accountId))
+          .update(
+            _.verified            -> lift(verified)
+          )
     }
     run(q).map(_ == 1)
   }

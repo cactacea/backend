@@ -19,20 +19,19 @@ class BaseServer extends HttpServer {
   protected  def databaseModule = DatabaseProviderModule
 
   def identifyModule: TwitterModule =  DefaultIdentifyModule
-  def socialAccountsModule: TwitterModule = FGTSocialAccountsModule
-  def injectionModule: TwitterModule =  NoActionInjectionModule
+  def injectionModule: TwitterModule =  DefaultInjectionModule
   def configModule: TwitterModule = DefaultConfigModule
   def fanOutModule: TwitterModule = DefaultNotificationModule
   def notificationMessagesModule: TwitterModule = DefaultNotificationMessagesModule
-  def publishModule: TwitterModule =  NoQueuePublishModule
-  def pushNotificationModule: TwitterModule = NoPushNotificationModule
-  def storageModule: TwitterModule = LocalStorageModule
-  def subScribeModule: TwitterModule = NoQueueSubScribeModule
+  def publishModule: TwitterModule =  DefaultPublishModule
+  def pushNotificationModule: TwitterModule = DefaultPushNotificationModule
+  def storageModule: TwitterModule = DefaultStorageModule
+  def subScribeModule: TwitterModule = DefaultSubScribeModule
   def deepLinkModule: TwitterModule = DefaultDeepLinkModule
-  def transcodeModule: TwitterModule = ImageTranscodeModule
+  def transcodeModule: TwitterModule = DefaultTranscodeModule
+  def socialAccountsModule: TwitterModule = DefaultSocialAccountsModule
 
   addFrameworkModule(identifyModule)
-  addFrameworkModule(socialAccountsModule)
   addFrameworkModule(injectionModule)
   addFrameworkModule(configModule)
   addFrameworkModule(fanOutModule)
@@ -44,6 +43,7 @@ class BaseServer extends HttpServer {
   addFrameworkModule(deepLinkModule)
   addFrameworkModule(transcodeModule)
   addFrameworkModule(databaseModule)
+  addFrameworkModule(socialAccountsModule)
 
   override def configureHttp(router: HttpRouter) = {
     router

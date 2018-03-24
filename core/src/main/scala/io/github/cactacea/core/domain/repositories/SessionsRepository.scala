@@ -63,7 +63,12 @@ class SessionsRepository {
         })
       case None =>
         _signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent).flatMap({ a =>
-          socialAccountsDAO.create(socialAccountType, socialAccountId, a.id.toSessionId).flatMap(_ => Future.value(a))
+          socialAccountsDAO.update(socialAccountType, true, a.id.toSessionId).flatMap(_ match {
+            case true =>
+              Future.value(a)
+            case false =>
+              socialAccountsDAO.create(socialAccountType, socialAccountId, None, true, a.id.toSessionId).flatMap(_ => Future.value(a))
+          })
         })
     })
 

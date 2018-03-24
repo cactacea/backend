@@ -13,9 +13,9 @@ class SocialAccountsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("account0")
     val sessionAccount2 = createAccount("account1")
     val sessionAccount3 = createAccount("account2")
-    Await.result(socialAccountsDAO.create("facebook", "facebook", sessionAccount3.id.toSessionId))
-    Await.result(socialAccountsDAO.create("google", "google", sessionAccount3.id.toSessionId))
-    Await.result(socialAccountsDAO.create("twitter", "twitter", sessionAccount3.id.toSessionId))
+    Await.result(socialAccountsDAO.create("facebook", "facebook", None, true, sessionAccount3.id.toSessionId))
+    Await.result(socialAccountsDAO.create("google", "google", None, true, sessionAccount3.id.toSessionId))
+    Await.result(socialAccountsDAO.create("twitter", "twitter", None, true, sessionAccount3.id.toSessionId))
 
     // exist
     val exists4 = Await.result(socialAccountsDAO.exist("facebook", sessionAccount3.id.toSessionId))
