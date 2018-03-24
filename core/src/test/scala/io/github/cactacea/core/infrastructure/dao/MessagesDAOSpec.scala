@@ -1,9 +1,9 @@
-package io.github.cactacea.core.infrastructure.dao
+package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.util.Await
-import io.github.cactacea.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, MediumType}
-import io.github.cactacea.core.helpers.DAOSpec
-import io.github.cactacea.core.infrastructure.models.Messages
+import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, MediumType}
+import io.github.cactacea.backend.core.helpers.DAOSpec
+import io.github.cactacea.backend.core.infrastructure.models.Messages
 
 class MessagesDAOSpec extends DAOSpec {
 

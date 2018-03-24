@@ -1,7 +1,7 @@
-package io.github.cactacea.core.infrastructure.clients.google
+package io.github.cactacea.backend.core.infrastructure.clients.google
 
 //import com.twitter.util.Await
-//import io.github.cactacea.core.helpers.DAOSpec
+//import io.github.cactacea.backend.core.helpers.DAOSpec
 //
 //class GooglePlusHttpClientSpec extends DAOSpec {
 //

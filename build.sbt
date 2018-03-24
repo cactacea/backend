@@ -2,7 +2,7 @@ import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val demo = (project in file("demo"))
   .settings(
-    version      := "0.1.0",
+    version      := "0.1.1-SNAPSHOT",
     organization := "io.github.cactacea.backend",
     name := "demo",
     scalaVersion := "2.12.4",
@@ -17,16 +17,16 @@ lazy val demo = (project in file("demo"))
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea")
   )
-  .dependsOn(api)
+  .dependsOn(server)
   .dependsOn(component)
   .enablePlugins(JavaAppPackaging)
 
 
-lazy val api = (project in file("api"))
+lazy val server = (project in file("server"))
   .settings(
-    version      := "0.1.0",
-      organization := "io.github.cactacea.backend.api",
-      name := "api",
+    version      := "0.1.1-SNAPSHOT",
+      organization := "io.github.cactacea.backend",
+      name := "server",
       scalaVersion := "2.12.4",
       concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
       testOptions in Test += Tests.Argument("-oI")
@@ -38,7 +38,7 @@ lazy val api = (project in file("api"))
 
 lazy val core = (project in file("core"))
   .settings(
-    version      := "0.1.0",
+    version      := "0.1.1-SNAPSHOT",
     organization := "io.github.cactacea.backend.core",
     scalaVersion := "2.12.4",
     name := "core",
@@ -55,7 +55,7 @@ lazy val core = (project in file("core"))
 
 lazy val util = (project in file("util"))
   .settings(
-    version      := "0.1.0",
+    version      := "0.1.1-SNAPSHOT",
     organization := "io.github.cactacea.backend.util",
     scalaVersion := "2.12.4",
     name := "util",

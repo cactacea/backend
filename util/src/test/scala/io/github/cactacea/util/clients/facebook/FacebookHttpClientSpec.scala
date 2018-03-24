@@ -1,7 +1,7 @@
-package io.github.cactacea.core.util.clients.facebook
+package io.github.cactacea.backend.core.util.clients.facebook
 
 //import com.twitter.util.Await
-//import io.github.cactacea.core.helpers.DAOSpec
+//import io.github.cactacea.backend.core.helpers.DAOSpec
 //
 //class FacebookHttpClientSpec extends DAOSpec {
 //

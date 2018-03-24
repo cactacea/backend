@@ -1,9 +1,9 @@
-package io.github.cactacea.core.infrastructure.dao
+package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.util.Await
-import io.github.cactacea.core.domain.enums.{DeviceType, FeedPrivacyType, GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.core.helpers.DAOSpec
-import io.github.cactacea.core.infrastructure.identifiers.MessageId
+import io.github.cactacea.backend.core.domain.enums.{DeviceType, FeedPrivacyType, GroupAuthorityType, GroupPrivacyType}
+import io.github.cactacea.backend.core.helpers.DAOSpec
+import io.github.cactacea.backend.core.infrastructure.identifiers.MessageId
 
 class PushNotificationsDAOSPec extends DAOSpec {
 

@@ -1,8 +1,8 @@
-package io.github.cactacea.core.helpers
+package io.github.cactacea.backend.core.helpers
 
-import io.github.cactacea.core.domain.enums.{AccountStatusType, ContentStatusType, MediumType}
-import io.github.cactacea.core.infrastructure.identifiers.{AccountId, MediumId}
-import io.github.cactacea.core.infrastructure.models.{Accounts, Mediums}
+import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType, MediumType}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId}
+import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Mediums}
 
 object FactoryHelper {
 

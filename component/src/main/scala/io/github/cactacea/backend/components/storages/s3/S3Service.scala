@@ -2,9 +2,9 @@ package io.github.cactacea.backend.components.storages.s3
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.StorageService
-import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaErrors.FileUploadErrorOccurred
+import io.github.cactacea.backend.core.application.components.interfaces.StorageService
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.FileUploadErrorOccurred
 
 class S3Service @Inject()(s3HttpClient: S3HttpClient) extends StorageService {
 

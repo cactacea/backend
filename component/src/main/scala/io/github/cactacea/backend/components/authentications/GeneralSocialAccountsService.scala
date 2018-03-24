@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.components.authentications
 
-import io.github.cactacea.core.application.components.services.DefaultSocialAccountsService
+import io.github.cactacea.backend.core.application.components.services.DefaultSocialAccountsService
 
 class GeneralSocialAccountsService extends DefaultSocialAccountsService {
 
