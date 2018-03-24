@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.AuthenticationService
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.OperationNotAllowed
-import io.github.cactacea.util.clients.twitter.TwitterClient
+import io.github.cactacea.backend.util.clients.twitter.TwitterClient
 
 class TwitterService extends AuthenticationService {
 
