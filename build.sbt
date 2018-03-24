@@ -2,7 +2,7 @@ import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val demo = (project in file("demo"))
   .settings(
-    version      := "0.1.0",
+    version      := "0.1.1-SNAPSHOT",
     organization := "io.github.cactacea.backend",
     name := "demo",
     scalaVersion := "2.12.4",
@@ -17,28 +17,35 @@ lazy val demo = (project in file("demo"))
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea")
   )
-  .dependsOn(api)
+  .dependsOn(server)
   .dependsOn(component)
   .enablePlugins(JavaAppPackaging)
 
 
-lazy val api = (project in file("api"))
+lazy val server = (project in file("server"))
   .settings(
-    version      := "0.1.0",
-      organization := "io.github.cactacea.backend.api",
-      name := "api",
+    version      := "0.1.1-SNAPSHOT",
+      organization := "io.github.cactacea.backend",
+      name := "server",
       scalaVersion := "2.12.4",
       concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
       testOptions in Test += Tests.Argument("-oI")
   )
+  .settings(
+    libraryDependencies ++= Seq(
+      "ch.qos.logback" % "logback-classic" % versions.logback,
+      "net.logstash.logback" % "logstash-logback-encoder" % "4.11"
+    )
+  )
   .settings(commonResolverSetting)
-  .settings(commonLibrarySetting)
+  .settings(finatraLibrarySetting)
+  .settings(coreLibrarySetting)
   .dependsOn(core)
 
 
 lazy val core = (project in file("core"))
   .settings(
-    version      := "0.1.0",
+    version      := "0.1.1-SNAPSHOT",
     organization := "io.github.cactacea.backend.core",
     scalaVersion := "2.12.4",
     name := "core",
@@ -46,7 +53,7 @@ lazy val core = (project in file("core"))
     testOptions in Test += Tests.Argument("-oI")
   )
   .settings(commonResolverSetting)
-  .settings(commonLibrarySetting)
+  .settings(coreLibrarySetting)
   .dependsOn(util)
   .dependsOn(oauth2)
   .dependsOn(swagger)
@@ -55,7 +62,7 @@ lazy val core = (project in file("core"))
 
 lazy val util = (project in file("util"))
   .settings(
-    version      := "0.1.0",
+    version      := "0.1.1-SNAPSHOT",
     organization := "io.github.cactacea.backend.util",
     scalaVersion := "2.12.4",
     name := "util",
@@ -70,7 +77,8 @@ lazy val util = (project in file("util"))
     )
   )
   .settings(commonResolverSetting)
-  .settings(commonLibrarySetting)
+  .settings(finatraLibrarySetting)
+  .settings(coreLibrarySetting)
 
 
 lazy val component = (project in file("component"))
@@ -87,12 +95,13 @@ lazy val component = (project in file("component"))
     )
   )
   .settings(commonResolverSetting)
-  .settings(commonLibrarySetting)
+  .settings(finatraLibrarySetting)
+  .settings(coreLibrarySetting)
   .dependsOn(core)
 
 
 lazy val versions = new {
-  val finatra = "18.2.0"
+  val finagle = "18.2.0"
   val guice = "4.0"
   val logback = "1.2.3"
   val mockito = "1.10.19"
@@ -102,47 +111,47 @@ lazy val versions = new {
   val aws = "1.11.289"
 }
 
-lazy val commonLibrarySetting = Seq(
+lazy val finatraLibrarySetting = Seq(
+  libraryDependencies ++= Seq(
+    "com.twitter" %% "finatra-http" % versions.finagle,
+    "com.twitter" %% "finatra-httpclient" % versions.finagle,
+    "com.twitter" %% "finatra-http" % versions.finagle % "test",
+    "com.twitter" %% "finatra-jackson" % versions.finagle % "test"
+  )
+)
+
+lazy val coreLibrarySetting = Seq(
   libraryDependencies ++= Seq(
 
     "com.typesafe" % "config" % "1.3.2",
-    "com.twitter" %% "finatra-http" % versions.finatra,
-    "com.twitter" %% "finatra-httpclient" % versions.finatra,
-    "com.twitter" %% "finagle-core" % versions.finatra,
+    "com.twitter" %% "finagle-core" % versions.finagle,
+    "io.getquill" %% "quill-finagle-mysql" % "2.3.3",
+    "io.jsonwebtoken" % "jjwt" % "0.9.0",
+    "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
+    "mysql" % "mysql-connector-java" % "6.0.6",
+    "org.flywaydb" % "flyway-core" % "5.0.7",
+    "com.jsuereth" %% "scala-arm" % "2.0",
+    "com.roundeights" %% "hasher" % "1.2.0",
+    "com.drewnoakes" % "metadata-extractor" % "2.11.0",
 
-    "com.twitter" %% "finatra-http" % versions.finatra % "test",
-    "com.twitter" %% "finatra-jackson" % versions.finatra % "test",
-    "com.twitter" %% "inject-server" % versions.finatra % "test",
-    "com.twitter" %% "inject-app" % versions.finatra % "test",
-    "com.twitter" %% "inject-core" % versions.finatra % "test",
-    "com.twitter" %% "inject-modules" % versions.finatra % "test",
+    "com.twitter" %% "inject-server" % versions.finagle % "test",
+    "com.twitter" %% "inject-app" % versions.finagle % "test",
+    "com.twitter" %% "inject-core" % versions.finagle % "test",
+    "com.twitter" %% "inject-modules" % versions.finagle % "test",
     "com.google.inject.extensions" % "guice-testlib" % versions.guice % "test",
-    "com.twitter" %% "finatra-http" % versions.finatra % "test" classifier "tests",
-    "com.twitter" %% "finatra-jackson" % versions.finatra % "test" classifier "tests",
-    "com.twitter" %% "inject-server" % versions.finatra % "test" classifier "tests",
-    "com.twitter" %% "inject-app" % versions.finatra % "test" classifier "tests",
-    "com.twitter" %% "inject-core" % versions.finatra % "test" classifier "tests",
-    "com.twitter" %% "inject-modules" % versions.finatra % "test" classifier "tests",
+    "com.twitter" %% "finatra-http" % versions.finagle % "test" classifier "tests",
+    "com.twitter" %% "finatra-jackson" % versions.finagle % "test" classifier "tests",
+    "com.twitter" %% "inject-server" % versions.finagle % "test" classifier "tests",
+    "com.twitter" %% "inject-app" % versions.finagle % "test" classifier "tests",
+    "com.twitter" %% "inject-core" % versions.finagle % "test" classifier "tests",
+    "com.twitter" %% "inject-modules" % versions.finagle % "test" classifier "tests",
     "org.mockito" % "mockito-core" %  versions.mockito % "test",
+
     "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
     "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
     "org.specs2" %% "specs2-core" % versions.specs2 % "test",
     "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-    "org.specs2" %% "specs2-mock" % versions.specs2 % "test",
-
-    "ch.qos.logback" % "logback-classic" % versions.logback,
-    "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
-    "io.getquill" %% "quill-finagle-mysql" % "2.3.3",
-    "io.jsonwebtoken" % "jjwt" % "0.9.0",
-    "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
-
-    "mysql" % "mysql-connector-java" % "6.0.6",
-    "org.flywaydb" % "flyway-core" % "5.0.7",
-
-    "com.jsuereth" %% "scala-arm" % "2.0",
-    "com.roundeights" %% "hasher" % "1.2.0",
-    "com.drewnoakes" % "metadata-extractor" % "2.11.0"
-
+    "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
   )
 )
 
@@ -163,7 +172,7 @@ lazy val swagger = (project in file("swagger"))
   )
   .settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "finatra-http" % versions.finatra,
+      "com.twitter" %% "finatra-http" % versions.finagle,
       "io.swagger" % "swagger-core" % "1.5.17",
       "io.swagger" %% "swagger-scala-module" % "1.0.4",
       "org.webjars" % "swagger-ui" % "3.10.0",
@@ -182,7 +191,7 @@ lazy val oauth2 = (project in file("oauth2"))
   )
   .settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "finagle-http" % versions.finatra,
+      "com.twitter" %% "finagle-http" % versions.finagle,
       "org.scalacheck" %% "scalacheck" % "1.13.5" % Test,
       "org.scalatest" %% "scalatest" % "3.0.5" % Test
     )

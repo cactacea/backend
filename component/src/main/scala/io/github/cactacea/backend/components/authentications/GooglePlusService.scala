@@ -2,9 +2,9 @@ package io.github.cactacea.backend.components.authentications
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.core.application.components.interfaces.AuthenticationService
-import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaErrors.OperationNotAllowed
+import io.github.cactacea.backend.core.application.components.interfaces.AuthenticationService
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.OperationNotAllowed
 import io.github.cactacea.util.clients.google.GoogleClient
 
 class GooglePlusService extends AuthenticationService {

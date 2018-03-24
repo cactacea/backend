@@ -1,8 +1,8 @@
-package io.github.cactacea.core.infrastructure.dao
+package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.DAOSpec
-import io.github.cactacea.core.infrastructure.models.Relationships
+import io.github.cactacea.backend.core.helpers.DAOSpec
+import io.github.cactacea.backend.core.infrastructure.models.Relationships
 
 class FollowersDAOSpec extends DAOSpec {
 

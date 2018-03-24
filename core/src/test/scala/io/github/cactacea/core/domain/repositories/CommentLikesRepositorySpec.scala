@@ -1,12 +1,12 @@
-package io.github.cactacea.core.domain.repositories
+package io.github.cactacea.backend.core.domain.repositories
 
 import com.twitter.util.Await
-import io.github.cactacea.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.core.helpers.RepositorySpec
-import io.github.cactacea.core.infrastructure.dao.CommentLikesDAO
-import io.github.cactacea.core.infrastructure.identifiers.CommentId
-import io.github.cactacea.core.util.responses.CactaceaErrors.{CommentAlreadyLiked, CommentNotLiked, CommentNotFound}
-import io.github.cactacea.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.helpers.RepositorySpec
+import io.github.cactacea.backend.core.infrastructure.dao.CommentLikesDAO
+import io.github.cactacea.backend.core.infrastructure.identifiers.CommentId
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{CommentAlreadyLiked, CommentNotLiked, CommentNotFound}
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 
 class CommentLikesRepositorySpec extends RepositorySpec {
 

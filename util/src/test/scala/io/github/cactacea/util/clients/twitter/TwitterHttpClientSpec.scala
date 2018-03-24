@@ -1,7 +1,7 @@
-package io.github.cactacea.core.infrastructure.clients.twitter
+package io.github.cactacea.backend.core.infrastructure.clients.twitter
 
 //import com.twitter.util.Await
-//import io.github.cactacea.core.helpers.DAOSpec
+//import io.github.cactacea.backend.core.helpers.DAOSpec
 //import io.github.cactacea.util.clients.twitter.TwitterHttpClient
 //
 //class TwitterHttpClientSpec extends DAOSpec {

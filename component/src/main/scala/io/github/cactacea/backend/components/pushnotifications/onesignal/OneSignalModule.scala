@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.components.pushnotifications.onesignal
 
 import com.twitter.inject.TwitterModule
-import io.github.cactacea.core.application.components.interfaces.PushNotificationService
+import io.github.cactacea.backend.core.application.components.interfaces.PushNotificationService
 
 object OneSignalModule extends TwitterModule {
 

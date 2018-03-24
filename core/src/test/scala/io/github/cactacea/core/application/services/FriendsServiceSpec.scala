@@ -1,6 +1,6 @@
-package io.github.cactacea.core.application.services
+package io.github.cactacea.backend.core.application.services
 
-import io.github.cactacea.core.helpers.ServiceSpec
+import io.github.cactacea.backend.core.helpers.ServiceSpec
 
 class FriendsServiceSpec extends ServiceSpec {
 

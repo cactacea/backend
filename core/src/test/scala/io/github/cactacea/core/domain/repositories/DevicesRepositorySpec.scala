@@ -1,8 +1,8 @@
-package io.github.cactacea.core.domain.repositories
+package io.github.cactacea.backend.core.domain.repositories
 
 import com.twitter.util.Await
-import io.github.cactacea.core.helpers.RepositorySpec
-import io.github.cactacea.core.infrastructure.dao.DevicesDAO
+import io.github.cactacea.backend.core.helpers.RepositorySpec
+import io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO
 
 class DevicesRepositorySpec extends RepositorySpec {
 

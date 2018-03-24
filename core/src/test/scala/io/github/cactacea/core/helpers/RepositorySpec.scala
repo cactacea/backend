@@ -1,14 +1,13 @@
-package io.github.cactacea.core.helpers
+package io.github.cactacea.backend.core.helpers
 
-import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
 import com.twitter.util.Await
 import com.twitter.util.logging.Logging
-import io.github.cactacea.core.application.components.modules._
-import io.github.cactacea.core.application.components.services.DatabaseService
-import io.github.cactacea.core.domain.enums.DeviceType
-import io.github.cactacea.core.domain.repositories.SessionsRepository
+import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.domain.enums.DeviceType
+import io.github.cactacea.backend.core.domain.repositories.SessionsRepository
 import org.scalatest.BeforeAndAfter
 
 class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
@@ -17,19 +16,8 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
-        //        FGTSocialAccountsModule,
-        //        NoActionInjectionModule,
         DefaultConfigModule,
-        //        DefaultNotificationModule,
-        //        DefaultNotificationMessagesModule,
-        //        NoQueuePublishModule,
-        //        NoPushNotificationModule,
-        //        LocalStorageModule,
-        //        NoQueueSubScribeModule,
-        //        ImageTranscodeModule,
-        DefaultIdentifyModule,
-        //        DefaultDeepLinkModule,
-        FinatraJacksonModule
+        DefaultIdentifyModule
       )
     ).create
 

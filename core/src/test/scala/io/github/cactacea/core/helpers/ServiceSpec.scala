@@ -1,14 +1,13 @@
-package io.github.cactacea.core.helpers
+package io.github.cactacea.backend.core.helpers
 
 import com.google.inject.Inject
-import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
 import com.twitter.util.Await
 import com.twitter.util.logging.Logging
-import io.github.cactacea.core.application.components.modules._
-import io.github.cactacea.core.application.services.SessionsService
-import io.github.cactacea.core.domain.enums.DeviceType
+import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.application.services.SessionsService
+import io.github.cactacea.backend.core.domain.enums.DeviceType
 import org.scalatest.BeforeAndAfter
 
 class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
@@ -28,8 +27,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultSubScribeModule,
         DefaultTranscodeModule,
         DefaultIdentifyModule,
-        DefaultDeepLinkModule,
-        FinatraJacksonModule
+        DefaultDeepLinkModule
       )
     ).create
 
