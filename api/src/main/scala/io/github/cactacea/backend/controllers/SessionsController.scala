@@ -3,7 +3,7 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.models.requests.session.{GetSignIn, PostSignUp}
+import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.models.responses.Authentication
 import io.github.cactacea.backend.swagger.BackendController
 import io.github.cactacea.backend.util.auth.{AuthTokenGenerator, SessionContext}

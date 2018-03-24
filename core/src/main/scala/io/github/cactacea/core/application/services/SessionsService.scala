@@ -8,8 +8,6 @@ import io.github.cactacea.core.domain.enums.DeviceType
 import io.github.cactacea.core.domain.models._
 import io.github.cactacea.core.domain.repositories.SessionsRepository
 import io.github.cactacea.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.core.util.exceptions.CactaceaException
-import io.github.cactacea.core.util.responses.CactaceaErrors.SocialAccountNotFound
 
 @Singleton
 class SessionsService {
@@ -46,33 +44,41 @@ class SessionsService {
     }
   }
 
-  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, accessTokenKey: String, accessTokenSecret: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Account] = {
+  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, socialAccountIdentifier: String, authenticationCode: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Account] = {
     db.transaction {
       for {
-        id <- validateSocialAccount(socialAccountType, accessTokenKey, accessTokenSecret)
-        a <- sessionsRepository.signUp(socialAccountType, accountName, displayName, password, id, accessTokenKey, accessTokenSecret, udid, deviceType, web, birthday, location, bio, userAgent)
+        id <- validateSocialAccount(socialAccountType, socialAccountIdentifier, authenticationCode)
+        a <- sessionsRepository.signUp(socialAccountType, accountName, displayName, password, id, socialAccountIdentifier, authenticationCode, udid, deviceType, web, birthday, location, bio, userAgent)
         _ <- actionService.signedUp(a)
       } yield (a)
     }
   }
 
-  def signIn(socialAccountType: String, accessTokenKey: String, accessTokenSecret: String, udid: String, userAgent: String, deviceType: DeviceType): Future[Account] = {
+  def issueAuthenticationCode(socialAccountType: String, socialAccountIdentifier: String): Future[Unit] = {
     db.transaction {
       for {
-        id <- validateSocialAccount(socialAccountType, accessTokenKey, accessTokenSecret)
-        a <- sessionsRepository.signIn(socialAccountType, id, accessTokenKey, accessTokenSecret, udid, deviceType, userAgent)
+        s <- socialAccountsService.getService(socialAccountType)
+        r <- s.issueCode(socialAccountIdentifier)
+      } yield (r)
+    }
+    Future.Unit
+  }
+
+  def signIn(socialAccountType: String, socialAccountIdentifier: String, authenticationCode: String, udid: String, userAgent: String, deviceType: DeviceType): Future[Account] = {
+    db.transaction {
+      for {
+        id <- validateSocialAccount(socialAccountType, socialAccountIdentifier, authenticationCode)
+        a <- sessionsRepository.signIn(socialAccountType, id, socialAccountIdentifier, authenticationCode, udid, deviceType, userAgent)
         _ <- actionService.signedIn(a)
       } yield (a)
     }
   }
 
-  private def validateSocialAccount(socialAccountType: String, accessTokenKey: String, accessTokenSecret: String): Future[String] = {
-    socialAccountsService.get(socialAccountType, accessTokenKey, accessTokenSecret).flatMap(_ match {
-      case Some(token) =>
-        Future.value(token)
-      case None =>
-        Future.exception(CactaceaException(SocialAccountNotFound))
-    })
+  private def validateSocialAccount(socialAccountType: String, socialAccountIdentifier: String, authenticationCode: String): Future[String] = {
+    for {
+      s <- socialAccountsService.getService(socialAccountType)
+      id <- s.validateCode(socialAccountIdentifier, authenticationCode)
+    } yield (id)
   }
 
 }

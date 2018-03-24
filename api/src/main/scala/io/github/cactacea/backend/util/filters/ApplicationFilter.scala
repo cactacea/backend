@@ -15,11 +15,11 @@ class ApplicationFilter @Inject()(authTokenGenerator: AuthTokenGenerator) extend
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     authTokenGenerator.check(request.headerMap.get("X-API-KEY")).flatMap({ deviceType =>
-      SessionContext.setDeviceType(deviceType)
       val locales = request.headerMap.get(Fields.AcceptLanguage).fold(Seq(Locale.getDefault())) { lang =>
         Locale.LanguageRange.parse(lang).asScala.map(f => Locale.forLanguageTag(f.getRange))
       }
       SessionContext.setLocales(locales)
+      SessionContext.setDeviceType(deviceType)
       service(request)
     })
   }

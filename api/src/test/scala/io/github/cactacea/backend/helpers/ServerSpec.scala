@@ -3,7 +3,6 @@ package io.github.cactacea.backend.helpers
 import com.google.inject.Inject
 import com.twitter.finagle.http.Response
 import com.twitter.finatra.http.EmbeddedHttpServer
-import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
@@ -23,16 +22,16 @@ class ServerSpec extends FeatureTest {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
-        FGTSocialAccountsModule,
-        NoActionInjectionModule,
+        DefaultSocialAccountsModule,
+        DefaultInjectionModule,
         DefaultConfigModule,
         DefaultNotificationModule,
         DefaultNotificationMessagesModule,
-        NoQueuePublishModule,
-        NoPushNotificationModule,
-        LocalStorageModule,
-        NoQueueSubScribeModule,
-        ImageTranscodeModule,
+        DefaultPublishModule,
+        DefaultPushNotificationModule,
+        DefaultStorageModule,
+        DefaultSubScribeModule,
+        DefaultTranscodeModule,
         DefaultIdentifyModule,
         DefaultDeepLinkModule,
         FinatraJacksonModule

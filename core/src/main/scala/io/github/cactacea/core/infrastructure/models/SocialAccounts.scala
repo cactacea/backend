@@ -5,5 +5,7 @@ import io.github.cactacea.core.infrastructure.identifiers.AccountId
 case class SocialAccounts(
                            socialAccountType: String,
                            socialAccountId: String,
-                           accountId: AccountId
+                           accountId: AccountId,
+                           authenticationCode: Option[String],
+                           verified: Boolean
                     )

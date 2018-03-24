@@ -25,7 +25,12 @@ class SocialAccountsRepository {
       sessionId
     ).flatMap(_ match {
       case false =>
-        socialAccountsDAO.create(socialAccountType, token, sessionId).flatMap(_ => Future.Unit)
+        socialAccountsDAO.update(socialAccountType, true, sessionId).flatMap(_ match {
+          case true =>
+            Future.Unit
+          case false =>
+            socialAccountsDAO.create(socialAccountType, token, None, true, sessionId).flatMap(_ => Future.Unit)
+        })
       case true =>
         Future.exception(CactaceaException(SocialAccountAlreadyConnected))
     })
