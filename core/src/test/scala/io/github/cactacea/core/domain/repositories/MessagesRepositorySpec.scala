@@ -19,8 +19,8 @@ class MessagesRepositorySpec extends RepositorySpec {
 
   test("create and delete") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val user = signUp("user name", "user password", "user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val user = signUp("user name", "user password", "user udid")
 
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
@@ -45,8 +45,8 @@ class MessagesRepositorySpec extends RepositorySpec {
 
   test("findAll and update read status") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val user = signUp("user name", "user password", "user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val user = signUp("user name", "user password", "user udid")
 
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))

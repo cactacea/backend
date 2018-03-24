@@ -4,10 +4,11 @@ import com.jakehschwartz.finatra.swagger.DocsController
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.swagger.{BackendDocumentsController, BackendSwaggerModule}
-import io.github.cactacea.core.CactaceaServer
-import io.github.cactacea.core.util.filters._
+import io.github.cactacea.backend.util.filters._
 
-class BackendServer extends CactaceaServer {
+class BackendServer extends BaseServer {
+
+  flag(name = "api.prefix", default = "/", help = "Api endpoint prefix")
 
   override def configureHttp(router: HttpRouter) = {
     super.configureHttp(router)

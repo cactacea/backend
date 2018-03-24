@@ -26,45 +26,41 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
-    val authentication = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val account = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     // result user
-    assert(authentication.account.accountName == accountName)
-    assert(authentication.account.displayName == displayName)
-
-    // result access token
-    assert(authentication.accessToken != "")
+    assert(account.accountName == accountName)
+    assert(account.displayName == displayName)
 
     // result device
-    val devices = Await.result(devicesDAO.exist(authentication.account.id.toSessionId, udid))
+    val devices = Await.result(devicesDAO.exist(account.id.toSessionId, udid))
     assert(devices == true)
 
     // result advertisementSettings
-    val advertisementSettings = Await.result(advertisementSettingsDAO.find(authentication.account.id.toSessionId))
+    val advertisementSettings = Await.result(advertisementSettingsDAO.find(account.id.toSessionId))
     assert(advertisementSettings.isDefined == true)
 
     // result notificationSettings
-    val notificationSettings = Await.result(notificationSettingsDAO.find(authentication.account.id.toSessionId))
+    val notificationSettings = Await.result(notificationSettingsDAO.find(account.id.toSessionId))
     assert(notificationSettings.isDefined == true)
 
     // result users
-    val users = Await.result(accountsDAO.find(authentication.account.id.toSessionId))
+    val users = Await.result(accountsDAO.find(account.id.toSessionId))
     assert(users.isDefined == true)
 
   }
 
   test("signIn") {
 
-    val accountName = "new account"
-    val displayName = "new account"
+    val accountName = "accountName"
+    val displayName = "displayName"
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
     val result = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
-    val authentication = Await.result(sessionsRepository.signIn(result.account.displayName, password, udid,  DeviceType.ios, userAgent))
+    val account = Await.result(sessionsRepository.signIn(result.accountName, password, udid,  DeviceType.ios, userAgent))
 
-    assert(authentication.account.displayName == displayName)
-    assert(authentication.accessToken != "")
+    assert(account.displayName == displayName)
 
   }
 
@@ -90,7 +86,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
-    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent)).account
+    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
     val result = Await.result(sessionsRepository.signOut(udid, session.id.toSessionId))
     assert(result == true)
 
@@ -103,7 +99,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = "userAgent"
-    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent)).account
+    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     val expired = System.currentTimeMillis
     assert(Await.result(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired)) == true)
@@ -147,7 +143,7 @@ class SessionsRepositorySpec extends RepositorySpec {
       Some("bio"),
       "userAgent"
     ))
-    assert(result.account.accountName == "accountName")
+    assert(result.accountName == "accountName")
 
   }
 

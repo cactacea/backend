@@ -17,18 +17,18 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
-        FGTSocialAccountsModule,
-        NoActionInjectionModule,
+        //        FGTSocialAccountsModule,
+        //        NoActionInjectionModule,
         DefaultConfigModule,
-        DefaultNotificationModule,
-        DefaultNotificationMessagesModule,
-        NoQueuePublishModule,
-        NoPushNotificationModule,
-        LocalStorageModule,
-        NoQueueSubScribeModule,
-        ImageTranscodeModule,
-        InstagramDesignIdentifyModule,
-        DefaultDeepLinkModule,
+        //        DefaultNotificationModule,
+        //        DefaultNotificationMessagesModule,
+        //        NoQueuePublishModule,
+        //        NoPushNotificationModule,
+        //        LocalStorageModule,
+        //        NoQueueSubScribeModule,
+        //        ImageTranscodeModule,
+        DefaultIdentifyModule,
+        //        DefaultDeepLinkModule,
         FinatraJacksonModule
       )
     ).create
@@ -56,11 +56,11 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
     authentication
   }
 
-  def signIn(displayName: String, password: String, udid: String) = {
+  def signIn(accountName: String, password: String, udid: String) = {
 
     val sessionsRepository = injector.instance[SessionsRepository]
-    val result = Await.result(sessionsRepository.signIn(displayName, password, udid, DeviceType.ios, "user agent"))
-    val authentication = Await.result(sessionsRepository.signIn(result.account.displayName, password, udid, DeviceType.ios, "user agent"))
+    val result = Await.result(sessionsRepository.signIn(accountName, password, udid, DeviceType.ios, "user agent"))
+    val authentication = Await.result(sessionsRepository.signIn(result.accountName, password, udid, DeviceType.ios, "user agent"))
     authentication
 
   }

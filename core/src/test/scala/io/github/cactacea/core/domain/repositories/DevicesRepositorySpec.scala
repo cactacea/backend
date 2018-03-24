@@ -15,11 +15,11 @@ class DevicesRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
-    val auth = signUp(displayName, password, udid)
+    val account = signUp(displayName, password, udid)
 
-    Await.result(devicesRepository.update(udid, pushToken, auth.account.id.toSessionId))
+    Await.result(devicesRepository.update(udid, pushToken, account.id.toSessionId))
 
-    val devices = Await.result(devicesDAO.find(auth.account.id.toSessionId))
+    val devices = Await.result(devicesDAO.find(account.id.toSessionId))
     assert(devices.size == 1)
 
     val device = devices.head

@@ -12,7 +12,7 @@ class AdvertisementSettingsRepositorySpec extends RepositorySpec {
 
   test("find session's setting") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid").account
+    val sessionUser = signUp("session user name", "session user password", "session udid")
     val result = Await.result(advertisementSettingsRepository.find(sessionUser.id.toSessionId))
     assert(result.ad1 == true)
     assert(result.ad2 == true)
@@ -32,7 +32,7 @@ class AdvertisementSettingsRepositorySpec extends RepositorySpec {
 
   test("update session's setting") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid").account
+    val sessionUser = signUp("session user name", "session user password", "session udid")
 
     Await.result(advertisementSettingsRepository.update(false, false, false, false, false, sessionUser.id.toSessionId))
     val result = Await.result(advertisementSettingsRepository.find(sessionUser.id.toSessionId))

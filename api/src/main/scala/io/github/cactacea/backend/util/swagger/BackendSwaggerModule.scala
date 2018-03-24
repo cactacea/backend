@@ -1,49 +1,18 @@
 package io.github.cactacea.backend.swagger
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
-import com.google.inject.Provides
-import com.jakehschwartz.finatra.swagger.{SwaggerModule, SwaggerTypeRegister}
-import io.github.cactacea.core.infrastructure.identifiers._
+import com.google.inject.{Inject, Provides}
+import com.jakehschwartz.finatra.swagger.SwaggerModule
+import com.twitter.inject.annotations.Flag
+import io.github.cactacea.backend.util.oauth.Permissions
+import io.github.cactacea.backend.util.swagger.BackendSwagger
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
 import io.swagger.models.{Info, Swagger, Tag}
-import io.swagger.util.{Json, PrimitiveType}
 
 import scala.collection.JavaConverters._
 
-object SampleSwagger extends Swagger {
-  Json.mapper().setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy)
-
-  val map: Map[Class[_], PrimitiveType] = Map(
-    classOf[AccountId]          -> PrimitiveType.LONG,
-    classOf[AccountGroupId]     -> PrimitiveType.LONG,
-    classOf[AccountId]          -> PrimitiveType.LONG,
-    classOf[AccountReportId]    -> PrimitiveType.LONG,
-    classOf[BlockId]            -> PrimitiveType.LONG,
-    classOf[CommentId]          -> PrimitiveType.LONG,
-    classOf[CommentLikeId]      -> PrimitiveType.LONG,
-    classOf[CommentReportId]    -> PrimitiveType.LONG,
-    classOf[DeviceId]           -> PrimitiveType.LONG,
-    classOf[FeedId]             -> PrimitiveType.LONG,
-    classOf[FeedLikeId]         -> PrimitiveType.LONG,
-    classOf[FeedReportId]       -> PrimitiveType.LONG,
-    classOf[FriendRequestId]    -> PrimitiveType.LONG,
-    classOf[GroupId]            -> PrimitiveType.LONG,
-    classOf[GroupInvitationId]  -> PrimitiveType.LONG,
-    classOf[GroupReportId]      -> PrimitiveType.LONG,
-    classOf[MediumId]           -> PrimitiveType.LONG,
-    classOf[MessageId]          -> PrimitiveType.LONG,
-    classOf[NotificationId]     -> PrimitiveType.LONG,
-    classOf[SessionId]          -> PrimitiveType.LONG,
-    classOf[StampId]            -> PrimitiveType.LONG,
-  )
-  SwaggerTypeRegister.setExternalTypes(map.asJava)
-
-}
-
 object BackendSwaggerModule extends SwaggerModule {
 
-  val swaggerUI = SampleSwagger
-
+  val swaggerUI = BackendSwagger
 
   @Provides
   def swagger: Swagger = {
@@ -53,17 +22,8 @@ object BackendSwaggerModule extends SwaggerModule {
       .version("0.1.0-SNAPSHOT")
       .title("Cactacea backend API")
 
-    val scopes = Map(
-      "basic"         -> "to read a user's profile info and media (granted by default)",
-      "comments"      -> "to post and delete comments on a user's behalf",
-      "groups"        -> "to create and delete groups",
-      "follower_list" -> "to read the list of followers and followed-by users",
-      "likes"         -> "to read any public profile info and media on a user’s behalf",
-      "relationships" -> "to follow and unfollow accounts on a user's behalf"
-    )
-
+    val scopes = Permissions.values.map(t => (t.value -> t.description)).toMap
     val oauth = new OAuth2Definition()
-    oauth.setAuthorizationUrl("/auth")
     oauth.setScopes(scopes.asJava)
 
     val apiKey = new ApiKeyAuthDefinition()
@@ -72,7 +32,7 @@ object BackendSwaggerModule extends SwaggerModule {
 
     swaggerUI.info(info)
     swaggerUI.addSecurityDefinition("api_key", apiKey)
-    swaggerUI.addSecurityDefinition("cactacea_oauth", oauth)
+    swaggerUI.addSecurityDefinition("oauth", oauth)
 
     swaggerUI.addTag(new Tag().name("Accounts").description("Manage accounts"))
     swaggerUI.addTag(new Tag().name("Blocks").description("Manage blocks"))

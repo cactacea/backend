@@ -15,8 +15,8 @@ class FriendsRepositorySpec extends RepositorySpec {
   test("create friendship a user") {
 
     // TODO : Block user
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val friendUser = signUp("friend user name", "friend user password", "friend user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val friendUser = signUp("friend user name", "friend user password", "friend user udid")
     Await.result(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
     val result = Await.result(friendsRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
@@ -40,8 +40,8 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("create friendship a blocked user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val blockedUser = signUp("blocked user name", "blocked user password", "blocked user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val blockedUser = signUp("blocked user name", "blocked user password", "blocked user udid")
 
     Await.result(blocksRepository.create(blockedUser.id, sessionUser.id.toSessionId))
     val result = try {
@@ -58,8 +58,8 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("create friendship a friend user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val friendUser = signUp("friend user name", "friend user password", "friend user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val friendUser = signUp("friend user name", "friend user password", "friend user udid")
 
     Await.result(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
@@ -77,7 +77,7 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("create friend a session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
 
     val result = try {
       Await.result(friendsRepository.create(sessionUser.id, sessionUser.id.toSessionId))
@@ -97,8 +97,8 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("delete friendship") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val friendUser = signUp("friend user name", "friend user password", "friend user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val friendUser = signUp("friend user name", "friend user password", "friend user udid")
 
     Await.result(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
@@ -117,8 +117,8 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("delete no friend friendship ") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val friendUser = signUp("friend user name", "friend user password", "friend user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val friendUser = signUp("friend user name", "friend user password", "friend user udid")
 
     val result = try {
       Await.result(friendsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
@@ -134,7 +134,7 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("delete no exist account friendship ") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
 
     val result = try {
       Await.result(friendsRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
@@ -150,7 +150,7 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("delete friend session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
 
     val result = try {
       Await.result(friendsRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
@@ -169,13 +169,13 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("find a user's friends") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val user = signUp("user name", "user password", "user udid").account
-    val friendUser1 = signUp("user name 1", "user password 1", "user udid 1").account
-    val friendUser2 = signUp("user name 2", "user password 2", "user udid 2").account
-    val friendUser3 = signUp("user name 3", "user password 3", "user udid 3").account
-    val friendUser4 = signUp("user name 4", "user password 4", "user udid 4").account
-    val friendUser5 = signUp("user name 5", "user password 5", "user udid 5").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val user = signUp("user name", "user password", "user udid")
+    val friendUser1 = signUp("user name 1", "user password 1", "user udid 1")
+    val friendUser2 = signUp("user name 2", "user password 2", "user udid 2")
+    val friendUser3 = signUp("user name 3", "user password 3", "user udid 3")
+    val friendUser4 = signUp("user name 4", "user password 4", "user udid 4")
+    val friendUser5 = signUp("user name 5", "user password 5", "user udid 5")
 
     Await.result(friendsRepository.create(friendUser1.id, user.id.toSessionId))
     Await.result(friendsRepository.create(friendUser2.id, user.id.toSessionId))
@@ -198,12 +198,12 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   test("find session's friends") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid").account
-    val friendUser1 = signUp("user name 1", "user password 1", "user udid 1").account
-    val friendUser2 = signUp("user name 2", "user password 2", "user udid 2").account
-    val friendUser3 = signUp("user name 3", "user password 3", "user udid 3").account
-    val friendUser4 = signUp("user name 4", "user password 4", "user udid 4").account
-    val friendUser5 = signUp("user name 5", "user password 5", "user udid 5").account
+    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val friendUser1 = signUp("user name 1", "user password 1", "user udid 1")
+    val friendUser2 = signUp("user name 2", "user password 2", "user udid 2")
+    val friendUser3 = signUp("user name 3", "user password 3", "user udid 3")
+    val friendUser4 = signUp("user name 4", "user password 4", "user udid 4")
+    val friendUser5 = signUp("user name 5", "user password 5", "user udid 5")
 
     Await.result(friendsRepository.create(friendUser1.id, sessionUser.id.toSessionId))
     Await.result(friendsRepository.create(friendUser2.id, sessionUser.id.toSessionId))

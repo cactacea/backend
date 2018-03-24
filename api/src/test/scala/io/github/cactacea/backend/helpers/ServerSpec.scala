@@ -14,7 +14,6 @@ import io.github.cactacea.core.application.components.modules.{DefaultConfigModu
 class ServerSpec extends FeatureTest {
 
   @Inject private var configService: ConfigService = _
-  @Inject private var objectMapper: FinatraObjectMapper = _
 
   override val server = new EmbeddedHttpServer(
     twitterServer = new BackendServer
@@ -34,16 +33,17 @@ class ServerSpec extends FeatureTest {
         LocalStorageModule,
         NoQueueSubScribeModule,
         ImageTranscodeModule,
-        InstagramDesignIdentifyModule,
+        DefaultIdentifyModule,
         DefaultDeepLinkModule,
         FinatraJacksonModule
       )
     ).create
 
 
+  val root = ""
   def post(path: String, postBody: String, accessToken: String): Response = {
     server.httpPost(
-      path = configService.rootPath + path,
+      path = root + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken
@@ -54,7 +54,7 @@ class ServerSpec extends FeatureTest {
 
   def delete(path: String, accessToken: String): Response = {
     server.httpDelete(
-      path = configService.rootPath + path,
+      path = root + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken
@@ -64,7 +64,7 @@ class ServerSpec extends FeatureTest {
 
   def post(path: String, postBody: String) : Response = {
     server.httpPost(
-      path = configService.rootPath + path,
+      path = root + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "User-Agent" -> "ios"
@@ -75,7 +75,7 @@ class ServerSpec extends FeatureTest {
 
   def get(path: String) : Response = {
     server.httpGet(
-      path = configService.rootPath + path,
+      path = root + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "User-Agent" -> "ios"
@@ -85,7 +85,7 @@ class ServerSpec extends FeatureTest {
 
   def get(path: String, accessToken: String): Response = {
     server.httpGet(
-      path = configService.rootPath + path,
+      path = root + path,
       headers = Map(
         "X-API-KEY" -> configService.apiKeys.head._2,
         "X-AUTHORIZATION" -> accessToken

@@ -18,18 +18,18 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
-        FGTSocialAccountsModule,
-        NoActionInjectionModule,
+//        FGTSocialAccountsModule,
+//        NoActionInjectionModule,
         DefaultConfigModule,
-        DefaultNotificationModule,
-        DefaultNotificationMessagesModule,
-        NoQueuePublishModule,
-        NoPushNotificationModule,
-        LocalStorageModule,
-        NoQueueSubScribeModule,
-        ImageTranscodeModule,
-        InstagramDesignIdentifyModule,
-        DefaultDeepLinkModule,
+//        DefaultNotificationModule,
+//        DefaultNotificationMessagesModule,
+//        NoQueuePublishModule,
+//        NoPushNotificationModule,
+//        LocalStorageModule,
+//        NoQueueSubScribeModule,
+//        ImageTranscodeModule,
+        DefaultIdentifyModule,
+//        DefaultDeepLinkModule,
         FinatraJacksonModule
       )
     ).create
