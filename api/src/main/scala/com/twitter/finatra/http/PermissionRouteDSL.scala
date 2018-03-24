@@ -99,7 +99,11 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
 
   protected def createOperation(scopes: Seq[Permission])(doc: Operation => Operation) = {
     val doc2: Operation => Operation = { o =>
-      doc(o).addSecurity("oauth", scopes.map(_.value).asJava)
+      if (scopes.size > 0) {
+        doc(o).addSecurity("accessCode", scopes.map(_.value).asJava)
+        doc(o).addSecurity("application", scopes.map(_.value).asJava)
+      }
+      doc(o).addSecurity("api_key", List[String]().asJava)
       o
     }
     doc2

@@ -25,7 +25,7 @@ class OAuthController @Inject()(@Flag("api.prefix") apiPrefix: String) extends C
 
   prefix(apiPrefix) {
 
-    get("/oauth2/authorize") { req: GetAuthorize =>
+    get("/oauth2/authorization") { req: GetAuthorize =>
       oauthService.validateResponseType(req.responseType) match {
         case Right(_) =>
           oauthService.validateClient(req.clientId).map(_ match {
@@ -33,7 +33,7 @@ class OAuthController @Inject()(@Flag("api.prefix") apiPrefix: String) extends C
               oauthService.validateScope(req.scope, permissions) match {
                 case Right(_) =>
                   val scope = req.scope.map({ s => s"&scope=${s}"}).getOrElse("")
-                  val location = s"/oauth2/authenticate?response_type=${req.responseType}&client_id=${req.clientId}${scope}"
+                  val location = s"/oauth2/authentication?response_type=${req.responseType}&client_id=${req.clientId}${scope}"
                   response.status(Status.SeeOther).location(location)
                 case Left(e) =>
                   handleError(e)
@@ -46,7 +46,7 @@ class OAuthController @Inject()(@Flag("api.prefix") apiPrefix: String) extends C
       }
     }
 
-    get("/oauth2/authenticate") { req: GetAuthorize =>
+    get("/oauth2/authentication") { req: GetAuthorize =>
       oauthService.validateClient(req.clientId).map(_ match {
         case Right((client, permissions)) =>
           oauthService.validateScope(req.scope, permissions) match {
