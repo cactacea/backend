@@ -54,8 +54,6 @@ object BackendSwaggerModule extends SwaggerModule {
     swaggerUI.addTag(new Tag().name("Sessions").description("Manage sessions"))
     swaggerUI.addTag(new Tag().name("Social Accounts").description("Manage social accounts"))
     swaggerUI.addTag(new Tag().name("Settings").description("Manage session settings"))
-    swaggerUI.addTag(new Tag().name("OAuth2").description("Provide Oauth2 features"))
-    swaggerUI.addTag(new Tag().name("Resource").description("Manage resources"))
     swaggerUI.addTag(new Tag().name("System").description("Health checking and etc"))
     swaggerUI
   }

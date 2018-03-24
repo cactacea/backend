@@ -1,7 +1,6 @@
 package io.github.cactacea.backend.core.helpers
 
 import com.google.inject.Inject
-import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
 import com.twitter.util.Await
@@ -28,8 +27,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultSubScribeModule,
         DefaultTranscodeModule,
         DefaultIdentifyModule,
-        DefaultDeepLinkModule,
-        FinatraJacksonModule
+        DefaultDeepLinkModule
       )
     ).create
 

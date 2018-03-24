@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.application.services
 
 
 import com.google.inject.Inject
-import com.twitter.finatra.http.fileupload.MultipartItem
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, StorageService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
@@ -11,7 +10,7 @@ import io.github.cactacea.backend.core.domain.repositories.MediumsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.NotAcceptableMimeTypeFound
-import io.github.cactacea.util.media.MediaExtractor
+import io.github.cactacea.util.media.MediaMetadata
 
 class MediumsService {
 
@@ -20,9 +19,8 @@ class MediumsService {
   @Inject private var storageService: StorageService = _
   @Inject private var mediumsRepository: MediumsRepository = _
 
-  def create(multiParams: Map[String, MultipartItem], sessionId: SessionId): Future[Seq[(MediumId, String)]] = {
-    val list = multiParams.toList.map({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) })
-    Future.traverseSequentially(list) {
+  def create(media: List[Option[MediaMetadata]], sessionId: SessionId): Future[Seq[(MediumId, String)]] = {
+    Future.traverseSequentially(media) {
       _ match {
         case Some(metadata) =>
           for {

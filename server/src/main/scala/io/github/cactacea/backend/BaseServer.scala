@@ -7,7 +7,7 @@ import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.backend.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.warmups.DatabaseMigrationHandler
+import io.github.cactacea.backend.util.warmups.DatabaseMigrationHandler
 
 class BaseServer extends HttpServer {
 
