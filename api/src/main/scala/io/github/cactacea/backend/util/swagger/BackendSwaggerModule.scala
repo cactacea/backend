@@ -1,8 +1,7 @@
 package io.github.cactacea.backend.swagger
 
-import com.google.inject.{Inject, Provides}
+import com.google.inject.Provides
 import com.jakehschwartz.finatra.swagger.SwaggerModule
-import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.util.oauth.Permissions
 import io.github.cactacea.backend.util.swagger.BackendSwagger
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
@@ -23,8 +22,11 @@ object BackendSwaggerModule extends SwaggerModule {
       .title("Cactacea backend API")
 
     val scopes = Permissions.values.map(t => (t.value -> t.description)).toMap
-    val oauth = new OAuth2Definition()
-    oauth.setScopes(scopes.asJava)
+    val accessCode = new OAuth2Definition().accessCode("/oauth2/authorization", "/oauth2/token")
+    accessCode.setScopes(scopes.asJava)
+
+    val application = new OAuth2Definition().application("/oauth2/authorization")
+    application.setScopes(scopes.asJava)
 
     val apiKey = new ApiKeyAuthDefinition()
     apiKey.setIn(In.HEADER)
@@ -32,7 +34,8 @@ object BackendSwaggerModule extends SwaggerModule {
 
     swaggerUI.info(info)
     swaggerUI.addSecurityDefinition("api_key", apiKey)
-    swaggerUI.addSecurityDefinition("oauth", oauth)
+    swaggerUI.addSecurityDefinition("accessCode", accessCode)
+    swaggerUI.addSecurityDefinition("application", application)
 
     swaggerUI.addTag(new Tag().name("Accounts").description("Manage accounts"))
     swaggerUI.addTag(new Tag().name("Blocks").description("Manage blocks"))

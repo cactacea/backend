@@ -27,7 +27,7 @@ class FacebookController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swa
 
   prefix(apiPrefix) {
 
-    postWithDoc(s"/sessions/$accountType") { o =>
+    postWithPermission(s"/sessions/$accountType")() { o =>
       o.summary(s"Sign up by $accountType")
         .tag(tagName)
         .request[PostSocialAccountSignUp]
@@ -55,7 +55,7 @@ class FacebookController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swa
       })
     }
 
-    getWithDoc(s"/sessions/$accountType") { o =>
+    getWithPermission(s"/sessions/$accountType")() { o =>
       o.summary(s"Sign in by $accountType")
         .tag(tagName)
         .request[GetSocialAccountSignIn]

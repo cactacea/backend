@@ -55,7 +55,7 @@ class TwitterController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swag
       })
     }
 
-    getWithDoc(s"/sessions/$accountType") { o =>
+    getWithPermission(s"/sessions/$accountType")() { o =>
       o.summary(s"Sign in by $accountType")
         .tag(tagName)
         .request[GetSocialAccountSignIn]

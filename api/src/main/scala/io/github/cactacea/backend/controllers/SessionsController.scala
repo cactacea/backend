@@ -48,7 +48,7 @@ class SessionsController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swa
       })
     }
 
-    getWithDoc("/sessions") { o =>
+    getWithPermission("/sessions")() { o =>
       o.summary("Sign in")
         .tag(tagName)
         .request[GetSignIn]
