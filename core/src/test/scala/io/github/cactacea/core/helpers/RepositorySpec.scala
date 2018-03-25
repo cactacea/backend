@@ -21,15 +21,11 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
       )
     ).create
 
-  before {
-    DatabaseHelper.initialize()
-  }
-
-  after {
-    DatabaseHelper.initialize()
-  }
-
   val db = injector.instance[DatabaseService]
+
+  before {
+    DatabaseHelper.initialize(db)
+  }
 
   def signUp(accountName: String, password: String, udid: String) = {
 

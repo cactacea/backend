@@ -22,15 +22,12 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
       )
     ).create
 
-  before {
-    DatabaseHelper.initialize()
-  }
-
-  after {
-    DatabaseHelper.initialize()
-  }
-
   val db = injector.instance[DatabaseService]
+
+  before {
+    DatabaseHelper.initialize(db)
+  }
+
 
   def createAccount(accountName: String): Accounts = {
     val u: Accounts = FactoryHelper.createAccounts(accountName)

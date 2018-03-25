@@ -6,6 +6,7 @@ import com.twitter.inject.app.TestInjector
 import com.twitter.util.Await
 import com.twitter.util.logging.Logging
 import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.SessionsService
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import org.scalatest.BeforeAndAfter
@@ -31,12 +32,10 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
       )
     ).create
 
-  before {
-    DatabaseHelper.initialize()
-  }
+  val db = injector.instance[DatabaseService]
 
-  after {
-    DatabaseHelper.initialize()
+  before {
+    DatabaseHelper.initialize(db)
   }
 
   @Inject private var sessionService: SessionsService = _
