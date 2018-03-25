@@ -1,14 +1,12 @@
 package io.github.cactacea.backend.core.helpers
 
 import com.twitter.util.Await
-import io.github.cactacea.backend.core.application.components.modules.DatabaseProviderModule
+import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.infrastructure.models._
 
 object DatabaseHelper {
 
-  val db = DatabaseProviderModule.context()
-
-  def initialize() = {
+  def initialize(db: DatabaseService) = {
     import db._
     val r = db.transaction {
       for {
