@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.AuthenticationService
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.OperationNotAllowed
-import io.github.cactacea.util.clients.facebook.FacebookClient
+import io.github.cactacea.backend.util.clients.facebook.FacebookClient
 
 class FacebookService extends AuthenticationService {
 

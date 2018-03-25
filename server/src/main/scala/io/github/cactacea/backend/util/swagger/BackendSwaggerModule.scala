@@ -17,9 +17,10 @@ object BackendSwaggerModule extends SwaggerModule {
   def swagger: Swagger = {
 
     val info = new Info()
-      .description("Cactacea / Cactacea backend API for web and mobile applications")
-      .version("0.1.1-SNAPSHOT")
       .title("Cactacea backend API")
+      .version("0.1.1-SNAPSHOT")
+      .description("Cactacea / Cactacea backend API for web and mobile applications")
+      .setVendorExtension("logo", "https://avatars3.githubusercontent.com/u/36766951?s=200&v=4")
 
     val scopes = Permissions.values.map(t => (t.value -> t.description)).toMap
     val accessCode = new OAuth2Definition().accessCode("/oauth2/authorization", "/oauth2/token")
