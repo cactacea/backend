@@ -1,10 +1,14 @@
-# Cactacea v0.1.0
+# Cactacea v0.1.1-SNAPSHOT
 
 [![Build Status](https://travis-ci.org/cactacea/backend.svg?branch=master)](https://travis-ci.org/cactacea/backend)
 [![codecov](https://codecov.io/gh/cactacea/backend/branch/master/graph/badge.svg)](https://codecov.io/gh/cactacea/backend)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 **Cactacea** is a framework to construct social networking applications and built on top of [Finatra](https://twitter.github.io/finatra/), [Finagle](https://twitter.github.io/finagle/), Twitter Server.
+
+## Documentation ##
+
+- [`REST API`](https://rebilly.github.io/ReDoc/?url=http://backend.cactacea.io/swagger.yaml)
 
 ## Features ##
 
@@ -49,8 +53,4 @@ Modules are implements of above components and the following modules are provide
 - [`DefaultSubScribeModule`](https://github.com/cactacea/backend/blob/master/core/src/main/scala/io/github/cactacea/core/application/components/modules/DefaultSubScribeModule.scala)
 - [`OneSignalModule`](https://github.com/cactacea/backend/blob/master/core/src/main/scala/io/github/cactacea/core/application/components/thirdparties/onesignal/OneSignalModule.scala)
 - [`S3Module`](https://github.com/cactacea/backend/blob/master/core/src/main/scala/io/github/cactacea/core/application/components/thirdparties/s3/S3ServiceModule.scala)
-
-## Documentation ##
-
-- [`REST API`](https://rebilly.github.io/ReDoc/?url=http://backend.cactacea.io/swagger.yaml)
 
