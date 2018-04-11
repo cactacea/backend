@@ -2,10 +2,10 @@ import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val demo = (project in file("demo"))
   .settings(
-    version      := "0.1.1-SNAPSHOT",
+    version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     name := "demo",
-    scalaVersion := "2.12.4",
+    scalaVersion := "2.12.5",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp")
   )
@@ -24,18 +24,12 @@ lazy val demo = (project in file("demo"))
 
 lazy val server = (project in file("server"))
   .settings(
-    version      := "0.1.1-SNAPSHOT",
-      organization := "io.github.cactacea.backend",
-      name := "server",
-      scalaVersion := "2.12.4",
-      concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-      testOptions in Test += Tests.Argument("-oI")
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      "ch.qos.logback" % "logback-classic" % versions.logback,
-      "net.logstash.logback" % "logstash-logback-encoder" % "4.11"
-    )
+    version      := versions.cactacea,
+    organization := "io.github.cactacea.backend",
+    name := "server",
+    scalaVersion := "2.12.5",
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+    testOptions in Test += Tests.Argument("-oI")
   )
   .settings(commonResolverSetting)
   .settings(finatraLibrarySetting)
@@ -45,9 +39,9 @@ lazy val server = (project in file("server"))
 
 lazy val core = (project in file("core"))
   .settings(
-    version      := "0.1.1-SNAPSHOT",
-    organization := "io.github.cactacea.backend.core",
-    scalaVersion := "2.12.4",
+    version      := versions.cactacea,
+    organization := "io.github.cactacea.backend",
+    scalaVersion := "2.12.5",
     name := "core",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
@@ -62,9 +56,9 @@ lazy val core = (project in file("core"))
 
 lazy val util = (project in file("util"))
   .settings(
-    version      := "0.1.1-SNAPSHOT",
-    organization := "io.github.cactacea.backend.util",
-    scalaVersion := "2.12.4",
+    version      := versions.cactacea,
+    organization := "io.github.cactacea.backend",
+    scalaVersion := "2.12.5",
     name := "util",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
@@ -83,9 +77,10 @@ lazy val util = (project in file("util"))
 
 lazy val component = (project in file("component"))
   .settings(
-    organization := "io.github.cactacea.backend.components",
-    scalaVersion := "2.12.4",
-    name := "component",
+    version      := versions.cactacea,
+    organization := "io.github.cactacea.backend",
+    scalaVersion := "2.12.5",
+    name := "components",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
   )
@@ -101,6 +96,7 @@ lazy val component = (project in file("component"))
 
 
 lazy val versions = new {
+  val cactacea = "0.1.1-SNAPSHOT"
   val finagle = "18.2.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -151,7 +147,11 @@ lazy val coreLibrarySetting = Seq(
     "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
     "org.specs2" %% "specs2-core" % versions.specs2 % "test",
     "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-    "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
+    "org.specs2" %% "specs2-mock" % versions.specs2 % "test",
+
+    "ch.qos.logback" % "logback-classic" % versions.logback,
+    "net.logstash.logback" % "logstash-logback-encoder" % "4.11"
+
   )
 )
 
@@ -164,8 +164,9 @@ lazy val commonResolverSetting = Seq(
 
 lazy val swagger = (project in file("swagger"))
   .settings(
-    organization := "com.jakehschwartz.finatra.swagger",
-    scalaVersion := "2.12.4",
+    version      := versions.cactacea,
+    organization := "io.github.cactacea.backend",
+    scalaVersion := "2.12.5",
     name := "swagger",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
@@ -184,7 +185,7 @@ lazy val swagger = (project in file("swagger"))
 lazy val oauth2 = (project in file("oauth2"))
   .settings(
     organization := "com.twitter.finagle.oauth2",
-    scalaVersion := "2.12.4",
+    scalaVersion := "2.12.5",
     name := "oauth2",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")

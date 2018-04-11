@@ -1,18 +1,18 @@
-package com.jakehschwartz.finatra.swagger
+package io.github.cactacea.swagger
 
 import java.lang.annotation.Annotation
 import java.lang.reflect.ParameterizedType
-import javax.inject.{Inject => JInject}
 
 import com.google.inject.{Inject => GInject}
-import com.jakehschwartz.finatra.swagger.SchemaUtil._
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.{FormParam, QueryParam, RouteParam, Header => HeaderParam}
+import io.github.cactacea.swagger.SchemaUtil._
 import io.swagger.annotations.ApiModelProperty
 import io.swagger.converter.ModelConverters
 import io.swagger.models._
 import io.swagger.models.parameters._
 import io.swagger.models.properties.Property
+import javax.inject.{Inject => JInject}
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.`type`.TypeDescription
 import net.bytebuddy.description.modifier.Visibility

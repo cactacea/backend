@@ -1,9 +1,9 @@
 package io.github.cactacea.backend.swagger
 
 import com.google.inject.Provides
-import com.jakehschwartz.finatra.swagger.SwaggerModule
 import io.github.cactacea.backend.util.oauth.Permissions
 import io.github.cactacea.backend.util.swagger.BackendSwagger
+import io.github.cactacea.swagger.SwaggerModule
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
 import io.swagger.models.{Info, Swagger, Tag}
 

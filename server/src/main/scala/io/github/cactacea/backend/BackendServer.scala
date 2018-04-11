@@ -1,10 +1,10 @@
 package io.github.cactacea.backend
 
-import com.jakehschwartz.finatra.swagger.DocsController
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.swagger.{BackendDocumentsController, BackendSwaggerModule}
 import io.github.cactacea.backend.util.filters._
+import io.github.cactacea.swagger.DocsController
 
 class BackendServer extends BaseServer {
 
