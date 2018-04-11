@@ -40,7 +40,7 @@ lazy val server = (project in file("server"))
 lazy val core = (project in file("core"))
   .settings(
     version      := "0.1.1-SNAPSHOT",
-    organization := "io.github.cactacea.backend.core",
+    organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
     name := "core",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
@@ -57,7 +57,7 @@ lazy val core = (project in file("core"))
 lazy val util = (project in file("util"))
   .settings(
     version      := "0.1.1-SNAPSHOT",
-    organization := "io.github.cactacea.backend.util",
+    organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
     name := "util",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
@@ -77,9 +77,9 @@ lazy val util = (project in file("util"))
 
 lazy val component = (project in file("component"))
   .settings(
-    organization := "io.github.cactacea.backend.components",
+    organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
-    name := "component",
+    name := "components",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
   )
@@ -162,7 +162,7 @@ lazy val commonResolverSetting = Seq(
 
 lazy val swagger = (project in file("swagger"))
   .settings(
-    organization := "com.jakehschwartz.finatra.swagger",
+    organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
     name := "swagger",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
