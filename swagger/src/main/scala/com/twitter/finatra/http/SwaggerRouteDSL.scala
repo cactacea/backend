@@ -1,7 +1,7 @@
 package com.twitter.finatra.http
 
-import com.jakehschwartz.finatra.swagger.FinatraSwagger
 import com.twitter.finagle.http.RouteIndex
+import io.github.cactacea.swagger.FinatraSwagger
 import io.swagger.models.{Operation, Swagger}
 
 /**

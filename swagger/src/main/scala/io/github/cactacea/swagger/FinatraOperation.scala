@@ -1,13 +1,13 @@
-package com.jakehschwartz.finatra.swagger
+package io.github.cactacea.swagger
 
-import io.swagger.models.parameters._
+import io.github.cactacea.swagger.FinatraSwagger._
+import io.github.cactacea.swagger.SchemaUtil._
 import io.swagger.models._
+import io.swagger.models.parameters._
 import io.swagger.util.Json
+
 import scala.collection.JavaConverters._
 import scala.reflect.runtime.universe._
-
-import SchemaUtil._
-import FinatraSwagger._
 
 object FinatraOperation {
   implicit def convert(operation: Operation): FinatraOperation = new FinatraOperation(operation)

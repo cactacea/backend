@@ -1,15 +1,15 @@
-package com.jakehschwartz.finatra.swagger
+package io.github.cactacea.swagger
 
 import java.io.BufferedInputStream
 import java.util.Date
-import javax.activation.MimetypesFileTypeMap
-import javax.inject.{Inject, Singleton}
 
 import com.twitter.finagle.http.{Message, Request}
 import com.twitter.finatra.http.Controller
 import com.twitter.inject.annotations.Flag
 import io.swagger.models.Swagger
 import io.swagger.util.Json
+import javax.activation.MimetypesFileTypeMap
+import javax.inject.{Inject, Singleton}
 import org.apache.commons.io.FilenameUtils
 import org.joda.time.format.DateTimeFormat
 

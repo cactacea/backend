@@ -1,8 +1,8 @@
 package io.github.cactacea.backend.util.swagger
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
-import com.jakehschwartz.finatra.swagger.SwaggerTypeRegister
 import io.github.cactacea.backend.core.infrastructure.identifiers._
+import io.github.cactacea.swagger.SwaggerTypeRegister
 import io.swagger.models.Swagger
 import io.swagger.util.{Json, PrimitiveType}
 

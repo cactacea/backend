@@ -1,4 +1,4 @@
-package com.jakehschwartz.finatra.swagger
+package io.github.cactacea.swagger
 
 import java.lang.annotation.Annotation
 import java.lang.reflect.Type
