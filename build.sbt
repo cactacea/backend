@@ -2,7 +2,7 @@ import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val demo = (project in file("demo"))
   .settings(
-    version      := "0.1.1-SNAPSHOT",
+    version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     name := "demo",
     scalaVersion := "2.12.5",
@@ -24,12 +24,12 @@ lazy val demo = (project in file("demo"))
 
 lazy val server = (project in file("server"))
   .settings(
-    version      := "0.1.1-SNAPSHOT",
-      organization := "io.github.cactacea.backend",
-      name := "server",
-      scalaVersion := "2.12.5",
-      concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-      testOptions in Test += Tests.Argument("-oI")
+    version      := versions.cactacea,
+    organization := "io.github.cactacea.backend",
+    name := "server",
+    scalaVersion := "2.12.5",
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+    testOptions in Test += Tests.Argument("-oI")
   )
   .settings(commonResolverSetting)
   .settings(finatraLibrarySetting)
@@ -39,7 +39,7 @@ lazy val server = (project in file("server"))
 
 lazy val core = (project in file("core"))
   .settings(
-    version      := "0.1.1-SNAPSHOT",
+    version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
     name := "core",
@@ -56,7 +56,7 @@ lazy val core = (project in file("core"))
 
 lazy val util = (project in file("util"))
   .settings(
-    version      := "0.1.1-SNAPSHOT",
+    version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
     name := "util",
@@ -77,6 +77,7 @@ lazy val util = (project in file("util"))
 
 lazy val component = (project in file("component"))
   .settings(
+    version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
     name := "components",
@@ -95,6 +96,7 @@ lazy val component = (project in file("component"))
 
 
 lazy val versions = new {
+  val cactacea = "0.1.1-SNAPSHOT"
   val finagle = "18.2.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -162,6 +164,7 @@ lazy val commonResolverSetting = Seq(
 
 lazy val swagger = (project in file("swagger"))
   .settings(
+    version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
     name := "swagger",
