@@ -18,6 +18,7 @@ object DatabaseMigration {
     flyway.setDataSource(url, user, password)
     flyway.setBaselineOnMigrate(true)
     flyway.setPlaceholders(Map("schema" -> database).asJava)
+    flyway.setLocations("classpath:/db/migration/cactacea/")
     flyway.clean()
     flyway.migrate()
   }
