@@ -313,7 +313,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   def signOut(sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
-    val signedOutAt: Option[Long] = Some(System.currentTimeMillis)
+    val signedOutAt: Option[Long] = Some(timeService.nanoTime())
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))

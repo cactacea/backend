@@ -9,7 +9,7 @@ class DefaultIdentifyService extends IdentifyService {
 
   private class IdentityDatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config)
 
-  private val config = ConfigFactory.load("application.conf").getConfig("db.id")
+  private val config = ConfigFactory.load("application.conf").getConfig("db.identifier")
   private val db = new IdentityDatabaseService(config)
 
   import db._
