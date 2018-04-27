@@ -185,7 +185,7 @@ class FinatraSwagger(swagger: Swagger) {
           Some(FormRequestParam(name, description = description, typ = typ, required = isRequired))
         }
         else {
-          Some(BodyRequestParam(name = name, description = description, typ = typ, innerOptionType = innerOptionType))
+          Some(BodyRequestParam(name = name, description = description, typ = field.getType, innerOptionType = None))
         }
       }.toList
 

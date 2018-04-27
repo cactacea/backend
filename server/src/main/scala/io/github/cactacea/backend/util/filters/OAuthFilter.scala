@@ -6,12 +6,13 @@ import com.twitter.finagle.oauth2.{OAuthError, OAuthErrorInJson}
 import com.twitter.finagle.{OAuth2, Service, SimpleFilter}
 import com.twitter.inject.Logging
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.application.components.interfaces.ConfigService
 import io.github.cactacea.backend.util.auth.SessionContext
 import io.github.cactacea.backend.util.oauth.OAuthHandler
 import io.github.cactacea.backend.core.domain.repositories.SessionsRepository
 
 @Singleton
-class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Request, Response] with OAuth2 with OAuthErrorInJson with Logging {
+class OAuthFilter @Inject()(dataHandler: OAuthHandler, configService: ConfigService) extends SimpleFilter[Request, Response] with OAuth2 with OAuthErrorInJson with Logging {
 
   @Inject private var sessionsRepository: SessionsRepository = _
 
@@ -21,7 +22,8 @@ class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Requ
         service(request)
       case false =>
         authorize(request, dataHandler) flatMap { auth =>
-          sessionsRepository.checkAccountStatus(auth.user.accountId.toSessionId, auth.user.expiresIn).flatMap({_ =>
+          val expiresIn = auth.user.expiresIn - configService.basePointInTime
+          sessionsRepository.checkAccountStatus(auth.user.accountId.toSessionId, expiresIn).flatMap({_ =>
             SessionContext.setAuthenticated(true)
             SessionContext.setId(auth.user.accountId.toSessionId)
             SessionContext.setPermissions(auth.user.permissions)

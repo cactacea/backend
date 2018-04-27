@@ -1,6 +1,7 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 import com.twitter.util.Await
+import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
 import io.github.cactacea.backend.core.helpers.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.dao._
@@ -16,7 +17,7 @@ class SessionsRepositorySpec extends RepositorySpec {
   var advertisementSettingsDAO = injector.instance[AdvertisementSettingsDAO]
   var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
   val accountsDAO = injector.instance[AccountsDAO]
-
+  val timeService = injector.instance[TimeService]
   import db._
 
   test("signUp") {
@@ -101,7 +102,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val userAgent = "userAgent"
     val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
-    val expired = System.currentTimeMillis
+    val expired = timeService.nanoTime()
     assert(Await.result(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired)) == true)
 
     // Session Timeout
