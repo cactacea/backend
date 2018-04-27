@@ -1,16 +1,10 @@
 package io.github.cactacea.backend.core.application.components.services
 
+import com.google.inject.Inject
 import com.twitter.util.Future
-import com.typesafe.config.{Config, ConfigFactory}
-import io.getquill._
 import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 
-class DefaultIdentifyService extends IdentifyService {
-
-  private class IdentityDatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config)
-
-  private val config = ConfigFactory.load("application.conf").getConfig("db.identifier")
-  private val db = new IdentityDatabaseService(config)
+class DefaultIdentifyService @Inject()(db: DatabaseService) extends IdentifyService {
 
   import db._
 
