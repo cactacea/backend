@@ -58,7 +58,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     assert(accounts3(1).displayName == account63.displayName)
     assert(accounts3(2).displayName == account62.displayName)
 
-    val accounts4 = Await.result(accountsRepository.findAll(None, Some(accounts3(2).next), None, Some(3), session.id.toSessionId))
+    val accounts4 = Await.result(accountsRepository.findAll(Some("account6"), Some(accounts3(2).next), None, Some(3), session.id.toSessionId))
     assert(accounts4.size == 1)
     assert(accounts4(0).displayName == account61.displayName)
 
@@ -135,7 +135,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     Await.result(accountsRepository.updateDisplayName(account.id, Some("new account name"), session.id.toSessionId))
     val result = Await.result(accountsRepository.find(account.id, session.id.toSessionId))
     assert(result.id == account.id)
-    assert(result.displayName == "new account name")
+    assert(result.displayName == Some("new account name"))
 
   }
 
@@ -198,7 +198,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
     val session2 = this.signIn("session account", "new password", "udid")
     assert(session2.id == session.id)
-    assert(session2.displayName == "session account")
+    assert(session2.accountName == "session account")
 
   }
 

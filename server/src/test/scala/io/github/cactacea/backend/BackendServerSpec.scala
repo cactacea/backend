@@ -28,7 +28,7 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignUp
-        val postSignUp = PostSignUp(s"account$i", s"display$i", s"Password_$i", uuid, None, None, None, None, "ios")
+        val postSignUp = PostSignUp(s"account$i", Some(s"display$i"), s"Password_$i", uuid, None, None, None, None, "ios")
         val body = mapper.writePrettyString(postSignUp)
         val signUpResponse = post("/sessions", body)
         assert(signUpResponse.statusCode == Status.Ok.code)

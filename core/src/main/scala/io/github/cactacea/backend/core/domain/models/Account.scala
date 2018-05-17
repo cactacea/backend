@@ -5,7 +5,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 
 case class Account(id: AccountId,
                    accountName: String,
-                   displayName: String,
+                   displayName: Option[String],
                    profileImageUrl: Option[String],
                    friend: Boolean,
                    friendRequestInProgress: Boolean,
@@ -57,7 +57,7 @@ object Account {
     Account(
       a.id,
       a.accountName,
-      r.flatMap(_.editedDisplayName).getOrElse(a.displayName),
+      r.map(_.editedDisplayName).getOrElse(a.displayName),
       a.profileImageUrl,
       r.map(_.friend).getOrElse(false),
       r.map(_.inProgress).getOrElse(false),

@@ -51,7 +51,7 @@ class AccountsService {
     }
   }
 
-  def update(displayName: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
+  def update(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
         r <- accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId)

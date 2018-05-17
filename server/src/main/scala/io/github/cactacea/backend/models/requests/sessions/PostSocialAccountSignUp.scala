@@ -10,7 +10,7 @@ case class PostSocialAccountSignUp(
                                     @Size(min = 2, max = 30) name: String,
 
                                     @ApiModelProperty(value = "Display name.")
-                                    @Size(min = 1, max = 50) displayName: String,
+                                    @Size(min = 1, max = 50) displayName: Option[String],
 
                                     @ApiModelProperty(value = "Social account type.")
                                     @Size(min = 1, max = 255) socialAccountType: String,

@@ -191,7 +191,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(result2.size == 2)
     assert(result2(0)._1.groupId == groupId2)
     assert(result2(0)._3.isDefined == true)
-    assert(result2(0)._3.forall(_.id == messageId3) == true)
+    assert(result2(0)._3.exists(_.id == messageId3) == true)
 
     val message = result2(0)._3.get
     assert(message.message == Some("New Message3"))
