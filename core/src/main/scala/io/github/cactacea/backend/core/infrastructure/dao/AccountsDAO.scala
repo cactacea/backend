@@ -19,14 +19,14 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   @Inject private var blocksCountDAO: BlockCountDAO = _
   @Inject private var identifyService: IdentifyService = _
 
-  def create(accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
+  def create(accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
     for {
       id <- identifyService.generate().map(AccountId(_))
       _ <- insert(id, accountName, displayName, password, web, birthday, location, bio)
     } yield (id)
   }
 
-  private def insert(id: AccountId, accountName: String, displayName: String, password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[Long] = {
+  private def insert(id: AccountId, accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[Long] = {
     val accountStatus = AccountStatusType.normally
     val hashedPassword = createHashedPassword(password)
     val q = quote {
@@ -45,7 +45,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def updateProfile(displayName: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Boolean] = {
+  def updateProfile(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
@@ -223,7 +223,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
           val a = t._1
           val r = t._2
           val b = blocksCount.filter(_.id == a.id).headOption.getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
-          val displayName = r.flatMap(_.editedDisplayName).getOrElse(a.displayName)
+          val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
           val friendCount = a.friendCount - b.friendCount
           val followCount = a.followCount - b.followCount
           val followerCount = a.followerCount - b.followerCount
@@ -246,7 +246,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.normally
 
     val q2 = quote {
-      query[Accounts].filter({a => a.id != lift(by) && ((a.accountName like lift(un)) || (a.displayName like lift(un)) || (lift(un) == "")) &&
+      query[Accounts].filter({a => a.id !=  lift(by) && ((a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == "")) &&
           a.accountStatus  == lift(status) && (infix"a.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
           query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty})
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
@@ -268,7 +268,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
           val friendCount = a.friendCount - b.map(_.friendCount).getOrElse(0L)
           val followCount = a.followCount - b.map(_.followCount).getOrElse(0L)
           val followerCount = a.followerCount - b.map(_.followerCount).getOrElse(0L)
-          val displayName = r.flatMap(_.editedDisplayName).getOrElse(a.displayName)
+          val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
           val na = a.copy(displayName = displayName, friendCount = friendCount, followCount = followCount, followerCount = followerCount)
           (na, r)
         })

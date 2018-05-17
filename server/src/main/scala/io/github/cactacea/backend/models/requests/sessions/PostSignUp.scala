@@ -10,7 +10,7 @@ case class PostSignUp(
                        @Size(min = 2, max = 30) name: String,
 
                        @ApiModelProperty(value = "Display name.")
-                       @Size(min = 1, max = 50) displayName: String,
+                       @Size(min = 1, max = 50) displayName: Option[String],
 
                        @ApiModelProperty(value = "Account password.")
                        @Size(min = 8, max = 255) password: String,

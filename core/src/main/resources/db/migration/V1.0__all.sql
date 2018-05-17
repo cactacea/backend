@@ -35,7 +35,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `${schema}`.`accounts` (
   `id` BIGINT NOT NULL,
   `account_name` VARCHAR(30) NOT NULL,
-  `display_name` VARCHAR(50) NOT NULL,
+  `display_name` VARCHAR(50) NULL DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
   `follow_count` BIGINT NOT NULL DEFAULT 0,
   `profile_image` BIGINT NULL DEFAULT NULL,

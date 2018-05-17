@@ -30,7 +30,7 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
   def signUp(accountName: String, password: String, udid: String) = {
 
     val sessionsRepository = injector.instance[SessionsRepository]
-    Await.result(sessionsRepository.signUp(accountName, accountName, password, udid, DeviceType.ios,
+    Await.result(sessionsRepository.signUp(accountName, None, password, udid, DeviceType.ios,
       Some("test@example.com"),
       None,
       Some("location"),

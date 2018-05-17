@@ -122,17 +122,17 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     Await.result(accountsDAO.updateDisplayName(account2.id, Some("newUserName2"), sessionAccount.id.toSessionId))
 
     val result1 = Await.result(accountsDAO.find(account1.id, sessionAccount.id.toSessionId))
-    assert(result1.get._1.displayName == "newUserName1")
+    assert(result1.get._1.displayName == Some("newUserName1"))
     val result2 = Await.result(accountsDAO.find(account2.id, sessionAccount.id.toSessionId))
-    assert(result2.get._1.displayName == "newUserName2")
+    assert(result2.get._1.displayName == Some("newUserName2"))
 
     Await.result(accountsDAO.updateDisplayName(account1.id, None, sessionAccount.id.toSessionId))
     Await.result(accountsDAO.updateDisplayName(account2.id, None, sessionAccount.id.toSessionId))
 
     val result3 = Await.result(accountsDAO.find(account1.id, sessionAccount.id.toSessionId))
-    assert(result3.get._1.displayName == account1.displayName)
+    assert(result3.get._1.displayName == None)
     val result4 = Await.result(accountsDAO.find(account2.id, sessionAccount.id.toSessionId))
-    assert(result4.get._1.displayName == account2.displayName)
+    assert(result4.get._1.displayName == None)
 
   }
 

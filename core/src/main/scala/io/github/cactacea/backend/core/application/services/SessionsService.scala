@@ -17,7 +17,7 @@ class SessionsService {
   @Inject private var socialAccountsService: SocialAccountsService = _
   @Inject private var actionService: InjectionService = _
 
-  def signUp(accountName: String, displayName: String, password: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Account] = {
+  def signUp(accountName: String, displayName: Option[String], password: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Account] = {
     db.transaction {
       for {
         a <- sessionsRepository.signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent)
@@ -44,7 +44,7 @@ class SessionsService {
     }
   }
 
-  def signUp(socialAccountType: String, accountName: String, displayName: String, password: String, socialAccountIdentifier: String, authenticationCode: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Account] = {
+  def signUp(socialAccountType: String, accountName: String, displayName: Option[String], password: String, socialAccountIdentifier: String, authenticationCode: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String, deviceType: DeviceType): Future[Account] = {
     db.transaction {
       for {
         id <- validateSocialAccount(socialAccountType, socialAccountIdentifier, authenticationCode)

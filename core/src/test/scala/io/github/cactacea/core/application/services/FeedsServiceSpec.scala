@@ -18,7 +18,7 @@ class FeedsServiceSpec extends ServiceSpec {
     assert(feed.id == id)
     assert(feed.message == "a message feed")
     assert(feed.tags == Some(List("tag1, tag2, tag3, tag4")))
-    assert(feed.account.forall(_.displayName == "account name"))
+    assert(feed.account.map(_.accountName) == Some("account name"))
     assert(feed.contentWarning == false)
     assert(feed.commentCount == 0)
 

@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Me
 case class Accounts(
                      id: AccountId,
                      accountName: String,
-                     displayName: String,
+                     displayName: Option[String],
                      profileImage: Option[MediumId],
                      profileImageUrl: Option[String],
                      password: String,
