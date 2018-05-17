@@ -96,7 +96,7 @@ lazy val component = (project in file("component"))
 
 
 lazy val versions = new {
-  val cactacea = "0.1.3-SNAPSHOT"
+  val cactacea = "0.1.4-SNAPSHOT"
   val finagle = "18.2.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -121,7 +121,7 @@ lazy val coreLibrarySetting = Seq(
 
     "com.typesafe" % "config" % "1.3.2",
     "com.twitter" %% "finagle-core" % versions.finagle,
-    "io.getquill" %% "quill-finagle-mysql" % "2.3.3",
+    "io.getquill" %% "quill-finagle-mysql" % "2.4.2",
     "io.jsonwebtoken" % "jjwt" % "0.9.0",
     "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
     "mysql" % "mysql-connector-java" % "6.0.6",
