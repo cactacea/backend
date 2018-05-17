@@ -100,7 +100,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
 
       val q = quote {
         query[Comments].filter(c => c.id == lift(id) && c.notified == false)
-          .join(query[Comments]).on((c, f) => f.replyId.forall(_ == c.id)
+          .join(query[Comments]).on((c, f) => f.replyId.exists(_ == c.id)
           && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.mute == true).isEmpty
           && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.feedComment == true).nonEmpty)
           .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})

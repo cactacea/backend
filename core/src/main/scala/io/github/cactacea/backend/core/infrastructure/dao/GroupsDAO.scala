@@ -128,7 +128,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
       query[Groups]
         .filter(g => g.by != lift(by))
         .filter(g => g.directMessage == false)
-        .filter(g => (g.name.forall(_ like lift(n)))  || lift(name).isEmpty)
+        .filter(g => (g.name.exists(_ like lift(n)))  || lift(name).isEmpty)
         .filter(g => g.invitationOnly == lift(invitationOnly.getOrElse(false))    || lift(invitationOnly).isEmpty)
         .filter(g => g.privacyType == lift(privacyType.getOrElse(GroupPrivacyType.everyone))         || lift(privacyType).isEmpty)
         .filter(g => query[Blocks]

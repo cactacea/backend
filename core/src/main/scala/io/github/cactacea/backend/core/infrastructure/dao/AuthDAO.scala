@@ -30,7 +30,7 @@ class AuthDAO @Inject()(db: DatabaseService) {
       (for {
         oc <- query[Clients]
           .filter(_.id == lift(id))
-          .filter(_.secret.forall(_ == lift(secret) || lift(secret) == ""))
+          .filter(_.secret.exists(_ == lift(secret) || lift(secret) == ""))
         ocg <- query[ClientGrantTypes]
           .filter(_.clientId == oc.id)
         og <- query[GrantTypes]
