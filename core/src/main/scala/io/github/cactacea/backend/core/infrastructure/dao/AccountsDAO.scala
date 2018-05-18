@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
+import io.github.cactacea.backend.core.application.components.interfaces.{HashService, IdentifyService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
@@ -11,7 +11,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.infrastructure.results.RelationshipBlocksCount
 
 @Singleton
-class AccountsDAO @Inject()(db: DatabaseService) {
+class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
 
   import db._
 
@@ -28,7 +28,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   private def insert(id: AccountId, accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[Long] = {
     val accountStatus = AccountStatusType.normally
-    val hashedPassword = createHashedPassword(password)
+    val hashedPassword = hashService.hash(password)
     val q = quote {
       query[Accounts].insert(
         _.id                    -> lift(id),
@@ -88,8 +88,8 @@ class AccountsDAO @Inject()(db: DatabaseService) {
 
   def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
-    val hashedNewPassword = createHashedPassword(newPassword)
-    val hashedOldPassword = createHashedPassword(oldPassword)
+    val hashedNewPassword = hashService.hash(newPassword)
+    val hashedOldPassword = hashService.hash(oldPassword)
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
@@ -185,7 +185,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
   }
 
   def find(accountName: String, password: String): Future[Option[Accounts]] = {
-    val hashedPassword = createHashedPassword(password)
+    val hashedPassword = hashService.hash(password)
     val q = quote {
       query[Accounts]
         .filter(_.accountName == lift(accountName))
@@ -322,12 +322,6 @@ class AccountsDAO @Inject()(db: DatabaseService) {
         )
     }
     run(q).map(_ == 1)
-  }
-
-
-  def createHashedPassword(password: String) = {
-    import com.roundeights.hasher.Implicits._
-    "v1" + password.pbkdf2("cactacea", 1000, 128)
   }
 
 }

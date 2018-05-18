@@ -96,7 +96,7 @@ lazy val component = (project in file("component"))
 
 
 lazy val versions = new {
-  val cactacea = "0.1.4-SNAPSHOT"
+  val cactacea = "0.1.5-SNAPSHOT"
   val finagle = "18.2.0"
   val guice = "4.0"
   val logback = "1.2.3"

@@ -2,6 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.inject.Logging
 import com.twitter.util.Await
+import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
@@ -14,6 +15,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
   val followingDAO: FollowingDAO = injector.instance[FollowingDAO]
   val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
   val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
+  val hashService: HashService = injector.instance[HashService]
 
   test("create") {
 
@@ -46,7 +48,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
       )
     ).get
 
-    assert(result.password == accountsDAO.createHashedPassword("password"))
+    assert(result.password == hashService.hash("password"))
 
   }
 
@@ -87,7 +89,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     )
 
     val result = Await.result(accountsDAO.find(sessionAccount.id.toSessionId)).get
-    assert(result.password == accountsDAO.createHashedPassword("password2"))
+    assert(result.password == hashService.hash("password2"))
 
   }
 
