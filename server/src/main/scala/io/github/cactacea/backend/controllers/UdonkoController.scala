@@ -49,42 +49,38 @@ class UdonkoController @Inject()(db: DatabaseService) extends Controller {
   }
 
 
-  post("/expressions") { request: List[PostExpression] =>
-    request.headOption match {
-      case Some(e) =>
-        val a1 = e.faceRectangle.top.getOrElse(0L)
-        val a2 = e.faceRectangle.left.getOrElse(0L)
-        val a3 = e.faceRectangle.width.getOrElse(0L)
-        val a4 = e.faceRectangle.height.getOrElse(0L)
-        val a5 = e.scores.anger.getOrElse(0.0f)
-        val a6 = e.scores.contempt.getOrElse(0.0f)
-        val a7 = e.scores.disgust.getOrElse(0.0f)
-        val a8 = e.scores.fear.getOrElse(0.0f)
-        val a9 = e.scores.happiness.getOrElse(0.0f)
-        val a10 = e.scores.neutral.getOrElse(0.0f)
-        val a11 = e.scores.sadness.getOrElse(0.0f)
-        val a12 = e.scores.surprise.getOrElse(0.0f)
+  post("/expressions") { request: PostExpression =>
+    val e = request
+    val a1 = e.faceRectangle.top.getOrElse(0L)
+    val a2 = e.faceRectangle.left.getOrElse(0L)
+    val a3 = e.faceRectangle.width.getOrElse(0L)
+    val a4 = e.faceRectangle.height.getOrElse(0L)
+    val a5 = e.scores.anger.getOrElse(0.0f)
+    val a6 = e.scores.contempt.getOrElse(0.0f)
+    val a7 = e.scores.disgust.getOrElse(0.0f)
+    val a8 = e.scores.fear.getOrElse(0.0f)
+    val a9 = e.scores.happiness.getOrElse(0.0f)
+    val a10 = e.scores.neutral.getOrElse(0.0f)
+    val a11 = e.scores.sadness.getOrElse(0.0f)
+    val a12 = e.scores.surprise.getOrElse(0.0f)
 
-        val q = quote {
-          query[expressions].insert(
-            _.top -> lift(a1),
-            _.left -> lift(a2),
-            _.width -> lift(a3),
-            _.height -> lift(a4),
-            _.anger -> lift(a5),
-            _.contempt -> lift(a6),
-            _.disgust -> lift(a7),
-            _.fear -> lift(a8),
-            _.happiness -> lift(a9),
-            _.neutral -> lift(a10),
-            _.sadness -> lift(a11),
-            _.surprise -> lift(a12)
-          )
-        }
-        run(q).map(_ => response.ok)
-      case None =>
-        response.ok
+    val q = quote {
+      query[expressions].insert(
+        _.top -> lift(a1),
+        _.left -> lift(a2),
+        _.width -> lift(a3),
+        _.height -> lift(a4),
+        _.anger -> lift(a5),
+        _.contempt -> lift(a6),
+        _.disgust -> lift(a7),
+        _.fear -> lift(a8),
+        _.happiness -> lift(a9),
+        _.neutral -> lift(a10),
+        _.sadness -> lift(a11),
+        _.surprise -> lift(a12)
+      )
     }
+    run(q).map(_ => response.ok)
   }
 
 }
