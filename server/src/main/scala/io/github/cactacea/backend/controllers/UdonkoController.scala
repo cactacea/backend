@@ -10,7 +10,24 @@ class UdonkoController @Inject()(db: DatabaseService) extends Controller {
   import db._
 
   get("/friend") { _: Request =>
-    GetFriend(100L)
+    val q1 = quote { query[expressions].sortBy(_.id)(Ord.desc).take(3).map(_.happiness) }
+    val q2 = quote { query[hearts].sortBy(_.id)(Ord.desc).take(3).map(_.beat)}
+    val r = for {
+      h <- run(q1)
+      b <- run(q2)
+    } yield (h, b)
+    r.map({ case (n, b) =>
+      val nn = n.size match {
+        case 0 => 0.0005f
+        case 1 => (n.fold(0.0f)(_ + _) / n.size)
+      }
+      val bb = b.size match {
+        case 0 => 0.0005f
+        case 1 => (b.fold(0.0f)(_ + _) / b.size)
+      }
+      val v = nn + bb
+      GetFriend(v)
+    })
   }
 
   post("/hearts") { request: PostHeart =>
@@ -80,7 +97,7 @@ case class expressions (
 
 
 
-case class GetFriend(value: Long)
+case class GetFriend(value: Float)
 case class PostHeart(beat: Float)
 case class PostExpression(
                            faceRectangle: PostExpressionFaceRectangle,
