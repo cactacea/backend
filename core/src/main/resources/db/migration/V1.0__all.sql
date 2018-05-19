@@ -25,6 +25,16 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `${schema}`.`mediums`
 -- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `${schema}`.`blinks` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `strength` Float NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `${schema}`.`mediums`
+-- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`expressions` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `top` BIGINT NOT NULL,

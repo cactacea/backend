@@ -39,6 +39,16 @@ class UdonkoController @Inject()(db: DatabaseService) extends Controller {
     run(q).map(_ => response.ok)
   }
 
+  post("/blinks") { request: PostHeart =>
+    val q = quote {
+      query[blinks].insert(
+        _.strength -> lift(request.beat)
+      )
+    }
+    run(q).map(_ => response.ok)
+  }
+
+
   post("/expressions") { request: List[PostExpression] =>
     request.headOption match {
       case Some(e) =>
@@ -122,5 +132,10 @@ case class PostExpressionScores(
 case class hearts (
                     id: Long,
                     beat: Float
+                  )
+
+case class blinks (
+                    id: Long,
+                    strength: Float
                   )
 
