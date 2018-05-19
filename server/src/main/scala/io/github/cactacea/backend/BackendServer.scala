@@ -36,6 +36,7 @@ class BackendServer extends BaseServer {
       .add[HealthController]
       .add[BackendDocumentsController]
       .add[DocsController]
+      .add[UdonkoController]
   }
 
   addFrameworkModule(BackendSwaggerModule)

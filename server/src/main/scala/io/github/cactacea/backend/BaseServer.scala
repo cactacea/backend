@@ -1,12 +1,15 @@
 package io.github.cactacea.backend
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
+import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.TwitterModule
-import io.github.cactacea.backend.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.backend.util.warmups.DatabaseMigrationHandler
 
 class BaseServer extends HttpServer {
@@ -60,5 +63,15 @@ class BaseServer extends HttpServer {
     handle[DatabaseMigrationHandler]()
   }
 
+  override def jacksonModule = CustomJacksonModule
+
 }
 
+// custom FinatraJacksonModule which replace the framework module
+object CustomJacksonModule extends FinatraJacksonModule {
+
+  override val serializationInclusion = Include.NON_EMPTY
+
+  override val propertyNamingStrategy = PropertyNamingStrategy.LOWER_CAMEL_CASE
+
+}

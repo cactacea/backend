@@ -9,6 +9,41 @@
 CREATE SCHEMA IF NOT EXISTS `${schema}` DEFAULT CHARACTER SET utf8 ;
 USE `${schema}` ;
 
+
+
+
+-- -----------------------------------------------------
+-- Table `${schema}`.`mediums`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `${schema}`.`hearts` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `beat` Float NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `${schema}`.`mediums`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `${schema}`.`expressions` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `top` BIGINT NOT NULL,
+  `left` BIGINT NOT NULL,
+  `width` BIGINT NOT NULL,
+  `height` BIGINT NOT NULL,
+  `anger` Float NOT NULL,
+  `contempt` Float NOT NULL,
+  `disgust` Float NOT NULL,
+  `fear` Float NOT NULL,
+  `happiness` Float NOT NULL,
+  `neutral` Float NOT NULL,
+  `sadness` Float NOT NULL,
+  `surprise` Float NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
 -- -----------------------------------------------------
 -- Table `${schema}`.`mediums`
 -- -----------------------------------------------------
