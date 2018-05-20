@@ -32,12 +32,19 @@ class UdonkoController @Inject()(db: DatabaseService) extends Controller {
   }
 
   post("/hearts") { request: PostHeart =>
-    val q = quote {
-      query[hearts].insert(
-        _.beat -> lift(request.beat)
-      )
+    if (request.beat > 0.0f) {
+      val q = quote {
+        query[hearts].insert(
+          _.beat -> lift(request.beat)
+        )
+      }
+      run(q).map(_ => response.ok)
+    } else {
+      val q = quote {
+        query[hearts].delete
+      }
+      run(q).map(_ => response.ok)
     }
-    run(q).map(_ => response.ok)
   }
 
   post("/blinks") { request: PostHeart =>
