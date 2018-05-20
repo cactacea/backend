@@ -17,13 +17,14 @@ class UdonkoController @Inject()(db: DatabaseService) extends Controller {
       b <- run(q2)
     } yield (h, b)
     r.map({ case (n, b) =>
-      val nn = n.size match {
+      val nc = n.size
+      val nn = nc match {
         case 0 => 0.0005f
-        case 1 => (n.fold(0.0f)(_ + _) / n.size)
+        case _ => (n.fold(0.0f)(_ + _) / n.size)
       }
       val bb = b.size match {
         case 0 => 0.0005f
-        case 1 => (b.fold(0.0f)(_ + _) / b.size)
+        case _ => (b.fold(0.0f)(_ + _) / b.size)
       }
       val v = nn + bb
       GetFriend(v)
