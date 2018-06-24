@@ -9,6 +9,7 @@ import io.swagger.models.{Operation, Swagger}
 
 import scala.collection.JavaConverters._
 
+
 /**
   * To work around the accessibility of RouteDSL, this class is in "com.twitter.finatra.http" package
   */
