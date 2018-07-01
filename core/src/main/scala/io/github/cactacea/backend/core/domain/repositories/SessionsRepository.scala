@@ -20,14 +20,14 @@ class SessionsRepository {
   @Inject private var socialAccountsDAO: SocialAccountsDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
-  def signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Account] = {
+  def signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
     for {
       _ <- validationDAO.notExistAccountName(accountName)
       r <- _signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent)
     } yield (r)
   }
 
-  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: String): Future[Account] = {
+  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
     accountsDAO.find(accountName, password).flatMap(_ match {
       case Some(account) =>
         if (account.isTerminated) {
@@ -48,7 +48,7 @@ class SessionsRepository {
   }
 
 
-  def signUp(socialAccountType: String, accountName: String, displayName: Option[String], password: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Account] = {
+  def signUp(socialAccountType: String, accountName: String, displayName: Option[String], password: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
     socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
       case Some(sa) =>
         accountsDAO.find(sa.accountId.toSessionId).flatMap(_ match {
@@ -74,11 +74,11 @@ class SessionsRepository {
 
   }
 
-  private def _signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: String): Future[Account] = {
+  private def _signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
     (for {
       accountId <- accountsDAO.create(accountName, displayName, password, web, birthday, location, bio)
       sessionId = accountId.toSessionId
-      _             <- devicesDAO.create(udid, deviceType, Some(userAgent), sessionId)
+      _             <- devicesDAO.create(udid, deviceType, userAgent, sessionId)
       _             <- notificationSettingsDAO.create(true, true, true, true, true, true, sessionId)
       _             <- advertisementSettingsDAO.create(true, true, true, true, true, sessionId)
       account       <- accountsDAO.find(sessionId)
@@ -91,7 +91,7 @@ class SessionsRepository {
   }
 
 
-  def signIn(socialAccountType: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, userAgent: String): Future[Account] = {
+  def signIn(socialAccountType: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
     socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
       case Some(socialAccount) =>
         accountsDAO.find(socialAccount.accountId.toSessionId).flatMap(_ match {
@@ -110,12 +110,12 @@ class SessionsRepository {
   }
 
 
-  private def _signIn(account: Accounts, udid: String, deviceType: DeviceType, userAgent: String): Future[Account] = {
+  private def _signIn(account: Accounts, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
     devicesDAO.exist(account.id.toSessionId, udid).flatMap(_ match {
       case true =>
         Future.True
       case false =>
-        devicesDAO.create(udid, deviceType, Some(userAgent), account.id.toSessionId)
+        devicesDAO.create(udid, deviceType, userAgent, account.id.toSessionId)
     }).map({ _ =>
       Account(account)
     })

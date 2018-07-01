@@ -5,6 +5,6 @@ import io.swagger.annotations.ApiModelProperty
 
 case class DeleteSocialAccount(
                               @ApiModelProperty(value = "Social account type.")
-                              @Size(min = 1, max = 255) socialAccountType: String
+                              @Size(min = 1, max = 255) providerId: String
 
                             )

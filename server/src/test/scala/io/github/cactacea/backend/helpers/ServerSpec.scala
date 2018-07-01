@@ -51,15 +51,13 @@ class ServerSpec extends FeatureTest {
     )
   }
 
-  def delete(path: String, accessToken: String): Response = {
-    server.httpDelete(
-      path = root + path,
-      headers = Map(
-        "X-API-KEY" -> configService.apiKeys.head._2,
-        "X-AUTHORIZATION" -> accessToken
-      )
+  def delete(path: String, accessToken: String): Response = server.httpDelete(
+    path = root + path,
+    headers = Map(
+      "X-API-KEY" -> configService.apiKeys.head._2,
+      "X-AUTHORIZATION" -> accessToken
     )
-  }
+  )
 
   def post(path: String, postBody: String) : Response = {
     server.httpPost(

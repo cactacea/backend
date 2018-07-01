@@ -11,17 +11,17 @@ class GooglePlusService extends AuthenticationService {
 
   @Inject private var googleClient: GoogleClient = _
 
-  val socialAccountType: String = "google"
+  val providerId: String = "google"
 
-  def issueCode(socialAccountIdentifier: String): Future[Unit] = {
+  def issueCode(providerKey: String): Future[Unit] = {
     Future.exception(CactaceaException(OperationNotAllowed))
   }
 
-  def validateCode(socialAccountIdentifier: String, authenticationCode: String): Future[String] = {
-    googleClient.me(socialAccountIdentifier).map(s => s.id)
+  def validateCode(providerKey: String, authenticationCode: String): Future[String] = {
+    googleClient.me(providerKey).map(s => s.id)
   }
 
-  def resetPassword(socialAccountIdentifier: String): Future[Unit] = {
+  def resetPassword(providerKey: String): Future[Unit] = {
     Future.exception(CactaceaException(OperationNotAllowed))
   }
 

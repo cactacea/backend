@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty
 
 case class PostSocialAccount(
                               @ApiModelProperty(value = "Social account type.")
-                              @Size(min = 1, max = 255) socialAccountType: String,
+                              @Size(min = 1, max = 255) providerId: String,
 
                               @ApiModelProperty(value = "OAuth2 access token.")
                               @QueryParam @Size(min = 1, max = 1000) accessTokenKey: String,

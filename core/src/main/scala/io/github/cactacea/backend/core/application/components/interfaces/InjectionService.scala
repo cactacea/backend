@@ -52,6 +52,6 @@ trait InjectionService {
   def mediumCreated(mediumId: MediumId, sessionId: SessionId): Future[Unit]
   def messageCreated(messageId: MessageId, sessionId: SessionId): Future[Unit]
   def messagesDeleted(groupId: GroupId, sessionId: SessionId): Future[Unit]
-  def socialAccountConnected(socialAccountType: String, sessionId: SessionId): Future[Unit]
-  def socialAccountDisconnected(socialAccountType: String, sessionId: SessionId): Future[Unit]
+  def socialAccountConnected(providerId: String, sessionId: SessionId): Future[Unit]
+  def socialAccountDisconnected(providerId: String, sessionId: SessionId): Future[Unit]
 }

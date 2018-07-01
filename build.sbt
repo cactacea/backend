@@ -35,6 +35,7 @@ lazy val server = (project in file("server"))
   .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
   .dependsOn(core)
+  .dependsOn(filhouette)
 
 
 lazy val core = (project in file("core"))
@@ -94,9 +95,38 @@ lazy val component = (project in file("component"))
   .settings(coreLibrarySetting)
   .dependsOn(core)
 
+lazy val filhouette = (project in file("filhouette"))
+  .settings(
+    version      := versions.cactacea,
+    organization := "io.github.cactacea.filhouette",
+    scalaVersion := "2.12.5",
+    name := "filhouette",
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+    testOptions in Test += Tests.Argument("-oI")
+  )
+  .settings(finatraLibrarySetting)
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.jsonwebtoken" % "jjwt" % "0.9.0",
+      "com.github.cb372" %% "scalacache-ehcache" % "0.24.1",
+      "org.apache.commons" % "commons-lang3" % "3.7",
+
+      "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
+      "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
+      "org.specs2" %% "specs2-core" % versions.specs2 % "test",
+      "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
+      "org.specs2" %% "specs2-matcher-extra" % versions.specs2 % "test",
+      "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
+    ))
+  .settings(
+    libraryDependencies ++= Seq(
+      "de.svenkubiak" % "jBCrypt" % "0.4.1"
+//      "org.jasig.cas.client" % "cas-client-core" % "3.4.1",
+//      "org.jasig.cas.client" % "cas-client-support-saml" % "3.4.1"
+    ))
 
 lazy val versions = new {
-  val cactacea = "0.1.5-SNAPSHOT"
+  val cactacea = "0.1.6-SNAPSHOT"
   val finagle = "18.2.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -120,7 +150,6 @@ lazy val coreLibrarySetting = Seq(
   libraryDependencies ++= Seq(
 
     "com.typesafe" % "config" % "1.3.2",
-    "com.twitter" %% "finagle-core" % versions.finagle,
     "io.getquill" %% "quill-finagle-mysql" % "2.4.2",
     "io.jsonwebtoken" % "jjwt" % "0.9.0",
     "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
@@ -129,6 +158,7 @@ lazy val coreLibrarySetting = Seq(
     "com.jsuereth" %% "scala-arm" % "2.0",
     "com.roundeights" %% "hasher" % "1.2.0",
     "com.drewnoakes" % "metadata-extractor" % "2.11.0",
+    "com.iheart" %% "ficus" % "1.4.3",
 
     "com.twitter" %% "inject-server" % versions.finagle % "test",
     "com.twitter" %% "inject-app" % versions.finagle % "test",
@@ -165,7 +195,7 @@ lazy val commonResolverSetting = Seq(
 lazy val swagger = (project in file("swagger"))
   .settings(
     version      := versions.cactacea,
-    organization := "io.github.cactacea.backend",
+    organization := "io.github.cactacea.swagger",
     scalaVersion := "2.12.5",
     name := "swagger",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),

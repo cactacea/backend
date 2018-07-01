@@ -6,10 +6,10 @@ import io.swagger.annotations.ApiModelProperty
 
 case class GetSocialAccountSignIn(
                                    @ApiModelProperty(value = "Social account type.")
-                                   @Size(min = 1, max = 255) socialAccountType: String,
+                                   @Size(min = 1, max = 255) providerId: String,
 
                                    @ApiModelProperty(value = "OAuth2 access token or phone number or email address.")
-                                   @QueryParam @Size(min = 1, max = 1000) socialAccountIdentifier: String,
+                                   @QueryParam @Size(min = 1, max = 1000) providerKey: String,
 
                                    @ApiModelProperty(value = "OAuth2 access token secret or issued code.")
                                    @QueryParam @Size(min = 1, max = 1000) authenticationCode: String,
@@ -17,5 +17,5 @@ case class GetSocialAccountSignIn(
                                    @ApiModelProperty(value = "Unique Device Identifier.")
                                    @QueryParam @Size(min = 1, max = 1000) udid: String,
 
-                                   @Header("user-agent") userAgent: String
+                                   @Header("user-agent") userAgent: Option[String]
                                  )

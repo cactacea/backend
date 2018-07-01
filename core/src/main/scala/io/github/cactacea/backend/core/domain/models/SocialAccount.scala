@@ -3,16 +3,16 @@ package io.github.cactacea.backend.core.domain.models
 import io.github.cactacea.backend.core.infrastructure.models.SocialAccounts
 
 case class SocialAccount(
-                       accountType: String,
-                       token: String
-                   )
+                          providerId: String,
+                          providerKey: String
+                        )
 
 object SocialAccount {
 
   def apply(a: SocialAccounts): SocialAccount = {
     SocialAccount(
-      accountType = a.socialAccountType,
-      token       = a.socialAccountId
+      providerId = a.providerId,
+      providerKey = a.providerKey
     )
   }
 

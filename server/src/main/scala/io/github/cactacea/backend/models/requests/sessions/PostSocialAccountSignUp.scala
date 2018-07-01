@@ -13,13 +13,13 @@ case class PostSocialAccountSignUp(
                                     @Size(min = 1, max = 50) displayName: Option[String],
 
                                     @ApiModelProperty(value = "Social account type.")
-                                    @Size(min = 1, max = 255) socialAccountType: String,
+                                    @Size(min = 1, max = 255) providerId: String,
 
                                     @ApiModelProperty(value = "Account password.")
                                     @Size(min = 8, max = 255) password: String,
 
                                     @ApiModelProperty(value = "OAuth2 access token or phone number or email address.")
-                                    @QueryParam @Size(min = 1, max = 1000) socialAccountIdentifier: String,
+                                    @QueryParam @Size(min = 1, max = 1000) providerKey: String,
 
                                     @ApiModelProperty(value = "OAuth2 access token secret or issued code.")
                                     @QueryParam @Size(min = 1, max = 1000) authenticationCode: String,
@@ -39,7 +39,7 @@ case class PostSocialAccountSignUp(
                                     @ApiModelProperty(value = "Account bio.")
                                     @Size(min = 0, max = 1024) bio: Option[String],
 
-                                    @Header("user-agent") userAgent: String
+                                    @Header("user-agent") userAgent: Option[String]
                                   ) {
 
   @MethodValidation

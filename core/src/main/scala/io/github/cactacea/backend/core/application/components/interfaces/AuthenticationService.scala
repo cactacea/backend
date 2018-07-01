@@ -4,9 +4,9 @@ import com.twitter.util.Future
 
 trait AuthenticationService {
 
-  val socialAccountType: String
-  def issueCode(socialAccountIdentifier: String): Future[Unit]
-  def validateCode(socialAccountIdentifier: String, authenticationCode: String): Future[String]
-  def resetPassword(socialAccountIdentifier: String): Future[Unit]
+  val providerId: String
+  def issueCode(providerKey: String): Future[Unit]
+  def validateCode(providerKey: String, authenticationCode: String): Future[String]
+  def resetPassword(providerKey: String): Future[Unit]
 
 }

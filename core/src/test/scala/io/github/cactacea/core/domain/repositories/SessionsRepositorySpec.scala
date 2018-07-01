@@ -26,7 +26,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val displayName = Some("new account")
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
-    val userAgent = "userAgent"
+    val userAgent = Some("userAgent")
     val account = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     // result user
@@ -57,7 +57,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val displayName = Some("displayName")
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
-    val userAgent = "userAgent"
+    val userAgent = Some("userAgent")
     val result = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
     val account = Await.result(sessionsRepository.signIn(result.accountName, password, udid,  DeviceType.ios, userAgent))
 
@@ -71,7 +71,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val displayName = Some("new account")
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
-    val userAgent = "userAgent"
+    val userAgent = Some("userAgent")
 
     Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
@@ -86,7 +86,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val displayName = Some("new account")
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
-    val userAgent = "userAgent"
+    val userAgent = Some("userAgent")
     val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
     val result = Await.result(sessionsRepository.signOut(udid, session.id.toSessionId))
     assert(result == true)
@@ -99,7 +99,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val displayName = Some("new account")
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
-    val userAgent = "userAgent"
+    val userAgent = Some("userAgent")
     val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     val expired = timeService.nanoTime()
@@ -142,7 +142,7 @@ class SessionsRepositorySpec extends RepositorySpec {
       None,
       Some("location"),
       Some("bio"),
-      "userAgent"
+      Some("userAgent")
     ))
     assert(result.accountName == "accountName")
 
@@ -151,7 +151,7 @@ class SessionsRepositorySpec extends RepositorySpec {
   test("social account signIn") {
 
     assert(intercept[CactaceaException] {
-      Await.result(sessionsRepository.signIn("tokenkey", "token secret", "udid", DeviceType.ios, "user agent"))
+      Await.result(sessionsRepository.signIn("tokenkey", "token secret", "udid", DeviceType.ios, Some("user agent")))
     }.error == InvalidAccountNameOrPassword)
 
   }

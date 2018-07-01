@@ -36,16 +36,16 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
       None,
       Some("location"),
       Some("bio"),
-      "user agent"))
-    val authentication = Await.result(sessionsRepository.signIn(accountName, password, udid, DeviceType.ios, "user agent"))
+      Some("user agent")))
+    val authentication = Await.result(sessionsRepository.signIn(accountName, password, udid, DeviceType.ios, Some("user agent")))
     authentication
   }
 
   def signIn(accountName: String, password: String, udid: String) = {
 
     val sessionsRepository = injector.instance[SessionsRepository]
-    val result = Await.result(sessionsRepository.signIn(accountName, password, udid, DeviceType.ios, "user agent"))
-    val authentication = Await.result(sessionsRepository.signIn(result.accountName, password, udid, DeviceType.ios, "user agent"))
+    val result = Await.result(sessionsRepository.signIn(accountName, password, udid, DeviceType.ios, Some("user agent")))
+    val authentication = Await.result(sessionsRepository.signIn(result.accountName, password, udid, DeviceType.ios, Some("user agent")))
     authentication
 
   }

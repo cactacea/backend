@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.models.requests.auth
+package io.github.cactacea.backend.models.requests.oauth
 
 import com.twitter.finatra.request.RouteParam
 

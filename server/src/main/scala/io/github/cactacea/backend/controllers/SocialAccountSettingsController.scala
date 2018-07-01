@@ -31,7 +31,7 @@ class SocialAccountSettingsController @Inject()(@Flag("api.prefix") apiPrefix: S
 
     } { request: PostSocialAccount =>
       settingsService.connectSocialAccount(
-        request.socialAccountType,
+        request.providerId,
         request.accessTokenKey,
         request.accessTokenSecret,
         SessionContext.id
@@ -46,7 +46,7 @@ class SocialAccountSettingsController @Inject()(@Flag("api.prefix") apiPrefix: S
 
     } { request: DeleteSocialAccount =>
       settingsService.disconnectSocialAccount(
-        request.socialAccountType,
+        request.providerId,
         SessionContext.id
       ).map(_ => response.noContent)
     }

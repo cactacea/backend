@@ -4,6 +4,6 @@ import com.twitter.util.Future
 
 trait SocialAccountsService {
 
-  def getService(socialAccountType: String): Future[AuthenticationService]
+  def getService(providerId: String): Future[AuthenticationService]
 
 }

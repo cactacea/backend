@@ -34,11 +34,11 @@ class SocialAccountsController @Inject()(@Flag("api.prefix") apiPrefix: String, 
 
     } { request: PostSocialAccountSignUp =>
       sessionService.signUp(
-        request.socialAccountType,
+        request.providerId,
         request.name,
         request.displayName,
         request.password,
-        request.socialAccountIdentifier,
+        request.providerKey,
         request.authenticationCode,
         request.udid,
         request.web,
@@ -62,8 +62,8 @@ class SocialAccountsController @Inject()(@Flag("api.prefix") apiPrefix: String, 
 
     } { request: GetSocialAccountSignIn =>
       sessionService.signIn(
-        request.socialAccountType,
-        request.socialAccountIdentifier,
+        request.providerId,
+        request.providerKey,
         request.authenticationCode,
         request.udid,
         request.userAgent,
@@ -83,8 +83,8 @@ class SocialAccountsController @Inject()(@Flag("api.prefix") apiPrefix: String, 
 
     } { request: GetAuthenticationCode =>
       sessionService.issueAuthenticationCode(
-        request.socialAccountType,
-        request.socialAccountIdentifier
+        request.providerId,
+        request.providerKey
       ).map( _ => response.ok )
     }
 
