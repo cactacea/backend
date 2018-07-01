@@ -1,3 +1,2 @@
-# Authentication library for Finatra
-
-Forked from https://github.com/mohiva/play-silhouette
+# Filhouette
+An authentication library for Finatra forked from [`Silhouette`](https://github.com/mohiva/play-silhouette)
