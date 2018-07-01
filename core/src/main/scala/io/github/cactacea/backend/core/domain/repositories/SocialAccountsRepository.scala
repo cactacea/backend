@@ -19,26 +19,26 @@ class SocialAccountsRepository {
     ))
   }
 
-  def create(socialAccountType: String, token: String, sessionId: SessionId): Future[Unit] = {
+  def create(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
     socialAccountsDAO.exist(
-      socialAccountType,
+      providerId,
       sessionId
     ).flatMap(_ match {
       case false =>
-        socialAccountsDAO.update(socialAccountType, true, sessionId).flatMap(_ match {
+        socialAccountsDAO.update(providerId, true, sessionId).flatMap(_ match {
           case true =>
             Future.Unit
           case false =>
-            socialAccountsDAO.create(socialAccountType, token, None, true, sessionId).flatMap(_ => Future.Unit)
+            socialAccountsDAO.create(providerId, providerKey, None, true, sessionId).flatMap(_ => Future.Unit)
         })
       case true =>
         Future.exception(CactaceaException(SocialAccountAlreadyConnected))
     })
   }
 
-  def delete(socialAccountType: String, sessionId: SessionId): Future[Unit] = {
+  def delete(providerId: String, sessionId: SessionId): Future[Unit] = {
     socialAccountsDAO.delete(
-      socialAccountType,
+      providerId,
       sessionId
     ).flatMap(_ match {
       case true =>

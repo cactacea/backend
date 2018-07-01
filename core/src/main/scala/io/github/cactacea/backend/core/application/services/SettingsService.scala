@@ -52,22 +52,22 @@ class SettingsService {
   }
 
 
-  def connectSocialAccount(socialAccountType: String, socialAccountIdentifier: String, authenticationCode: String, sessionId: SessionId): Future[Unit] = {
+  def connectSocialAccount(providerId: String, providerKey: String, authenticationCode: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        s <- socialAccountsService.getService(socialAccountType)
-        _ <- s.validateCode(socialAccountIdentifier, authenticationCode)
-        r <- socialAccountsRepository.create(socialAccountType, socialAccountIdentifier, sessionId)
-        _ <- injectionService.socialAccountConnected(socialAccountType, sessionId)
+        s <- socialAccountsService.getService(providerId)
+        _ <- s.validateCode(providerKey, authenticationCode)
+        r <- socialAccountsRepository.create(providerId, providerKey, sessionId)
+        _ <- injectionService.socialAccountConnected(providerId, sessionId)
       } yield (r)
     }
   }
 
-  def disconnectSocialAccount(socialAccountType: String, sessionId: SessionId): Future[Unit] = {
+  def disconnectSocialAccount(providerId: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- socialAccountsRepository.delete(socialAccountType, sessionId)
-        _ <- injectionService.socialAccountDisconnected(socialAccountType, sessionId)
+        r <- socialAccountsRepository.delete(providerId, sessionId)
+        _ <- injectionService.socialAccountDisconnected(providerId, sessionId)
       } yield (r)
     }
   }

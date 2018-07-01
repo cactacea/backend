@@ -11,25 +11,25 @@ class SocialAccountsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(socialAccountType: String, socialAccountId: String, authenticationCode: Option[String], verified: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def create(providerId: String, providerKey: String, authenticationCode: Option[String], verified: Boolean, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[SocialAccounts]
         .insert(
-          _.accountId           -> lift(accountId),
-          _.socialAccountId     -> lift(socialAccountId),
-          _.socialAccountType   -> lift(socialAccountType),
-          _.verified            -> lift(verified)
+          _.accountId    -> lift(accountId),
+          _.providerKey  -> lift(providerKey),
+          _.providerId   -> lift(providerId),
+          _.verified     -> lift(verified)
         )
     }
     run(q).map(_ == 1)
   }
 
-  def update(socialAccountType: String, verified: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def update(providerKey: String, verified: Boolean, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[SocialAccounts]
-          .filter(_.socialAccountType == lift(socialAccountType))
+          .filter(_.providerId == lift(providerKey))
           .filter(_.accountId == lift(accountId))
           .update(
             _.verified            -> lift(verified)
@@ -38,32 +38,32 @@ class SocialAccountsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  def delete(accountType: String, sessionId: SessionId): Future[Boolean] = {
+  def delete(providerId: String, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[SocialAccounts]
+        .filter(_.providerId == lift(providerId))
         .filter(_.accountId == lift(accountId))
-        .filter(_.socialAccountType == lift(accountType))
         .delete
     }
     run(q).map(_ == 1)
   }
 
-  def find(accountType: String, socialAccountId: String): Future[Option[SocialAccounts]] = {
+  def find(providerId: String, providerKey: String): Future[Option[SocialAccounts]] = {
     val q = quote {
       query[SocialAccounts]
-        .filter(_.socialAccountId == lift(socialAccountId))
-        .filter(_.socialAccountType == lift(accountType))
+        .filter(_.providerKey == lift(providerKey))
+        .filter(_.providerId == lift(providerId))
     }
     run(q).map(_.headOption)
   }
 
-  def exist(accountType: String, sessionId: SessionId): Future[Boolean] = {
+  def exist(providerId: String, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[SocialAccounts]
         .filter(_.accountId == lift(accountId))
-        .filter(_.socialAccountType == lift(accountType))
+        .filter(_.providerId == lift(providerId))
         .size
     }
     run(q).map(_ == 1)
@@ -74,8 +74,8 @@ class SocialAccountsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[SocialAccounts]
         .filter(_.accountId == lift(accountId))
-        .filter(_.socialAccountType != "")
-        .sortBy(_.socialAccountType)
+        .filter(_.providerId != "")
+        .sortBy(_.providerId)
     }
     run(q)
   }

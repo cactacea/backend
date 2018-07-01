@@ -9,8 +9,8 @@ class DefaultSocialAccountsService extends SocialAccountsService {
 
   val services = Map[String, AuthenticationService]()
 
-  def getService(socialAccountType: String): Future[AuthenticationService] = {
-    services.get(socialAccountType) match {
+  def getService(providerId: String): Future[AuthenticationService] = {
+    services.get(providerId) match {
       case Some(s) =>
         Future.value(s)
       case None =>

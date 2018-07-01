@@ -6,12 +6,12 @@ import com.google.inject.Inject
 import com.twitter.finagle.http.Status
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util.{Await, Future}
+import io.github.cactacea.backend.core.application.components.interfaces.ConfigService
+import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.helpers.ServerSpec
 import io.github.cactacea.backend.models.requests.account.GetAccounts
 import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.models.responses.Authentication
-import io.github.cactacea.backend.core.application.components.interfaces.ConfigService
-import io.github.cactacea.backend.core.domain.models.Account
 
 class BackendServerSpec extends ServerSpec {
 
@@ -28,7 +28,7 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignUp
-        val postSignUp = PostSignUp(s"account$i", Some(s"display$i"), s"Password_$i", uuid, None, None, None, None, "ios")
+        val postSignUp = PostSignUp(s"account$i", Some(s"display$i"), s"Password_$i", uuid, None, None, None, None, Some("ios"))
         val body = mapper.writePrettyString(postSignUp)
         val signUpResponse = post("/sessions", body)
         assert(signUpResponse.statusCode == Status.Ok.code)
@@ -52,7 +52,7 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignIn
-        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
+        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, Some("ios"))
         val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
@@ -75,7 +75,7 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignIn
-        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
+        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, Some("ios"))
         val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
@@ -112,7 +112,7 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignIn
-        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, "ios")
+        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, Some("ios"))
         val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)

@@ -4,6 +4,6 @@ import io.github.cactacea.backend.core.domain.enums.ActiveStatus
 import io.swagger.annotations.ApiModelProperty
 
 case class PostActiveStatus(
-                            @ApiModelProperty(value = "Device status.")
-                            status: ActiveStatus
-                          )
+                             @ApiModelProperty(value = "Device status.")
+                             status: ActiveStatus
+                           )

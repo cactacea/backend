@@ -7,7 +7,7 @@ import com.twitter.finagle.oauth2._
 import com.twitter.finatra.http.Controller
 import com.twitter.inject.annotations.Flag
 import com.twitter.util.Future
-import io.github.cactacea.backend.models.requests.auth.GetAuthorize
+import io.github.cactacea.backend.models.requests.oauth.GetAuthorize
 import io.github.cactacea.backend.util.oauth.{OAuthCodeGenerator, OAuthHandler, OAuthService, OAuthTokenGenerator}
 import io.github.cactacea.backend.views.{ErrorView, SignInView}
 

@@ -30,7 +30,8 @@ case class PostSignUp(
                        @ApiModelProperty(value = "Account bio.")
                        @Size(min = 0, max = 1024) bio: Option[String],
 
-                       @Header("user-agent") userAgent: String
+                       @Header("user-agent") userAgent: Option[String]
+
                   ) {
 
   @MethodValidation

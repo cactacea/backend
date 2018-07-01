@@ -11,17 +11,17 @@ class FacebookService extends AuthenticationService {
 
   @Inject private var facebookClient: FacebookClient = _
 
-  val socialAccountType: String = "facebook"
+  val providerId: String = "facebook"
 
-  def issueCode(socialAccountIdentifier: String): Future[Unit] = {
+  def issueCode(providerKey: String): Future[Unit] = {
     Future.exception(CactaceaException(OperationNotAllowed))
   }
 
-  def validateCode(socialAccountIdentifier: String, authenticationCode: String): Future[String] = {
-    facebookClient.me(socialAccountIdentifier).map(s => s.id)
+  def validateCode(providerKey: String, authenticationCode: String): Future[String] = {
+    facebookClient.me(providerKey).map(s => s.id)
   }
 
-  def resetPassword(socialAccountIdentifier: String): Future[Unit] = {
+  def resetPassword(providerKey: String): Future[Unit] = {
     Future.exception(CactaceaException(OperationNotAllowed))
   }
 

@@ -194,11 +194,11 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  def socialAccountConnected(socialAccountType: String, sessionId: SessionId): Future[Unit] = {
+  def socialAccountConnected(providerId: String, sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
-  def socialAccountDisconnected(socialAccountType: String, sessionId: SessionId): Future[Unit] = {
+  def socialAccountDisconnected(providerId: String, sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 

@@ -11,17 +11,17 @@ class TwitterService extends AuthenticationService {
 
   @Inject private var twitterClient: TwitterClient = _
 
-  val socialAccountType: String = "twitter"
+  val providerId: String = "twitter"
 
-  def issueCode(socialAccountIdentifier: String): Future[Unit] = {
+  def issueCode(providerKey: String): Future[Unit] = {
     Future.exception(CactaceaException(OperationNotAllowed))
   }
 
-  def validateCode(socialAccountIdentifier: String, authenticationCode: String): Future[String] = {
-    twitterClient.me(socialAccountIdentifier, authenticationCode).map(s => s.id)
+  def validateCode(providerKey: String, authenticationCode: String): Future[String] = {
+    twitterClient.me(providerKey, authenticationCode).map(s => s.id)
   }
 
-  def resetPassword(socialAccountIdentifier: String): Future[Unit] = {
+  def resetPassword(providerKey: String): Future[Unit] = {
     Future.exception(CactaceaException(OperationNotAllowed))
   }
 

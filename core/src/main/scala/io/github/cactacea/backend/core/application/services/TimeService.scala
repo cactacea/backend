@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.application.components.interfaces.ConfigS
 class TimeService @Inject()(configService: ConfigService) {
 
   def nanoTime(): Long = {
-    System.currentTimeMillis - configService.basePointInTime
+    System.currentTimeMillis
   }
 
 }
