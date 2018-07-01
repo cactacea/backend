@@ -126,8 +126,8 @@ lazy val filhouette = (project in file("filhouette"))
     ))
 
 lazy val versions = new {
-  val cactacea = "0.1.6-SNAPSHOT"
-  val finagle = "18.2.0"
+  val cactacea = "0.1.7-SNAPSHOT"
+  val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
   val mockito = "1.10.19"
@@ -150,7 +150,7 @@ lazy val coreLibrarySetting = Seq(
   libraryDependencies ++= Seq(
 
     "com.typesafe" % "config" % "1.3.2",
-    "io.getquill" %% "quill-finagle-mysql" % "2.4.2",
+    "io.getquill" %% "quill-finagle-mysql" % "2.5.4",
     "io.jsonwebtoken" % "jjwt" % "0.9.0",
     "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
     "mysql" % "mysql-connector-java" % "6.0.6",
