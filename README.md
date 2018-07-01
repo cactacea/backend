@@ -21,3 +21,8 @@ Cactacea provides the following features.
 - `Links` - Linking social network accounts.
 - `Notifications` - new users, feeds, group invitations and messages. 
 - `Authentication`, `Authorization` - API Key, OAuth2
+
+## Projects ##
+
+- [`Suwagger`](https://github.com/cactacea/backend/tree/master/swagger) - Swagger Finatra Integration
+- [`Filhouette`](https://github.com/cactacea/backend/tree/master/filhouette) - Authentication library for Finatra
