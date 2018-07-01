@@ -18,7 +18,7 @@ lazy val demo = (project in file("demo"))
     dockerRepository := Some("cactacea")
   )
   .dependsOn(server)
-  .dependsOn(component)
+  .dependsOn(components)
   .enablePlugins(JavaAppPackaging)
 
 
@@ -76,7 +76,7 @@ lazy val util = (project in file("util"))
   .settings(coreLibrarySetting)
 
 
-lazy val component = (project in file("component"))
+lazy val components = (project in file("components"))
   .settings(
     version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
@@ -98,7 +98,7 @@ lazy val component = (project in file("component"))
 lazy val filhouette = (project in file("filhouette"))
   .settings(
     version      := versions.cactacea,
-    organization := "io.github.cactacea.filhouette",
+    organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
     name := "filhouette",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
@@ -124,6 +124,8 @@ lazy val filhouette = (project in file("filhouette"))
 //      "org.jasig.cas.client" % "cas-client-core" % "3.4.1",
 //      "org.jasig.cas.client" % "cas-client-support-saml" % "3.4.1"
     ))
+
+
 
 lazy val versions = new {
   val cactacea = "0.1.7-SNAPSHOT"
