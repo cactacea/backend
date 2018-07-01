@@ -10,5 +10,4 @@ trait ConfigService {
   val subject: String
   val algorithm: String
   val maximumGroupAccountLimits: Long
-  val basePointInTime: Long
 }
