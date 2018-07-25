@@ -12,5 +12,6 @@ class DefaultConfigService(
                             val subject: String,
                             val algorithm: String,
                             val maximumGroupAccountLimits: Long,
-                            val basePointInTime: Long
+                            val basePointInTime: Long,
+                            val numberOfShards: Long
                           ) extends ConfigService

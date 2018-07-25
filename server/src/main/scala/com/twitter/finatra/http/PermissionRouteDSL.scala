@@ -1,8 +1,8 @@
 package com.twitter.finatra.http
 
 import com.twitter.finagle.http.RouteIndex
-import io.github.cactacea.backend.util.auth.SessionContext
-import io.github.cactacea.backend.util.oauth.{Permission, Permissions}
+import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.oauth.{Permission, Permissions}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.OperationNotAllowed
 import io.swagger.models.{Operation, Swagger}

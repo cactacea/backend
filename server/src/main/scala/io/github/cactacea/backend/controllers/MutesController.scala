@@ -6,8 +6,8 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
 import io.github.cactacea.backend.models.requests.session.GetSessionMutes
 import io.github.cactacea.backend.swagger.BackendController
-import io.github.cactacea.backend.util.auth.SessionContext
-import io.github.cactacea.backend.util.oauth.Permissions
+import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services.MutesService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._

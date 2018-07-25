@@ -7,8 +7,8 @@ import io.github.cactacea.backend.models.requests.account.{PostAccountJoinGroup,
 import io.github.cactacea.backend.models.requests.group._
 import io.github.cactacea.backend.models.responses.GroupCreated
 import io.github.cactacea.backend.swagger.BackendController
-import io.github.cactacea.backend.util.auth.SessionContext
-import io.github.cactacea.backend.util.oauth.Permissions
+import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._

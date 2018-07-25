@@ -5,9 +5,9 @@ import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.inject.TwitterModule
-import io.github.cactacea.backend.util.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
+import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.util.warmups.DatabaseMigrationHandler
+import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
 
 class BaseServer extends HttpServer {
 

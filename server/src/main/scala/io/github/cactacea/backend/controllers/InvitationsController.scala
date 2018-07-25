@@ -7,8 +7,8 @@ import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount
 import io.github.cactacea.backend.models.requests.group.{GetSessionInvitations, PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
 import io.github.cactacea.backend.swagger.BackendController
-import io.github.cactacea.backend.util.auth.SessionContext
-import io.github.cactacea.backend.util.oauth.Permissions
+import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services.GroupInvitationsService
 import io.github.cactacea.backend.core.domain.models.GroupInvitation
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._

@@ -30,7 +30,7 @@ object DefaultConfigModule extends TwitterModule {
       (DeviceType.ios, ios),
       (DeviceType.android, android),
       (DeviceType.web, web))
-    val service = new DefaultConfigService(apiKeys, signingKey, expire, issuer, subject, algorithm, max, time)
+    val service = new DefaultConfigService(apiKeys, signingKey, expire, issuer, subject, algorithm, max, time, 1L)
     bindSingleton[ConfigService].toInstance(service)
   }
 

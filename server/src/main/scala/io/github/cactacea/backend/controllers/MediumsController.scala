@@ -9,9 +9,9 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.MediumNotFo
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
 import io.github.cactacea.backend.swagger.BackendController
-import io.github.cactacea.backend.util.auth.SessionContext
-import io.github.cactacea.backend.util.oauth.Permissions
-import io.github.cactacea.backend.util.media.MediaExtractor
+import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.media.MediaExtractor
 import io.swagger.models.Swagger
 
 @Singleton
