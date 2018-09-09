@@ -124,7 +124,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.normally
 
     val q = quote {
-      query[FeedLikes].filter(ff => ff.feedId == lift(feedId) && (infix"ff.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
+      query[FeedLikes].filter(ff => ff.feedId == lift(feedId) && (ff.id < lift(s) || lift(s) == -1L) &&
         query[Blocks].filter(b => b.accountId == ff.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
@@ -144,7 +144,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedLikes].filter(ff => ff.by == lift(by) && (infix"ff.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+      query[FeedLikes].filter(ff => ff.by == lift(by) && (ff.id < lift(s) || lift(s) == -1L))
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
@@ -168,7 +168,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedLikes].filter(ff => ff.by == lift(accountId) && (infix"ff.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+      query[FeedLikes].filter(ff => ff.by == lift(accountId) && (ff.id < lift(s) || lift(s) == -1L))
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         (query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty) &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))

@@ -2,6 +2,7 @@ package io.github.cactacea.backend.core.application.components.services
 
 import java.util.Date
 
+import com.twitter.inject.domain.WrappedValue
 import com.typesafe.config.Config
 import io.getquill._
 import io.github.cactacea.backend.core.domain.enums._
@@ -83,5 +84,12 @@ class DatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy
   implicit val deviceTypeEncode: MappedEncoding[Byte, DeviceType] = MappedEncoding[Byte, DeviceType] (long => DeviceType.forName(long))
   implicit val activeStatusTypeDecode: MappedEncoding[ActiveStatus, Byte] = MappedEncoding[ActiveStatus, Byte] (enumValue => enumValue.toValue)
   implicit val activeStatusTypeEncode: MappedEncoding[Byte, ActiveStatus] = MappedEncoding[Byte, ActiveStatus] (long => ActiveStatus.forName(long))
+
+  implicit class IdComparison[T <: WrappedValue[Long]](left: T) {
+    def >(right: Long) = quote(infix"$left > $right".as[Boolean])
+    def <(right: Long) = quote(infix"$left < $right".as[Boolean])
+    def >=(right: Long) = quote(infix"$left >= $right".as[Boolean])
+    def <=(right: Long) = quote(infix"$left <= $right".as[Boolean])
+  }
 
 }

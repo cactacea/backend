@@ -180,7 +180,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Comments].filter(c => c.feedId == lift(feedId) && (infix"c.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
+      query[Comments].filter(c => c.feedId == lift(feedId) && (c.id < lift(s) || lift(s) == -1L) &&
         query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})

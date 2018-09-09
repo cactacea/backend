@@ -128,14 +128,13 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean): Future[List[(AccountGroups, Groups, Option[Messages], Option[AccountMessages])]] = {
-
     val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
-
     val q = quote {
-      query[AccountGroups].filter(ag => ag.accountId == lift(accountId) && ag.hidden == lift(hidden))
-        .filter(_ => infix"ag.id < ${lift(s)}".as[Boolean] || lift(s) == -1L)
+      query[AccountGroups]
+        .filter(ag => ag.accountId == lift(accountId) && ag.hidden == lift(hidden))
+        .filter(ag => ag.id < lift(s) || lift(s) == -1L)
         .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
         .leftJoin(query[Messages]).on({ case ((_, g), m) => g.messageId.exists(_ == m.id) })
         .leftJoin(query[AccountMessages]).on({ case (((_, g), _), am) => g.messageId.exists(_ == am.messageId) && am.accountId == lift(accountId) })

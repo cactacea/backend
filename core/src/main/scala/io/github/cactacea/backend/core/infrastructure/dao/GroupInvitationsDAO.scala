@@ -79,7 +79,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (infix"gi.id < ${lift(s)}".as[Boolean] || lift(s) == -1L)})
+      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (gi.id < lift(s) || lift(s) == -1L)})
         .join(query[Groups]).on((gi, g) => g.id == gi.groupId)
         .join(query[Accounts]).on({ case ((gi, g), a) => a.id == gi.by})
         .leftJoin(query[Relationships]).on({ case (((_, g), a), r) => r.accountId == a.id && r.by == lift(by)})

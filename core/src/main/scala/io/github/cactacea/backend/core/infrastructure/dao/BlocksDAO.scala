@@ -97,7 +97,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.normally
 
     val q = quote {
-      query[Blocks].filter(b => b.by == lift(by) && b.blocked == true && (infix"b.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+      query[Blocks].filter(b => b.by == lift(by) && b.blocked == true && (b.id < lift(s) || lift(s) == -1L))
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
         .map({ case ((b, a), r) => (a, r, b)})

@@ -36,7 +36,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
         _.displayName           -> lift(displayName),
         _.password              -> lift(hashedPassword),
         _.accountStatus         -> lift(accountStatus),
-        _.web                 -> lift(web),
+        _.web                   -> lift(web),
         _.birthday              -> lift(birthday),
         _.location              -> lift(location),
         _.bio                   -> lift(bio)
@@ -246,8 +246,9 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
     val status = AccountStatusType.normally
 
     val q2 = quote {
-      query[Accounts].filter({a => a.id !=  lift(by) && ((a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == "")) &&
-          a.accountStatus  == lift(status) && (infix"a.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
+      query[Accounts]
+        .filter({a => a.id !=  lift(by) && ((a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == "")) &&
+          a.accountStatus  == lift(status) && (a.id < lift(s) || lift(s) == -1L) &&
           query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty})
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
       .sortBy({ case (a, _) => a.id})(Ord.descNullsLast)

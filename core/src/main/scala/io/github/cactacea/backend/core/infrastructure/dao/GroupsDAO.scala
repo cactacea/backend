@@ -136,7 +136,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
           .filter(_.by        == lift(by))
           .filter(b => b.blocked == true || b.beingBlocked == true)
           .isEmpty)
-        .filter(_ => (infix"g.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        .filter(_.id < lift(s) || lift(s) == -1L)
         .sortBy(_.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))

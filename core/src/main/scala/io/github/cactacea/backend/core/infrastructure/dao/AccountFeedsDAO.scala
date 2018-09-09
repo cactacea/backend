@@ -45,7 +45,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
       for {
         af <- query[AccountFeeds]
           .filter(_.accountId == lift(by))
-          .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+          .filter(_.feedId < lift(s)  || lift(s) == -1)
           .sortBy(_.feedId)(Ord.descNullsLast)
           .take(lift(c))
         f <- query[Feeds]
