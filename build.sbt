@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.2.1-SNAPSHOT"
+  val cactacea = "0.3.1-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -31,6 +31,7 @@ lazy val demo = (project in file("demo"))
   )
   .dependsOn(server)
   .dependsOn(externals)
+  .dependsOn(swagger)
   .enablePlugins(JavaAppPackaging)
 
 
@@ -42,6 +43,11 @@ lazy val server = (project in file("server"))
     scalaVersion := "2.12.5",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.github.finagle" %% "finagle-oauth2" % "18.4.0"
+    )
   )
   .settings(commonResolverSetting)
   .settings(finatraLibrarySetting)
@@ -64,8 +70,8 @@ lazy val core = (project in file("core"))
     )
   )
   .settings(commonResolverSetting)
+  .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
-  .dependsOn(oauth2)
   .dependsOn(swagger)
   .enablePlugins(FlywayPlugin)
 
@@ -73,7 +79,7 @@ lazy val core = (project in file("core"))
 lazy val externals = (project in file("externals"))
   .settings(
     version      := versions.cactacea,
-    organization := "io.github.cactacea.backend",
+    organization := "io.github.cactacea.backend.externals",
     scalaVersion := "2.12.5",
     name := "externals",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
@@ -155,7 +161,7 @@ lazy val commonResolverSetting = Seq(
 lazy val filhouette = (project in file("filhouette"))
   .settings(
     version      := versions.cactacea,
-    organization := "io.github.cactacea.filhouette",
+    organization := "io.github.cactacea",
     scalaVersion := "2.12.5",
     name := "filhouette",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
@@ -178,14 +184,12 @@ lazy val filhouette = (project in file("filhouette"))
   .settings(
     libraryDependencies ++= Seq(
       "de.svenkubiak" % "jBCrypt" % "0.4.1"
-      //      "org.jasig.cas.client" % "cas-client-core" % "3.4.1",
-      //      "org.jasig.cas.client" % "cas-client-support-saml" % "3.4.1"
     ))
 
 lazy val swagger = (project in file("swagger"))
   .settings(
     version      := versions.cactacea,
-    organization := "io.github.cactacea.swagger",
+    organization := "io.github.cactacea",
     scalaVersion := "2.12.5",
     name := "swagger",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
@@ -199,21 +203,5 @@ lazy val swagger = (project in file("swagger"))
       "org.webjars" % "swagger-ui" % "3.10.0",
       "net.bytebuddy" % "byte-buddy" % "1.7.11",
       "org.scalatest" %% "scalatest" % versions.scalaTest % "test"
-    )
-  )
-
-lazy val oauth2 = (project in file("oauth2"))
-  .settings(
-    organization := "com.twitter.finagle.oauth2",
-    scalaVersion := "2.12.5",
-    name := "oauth2",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.twitter" %% "finagle-http" % versions.finagle,
-      "org.scalacheck" %% "scalacheck" % "1.13.5" % Test,
-      "org.scalatest" %% "scalatest" % "3.0.5" % Test
     )
   )

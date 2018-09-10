@@ -143,7 +143,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).flatMap(f => _addTagsMedium(f, sessionId).map(_.sortWith(_._1.id.value > _._1.id.value)))
+    run(q).flatMap(f => _addTagsMedium(f, sessionId)) //.map(_.sortWith(_._1.id.value > _._1.id.value)))
   }
 
 
