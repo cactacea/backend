@@ -187,23 +187,21 @@ class CommentsDAO @Inject()(db: DatabaseService) {
         .take(lift(c))
     }
 
-
     (for {
-      comments <- run(q)
-      ids = comments.map(_._1._1.id)
-      blocksCount <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
-    } yield (comments, blocksCount))
+      c <- run(q)
+      ids = c.map(_._1._1.id)
+      b <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
+    } yield (c, b))
       .map({ case (accounts, blocksCount) =>
-        accounts.map({ t =>
-          val c = t._1._1
-          val a = t._1._2
-          val r = t._2
-          val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
+        accounts.map({ case ((comment, account), relationship) =>
+          val b = blocksCount.filter(_.id == comment.id).map(_.count).headOption
+          (comment.copy(likeCount = comment.likeCount - b.getOrElse(0L)), account, relationship)
         })
       })
-      // TODO : Fix me
-      .map(_.sortWith(_._1.id.value > _._1.id.value))
+
+//
+//      // TODO : Fix me
+//    v.map(_.sortWith(_._1.id.value > _._1.id.value))
   }
 
   def find(commentId: CommentId): Future[Option[Comments]] = {
