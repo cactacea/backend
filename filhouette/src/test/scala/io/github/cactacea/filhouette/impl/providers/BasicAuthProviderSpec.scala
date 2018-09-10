@@ -20,14 +20,16 @@ import com.twitter.util.{Await, Future}
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.crypto.Base64
 import io.github.cactacea.filhouette.api.exceptions.ConfigurationException
-import io.github.cactacea.filhouette.api.util.{Credentials, PasswordInfo}
-import io.github.cactacea.filhouette.impl.providers.BasicAuthProvider
+import io.github.cactacea.filhouette.api.util.Credentials
 import io.github.cactacea.filhouette.api.util.PasswordInfo
 import io.github.cactacea.filhouette.impl.providers.PasswordProvider._
+import org.specs2.runner.JUnitRunner
+import org.junit.runner.RunWith
 
 /**
  * Test case for the [[BasicAuthProvider]] class.
  */
+@RunWith(classOf[JUnitRunner])
 class BasicAuthProviderSpec extends PasswordProviderSpec {
 
   "The `authenticate` method" should {

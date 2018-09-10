@@ -6,7 +6,6 @@ import com.google.inject.Inject
 import com.twitter.finagle.http.Status
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util.{Await, Future}
-import io.github.cactacea.backend.core.application.components.interfaces.ConfigService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.helpers.ServerSpec
 import io.github.cactacea.backend.models.requests.account.GetAccounts
@@ -16,7 +15,6 @@ import io.github.cactacea.backend.models.responses.Authentication
 class BackendServerSpec extends ServerSpec {
 
   @Inject private var mapper: FinatraObjectMapper = _
-  @Inject private var configService: ConfigService = _
 
   val accountsCount = 1
 

@@ -84,5 +84,5 @@ object BCryptSha256PasswordHasher {
   /**
     * The ID of the hasher.
     */
-  val ID = "bcrypt-sha256"
+  val ID = "02"
 }

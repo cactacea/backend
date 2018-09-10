@@ -59,10 +59,9 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
       query[FriendRequests]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
-        .take(lift(1))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def find(id: FriendRequestId): Future[Option[FriendRequests]] = {
@@ -91,7 +90,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
 
     if (received) {
       val q = quote {
-        query[FriendRequests].filter(f => f.accountId == lift(by) && (infix"f.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        query[FriendRequests].filter(f => f.accountId == lift(by) && (f.id < lift(s) || lift(s) == -1L))
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})

@@ -745,18 +745,16 @@ DROP FUNCTION IF EXISTS `${schema}`.`generateId`;
 -- https://engineering.instagram.com/sharding-ids-at-instagram-1cf5a71e5a5c
 
 DELIMITER $$
-CREATE FUNCTION `generateId`() RETURNS BIGINT
+CREATE FUNCTION `generateId`(shard_id INT) RETURNS BIGINT
     DETERMINISTIC
 BEGIN
     DECLARE our_epoc BIGINT;
     DECLARE now_millis BIGINT;
     DECLARE seq_id BIGINT;
     DECLARE result BIGINT;
-    DECLARE shard_id BIGINT;
 
 	REPLACE INTO tickets (stub) VALUES ('a');
 	SET seq_id := LAST_INSERT_ID() % 1024;
-    SET shard_id := IFNULL(@shard_id, 1);
 	SET our_epoc := 1387263000;  # 2011/01/01 00:00:00
     SET now_millis := (UNIX_TIMESTAMP() - our_epoc) * 1000;
     SET result := now_millis << 23;

@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.models.responses.Authentication
 import io.github.cactacea.backend.swagger.BackendController
-import io.github.cactacea.backend.util.auth.{AuthTokenGenerator, SessionContext}
+import io.github.cactacea.backend.utils.auth.{AuthTokenGenerator, SessionContext}
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountTerminated, AccountTerminatedType, InvalidAccountNameOrPassword, InvalidAccountNameOrPasswordType}
 import io.swagger.models.Swagger

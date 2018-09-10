@@ -90,7 +90,7 @@ object BCryptPasswordHasher {
   /**
     * The ID of the hasher.
     */
-  val ID = "bcrypt"
+  val ID = "01"
 
   /**
     * The pattern to extract the log rounds from the password string.

@@ -46,8 +46,9 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages].filter(am => am.accountId == lift(by) && am.groupId == lift(groupId))
-        .filter(_ => infix"am.message_id > ${lift(s)}".as[Boolean] || lift(s) == -1L)
+      query[AccountMessages]
+        .filter(am => am.accountId == lift(by) && am.groupId == lift(groupId))
+        .filter(am => am.messageId > lift(s) || lift(s) == -1L)
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.exists(_ == i.id) })
@@ -69,8 +70,9 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages].filter(am => am.accountId == lift(by) && am.groupId == lift(groupId) )
-        .filter(_ => infix"am.message_id < ${lift(s)}".as[Boolean] || lift(s) == -1L )
+      query[AccountMessages]
+        .filter(am => am.accountId == lift(by) && am.groupId == lift(groupId) )
+        .filter(am => am.messageId < lift(s) || lift(s) == -1L)
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.exists(_ == i.id) })

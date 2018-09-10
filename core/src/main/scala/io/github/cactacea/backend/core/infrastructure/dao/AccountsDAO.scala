@@ -36,7 +36,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
         _.displayName           -> lift(displayName),
         _.password              -> lift(hashedPassword),
         _.accountStatus         -> lift(accountStatus),
-        _.web                 -> lift(web),
+        _.web                   -> lift(web),
         _.birthday              -> lift(birthday),
         _.location              -> lift(location),
         _.bio                   -> lift(bio)
@@ -45,7 +45,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
     run(q)
   }
 
-  def updateProfile(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Boolean] = {
+  def updateProfile(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
@@ -58,10 +58,10 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
           _.bio         -> lift(bio)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def updateProfileImageUri(profileImageUrl: Option[String], profileImage: Option[MediumId], sessionId: SessionId): Future[Boolean] = {
+  def updateProfileImageUri(profileImageUrl: Option[String], profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
@@ -71,10 +71,10 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
           _.profileImageUrl -> lift(profileImageUrl)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def updateAccountName(accountName: String, sessionId: SessionId): Future[Boolean] = {
+  def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
@@ -83,10 +83,10 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
           _.accountName   -> lift(accountName)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Boolean] = {
+  def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val hashedNewPassword = hashService.hash(newPassword)
     val hashedOldPassword = hashService.hash(oldPassword)
@@ -98,25 +98,25 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
           _.password -> lift(hashedNewPassword)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   def exist(accountName: String): Future[Boolean] = {
     val q = quote {
       query[Accounts]
         .filter(_.accountName == lift(accountName))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def exist(accountId: AccountId): Future[Boolean] = {
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def exist(accountId: AccountId, sessionId: SessionId, ignoreBlockedUser: Boolean = true): Future[Boolean] = {
@@ -132,18 +132,18 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
             .filter(_.by        == lift(by))
             .filter(b => b.blocked == true || b.beingBlocked == true)
             .isEmpty)
-          .size
+          .nonEmpty
       }
-      run(q).map(_ == 1)
+      run(q)
     } else {
       val status = AccountStatusType.normally
       val q = quote {
         query[Accounts]
           .filter(_.id == lift(accountId))
           .filter(_.accountStatus  == lift(status))
-          .size
+          .nonEmpty
       }
-      run(q).map(_ == 1)
+      run(q)
     }
   }
 
@@ -246,8 +246,9 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
     val status = AccountStatusType.normally
 
     val q2 = quote {
-      query[Accounts].filter({a => a.id !=  lift(by) && ((a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == "")) &&
-          a.accountStatus  == lift(status) && (infix"a.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
+      query[Accounts]
+        .filter({a => a.id !=  lift(by) && ((a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == "")) &&
+          a.accountStatus  == lift(status) && (a.id < lift(s) || lift(s) == -1L) &&
           query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty})
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
       .sortBy({ case (a, _) => a.id})(Ord.descNullsLast)

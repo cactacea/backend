@@ -84,9 +84,10 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[CommentLikes]
         .filter(_.commentId == lift(commentId))
-        .filter(_.by      == lift(by)).size
+        .filter(_.by      == lift(by))
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findAll(commentId: CommentId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {
@@ -97,7 +98,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[CommentLikes].filter(cf => cf.commentId == lift(commentId) && (infix"cf.id < ${lift(s)}".as[Boolean] || lift(s) == -1L) &&
+      query[CommentLikes].filter(cf => cf.commentId == lift(commentId) && (cf.id < lift(s) || lift(s) == -1L) &&
           query[Blocks].filter(b => b.accountId == cf.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})

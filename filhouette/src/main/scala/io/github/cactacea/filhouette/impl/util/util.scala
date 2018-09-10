@@ -16,9 +16,7 @@
 package io.github.cactacea.filhouette.impl.util
 
 import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.databind.{DeserializationFeature, JsonNode, ObjectMapper}
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import com.fasterxml.jackson.databind.JsonNode
 import com.twitter.finatra.json.FinatraObjectMapper
 
 /**
@@ -27,13 +25,9 @@ import com.twitter.finatra.json.FinatraObjectMapper
 package object util {}
 
 object Json {
-  private val scalaObjectMapper = new ObjectMapper() with ScalaObjectMapper
-  private val jsonFactory = new JsonFactory(scalaObjectMapper)
 
-  scalaObjectMapper.registerModule(DefaultScalaModule)
-  scalaObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
-  val finatraObjectMapper = new FinatraObjectMapper(scalaObjectMapper)
+  private val finatraObjectMapper = FinatraObjectMapper.create()
+  private val jsonFactory = new JsonFactory(finatraObjectMapper.objectMapper)
 
   def validate[T: Manifest](string: String): T = {
     finatraObjectMapper.parse[T](string)
@@ -44,15 +38,15 @@ object Json {
   }
 
   def obj(string: String): JsonNode = {
-    scalaObjectMapper.readValue(jsonFactory.createParser(string), classOf[JsonNode])
+    finatraObjectMapper.objectMapper.readValue(jsonFactory.createParser(string), classOf[JsonNode])
   }
 
   def obj(fields: (String, Any)*): JsonNode = {
-    scalaObjectMapper.valueToTree(fields.toMap)
+    finatraObjectMapper.objectMapper.valueToTree(fields.toMap)
   }
 
   def obj(value: Map[Symbol, Any]): JsonNode = {
-    scalaObjectMapper.valueToTree(value)
+    finatraObjectMapper.objectMapper.valueToTree(value)
   }
 
   def toJson(value: Map[Symbol, Any]): String = {
@@ -60,13 +54,14 @@ object Json {
   }
 
   def toJson(value: Any): String = {
-    scalaObjectMapper.writeValueAsString(value)
+    finatraObjectMapper.writeValueAsString(value)
   }
 
   def toMap[V](json:String)(implicit m: Manifest[V]) = fromJson[Map[String,V]](json)
 
   def fromJson[T](json: String)(implicit m : Manifest[T]): T = {
-    scalaObjectMapper.readValue[T](json)
+    val jsonNode = Json.obj(json)
+    finatraObjectMapper.parse[T](jsonNode)
   }
 }
 

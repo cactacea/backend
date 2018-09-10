@@ -4,14 +4,16 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.finatra.http.request.RequestUtils
 import com.twitter.inject.annotations.Flag
+import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.services.MediumsService
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.MediumNotFound
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{MediumNotFound, NotAcceptableMimeTypeFound}
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
 import io.github.cactacea.backend.swagger.BackendController
-import io.github.cactacea.backend.util.auth.SessionContext
-import io.github.cactacea.backend.util.oauth.Permissions
-import io.github.cactacea.backend.util.media.MediaExtractor
+import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.media.MediaExtractor
 import io.swagger.models.Swagger
 
 @Singleton
@@ -37,12 +39,18 @@ class MediumsController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swag
     } { request: Request =>
 
       val multiParams = RequestUtils.multiParams(request)
-      val media = multiParams.toList.map({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) })
-
-      mediumsService.create(
-        media,
-        SessionContext.id
-      ).map(_.map({case (id, url) => MediumCreated(id, url)}))
+      multiParams.toList.flatMap({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) }).headOption match {
+        case Some(media) =>
+          mediumsService.create(
+            media.width,
+            media.height,
+            media.data,
+            media.contentType,
+            SessionContext.id
+          ).map({ case (id, url) => MediumCreated(id, url) })
+        case None =>
+          Future.exception(CactaceaException(NotAcceptableMimeTypeFound))
+      }
     }
 
     deleteWithPermission("/mediums/:id")(Permissions.media) { o =>

@@ -20,11 +20,13 @@ import io.github.cactacea.filhouette.api.util.{PasswordHasher, PasswordHasherReg
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
-
+import org.specs2.runner.JUnitRunner
+import org.junit.runner.RunWith
 
 /**
  * Abstract test case for the [[PasswordProvider]] based class.
  */
+@RunWith(classOf[JUnitRunner])
 trait PasswordProviderSpec extends Specification with Mockito {
 
   /**

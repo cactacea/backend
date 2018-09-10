@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.models.requests.session
 
 import com.twitter.finatra.validation.{MethodValidation, Size}
-import io.github.cactacea.backend.util.validaters.Validations
+import io.github.cactacea.backend.utils.validaters.Validations
 import io.swagger.annotations.ApiModelProperty
 
 case class PutSessionPassword(

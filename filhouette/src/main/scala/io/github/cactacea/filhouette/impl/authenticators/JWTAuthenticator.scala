@@ -17,9 +17,7 @@ package io.github.cactacea.filhouette.impl.authenticators
 
 import java.util.Date
 
-import com.google.inject.Inject
 import com.twitter.finagle.http.{Request, Response}
-import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util.TimeConversions._
 import com.twitter.util._
 import io.github.cactacea.filhouette.api.Authenticator.Implicits._
@@ -33,6 +31,7 @@ import io.github.cactacea.filhouette.api.util.RequestExtractor._
 import io.github.cactacea.filhouette.api.{ExpirableAuthenticator, Logger, LoginInfo, StorableAuthenticator, util}
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator._
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService._
+import io.github.cactacea.filhouette.impl.util.Json
 import io.jsonwebtoken._
 import org.joda.time.DateTime
 
@@ -79,8 +78,6 @@ case class JWTAuthenticator(
  */
 object JWTAuthenticator {
 
-  @Inject var finatraObjectMapper: FinatraObjectMapper = _
-
   /**
    * Serializes the authenticator.
    *
@@ -95,14 +92,16 @@ object JWTAuthenticator {
     settings: JWTAuthenticatorSettings): String = {
 
     val signatureAlgorithm = SignatureAlgorithm.HS256
-    val subject = finatraObjectMapper.writePrettyString(authenticator.loginInfo)
-    val issuedAt = new Date(authenticator.lastUsedDateTime.getMillis / 1000)
-    val expired = new Date(authenticator.expirationDateTime.getMillis / 1000)
+    val subject = Json.toJson(authenticator.loginInfo)
+    val issuedAt = new Date() // new Date(authenticator.lastUsedDateTime.getMillis / 1000)
+    val expired = new DateTime().plus(authenticator.expirationDateTime.getMillis / 1000).toDate //new Date(authenticator.expirationDateTime.getMillis / 1000)
+
+
 
     authenticator.customClaims.foreach({ c =>
       c.asScala.foreach({ case (key, _) =>
         if (ReservedClaims.contains(key)) {
-          throw new AuthenticatorException(OverrideReservedClaim.format(ID, key, ReservedClaims.mkString(", ")))
+          Future.exception(new AuthenticatorException(OverrideReservedClaim.format(ID, key, ReservedClaims.mkString(", "))))
         }
       })
     })
@@ -115,7 +114,7 @@ object JWTAuthenticator {
       .setId(authenticator.id)
     authenticator.customClaims.foreach(token.addClaims(_))
 
-    token
+    settings.authenticateType +  token
       .signWith(signatureAlgorithm, settings.sharedSecret)
       .compact()
 
@@ -136,14 +135,16 @@ object JWTAuthenticator {
 
     Try {
 
+      val token = str.drop(settings.authenticateType.length)
+
       Jwts.parser()
         .setSigningKey(settings.sharedSecret)
-        .parseClaimsJws(str)
+        .parseClaimsJws(token)
 
     }.map { jwtObject =>
 
       val body = jwtObject.getBody()
-      val loginInfo = finatraObjectMapper.parse[LoginInfo](authenticatorEncoder.decode(body.getSubject))
+      val loginInfo = Json.fromJson[LoginInfo](authenticatorEncoder.decode(body.getSubject))
       val filteredClaims = body.asScala.filterNot({ case (k, v) => ReservedClaims.contains(k) || v == null })
       val customClaims = filteredClaims.map({ case (k, v) => (k, v.asInstanceOf[Object]) }).asJava
 
@@ -203,7 +204,7 @@ class JWTAuthenticatorService(
         idleTimeout = settings.authenticatorIdleTimeout
       )
     }.rescue {
-      case e => throw new AuthenticatorCreationException(CreateError.format(ID, loginInfo), e)
+      case e => Future.exception(new AuthenticatorCreationException(CreateError.format(ID, loginInfo), e))
     }
   }
 
@@ -239,7 +240,8 @@ class JWTAuthenticatorService(
     repository.fold(Future.value(authenticator))(_.add(authenticator)).map { a =>
       serialize(a, authenticatorEncoder, settings)
     }.rescue {
-      case e => throw new AuthenticatorInitializationException(InitError.format(ID, authenticator), e)
+      case e =>
+        Future.exception(new AuthenticatorInitializationException(InitError.format(ID, authenticator), e))
     }
   }
 
@@ -247,12 +249,12 @@ class JWTAuthenticatorService(
    * Adds a header with the token as value to the result.
    *
    * @param token  The token to embed.
-   * @param result The result to manipulate.
+   * @param response The response to manipulate.
    * @return The manipulated result.
    */
-  override def embed(token: String, result: Response)(implicit request: Request): Future[Response] = {
-    result.headerMap.add(settings.fieldName, token)
-    Future.value(result)
+  override def embed(token: String, response: Response)(implicit request: Request): Future[Response] = {
+    response.headerMap.add(settings.fieldName, token)
+    Future.value(response)
   }
 
   /**
@@ -300,7 +302,7 @@ class JWTAuthenticatorService(
       result.headerMap.add(settings.fieldName, serialize(a, authenticatorEncoder, settings))
       result
     }.rescue {
-      case e => throw new AuthenticatorUpdateException(UpdateError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorUpdateException(UpdateError.format(ID, authenticator), e))
     }
   }
 
@@ -319,7 +321,7 @@ class JWTAuthenticatorService(
     repository.fold(Future.value(()))(_.remove(authenticator.id)).flatMap { _ =>
       create(authenticator.loginInfo).map(_.copy(customClaims = authenticator.customClaims)).flatMap(init)
     }.rescue {
-      case e => throw new AuthenticatorRenewalException(RenewError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorRenewalException(RenewError.format(ID, authenticator), e))
     }
   }
 
@@ -339,7 +341,7 @@ class JWTAuthenticatorService(
     request: Request): Future[Response] = {
 
     renew(authenticator).flatMap(v => embed(v, result)).rescue {
-      case e => throw new AuthenticatorRenewalException(RenewError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorRenewalException(RenewError.format(ID, authenticator), e))
     }
   }
 
@@ -357,7 +359,7 @@ class JWTAuthenticatorService(
     repository.fold(Future.value(()))(_.remove(authenticator.id)).map { _ =>
       result
     }.rescue {
-      case e => throw new AuthenticatorDiscardingException(DiscardError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorDiscardingException(DiscardError.format(ID, authenticator), e))
     }
   }
 }
@@ -397,7 +399,8 @@ object JWTAuthenticatorService {
  * @param sharedSecret             The shared secret to sign the JWT.
  */
 case class JWTAuthenticatorSettings(
-  fieldName: String = "X-Auth-Token",
+  fieldName: String = "Authorization",
+  authenticateType: String = "Bearer ",
   issuerClaim: String = "finatra-filhouette",
   authenticatorIdleTimeout: Option[Duration] = None,
   authenticatorExpiry: Duration = 12 hours,

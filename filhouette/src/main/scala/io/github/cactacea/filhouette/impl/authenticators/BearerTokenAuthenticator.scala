@@ -93,7 +93,7 @@ class BearerTokenAuthenticatorService(
         expirationDateTime = now + settings.authenticatorExpiry,
         idleTimeout = settings.authenticatorIdleTimeout)
     }.rescue {
-      case e => throw new AuthenticatorCreationException(CreateError.format(ID, loginInfo), e)
+      case e => Future.exception(new AuthenticatorCreationException(CreateError.format(ID, loginInfo), e))
     }
   }
 
@@ -122,7 +122,7 @@ class BearerTokenAuthenticatorService(
     repository.add(authenticator).map { a =>
       a.id
     }.rescue {
-      case e => throw new AuthenticatorInitializationException(InitError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorInitializationException(InitError.format(ID, authenticator), e))
     }
   }
 
@@ -183,7 +183,7 @@ class BearerTokenAuthenticatorService(
     repository.update(authenticator).map { _ =>
       result
     }.rescue {
-      case e => throw new AuthenticatorUpdateException(UpdateError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorUpdateException(UpdateError.format(ID, authenticator), e))
     }
   }
 
@@ -205,7 +205,7 @@ class BearerTokenAuthenticatorService(
     repository.remove(authenticator.id).flatMap { _ =>
       create(authenticator.loginInfo).flatMap(init)
     }.rescue {
-      case e => throw new AuthenticatorRenewalException(RenewError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorRenewalException(RenewError.format(ID, authenticator), e))
     }
   }
 
@@ -225,7 +225,7 @@ class BearerTokenAuthenticatorService(
     request: Request): Future[Response] = {
 
     renew(authenticator).flatMap(v => embed(v, result)).rescue {
-      case e => throw new AuthenticatorRenewalException(RenewError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorRenewalException(RenewError.format(ID, authenticator), e))
     }
   }
 
@@ -243,7 +243,7 @@ class BearerTokenAuthenticatorService(
     repository.remove(authenticator.id).map { _ =>
       result
     }.rescue {
-      case e => throw new AuthenticatorDiscardingException(DiscardError.format(ID, authenticator), e)
+      case e => Future.exception(new AuthenticatorDiscardingException(DiscardError.format(ID, authenticator), e))
     }
   }
 }

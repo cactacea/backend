@@ -1,10 +1,9 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.{Inject, Singleton}
-import io.github.cactacea.backend.core.application.components.interfaces.ConfigService
+import com.google.inject.Singleton
 
 @Singleton
-class TimeService @Inject()(configService: ConfigService) {
+class TimeService {
 
   def nanoTime(): Long = {
     System.currentTimeMillis

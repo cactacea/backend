@@ -19,7 +19,7 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
 //    val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (infix"ag.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+      query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (ag.id < lift(s) || lift(s) == -1L))
         .join(query[Accounts]).on((ag, a) => a.id == ag.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id})
         .sortBy({ case ((ag, _), _) => ag.id})(Ord.descNullsLast)
@@ -35,9 +35,9 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
       query[AccountGroups]
         .filter(_.groupId   == lift(groupId))
         .filter(_.accountId    == lift(accountId))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findCount(groupId: GroupId): Future[Long] = {

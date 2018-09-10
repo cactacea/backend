@@ -5,7 +5,7 @@
   * Derivative work: Silhouette (https://github.com/mohiva/play-silhouette)
   * Modifications Copyright 2015 Mohiva Organisation (license at mohiva dot com)
   *
-  * Derivative work: Filhouette (https://github.com/cactacea)
+  * Derivative work: Filhouette (https://github.com/cactacea/filhouette)
   * Modifications Copyright 2018 Takeshi Shimada
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +32,6 @@ import io.github.cactacea.filhouette.impl.exceptions.ProfileRetrievalException
 import io.github.cactacea.filhouette.impl.providers._
 import io.github.cactacea.filhouette.impl.providers.oauth2.FacebookProvider._
 import io.github.cactacea.filhouette.impl.util.Json
-import io.github.cactacea.filhouette.impl.providers._
 
 /**
  * Base Facebook OAuth2 Provider.
@@ -73,7 +72,7 @@ trait BaseFacebookProvider extends OAuth2Provider {
         val errorMsg = error.get("message").asText()
         val errorType = error.get("type").asText()
         val errorCode = error.get("code").asInt()
-        throw new ProfileRetrievalException(SpecifiedProfileError.format(id, errorMsg, errorType, errorCode))
+        Future.exception(new ProfileRetrievalException(SpecifiedProfileError.format(id, errorMsg, errorType, errorCode)))
       } else {
         profileParser.parse(json, authInfo)
       }

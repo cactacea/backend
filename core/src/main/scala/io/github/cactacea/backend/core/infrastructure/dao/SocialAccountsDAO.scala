@@ -64,9 +64,9 @@ class SocialAccountsDAO @Inject()(db: DatabaseService) {
       query[SocialAccounts]
         .filter(_.accountId == lift(accountId))
         .filter(_.providerId == lift(providerId))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findAll(sessionId: SessionId): Future[List[SocialAccounts]] = {

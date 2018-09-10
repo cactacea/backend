@@ -282,9 +282,9 @@ class DefaultSocialStateHandler(val handlers: Set[SocialStateItemHandler], signe
                   case Some(handler) => handler.unserialize(item)
                   case None          =>
                     println("test3: " + MissingItemHandlerError.format(item))
-                    throw new ProviderException(MissingItemHandlerError.format(item))
+                    Future.exception(new ProviderException(MissingItemHandlerError.format(item)))
                 }
-                case item => throw new ProviderException(ItemExtractionError.format(item))
+                case item => Future.exception(new ProviderException(ItemExtractionError.format(item)))
               }
             }.map(items => SocialState(items.toSet))
         }

@@ -197,10 +197,10 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
 
-    assert(Await.result(accountGroupsDAO.create(account1.id, groupId)) == true)
-    assert(Await.result(accountGroupsDAO.create(account2.id, groupId)) == true)
-    assert(Await.result(accountGroupsDAO.create(account3.id, groupId)) == true)
-    assert(Await.result(accountGroupsDAO.create(sessionAccount.id, groupId)) == true)
+    Await.result(accountGroupsDAO.create(account1.id, groupId))
+    Await.result(accountGroupsDAO.create(account2.id, groupId))
+    Await.result(accountGroupsDAO.create(account3.id, groupId))
+    Await.result(accountGroupsDAO.create(sessionAccount.id, groupId))
 
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     assert(Await.result(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId)) == true)

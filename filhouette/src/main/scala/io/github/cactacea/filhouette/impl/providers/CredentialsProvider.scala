@@ -40,11 +40,11 @@ class CredentialsProvider (
     */
   def authenticate(credentials: Credentials): Future[LoginInfo] = {
     loginInfo(credentials).flatMap { loginInfo =>
-      authenticate(loginInfo, credentials.password).map {
-        case Authenticated            => loginInfo
-        case InvalidPassword(error)   => throw new InvalidPasswordException(error)
-        case UnsupportedHasher(error) => throw new ConfigurationException(error)
-        case NotFound(error)          => throw new IdentityNotFoundException(error)
+      authenticate(loginInfo, credentials.password).flatMap {
+        case Authenticated            => Future.value(loginInfo)
+        case InvalidPassword(error)   => Future.exception(new InvalidPasswordException(error))
+        case UnsupportedHasher(error) => Future.exception(new ConfigurationException(error))
+        case NotFound(error)          => Future.exception(new IdentityNotFoundException(error))
       }
     }
   }

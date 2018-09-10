@@ -55,14 +55,10 @@ class AccountsRepository {
   }
 
   def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
-    validationDAO.notExistAccountName(accountName).flatMap(_ =>
-      accountsDAO.updateAccountName(accountName, sessionId).flatMap(_ match {
-        case true =>
-          Future.Unit
-        case false =>
-          Future.exception(CactaceaException(AccountNotFound))
-      })
-    )
+    for {
+      _ <- validationDAO.notExistAccountName(accountName)
+      r <- accountsDAO.updateAccountName(accountName, sessionId)
+    } yield (r)
   }
 
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {
@@ -73,21 +69,11 @@ class AccountsRepository {
   }
 
   def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
-    accountsDAO.updatePassword(oldPassword, newPassword, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
+    accountsDAO.updatePassword(oldPassword, newPassword, sessionId)
   }
 
   def updateProfile(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
-    accountsDAO.updateProfile(displayName, web, birthday, location, bio, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
+    accountsDAO.updateProfile(displayName, web, birthday, location, bio, sessionId)
   }
 
   def updateProfileImage(profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {

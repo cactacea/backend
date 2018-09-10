@@ -30,10 +30,9 @@ class DevicesDAO @Inject()(db: DatabaseService) {
       query[Devices]
         .filter(_.udid == lift(udid))
         .filter(_.accountId == lift(accountId))
-        .take(1)
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findActiveStatus(accountId: AccountId): Future[Option[ActiveStatus]] = {

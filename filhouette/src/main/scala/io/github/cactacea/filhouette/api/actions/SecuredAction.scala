@@ -5,7 +5,7 @@
   * Derivative work: Silhouette (https://github.com/mohiva/play-silhouette)
   * Modifications Copyright 2015 Mohiva Organisation (license at mohiva dot com)
   *
-  * Derivative work: Filhouette (https://github.com/cactacea)
+  * Derivative work: Filhouette (https://github.com/cactacea/filhouette)
   * Modifications Copyright 2018 Takeshi Shimada
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
@@ -128,8 +128,8 @@ case class SecuredRequestHandlerBuilder[I <: Identity, A <: Authenticator](
   * If there is one, the execution continues and the enclosed code is invoked.
   *
   * If the user is not authenticated or not authorized, the request is forwarded to
-  * the [[io.github.filhouette.api.actions.SecuredErrorHandler.onNotAuthenticated]] or
-  * the [[io.github.filhouette.api.actions.SecuredErrorHandler.onNotAuthorized]] methods.
+  * the [[io.github.cactacea.filhouette.api.actions.SecuredErrorHandler.onNotAuthenticated]] or
+  * the [[io.github.cactacea.filhouette.api.actions.SecuredErrorHandler.onNotAuthorized]] methods.
   */
 trait SecuredRequestHandler {
 

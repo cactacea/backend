@@ -26,7 +26,14 @@ object RequestExtractor {
         .orElse(request.headerMap.get(name))
         .orElse(
           request.contentType match {
-            case Some(MediaType.Json) => Some(Json.obj(request.contentString).get(name).textValue())
+            case Some(MediaType.Json) => {
+              val json = Json.obj(request.contentString).get(name)
+              if (json == null) {
+                None
+              } else {
+                Some(json.asText())
+              }
+            }
             case _ => None
           })
     }

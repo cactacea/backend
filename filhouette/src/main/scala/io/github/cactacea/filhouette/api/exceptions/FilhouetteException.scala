@@ -2,7 +2,7 @@
   * Original work: Silhouette (https://github.com/mohiva/play-silhouette)
   * Modifications Copyright 2015 Mohiva Organisation (license at mohiva dot com)
   *
-  * Derivative work: Filhouette (https://github.com/cactacea)
+  * Derivative work: Filhouette (https://github.com/cactacea/filhouette)
   * Modifications Copyright 2018 Takeshi Shimada
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,5 +22,5 @@ package io.github.cactacea.filhouette.api.exceptions
 /**
  * A marker exception for the Silhouette project.
  */
-class FilhouetteException(msg: String, cause: Throwable = null)
-  extends Exception(msg, cause)
+class FilhouetteException(val msg: String, val cause: Throwable = null)
+  extends scala.Exception(msg, cause)

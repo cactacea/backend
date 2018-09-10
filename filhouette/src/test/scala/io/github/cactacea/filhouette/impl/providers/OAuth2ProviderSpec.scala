@@ -27,15 +27,18 @@ import io.github.cactacea.filhouette.impl.providers.OAuth2Provider._
 import io.github.cactacea.filhouette.impl.providers.state.UserStateItem
 import io.github.cactacea.filhouette.impl.util.Json
 import io.github.filhouette.SocialStateProviderSpec
+import org.junit.runner.RunWith
 import org.specs2.matcher.ThrownExpectations
 import org.specs2.mock.Mockito
 import org.specs2.specification.Scope
+import org.specs2.runner.JUnitRunner
 
 /**
  * Abstract test case for the [[OAuth2Provider]] class.
  *
  * These tests will be additionally executed before every OAuth2 provider spec.
  */
+@RunWith(classOf[JUnitRunner])
 abstract class OAuth2ProviderSpec extends SocialStateProviderSpec[OAuth2Info, SocialStateItem] {
   isolated
 

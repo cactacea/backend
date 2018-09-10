@@ -19,10 +19,13 @@ import io.github.cactacea.filhouette.impl.providers.oauth2.{FacebookProvider, Go
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
+import org.specs2.runner.JUnitRunner
+import org.junit.runner.RunWith
 
 /**
  * Test case for the [[SocialProviderRegistry]] class.
  */
+@RunWith(classOf[JUnitRunner])
 class SocialProviderRegistrySpec extends Specification with Mockito {
 
   "The `get` method" should {

@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.ConfigService
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -28,7 +27,6 @@ class ValidationDAO {
   @Inject private var groupAuthorityDAO: GroupAuthorityDAO = _
   @Inject private var mediumsDAO: MediumsDAO = _
   @Inject private var mutesDAO: MutesDAO = _
-  @Inject private var configService: ConfigService = _
 
   def notSessionId(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId

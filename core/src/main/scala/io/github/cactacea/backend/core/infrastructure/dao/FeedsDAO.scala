@@ -125,10 +125,9 @@ class FeedsDAO @Inject()(db: DatabaseService) {
           .filter(_.by      == lift(by))
           .filter(us => us.blocked == true || us.beingBlocked == true)
           .isEmpty)
-        .take(1)
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
@@ -139,7 +138,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[Feeds]
         .filter(_.by        ==  lift(by))
-        .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        .filter(_.id < lift(s) || lift(s) == -1L)
         .sortBy(_.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
@@ -164,7 +163,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
             || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
         .filter({ f => (f.expiration.forall(_ > lift(e)))})
-        .filter(_ => (infix"id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        .filter(_.id < lift(s) || lift(s) == -1L)
         .sortBy(_.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))

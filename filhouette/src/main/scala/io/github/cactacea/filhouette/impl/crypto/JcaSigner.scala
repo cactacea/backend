@@ -105,9 +105,9 @@ class JcaSigner(settings: JcaSignerSettings) extends Signer {
  */
 object JcaSigner {
 
-  val BadSignature = "[Silhouette][JcaSigner] Bad signature"
-  val UnknownVersion = "[Silhouette][JcaSigner] Unknown version: %s"
-  val InvalidMessageFormat = "[Silhouette][JcaSigner] Invalid message format; Expected [VERSION]-[SIGNATURE]-[DATA]"
+  val BadSignature = "[Filhouette][JcaSigner] Bad signature"
+  val UnknownVersion = "[Filhouette][JcaSigner] Unknown version: %s"
+  val InvalidMessageFormat = "[Filhouette][JcaSigner] Invalid message format; Expected [VERSION]-[SIGNATURE]-[DATA]"
 }
 
 /**
@@ -117,4 +117,4 @@ object JcaSigner {
  * @param pepper Constant prepended and appended to the data before signing. When using one key for multiple purposes,
  *               using a specific pepper reduces some risks arising from this.
  */
-case class JcaSignerSettings(key: String, pepper: String = "-mohiva-silhouette-signer-")
+case class JcaSignerSettings(key: String, pepper: String = "-cactacea-filhouette-signer-")

@@ -16,7 +16,6 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
-        DefaultConfigModule,
         DefaultIdentifyModule,
         DefaultHashModule
       )

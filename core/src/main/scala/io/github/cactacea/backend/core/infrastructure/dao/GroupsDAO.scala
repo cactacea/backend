@@ -136,7 +136,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
           .filter(_.by        == lift(by))
           .filter(b => b.blocked == true || b.beingBlocked == true)
           .isEmpty)
-        .filter(_ => (infix"g.id < ${lift(s)}".as[Boolean] || lift(s) == -1L))
+        .filter(_.id < lift(s) || lift(s) == -1L)
         .sortBy(_.id)(Ord.descNullsLast)
         .drop(lift(o))
         .take(lift(c))
@@ -172,10 +172,9 @@ class GroupsDAO @Inject()(db: DatabaseService) {
     val q = quote(
       query[Groups]
         .filter(_.id == lift(groupId))
-        .take(1)
-        .size
+        .nonEmpty
     )
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def exist(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
@@ -188,10 +187,9 @@ class GroupsDAO @Inject()(db: DatabaseService) {
           .filter(_.by        == lift(by))
           .filter(b => b.blocked == true || b.beingBlocked == true)
           .isEmpty)
-        .take(1)
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
 }

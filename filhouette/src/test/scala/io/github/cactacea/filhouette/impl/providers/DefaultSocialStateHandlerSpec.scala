@@ -22,16 +22,18 @@ import io.github.cactacea.filhouette.api.crypto.Signer
 import io.github.cactacea.filhouette.api.exceptions.ProviderException
 import io.github.cactacea.filhouette.impl.providers
 import io.github.cactacea.filhouette.impl.providers.DefaultSocialStateHandler._
-import io.github.cactacea.filhouette.impl.providers._
 import io.github.cactacea.filhouette.impl.providers.SocialStateItem.ItemStructure
+import org.junit.runner.RunWith
 import org.specs2.matcher.JsonMatchers
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
+import org.specs2.runner.JUnitRunner
 import org.specs2.specification.Scope
 
 /**
  *  Test case for the [[DefaultSocialStateHandler]] class.
  */
+@RunWith(classOf[JUnitRunner])
 class DefaultSocialStateHandlerSpec extends Specification with Mockito with JsonMatchers {
 
   "The `withHandler` method" should {

@@ -55,7 +55,7 @@ class AccountGroupsRepository {
   def show(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     validationDAO.findAccountGroup(groupId, sessionId).flatMap({ case (ag, g) =>
       if (ag.hidden) {
-        accountGroupsDAO.updateHidden(groupId, false, sessionId).map(_ => Unit)
+        accountGroupsDAO.updateHidden(groupId, false, sessionId)
       } else {
         Future.exception(CactaceaException(GroupNotHidden))
       }
@@ -67,7 +67,7 @@ class AccountGroupsRepository {
       if (ag.hidden) {
         Future.exception(CactaceaException(GroupAlreadyHidden))
       } else {
-        accountGroupsDAO.updateHidden(groupId, true, sessionId).map(_ => Unit)
+        accountGroupsDAO.updateHidden(groupId, true, sessionId)
       }
     })
   }

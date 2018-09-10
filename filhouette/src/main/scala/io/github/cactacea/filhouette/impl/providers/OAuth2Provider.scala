@@ -169,7 +169,7 @@ trait OAuth2Provider extends SocialStateProvider with OAuth2Constants with Logge
       }
       val encodedParams = params.map { p => encode(p._1, "UTF-8") + "=" + encode(p._2, "UTF-8") }
       val url = settings.authorizationURL.getOrElse {
-        throw new ConfigurationException(AuthorizationURLUndefined.format(id))
+        Future.exception(new ConfigurationException(AuthorizationURLUndefined.format(id)))
       } + encodedParams.mkString("?", "&", "")
       val response = Response(Status.TemporaryRedirect)
       response.location = url

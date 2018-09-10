@@ -84,9 +84,9 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
       query[AccountGroups]
         .filter(_.accountId   == lift(accountId))
         .filter(_.groupId     == lift(groupId))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   private def _findRelationship(accountId: AccountId, sessionId: SessionId): Future[Option[Relationships]] = {

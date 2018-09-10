@@ -8,8 +8,8 @@ import io.github.cactacea.backend.models.requests.comment.PostCommentReport
 import io.github.cactacea.backend.models.requests.feed.PostFeedReport
 import io.github.cactacea.backend.models.requests.group.PostGroupReport
 import io.github.cactacea.backend.swagger.BackendController
-import io.github.cactacea.backend.util.auth.SessionContext
-import io.github.cactacea.backend.util.oauth.Permissions
+import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger

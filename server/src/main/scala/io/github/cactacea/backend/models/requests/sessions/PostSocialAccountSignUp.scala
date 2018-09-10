@@ -2,7 +2,7 @@ package io.github.cactacea.backend.models.requests.sessions
 
 import com.twitter.finatra.request.{Header, QueryParam}
 import com.twitter.finatra.validation._
-import io.github.cactacea.backend.util.validaters.Validations
+import io.github.cactacea.backend.utils.validaters.Validations
 import io.swagger.annotations.ApiModelProperty
 
 case class PostSocialAccountSignUp(

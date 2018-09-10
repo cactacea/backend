@@ -63,6 +63,7 @@ class GravatarService @Inject() (httpLayer: HttpClient, settings: GravatarServic
             logger.info("[Silhouette] Error invoking gravatar", e)
             Future.None
         }
+      case None => Future.None
     }
   }
 

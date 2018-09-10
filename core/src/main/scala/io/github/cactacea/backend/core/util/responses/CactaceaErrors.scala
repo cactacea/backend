@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.util.responses
 
-import com.twitter.finagle.http.Status
 import io.swagger.annotations.ApiModelProperty
 
 object CactaceaErrors {
@@ -50,7 +49,99 @@ object CactaceaErrors {
   type SessionNotAuthorizedType = SessionNotAuthorized.type
   type SessionTimeoutType = SessionTimeout.type
 
-  import CactaceaErrorMessages._
+  final val c40400 = "40400"
+  final val c40401 = "40401"
+  final val c40402 = "40402"
+  final val c40403 = "40403"
+  final val c40404 = "40404"
+  final val c40405 = "40405"
+  final val c40406 = "40406"
+  final val c40407 = "40407"
+  final val c40000 = "40000"
+  final val c40001 = "40001"
+  final val c40002 = "40002"
+  final val c40003 = "40003"
+  final val c40004 = "40004"
+  final val c40005 = "40005"
+  final val c40006 = "40006"
+  final val c40007 = "40007"
+  final val c40008 = "40008"
+  final val c40009 = "40009"
+  final val c40010 = "40010"
+  final val c40011 = "40011"
+  final val c40012 = "40012"
+  final val c40013 = "40013"
+  final val c40014 = "40014"
+  final val c40015 = "40015"
+  final val c40016 = "40016"
+  final val c40017 = "40017"
+  final val c40018 = "40018"
+  final val c40019 = "40019"
+  final val c40020 = "40020"
+  final val c40021 = "40021"
+  final val c40022 = "40022"
+  final val c40023 = "40023"
+  final val c40024 = "40024"
+  final val c40025 = "40025"
+  final val c40026 = "40026"
+  final val c40027 = "40027"
+  final val c40028 = "40028"
+  final val c40029 = "40029"
+  final val c40030 = "40030"
+  final val c40031 = "40031"
+  final val c40032 = "40032"
+  final val c40033 = "40033"
+  final val c40034 = "40034"
+  final val c40600 = "40100"
+  final val c40601 = "40101"
+  final val c40080 = "40080"
+
+  final val m40400 = "Account not found."
+  final val m40401 = "Comment not found."
+  final val m40402 = "Medium not found."
+  final val m40403 = "Feed not found."
+  final val m40404 = "Request not found."
+  final val m40405 = "Group not found."
+  final val m40406 = "Group invitation not found."
+  final val m40407 = "Social account not found."
+  final val m40000 = "Account already follow."
+  final val m40001 = "Account not follow."
+  final val m40002 = "Account already blocked."
+  final val m40003 = "Account not blocked."
+  final val m40004 = "Account already muted."
+  final val m40005 = "Account not muted."
+  final val m40006 = "Account already friend."
+  final val m40007 = "Account not friend."
+  final val m40008 = "Account already invitationd."
+  final val m40009 = "Account already requested."
+  final val m40010 = "Account already joined."
+  final val m40011 = "Account not joined."
+  final val m40012 = "Account not signed up."
+  final val m40013 = "Account deleted."
+  final val m40014 = "Account terminated."
+  final val m40015 = "Operation not allowed."
+  final val m40016 = "Comment already liked."
+  final val m40017 = "Comment not liked."
+  final val m40018 = "Feed already liked."
+  final val m40019 = "Feed not liked."
+  final val m40020 = "Social Account already connected."
+  final val m40021 = "Social Account not connected"
+  final val m40022 = "File upload error occurred."
+  final val m40023 = "Authority not found."
+  final val m40024 = "Group is invitation only."
+  final val m40025 = "Direct message group can not updated."
+  final val m40026 = "API Key is invalid."
+  final val m40027 = "Account name already used."
+  final val m40028 = "Can not specify myself."
+  final val m40029 = "Password not matched."
+  final val m40030 = "Invalid Account name or password."
+  final val m40031 = "Maximum number of group accounts reached."
+  final val m40032 = "Group already hidden."
+  final val m40033 = "Group not hidden."
+  final val m40034 = "Not acceptable mime type found."
+  final val m40600 = "Session not authorized."
+  final val m40601 = "Access token expired."
+  final val m40080 = "Validation error message is here."
 
   // 404 Not Found
 
@@ -273,14 +364,14 @@ object CactaceaErrors {
 
   // 406 Unauthorized
 
-  final object SessionNotAuthorized extends BadRequest {
-    @ApiModelProperty(example = c40100)  override val code: Int =       c40100.toInt
-    @ApiModelProperty(example = m40100)  override val message: String = m40100
+  final object SessionNotAuthorized extends Unauthorized {
+    @ApiModelProperty(example = c40600)  override val code: Int =       c40600.toInt
+    @ApiModelProperty(example = m40600)  override val message: String = m40600
   }
 
-  final object SessionTimeout extends BadRequest {
-    @ApiModelProperty(example = c40101)  override val code: Int =       c40101.toInt
-    @ApiModelProperty(example = m40101)  override val message: String = m40101
+  final object SessionTimeout extends Unauthorized {
+    @ApiModelProperty(example = c40601)  override val code: Int =       c40601.toInt
+    @ApiModelProperty(example = m40601)  override val message: String = m40601
   }
 
   // 400 Bad Request

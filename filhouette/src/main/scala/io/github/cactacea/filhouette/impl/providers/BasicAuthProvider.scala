@@ -44,15 +44,15 @@ class BasicAuthProvider (
     getCredentials(request) match {
       case Some(credentials) =>
         val loginInfo = LoginInfo(id, credentials.identifier)
-        authenticate(loginInfo, credentials.password).map {
-          case Authenticated => Some(loginInfo)
+        authenticate(loginInfo, credentials.password).flatMap {
+          case Authenticated => Future.value(Some(loginInfo))
           case InvalidPassword(error) =>
             logger.debug(error)
-            None
-          case UnsupportedHasher(error) => throw new ConfigurationException(error)
+            Future.None
+          case UnsupportedHasher(error) => Future.exception(new ConfigurationException(error))
           case NotFound(error) =>
             logger.debug(error)
-            None
+            Future.None
         }
       case None => Future.None
     }
