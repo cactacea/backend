@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.3.0-SNAPSHOT"
+  val cactacea = "0.3.1-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -31,6 +31,8 @@ lazy val demo = (project in file("demo"))
   )
   .dependsOn(server)
   .dependsOn(externals)
+  .dependsOn(oauth2)
+  .dependsOn(swagger)
   .enablePlugins(JavaAppPackaging)
 
 
@@ -64,6 +66,7 @@ lazy val core = (project in file("core"))
     )
   )
   .settings(commonResolverSetting)
+  .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
   .dependsOn(oauth2)
   .dependsOn(swagger)
@@ -73,7 +76,7 @@ lazy val core = (project in file("core"))
 lazy val externals = (project in file("externals"))
   .settings(
     version      := versions.cactacea,
-    organization := "io.github.cactacea.backend",
+    organization := "io.github.cactacea.backend.externals",
     scalaVersion := "2.12.5",
     name := "externals",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
