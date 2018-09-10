@@ -24,5 +24,5 @@ Cactacea provides the following features.
 
 ## Projects ##
 
-- [`Suwagger`](https://github.com/cactacea/backend/tree/master/swagger) - Swagger Finatra Integration
+- [`Swagger`](https://github.com/cactacea/backend/tree/master/swagger) - Swagger Finatra Integration
 - [`Filhouette`](https://github.com/cactacea/backend/tree/master/filhouette) - Authentication library for Finatra
