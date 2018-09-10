@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.2.1-SNAPSHOT"
+  val cactacea = "0.3.0-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -204,6 +204,7 @@ lazy val swagger = (project in file("swagger"))
 
 lazy val oauth2 = (project in file("oauth2"))
   .settings(
+    version      := versions.cactacea,
     organization := "com.twitter.finagle.oauth2",
     scalaVersion := "2.12.5",
     name := "oauth2",
