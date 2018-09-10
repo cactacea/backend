@@ -84,9 +84,9 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .filter(_.blocked    == true)
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Blocks)]] = {

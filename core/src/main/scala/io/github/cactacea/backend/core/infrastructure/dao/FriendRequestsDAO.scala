@@ -59,10 +59,9 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
       query[FriendRequests]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
-        .take(lift(1))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def find(id: FriendRequestId): Future[Option[FriendRequests]] = {

@@ -125,10 +125,9 @@ class FeedsDAO @Inject()(db: DatabaseService) {
           .filter(_.by      == lift(by))
           .filter(us => us.blocked == true || us.beingBlocked == true)
           .isEmpty)
-        .take(1)
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {

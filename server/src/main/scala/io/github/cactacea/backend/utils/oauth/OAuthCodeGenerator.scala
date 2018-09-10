@@ -2,28 +2,26 @@ package io.github.cactacea.backend.utils.oauth
 
 import java.util.Date
 
-import com.google.inject.{Inject, Singleton}
-import io.github.cactacea.backend.core.application.components.interfaces.ConfigService
+import com.google.inject.Singleton
+import io.github.cactacea.backend.core.util.configs.Config
 import io.jsonwebtoken.{Jwts, SignatureAlgorithm}
 import org.joda.time.DateTime
 
 @Singleton
 class OAuthCodeGenerator {
 
-  @Inject var config: ConfigService = _
-
   def generateCode(audience: Long, clientId: String, scope: String): String = {
     val expired = new DateTime().plusMinutes(3).toDate
-    val signatureAlgorithm = SignatureAlgorithm.forName(config.algorithm)
+    val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.algorithm)
     val jwt = Jwts.builder()
-      .setIssuer(config.issuer)
+      .setIssuer(Config.auth.issuer)
       .setIssuedAt(new Date())
       .setSubject("code")
       .setHeaderParam("client_id", clientId)
       .setHeaderParam("scope", scope)
       .setAudience(audience.toString())
       .setExpiration(expired)
-      .signWith(signatureAlgorithm, config.signingKey)
+      .signWith(signatureAlgorithm, Config.auth.signingKey)
       .compact()
 
     jwt
@@ -33,8 +31,8 @@ class OAuthCodeGenerator {
 
     try {
 
-      val signatureAlgorithm = SignatureAlgorithm.forName(config.algorithm)
-      val parsed = Jwts.parser().setSigningKey(config.signingKey).parseClaimsJws(code)
+      val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.algorithm)
+      val parsed = Jwts.parser().setSigningKey(Config.auth.signingKey).parseClaimsJws(code)
       val header = parsed.getHeader()
       val body = parsed.getBody()
       val issuedAt = body.getIssuedAt
@@ -49,7 +47,7 @@ class OAuthCodeGenerator {
       } else if (body.getSubject.equals("code") == false) {
         None
 
-      } else if (body.getIssuer.equals(config.issuer) == false) {
+      } else if (body.getIssuer.equals(Config.auth.issuer) == false) {
         None
 
       } else {

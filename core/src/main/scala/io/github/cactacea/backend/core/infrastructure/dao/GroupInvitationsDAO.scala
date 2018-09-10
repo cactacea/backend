@@ -57,9 +57,9 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[GroupInvitations]
         .filter(_.id == lift(id))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def find(id: GroupInvitationId, sessionId: SessionId): Future[Option[GroupInvitations]] = {

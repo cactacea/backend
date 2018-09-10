@@ -119,14 +119,6 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("update no exist session name") {
-
-    assert(intercept[CactaceaException] {
-      Await.result(accountsRepository.updateAccountName("new account name", AccountId(0L).toSessionId))
-    }.error == AccountNotFound)
-
-  }
-
   test("update other account's name") {
 
     val session = signUp("session account", "password", "udid")
@@ -202,12 +194,5 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("update no exist account password") {
-
-    assert(intercept[CactaceaException] {
-      Await.result(accountsRepository.updatePassword("password", "new password", SessionId(0L)))
-    }.error == AccountNotFound)
-
-  }
 
 }

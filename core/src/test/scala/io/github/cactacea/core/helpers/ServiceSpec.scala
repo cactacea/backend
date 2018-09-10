@@ -19,7 +19,6 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DatabaseProviderModule,
         DefaultSocialAccountsModule,
         DefaultInjectionModule,
-        DefaultConfigModule,
         DefaultNotificationModule,
         DefaultNotificationMessagesModule,
         DefaultPublishModule,

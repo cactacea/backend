@@ -18,7 +18,7 @@ lazy val demo = (project in file("demo"))
     dockerRepository := Some("cactacea")
   )
   .dependsOn(server)
-  .dependsOn(components)
+  .dependsOn(externals)
   .enablePlugins(JavaAppPackaging)
 
 
@@ -46,47 +46,54 @@ lazy val core = (project in file("core"))
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
   )
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.iheart" %% "ficus" % "1.4.3"
+    )
+  )
   .settings(commonResolverSetting)
   .settings(coreLibrarySetting)
-  .dependsOn(util)
+//  .dependsOn(util)
   .dependsOn(oauth2)
   .dependsOn(swagger)
   .enablePlugins(FlywayPlugin)
 
 
-lazy val util = (project in file("util"))
+//lazy val util = (project in file("util"))
+//  .settings(
+//    version      := versions.cactacea,
+//    organization := "io.github.cactacea.backend",
+//    scalaVersion := "2.12.5",
+//    name := "util",
+//    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+//    testOptions in Test += Tests.Argument("-oI")
+//  )
+//  .settings(
+//    libraryDependencies ++= Seq(
+//      "com.danielasfregola" %% "twitter4s" % "5.3",
+//      "com.github.seratch" %% "awscala" % "0.6.+",
+//      "com.google.inject" % "guice" % versions.guice
+//    )
+//  )
+//  .settings(commonResolverSetting)
+//  .settings(finatraLibrarySetting)
+//  .settings(coreLibrarySetting)
+
+
+lazy val externals = (project in file("externals"))
   .settings(
     version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
-    name := "util",
+    name := "externals",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
   )
   .settings(
     libraryDependencies ++= Seq(
-      "com.danielasfregola" %% "twitter4s" % "5.3",
       "com.github.seratch" %% "awscala" % "0.6.+",
+      "com.danielasfregola" %% "twitter4s" % "5.3",
       "com.google.inject" % "guice" % versions.guice
-    )
-  )
-  .settings(commonResolverSetting)
-  .settings(finatraLibrarySetting)
-  .settings(coreLibrarySetting)
-
-
-lazy val components = (project in file("components"))
-  .settings(
-    version      := versions.cactacea,
-    organization := "io.github.cactacea.backend",
-    scalaVersion := "2.12.5",
-    name := "components",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.github.seratch" %% "awscala" % "0.6.+"
     )
   )
   .settings(commonResolverSetting)
@@ -94,39 +101,39 @@ lazy val components = (project in file("components"))
   .settings(coreLibrarySetting)
   .dependsOn(core)
 
-lazy val filhouette = (project in file("filhouette"))
-  .settings(
-    version      := versions.cactacea,
-    organization := "io.github.cactacea.backend",
-    scalaVersion := "2.12.5",
-    name := "filhouette",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
-  )
-  .settings(finatraLibrarySetting)
-  .settings(
-    libraryDependencies ++= Seq(
-      "io.jsonwebtoken" % "jjwt" % "0.9.0",
-      "com.github.cb372" %% "scalacache-ehcache" % "0.24.1",
-      "org.apache.commons" % "commons-lang3" % "3.7",
-
-      "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
-      "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
-      "org.specs2" %% "specs2-core" % versions.specs2 % "test",
-      "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-      "org.specs2" %% "specs2-matcher-extra" % versions.specs2 % "test",
-      "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
-    ))
-  .settings(
-    libraryDependencies ++= Seq(
-      "de.svenkubiak" % "jBCrypt" % "0.4.1"
-//      "org.jasig.cas.client" % "cas-client-core" % "3.4.1",
-//      "org.jasig.cas.client" % "cas-client-support-saml" % "3.4.1"
-    ))
+//lazy val filhouette = (project in file("filhouette"))
+//  .settings(
+//    version      := versions.cactacea,
+//    organization := "io.github.cactacea.backend",
+//    scalaVersion := "2.12.5",
+//    name := "filhouette",
+//    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+//    testOptions in Test += Tests.Argument("-oI")
+//  )
+//  .settings(finatraLibrarySetting)
+//  .settings(
+//    libraryDependencies ++= Seq(
+//      "io.jsonwebtoken" % "jjwt" % "0.9.0",
+//      "com.github.cb372" %% "scalacache-ehcache" % "0.24.1",
+//      "org.apache.commons" % "commons-lang3" % "3.7",
+//
+//      "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
+//      "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
+//      "org.specs2" %% "specs2-core" % versions.specs2 % "test",
+//      "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
+//      "org.specs2" %% "specs2-matcher-extra" % versions.specs2 % "test",
+//      "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
+//    ))
+//  .settings(
+//    libraryDependencies ++= Seq(
+//      "de.svenkubiak" % "jBCrypt" % "0.4.1"
+////      "org.jasig.cas.client" % "cas-client-core" % "3.4.1",
+////      "org.jasig.cas.client" % "cas-client-support-saml" % "3.4.1"
+//    ))
 
 
 lazy val versions = new {
-  val cactacea = "0.1.9-SNAPSHOT"
+  val cactacea = "0.2.0-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"

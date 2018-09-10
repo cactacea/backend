@@ -67,9 +67,9 @@ class MediumsDAO @Inject()(db: DatabaseService) {
       query[Mediums]
         .filter(_.id == lift(mediumId))
         .filter(_.by == lift(by))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def exist(mediumIds: List[MediumId], sessionId: SessionId): Future[Boolean] = {

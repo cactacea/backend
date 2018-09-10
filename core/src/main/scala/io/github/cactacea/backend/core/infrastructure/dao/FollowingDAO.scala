@@ -108,9 +108,9 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by           == lift(by))
         .filter(_.follow     == true)
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Relationships)]] = {

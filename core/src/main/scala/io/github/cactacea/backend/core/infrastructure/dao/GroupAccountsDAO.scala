@@ -35,9 +35,9 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
       query[AccountGroups]
         .filter(_.groupId   == lift(groupId))
         .filter(_.accountId    == lift(accountId))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findCount(groupId: GroupId): Future[Long] = {

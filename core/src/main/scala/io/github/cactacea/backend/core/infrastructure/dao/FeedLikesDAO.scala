@@ -109,10 +109,9 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
       query[FeedLikes]
         .filter(_.feedId  == lift(feedId))
         .filter(_.by      == lift(by))
-        .take(1)
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findAccounts(feedId: FeedId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], FeedLikes)]] = {

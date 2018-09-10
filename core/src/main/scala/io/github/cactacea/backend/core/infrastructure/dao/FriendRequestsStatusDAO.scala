@@ -57,9 +57,9 @@ class FriendRequestsStatusDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId    == lift(accountId))
         .filter(_.by           == lift(by))
         .filter(_.inProgress   == true)
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
 }

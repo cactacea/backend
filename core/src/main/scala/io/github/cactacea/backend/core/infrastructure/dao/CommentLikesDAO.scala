@@ -84,9 +84,10 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[CommentLikes]
         .filter(_.commentId == lift(commentId))
-        .filter(_.by      == lift(by)).size
+        .filter(_.by      == lift(by))
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def findAll(commentId: CommentId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {

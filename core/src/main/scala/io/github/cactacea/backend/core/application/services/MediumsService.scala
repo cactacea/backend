@@ -8,9 +8,6 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.enums.MediumType
 import io.github.cactacea.backend.core.domain.repositories.MediumsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.NotAcceptableMimeTypeFound
-import io.github.cactacea.backend.utils.media.MediaMetadata
 
 class MediumsService {
 
@@ -19,19 +16,14 @@ class MediumsService {
   @Inject private var storageService: StorageService = _
   @Inject private var mediumsRepository: MediumsRepository = _
 
-  def create(media: List[Option[MediaMetadata]], sessionId: SessionId): Future[Seq[(MediumId, String)]] = {
-    Future.traverseSequentially(media) {
-      _ match {
-        case Some(metadata) =>
-          for {
-            (url, key) <- storageService.put(metadata.contentType, metadata.data)
-            r <- db.transaction(mediumsRepository.create(key, url, None, MediumType.image, metadata.width, metadata.height, metadata.data.length, sessionId))
-            _ <- injectionService.mediumCreated(r._1, sessionId)
-          } yield (r)
-        case None =>
-          Future.exception(CactaceaException(NotAcceptableMimeTypeFound))
-      }
-    }
+
+
+  def create(width: Int, height: Int, data: Array[Byte], contentType: Option[String], sessionId: SessionId): Future[(MediumId, String)] = {
+    for {
+      (url, key) <- storageService.put(contentType, data)
+      r <- db.transaction(mediumsRepository.create(key, url, None, MediumType.image, width, height, data.length, sessionId))
+      _ <- injectionService.mediumCreated(r._1, sessionId)
+    } yield (r)
   }
 
   def delete(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {

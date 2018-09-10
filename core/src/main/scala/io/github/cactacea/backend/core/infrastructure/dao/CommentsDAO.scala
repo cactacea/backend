@@ -141,10 +141,9 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           .filter(_.by     == lift(by))
           .filter(ur => (ur.blocked == true || ur.beingBlocked == true))
           .isEmpty)
-        .take(1)
-        .size
+        .nonEmpty
     )
-    run(q).map(_ == 1)
+    run(q)
   }
 
   def find(commentId: CommentId, sessionId: SessionId): Future[Option[(Comments, Accounts, Option[Relationships])]] = {

@@ -22,30 +22,30 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
       query[AccountGroups]
         .filter(_.groupId     == lift(groupId))
         .filter(_.accountId   == lift(by))
-        .size
+        .nonEmpty
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
-  def create(accountId: AccountId, groupId: GroupId): Future[Boolean] = {
+  def create(accountId: AccountId, groupId: GroupId): Future[AccountGroupId] = {
     create(accountId, groupId, accountId.toSessionId)
   }
 
-  def create(accountIds: List[AccountId], groupId: GroupId): Future[Boolean] = {
+  def create(accountIds: List[AccountId], groupId: GroupId): Future[List[AccountGroupId]] = {
     val r = Future.traverseSequentially(accountIds) { id =>
       create(id, groupId, id.toSessionId)
     }
-    r.map(_.foldLeft(true)(_ && _))
+    r.map(_.toList)
   }
 
-  def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
+  def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
     for {
       id <- identifyService.generate().map(AccountGroupId(_))
-      r <- _insert(id, accountId, groupId, sessionId)
-    } yield (r)
+      _ <- _insert(id, accountId, groupId, sessionId)
+    } yield (id)
   }
 
-  private def _insert(id: AccountGroupId, accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
+  private def _insert(id: AccountGroupId, accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     val joinedAt = timeService.nanoTime()
     val toAccountId = sessionId.toAccountId
     val q = quote {
@@ -61,17 +61,17 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
           _.mute                -> false
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def delete(accountId: AccountId, groupId: GroupId): Future[Boolean] = {
+  def delete(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     val q = quote {
       query[AccountGroups]
         .filter(_.groupId == lift(groupId))
         .filter(_.accountId  == lift(accountId))
         .delete
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   def updateUnreadCount(groupId: GroupId): Future[Boolean] = {
@@ -86,7 +86,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ > 0)
   }
 
-  def updateHidden(groupId: GroupId, hidden: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def updateHidden(groupId: GroupId, hidden: Boolean, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[AccountGroups]
@@ -96,7 +96,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
           _.hidden -> lift(hidden)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   def findByGroupId(groupId: GroupId, sessionId: SessionId): Future[Option[(AccountGroups, Groups)]] = {

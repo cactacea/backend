@@ -2,14 +2,12 @@ package io.github.cactacea.backend.utils.oauth
 
 import java.util.Date
 
-import com.google.inject.{Inject, Singleton}
-import io.github.cactacea.backend.core.application.components.interfaces.ConfigService
+import com.google.inject.Singleton
+import io.github.cactacea.backend.core.util.configs.Config
 import io.jsonwebtoken._
 
 @Singleton
 class OAuthTokenGenerator {
-
-  @Inject var config: ConfigService = _
 
   def generateToken(audience: Long, clientId: String, scope: String): String = {
     val expired = 30 * 60 // 30 minutes
@@ -23,17 +21,17 @@ class OAuthTokenGenerator {
 
   private def generate(subject: String, audience: Long, clientId: String, scope: String, expired: Long): String = {
 
-    val signatureAlgorithm = SignatureAlgorithm.forName(config.algorithm)
+    val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.algorithm)
 
     Jwts.builder()
-      .setIssuer(config.issuer)
+      .setIssuer(Config.auth.issuer)
       .setIssuedAt(new Date())
       .setSubject(subject)
       .setHeaderParam("client_id", clientId)
       .setHeaderParam("scope", scope)
       .setHeaderParam("expired", expired.toString)
       .setAudience(audience.toString())
-      .signWith(signatureAlgorithm, config.signingKey)
+      .signWith(signatureAlgorithm, Config.auth.signingKey)
       .compact()
 
   }
@@ -51,8 +49,8 @@ class OAuthTokenGenerator {
 
     try {
 
-      val signatureAlgorithm = SignatureAlgorithm.forName(config.algorithm)
-      val parsed = Jwts.parser().setSigningKey(config.signingKey).parseClaimsJws(token)
+      val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.algorithm)
+      val parsed = Jwts.parser().setSigningKey(Config.auth.signingKey).parseClaimsJws(token)
       val header = parsed.getHeader()
       val body = parsed.getBody()
       val issuedAt = body.getIssuedAt
@@ -67,7 +65,7 @@ class OAuthTokenGenerator {
       } else if (body.getSubject.equals(subject) == false) {
         None
 
-      } else if (body.getIssuer.equals(config.issuer) == false) {
+      } else if (body.getIssuer.equals(Config.auth.issuer) == false) {
         None
 
       } else {

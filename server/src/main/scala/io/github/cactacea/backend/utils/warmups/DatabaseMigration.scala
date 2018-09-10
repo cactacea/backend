@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.utils.warmups
 
-import com.typesafe.config.ConfigFactory
+import io.github.cactacea.backend.core.util.configs.Config
 import org.flywaydb.core.Flyway
 
 import scala.collection.JavaConverters._
@@ -8,11 +8,10 @@ import scala.collection.JavaConverters._
 object DatabaseMigration {
 
   def execute() = {
-    val config = ConfigFactory.load()
-    val database = config.getString("db.master.database")
-    val user = config.getString("db.master.user")
-    val password = config.getString("db.master.password")
-    val dest = config.getString("db.master.dest")
+    val database = Config.db.database
+    val user = Config.db.user
+    val password = Config.db.password
+    val dest = Config.db.dest
     val url = s"jdbc:mysql://$dest/$database"
     val flyway = new Flyway()
     flyway.setDataSource(url, user, password)
