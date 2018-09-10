@@ -1,5 +1,17 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
+lazy val versions = new {
+  val cactacea = "0.2.1-SNAPSHOT"
+  val finagle = "18.5.0"
+  val guice = "4.0"
+  val logback = "1.2.3"
+  val mockito = "1.10.19"
+  val scalaCheck = "1.13.4"
+  val scalaTest = "3.0.4"
+  val specs2 = "3.8.6"
+  val aws = "1.11.289"
+}
+
 lazy val demo = (project in file("demo"))
   .settings(
     version      := versions.cactacea,
@@ -53,31 +65,9 @@ lazy val core = (project in file("core"))
   )
   .settings(commonResolverSetting)
   .settings(coreLibrarySetting)
-//  .dependsOn(util)
   .dependsOn(oauth2)
   .dependsOn(swagger)
   .enablePlugins(FlywayPlugin)
-
-
-//lazy val util = (project in file("util"))
-//  .settings(
-//    version      := versions.cactacea,
-//    organization := "io.github.cactacea.backend",
-//    scalaVersion := "2.12.5",
-//    name := "util",
-//    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-//    testOptions in Test += Tests.Argument("-oI")
-//  )
-//  .settings(
-//    libraryDependencies ++= Seq(
-//      "com.danielasfregola" %% "twitter4s" % "5.3",
-//      "com.github.seratch" %% "awscala" % "0.6.+",
-//      "com.google.inject" % "guice" % versions.guice
-//    )
-//  )
-//  .settings(commonResolverSetting)
-//  .settings(finatraLibrarySetting)
-//  .settings(coreLibrarySetting)
 
 
 lazy val externals = (project in file("externals"))
@@ -100,49 +90,6 @@ lazy val externals = (project in file("externals"))
   .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
   .dependsOn(core)
-
-//lazy val filhouette = (project in file("filhouette"))
-//  .settings(
-//    version      := versions.cactacea,
-//    organization := "io.github.cactacea.backend",
-//    scalaVersion := "2.12.5",
-//    name := "filhouette",
-//    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-//    testOptions in Test += Tests.Argument("-oI")
-//  )
-//  .settings(finatraLibrarySetting)
-//  .settings(
-//    libraryDependencies ++= Seq(
-//      "io.jsonwebtoken" % "jjwt" % "0.9.0",
-//      "com.github.cb372" %% "scalacache-ehcache" % "0.24.1",
-//      "org.apache.commons" % "commons-lang3" % "3.7",
-//
-//      "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
-//      "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
-//      "org.specs2" %% "specs2-core" % versions.specs2 % "test",
-//      "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-//      "org.specs2" %% "specs2-matcher-extra" % versions.specs2 % "test",
-//      "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
-//    ))
-//  .settings(
-//    libraryDependencies ++= Seq(
-//      "de.svenkubiak" % "jBCrypt" % "0.4.1"
-////      "org.jasig.cas.client" % "cas-client-core" % "3.4.1",
-////      "org.jasig.cas.client" % "cas-client-support-saml" % "3.4.1"
-//    ))
-
-
-lazy val versions = new {
-  val cactacea = "0.2.0-SNAPSHOT"
-  val finagle = "18.5.0"
-  val guice = "4.0"
-  val logback = "1.2.3"
-  val mockito = "1.10.19"
-  val scalaCheck = "1.13.4"
-  val scalaTest = "3.0.4"
-  val specs2 = "3.8.6"
-  val aws = "1.11.289"
-}
 
 lazy val finatraLibrarySetting = Seq(
   libraryDependencies ++= Seq(
@@ -198,6 +145,42 @@ lazy val commonResolverSetting = Seq(
     "Maven central" at "http://central.maven.org/maven2/"
   )
 )
+
+///////////////////////////////////////////////
+//
+//  Independent libraries
+//
+///////////////////////////////////////////////
+
+lazy val filhouette = (project in file("filhouette"))
+  .settings(
+    version      := versions.cactacea,
+    organization := "io.github.cactacea.filhouette",
+    scalaVersion := "2.12.5",
+    name := "filhouette",
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+    testOptions in Test += Tests.Argument("-oI")
+  )
+  .settings(finatraLibrarySetting)
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.jsonwebtoken" % "jjwt" % "0.9.0",
+      "com.github.cb372" %% "scalacache-ehcache" % "0.24.1",
+      "org.apache.commons" % "commons-lang3" % "3.7",
+
+      "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
+      "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
+      "org.specs2" %% "specs2-core" % versions.specs2 % "test",
+      "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
+      "org.specs2" %% "specs2-matcher-extra" % versions.specs2 % "test",
+      "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
+    ))
+  .settings(
+    libraryDependencies ++= Seq(
+      "de.svenkubiak" % "jBCrypt" % "0.4.1"
+      //      "org.jasig.cas.client" % "cas-client-core" % "3.4.1",
+      //      "org.jasig.cas.client" % "cas-client-support-saml" % "3.4.1"
+    ))
 
 lazy val swagger = (project in file("swagger"))
   .settings(
