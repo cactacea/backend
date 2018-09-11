@@ -17,7 +17,6 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseProviderModule,
-        DefaultIdentifyModule,
         DefaultHashModule
       )
     ).create

@@ -11,13 +11,13 @@ class FollowersDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     (for {
       r <- _updateFollower(accountId, sessionId)
       _ <- _updateFollowerCount(accountId)
     } yield (r)).flatMap(_ match {
       case true =>
-        Future.True
+        Future.value(Unit)
       case false =>
         _insertFollower(accountId, sessionId)
     })
@@ -30,7 +30,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
     } yield (r)
   }
 
-  private def _insertFollower(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertFollower(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -40,7 +40,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
           _.follower          -> true
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   private def _updateFollowerCount(accountId: AccountId): Future[Boolean] = {
@@ -104,7 +104,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.followedAt)(Ord.descNullsLast)
+        .sortBy(_._3.followedAt)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -130,7 +130,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.followedAt)(Ord.descNullsLast)
+        .sortBy(_._3.followedAt)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

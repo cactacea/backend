@@ -166,10 +166,8 @@ class GroupsDAOSpec extends DAOSpec {
     val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.friends,   GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), false, GroupPrivacyType.everyone,      GroupAuthorityType.owner,  0L, sessionAccount.id.toSessionId))
 
-    val result1 = Await.result(groupsDAO.update(groupId1, Some("New Group Name11"), false, GroupPrivacyType.followers, GroupAuthorityType.owner,  sessionAccount.id.toSessionId))
-    val result2 = Await.result(groupsDAO.update(groupId2, Some("New Group Name21"),  true, GroupPrivacyType.following,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    assert(result1 == true)
-    assert(result2 == true)
+    Await.result(groupsDAO.update(groupId1, Some("New Group Name11"), false, GroupPrivacyType.followers, GroupAuthorityType.owner,  sessionAccount.id.toSessionId))
+    Await.result(groupsDAO.update(groupId2, Some("New Group Name21"),  true, GroupPrivacyType.following,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
 
     val group1 = Await.result(groupsDAO.find(groupId1, sessionAccount.id.toSessionId)).head
     val group2 = Await.result(groupsDAO.find(groupId2, sessionAccount.id.toSessionId)).head
@@ -184,8 +182,7 @@ class GroupsDAOSpec extends DAOSpec {
     val sessionAccount = createAccount("account0")
 
     val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val result1 = Await.result(groupsDAO.update(groupId1, None, sessionAccount.id.toSessionId))
-    assert(result1 == true)
+    Await.result(groupsDAO.update(groupId1, None, sessionAccount.id.toSessionId))
 
   }
 

@@ -26,7 +26,6 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultStorageModule,
         DefaultSubScribeModule,
         DefaultTranscodeModule,
-        DefaultIdentifyModule,
         DefaultDeepLinkModule,
         DefaultHashModule
       )

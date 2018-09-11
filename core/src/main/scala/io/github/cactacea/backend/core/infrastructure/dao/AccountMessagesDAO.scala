@@ -78,7 +78,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.exists(_ == i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
-        .sortBy(_._2.messageId)(Ord.descNullsLast)
+        .sortBy(_._2.messageId)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

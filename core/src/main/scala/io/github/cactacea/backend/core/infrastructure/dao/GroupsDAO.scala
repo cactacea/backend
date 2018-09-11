@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
@@ -14,73 +13,56 @@ class GroupsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject private var identifyService: IdentifyService = _
   @Inject private var timeService: TimeService = _
 
   def create(sessionId: SessionId): Future[GroupId] = {
-    for {
-      id <- identifyService.generate().map(GroupId(_))
-      _ <- insert(id, sessionId)
-    } yield (id)
-  }
-
-  private def insert(id: GroupId, sessionId: SessionId): Future[Long] = {
     val organizedAt = timeService.nanoTime()
     val name: Option[String] = None
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups].insert(
-        _.id                -> lift(id),
         _.name              -> lift(name),
-        _.invitationOnly  -> true,
+        _.invitationOnly    -> true,
         _.authorityType     -> lift(GroupAuthorityType.member),
         _.privacyType       -> lift(GroupPrivacyType.everyone),
-        _.directMessage   -> true,
+        _.directMessage     -> true,
         _.accountCount      -> 0L,
         _.by                -> lift(by),
         _.organizedAt       -> lift(organizedAt)
-      )
+      ).returning(_.id)
     }
     run(r)
   }
 
 
   def create(name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, accountCount: Long, sessionId: SessionId): Future[GroupId] = {
-    for {
-      id <- identifyService.generate().map(GroupId(_))
-      _ <- insert(id, name, byInvitationOnly, privacyType, authority, accountCount, sessionId)
-    } yield (id)
-  }
-
-  private def insert(id: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, accountCount: Long, sessionId: SessionId): Future[Long] = {
     val organizedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups].insert(
-        _.id                  -> lift(id),
         _.name                -> lift(name),
-        _.invitationOnly    -> lift(byInvitationOnly),
+        _.invitationOnly      -> lift(byInvitationOnly),
         _.authorityType       -> lift(authority),
         _.privacyType         -> lift(privacyType),
-        _.directMessage     -> false,
+        _.directMessage       -> false,
         _.accountCount        -> lift(accountCount),
         _.by                  -> lift(by),
         _.organizedAt         -> lift(organizedAt)
-      )
+      ).returning(_.id)
     }
     run(r)
   }
 
-  def delete(groupId: GroupId): Future[Boolean] = {
+  def delete(groupId: GroupId): Future[Unit] = {
     val r = quote {
       query[Groups]
         .filter(_.id == lift(groupId))
         .delete
     }
-    run(r).map(_ == 1)
+    run(r).map(_ => Unit)
   }
 
-  def update(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Boolean] = {
+  def update(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups]
@@ -88,15 +70,15 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         .filter(_.by == lift(by))
         .update(
         _.name                -> lift(name),
-        _.invitationOnly    -> lift(byInvitationOnly),
+        _.invitationOnly      -> lift(byInvitationOnly),
         _.privacyType         -> lift(privacyType),
         _.authorityType       -> lift(authority)
       )
     }
-    run(r).map(_ == 1)
+    run(r).map(_ => Unit)
   }
 
-  def update(groupId: GroupId, messageId: Option[MessageId], sessionId: SessionId): Future[Boolean] = {
+  def update(groupId: GroupId, messageId: Option[MessageId], sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups]
@@ -106,7 +88,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
           _.messageId -> lift(messageId)
         )
     }
-    run(r).map(_ == 1)
+    run(r).map(_ => Unit)
   }
 
   def updateAccountCount(groupId: GroupId, count: Long): Future[Boolean] = {
@@ -137,7 +119,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
           .filter(b => b.blocked == true || b.beingBlocked == true)
           .isEmpty)
         .filter(_.id < lift(s) || lift(s) == -1L)
-        .sortBy(_.id)(Ord.descNullsLast)
+        .sortBy(_.id)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

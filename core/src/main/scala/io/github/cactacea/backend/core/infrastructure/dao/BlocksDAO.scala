@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
@@ -15,17 +14,13 @@ class BlocksDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
-  @Inject private var identifyService: IdentifyService = _
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     _updateBlocks(accountId, sessionId).flatMap(_ match {
       case true =>
-        Future.True
+        Future.Unit
       case false =>
-        for {
-          id <- identifyService.generate().map(BlockId(_))
-          r <- _insertBlocks(id, accountId, sessionId)
-        } yield (r)
+        _insertBlocks(accountId, sessionId).map(_ => Unit)
     })
   }
 
@@ -33,20 +28,19 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     _updateUnblocks(accountId, sessionId)
   }
 
-  private def _insertBlocks(id: BlockId, accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertBlocks(accountId: AccountId, sessionId: SessionId): Future[BlockId] = {
     val by = sessionId.toAccountId
     val blockedAt = timeService.nanoTime()
     val q = quote {
       query[Blocks]
         .insert(
-          _.id            -> lift(id),
           _.accountId     -> lift(accountId),
           _.by            -> lift(by),
           _.blocked       -> true,
           _.blockedAt     -> lift(blockedAt)
-        )
+        ).returning(_.id)
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   private def _updateBlocks(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
@@ -101,7 +95,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
         .map({ case ((b, a), r) => (a, r, b)})
-        .sortBy(_._3.id)(Ord.descNullsLast)
+        .sortBy(_._3.id)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

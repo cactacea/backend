@@ -18,7 +18,6 @@ class BaseServer extends HttpServer {
 
   protected  def databaseModule = DatabaseProviderModule
 
-  def identifyModule: TwitterModule =  DefaultIdentifyModule
   def injectionModule: TwitterModule =  DefaultInjectionModule
   def fanOutModule: TwitterModule = DefaultNotificationModule
   def notificationMessagesModule: TwitterModule = DefaultNotificationMessagesModule
@@ -31,7 +30,6 @@ class BaseServer extends HttpServer {
   def socialAccountsModule: TwitterModule = DefaultSocialAccountsModule
   def hashModule: TwitterModule = DefaultHashModule
 
-  addFrameworkModule(identifyModule)
   addFrameworkModule(injectionModule)
   addFrameworkModule(fanOutModule)
   addFrameworkModule(notificationMessagesModule)

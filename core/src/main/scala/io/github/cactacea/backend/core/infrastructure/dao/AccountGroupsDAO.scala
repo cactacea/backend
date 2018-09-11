@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.infrastructure.identifiers._
@@ -14,7 +13,6 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
-  @Inject private var identifyService: IdentifyService = _
 
   def exist(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
@@ -40,18 +38,16 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
     for {
-      id <- identifyService.generate().map(AccountGroupId(_))
-      _ <- _insert(id, accountId, groupId, sessionId)
+      id <- _insert(accountId, groupId, sessionId)
     } yield (id)
   }
 
-  private def _insert(id: AccountGroupId, accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+  private def _insert(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
     val joinedAt = timeService.nanoTime()
     val toAccountId = sessionId.toAccountId
     val q = quote {
       query[AccountGroups]
         .insert(
-          _.id                  -> lift(id),
           _.accountId           -> lift(accountId),
           _.groupId             -> lift(groupId),
           _.unreadCount         -> 0L,
@@ -59,9 +55,9 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
           _.toAccountId         -> lift(toAccountId),
           _.hidden              -> false,
           _.mute                -> false
-        )
+        ).returning(_.id)
     }
-    run(q).map(_ => Unit)
+    run(q)
   }
 
   def delete(accountId: AccountId, groupId: GroupId): Future[Unit] = {
@@ -139,7 +135,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         .leftJoin(query[Messages]).on({ case ((_, g), m) => g.messageId.exists(_ == m.id) })
         .leftJoin(query[AccountMessages]).on({ case (((_, g), _), am) => g.messageId.exists(_ == am.messageId) && am.accountId == lift(accountId) })
         .map({ case (((ag, g), m), am) => (ag, g, m, am) })
-        .sortBy(_._1.id)(Ord.descNullsLast)
+        .sortBy(_._1.id)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

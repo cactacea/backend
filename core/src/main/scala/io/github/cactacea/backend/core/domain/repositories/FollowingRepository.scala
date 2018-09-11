@@ -34,7 +34,7 @@ class FollowingRepository {
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.notExistFollow(accountId, sessionId)
       _ <- followingDAO.create(accountId, sessionId)
-      _ <- followersDAO.create(accountId, sessionId)
+      _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
     } yield (Future.value(Unit))
   }
 
@@ -44,7 +44,7 @@ class FollowingRepository {
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.existFollow(accountId, sessionId)
       _ <- followingDAO.delete(accountId, sessionId)
-      _ <- followersDAO.delete(accountId, sessionId)
+      _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.following, sessionId)
       _ <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.followers, accountId.toSessionId)
     } yield (Future.value(Unit))

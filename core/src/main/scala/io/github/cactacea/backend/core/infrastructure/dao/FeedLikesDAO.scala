@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, FeedPrivacyType}
@@ -15,29 +14,26 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
-  @Inject private var indentifyService: IdentifyService = _
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     for {
-      id <- indentifyService.generate().map(FeedLikeId(_))
-      _ <- _insertFeedLikes(id, feedId, sessionId)
+      _ <- _insertFeedLikes(feedId, sessionId)
       r <- _updateLikeCount(feedId)
     } yield (r)
   }
 
-  private def _insertFeedLikes(id: FeedLikeId, feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertFeedLikes(feedId: FeedId, sessionId: SessionId): Future[FeedLikeId] = {
     val postedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[FeedLikes]
         .insert(
-          _.id       -> lift(id),
           _.feedId   -> lift(feedId),
           _.postedAt -> lift(postedAt),
           _.by       -> lift(by)
-        )
+        ).returning(_.id)
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   private def _updateLikeCount(feedId: FeedId): Future[Boolean] = {
@@ -128,7 +124,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((ff, a), r) => (a, r, ff)})
-        .sortBy(_._3.id)(Ord.descNullsLast)
+        .sortBy(_._3.id)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -151,7 +147,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
         .map({case (ff, f) => (f, ff)})
-        .sortBy({ case (ff, _) => ff.id })(Ord.descNullsLast)
+        .sortBy({ case (ff, _) => ff.id })(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -175,7 +171,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
         .map({case (ff, f) => (f, ff)})
-        .sortBy({ case (ff, _) => ff.id })(Ord.descNullsLast)
+        .sortBy({ case (ff, _) => ff.id })(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
