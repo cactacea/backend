@@ -46,7 +46,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
         af <- query[AccountFeeds]
           .filter(_.accountId == lift(by))
           .filter(_.feedId < lift(s)  || lift(s) == -1)
-          .sortBy(_.feedId)(Ord.descNullsLast)
+          .sortBy(_.feedId)(Ord.desc)
           .take(lift(c))
         f <- query[Feeds]
           .join(f => f.id == af.feedId && (f.privacyType == lift(privacyType) || lift(privacyType) == lift(FeedPrivacyType.everyone)) )

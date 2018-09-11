@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{HashService, IdentifyService}
+import io.github.cactacea.backend.core.application.components.interfaces.{HashService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
@@ -17,21 +17,18 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
 
   @Inject private var timeService: TimeService = _
   @Inject private var blocksCountDAO: BlockCountDAO = _
-  @Inject private var identifyService: IdentifyService = _
 
   def create(accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
     for {
-      id <- identifyService.generate().map(AccountId(_))
-      _ <- insert(id, accountName, displayName, password, web, birthday, location, bio)
+      id <- insert(accountName, displayName, password, web, birthday, location, bio)
     } yield (id)
   }
 
-  private def insert(id: AccountId, accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[Long] = {
+  private def insert(accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
     val accountStatus = AccountStatusType.normally
     val hashedPassword = hashService.hash(password)
     val q = quote {
       query[Accounts].insert(
-        _.id                    -> lift(id),
         _.accountName           -> lift(accountName),
         _.displayName           -> lift(displayName),
         _.password              -> lift(hashedPassword),
@@ -40,7 +37,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
         _.birthday              -> lift(birthday),
         _.location              -> lift(location),
         _.bio                   -> lift(bio)
-      )
+      ).returning(_.id)
     }
     run(q)
   }
@@ -251,7 +248,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
           a.accountStatus  == lift(status) && (a.id < lift(s) || lift(s) == -1L) &&
           query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty})
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
-      .sortBy({ case (a, _) => a.id})(Ord.descNullsLast)
+      .sortBy({ case (a, _) => a.id})(Ord.desc)
       .drop(lift(o))
       .take(lift(c))
     }

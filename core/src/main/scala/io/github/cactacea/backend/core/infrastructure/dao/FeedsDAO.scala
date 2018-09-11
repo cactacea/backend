@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType, FeedPrivacyType}
@@ -18,7 +17,6 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   @Inject private var feedReportsDAO: FeedReportsDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
   @Inject private var blocksCountDAO: BlockCountDAO = _
-  @Inject private var identifyService: IdentifyService = _
   @Inject private var timeService: TimeService = _
 
   import db._
@@ -26,19 +24,17 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
     val by = sessionId.toAccountId
     for {
-      id <- identifyService.generate().map(FeedId(_))
-      _  <- _insertFeed(id, message, privacyType, contentWarning, expiration, by)
+      id  <- _insertFeed(message, privacyType, contentWarning, expiration, by)
       _  <- feedTagsDAO.create(id, tags)
       _  <- feedMediumDAO.create(id, mediumIds)
     } yield (id)
   }
 
-  private def _insertFeed(id: FeedId, message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], by: AccountId): Future[Long] = {
+  private def _insertFeed(message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], by: AccountId): Future[FeedId] = {
     val privacy = privacyType
     val postedAt = timeService.nanoTime()
     val q = quote {
       query[Feeds].insert(
-        _.id                  -> lift(id),
         _.by                  -> lift(by),
         _.message             -> lift(message),
         _.likeCount           -> 0L,
@@ -49,7 +45,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         _.contentStatus       -> lift(ContentStatusType.unchecked),
         _.notified            -> false,
         _.postedAt            -> lift(postedAt)
-      )
+      ).returning(_.id)
     }
     run(q)
   }
@@ -139,7 +135,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
       query[Feeds]
         .filter(_.by        ==  lift(by))
         .filter(_.id < lift(s) || lift(s) == -1L)
-        .sortBy(_.id)(Ord.descNullsLast)
+        .sortBy(_.id)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -164,7 +160,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
             || (f.by == lift(by)))
         .filter({ f => (f.expiration.forall(_ > lift(e)))})
         .filter(_.id < lift(s) || lift(s) == -1L)
-        .sortBy(_.id)(Ord.descNullsLast)
+        .sortBy(_.id)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

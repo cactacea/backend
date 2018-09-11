@@ -13,7 +13,7 @@ USE `${schema}` ;
 -- Table `${schema}`.`mediums`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`mediums` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `key` VARCHAR(1024) NOT NULL,
   `uri` VARCHAR(2048) NOT NULL,
   `width` INT NOT NULL,
@@ -33,7 +33,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`accounts`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`accounts` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_name` VARCHAR(30) NOT NULL,
   `display_name` VARCHAR(50) NULL DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
@@ -64,7 +64,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`feeds`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`feeds` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `message` VARCHAR(1000) NOT NULL,
   `by` BIGINT NOT NULL,
   `like_count` BIGINT NOT NULL,
@@ -109,7 +109,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`groups`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`groups` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(1000) NULL DEFAULT NULL,
   `privacy_type` TINYINT NOT NULL,
   `invitation_only` TINYINT NOT NULL,
@@ -136,7 +136,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`account_groups`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`account_groups` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT NOT NULL,
   `group_id` BIGINT NOT NULL,
   `unread_count` BIGINT NOT NULL,
@@ -172,7 +172,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`messages`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`messages` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `by` BIGINT NOT NULL,
   `group_id` BIGINT NOT NULL,
   `message_type` TINYINT NOT NULL,
@@ -245,7 +245,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`account_reports`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`account_reports` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `report_type` TINYINT NOT NULL,
@@ -291,7 +291,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`blocks`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`blocks` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `blocked` TINYINT NOT NULL DEFAULT 0,
@@ -365,7 +365,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`comments`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`comments` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `message` VARCHAR(1000) NOT NULL,
   `feed_id` BIGINT NOT NULL,
   `reply_id` BIGINT NULL DEFAULT NULL,
@@ -384,7 +384,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`comment_likes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`comment_likes` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `comment_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `posted_at` BIGINT NOT NULL,
@@ -410,7 +410,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`comment_reports`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`comment_reports` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `comment_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `report_type` TINYINT NOT NULL,
@@ -435,7 +435,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`devices`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`devices` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT NOT NULL,
   `udid` VARCHAR(255) NOT NULL,
   `device_type` TINYINT NOT NULL,
@@ -457,7 +457,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`feed_likes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`feed_likes` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `feed_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `posted_at` BIGINT NOT NULL,
@@ -499,7 +499,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`feed_reports`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`feed_reports` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `feed_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `report_type` TINYINT NOT NULL,
@@ -542,7 +542,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`friend_requests`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`friend_requests` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `notified` TINYINT NOT NULL,
@@ -569,7 +569,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`group_invitations`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`group_invitations` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `group_id` BIGINT NOT NULL,
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
@@ -603,7 +603,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`group_reports`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`group_reports` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `group_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `report_type` TINYINT NOT NULL,
@@ -624,7 +624,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `${schema}`.`notifications`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`notifications` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
   `notification_type` BIGINT NOT NULL,

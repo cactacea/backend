@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.ContentStatusType
@@ -15,25 +14,22 @@ class CommentsDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var blocksCountDAO: BlockCountDAO = _
-  @Inject private var identifyService: IdentifyService = _
   @Inject private var timeService: TimeService = _
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     for {
-      id <- identifyService.generate().map(CommentId(_))
-      _ <- _insertComments(id, feedId, message, sessionId)
+      id <- _insertComments(feedId, message, sessionId)
       _ <- _updateCommentCount(feedId)
     } yield (id)
   }
 
-  private def _insertComments(id: CommentId, feedId: FeedId, message: String, sessionId: SessionId): Future[Long] = {
+  private def _insertComments(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.nanoTime()
     val replyId: Option[CommentId] = None
     val q = quote {
       query[Comments]
         .insert(
-          _.id                -> lift(id),
           _.feedId            -> lift(feedId),
           _.replyId           -> lift(replyId),
           _.by                -> lift(by),
@@ -43,7 +39,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           _.contentStatus     -> lift(ContentStatusType.unchecked),
           _.notified          -> false,
           _.postedAt          -> lift(postedAt)
-        )
+        ).returning(_.id)
     }
     run(q)
   }
@@ -183,7 +179,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
         query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((c, _), _) => c.id })(Ord.descNullsLast)
+        .sortBy({ case ((c, _), _) => c.id })(Ord.desc)
         .take(lift(c))
     }
 

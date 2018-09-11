@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.infrastructure.identifiers._
@@ -13,24 +12,20 @@ class FeedReportsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject private var identifyService: IdentifyService = _
-
   def create(feedId: FeedId, reportType: ReportType, sessionId: SessionId): Future[FeedReportId] = {
     for {
-      id <- identifyService.generate().map(FeedReportId(_))
-      _ <- insert(id, feedId, reportType, sessionId)
+      id <- insert(feedId, reportType, sessionId)
     } yield (id)
   }
 
-  private def insert(id: FeedReportId, feedId: FeedId, reportType: ReportType, sessionId: SessionId): Future[Long] = {
+  private def insert(feedId: FeedId, reportType: ReportType, sessionId: SessionId): Future[FeedReportId] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[FeedReports].insert(
-        _.id            -> lift(id),
         _.feedId        -> lift(feedId),
         _.by            -> lift(by),
         _.reportType    -> lift(reportType)
-      )
+      ).returning(_.id)
     }
     run(q)
   }

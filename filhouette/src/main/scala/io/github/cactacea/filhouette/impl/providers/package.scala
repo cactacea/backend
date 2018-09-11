@@ -16,7 +16,7 @@
 package io.github.cactacea.filhouette.impl
 
 /**
- * Contains [[com.mohiva.play.silhouette.api.Provider]] implementations that provide authentication
+ * Contains [[io.github.cactacea.filhouette.api.Provider]] implementations that provide authentication
  * for different schemes and services.
  */
 package object providers {}

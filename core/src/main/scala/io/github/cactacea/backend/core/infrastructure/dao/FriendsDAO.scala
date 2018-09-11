@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -14,18 +13,16 @@ class FriendsDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
-  @Inject private var identifyService: IdentifyService = _
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     (for {
-      f <- identifyService.generate()
       _ <- _updateFriendCount(sessionId)
-      r <- _updateFriend(accountId, f, sessionId)
-    } yield ((f, r))).flatMap(_ match {
-      case (_ , true) =>
-        Future.True
-      case (f, false)=>
-        _insertFriend(accountId, f, sessionId)
+      r <- _updateFriend(accountId, sessionId)
+    } yield (r)).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        _insertFriend(accountId, sessionId)
     })
   }
 
@@ -36,7 +33,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     } yield (true)
   }
 
-  private def _updateFriendCount(sessionId: SessionId): Future[Boolean] = {
+  private def _updateFriendCount(sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
@@ -45,7 +42,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
           a => a.friendCount -> (a.friendCount + 1)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   private def _updateUnFriendCount(sessionId: SessionId): Future[Boolean] = {
@@ -60,7 +57,8 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == 1)
   }
 
-  private def _insertFriend(accountId: AccountId, friendedAt: Long, sessionId: SessionId): Future[Boolean] = {
+  private def _insertFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    val friendedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -71,10 +69,11 @@ class FriendsDAO @Inject()(db: DatabaseService) {
           _.friendedAt        -> lift(friendedAt)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  private def _updateFriend(accountId: AccountId, friendedAt: Long, sessionId: SessionId): Future[Boolean] = {
+  private def _updateFriend(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+    val friendedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -125,7 +124,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.friendedAt)(Ord.descNullsLast)
+        .sortBy(_._3.friendedAt)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -150,7 +149,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.friendedAt)(Ord.descNullsLast)
+        .sortBy(_._3.friendedAt)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

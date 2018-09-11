@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, CommentLikeId, SessionId}
@@ -14,29 +13,26 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
-  @Inject private var identifyService: IdentifyService = _
 
   def create(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     for {
-      id <- identifyService.generate().map(CommentLikeId(_))
-      _ <- _insertCommentLikes(id, commentId, sessionId)
+      id <- _insertCommentLikes(commentId, sessionId)
       r <- _updateLikeCount(commentId)
     } yield (r)
   }
 
-  private def _insertCommentLikes(id: CommentLikeId, commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  private def _insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[CommentLikeId] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.nanoTime()
     val q = quote {
       query[CommentLikes]
         .insert(
-          _.id          -> lift(id),
           _.commentId   -> lift(commentId),
           _.by          -> lift(by),
           _.postedAt    -> lift(postedAt)
-        )
+        ).returning(_.id)
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
   private def _updateLikeCount(commentId: CommentId): Future[Boolean] = {
@@ -103,7 +99,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (a, r, c)})
-        .sortBy(_._3.id)(Ord.descNullsLast)
+        .sortBy(_._3.id)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

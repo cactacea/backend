@@ -16,9 +16,12 @@ class FollowingRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("session user name", "session user password", "session user udid")
     val followedUser = signUp("followed user name", "followed user password", "followed user udid")
+
     Await.result(followingRepository.create(followedUser.id, sessionUser.id.toSessionId))
+
     val result = Await.result(followingRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
     assert(result.size == 1)
+
     val resultFollowedUser = result(0)
     assert(followedUser.id == resultFollowedUser.id)
 
@@ -26,7 +29,7 @@ class FollowingRepositorySpec extends RepositorySpec {
     assert(account1.followCount == Some(1L))
 
     val account2 = Await.result(accountsRepository.find(followedUser.id.toSessionId))
-    assert(account2.followerCount == Some(1L))
+    assert(account2.followerCount == Some(0L))
 
   }
 

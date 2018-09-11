@@ -45,7 +45,7 @@ class GroupInvitationsRepository {
       _ <- validationDAO.checkGroupAccountsCount(i.groupId)
     } yield ((r, g, i))).flatMap(_ match {
       case (true, _, i) =>
-        groupInvitationsDAO.update(i.accountId, i.groupId, GroupInvitationStatusType.accepted).flatMap(_ => Future.Unit)
+        groupInvitationsDAO.update(i.accountId, i.groupId, GroupInvitationStatusType.accepted)
       case (false, g, i) =>
         for {
           _ <- accountGroupsDAO.create(i.accountId, i.groupId)
@@ -59,7 +59,7 @@ class GroupInvitationsRepository {
   def reject(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     groupInvitationsDAO.exist(invitationId).flatMap(_ match {
       case true =>
-        groupInvitationsDAO.update(invitationId, GroupInvitationStatusType.rejected, sessionId).flatMap(_ => Future.Unit)
+        groupInvitationsDAO.update(invitationId, GroupInvitationStatusType.rejected, sessionId)
       case false =>
         Future.exception(CactaceaException(GroupInvitationNotFound))
     })

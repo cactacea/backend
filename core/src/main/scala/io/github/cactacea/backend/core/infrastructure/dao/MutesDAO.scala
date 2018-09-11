@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -14,25 +13,34 @@ class MutesDAO @Inject()(db: DatabaseService) {
   import db._
 
   @Inject private var timeService: TimeService = _
-  @Inject private var identifyService: IdentifyService = _
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     (for {
-      m <- identifyService.generate()
-      r <- _updateMuted(accountId, m, sessionId)
-    } yield ((m, r))).flatMap(_ match {
-      case (_ , true) =>
-        Future.True
-      case (m , false) =>
-        _insertMuted(accountId, m, sessionId)
+      r <- _updateMuted(accountId, sessionId)
+    } yield (r)).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        _insertMuted(accountId, sessionId)
     })
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    _updateUnMuted(accountId, sessionId).map(_ => true)
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[Relationships]
+        .filter(_.accountId    == lift(accountId))
+        .filter(_.by        == lift(by))
+        .update(
+          _.mute           -> false
+        )
+    }
+    run(q).map(_ == 1)
+
   }
 
-  private def _insertMuted(accountId: AccountId, mutedAt: Long, sessionId: SessionId): Future[Boolean] = {
+  private def _insertMuted(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    val mutedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -43,10 +51,11 @@ class MutesDAO @Inject()(db: DatabaseService) {
           _.mutedAt         -> lift(mutedAt)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  private def _updateMuted(accountId: AccountId, mutedAt: Long, sessionId: SessionId): Future[Boolean] = {
+  private def _updateMuted(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+    val mutedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -55,19 +64,6 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .update(
           _.mute            -> true,
           _.mutedAt         -> lift(mutedAt)
-        )
-    }
-    run(q).map(_ == 1)
-  }
-
-  private def _updateUnMuted(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[Relationships]
-        .filter(_.accountId    == lift(accountId))
-        .filter(_.by        == lift(by))
-        .update(
-          _.mute           -> false
         )
     }
     run(q).map(_ == 1)
@@ -96,7 +92,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
       query[Relationships].filter(f => f.by == lift(by) && f.mute  == true && (f.mutedAt < lift(s) || lift(s) == -1L) )
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((f, _), _) => f.mutedAt })(Ord.descNullsLast)
+        .sortBy({ case ((f, _), _) => f.mutedAt })(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -121,7 +117,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.mutedAt)(Ord.descNullsLast)
+        .sortBy(_._3.mutedAt)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

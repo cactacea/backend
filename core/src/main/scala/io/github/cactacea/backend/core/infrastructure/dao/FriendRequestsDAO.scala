@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
@@ -14,29 +13,20 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject private var identifyService: IdentifyService = _
   @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
-    for {
-      id <- identifyService.generate().map(FriendRequestId(_))
-      _ <- insert(id, accountId, sessionId)
-    } yield (id)
-  }
-
-  private def insert(id: FriendRequestId, accountId: AccountId, sessionId: SessionId): Future[Long] = {
     val requestedAt = timeService.nanoTime()
     val by = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
         .insert(
-          _.id              -> lift(id),
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
           _.notified        -> false,
           _.requestStatus   -> lift(FriendRequestStatusType.noResponded),
           _.requestedAt     -> lift(requestedAt)
-        )
+        ).returning(_.id)
     }
     run(q)
   }
@@ -94,7 +84,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})
-          .sortBy(_._1.id)(Ord.descNullsLast)
+          .sortBy(_._1.id)(Ord.desc)
           .drop(lift(o))
           .take(lift(c))
       }
@@ -106,7 +96,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})
-          .sortBy(_._1.id)(Ord.descNullsLast)
+          .sortBy(_._1.id)(Ord.desc)
           .drop(lift(o))
           .take(lift(c))
       }

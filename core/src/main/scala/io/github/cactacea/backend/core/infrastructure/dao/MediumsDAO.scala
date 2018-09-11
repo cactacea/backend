@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.IdentifyService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MediumType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
@@ -13,20 +12,10 @@ class MediumsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  @Inject private var identifyService: IdentifyService = _
-
   def create(key: String, uri: String, thumbnailUri: Option[String], mediumType: MediumType, width: Int, height: Int, size: Long, sessionId: SessionId): Future[MediumId] = {
-    for {
-      id <- identifyService.generate().map(MediumId(_))
-      _ <- insert(id, key, uri, thumbnailUri, mediumType, width, height, size, sessionId)
-    } yield (id)
-  }
-
-  private def insert(id: MediumId, key: String, uri: String, thumbnailUri: Option[String], mediumType: MediumType, width: Int, height: Int, size: Long, sessionId: SessionId): Future[Long] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Mediums].insert(
-        _.id              -> lift(id),
         _.key             -> lift(key),
         _.uri             -> lift(uri),
         _.width           -> lift(width),
@@ -37,7 +26,7 @@ class MediumsDAO @Inject()(db: DatabaseService) {
         _.mediumType      -> lift(mediumType),
         _.contentWarning  -> false,
         _.contentStatus   -> lift(ContentStatusType.unchecked)
-      )
+      ).returning(_.id)
     }
     run(q)
   }
@@ -52,13 +41,13 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def delete(id: MediumId): Future[Long] = {
+  def delete(id: MediumId): Future[Unit] = {
     val q = quote {
       query[Mediums]
         .filter(_.id == lift(id))
         .delete
     }
-    run(q)
+    run(q).map(_ => Unit)
   }
 
   def exist(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {

@@ -22,7 +22,7 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
       query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (ag.id < lift(s) || lift(s) == -1L))
         .join(query[Accounts]).on((ag, a) => a.id == ag.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id})
-        .sortBy({ case ((ag, _), _) => ag.id})(Ord.descNullsLast)
+        .sortBy({ case ((ag, _), _) => ag.id})(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
