@@ -31,7 +31,7 @@ lazy val demo = (project in file("demo"))
   )
   .dependsOn(server)
   .dependsOn(externals)
-  .dependsOn(swagger)
+  .dependsOn(finagger)
   .enablePlugins(JavaAppPackaging)
 
 
@@ -72,7 +72,7 @@ lazy val core = (project in file("core"))
   .settings(commonResolverSetting)
   .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
-  .dependsOn(swagger)
+  .dependsOn(finagger)
   .enablePlugins(FlywayPlugin)
 
 
@@ -186,22 +186,4 @@ lazy val filhouette = (project in file("filhouette"))
       "de.svenkubiak" % "jBCrypt" % "0.4.1"
     ))
 
-lazy val swagger = (project in file("swagger"))
-  .settings(
-    version      := versions.cactacea,
-    organization := "io.github.cactacea",
-    scalaVersion := "2.12.5",
-    name := "swagger",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.twitter" %% "finatra-http" % versions.finagle,
-      "io.swagger" % "swagger-core" % "1.5.17",
-      "io.swagger" %% "swagger-scala-module" % "1.0.4",
-      "org.webjars" % "swagger-ui" % "3.10.0",
-      "net.bytebuddy" % "byte-buddy" % "1.7.11",
-      "org.scalatest" %% "scalatest" % versions.scalaTest % "test"
-    )
-  )
+lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
