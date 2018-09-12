@@ -9,7 +9,7 @@ import com.twitter.util.TimeConversions._
 object Config extends DurationReader {
 
   private val config = ConfigFactory.load().as[TypeSafeConfig]("cactacea")
-  private val dbConfig = config.as[DatabaseConfig]("db.master")
+  private val dbConfig = config.as[DatabaseConfig]("db")
   private val authConfig = config.as[AuthConfig]("auth")
   private val passwordConfig = config.as[PasswordConfig]("password")
 
