@@ -152,38 +152,4 @@ lazy val commonResolverSetting = Seq(
   )
 )
 
-///////////////////////////////////////////////
-//
-//  Independent libraries
-//
-///////////////////////////////////////////////
-
-lazy val filhouette = (project in file("filhouette"))
-  .settings(
-    version      := versions.cactacea,
-    organization := "io.github.cactacea",
-    scalaVersion := "2.12.5",
-    name := "filhouette",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
-  )
-  .settings(finatraLibrarySetting)
-  .settings(
-    libraryDependencies ++= Seq(
-      "io.jsonwebtoken" % "jjwt" % "0.9.0",
-      "com.github.cb372" %% "scalacache-ehcache" % "0.24.1",
-      "org.apache.commons" % "commons-lang3" % "3.7",
-
-      "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
-      "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
-      "org.specs2" %% "specs2-core" % versions.specs2 % "test",
-      "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-      "org.specs2" %% "specs2-matcher-extra" % versions.specs2 % "test",
-      "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
-    ))
-  .settings(
-    libraryDependencies ++= Seq(
-      "de.svenkubiak" % "jBCrypt" % "0.4.1"
-    ))
-
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
