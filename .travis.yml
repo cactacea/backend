@@ -37,7 +37,7 @@ before_install:
   - bash ./scripts/travis_mysql-reset-root-password.sh
 
 script:
-  - bash ./scripts/travis_db_migrate.sh
+#  - bash ./scripts/travis_db_migrate.sh
   - sbt ++$TRAVIS_SCALA_VERSION
   - sbt "project core" clean coverage test coverageReport
 

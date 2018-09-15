@@ -18,8 +18,7 @@ lazy val demo = (project in file("demo"))
     organization := "io.github.cactacea.backend",
     name := "demo",
     scalaVersion := "2.12.5",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp")
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp"),
   )
   .settings(
     version in Docker := "latest",
@@ -40,9 +39,7 @@ lazy val server = (project in file("server"))
     version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     name := "server",
-    scalaVersion := "2.12.5",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
+    scalaVersion := "2.12.5"
   )
   .settings(
     libraryDependencies ++= Seq(
@@ -60,9 +57,7 @@ lazy val core = (project in file("core"))
     version      := versions.cactacea,
     organization := "io.github.cactacea.backend",
     scalaVersion := "2.12.5",
-    name := "core",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
+    name := "core"
   )
   .settings(
     libraryDependencies ++= Seq(
@@ -72,6 +67,7 @@ lazy val core = (project in file("core"))
   .settings(commonResolverSetting)
   .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
+  .settings(testSettings)
   .dependsOn(finagger)
   .enablePlugins(FlywayPlugin)
 
@@ -150,6 +146,31 @@ lazy val commonResolverSetting = Seq(
     Resolver.sonatypeRepo("releases"),
     "Maven central" at "http://central.maven.org/maven2/"
   )
+)
+
+lazy val dbUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
+lazy val dbPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
+lazy val dbDatabase = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
+lazy val dbHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
+lazy val dbPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
+
+lazy val testSettings = Seq(
+  flywayUser := dbUser,
+  flywayPassword := dbPassword,
+  flywayUrl := s"jdbc:mysql://$dbHostName:$dbPort/$dbDatabase",
+  flywayPlaceholders := Map("schema" -> dbDatabase),
+  flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
+  (test in Test) := {
+    (test in Test).dependsOn(flywayClean, flywayMigrate).value
+  },
+  (testOnly in Test) := {
+    (testOnly in Test).dependsOn(flywayClean, flywayMigrate).evaluated
+  },
+  (testQuick in Test) := {
+    (testQuick in Test).dependsOn(flywayClean, flywayMigrate).evaluated
+  },
+  concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+  testOptions in Test += Tests.Argument("-oI")
 )
 
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))

@@ -13,12 +13,12 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount1 = createAccount("account1")
-    val sessionAccount2 = createAccount("account2")
-    val sessionAccount3 = createAccount("account3")
-    val sessionAccount4 = createAccount("account4")
-    val sessionAccount5 = createAccount("account5")
-    val sessionAccount6 = createAccount("account6")
+    val sessionAccount1 = createAccount("PushNotificationSettingsDAOSpec1")
+    val sessionAccount2 = createAccount("PushNotificationSettingsDAOSpec2")
+    val sessionAccount3 = createAccount("PushNotificationSettingsDAOSpec3")
+    val sessionAccount4 = createAccount("PushNotificationSettingsDAOSpec4")
+    val sessionAccount5 = createAccount("PushNotificationSettingsDAOSpec5")
+    val sessionAccount6 = createAccount("PushNotificationSettingsDAOSpec6")
 
     // create settings
     Await.result(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
@@ -44,12 +44,12 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
 
   test("edit") {
 
-    val sessionAccount1 = createAccount("account1")
-    val sessionAccount2 = createAccount("account2")
-    val sessionAccount3 = createAccount("account3")
-    val sessionAccount4 = createAccount("account4")
-    val sessionAccount5 = createAccount("account5")
-    val sessionAccount6 = createAccount("account6")
+    val sessionAccount1 = createAccount("PushNotificationSettingsDAOSpec7")
+    val sessionAccount2 = createAccount("PushNotificationSettingsDAOSpec8")
+    val sessionAccount3 = createAccount("PushNotificationSettingsDAOSpec9")
+    val sessionAccount4 = createAccount("PushNotificationSettingsDAOSpec10")
+    val sessionAccount5 = createAccount("PushNotificationSettingsDAOSpec11")
+    val sessionAccount6 = createAccount("PushNotificationSettingsDAOSpec12")
 
     Await.result(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
     Await.result(pushNotificationSettingsDAO.create(false, true, false,  false, false, false, sessionAccount2.id.toSessionId))
@@ -82,12 +82,12 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
 
   test("find") {
 
-    val sessionAccount1 = createAccount("account1")
-    val sessionAccount2 = createAccount("account2")
-    val sessionAccount3 = createAccount("account3")
-    val sessionAccount4 = createAccount("account4")
-    val sessionAccount5 = createAccount("account5")
-    val sessionAccount6 = createAccount("account6")
+    val sessionAccount1 = createAccount("PushNotificationSettingsDAOSpec13")
+    val sessionAccount2 = createAccount("PushNotificationSettingsDAOSpec14")
+    val sessionAccount3 = createAccount("PushNotificationSettingsDAOSpec15")
+    val sessionAccount4 = createAccount("PushNotificationSettingsDAOSpec16")
+    val sessionAccount5 = createAccount("PushNotificationSettingsDAOSpec17")
+    val sessionAccount6 = createAccount("PushNotificationSettingsDAOSpec18")
 
     Await.result(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
     Await.result(pushNotificationSettingsDAO.create(false, true, false,  false, false, false, sessionAccount2.id.toSessionId))

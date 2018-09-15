@@ -14,8 +14,8 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("follow a user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val followedUser = signUp("followed user name", "followed user password", "followed user udid")
+    val sessionUser = signUp("FollowingRepositorySpec1", "session user password", "session user udid")
+    val followedUser = signUp("FollowingRepositorySpec2", "followed user password", "followed user udid")
 
     Await.result(followingRepository.create(followedUser.id, sessionUser.id.toSessionId))
 
@@ -35,11 +35,11 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("follow a blocked user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val blockedUser = signUp("blocked user name", "blocked user password", "blocked user udid")
+    val sessionUser = signUp("FollowingRepositorySpec3", "session user password", "session user udid")
+    val blockedUser = signUp("FollowingRepositorySpec4", "blocked user password", "blocked user udid")
 
     Await.result(blocksRepository.create(blockedUser.id, sessionUser.id.toSessionId))
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("FollowingRepositorySpec4-2", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(followingRepository.create(blockedUser.id, sessionUser.id.toSessionId))
     }.error == AccountNotFound)
@@ -48,8 +48,8 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("follow a followed user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("FollowingRepositorySpec5", "session user password", "session user udid")
+    val user = signUp("FollowingRepositorySpec6", "user password", "user udid")
 
     Await.result(followingRepository.create(user.id, sessionUser.id.toSessionId))
 
@@ -61,7 +61,7 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("follow a session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("FollowingRepositorySpec7", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(followingRepository.create(sessionUser.id, sessionUser.id.toSessionId))
@@ -71,8 +71,8 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("delete follow") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("FollowingRepositorySpec8", "session user password", "session user udid")
+    val user = signUp("FollowingRepositorySpec9", "user password", "user udid")
 
     Await.result(followingRepository.create(user.id, sessionUser.id.toSessionId))
 
@@ -88,8 +88,8 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("delete follow no followed user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("FollowingRepositorySpec10", "session user password", "session user udid")
+    val user = signUp("FollowingRepositorySpec11", "user password", "user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(followingRepository.delete(user.id, sessionUser.id.toSessionId))
@@ -99,7 +99,7 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("delete no exist account follow") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("FollowingRepositorySpec12", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(followingRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
@@ -109,7 +109,7 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("delete follow session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("FollowingRepositorySpec13", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(followingRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
@@ -119,12 +119,12 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("find session's following") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val followedUser1 = signUp("user name 1", "user password 1", "user udid 1")
-    val followedUser2 = signUp("user name 2", "user password 2", "user udid 2")
-    val followedUser3 = signUp("user name 3", "user password 3", "user udid 3")
-    val followedUser4 = signUp("user name 4", "user password 4", "user udid 4")
-    val followedUser5 = signUp("user name 5", "user password 5", "user udid 5")
+    val sessionUser = signUp("FollowingRepositorySpec14", "session user password", "session user udid")
+    val followedUser1 = signUp("FollowingRepositorySpec15", "user password 1", "user udid 1")
+    val followedUser2 = signUp("FollowingRepositorySpec16", "user password 2", "user udid 2")
+    val followedUser3 = signUp("FollowingRepositorySpec17", "user password 3", "user udid 3")
+    val followedUser4 = signUp("FollowingRepositorySpec18", "user password 4", "user udid 4")
+    val followedUser5 = signUp("FollowingRepositorySpec19", "user password 5", "user udid 5")
 
     Await.result(followingRepository.create(followedUser1.id, sessionUser.id.toSessionId))
     Await.result(followingRepository.create(followedUser2.id, sessionUser.id.toSessionId))
@@ -147,13 +147,13 @@ class FollowingRepositorySpec extends RepositorySpec {
 
   test("find a user's following") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
-    val followedUser1 = signUp("user name 1", "user password 1", "user udid 1")
-    val followedUser2 = signUp("user name 2", "user password 2", "user udid 2")
-    val followedUser3 = signUp("user name 3", "user password 3", "user udid 3")
-    val followedUser4 = signUp("user name 4", "user password 4", "user udid 4")
-    val followedUser5 = signUp("user name 5", "user password 5", "user udid 5")
+    val sessionUser = signUp("FollowingRepositorySpec20", "session user password", "session user udid")
+    val user = signUp("FollowingRepositorySpec21", "user password", "user udid")
+    val followedUser1 = signUp("FollowingRepositorySpec22", "user password 1", "user udid 1")
+    val followedUser2 = signUp("FollowingRepositorySpec23", "user password 2", "user udid 2")
+    val followedUser3 = signUp("FollowingRepositorySpec24", "user password 3", "user udid 3")
+    val followedUser4 = signUp("FollowingRepositorySpec25", "user password 4", "user udid 4")
+    val followedUser5 = signUp("FollowingRepositorySpec26", "user password 5", "user udid 5")
 
     Await.result(followingRepository.create(followedUser1.id, user.id.toSessionId))
     Await.result(followingRepository.create(followedUser2.id, user.id.toSessionId))

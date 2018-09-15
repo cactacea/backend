@@ -22,7 +22,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
   }
 
   private def insert(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
-    val invitedAt = timeService.nanoTime()
+    val invitedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[GroupInvitations]

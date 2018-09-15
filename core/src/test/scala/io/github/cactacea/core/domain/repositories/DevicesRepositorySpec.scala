@@ -11,7 +11,7 @@ class DevicesRepositorySpec extends RepositorySpec {
 
   test("updateDeviceToken") {
 
-    val displayName = "new account"
+    val displayName = "DevicesRepositorySpec1"
     val password = "password"
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")

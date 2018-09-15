@@ -15,11 +15,11 @@ class MessagesDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("MediumsDAOSpec4")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
 
-    val result = Await.result(db.run(quote(query[Messages])))
+    val result = Await.result(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result.size == 1)
     val message = result(0)
     assert(message.id == messageId)
@@ -37,24 +37,24 @@ class MessagesDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("MediumsDAOSpec5")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
 
     Await.result(messagesDAO.delete(groupId))
-    val result = Await.result(db.run(quote(query[Messages])))
+    val result = Await.result(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result.size == 0)
   }
 
   test("updateReadStatus") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("MediumsDAOSpec6")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     // TODO : check
     Await.result(messagesDAO.updateReadAccountCount(List(messageId)))
 
-    val result2 = Await.result(db.run(quote(query[Messages])))
+    val result2 = Await.result(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result2.size == 1)
     val message = result2(0)
     assert(message.readAccountCount == 1)
@@ -63,7 +63,7 @@ class MessagesDAOSpec extends DAOSpec {
 
   test("updateNotified") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("MediumsDAOSpec7")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     // TODO : Check

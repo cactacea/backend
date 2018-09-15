@@ -24,8 +24,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block a user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("blocked user name", "blocked user password", "blocked user udid")
+    val sessionUser = signUp("BlocksRepositorySpec1", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec2", "blocked user password", "blocked user udid")
 
     Await.result(blocksRepository.create(user.id, sessionUser.id.toSessionId))
     assert(Await.result(blocksDAO.exist(user.id, sessionUser.id.toSessionId)) == true)
@@ -34,8 +34,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block a follower") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("BlocksRepositorySpec3", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec4", "user password", "user udid")
 
     Await.result(followingRepository.create(sessionUser.id, user.id.toSessionId))
 
@@ -51,8 +51,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block a follow") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("BlocksRepositorySpec5", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec6", "user password", "user udid")
 
     Await.result(followingRepository.create(user.id, sessionUser.id.toSessionId))
 
@@ -68,8 +68,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block a friend") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("BlocksRepositorySpec7", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec8", "user password", "user udid")
 
     Await.result(friendsRepository.create(user.id, sessionUser.id.toSessionId))
 
@@ -85,8 +85,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block a mute") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("BlocksRepositorySpec9", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec10", "user password", "user udid")
 
     Await.result(mutesRepository.create(user.id, sessionUser.id.toSessionId))
 
@@ -102,8 +102,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block a muter") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("BlocksRepositorySpec11", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec12", "user password", "user udid")
 
     Await.result(mutesRepository.create(sessionUser.id, user.id.toSessionId))
 
@@ -119,8 +119,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block a friend request user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("blocked user name", "blocked user password", "blocked user udid")
+    val sessionUser = signUp("BlocksRepositorySpec13", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec14", "blocked user password", "blocked user udid")
 
     Await.result(friendRequestsRepository.create(user.id, sessionUser.id.toSessionId))
     Await.result(friendRequestsRepository.create(sessionUser.id, user.id.toSessionId))
@@ -140,8 +140,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("unblock a user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("blocked user name", "blocked user password", "blocked user udid")
+    val sessionUser = signUp("BlocksRepositorySpec15", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec16", "blocked user password", "blocked user udid")
 
     Await.result(blocksRepository.create(user.id, sessionUser.id.toSessionId))
     assert(Await.result(blocksDAO.exist(user.id, sessionUser.id.toSessionId)) == true)
@@ -152,7 +152,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("unblock a no exist user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
+    val sessionUser = signUp("BlocksRepositorySpec16-2", "session user password", "session udid")
 
     assert(intercept[CactaceaException] {
       Await.result(blocksRepository.create(AccountId(0L), sessionUser.id.toSessionId))
@@ -162,8 +162,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("unblock a no blocking user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("blocked user name", "blocked user password", "blocked user udid")
+    val sessionUser = signUp("BlocksRepositorySpec17", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec18", "blocked user password", "blocked user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(blocksRepository.delete(user.id, sessionUser.id.toSessionId))
@@ -173,12 +173,12 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("find session's blocks") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user1 = signUp("blocked user name 1", "blocked user password 1", "blocked user udid 1")
-    val user2 = signUp("blocked user name 2", "blocked user password 2", "blocked user udid 2")
-    val user3 = signUp("blocked user name 3", "blocked user password 3", "blocked user udid 3")
-    val user4 = signUp("blocked user name 4", "blocked user password 4", "blocked user udid 4")
-    val user5 = signUp("blocked user name 5", "blocked user password 5", "blocked user udid 5")
+    val sessionUser = signUp("BlocksRepositorySpec19", "session user password", "session udid")
+    val user1 = signUp("BlocksRepositorySpec20", "blocked user password 1", "blocked user udid 1")
+    val user2 = signUp("BlocksRepositorySpec21", "blocked user password 2", "blocked user udid 2")
+    val user3 = signUp("BlocksRepositorySpec22", "blocked user password 3", "blocked user udid 3")
+    val user4 = signUp("BlocksRepositorySpec23", "blocked user password 4", "blocked user udid 4")
+    val user5 = signUp("BlocksRepositorySpec24", "blocked user password 5", "blocked user udid 5")
 
     Await.result(blocksRepository.create(user1.id, sessionUser.id.toSessionId))
     Await.result(blocksRepository.create(user2.id, sessionUser.id.toSessionId))
@@ -201,7 +201,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block no exist user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
+    val sessionUser = signUp("BlocksRepositorySpec25", "session user password", "session udid")
 
     assert(intercept[CactaceaException] {
       Await.result(blocksRepository.create(AccountId(0L), sessionUser.id.toSessionId))
@@ -211,7 +211,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("unblock no exist user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
+    val sessionUser = signUp("BlocksRepositorySpec26", "session user password", "session udid")
 
     assert(intercept[CactaceaException] {
       Await.result(blocksRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
@@ -221,8 +221,8 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block blocked user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
-    val user = signUp("blocked user name", "blocked user password", "blocked user udid")
+    val sessionUser = signUp("BlocksRepositorySpec27", "session user password", "session udid")
+    val user = signUp("BlocksRepositorySpec28", "blocked user password", "blocked user udid")
 
     Await.result(blocksRepository.create(user.id, sessionUser.id.toSessionId))
     assert(Await.result(blocksDAO.exist(user.id, sessionUser.id.toSessionId)) == true)
@@ -235,7 +235,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("block session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
+    val sessionUser = signUp("BlocksRepositorySpec29", "session user password", "session udid")
 
     assert(intercept[CactaceaException] {
       Await.result(blocksRepository.create(sessionUser.id, sessionUser.id.toSessionId))
@@ -245,7 +245,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   test("delete block session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
+    val sessionUser = signUp("BlocksRepositorySpec30", "session user password", "session udid")
 
     assert(intercept[CactaceaException] {
       Await.result(blocksRepository.delete(sessionUser.id, sessionUser.id.toSessionId))

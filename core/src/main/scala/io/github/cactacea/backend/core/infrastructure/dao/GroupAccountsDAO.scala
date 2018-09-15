@@ -16,7 +16,6 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
-//    val by = sessionId.toAccountId
 
     val q = quote {
       query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (ag.id < lift(s) || lift(s) == -1L))
@@ -26,7 +25,7 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).map(_.map({ case ((ag, a), r) => (a, r, ag)})) //.sortWith(_._3.id.value > _._3.id.value))
+    run(q).map(_.map({ case ((ag, a), r) => (a, r, ag)}))
 
   }
 

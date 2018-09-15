@@ -15,12 +15,12 @@ class AccountFeedsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
-    val sessionAccount6 = createAccount("account5")
+    val sessionAccount1 = createAccount("AccountFeedsDAOSpec0")
+    val sessionAccount2 = createAccount("AccountFeedsDAOSpec1")
+    val sessionAccount3 = createAccount("AccountFeedsDAOSpec2")
+    val sessionAccount4 = createAccount("AccountFeedsDAOSpec3")
+    val sessionAccount5 = createAccount("AccountFeedsDAOSpec4")
+    val sessionAccount6 = createAccount("AccountFeedsDAOSpec5")
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
     val medium3 = this.createMedium(sessionAccount1.id)
@@ -43,7 +43,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     // create account feeds
     Await.result(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId))
 
-    val q = quote { query[AccountFeeds].size}
+    val q = quote { query[AccountFeeds].filter(_.feedId == lift(feedId)).size}
     val result = Await.result(db.run(q))
     assert(result == 5)
 
@@ -51,12 +51,12 @@ class AccountFeedsDAOSpec extends DAOSpec {
 
   test("update") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
-    val sessionAccount6 = createAccount("account5")
+    val sessionAccount1 = createAccount("AccountFeedsDAOSpec6")
+    val sessionAccount2 = createAccount("AccountFeedsDAOSpec7")
+    val sessionAccount3 = createAccount("AccountFeedsDAOSpec8")
+    val sessionAccount4 = createAccount("AccountFeedsDAOSpec9")
+    val sessionAccount5 = createAccount("AccountFeedsDAOSpec10")
+    val sessionAccount6 = createAccount("AccountFeedsDAOSpec11")
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
     val medium3 = this.createMedium(sessionAccount1.id)

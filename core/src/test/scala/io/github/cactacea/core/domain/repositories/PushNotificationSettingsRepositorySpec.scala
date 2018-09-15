@@ -12,7 +12,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
 
   test("find session setting") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
+    val sessionUser = signUp("PushNotificationSettingsRepositorySpec1", "session user password", "session udid")
     val result = Await.result(notificationSettingsRepository.find(sessionUser.id.toSessionId))
     assert(result.groupMessage == true)
     assert(result.directMessage == true)
@@ -32,7 +32,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
 
   test("update session setting") {
 
-    val sessionUser = signUp("session user name", "session user password", "session udid")
+    val sessionUser = signUp("PushNotificationSettingsRepositorySpec2", "session user password", "session udid")
 
     Await.result(notificationSettingsRepository.update(false, false, false, false, false, false, sessionUser.id.toSessionId))
     val result = Await.result(notificationSettingsRepository.find(sessionUser.id.toSessionId))

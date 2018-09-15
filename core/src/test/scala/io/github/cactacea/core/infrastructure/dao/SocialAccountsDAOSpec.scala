@@ -10,12 +10,12 @@ class SocialAccountsDAOSpec extends DAOSpec {
   test("create find exist delete") {
 
     // create
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    Await.result(socialAccountsDAO.create("facebook", "facebook", None, true, sessionAccount3.id.toSessionId))
-    Await.result(socialAccountsDAO.create("google", "google", None, true, sessionAccount3.id.toSessionId))
-    Await.result(socialAccountsDAO.create("twitter", "twitter", None, true, sessionAccount3.id.toSessionId))
+    val sessionAccount1 = createAccount("SocialAccountsDAOSpec1")
+    val sessionAccount2 = createAccount("SocialAccountsDAOSpec2")
+    val sessionAccount3 = createAccount("SocialAccountsDAOSpec3")
+    Await.result(socialAccountsDAO.create("facebook", "SocialAccountsDAOSpec1", None, true, sessionAccount3.id.toSessionId))
+    Await.result(socialAccountsDAO.create("google", "SocialAccountsDAOSpec2", None, true, sessionAccount3.id.toSessionId))
+    Await.result(socialAccountsDAO.create("twitter", "SocialAccountsDAOSpec3", None, true, sessionAccount3.id.toSessionId))
 
     // exist
     val exists4 = Await.result(socialAccountsDAO.exist("facebook", sessionAccount3.id.toSessionId))
@@ -40,11 +40,11 @@ class SocialAccountsDAOSpec extends DAOSpec {
     assert(facebook.providerId == "facebook")
     assert(google.providerId == "google")
     assert(twitter.providerId == "twitter")
-    assert(facebook.providerKey == "facebook")
-    assert(google.providerKey == "google")
-    assert(twitter.providerKey == "twitter")
+    assert(facebook.providerKey == "SocialAccountsDAOSpec1")
+    assert(google.providerKey == "SocialAccountsDAOSpec2")
+    assert(twitter.providerKey == "SocialAccountsDAOSpec3")
 
-    val result6 = Await.result(socialAccountsDAO.find("facebook", "facebook"))
+    val result6 = Await.result(socialAccountsDAO.find("facebook", "SocialAccountsDAOSpec1"))
     assert(result6.isDefined == true)
 
     // delete
@@ -58,7 +58,7 @@ class SocialAccountsDAOSpec extends DAOSpec {
     assert(d2 == false)
     assert(d3 == false)
 
-    val result7 = Await.result(socialAccountsDAO.find("facebook", "facebook"))
+    val result7 = Await.result(socialAccountsDAO.find("facebook", "SocialAccountsDAOSpec1"))
     assert(result7.isDefined == false)
 
   }

@@ -15,8 +15,8 @@ class CommentReportsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
+    val sessionAccount1 = createAccount("CommentReportsDAOSpec1")
+    val sessionAccount2 = createAccount("CommentReportsDAOSpec2")
 
     val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.followers, false, None, sessionAccount1.id.toSessionId))
     val commentId = Await.result(commentsDAO.create(feedId, "0123456789" * 100, sessionAccount1.id.toSessionId))

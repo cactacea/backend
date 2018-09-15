@@ -5,8 +5,8 @@ import com.google.inject.Singleton
 @Singleton
 class TimeService {
 
-  def nanoTime(): Long = {
-    System.currentTimeMillis
+  def currentTimeMillis(): Long = {
+    System.currentTimeMillis()
   }
 
 }

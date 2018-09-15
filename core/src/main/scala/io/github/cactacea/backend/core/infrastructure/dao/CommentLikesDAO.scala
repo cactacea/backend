@@ -23,7 +23,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
 
   private def _insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[CommentLikeId] = {
     val by = sessionId.toAccountId
-    val postedAt = timeService.nanoTime()
+    val postedAt = timeService.currentTimeMillis()
     val q = quote {
       query[CommentLikes]
         .insert(

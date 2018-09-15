@@ -15,13 +15,13 @@ class GroupAccountsRepositorySpec extends RepositorySpec {
 
   test("find accounts") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user1 = signUp("user name 1", "user password", "user udid")
-    val user2 = signUp("user name 2", "user password", "user udid")
-    val user3 = signUp("user name 3", "user password", "user udid")
-    val user4 = signUp("user name 4", "user password", "user udid")
-    val user5 = signUp("user name 5", "user password", "user udid")
-    val user6 = signUp("user name 6", "user password", "user udid")
+    val sessionUser = signUp("GroupAccountsRepositorySpec1", "session user password", "session user udid")
+    val user1 = signUp("GroupAccountsRepositorySpec2", "user password", "user udid")
+    val user2 = signUp("GroupAccountsRepositorySpec3", "user password", "user udid")
+    val user3 = signUp("GroupAccountsRepositorySpec4", "user password", "user udid")
+    val user4 = signUp("GroupAccountsRepositorySpec5", "user password", "user udid")
+    val user5 = signUp("GroupAccountsRepositorySpec6", "user password", "user udid")
+    val user6 = signUp("GroupAccountsRepositorySpec7", "user password", "user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(groupAccountsRepository.create(groupId, user1.id.toSessionId))
     Await.result(groupAccountsRepository.create(groupId, user2.id.toSessionId))
@@ -46,8 +46,8 @@ class GroupAccountsRepositorySpec extends RepositorySpec {
 
   test("join to a group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("GroupAccountsRepositorySpec8", "session user password", "session user udid")
+    val user = signUp("GroupAccountsRepositorySpec9", "user password", "user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
 
     Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
@@ -76,8 +76,8 @@ class GroupAccountsRepositorySpec extends RepositorySpec {
 
   test("join a account to a group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("GroupAccountsRepositorySpec10", "session user password", "session user udid")
+    val user = signUp("GroupAccountsRepositorySpec11", "user password", "user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(groupAccountsRepository.create(user.id, groupId, sessionUser.id.toSessionId))
 
@@ -109,8 +109,8 @@ class GroupAccountsRepositorySpec extends RepositorySpec {
 
   test("leave a group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("GroupAccountsRepositorySpec12", "session user password", "session user udid")
+    val user = signUp("GroupAccountsRepositorySpec13", "user password", "user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId2 = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, user.id.toSessionId))
     Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
@@ -139,9 +139,9 @@ class GroupAccountsRepositorySpec extends RepositorySpec {
 
   test("leave a account from a group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
-    val user1 = signUp("user name 1", "user password", "user udid")
+    val sessionUser = signUp("GroupAccountsRepositorySpec14", "session user password", "session user udid")
+    val user = signUp("GroupAccountsRepositorySpec15", "user password", "user udid")
+    val user1 = signUp("GroupAccountsRepositorySpec16", "user password", "user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(groupAccountsRepository.create(user.id, groupId, sessionUser.id.toSessionId))
 

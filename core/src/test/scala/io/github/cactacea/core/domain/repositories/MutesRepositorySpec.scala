@@ -13,8 +13,8 @@ class MutesRepositorySpec extends RepositorySpec {
 
   test("mute a user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("muted user name", "muted user password", "muted user udid")
+    val sessionUser = signUp("MutesRepositorySpec1", "session user password", "session user udid")
+    val user = signUp("MutesRepositorySpec2", "muted user password", "muted user udid")
     Await.result(mutesRepository.create(user.id, sessionUser.id.toSessionId))
     val results = Await.result(mutesRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
     assert(results.size == 1)
@@ -25,8 +25,8 @@ class MutesRepositorySpec extends RepositorySpec {
 
   test("mute a blocked user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val blockedUser = signUp("blocked user name", "blocked user password", "blocked user udid")
+    val sessionUser = signUp("MutesRepositorySpec3", "session user password", "session user udid")
+    val blockedUser = signUp("MutesRepositorySpec4", "blocked user password", "blocked user udid")
 
     Await.result(blocksRepository.create(blockedUser.id, sessionUser.id.toSessionId))
 
@@ -38,8 +38,8 @@ class MutesRepositorySpec extends RepositorySpec {
 
   test("mute a muted user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("mute name", "mute password", "mute udid")
+    val sessionUser = signUp("MutesRepositorySpec5", "session user password", "session user udid")
+    val user = signUp("MutesRepositorySpec6", "mute password", "mute udid")
 
     Await.result(mutesRepository.create(user.id, sessionUser.id.toSessionId))
 
@@ -51,7 +51,7 @@ class MutesRepositorySpec extends RepositorySpec {
 
   test("mute a session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("MutesRepositorySpec7", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(mutesRepository.create(sessionUser.id, sessionUser.id.toSessionId))
@@ -61,8 +61,8 @@ class MutesRepositorySpec extends RepositorySpec {
 
   test("delete mute") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("MutesRepositorySpec8", "session user password", "session user udid")
+    val user = signUp("MutesRepositorySpec9", "user password", "user udid")
 
     Await.result(mutesRepository.create(user.id, sessionUser.id.toSessionId))
     Await.result(mutesRepository.delete(user.id, sessionUser.id.toSessionId))
@@ -72,7 +72,7 @@ class MutesRepositorySpec extends RepositorySpec {
 
   test("delete no exist account mute") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("MutesRepositorySpec10", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(mutesRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
@@ -82,8 +82,8 @@ class MutesRepositorySpec extends RepositorySpec {
 
   test("delete mute no muted user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user = signUp("user name", "user password", "user udid")
+    val sessionUser = signUp("MutesRepositorySpec11", "session user password", "session user udid")
+    val user = signUp("MutesRepositorySpec12", "user password", "user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(mutesRepository.delete(user.id, sessionUser.id.toSessionId))
@@ -93,7 +93,7 @@ class MutesRepositorySpec extends RepositorySpec {
 
   test("delete mute session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("MutesRepositorySpec13", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(mutesRepository.delete(sessionUser.id, sessionUser.id.toSessionId))

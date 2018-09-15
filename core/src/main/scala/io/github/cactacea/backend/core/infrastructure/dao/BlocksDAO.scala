@@ -30,7 +30,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
 
   private def _insertBlocks(accountId: AccountId, sessionId: SessionId): Future[BlockId] = {
     val by = sessionId.toAccountId
-    val blockedAt = timeService.nanoTime()
+    val blockedAt = timeService.currentTimeMillis()
     val q = quote {
       query[Blocks]
         .insert(
@@ -45,7 +45,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
 
   private def _updateBlocks(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
-    val blockedAt = timeService.nanoTime()
+    val blockedAt = timeService.currentTimeMillis()
     val q = quote {
       query[Blocks]
         .filter(_.accountId == lift(accountId))

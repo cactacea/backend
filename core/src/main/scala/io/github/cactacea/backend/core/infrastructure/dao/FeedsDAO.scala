@@ -32,7 +32,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
   private def _insertFeed(message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], by: AccountId): Future[FeedId] = {
     val privacy = privacyType
-    val postedAt = timeService.nanoTime()
+    val postedAt = timeService.currentTimeMillis()
     val q = quote {
       query[Feeds].insert(
         _.by                  -> lift(by),
@@ -105,7 +105,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
 
   def exist(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
-    val e = timeService.nanoTime()
+    val e = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
@@ -145,7 +145,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
 
-    val e = timeService.nanoTime()
+    val e = timeService.currentTimeMillis()
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
@@ -190,7 +190,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   def find(feedId: FeedId, sessionId: SessionId): Future[Option[(Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
-    val e = timeService.nanoTime()
+    val e = timeService.currentTimeMillis()
     val q = quote {
       query[Feeds].filter(f => f.id == lift(feedId) && (f.expiration.forall(_ > lift(e))) &&
         query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&

@@ -12,9 +12,9 @@ class BlocksDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val account1 = createAccount("account1")
-    val account2 = createAccount("account2")
-    val account3 = createAccount("account3")
+    val account1 = createAccount("BlocksDAOSpec1")
+    val account2 = createAccount("BlocksDAOSpec2")
+    val account3 = createAccount("BlocksDAOSpec3")
 
     // create
     Await.result(blocksDAO.create(account1.id, account2.id.toSessionId))
@@ -43,9 +43,9 @@ class BlocksDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val account1 = createAccount("account1")
-    val account2 = createAccount("account2")
-    val account3 = createAccount("account3")
+    val account1 = createAccount("BlocksDAOSpec4")
+    val account2 = createAccount("BlocksDAOSpec5")
+    val account3 = createAccount("BlocksDAOSpec6")
 
     // create
     Await.result(blocksDAO.create(account1.id, account2.id.toSessionId))
@@ -68,9 +68,9 @@ class BlocksDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val account1 = createAccount("account1")
-    val account2 = createAccount("account2")
-    val account3 = createAccount("account3")
+    val account1 = createAccount("BlocksDAOSpec7")
+    val account2 = createAccount("BlocksDAOSpec8")
+    val account3 = createAccount("BlocksDAOSpec9")
 
     // create
     Await.result(blocksDAO.create(account1.id, account2.id.toSessionId))
@@ -112,15 +112,15 @@ class BlocksDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val account1 = createAccount("account1")
-    val account2 = createAccount("account2")
-    val account3 = createAccount("account3")
-    val account4 = createAccount("account4")
-    val account5 = createAccount("account5")
-    val account6 = createAccount("account6")
-    val account7 = createAccount("account7")
-    val account8 = createAccount("account8")
-    val account9 = createAccount("account9")
+    val account1 = createAccount("BlocksDAOSpec9")
+    val account2 = createAccount("BlocksDAOSpec10")
+    val account3 = createAccount("BlocksDAOSpec11")
+    val account4 = createAccount("BlocksDAOSpec12")
+    val account5 = createAccount("BlocksDAOSpec13")
+    val account6 = createAccount("BlocksDAOSpec14")
+    val account7 = createAccount("BlocksDAOSpec15")
+    val account8 = createAccount("BlocksDAOSpec16")
+    val account9 = createAccount("BlocksDAOSpec17")
 
     // create
     Await.result(blocksDAO.create(account4.id, account2.id.toSessionId))

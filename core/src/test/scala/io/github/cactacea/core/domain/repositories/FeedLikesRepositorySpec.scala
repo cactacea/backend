@@ -14,8 +14,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("create a feed like") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user = signUp("user name", "user password", "user udid")
+    val session = signUp("FeedLikesRepositorySpec1", "session password", "udid")
+    val user = signUp("FeedLikesRepositorySpec2", "user password", "user udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val result = Await.result(feedLikesRepository.create(feedId, user.id.toSessionId))
     // TODO : Check
@@ -24,7 +24,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("create a feed like on no exist feed") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("FeedLikesRepositorySpec3", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(feedLikesRepository.create(FeedId(0L), session.id.toSessionId))
     }.error == FeedNotFound)
@@ -33,8 +33,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("create duplication feed likes") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user = signUp("user name", "user password", "user udid")
+    val session = signUp("FeedLikesRepositorySpec4", "session password", "udid")
+    val user = signUp("FeedLikesRepositorySpec5", "user password", "user udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(feedLikesRepository.create(feedId, user.id.toSessionId))
     assert(intercept[CactaceaException] {
@@ -45,8 +45,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("delete a feed like") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user = signUp("user name", "user password", "user udid")
+    val session = signUp("FeedLikesRepositorySpec6", "session password", "udid")
+    val user = signUp("FeedLikesRepositorySpec7", "user password", "user udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(feedLikesRepository.create(feedId, user.id.toSessionId))
     val result = Await.result(feedLikesRepository.delete(feedId, user.id.toSessionId))
@@ -57,7 +57,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("delete a feed like on no exist feed") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("FeedLikesRepositorySpec8", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(feedLikesRepository.delete(FeedId(0L), session.id.toSessionId))
     }.error == FeedNotFound)
@@ -66,8 +66,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("delete duplication feed likes") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user = signUp("user name", "user password", "user udid")
+    val session = signUp("FeedLikesRepositorySpec9", "session password", "udid")
+    val user = signUp("FeedLikesRepositorySpec10", "user password", "user udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     assert(intercept[CactaceaException] {
       Await.result(feedLikesRepository.delete(feedId, user.id.toSessionId))
@@ -77,8 +77,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("find feed likes by a user") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user1 = signUp("user name 1", "user password", "user udid")
+    val session = signUp("FeedLikesRepositorySpec11", "session password", "udid")
+    val user1 = signUp("FeedLikesRepositorySpec11-2", "user password", "user udid")
     val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
@@ -99,8 +99,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("find feed likes by session") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user1 = signUp("user name 1", "user password", "user udid")
+    val session = signUp("FeedLikesRepositorySpec12", "session password", "udid")
+    val user1 = signUp("FeedLikesRepositorySpec13", "user password", "user udid")
     val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, user1.id.toSessionId))
     val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, user1.id.toSessionId))
     val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, user1.id.toSessionId))
@@ -121,8 +121,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("find feed likes by a account") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user1 = signUp("user name 1", "user password", "user udid")
+    val session = signUp("FeedLikesRepositorySpec14", "session password", "udid")
+    val user1 = signUp("FeedLikesRepositorySpec15", "user password", "user udid")
     val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
@@ -153,12 +153,12 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("find accounts") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user1 = signUp("user name 1", "user password 1", "user udid 1")
-    val user2 = signUp("user name 2", "user password 2", "user udid 2")
-    val user3 = signUp("user name 3", "user password 3", "user udid 3")
-    val user4 = signUp("user name 4", "user password 4", "user udid 4")
-    val user5 = signUp("user name 5", "user password 5", "user udid 5")
+    val session = signUp("FeedLikesRepositorySpec16", "session password", "udid")
+    val user1 = signUp("FeedLikesRepositorySpec17", "user password 1", "user udid 1")
+    val user2 = signUp("FeedLikesRepositorySpec18", "user password 2", "user udid 2")
+    val user3 = signUp("FeedLikesRepositorySpec19", "user password 3", "user udid 3")
+    val user4 = signUp("FeedLikesRepositorySpec20", "user password 4", "user udid 4")
+    val user5 = signUp("FeedLikesRepositorySpec21", "user password 5", "user udid 5")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     Await.result(feedLikesRepository.create(feedId, user1.id.toSessionId))
     Await.result(feedLikesRepository.create(feedId, user2.id.toSessionId))
@@ -175,7 +175,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
 
   test("find no exist feed") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("FeedLikesRepositorySpec22", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(feedLikesRepository.findAccounts(FeedId(0L), None, None, Some(3), session.id.toSessionId))
     }.error == FeedNotFound)

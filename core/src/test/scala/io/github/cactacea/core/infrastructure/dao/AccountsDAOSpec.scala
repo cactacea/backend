@@ -19,9 +19,9 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("AccountsDAOSpec1")
 
-    val newUser = createAccount("account1")
+    val newUser = createAccount("AccountsDAOSpec2")
     val accountId = Await.result(
       accountsDAO.create(newUser.accountName, newUser.displayName, newUser.password, newUser.web, newUser.birthday, newUser.location, newUser.bio)
     )
@@ -39,7 +39,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("exist by account name and password") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("AccountsDAOSpec3")
 
     val result = Await.result(
       accountsDAO.find(
@@ -54,7 +54,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("exists by session id") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("AccountsDAOSpec4")
 
     val result = Await.result(
       accountsDAO.find(sessionAccount.id.toSessionId)
@@ -66,9 +66,9 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("exists by account ids") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
-    val account2 = createAccount("account2")
+    val sessionAccount = createAccount("AccountsDAOSpec5")
+    val account1 = createAccount("AccountsDAOSpec6")
+    val account2 = createAccount("AccountsDAOSpec7")
 
     val result = Await.result(accountsDAO.exist(List(sessionAccount.id, account1.id, account2.id), sessionAccount.id.toSessionId))
 
@@ -78,7 +78,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("update password") {
 
-    val sessionAccount = createAccount("account1")
+    val sessionAccount = createAccount("AccountsDAOSpec8")
 
     Await.result(
       accountsDAO.updatePassword(
@@ -95,9 +95,9 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("update account name") {
 
-    val sessionAccount = createAccount("account1")
+    val sessionAccount = createAccount("AccountsDAOSpec9")
 
-    val newUser = createAccount("account0")
+    val newUser = createAccount("AccountsDAOSpec10")
     val accountId = this.insertAccounts(newUser)
 
     Await.result(
@@ -115,9 +115,9 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("update other user's userName") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
-    val account2 = createAccount("account2")
+    val sessionAccount = createAccount("AccountsDAOSpec11")
+    val account1 = createAccount("AccountsDAOSpec12")
+    val account2 = createAccount("AccountsDAOSpec13")
 
     // update other user name
     Await.result(accountsDAO.updateDisplayName(account1.id, Some("newUserName1"), sessionAccount.id.toSessionId))
@@ -140,10 +140,10 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("exist") {
 
-    val sessionAccount = createAccount("account0")
-    val noBlockedUser = createAccount("account1")
-    val blockedAccount1 = createAccount("account2")
-    val blockedAccount2 = createAccount("account3")
+    val sessionAccount = createAccount("AccountsDAOSpec14")
+    val noBlockedUser = createAccount("AccountsDAOSpec15")
+    val blockedAccount1 = createAccount("AccountsDAOSpec16")
+    val blockedAccount2 = createAccount("AccountsDAOSpec17")
 
     val result1 = Await.result(accountsDAO.exist(blockedAccount1.id, sessionAccount.id.toSessionId))
     val result2 = Await.result(accountsDAO.exist(blockedAccount1.id, sessionAccount.id.toSessionId))
@@ -161,15 +161,15 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("find") {
 
-    val account1 = createAccount("account1")
-    val sessionAccount = createAccount("account2")
-    val user1 = createAccount("account3")
-    val user2 = createAccount("account5")
-    val user3 = createAccount("account6")
-    val user4 = createAccount("account7")
-    val friend1 = createAccount("account8")
-    val friend2 = createAccount("account9")
-    val blockedUser = createAccount("account10")
+    val account1 = createAccount("AccountsDAOSpec18")
+    val sessionAccount = createAccount("AccountsDAOSpec19")
+    val user1 = createAccount("AccountsDAOSpec20")
+    val user2 = createAccount("AccountsDAOSpec21")
+    val user3 = createAccount("AccountsDAOSpec22")
+    val user4 = createAccount("AccountsDAOSpec23")
+    val friend1 = createAccount("AccountsDAOSpec24")
+    val friend2 = createAccount("AccountsDAOSpec25")
+    val blockedUser = createAccount("AccountsDAOSpec26")
 
     // account1 follow user1
     Await.result(followingDAO.create(user1.id, account1.id.toSessionId))
@@ -219,7 +219,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("find session user") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("AccountsDAOSpec27")
 
     val userList = Await.result(accountsDAO.find(sessionAccount.id.toSessionId))
     val user = userList.head
@@ -235,13 +235,13 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("findAll") {
 
-    val sessionAccount = createAccount("account0")
-    val blockedUser = createAccount("account1")
-    val account1 = createAccount("account2")
-    val account2 = createAccount("account3")
-    val account3 = createAccount("account4")
-    val account4 = createAccount("account5")
-    val account5 = createAccount("account6")
+    val sessionAccount = createAccount("AccountsDAOSpec28")
+    val blockedUser = createAccount("AccountsDAOSpec29")
+    val account1 = createAccount("AccountsDAOSpec30")
+    val account2 = createAccount("AccountsDAOSpec31")
+    val account3 = createAccount("AccountsDAOSpec32")
+    val account4 = createAccount("AccountsDAOSpec33")
+    val account5 = createAccount("AccountsDAOSpec34")
 
     Await.result(accountsDAO.updateAccountName("userName1", account1.id.toSessionId))
     Await.result(accountsDAO.updateAccountName("userName2", account2.id.toSessionId))
@@ -267,7 +267,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     assert(resultAccount2.id == account4.id)
     assert(resultAccount3.id == account3.id)
 
-    val result16 = Await.result(accountsDAO.findAll(None, Some(resultAccount3.id.value), None, Some(3), sessionAccount.id.toSessionId))
+    val result16 = Await.result(accountsDAO.findAll(None, Some(resultAccount3.id.value), None, Some(2), sessionAccount.id.toSessionId))
     assert(result16.size == 2)
     val resultAccount4 = result16(0)._1
     val resultAccount5 = result16(1)._1
@@ -279,7 +279,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("signOut") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("AccountsDAOSpec35")
 
     Await.result(accountsDAO.signOut(sessionAccount.id.toSessionId))
     val result1 = Await.result(accountsDAO.find(sessionAccount.id.toSessionId))
@@ -289,7 +289,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   test("findStatus") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("AccountsDAOSpec36")
     val result = Await.result(accountsDAO.findStatus(sessionAccount.id.toSessionId))
     assert(result.isDefined == true)
     val (accountStatus, signedOutAt) = result.get

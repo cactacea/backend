@@ -11,7 +11,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec5")
 
     val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -35,7 +35,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec6")
 
     val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -60,7 +60,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("createOneToOne") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec7")
 
     val groupId1 = Await.result(groupsDAO.create(sessionAccount.id.toSessionId))
     assert(Await.result(groupsDAO.exist(groupId1)) == true)
@@ -70,7 +70,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("update Account count") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec8")
 
     val groupId1 = Await.result(groupsDAO.create(sessionAccount.id.toSessionId))
     val result = Await.result(groupsDAO.updateAccountCount(groupId1, 1L))
@@ -80,7 +80,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("find") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec9")
 
     val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -113,7 +113,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("find2") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec10")
     val groupId = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     assert(Await.result(groupsDAO.find(groupId)).isDefined == true)
 
@@ -121,9 +121,9 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount = createAccount("account0")
-    val groupOwner = createAccount("account1")
-    val blockedUser = createAccount("account2")
+    val sessionAccount = createAccount("GroupsDAOSpec11")
+    val groupOwner = createAccount("GroupsDAOSpec12")
+    val blockedUser = createAccount("GroupsDAOSpec13")
 
     Await.result(blocksDAO.create(blockedUser.id, sessionAccount.id.toSessionId))
 
@@ -147,7 +147,7 @@ class GroupsDAOSpec extends DAOSpec {
     assert((group3.id, group3.name, group3.invitationOnly, group3.privacyType, group3.authorityType) == (groupId6, Some("New Group Name6"), false, GroupPrivacyType.followers,  GroupAuthorityType.owner))
     assert((group4.id, group4.name, group4.invitationOnly, group4.privacyType, group4.authorityType) == (groupId4, Some("New Group Name4"),  true, GroupPrivacyType.friends,    GroupAuthorityType.member))
 
-    val result2 = Await.result(groupsDAO.findAll(None, None, None, Some(group4.id.value), None, Some(4), sessionAccount.id.toSessionId))
+    val result2 = Await.result(groupsDAO.findAll(None, None, None, Some(group4.id.value), None, Some(3), sessionAccount.id.toSessionId))
     assert(result2.size == 3)
     val group5 = result2(0)
     val group6 = result2(1)
@@ -161,7 +161,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("update") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec14")
 
     val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.friends,   GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), false, GroupPrivacyType.everyone,      GroupAuthorityType.owner,  0L, sessionAccount.id.toSessionId))
@@ -179,7 +179,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("updateLatestMessage") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec15")
 
     val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     Await.result(groupsDAO.update(groupId1, None, sessionAccount.id.toSessionId))
@@ -188,7 +188,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = createAccount("account0")
+    val sessionAccount = createAccount("GroupsDAOSpec16")
 
     val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))

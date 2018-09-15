@@ -16,8 +16,8 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
+    val sessionAccount = createAccount("AccountMessagesDAOSpec1")
+    val account1 = createAccount("AccountMessagesDAOSpec2")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     Await.result(accountGroupsDAO.create(account1.id, groupId))
     Await.result(accountGroupsDAO.create(sessionAccount.id, groupId))
@@ -29,8 +29,8 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
+    val sessionAccount = createAccount("AccountMessagesDAOSpec3")
+    val account1 = createAccount("AccountMessagesDAOSpec4")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val messageId1 = Await.result(messagesDAO.create(groupId, Some("new message1"), 1, None, sessionAccount.id.toSessionId))
     val messageId2 = Await.result(messagesDAO.create(groupId, Some("new message2"), 1, None, sessionAccount.id.toSessionId))
@@ -57,8 +57,8 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
   test("find older") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
+    val sessionAccount = createAccount("AccountMessagesDAOSpec5")
+    val account1 = createAccount("AccountMessagesDAOSpec6")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
 
     Await.result(accountGroupsDAO.create(account1.id, groupId))
@@ -112,8 +112,8 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
   test("find earlier") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
+    val sessionAccount = createAccount("AccountMessagesDAOSpec7")
+    val account1 = createAccount("AccountMessagesDAOSpec8")
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
 
     Await.result(accountGroupsDAO.create(account1.id, groupId))
@@ -168,8 +168,8 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
   test("updateUnreadStatus") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
+    val sessionAccount = createAccount("AccountMessagesDAOSpec9")
+    val account1 = createAccount("AccountMessagesDAOSpec10")
 
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
 
@@ -190,10 +190,10 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
   test("updateNotified") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
-    val account2 = createAccount("account2")
-    val account3 = createAccount("account3")
+    val sessionAccount = createAccount("AccountMessagesDAOSpec11")
+    val account1 = createAccount("AccountMessagesDAOSpec12")
+    val account2 = createAccount("AccountMessagesDAOSpec13")
+    val account3 = createAccount("AccountMessagesDAOSpec14")
 
     val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
 

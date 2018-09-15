@@ -23,7 +23,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
   }
 
   private def _insertFeedLikes(feedId: FeedId, sessionId: SessionId): Future[FeedLikeId] = {
-    val postedAt = timeService.nanoTime()
+    val postedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[FeedLikes]

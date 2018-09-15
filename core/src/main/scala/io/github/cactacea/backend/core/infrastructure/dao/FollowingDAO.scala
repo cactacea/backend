@@ -58,7 +58,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
   }
 
   private def _insertFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val followedAt = timeService.nanoTime()
+    val followedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -73,7 +73,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
   }
 
   private def _updateFollow(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    val followedAt: Long = timeService.nanoTime()
+    val followedAt: Long = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -124,7 +124,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.followedAt)(Ord.desc)
+        .sortBy(p => (p._3.followedAt, p._3.by))(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }
@@ -149,7 +149,7 @@ class FollowingDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.followedAt)(Ord.desc)
+        .sortBy(p => (p._3.followedAt, p._3.by))(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }

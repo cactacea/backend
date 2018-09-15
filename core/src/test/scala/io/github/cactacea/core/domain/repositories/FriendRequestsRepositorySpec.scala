@@ -17,8 +17,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("create friend request a user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val friendUser = signUp("friend user name", "friend user password", "friend user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec1", "session user password", "session user udid")
+    val friendUser = signUp("FriendRequestsRepositorySpec2", "friend user password", "friend user udid")
     Await.result(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
     assert(Await.result(friendRequestsDAO.exist(friendUser.id, sessionUser.id.toSessionId)) == true)
@@ -28,8 +28,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("create friend request a blocked user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val blockedUser = signUp("blocked user name", "blocked user password", "blocked user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec3", "session user password", "session user udid")
+    val blockedUser = signUp("FriendRequestsRepositorySpec4", "blocked user password", "blocked user udid")
 
     Await.result(blocksRepository.create(blockedUser.id, sessionUser.id.toSessionId))
 
@@ -41,8 +41,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("create friend request a friend user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val friendUser = signUp("friend user name", "friend user password", "friend user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec5", "session user password", "session user udid")
+    val friendUser = signUp("FriendRequestsRepositorySpec6", "friend user password", "friend user udid")
 
     Await.result(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
@@ -54,7 +54,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("create friend request a session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec7", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(friendRequestsRepository.create(sessionUser.id, sessionUser.id.toSessionId))
@@ -66,8 +66,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("delete friend request") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val friendUser = signUp("friend user name", "friend user password", "friend user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec8", "session user password", "session user udid")
+    val friendUser = signUp("FriendRequestsRepositorySpec9", "friend user password", "friend user udid")
 
     Await.result(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
     val result = Await.result(friendRequestsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
@@ -77,8 +77,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("delete no request friend request ") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val friendUser = signUp("friend user name", "friend user password", "friend user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec10", "session user password", "session user udid")
+    val friendUser = signUp("FriendRequestsRepositorySpec11", "friend user password", "friend user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(friendRequestsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
@@ -88,7 +88,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("delete no exist account friend request ") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec12", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(friendRequestsRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
@@ -98,7 +98,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("delete friend session user") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec13", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
       Await.result(friendRequestsRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
@@ -110,12 +110,12 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("find session's friend requests") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val requestingUser1 = signUp("user name 1", "user password 1", "user udid 1")
-    val requestingUser2 = signUp("user name 2", "user password 2", "user udid 2")
-    val requestingUser3 = signUp("user name 3", "user password 3", "user udid 3")
-    val requestingUser4 = signUp("user name 4", "user password 4", "user udid 4")
-    val requestingUser5 = signUp("user name 5", "user password 5", "user udid 5")
+    val sessionUser = signUp("FriendRequestsRepositorySpec14", "session user password", "session user udid")
+    val requestingUser1 = signUp("FriendRequestsRepositorySpec15", "user password 1", "user udid 1")
+    val requestingUser2 = signUp("FriendRequestsRepositorySpec16", "user password 2", "user udid 2")
+    val requestingUser3 = signUp("FriendRequestsRepositorySpec17", "user password 3", "user udid 3")
+    val requestingUser4 = signUp("FriendRequestsRepositorySpec18", "user password 4", "user udid 4")
+    val requestingUser5 = signUp("FriendRequestsRepositorySpec19", "user password 5", "user udid 5")
 
     val request1 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
     val request2 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))
@@ -138,7 +138,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("accept no exist request") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec20", "session user password", "session user udid")
     assert(intercept[CactaceaException] {
       Await.result(friendRequestsRepository.accept(FriendRequestId(0L), sessionUser.id.toSessionId))
     }.error == FriendRequestNotFound)
@@ -147,7 +147,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("reject no exist request") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
+    val sessionUser = signUp("FriendRequestsRepositorySpec21", "session user password", "session user udid")
     assert(intercept[CactaceaException] {
       Await.result(friendRequestsRepository.reject(FriendRequestId(0L), sessionUser.id.toSessionId))
     }.error == FriendRequestNotFound)
@@ -156,12 +156,12 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("accept a friend request") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val requestingUser1 = signUp("user name 1", "user password 1", "user udid 1")
-    val requestingUser2 = signUp("user name 2", "user password 2", "user udid 2")
-    val requestingUser3 = signUp("user name 3", "user password 3", "user udid 3")
-    val requestingUser4 = signUp("user name 4", "user password 4", "user udid 4")
-    val requestingUser5 = signUp("user name 5", "user password 5", "user udid 5")
+    val sessionUser = signUp("FriendRequestsRepositorySpec22", "session user password", "session user udid")
+    val requestingUser1 = signUp("FriendRequestsRepositorySpec23", "user password 1", "user udid 1")
+    val requestingUser2 = signUp("FriendRequestsRepositorySpec24", "user password 2", "user udid 2")
+    val requestingUser3 = signUp("FriendRequestsRepositorySpec25", "user password 3", "user udid 3")
+    val requestingUser4 = signUp("FriendRequestsRepositorySpec26", "user password 4", "user udid 4")
+    val requestingUser5 = signUp("FriendRequestsRepositorySpec27", "user password 5", "user udid 5")
 
     val requestId1 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
     val requestId2 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))
@@ -197,12 +197,12 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   test("reject a friend request") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val requestingUser1 = signUp("user name 1", "user password 1", "user udid 1")
-    val requestingUser2 = signUp("user name 2", "user password 2", "user udid 2")
-    val requestingUser3 = signUp("user name 3", "user password 3", "user udid 3")
-    val requestingUser4 = signUp("user name 4", "user password 4", "user udid 4")
-    val requestingUser5 = signUp("user name 5", "user password 5", "user udid 5")
+    val sessionUser = signUp("FriendRequestsRepositorySpec28", "session user password", "session user udid")
+    val requestingUser1 = signUp("FriendRequestsRepositorySpec29", "user password 1", "user udid 1")
+    val requestingUser2 = signUp("FriendRequestsRepositorySpec30", "user password 2", "user udid 2")
+    val requestingUser3 = signUp("FriendRequestsRepositorySpec31", "user password 3", "user udid 3")
+    val requestingUser4 = signUp("FriendRequestsRepositorySpec32", "user password 4", "user udid 4")
+    val requestingUser5 = signUp("FriendRequestsRepositorySpec33", "user password 5", "user udid 5")
 
     val requestId1 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
     val requestId2 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))

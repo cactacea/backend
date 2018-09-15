@@ -14,8 +14,8 @@ class GroupReportsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
-    val reportedUser = createAccount("account1")
+    val sessionAccount = createAccount("GroupReportsDAOSpec1")
+    val reportedUser = createAccount("GroupReportsDAOSpec2")
 
     val groupId = Await.result(groupsDAO.create(sessionAccount.id.toSessionId))
     val groupReportId = Await.result(groupReportsDAO.create(groupId, ReportType.spam, reportedUser.id.toSessionId))
@@ -30,8 +30,8 @@ class GroupReportsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = createAccount("account0")
-    val reportedUser = createAccount("account1")
+    val sessionAccount = createAccount("GroupReportsDAOSpec3")
+    val reportedUser = createAccount("GroupReportsDAOSpec4")
 
     val groupId = Await.result(groupsDAO.create(sessionAccount.id.toSessionId))
     val groupReportId = Await.result(groupReportsDAO.create(groupId, ReportType.spam, reportedUser.id.toSessionId))

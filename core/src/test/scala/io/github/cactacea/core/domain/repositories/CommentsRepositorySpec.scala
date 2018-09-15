@@ -17,7 +17,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   test("create a comment") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("CommentsRepositorySpec1", "session password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     val result = Await.result(commentsDAO.exist(commentId, session.id.toSessionId))
@@ -27,7 +27,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   test("create a comment on no exist feed") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("CommentsRepositorySpec2", "session password", "udid")
 
     assert(intercept[CactaceaException] {
       Await.result(commentsRepository.create(FeedId(0L), "comment", session.id.toSessionId))
@@ -37,8 +37,8 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   test("delete a comment") {
 
-    val session = signUp("session name", "session password", "udid")
-    val user = signUp("user name", "user password", "user udid")
+    val session = signUp("CommentsRepositorySpec3", "session password", "udid")
+    val user = signUp("CommentsRepositorySpec3-2", "user password", "user udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     Await.result(reportsRepository.createCommentReport(commentId, ReportType.inappropriate, user.id.toSessionId))
@@ -49,7 +49,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   test("delete no exist comment") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("CommentsRepositorySpec4", "session password", "udid")
 
     assert(intercept[CactaceaException] {
       Await.result(commentsRepository.delete(CommentId(0l), session.id.toSessionId))
@@ -59,7 +59,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   test("find a comment") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("CommentsRepositorySpec5", "session password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     val comment = Await.result(commentsRepository.find(commentId, session.id.toSessionId))
@@ -69,7 +69,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   test("find no exist comment") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("CommentsRepositorySpec6", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(commentsRepository.find(CommentId(0L), session.id.toSessionId))
     }.error == CommentNotFound)
@@ -78,7 +78,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   test("find everyone comments") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("CommentsRepositorySpec7", "session password", "udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId1 = Await.result(commentsRepository.create(feedId, "comment 1", session.id.toSessionId))
     val commentId2 = Await.result(commentsRepository.create(feedId, "comment 2", session.id.toSessionId))
@@ -102,7 +102,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   test("find comments on no exist feed") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("CommentsRepositorySpec8", "session password", "udid")
     assert(intercept[CactaceaException] {
       Await.result(commentsRepository.findAll(FeedId(0L), None, Some(3), session.id.toSessionId))
     }.error == FeedNotFound)

@@ -15,7 +15,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
   @Inject private var timeService: TimeService = _
 
   def create(groupId: GroupId, messageId: MessageId, sessionId: SessionId): Future[Boolean] = {
-    val postedAt = timeService.nanoTime()
+    val postedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       infix"""
@@ -54,7 +54,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.exists(_ == i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
-        .sortBy(_._2.messageId)(Ord.ascNullsLast)
+        .sortBy(_._2.messageId)(Ord.asc)
         .drop(lift(o))
         .take(lift(c))
     }
