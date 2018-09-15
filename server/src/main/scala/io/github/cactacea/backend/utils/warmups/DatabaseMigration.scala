@@ -17,7 +17,6 @@ object DatabaseMigration {
     flyway.setDataSource(url, user, password)
     flyway.setBaselineOnMigrate(true)
     flyway.setPlaceholders(Map("schema" -> database).asJava)
-    flyway.clean()
     flyway.migrate()
   }
 
