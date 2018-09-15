@@ -167,16 +167,17 @@ lazy val dbMigrationSetting = Seq(
   flywayPlaceholders := Map("schema" -> testDBDatabase),
   flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
   (test in Test) := {
-    (test in Test).dependsOn(flywayClean, flywayMigrate).value
+    (test in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).value
   },
   (testOnly in Test) := {
-    (testOnly in Test).dependsOn(flywayClean, flywayMigrate).evaluated
+    (testOnly in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
   },
   (testQuick in Test) := {
-    (testQuick in Test).dependsOn(flywayClean, flywayMigrate).evaluated
+    (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
   },
   concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
   testOptions in Test += Tests.Argument("-oI")
 )
+
 
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
