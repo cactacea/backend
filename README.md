@@ -22,7 +22,7 @@ Cactacea provides the following features.
 - `Notifications` - new users, feeds, group invitations and messages. 
 - `Authentication`, `Authorization` - API Key, OAuth2
 
-## Projects ##
+## Related Projects ##
 
-- [`Swagger`](https://github.com/cactacea/backend/tree/master/swagger) - Swagger Finatra Integration
-- [`Filhouette`](https://github.com/cactacea/backend/tree/master/filhouette) - Authentication library for Finatra
+- [`Fiagger`](https://github.com/cactacea/finagger) - Swagger Finatra Integration
+- [`Filhouette`](https://github.com/cactacea/filhouette) - Authentication library for Finatra
