@@ -12,13 +12,14 @@ lazy val versions = new {
   val aws = "1.11.289"
 }
 
+ThisBuild / version      := versions.cactacea
+ThisBuild / organization := "io.github.cactacea.backend"
+ThisBuild / scalaVersion := "2.12.5"
+
 lazy val demo = (project in file("demo"))
   .settings(
-    version      := versions.cactacea,
-    organization := "io.github.cactacea.backend",
     name := "demo",
-    scalaVersion := "2.12.5",
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp"),
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp")
   )
   .settings(
     version in Docker := "latest",
@@ -36,10 +37,7 @@ lazy val demo = (project in file("demo"))
 
 lazy val server = (project in file("server"))
   .settings(
-    version      := versions.cactacea,
-    organization := "io.github.cactacea.backend",
-    name := "server",
-    scalaVersion := "2.12.5"
+    name := "server"
   )
   .settings(
     libraryDependencies ++= Seq(
@@ -54,9 +52,6 @@ lazy val server = (project in file("server"))
 
 lazy val core = (project in file("core"))
   .settings(
-    version      := versions.cactacea,
-    organization := "io.github.cactacea.backend",
-    scalaVersion := "2.12.5",
     name := "core"
   )
   .settings(
@@ -74,9 +69,6 @@ lazy val core = (project in file("core"))
 
 lazy val externals = (project in file("externals"))
   .settings(
-    version      := versions.cactacea,
-    organization := "io.github.cactacea.backend.externals",
-    scalaVersion := "2.12.5",
     name := "externals",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
@@ -148,17 +140,17 @@ lazy val commonResolverSetting = Seq(
   )
 )
 
-lazy val dbUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
-lazy val dbPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
-lazy val dbDatabase = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
-lazy val dbHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
-lazy val dbPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
+lazy val testDBUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
+lazy val testDBPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
+lazy val testDBDatabase = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
+lazy val testDBHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
+lazy val testDBPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
 
 lazy val testSettings = Seq(
-  flywayUser := dbUser,
-  flywayPassword := dbPassword,
-  flywayUrl := s"jdbc:mysql://$dbHostName:$dbPort/$dbDatabase",
-  flywayPlaceholders := Map("schema" -> dbDatabase),
+  flywayUser := testDBUser,
+  flywayPassword := testDBPassword,
+  flywayUrl := s"jdbc:mysql://$testDBHostName:$testDBPort/$testDBDatabase",
+  flywayPlaceholders := Map("schema" -> testDBDatabase),
   flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
   (test in Test) := {
     (test in Test).dependsOn(flywayClean, flywayMigrate).value
