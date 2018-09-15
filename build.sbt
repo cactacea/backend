@@ -47,6 +47,8 @@ lazy val server = (project in file("server"))
   .settings(commonResolverSetting)
   .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
+  .settings(logLibrarySetting)
+  .settings(testLibrarySetting)
   .dependsOn(core)
 
 
@@ -62,7 +64,9 @@ lazy val core = (project in file("core"))
   .settings(commonResolverSetting)
   .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
-  .settings(testSettings)
+  .settings(logLibrarySetting)
+  .settings(testLibrarySetting)
+  .settings(dbMigrationSetting)
   .dependsOn(finagger)
   .enablePlugins(FlywayPlugin)
 
@@ -83,6 +87,8 @@ lazy val externals = (project in file("externals"))
   .settings(commonResolverSetting)
   .settings(finatraLibrarySetting)
   .settings(coreLibrarySetting)
+  .settings(logLibrarySetting)
+  .settings(testLibrarySetting)
   .dependsOn(core)
 
 lazy val finatraLibrarySetting = Seq(
@@ -96,7 +102,6 @@ lazy val finatraLibrarySetting = Seq(
 
 lazy val coreLibrarySetting = Seq(
   libraryDependencies ++= Seq(
-
     "com.typesafe" % "config" % "1.3.2",
     "io.getquill" %% "quill-finagle-mysql" % "2.5.4",
     "io.jsonwebtoken" % "jjwt" % "0.9.0",
@@ -107,6 +112,11 @@ lazy val coreLibrarySetting = Seq(
     "com.roundeights" %% "hasher" % "1.2.0",
     "com.drewnoakes" % "metadata-extractor" % "2.11.0",
     "com.iheart" %% "ficus" % "1.4.3",
+  )
+)
+
+lazy val testLibrarySetting = Seq(
+  libraryDependencies ++= Seq(
 
     "com.twitter" %% "inject-server" % versions.finagle % "test",
     "com.twitter" %% "inject-app" % versions.finagle % "test",
@@ -125,11 +135,15 @@ lazy val coreLibrarySetting = Seq(
     "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
     "org.specs2" %% "specs2-core" % versions.specs2 % "test",
     "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-    "org.specs2" %% "specs2-mock" % versions.specs2 % "test",
+    "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
 
+  )
+)
+
+lazy val logLibrarySetting = Seq(
+  libraryDependencies ++= Seq(
     "ch.qos.logback" % "logback-classic" % versions.logback,
     "net.logstash.logback" % "logstash-logback-encoder" % "4.11"
-
   )
 )
 
@@ -146,7 +160,7 @@ lazy val testDBDatabase = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cact
 lazy val testDBHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
 lazy val testDBPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
 
-lazy val testSettings = Seq(
+lazy val dbMigrationSetting = Seq(
   flywayUser := testDBUser,
   flywayPassword := testDBPassword,
   flywayUrl := s"jdbc:mysql://$testDBHostName:$testDBPort/$testDBDatabase",
