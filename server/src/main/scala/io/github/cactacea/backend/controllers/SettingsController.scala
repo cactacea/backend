@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.domain.models.{AdvertisementSetting, Push
 import io.swagger.models.Swagger
 
 @Singleton
-class SettingsController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 

@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{SocialAcco
 import io.swagger.models.Swagger
 
 @Singleton
-class SocialAccountSettingsController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class SocialAccountSettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 

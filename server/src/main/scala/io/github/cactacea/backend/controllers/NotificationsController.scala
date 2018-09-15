@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.domain.models.Notification
 import io.swagger.models.Swagger
 
 @Singleton
-class NotificationsController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class NotificationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 

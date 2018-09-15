@@ -17,7 +17,7 @@ import io.github.cactacea.backend.utils.media.MediaExtractor
 import io.swagger.models.Swagger
 
 @Singleton
-class MediumsController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 

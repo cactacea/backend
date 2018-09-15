@@ -14,7 +14,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNot
 import io.swagger.models.Swagger
 
 @Singleton
-class AccountsController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 

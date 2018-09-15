@@ -1,18 +1,26 @@
 package io.github.cactacea.backend
 
+import com.twitter.finagle.http.{Request, Response}
+import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.swagger.{BackendDocumentsController, BackendSwaggerModule}
 import io.github.cactacea.backend.utils.filters._
+import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.swagger.DocsController
 
-class BackendServer extends BaseServer {
+class DocServer extends BaseServer {
 
-  flag(name = "api.prefix", default = "/", help = "Api endpoint prefix")
+  flag(name = "cactacea.api.prefix", default = "/", help = "Cactacea Api endpoint prefix")
 
   override def configureHttp(router: HttpRouter) = {
     super.configureHttp(router)
     router
+      .filter[LoggingMDCFilter[Request, Response]]
+      .filter[TraceIdMDCFilter[Request, Response]]
+      .filter[CommonFilters]
+      .exceptionMapper[CaseClassExceptionMapper]
+      .exceptionMapper[CactaceaExceptionMapper]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, AccountsController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, BlocksController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, CommentsController]
@@ -39,4 +47,7 @@ class BackendServer extends BaseServer {
   }
 
   addFrameworkModule(BackendSwaggerModule)
+  //  override def storageModule: TwitterModule = S3ServiceModule
+  //  override def socialAccountsModule: TwitterModule = GeneralSocialAccountsModule
+
 }
