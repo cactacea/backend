@@ -92,7 +92,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
       query[Relationships].filter(f => f.by == lift(by) && f.mute  == true && (f.mutedAt < lift(s) || lift(s) == -1L) )
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((f, _), _) => f.mutedAt })(Ord.desc)
+        .sortBy({ case ((f, _), _) => (f.mutedAt, f.by) })(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }
