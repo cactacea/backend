@@ -20,7 +20,7 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   }
 
   private def _insertNotifications(ids: List[AccountId], by: AccountId, notificationType: NotificationType, contentId: Option[Long], url: String): Future[List[NotificationId]] = {
-    val notifiedAt = timeService.nanoTime()
+    val notifiedAt = timeService.currentTimeMillis()
     val n = ids.map(id => Notifications(NotificationId(0L), id, by, notificationType, contentId, url, true,notifiedAt))
     val q = quote {
       liftQuery(n).foreach(e => query[Notifications].insert(e).returning(_.id))
@@ -29,7 +29,7 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   }
 
   def create(accountId: AccountId, by: AccountId, notificationType: NotificationType, contentId: Long, url: String): Future[NotificationId] = {
-    val notifiedAt = timeService.nanoTime()
+    val notifiedAt = timeService.currentTimeMillis()
     val contentIdOpt: Option[Long] = Some(contentId)
     val q = quote {
       query[Notifications].insert(

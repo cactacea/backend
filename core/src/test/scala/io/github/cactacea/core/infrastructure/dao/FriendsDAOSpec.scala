@@ -12,9 +12,9 @@ class FriendsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
-    val friendAccount1 = createAccount("account1")
-    val friendAccount2 = createAccount("account2")
+    val sessionAccount = createAccount("FriendsDAOSpec1")
+    val friendAccount1 = createAccount("FriendsDAOSpec2")
+    val friendAccount2 = createAccount("FriendsDAOSpec3")
 
     // create friends
     Await.result(friendsDAO.create(sessionAccount.id, friendAccount1.id.toSessionId))
@@ -28,9 +28,9 @@ class FriendsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = createAccount("account0")
-    val friendAccount1 = createAccount("account1")
-    val friendAccount2 = createAccount("account2")
+    val sessionAccount = createAccount("FriendsDAOSpec4")
+    val friendAccount1 = createAccount("FriendsDAOSpec5")
+    val friendAccount2 = createAccount("FriendsDAOSpec6")
     Await.result(friendsDAO.create(sessionAccount.id, friendAccount1.id.toSessionId))
     Await.result(friendsDAO.create(sessionAccount.id, friendAccount2.id.toSessionId))
 
@@ -46,10 +46,10 @@ class FriendsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = createAccount("account0")
-    val friendAccount1 = createAccount("account1")
-    val friendAccount2 = createAccount("account2")
-    val friendAccount3 = createAccount("account3")
+    val sessionAccount = createAccount("FriendsDAOSpec7")
+    val friendAccount1 = createAccount("FriendsDAOSpec8")
+    val friendAccount2 = createAccount("FriendsDAOSpec9")
+    val friendAccount3 = createAccount("FriendsDAOSpec10")
     Await.result(friendsDAO.create(sessionAccount.id, friendAccount1.id.toSessionId))
     Await.result(friendsDAO.create(sessionAccount.id, friendAccount2.id.toSessionId))
 
@@ -65,13 +65,13 @@ class FriendsDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
-    val sessionAccount6 = createAccount("account5")
-    val friendUser = createAccount("account6")
+    val sessionAccount1 = createAccount("FriendsDAOSpec11")
+    val sessionAccount2 = createAccount("FriendsDAOSpec12")
+    val sessionAccount3 = createAccount("FriendsDAOSpec13")
+    val sessionAccount4 = createAccount("FriendsDAOSpec14")
+    val sessionAccount5 = createAccount("FriendsDAOSpec15")
+    val sessionAccount6 = createAccount("FriendsDAOSpec16")
+    val friendUser = createAccount("FriendsDAOSpec16")
 
     Await.result(friendsDAO.create(sessionAccount1.id, friendUser.id.toSessionId))
     Await.result(friendsDAO.create(sessionAccount2.id, friendUser.id.toSessionId))

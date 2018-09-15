@@ -16,7 +16,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
   @Inject private var timeService: TimeService = _
 
   def create(sessionId: SessionId): Future[GroupId] = {
-    val organizedAt = timeService.nanoTime()
+    val organizedAt = timeService.currentTimeMillis()
     val name: Option[String] = None
     val by = sessionId.toAccountId
     val r = quote {
@@ -36,7 +36,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
 
 
   def create(name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, accountCount: Long, sessionId: SessionId): Future[GroupId] = {
-    val organizedAt = timeService.nanoTime()
+    val organizedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups].insert(
@@ -108,7 +108,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
     val q = quote {
       query[Groups]
-        .filter(g => g.by != lift(by))
+//        .filter(g => g.by != lift(by))
         .filter(g => g.directMessage == false)
         .filter(g => (g.name.exists(_ like lift(n)))  || lift(name).isEmpty)
         .filter(g => g.invitationOnly == lift(invitationOnly.getOrElse(false))    || lift(invitationOnly).isEmpty)

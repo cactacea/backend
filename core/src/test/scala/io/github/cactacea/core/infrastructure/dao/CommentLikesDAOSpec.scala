@@ -15,11 +15,11 @@ class CommentLikesDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
+    val sessionAccount1 = createAccount("CommentLikesDAOSpec0")
+    val sessionAccount2 = createAccount("CommentLikesDAOSpec1")
+    val sessionAccount3 = createAccount("CommentLikesDAOSpec2")
+    val sessionAccount4 = createAccount("CommentLikesDAOSpec3")
+    val sessionAccount5 = createAccount("CommentLikesDAOSpec4")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -64,11 +64,11 @@ class CommentLikesDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
+    val sessionAccount1 = createAccount("CommentLikesDAOSpec5")
+    val sessionAccount2 = createAccount("CommentLikesDAOSpec6")
+    val sessionAccount3 = createAccount("CommentLikesDAOSpec7")
+    val sessionAccount4 = createAccount("CommentLikesDAOSpec8")
+    val sessionAccount5 = createAccount("CommentLikesDAOSpec9")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -93,11 +93,11 @@ class CommentLikesDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
+    val sessionAccount1 = createAccount("CommentLikesDAOSpec10")
+    val sessionAccount2 = createAccount("CommentLikesDAOSpec11")
+    val sessionAccount3 = createAccount("CommentLikesDAOSpec12")
+    val sessionAccount4 = createAccount("CommentLikesDAOSpec13")
+    val sessionAccount5 = createAccount("CommentLikesDAOSpec14")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -128,11 +128,11 @@ class CommentLikesDAOSpec extends DAOSpec {
 
   test("findUsers") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
+    val sessionAccount1 = createAccount("CommentLikesDAOSpec15")
+    val sessionAccount2 = createAccount("CommentLikesDAOSpec16")
+    val sessionAccount3 = createAccount("CommentLikesDAOSpec17")
+    val sessionAccount4 = createAccount("CommentLikesDAOSpec18")
+    val sessionAccount5 = createAccount("CommentLikesDAOSpec19")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)

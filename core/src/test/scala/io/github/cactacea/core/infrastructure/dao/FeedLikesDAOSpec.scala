@@ -14,9 +14,9 @@ class FeedLikesDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
+    val sessionAccount1 = createAccount("FeedLikesDAOSpec1")
+    val sessionAccount2 = createAccount("FeedLikesDAOSpec2")
+    val sessionAccount3 = createAccount("FeedLikesDAOSpec3")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -27,7 +27,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     Await.result(feedLikesDAO.create(feedId, sessionAccount3.id.toSessionId))
     val likeCount1 = Await.result(feedsDAO.find(feedId, sessionAccount1.id.toSessionId)).head._1.likeCount
     assert(likeCount1 == 2)
-    val result1 = Await.result(db.run(query[FeedLikes].sortBy(_.postedAt)))
+    val result1 = Await.result(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.postedAt)))
     assert(result1.size == 2)
     val like1 = result1(0)
     val like2 = result1(1)
@@ -40,7 +40,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     Await.result(feedLikesDAO.delete(feedId, sessionAccount3.id.toSessionId))
     Await.result(feedLikesDAO.create(feedId, sessionAccount2.id.toSessionId))
     Await.result(feedLikesDAO.create(feedId, sessionAccount3.id.toSessionId))
-    val result2 = Await.result(db.run(query[FeedLikes].sortBy(_.postedAt)))
+    val result2 = Await.result(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.postedAt)))
     assert(result2.size == 2)
     val like3 = result2(0)
     val like4 = result2(1)
@@ -55,9 +55,9 @@ class FeedLikesDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
+    val sessionAccount1 = createAccount("FeedLikesDAOSpec4")
+    val sessionAccount2 = createAccount("FeedLikesDAOSpec5")
+    val sessionAccount3 = createAccount("FeedLikesDAOSpec6")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -72,14 +72,14 @@ class FeedLikesDAOSpec extends DAOSpec {
 
     Await.result(feedLikesDAO.delete(feedId, sessionAccount2.id.toSessionId))
     Await.result(feedLikesDAO.delete(feedId, sessionAccount3.id.toSessionId))
-    assert(Await.result(db.run(query[FeedLikes].sortBy(_.postedAt))).size == 0)
+    assert(Await.result(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.postedAt))).size == 0)
 
     val likeCount2 = Await.result(feedsDAO.find(feedId, sessionAccount1.id.toSessionId)).head._1.likeCount
     assert(likeCount2 == 0)
 
     Await.result(feedLikesDAO.delete(feedId, sessionAccount2.id.toSessionId))
     Await.result(feedLikesDAO.delete(feedId, sessionAccount3.id.toSessionId))
-    assert(Await.result(db.run(query[FeedLikes].sortBy(_.postedAt))).size == 0)
+    assert(Await.result(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.postedAt))).size == 0)
 
     val feedId2 = Await.result(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
     val feedId3 = Await.result(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
@@ -96,9 +96,9 @@ class FeedLikesDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
+    val sessionAccount1 = createAccount("FeedLikesDAOSpec7")
+    val sessionAccount2 = createAccount("FeedLikesDAOSpec8")
+    val sessionAccount3 = createAccount("FeedLikesDAOSpec9")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -120,12 +120,12 @@ class FeedLikesDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
-    val sessionAccount6 = createAccount("account5")
+    val sessionAccount1 = createAccount("FeedLikesDAOSpec10")
+    val sessionAccount2 = createAccount("FeedLikesDAOSpec11")
+    val sessionAccount3 = createAccount("FeedLikesDAOSpec12")
+    val sessionAccount4 = createAccount("FeedLikesDAOSpec13")
+    val sessionAccount5 = createAccount("FeedLikesDAOSpec14")
+    val sessionAccount6 = createAccount("FeedLikesDAOSpec15")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
@@ -148,12 +148,12 @@ class FeedLikesDAOSpec extends DAOSpec {
 
   test("findUsers") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
-    val sessionAccount6 = createAccount("account5")
+    val sessionAccount1 = createAccount("FeedLikesDAOSpec16")
+    val sessionAccount2 = createAccount("FeedLikesDAOSpec17")
+    val sessionAccount3 = createAccount("FeedLikesDAOSpec18")
+    val sessionAccount4 = createAccount("FeedLikesDAOSpec19")
+    val sessionAccount5 = createAccount("FeedLikesDAOSpec20")
+    val sessionAccount6 = createAccount("FeedLikesDAOSpec21")
 
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)

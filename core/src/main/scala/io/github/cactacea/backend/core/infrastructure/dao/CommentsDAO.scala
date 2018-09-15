@@ -25,7 +25,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
 
   private def _insertComments(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     val by = sessionId.toAccountId
-    val postedAt = timeService.nanoTime()
+    val postedAt = timeService.currentTimeMillis()
     val replyId: Option[CommentId] = None
     val q = quote {
       query[Comments]

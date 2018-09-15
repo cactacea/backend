@@ -33,10 +33,6 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
 
   val db = injector.instance[DatabaseService]
 
-  before {
-    DatabaseHelper.initialize(db)
-  }
-
   @Inject private var sessionService: SessionsService = _
 
   def signUp(accountName: String, password: String, udid: String) = {

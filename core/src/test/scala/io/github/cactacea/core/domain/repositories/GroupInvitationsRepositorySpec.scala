@@ -19,12 +19,12 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
 
   test("invitation accounts to a groups") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user1 = signUp("user name 1", "user password 1", "user udid 1")
-    val user2 = signUp("user name 2", "user password 2", "user udid 2")
-    val user3 = signUp("user name 3", "user password 3", "user udid 3")
-    val user4 = signUp("user name 4", "user password 4", "user udid 4")
-    val user5 = signUp("user name 5", "user password 5", "user udid 5")
+    val sessionUser = signUp("GroupInvitationsRepositorySpec1", "session user password", "session user udid")
+    val user1 = signUp("GroupInvitationsRepositorySpec2", "user password 1", "user udid 1")
+    val user2 = signUp("GroupInvitationsRepositorySpec3", "user password 2", "user udid 2")
+    val user3 = signUp("GroupInvitationsRepositorySpec4", "user password 3", "user udid 3")
+    val user4 = signUp("GroupInvitationsRepositorySpec5", "user password 4", "user udid 4")
+    val user5 = signUp("GroupInvitationsRepositorySpec6", "user password 5", "user udid 5")
 
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     Await.result(groupInvitationsRepository.create(user1.id, groupId, sessionUser.id.toSessionId))
@@ -47,10 +47,10 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
 
   test("invitation a account to a group") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user1 = signUp("user name 1", "user password 2", "user udid 2")
-    val user2 = signUp("user name 2", "user password 2", "user udid 2")
-    val user3 = signUp("user name 3", "user password 2", "user udid 2")
+    val sessionUser = signUp("GroupInvitationsRepositorySpec7", "session user password", "session user udid")
+    val user1 = signUp("GroupInvitationsRepositorySpec8", "user password 2", "user udid 2")
+    val user2 = signUp("GroupInvitationsRepositorySpec9", "user password 2", "user udid 2")
+    val user3 = signUp("GroupInvitationsRepositorySpec10", "user password 2", "user udid 2")
 
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupInvitationId = Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
@@ -85,9 +85,9 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
 
   test("accept a group invitation") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user1 = signUp("user name 1", "user password 1", "user udid 1")
-    val user2 = signUp("user name 2", "user password 2", "user udid 2")
+    val sessionUser = signUp("GroupInvitationsRepositorySpec11", "session user password", "session user udid")
+    val user1 = signUp("GroupInvitationsRepositorySpec12", "user password 1", "user udid 1")
+    val user2 = signUp("GroupInvitationsRepositorySpec13", "user password 2", "user udid 2")
 
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupInvitationId = Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
@@ -113,8 +113,8 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
 
   test("reject a group invitation") {
 
-    val sessionUser = signUp("session user name", "session user password", "session user udid")
-    val user2 = signUp("user name 2", "user password 2", "user udid 2")
+    val sessionUser = signUp("GroupInvitationsRepositorySpec14", "session user password", "session user udid")
+    val user2 = signUp("GroupInvitationsRepositorySpec15", "user password 2", "user udid 2")
 
     val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupInvitationId = Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))

@@ -16,7 +16,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
   @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
-    val requestedAt = timeService.nanoTime()
+    val requestedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]

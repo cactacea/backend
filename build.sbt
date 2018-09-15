@@ -161,7 +161,13 @@ lazy val testSettings = Seq(
   flywayPlaceholders := Map("schema" -> dbDatabase),
   flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
   (test in Test) := {
-    (test in Test).dependsOn(flywayMigrate).value
+    (test in Test).dependsOn(flywayClean, flywayMigrate).value
+  },
+  (testOnly in Test) := {
+    (testOnly in Test).dependsOn(flywayClean, flywayMigrate).evaluated
+  },
+  (testQuick in Test) := {
+    (testQuick in Test).dependsOn(flywayClean, flywayMigrate).evaluated
   },
   concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
   testOptions in Test += Tests.Argument("-oI")

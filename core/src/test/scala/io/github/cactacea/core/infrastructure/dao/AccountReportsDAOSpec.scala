@@ -13,8 +13,8 @@ class AccountReportsDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
-    val reportedUser = createAccount("account1")
+    val sessionAccount = createAccount("AccountReportsDAOSpec1")
+    val reportedUser = createAccount("AccountReportsDAOSpec2")
 
     val userReportId = Await.result(userReportsDAO.create(reportedUser.id, ReportType.spam, sessionAccount.id.toSessionId))
 

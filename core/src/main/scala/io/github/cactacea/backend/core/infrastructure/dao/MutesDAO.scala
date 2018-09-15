@@ -40,7 +40,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
   }
 
   private def _insertMuted(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val mutedAt = timeService.nanoTime()
+    val mutedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -55,7 +55,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
   }
 
   private def _updateMuted(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    val mutedAt = timeService.nanoTime()
+    val mutedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]

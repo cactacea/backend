@@ -14,9 +14,9 @@ class FollowersDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
-    val followAccount1 = createAccount("account1")
-    val followAccount2 = createAccount("account2")
+    val sessionAccount = createAccount("FollowersDAOSpec1")
+    val followAccount1 = createAccount("FollowersDAOSpec2")
+    val followAccount2 = createAccount("FollowersDAOSpec3")
     Await.result(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     Await.result(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
@@ -44,9 +44,9 @@ class FollowersDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = createAccount("account0")
-    val followAccount1 = createAccount("account1")
-    val followAccount2 = createAccount("account2")
+    val sessionAccount = createAccount("FollowersDAOSpec4")
+    val followAccount1 = createAccount("FollowersDAOSpec5")
+    val followAccount2 = createAccount("FollowersDAOSpec6")
     Await.result(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     Await.result(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
     Await.result(followersDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
@@ -60,22 +60,22 @@ class FollowersDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
-    val sessionAccount6 = createAccount("account5")
-    val followUser = createAccount("account6")
+    val sessionAccount1 = createAccount("FollowersDAOSpec7")
+    val sessionAccount2 = createAccount("FollowersDAOSpec8")
+    val sessionAccount3 = createAccount("FollowersDAOSpec9")
+    val sessionAccount4 = createAccount("FollowersDAOSpec10")
+    val sessionAccount5 = createAccount("FollowersDAOSpec11")
+    val sessionAccount6 = createAccount("FollowersDAOSpec12")
+    val followedUser = createAccount("FollowersDAOSpec13")
 
-    Await.result(followingDAO.create(followUser.id, sessionAccount1.id.toSessionId))
-    Await.result(followingDAO.create(followUser.id, sessionAccount2.id.toSessionId))
-    Await.result(followingDAO.create(followUser.id, sessionAccount3.id.toSessionId))
-    Await.result(followingDAO.create(followUser.id, sessionAccount4.id.toSessionId))
-    Await.result(followingDAO.create(followUser.id, sessionAccount5.id.toSessionId))
-    Await.result(followingDAO.create(followUser.id, sessionAccount6.id.toSessionId))
+    Await.result(followingDAO.create(followedUser.id, sessionAccount1.id.toSessionId))
+    Await.result(followingDAO.create(followedUser.id, sessionAccount2.id.toSessionId))
+    Await.result(followingDAO.create(followedUser.id, sessionAccount3.id.toSessionId))
+    Await.result(followingDAO.create(followedUser.id, sessionAccount4.id.toSessionId))
+    Await.result(followingDAO.create(followedUser.id, sessionAccount5.id.toSessionId))
+    Await.result(followingDAO.create(followedUser.id, sessionAccount6.id.toSessionId))
 
-    val result1 = Await.result(followersDAO.findAll(followUser.id, None, None, Some(3), sessionAccount1.id.toSessionId))
+    val result1 = Await.result(followersDAO.findAll(followedUser.id, None, None, Some(3), sessionAccount1.id.toSessionId))
     val account1 = result1(0)._1
     val account2 = result1(1)._1
     val account3 = result1(2)._1
@@ -84,7 +84,7 @@ class FollowersDAOSpec extends DAOSpec {
     assert(account2.id == sessionAccount5.id)
     assert(account3.id == sessionAccount4.id)
 
-    val result2 = Await.result(followersDAO.findAll(followUser.id, Some(follower1.followedAt), None, Some(3), sessionAccount1.id.toSessionId))
+    val result2 = Await.result(followersDAO.findAll(followedUser.id, Some(follower1.followedAt), None, Some(3), sessionAccount1.id.toSessionId))
     val account4 = result2(0)._1
     val account5 = result2(1)._1
     val account6 = result2(2)._1

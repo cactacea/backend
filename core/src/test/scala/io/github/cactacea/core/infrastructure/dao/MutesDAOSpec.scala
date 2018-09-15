@@ -12,9 +12,9 @@ class MutesDAOSpec extends DAOSpec {
 
   test("create") {
 
-    val sessionAccount = createAccount("account0")
-    val mutedAccount1 = createAccount("account1")
-    val mutedAccount2 = createAccount("account2")
+    val sessionAccount = createAccount("MutesDAOSpec1")
+    val mutedAccount1 = createAccount("MutesDAOSpec2")
+    val mutedAccount2 = createAccount("MutesDAOSpec3")
     Await.result(mutesDAO.create(sessionAccount.id, mutedAccount1.id.toSessionId))
     Await.result(mutesDAO.create(sessionAccount.id, mutedAccount2.id.toSessionId))
 
@@ -38,9 +38,9 @@ class MutesDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = createAccount("account0")
-    val muteAccount1 = createAccount("account1")
-    val muteAccount2 = createAccount("account2")
+    val sessionAccount = createAccount("MutesDAOSpec4")
+    val muteAccount1 = createAccount("MutesDAOSpec5")
+    val muteAccount2 = createAccount("MutesDAOSpec6")
     Await.result(mutesDAO.create(sessionAccount.id, muteAccount1.id.toSessionId))
     Await.result(mutesDAO.create(sessionAccount.id, muteAccount2.id.toSessionId))
     Await.result(mutesDAO.delete(sessionAccount.id, muteAccount1.id.toSessionId))
@@ -54,10 +54,10 @@ class MutesDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = createAccount("account0")
-    val mutedAccount1 = createAccount("account1")
-    val mutedAccount2 = createAccount("account2")
-    val mutedAccount3 = createAccount("account3")
+    val sessionAccount = createAccount("MutesDAOSpec7")
+    val mutedAccount1 = createAccount("MutesDAOSpec8")
+    val mutedAccount2 = createAccount("MutesDAOSpec9")
+    val mutedAccount3 = createAccount("MutesDAOSpec10")
     Await.result(mutesDAO.create(sessionAccount.id, mutedAccount1.id.toSessionId))
     Await.result(mutesDAO.create(sessionAccount.id, mutedAccount2.id.toSessionId))
 
@@ -72,13 +72,13 @@ class MutesDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
-    val sessionAccount6 = createAccount("account5")
-    val muteUser = createAccount("account6")
+    val sessionAccount1 = createAccount("MutesDAOSpec11")
+    val sessionAccount2 = createAccount("MutesDAOSpec12")
+    val sessionAccount3 = createAccount("MutesDAOSpec13")
+    val sessionAccount4 = createAccount("MutesDAOSpec14")
+    val sessionAccount5 = createAccount("MutesDAOSpec15")
+    val sessionAccount6 = createAccount("MutesDAOSpec16")
+    val muteUser = createAccount("MutesDAOSpec17")
 
     Await.result(mutesDAO.create(sessionAccount1.id, muteUser.id.toSessionId))
     Await.result(mutesDAO.create(sessionAccount2.id, muteUser.id.toSessionId))

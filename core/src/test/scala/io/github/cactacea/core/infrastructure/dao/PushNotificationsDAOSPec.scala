@@ -22,8 +22,8 @@ class PushNotificationsDAOSPec extends DAOSpec {
 
   test("findMessage - direct message") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
+    val sessionAccount = createAccount("PushNotificationsDAOSPec1")
+    val account1 = createAccount("PushNotificationsDAOSPec2")
 
     val displayName = Some("Invitation Sender Name")
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
@@ -52,8 +52,8 @@ class PushNotificationsDAOSPec extends DAOSpec {
 
   test("findMessage - group message") {
 
-    val sessionAccount = createAccount("account0")
-    val account1 = createAccount("account1")
+    val sessionAccount = createAccount("PushNotificationsDAOSPec3")
+    val account1 = createAccount("PushNotificationsDAOSPec4")
 
     val displayName = Some("Invitation Sender Name")
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
@@ -81,12 +81,12 @@ class PushNotificationsDAOSPec extends DAOSpec {
 
   test("findFeeds") {
 
-    val sessionAccount1 = createAccount("account0")
-    val sessionAccount2 = createAccount("account1")
-    val sessionAccount3 = createAccount("account2")
-    val sessionAccount4 = createAccount("account3")
-    val sessionAccount5 = createAccount("account4")
-    val sessionAccount6 = createAccount("account5")
+    val sessionAccount1 = createAccount("PushNotificationsDAOSPec5")
+    val sessionAccount2 = createAccount("PushNotificationsDAOSPec6")
+    val sessionAccount3 = createAccount("PushNotificationsDAOSPec7")
+    val sessionAccount4 = createAccount("PushNotificationsDAOSPec8")
+    val sessionAccount5 = createAccount("PushNotificationsDAOSPec9")
+    val sessionAccount6 = createAccount("PushNotificationsDAOSPec10")
     val medium1 = this.createMedium(sessionAccount1.id)
     val medium2 = this.createMedium(sessionAccount1.id)
     val medium3 = this.createMedium(sessionAccount1.id)

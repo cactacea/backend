@@ -43,7 +43,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
   }
 
   private def _insert(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
-    val joinedAt = timeService.nanoTime()
+    val joinedAt = timeService.currentTimeMillis()
     val toAccountId = sessionId.toAccountId
     val q = quote {
       query[AccountGroups]

@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.domain.repositories
 import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.MediumType
 import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, MediumNotFound}
 
@@ -16,22 +16,22 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("find accounts") {
 
-    val account61 = signUp("account61", "password1", "udid")
-    val account62 = signUp("account62", "password1", "udid")
-    val account63 = signUp("account63", "password1", "udid")
-    val account64 = signUp("account64", "password1", "udid")
+    val AccountsRepositorySpec6 = signUp("AccountsRepositorySpec01", "password1", "udid")
+    val AccountsRepositorySpec2 = signUp("AccountsRepositorySpec02", "password1", "udid")
+    val AccountsRepositorySpec3 = signUp("AccountsRepositorySpec03", "password1", "udid")
+    val AccountsRepositorySpec4 = signUp("AccountsRepositorySpec04", "password1", "udid")
 
-    val session = signUp("session account", "password", "udid")
-    val account1 = signUp("account1", "password1", "udid")
-    val blockAccount1 = signUp("block account1", "password1", "udid")
-    val account2 = signUp("account2", "password2", "udid")
-    val blockAccount2 = signUp("block account2", "password1", "udid")
-    val account3 = signUp("account3", "password3", "udid")
-    val blockAccount3 = signUp("block account3", "password1", "udid")
-    val account4 = signUp("account4", "password4", "udid")
-    val blockAccount4 = signUp("block account4", "password1", "udid")
-    val account5 = signUp("account5", "password5", "udid")
-    val blockAccount5 = signUp("block account5", "password1", "udid")
+    val session = signUp("AccountsRepositorySpec5", "password", "udid")
+    val account1 = signUp("AccountsRepositorySpec6", "password1", "udid")
+    val blockAccount1 = signUp("AccountsRepositorySpec7", "password1", "udid")
+    val account2 = signUp("AccountsRepositorySpec8", "password2", "udid")
+    val blockAccount2 = signUp("AccountsRepositorySpec9", "password1", "udid")
+    val account3 = signUp("AccountsRepositorySpec10", "password3", "udid")
+    val blockAccount3 = signUp("AccountsRepositorySpec11", "password1", "udid")
+    val account4 = signUp("AccountsRepositorySpec12", "password4", "udid")
+    val blockAccount4 = signUp("AccountsRepositorySpec13", "password1", "udid")
+    val account5 = signUp("AccountsRepositorySpec14", "password5", "udid")
+    val blockAccount5 = signUp("AccountsRepositorySpec15", "password1", "udid")
 
     Await.result(blocksRepository.create(blockAccount1.id, session.id.toSessionId))
     Await.result(blocksRepository.create(blockAccount2.id, session.id.toSessionId))
@@ -52,23 +52,23 @@ class AccountsRepositorySpec extends RepositorySpec {
     assert(accounts2(1).displayName == account1.displayName)
 
     // Find By account name
-    val accounts3 = Await.result(accountsRepository.findAll(Some("account6"), None, None, Some(3), session.id.toSessionId))
+    val accounts3 = Await.result(accountsRepository.findAll(Some("AccountsRepositorySpec0"), None, None, Some(3), session.id.toSessionId))
     assert(accounts3.size == 3)
-    assert(accounts3(0).displayName == account64.displayName)
-    assert(accounts3(1).displayName == account63.displayName)
-    assert(accounts3(2).displayName == account62.displayName)
+    assert(accounts3(0).displayName == AccountsRepositorySpec4.displayName)
+    assert(accounts3(1).displayName == AccountsRepositorySpec3.displayName)
+    assert(accounts3(2).displayName == AccountsRepositorySpec2.displayName)
 
-    val accounts4 = Await.result(accountsRepository.findAll(Some("account6"), Some(accounts3(2).next), None, Some(3), session.id.toSessionId))
+    val accounts4 = Await.result(accountsRepository.findAll(Some("AccountsRepositorySpec0"), Some(accounts3(2).next), None, Some(3), session.id.toSessionId))
     assert(accounts4.size == 1)
-    assert(accounts4(0).displayName == account61.displayName)
+    assert(accounts4(0).displayName == AccountsRepositorySpec6.displayName)
 
   }
 
   test("find a account") {
 
-    val session = signUp("session account", "password", "udid")
-    val account = signUp("account", "password", "udid")
-    val blockAccount = signUp("block account", "password", "udid")
+    val session = signUp("AccountsRepositorySpec16", "password", "udid")
+    val account = signUp("AccountsRepositorySpec17", "password", "udid")
+    val blockAccount = signUp("AccountsRepositorySpec18", "password", "udid")
 
     Await.result(blocksRepository.create(blockAccount.id, session.id.toSessionId))
 
@@ -83,7 +83,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("find no exist account") {
 
-    val session = signUp("session account", "password", "udid")
+    val session = signUp("AccountsRepositorySpec19", "password", "udid")
 
     assert(intercept[CactaceaException] {
       Await.result(accountsRepository.find(AccountId(0L), session.id.toSessionId))
@@ -93,7 +93,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("find session") {
 
-    val session = signUp("session account", "password", "udid")
+    val session = signUp("AccountsRepositorySpec20", "password", "udid")
 
     val result = Await.result(accountsRepository.find(session.id.toSessionId))
     assert(result.id == session.id)
@@ -110,7 +110,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("update session name") {
 
-    val session = signUp("session account", "password", "udid")
+    val session = signUp("AccountsRepositorySpec21", "password", "udid")
 
     Await.result(accountsRepository.updateAccountName("new account name", session.id.toSessionId))
     val result = Await.result(accountsRepository.find(session.id.toSessionId))
@@ -121,7 +121,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("update other account's name") {
 
-    val session = signUp("session account", "password", "udid")
+    val session = signUp("AccountsRepositorySpec22", "password", "udid")
     val account = signUp("account", "password", "udid")
 
     Await.result(accountsRepository.updateDisplayName(account.id, Some("new account name"), session.id.toSessionId))
@@ -133,7 +133,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("update profile image with exist medium") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("AccountsRepositorySpec23", "session password", "udid")
 
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
@@ -145,7 +145,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("delete profile image") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("AccountsRepositorySpec24", "session password", "udid")
     val result = Await.result(accountsRepository.updateProfileImage(None, session.id.toSessionId))
     // TODO : Check
 
@@ -153,7 +153,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("update profile image with no exist medium") {
 
-    val session = signUp("session name", "session password", "udid")
+    val session = signUp("AccountsRepositorySpec25", "session password", "udid")
 
     assert(intercept[CactaceaException] {
       Await.result(accountsRepository.updateProfileImage(Some(MediumId(0L)), session.id.toSessionId))
@@ -163,7 +163,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("update no exist other account'name") {
 
-    val session = signUp("session account", "password", "udid")
+    val session = signUp("AccountsRepositorySpec26", "password", "udid")
 
     assert(intercept[CactaceaException] {
       Await.result(accountsRepository.updateDisplayName(AccountId(0L), Some("new account name"), session.id.toSessionId))
@@ -173,24 +173,24 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("exist account name") {
 
-    val session = signUp("session account", "password", "udid")
+    val session = signUp("AccountsRepositorySpec27", "password", "udid")
 
-    val notExistAccountNameResult = Await.result(accountsRepository.notExist("session account 2"))
+    val notExistAccountNameResult = Await.result(accountsRepository.notExist("AccountsRepositorySpec5 2"))
     assert(notExistAccountNameResult == true)
 
-    val notExistAccountNameResult2 = Await.result(accountsRepository.notExist("session account"))
+    val notExistAccountNameResult2 = Await.result(accountsRepository.notExist("AccountsRepositorySpec5"))
     assert(notExistAccountNameResult2 == false)
 
   }
 
   test("update password") {
 
-    val session = signUp("session account", "password", "udid")
+    val session = signUp("AccountsRepositorySpec28", "password", "udid")
     Await.result(accountsRepository.updatePassword("password", "new password", session.id.toSessionId))
 
-    val session2 = this.signIn("session account", "new password", "udid")
+    val session2 = signIn("AccountsRepositorySpec28", "new password", "udid")
     assert(session2.id == session.id)
-    assert(session2.accountName == "session account")
+    assert(session2.accountName == "AccountsRepositorySpec28")
 
   }
 
