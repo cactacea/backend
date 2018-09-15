@@ -124,7 +124,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(p => (p._3.friendedAt, p._3.by))(Ord(Ord.desc, Ord.desc))
+        .sortBy(p => (p._3.friendedAt, p._1.id))(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }
@@ -149,7 +149,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(p => (p._3.friendedAt, p._3.by))(Ord(Ord.desc, Ord.desc))
+        .sortBy(p => (p._3.friendedAt, p._1.id))(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }

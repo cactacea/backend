@@ -104,7 +104,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(p => (p._3.followedAt, p._3.by))(Ord(Ord.desc, Ord.desc))
+        .sortBy(p => (p._3.followedAt, p._1.id))(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }
@@ -130,7 +130,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(p => (p._3.followedAt, p._3.by))(Ord(Ord.desc, Ord.desc))
+        .sortBy(p => (p._3.followedAt, p._1.id))(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }
