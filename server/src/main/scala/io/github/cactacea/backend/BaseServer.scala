@@ -1,15 +1,13 @@
 package io.github.cactacea.backend
 
-import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.HttpServer
-import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.inject.TwitterModule
-import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
 
-class BaseServer extends HttpServer {
+trait BaseServer extends HttpServer {
 
   override val disableAdminHttpServer = false
   override val defaultFinatraHttpPort = ":9000"
@@ -45,9 +43,6 @@ class BaseServer extends HttpServer {
 
   override def configureHttp(router: HttpRouter) = {
     router
-      .filter[LoggingMDCFilter[Request, Response]]
-      .filter[TraceIdMDCFilter[Request, Response]]
-      .filter[CommonFilters]
       .exceptionMapper[CaseClassExceptionMapper]
       .exceptionMapper[CactaceaExceptionMapper]
   }

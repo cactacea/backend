@@ -15,7 +15,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class GroupsController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 

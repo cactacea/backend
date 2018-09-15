@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.3.1-SNAPSHOT"
+  val cactacea = "0.3.2-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -12,14 +12,15 @@ lazy val versions = new {
   val aws = "1.11.289"
 }
 
+
 ThisBuild / version      := versions.cactacea
 ThisBuild / organization := "io.github.cactacea.backend"
 ThisBuild / scalaVersion := "2.12.5"
 
-lazy val demo = (project in file("demo"))
+lazy val doc = (project in file("doc"))
   .settings(
-    name := "demo",
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp")
+    name := "doc",
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DocServerApp")
   )
   .settings(
     version in Docker := "latest",
@@ -136,7 +137,6 @@ lazy val testLibrarySetting = Seq(
     "org.specs2" %% "specs2-core" % versions.specs2 % "test",
     "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
     "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
-
   )
 )
 
@@ -178,6 +178,5 @@ lazy val dbMigrationSetting = Seq(
   concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
   testOptions in Test += Tests.Argument("-oI")
 )
-
 
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))

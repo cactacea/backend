@@ -12,7 +12,7 @@ import io.github.cactacea.backend.utils.oauth.{OAuthCodeGenerator, OAuthHandler,
 import io.github.cactacea.backend.views.{ErrorView, SignInView}
 
 @Singleton
-class OAuthController @Inject()(@Flag("api.prefix") apiPrefix: String) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
+class OAuthController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
 
   protected val tagName = "OAuth"
 

@@ -14,7 +14,7 @@ import io.swagger.models.Swagger
 
 
 @Singleton
-class SessionController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 

@@ -7,7 +7,7 @@ import io.github.cactacea.backend.swagger.BackendController
 import io.swagger.models.Swagger
 
 @Singleton
-class HealthController @Inject()(@Flag("api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class HealthController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
 
   protected implicit val swagger = s
 
