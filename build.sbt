@@ -18,7 +18,7 @@ organization in ThisBuild := "io.github.cactacea.backend"
 scalaVersion in ThisBuild := "2.12.5"
 testOptions in Test in ThisBuild += Tests.Argument("-oI")
 concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
-parallelExecution in Test in ThisProject := false
+parallelExecution in Test in ThisBuild := false
 
 lazy val doc = (project in file("doc"))
   .settings(
@@ -53,8 +53,8 @@ lazy val server = (project in file("server"))
   .settings(coreLibrarySetting)
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
-  .settings(migrationSetting)
-  .enablePlugins(FlywayPlugin)
+//  .settings(migrationSetting)
+//  .enablePlugins(FlywayPlugin)
   .dependsOn(core % "compile->compile;test->test")
 
 lazy val core = (project in file("core"))
