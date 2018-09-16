@@ -3,7 +3,6 @@ package io.github.cactacea.backend
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.utils.filters._
-import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 
 class BackendServer extends BaseServer {
 
@@ -12,8 +11,6 @@ class BackendServer extends BaseServer {
   override def configureHttp(router: HttpRouter) = {
     super.configureHttp(router)
     router
-      .exceptionMapper[CaseClassExceptionMapper]
-      .exceptionMapper[CactaceaExceptionMapper]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, AccountsController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, BlocksController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, CommentsController]

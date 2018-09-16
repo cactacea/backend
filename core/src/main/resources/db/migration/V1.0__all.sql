@@ -735,34 +735,3 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`tickets` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-USE `${schema}` ;
-
-DROP FUNCTION IF EXISTS `${schema}`.`generateId`;
--- -----------------------------------------------------
--- function generateId
--- -----------------------------------------------------
-
--- https://engineering.instagram.com/sharding-ids-at-instagram-1cf5a71e5a5c
-
-DELIMITER $$
-CREATE FUNCTION `generateId`(shard_id INT) RETURNS BIGINT
-    DETERMINISTIC
-BEGIN
-    DECLARE our_epoc BIGINT;
-    DECLARE now_millis BIGINT;
-    DECLARE seq_id BIGINT;
-    DECLARE result BIGINT;
-
-	REPLACE INTO tickets (stub) VALUES ('a');
-	SET seq_id := LAST_INSERT_ID() % 1024;
-	SET our_epoc := 1387263000;  # 2011/01/01 00:00:00
-    SET now_millis := (UNIX_TIMESTAMP() - our_epoc) * 1000;
-    SET result := now_millis << 23;
-    SET result := result | (shard_id << 10);
-    SET result := result | seq_id;
-
-    RETURN result;
-END$$
-
-DELIMITER ;
-

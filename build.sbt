@@ -13,9 +13,12 @@ lazy val versions = new {
 }
 
 
-ThisBuild / version      := versions.cactacea
-ThisBuild / organization := "io.github.cactacea.backend"
-ThisBuild / scalaVersion := "2.12.5"
+version in ThisBuild      := versions.cactacea
+organization in ThisBuild := "io.github.cactacea.backend"
+scalaVersion in ThisBuild := "2.12.5"
+testOptions in Test in ThisBuild += Tests.Argument("-oI")
+concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
+parallelExecution in Test in ThisBuild := false
 
 lazy val doc = (project in file("doc"))
   .settings(
@@ -30,7 +33,7 @@ lazy val doc = (project in file("doc"))
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea")
   )
-  .dependsOn(server)
+  .dependsOn(server % "compile->compile;test->test")
   .dependsOn(externals)
   .dependsOn(finagger)
   .enablePlugins(JavaAppPackaging)
@@ -50,8 +53,9 @@ lazy val server = (project in file("server"))
   .settings(coreLibrarySetting)
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
-  .dependsOn(core)
-
+//  .settings(migrationSetting)
+//  .enablePlugins(FlywayPlugin)
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val core = (project in file("core"))
   .settings(
@@ -67,8 +71,8 @@ lazy val core = (project in file("core"))
   .settings(coreLibrarySetting)
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
-  .settings(dbMigrationSetting)
   .dependsOn(finagger)
+  .settings(migrationSetting)
   .enablePlugins(FlywayPlugin)
 
 
@@ -160,7 +164,7 @@ lazy val testDBDatabase = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cact
 lazy val testDBHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
 lazy val testDBPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
 
-lazy val dbMigrationSetting = Seq(
+lazy val migrationSetting = Seq(
   flywayUser := testDBUser,
   flywayPassword := testDBPassword,
   flywayUrl := s"jdbc:mysql://$testDBHostName:$testDBPort/$testDBDatabase",
@@ -174,9 +178,7 @@ lazy val dbMigrationSetting = Seq(
   },
   (testQuick in Test) := {
     (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
-  },
-  concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-  testOptions in Test += Tests.Argument("-oI")
+  }
 )
 
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
