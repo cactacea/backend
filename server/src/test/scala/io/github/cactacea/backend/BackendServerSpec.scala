@@ -26,7 +26,7 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignUp
-        val postSignUp = PostSignUp(s"account$i", Some(s"display$i"), s"Password_$i", uuid, None, None, None, None, Some("ios"))
+        val postSignUp = PostSignUp(s"BackendServerSpec$i", Some(s"BackendServerSpec$i"), s"Backend_Server_Spec_99$i", uuid, None, None, None, None, Some("ios"))
         val body = mapper.writePrettyString(postSignUp)
         val signUpResponse = post("/sessions", body)
         assert(signUpResponse.statusCode == Status.Ok.code)
@@ -50,7 +50,7 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignIn
-        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, Some("ios"))
+        val getSignIn = GetSignIn(s"BackendServerSpec$i", s"Backend_Server_Spec_99$i", uuid, Some("ios"))
         val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
@@ -73,13 +73,13 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignIn
-        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, Some("ios"))
+        val getSignIn = GetSignIn(s"BackendServerSpec$i", s"Backend_Server_Spec_99$i", uuid, Some("ios"))
         val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 
         // Get Accounts
-        val a = GetAccounts(Some("account"), None, None, None)
+        val a = GetAccounts(Some("BackendServerSpec"), None, None, None)
         val b = get(s"/accounts${a.displayName.map(name => "?display_name=" + name).getOrElse("")}", signInAuth.accessToken)
         val accounts = mapper.parse[List[Account]](b.getContentString())
         assert(accounts.size == (accountsCount - 1))
@@ -110,7 +110,7 @@ class BackendServerSpec extends ServerSpec {
         val uuid = UUID.randomUUID().toString
 
         // SignIn
-        val getSignIn = GetSignIn(s"account$i", s"Password_$i", uuid, Some("ios"))
+        val getSignIn = GetSignIn(s"BackendServerSpec$i", s"Backend_Server_Spec_99$i", uuid, Some("ios"))
         val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
