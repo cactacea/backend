@@ -33,7 +33,7 @@ lazy val doc = (project in file("doc"))
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea")
   )
-  .dependsOn(server)
+  .dependsOn(server % "compile->compile;test->test")
   .dependsOn(externals)
   .dependsOn(finagger)
   .enablePlugins(JavaAppPackaging)
@@ -55,8 +55,7 @@ lazy val server = (project in file("server"))
   .settings(testLibrarySetting)
   .settings(migrationSetting)
   .enablePlugins(FlywayPlugin)
-  .dependsOn(core)
-
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val core = (project in file("core"))
   .settings(
