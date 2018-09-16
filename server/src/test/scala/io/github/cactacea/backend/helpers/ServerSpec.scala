@@ -5,14 +5,13 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
-import io.github.cactacea.backend.ApiDocServer
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.util.configs.Config
 
 class ServerSpec extends FeatureTest {
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new ApiDocServer
+    twitterServer = new TestServer
   )
 
   override val injector =

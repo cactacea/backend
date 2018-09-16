@@ -1,23 +1,19 @@
-package io.github.cactacea.backend
+package io.github.cactacea.backend.helpers
+
 
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
-import io.github.cactacea.backend.swagger.{BackendDocumentsController, BackendSwaggerModule}
-import io.github.cactacea.swagger.DocsController
+import io.github.cactacea.backend.BackendServer
 
-class DocServer extends BackendServer {
+class TestServer extends BackendServer {
 
   override def configureHttp(router: HttpRouter) = {
-    super.configureHttp(router)
     router
       .filter[LoggingMDCFilter[Request, Response]]
       .filter[TraceIdMDCFilter[Request, Response]]
       .filter[CommonFilters]
-      .add[BackendDocumentsController]
-      .add[DocsController]
+    super.configureHttp(router)
   }
-
-  addFrameworkModule(BackendSwaggerModule)
 
 }
