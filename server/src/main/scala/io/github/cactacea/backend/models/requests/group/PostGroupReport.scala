@@ -8,6 +8,6 @@ import io.swagger.annotations.ApiModelProperty
 case class PostGroupReport(
                             @ApiModelProperty(value = "Group identifier.")
                             @RouteParam id: GroupId,
-
-                            reportType: ReportType
+                            reportType: ReportType,
+                            reportContent: Option[String]
                           )

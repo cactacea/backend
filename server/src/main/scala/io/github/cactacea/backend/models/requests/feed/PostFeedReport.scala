@@ -8,5 +8,6 @@ import io.swagger.annotations.ApiModelProperty
 case class PostFeedReport(
                            @ApiModelProperty(value = "Feed identifier.")
                            @RouteParam id: FeedId,
-                           reportType: ReportType
-                     )
+                           reportType: ReportType,
+                           reportContent: Option[String]
+                         )

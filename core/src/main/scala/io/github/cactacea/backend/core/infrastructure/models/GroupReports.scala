@@ -6,5 +6,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Gr
 case class GroupReports(id: GroupReportId,
                         groupId: GroupId,
                         by: AccountId,
-                        reportType: ReportType
+                        reportType: ReportType,
+                        reportContent: Option[String]
                         )

@@ -8,6 +8,6 @@ import io.swagger.annotations.ApiModelProperty
 case class PostCommentReport(
                               @ApiModelProperty(value = "Comment Identifier.")
                               @RouteParam id: CommentId,
-
-                              reportType: ReportType
+                              reportType: ReportType,
+                              reportContent: Option[String]
                      )

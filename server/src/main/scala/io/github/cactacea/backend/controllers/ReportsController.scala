@@ -41,6 +41,7 @@ class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
       accountsService.report(
         request.id,
         request.reportType,
+        request.reportContent,
         SessionContext.id
       ).map(_ => response.noContent)
     }
@@ -57,6 +58,7 @@ class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
       feedsService.report(
         request.id,
         request.reportType,
+        request.reportContent,
         SessionContext.id
       ).map(_ => response.noContent)
     }
@@ -73,6 +75,7 @@ class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
       commentsService.report(
         request.id,
         request.reportType,
+        request.reportContent,
         SessionContext.id
       )
     }
@@ -89,6 +92,7 @@ class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
       groupsService.report(
         request.id,
         request.reportType,
+        request.reportContent,
         SessionContext.id
       ).map(_ => response.noContent)
     }

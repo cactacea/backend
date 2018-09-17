@@ -23,7 +23,7 @@ class CommentsService {
       for {
         id <- commentsRepository.create(feedId, message, sessionId)
         _ <- publishService.enqueueComment(id)
-        _ <- actionService.commentCreated(id, sessionId)
+        _ <- actionService.commentCreated(id, feedId, message, sessionId)
       } yield (id)
     }
   }
@@ -48,10 +48,10 @@ class CommentsService {
     )
   }
 
-  def report(commentId: CommentId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
+  def report(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      r <- db.transaction(reportsRepository.createCommentReport(commentId, reportType, sessionId))
-      _ <- actionService.commentReported(commentId, reportType, sessionId)
+      r <- db.transaction(reportsRepository.createCommentReport(commentId, reportType, reportContent, sessionId))
+      _ <- actionService.commentReported(commentId, reportType, reportContent, sessionId)
     } yield (r)
   }
 

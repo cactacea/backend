@@ -41,7 +41,8 @@ class CommentsRepositorySpec extends RepositorySpec {
     val user = signUp("CommentsRepositorySpec3-2", "user password", "user udid")
     val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
-    Await.result(reportsRepository.createCommentReport(commentId, ReportType.inappropriate, user.id.toSessionId))
+    val reportContent = Some("report content")
+    Await.result(reportsRepository.createCommentReport(commentId, ReportType.inappropriate, reportContent, user.id.toSessionId))
     val result = Await.result(commentsRepository.delete(commentId, session.id.toSessionId))
     // TODO : Check
 

@@ -105,7 +105,8 @@ class FeedsRepositorySpec extends RepositorySpec {
     val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
     val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    Await.result(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, user.id.toSessionId))
+    val reportContent = Some("report content")
+    Await.result(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, reportContent, user.id.toSessionId))
     Await.result(feedsRepository.delete(feedId, session.id.toSessionId))
     // TODO : Check
 

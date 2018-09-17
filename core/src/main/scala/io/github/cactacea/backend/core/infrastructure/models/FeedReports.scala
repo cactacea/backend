@@ -6,5 +6,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Fe
 case class FeedReports(id: FeedReportId,
                        feedId: FeedId,
                        by: AccountId,
-                       reportType: ReportType
+                       reportType: ReportType,
+                       reportContent: Option[String]
                           )

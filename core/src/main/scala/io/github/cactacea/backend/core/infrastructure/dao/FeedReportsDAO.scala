@@ -12,19 +12,14 @@ class FeedReportsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(feedId: FeedId, reportType: ReportType, sessionId: SessionId): Future[FeedReportId] = {
-    for {
-      id <- insert(feedId, reportType, sessionId)
-    } yield (id)
-  }
-
-  private def insert(feedId: FeedId, reportType: ReportType, sessionId: SessionId): Future[FeedReportId] = {
+  def create(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[FeedReportId] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[FeedReports].insert(
         _.feedId        -> lift(feedId),
         _.by            -> lift(by),
-        _.reportType    -> lift(reportType)
+        _.reportType    -> lift(reportType),
+        _.reportContent -> lift(reportContent)
       ).returning(_.id)
     }
     run(q)

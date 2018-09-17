@@ -15,31 +15,31 @@ class ReportsRepository {
   @Inject private var groupReportsDAO: GroupReportsDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
-  def createAccountReport(accountId: AccountId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
+  def createAccountReport(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
-      id <- accountReportsDAO.create(accountId, reportType, sessionId)
+      id <- accountReportsDAO.create(accountId, reportType, reportContent, sessionId)
     } yield (Future.value(Unit))
   }
 
-  def createFeedReport(feedId: FeedId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
+  def createFeedReport(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existFeed(feedId, sessionId)
-      _ <- feedReportsDAO.create(feedId, reportType, sessionId)
+      _ <- feedReportsDAO.create(feedId, reportType, reportContent, sessionId)
     } yield (Future.value(Unit))
   }
 
-  def createCommentReport(commentId: CommentId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
+  def createCommentReport(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existComment(commentId, sessionId)
-      _ <- commentReportsDAO.create(commentId, reportType, sessionId)
+      _ <- commentReportsDAO.create(commentId, reportType, reportContent, sessionId)
     } yield (Future.value(Unit))
   }
 
-  def createGroupReport(groupId: GroupId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
+  def createGroupReport(groupId: GroupId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existGroup(groupId, sessionId)
-      _ <- groupReportsDAO.create(groupId, reportType, sessionId)
+      _ <- groupReportsDAO.create(groupId, reportType, reportContent, sessionId)
     } yield (Future.value(Unit))
   }
 
