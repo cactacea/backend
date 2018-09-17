@@ -110,7 +110,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
-        .filter({ f => (f.expiration.forall(_ > lift(e)))})
+        .filter({ f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty})
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
             || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
@@ -158,7 +158,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
             || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
             || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
-        .filter({ f => (f.expiration.forall(_ > lift(e)))})
+        .filter({ f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty })
         .filter(_.id < lift(s) || lift(s) == -1L)
         .sortBy(_.id)(Ord.desc)
         .drop(lift(o))
@@ -192,7 +192,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.normally
     val e = timeService.currentTimeMillis()
     val q = quote {
-      query[Feeds].filter(f => f.id == lift(feedId) && (f.expiration.forall(_ > lift(e))) &&
+      query[Feeds].filter(f => f.id == lift(feedId) && (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty) &&
         query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
           || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))

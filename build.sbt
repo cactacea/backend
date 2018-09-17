@@ -19,6 +19,7 @@ scalaVersion in ThisBuild := "2.12.5"
 testOptions in Test in ThisBuild += Tests.Argument("-oI")
 concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
 parallelExecution in Test in ThisBuild := false
+fork in run in ThisBuild := true
 
 lazy val doc = (project in file("doc"))
   .settings(
@@ -172,12 +173,6 @@ lazy val migrationSetting = Seq(
   flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
   (test in Test) := {
     (test in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).value
-  },
-  (testOnly in Test) := {
-    (testOnly in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
-  },
-  (testQuick in Test) := {
-    (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
   }
 )
 
