@@ -173,6 +173,12 @@ lazy val migrationSetting = Seq(
   flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
   (test in Test) := {
     (test in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).value
+  },
+  (testOnly in Test) := {
+    (testOnly in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
+  },
+  (testQuick in Test) := {
+    (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
   }
 )
 
