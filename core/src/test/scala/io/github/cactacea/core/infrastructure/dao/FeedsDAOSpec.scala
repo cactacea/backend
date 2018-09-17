@@ -82,7 +82,7 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
     // create report
-    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, sessionAccount1.id.toSessionId))
+    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId))
 
     // create feeds result
     val feed1 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId1))))).head
@@ -191,7 +191,7 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
     // create report
-    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, sessionAccount1.id.toSessionId))
+    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId))
 
     // create feeds result
     val feed1 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId1))))).head
@@ -319,7 +319,7 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
     // create report
-    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, sessionAccount1.id.toSessionId))
+    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId))
 
     // create feeds result
     val feed1 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId1))))).head
@@ -667,7 +667,7 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
 
     // create report
-    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, sessionAccount1.id.toSessionId))
+    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId))
 
     // create feeds result
     val feed1 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId1))))).head

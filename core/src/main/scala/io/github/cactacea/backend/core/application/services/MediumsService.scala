@@ -22,7 +22,7 @@ class MediumsService {
     for {
       (url, key) <- storageService.put(contentType, data)
       r <- db.transaction(mediumsRepository.create(key, url, None, MediumType.image, width, height, data.length, sessionId))
-      _ <- injectionService.mediumCreated(r._1, sessionId)
+      _ <- injectionService.mediumCreated(r._1, r._2, sessionId)
     } yield (r)
   }
 

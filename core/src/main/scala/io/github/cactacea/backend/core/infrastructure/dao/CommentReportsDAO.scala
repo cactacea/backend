@@ -12,19 +12,14 @@ class CommentReportsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(commentId: CommentId, reportType: ReportType, sessionId: SessionId): Future[CommentReportId] = {
-    for {
-      id <- insert(commentId, reportType, sessionId)
-    } yield (id)
-  }
-
-  private def insert(commentId: CommentId, reportType: ReportType, sessionId: SessionId): Future[CommentReportId] = {
+  def create(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[CommentReportId] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[CommentReports].insert(
         _.commentId     -> lift(commentId),
         _.by            -> lift(by),
-        _.reportType    -> lift(reportType)
+        _.reportType    -> lift(reportType),
+        _.reportContent -> lift(reportContent)
       ).returning(_.id)
     }
     run(q)

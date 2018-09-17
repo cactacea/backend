@@ -113,8 +113,9 @@ class GroupAccountsRepositorySpec extends RepositorySpec {
     val user = signUp("GroupAccountsRepositorySpec13", "user password", "user udid")
     val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val groupId2 = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, user.id.toSessionId))
+    val reportContent = Some("report content")
     Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
-    Await.result(reportsRepository.createGroupReport(groupId, ReportType.inappropriate, user.id.toSessionId))
+    Await.result(reportsRepository.createGroupReport(groupId, ReportType.inappropriate, reportContent, user.id.toSessionId))
 
     val group1 = Await.result(groupsRepository.find(groupId, user.id.toSessionId))
     assert(group1.accountCount == 2)

@@ -6,5 +6,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Co
 case class CommentReports(id: CommentReportId,
                           commentId: CommentId,
                           by: AccountId,
-                          reportType: ReportType
-                       )
+                          reportType: ReportType,
+                          reportContent: Option[String]
+                         )

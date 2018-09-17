@@ -34,19 +34,14 @@ class AccountsService {
   }
 
   def update(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        r <- accountsRepository.updateDisplayName(accountId, displayName, sessionId)
-        _ <- actionService.displayNameUpdated(sessionId)
-      } yield (r)
-    }
+    accountsRepository.updateDisplayName(accountId, displayName, sessionId)
   }
 
   def update(accountName: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
         r <- accountsRepository.updateAccountName(accountName, sessionId)
-        _ <- actionService.accountNameUpdated(sessionId)
+        _ <- actionService.accountNameUpdated(accountName, sessionId)
       } yield (r)
     }
   }
@@ -55,7 +50,7 @@ class AccountsService {
     db.transaction {
       for {
         r <- accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId)
-        _ <- actionService.profileUpdated(sessionId)
+        _ <- actionService.profileUpdated(displayName, web, birthday, location, bio, sessionId)
       } yield (r)
     }
   }
@@ -63,8 +58,8 @@ class AccountsService {
   def updateProfileImage(profileImage: MediumId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- accountsRepository.updateProfileImage(Some(profileImage), sessionId)
-        _ <- actionService.profileImageUpdated(sessionId)
+        uri <- accountsRepository.updateProfileImage(Some(profileImage), sessionId)
+        r <- actionService.profileImageUpdated(uri, sessionId)
       } yield (r)
     }
   }
@@ -72,8 +67,8 @@ class AccountsService {
   def deleteProfileImage(sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- accountsRepository.updateProfileImage(None, sessionId)
-        _ <- actionService.profileImageUpdated(sessionId)
+        _ <- accountsRepository.updateProfileImage(None, sessionId)
+        r <- actionService.profileImageUpdated(None, sessionId)
       } yield (r)
     }
   }
@@ -91,11 +86,11 @@ class AccountsService {
     accountsRepository.findAccountStatus(accountId, sessionId)
   }
 
-  def report(accountId: AccountId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
+  def report(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- reportsRepository.createAccountReport(accountId, reportType, sessionId)
-        _ <- actionService.accountReported(accountId, reportType, sessionId)
+        r <- reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId)
+        _ <- actionService.accountReported(accountId, reportType, reportContent, sessionId)
       } yield (r)
     }
   }

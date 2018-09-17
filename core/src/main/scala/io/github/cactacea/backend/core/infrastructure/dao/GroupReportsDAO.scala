@@ -12,13 +12,14 @@ class GroupReportsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(groupId: GroupId, reportType: ReportType, sessionId: SessionId): Future[GroupReportId] = {
+  def create(groupId: GroupId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[GroupReportId] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[GroupReports].insert(
         _.groupId       -> lift(groupId),
         _.by            -> lift(by),
-        _.reportType    -> lift(reportType)
+        _.reportType    -> lift(reportType),
+        _.reportContent -> lift(reportContent)
       ).returning(_.id)
     }
     run(q)

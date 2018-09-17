@@ -23,7 +23,7 @@ class FeedsService {
     db.transaction {
       for {
         id <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
-        _ <- actionService.feedCreated(id, sessionId)
+        _ <- actionService.feedCreated(id, message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
         _ <- publishService.enqueueFeed(id)
       } yield (id)
     }
@@ -72,9 +72,9 @@ class FeedsService {
     )
   }
 
-  def report(feedId: FeedId, reportType: ReportType, sessionId: SessionId): Future[Unit] = {
+  def report(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     db.transaction {
-      reportsRepository.createFeedReport(feedId, reportType, sessionId)
+      reportsRepository.createFeedReport(feedId, reportType, reportContent, sessionId)
     }
   }
 

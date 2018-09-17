@@ -20,19 +20,14 @@ class AccountReportsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def create(accountId: AccountId, reportType: ReportType, sessionId: SessionId): Future[AccountReportId] = {
-    for {
-      id <- insert(accountId, reportType, sessionId)
-    } yield (id)
-  }
-
-  private def insert(accountId: AccountId, reportType: ReportType, sessionId: SessionId): Future[AccountReportId] = {
+  def create(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[AccountReportId] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[AccountReports].insert(
-        _.accountId   -> lift(accountId),
-        _.by          -> lift(by),
-        _.reportType  -> lift(reportType)
+        _.accountId     -> lift(accountId),
+        _.by            -> lift(by),
+        _.reportType    -> lift(reportType),
+        _.reportContent -> lift(reportContent)
       ).returning(_.id)
     }
     run(q)

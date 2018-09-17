@@ -20,7 +20,7 @@ class MessagesService {
       for {
         id <- messagesRepository.create(groupId, message, mediumId, sessionId)
         _ <- publishService.enqueueMessage(id)
-        _ <- injectionService.messageCreated(id, sessionId)
+        _ <- injectionService.messageCreated(id, groupId, message, mediumId, sessionId)
       } yield (id)
     }
   }

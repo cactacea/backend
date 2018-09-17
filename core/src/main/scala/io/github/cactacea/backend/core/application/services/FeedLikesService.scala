@@ -19,7 +19,7 @@ class FeedLikesService {
     db.transaction {
       for {
         r <- feedLikesRepository.create(feedId, sessionId)
-        _ <- actionService.feedCreated(feedId, sessionId)
+        _ <- actionService.feedLiked(feedId, sessionId)
       } yield (r)
     }
   }
@@ -28,7 +28,7 @@ class FeedLikesService {
     db.transaction {
       for {
         r <- feedLikesRepository.delete(feedId, sessionId)
-        _ <- actionService.feedDeleted(feedId, sessionId)
+        _ <- actionService.feedUnLiked(feedId, sessionId)
       } yield (r)
     }
   }

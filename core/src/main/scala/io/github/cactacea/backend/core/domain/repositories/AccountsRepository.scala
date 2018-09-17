@@ -76,15 +76,15 @@ class AccountsRepository {
     accountsDAO.updateProfile(displayName, web, birthday, location, bio, sessionId)
   }
 
-  def updateProfileImage(profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
+  def updateProfileImage(profileImage: Option[MediumId], sessionId: SessionId): Future[Option[String]] = {
     profileImage match {
       case Some(id) =>
         for {
-          m <- validationDAO.findMedium(id, sessionId)
-          _ <- accountsDAO.updateProfileImageUri(Some(m.uri), profileImage, sessionId)
-        } yield (Future.value(Unit))
+          uri <- validationDAO.findMedium(id, sessionId).map(m => Some(m.uri))
+          _ <- accountsDAO.updateProfileImageUri(uri, profileImage, sessionId)
+        } yield (uri)
       case None =>
-        accountsDAO.updateProfileImageUri(None, None, sessionId).flatMap(_ => Future.Unit)
+        accountsDAO.updateProfileImageUri(None, None, sessionId).flatMap(_ => Future.None)
     }
   }
 
