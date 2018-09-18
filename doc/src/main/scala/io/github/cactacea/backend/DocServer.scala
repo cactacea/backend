@@ -9,11 +9,12 @@ import io.github.cactacea.swagger.DocsController
 class DocServer extends BackendServer {
 
   override def configureHttp(router: HttpRouter) = {
-    super.configureHttp(router)
     router
       .filter[LoggingMDCFilter[Request, Response]]
       .filter[TraceIdMDCFilter[Request, Response]]
       .filter[CommonFilters]
+    super.configureHttp(router)
+    router
       .add[BackendDocumentsController]
       .add[DocsController]
   }
