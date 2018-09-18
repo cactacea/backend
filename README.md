@@ -8,7 +8,7 @@
 
 ## Documentation ##
 
-- [`REST API`](https://rebilly.github.io/ReDoc/?url=http://backend.cactacea.io/swagger.yaml)
+- [`REST API`](https://cactacea.github.io/backend/)
 
 ## Features ##
 
