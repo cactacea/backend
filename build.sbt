@@ -18,8 +18,15 @@ organization in ThisBuild := "io.github.cactacea.backend"
 scalaVersion in ThisBuild := "2.12.5"
 testOptions in Test in ThisBuild += Tests.Argument("-oI")
 concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
-parallelExecution in Test in ThisBuild := false
-fork in run in ThisBuild := true
+parallelExecution in ThisBuild := false
+fork in ThisBuild := true
+
+
+enablePlugins(BuildInfoPlugin)
+buildInfoPackage := "io.github.cactacea.backend"
+buildInfoKeys := Seq[BuildInfoKey](name, version)
+
+
 
 lazy val doc = (project in file("doc"))
   .settings(

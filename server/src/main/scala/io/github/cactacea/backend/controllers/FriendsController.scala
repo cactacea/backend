@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account.{DeleteFriend, GetFriends}
 import io.github.cactacea.backend.models.requests.session.GetSessionFriends
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services.{FriendRequestsService, FriendsService}
@@ -14,7 +14,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNot
 import io.swagger.models.Swagger
 
 @Singleton
-class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 

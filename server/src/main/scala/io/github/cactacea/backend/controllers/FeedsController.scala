@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account.GetLikes
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
@@ -15,7 +15,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 

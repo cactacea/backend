@@ -10,14 +10,14 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{MediumNotFound, NotAcceptableMimeTypeFound}
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.utils.media.MediaExtractor
 import io.swagger.models.Swagger
 
 @Singleton
-class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 

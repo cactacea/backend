@@ -2,23 +2,23 @@ package io.github.cactacea.backend.swagger
 
 import com.google.inject.Provides
 import io.github.cactacea.backend.utils.oauth.Permissions
-import io.github.cactacea.backend.utils.swagger.BackendSwagger
+import io.github.cactacea.backend.utils.swagger.CactaceaSwagger
 import io.github.cactacea.swagger.SwaggerModule
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In, OAuth2Definition}
 import io.swagger.models.{Info, Swagger, Tag}
 
 import scala.collection.JavaConverters._
 
-object BackendSwaggerModule extends SwaggerModule {
+object CactaceaSwaggerModule extends SwaggerModule {
 
-  val swaggerUI = BackendSwagger
+  val swaggerUI = CactaceaSwagger
 
   @Provides
   def swagger: Swagger = {
 
     val info = new Info()
       .title("Cactacea backend API")
-      .version("0.1.1-SNAPSHOT")
+      .version("0.4.4-SNAPSHOT")
       .description("Cactacea / Cactacea backend API for web and mobile applications")
 
     info.setVendorExtension("x-logo", "https://avatars3.githubusercontent.com/u/36766951?s=200&v=4")
@@ -27,9 +27,6 @@ object BackendSwaggerModule extends SwaggerModule {
     val accessCode = new OAuth2Definition().accessCode("/oauth2/authorization", "/oauth2/token")
     accessCode.setScopes(scopes.asJava)
 
-    val application = new OAuth2Definition().application("/oauth2/authorization")
-    application.setScopes(scopes.asJava)
-
     val apiKey = new ApiKeyAuthDefinition()
     apiKey.setIn(In.HEADER)
     apiKey.setName("X-API-KEY")
@@ -37,7 +34,6 @@ object BackendSwaggerModule extends SwaggerModule {
     swaggerUI.info(info)
     swaggerUI.addSecurityDefinition("api_key", apiKey)
     swaggerUI.addSecurityDefinition("accessCode", accessCode)
-    swaggerUI.addSecurityDefinition("application", application)
 
     swaggerUI.addTag(new Tag().name("Accounts").description("Manage accounts"))
     swaggerUI.addTag(new Tag().name("Blocks").description("Manage blocks"))

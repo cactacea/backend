@@ -5,6 +5,7 @@ import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.{Permission, Permissions}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.OperationNotAllowed
+import io.github.cactacea.swagger.FinatraSwagger
 import io.swagger.models.{Operation, Swagger}
 
 import scala.collection.JavaConverters._
@@ -122,6 +123,24 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
       createCallback
     } else {
       callback
+    }
+  }
+
+  private def registerOperation(path: String, method: String)(doc: Operation => Operation): Unit = {
+    FinatraSwagger
+      .convert(swagger)
+      .registerOperation(prefixRoute(path), method, doc(new Operation))
+  }
+
+
+  //exact copy from Finatra RouteDSL class (it is defined as private there)
+  private def prefixRoute(route: String): String = {
+    contextWrapper {
+      contextVar().prefix match {
+        case prefix if prefix.nonEmpty && prefix.startsWith("/") => s"$prefix$route"
+        case prefix if prefix.nonEmpty && !prefix.startsWith("/") => s"/$prefix$route"
+        case _ => route
+      }
     }
   }
 

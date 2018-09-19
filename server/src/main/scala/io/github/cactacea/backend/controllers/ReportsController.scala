@@ -7,7 +7,7 @@ import io.github.cactacea.backend.models.requests.account.PostAccountReport
 import io.github.cactacea.backend.models.requests.comment.PostCommentReport
 import io.github.cactacea.backend.models.requests.feed.PostFeedReport
 import io.github.cactacea.backend.models.requests.group.PostGroupReport
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
@@ -16,7 +16,7 @@ import io.swagger.models.Swagger
 
 
 @Singleton
-class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 
