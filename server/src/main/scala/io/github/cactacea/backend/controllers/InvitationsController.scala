@@ -46,9 +46,9 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .tag(tagName)
         .request[PostAcceptInvitation]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[AuthorityNotFoundType](AuthorityNotFound.status.code, AuthorityNotFound.message)
-        .responseWith[AccountAlreadyJoinedType](AccountAlreadyJoined.status.code, AccountAlreadyJoined.message)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[AuthorityNotFound.type]](AuthorityNotFound.status.code, AuthorityNotFound.message)
+        .responseWith[Array[AccountAlreadyJoined.type]](AccountAlreadyJoined.status.code, AccountAlreadyJoined.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PostAcceptInvitation =>
       invitationService.accept(
@@ -62,7 +62,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .tag(tagName)
         .request[PostRejectInvitation]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[GroupInvitationNotFoundType]](GroupInvitationNotFound.status.code, GroupInvitationNotFound.message)
+        .responseWith[Array[GroupInvitationNotFound.type]](GroupInvitationNotFound.status.code, GroupInvitationNotFound.message)
 
     } { request: PostRejectInvitation =>
       invitationService.reject(
@@ -76,12 +76,12 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .tag(tagName)
         .request[PostInvitationAccounts]
         .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PostInvitationAccounts =>
       invitationService.create(
         request.accountIds.toList,
-        request.groupId,
+        request.id,
         SessionContext.id
       ).map(_.map(InvitationCreated(_))).map(response.created(_))
     }
@@ -91,8 +91,8 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .tag(tagName)
         .request[PostInvitationAccount]
         .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     }  { request: PostInvitationAccount =>
       invitationService.create(

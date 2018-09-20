@@ -32,7 +32,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[GetFeeds]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetFeeds =>
       feedsService.find(
@@ -49,7 +49,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[PostFeed]
         .responseWith[FeedCreated](Status.Created.code, successfulMessage)
-        .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
+        .responseWith[Array[MediumNotFound.type]](MediumNotFound.status.code, MediumNotFound.message)
 
     } { request: PostFeed =>
       feedsService.create(
@@ -68,7 +68,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[GetFeed]
         .responseWith[Feed](Status.Ok.code, successfulMessage)
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
 
     } { request: GetFeed =>
       feedsService.find(
@@ -82,8 +82,8 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[PutFeed]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
-        .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[MediumNotFound.type]](MediumNotFound.status.code, MediumNotFound.message)
 
     } { request: PutFeed =>
       feedsService.edit(
@@ -103,7 +103,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[DeleteFeed]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
 
     } { request: DeleteFeed =>
       feedsService.delete(
@@ -117,7 +117,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[GetAccountFeeds]
         .responseWith[Feed](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetAccountFeeds =>
       feedsService.find(
@@ -135,7 +135,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[GetFeedLikes]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
 
     } { request: GetFeedLikes =>
       feedLikesService.findAccounts(
@@ -152,8 +152,8 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[PostFeedLike]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedAlreadyLikedType]](FeedAlreadyLiked.status.code, FeedAlreadyLiked.message)
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[FeedAlreadyLiked.type]](FeedAlreadyLiked.status.code, FeedAlreadyLiked.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
 
     } { request: PostFeedLike =>
       feedLikesService.create(
@@ -167,8 +167,8 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[DeleteFeedLike]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedNotLikedType]](FeedNotLiked.status.code, FeedNotLiked.message)
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[FeedNotLiked.type]](FeedNotLiked.status.code, FeedNotLiked.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
 
     } { request: DeleteFeedLike =>
       feedLikesService.delete(
@@ -183,7 +183,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .request[GetLikes]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
 
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetLikes =>
       feedLikesService.find(

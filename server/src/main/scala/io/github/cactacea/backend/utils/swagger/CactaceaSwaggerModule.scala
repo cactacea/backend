@@ -32,8 +32,8 @@ object CactaceaSwaggerModule extends SwaggerModule {
     apiKey.setName("X-API-KEY")
 
     swaggerUI.info(info)
-    swaggerUI.addSecurityDefinition("api_key", apiKey)
-    swaggerUI.addSecurityDefinition("accessCode", accessCode)
+//    swaggerUI.addSecurityDefinition("api_key", apiKey)
+//    swaggerUI.addSecurityDefinition("accessCode", accessCode)
 
     swaggerUI.addTag(new Tag().name("Accounts").description("Manage accounts"))
     swaggerUI.addTag(new Tag().name("Blocks").description("Manage blocks"))

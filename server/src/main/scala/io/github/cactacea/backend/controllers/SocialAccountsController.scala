@@ -9,7 +9,7 @@ import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.{AuthTokenGenerator, SessionContext}
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{SocialAccountNotFound, SocialAccountNotFoundType}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{SocialAccountNotFound}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -25,12 +25,12 @@ class SocialAccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix:
 
   prefix(apiPrefix) {
 
-    postWithPermission(s"/sessions/:social_account_type")() { o =>
+    postWithPermission(s"/sessions/social_accounts")() { o =>
       o.summary(s"Sign up by social accounts")
         .tag(tagName)
         .request[PostSocialAccountSignUp]
         .responseWith[Account](Status.Ok.code, successfulMessage)
-        .responseWith[Array[SocialAccountNotFoundType]](SocialAccountNotFound.status.code, SocialAccountNotFound.message)
+        .responseWith[Array[SocialAccountNotFound.type]](SocialAccountNotFound.status.code, SocialAccountNotFound.message)
 
     } { request: PostSocialAccountSignUp =>
       sessionService.signUp(
@@ -53,12 +53,12 @@ class SocialAccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix:
       })
     }
 
-    getWithPermission(s"/sessions/:social_account_type")() { o =>
+    getWithPermission(s"/sessions/social_accounts")() { o =>
       o.summary(s"Sign in by social accounts")
         .tag(tagName)
         .request[GetSocialAccountSignIn]
         .responseWith[Account](Status.Ok.code, successfulMessage)
-        .responseWith[Array[SocialAccountNotFoundType]](SocialAccountNotFound.status.code, SocialAccountNotFound.message)
+        .responseWith[Array[SocialAccountNotFound.type]](SocialAccountNotFound.status.code, SocialAccountNotFound.message)
 
     } { request: GetSocialAccountSignIn =>
       sessionService.signIn(
@@ -74,12 +74,12 @@ class SocialAccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix:
       })
     }
 
-    getWithPermission(s"/sessions/:social_account_type/issue_code")() { o =>
+    getWithPermission(s"/sessions/social_accounts/issue_code")() { o =>
       o.summary(s"Issue authentication code.")
         .tag(tagName)
         .request[GetAuthenticationCode]
         .responseWith[Account](Status.Ok.code, successfulMessage)
-        .responseWith[Array[SocialAccountNotFoundType]](SocialAccountNotFound.status.code, SocialAccountNotFound.message)
+        .responseWith[Array[SocialAccountNotFound.type]](SocialAccountNotFound.status.code, SocialAccountNotFound.message)
 
     } { request: GetAuthenticationCode =>
       sessionService.issueAuthenticationCode(

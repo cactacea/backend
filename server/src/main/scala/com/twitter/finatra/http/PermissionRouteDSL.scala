@@ -1,14 +1,11 @@
 package com.twitter.finatra.http
 
 import com.twitter.finagle.http.RouteIndex
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{Permission, Permissions}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.OperationNotAllowed
-import io.github.cactacea.swagger.FinatraSwagger
+import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.oauth.{Permission, Permissions}
 import io.swagger.models.{Operation, Swagger}
-
-import scala.collection.JavaConverters._
 
 /**
   * To work around the accessibility of RouteDSL, this class is in "com.twitter.finatra.http" package
@@ -99,16 +96,17 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
   }
 
   protected def createOperation(scopes: Seq[Permission])(doc: Operation => Operation) = {
-    val doc2: Operation => Operation = { o =>
-      val o2 = doc(o)
-      if (scopes.size > 0) {
-        o2.addSecurity("accessCode", scopes.map(_.value).asJava)
-        o2.addSecurity("application", scopes.map(_.value).asJava)
-      }
-      o2.addSecurity("api_key", List[String]().asJava)
-      o2
-    }
-    doc2
+    doc
+//    val doc2: Operation => Operation = { o =>
+//      val o2 = doc(o)
+//      if (scopes.size > 0) {
+//        o2.addSecurity("accessCode", scopes.map(_.value).asJava)
+//        o2.addSecurity("application", scopes.map(_.value).asJava)
+//      }
+//      o2.addSecurity("api_key", List[String]().asJava)
+//      o2
+//    }
+//    doc2
   }
 
   protected def createCallback[RequestType: Manifest, ResponseType: Manifest](scopes: Seq[Permission])(callback: RequestType => ResponseType) = {
@@ -126,23 +124,23 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
     }
   }
 
-  private def registerOperation(path: String, method: String)(doc: Operation => Operation): Unit = {
-    FinatraSwagger
-      .convert(swagger)
-      .registerOperation(prefixRoute(path), method, doc(new Operation))
-  }
-
-
-  //exact copy from Finatra RouteDSL class (it is defined as private there)
-  private def prefixRoute(route: String): String = {
-    contextWrapper {
-      contextVar().prefix match {
-        case prefix if prefix.nonEmpty && prefix.startsWith("/") => s"$prefix$route"
-        case prefix if prefix.nonEmpty && !prefix.startsWith("/") => s"/$prefix$route"
-        case _ => route
-      }
-    }
-  }
+//  private def registerOperation(path: String, method: String)(doc: Operation => Operation): Unit = {
+//    FinatraSwagger
+//      .convert(swagger)
+//      .registerOperation(prefixRoute(path), method, doc(new Operation))
+//  }
+//
+//
+//  //exact copy from Finatra RouteDSL class (it is defined as private there)
+//  private def prefixRoute(route: String): String = {
+//    contextWrapper {
+//      contextVar().prefix match {
+//        case prefix if prefix.nonEmpty && prefix.startsWith("/") => s"$prefix$route"
+//        case prefix if prefix.nonEmpty && !prefix.startsWith("/") => s"/$prefix$route"
+//        case _ => route
+//      }
+//    }
+//  }
 
   private def validatePermission(requireScopes: List[Permission]): Boolean = {
     if (SessionContext.permissions == Permissions.all) {

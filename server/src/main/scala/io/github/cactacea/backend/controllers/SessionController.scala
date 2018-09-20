@@ -9,7 +9,7 @@ import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.{Account, SocialAccount}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNameAlreadyUsed, AccountNameAlreadyUsedType, MediumNotFound, MediumNotFoundType}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNameAlreadyUsed,  MediumNotFound}
 import io.swagger.models.Swagger
 
 
@@ -57,7 +57,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(tagName)
         .request[PutSessionAccountName]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNameAlreadyUsedType]](AccountNameAlreadyUsed.status.code, AccountNameAlreadyUsed.message)
+        .responseWith[Array[AccountNameAlreadyUsed.type]](AccountNameAlreadyUsed.status.code, AccountNameAlreadyUsed.message)
 
 
     } { request: PutSessionAccountName =>
@@ -105,7 +105,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(tagName)
         .request[PutSessionProfileImage]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
+        .responseWith[Array[MediumNotFound.type]](MediumNotFound.status.code, MediumNotFound.message)
 
     }  { request: PutSessionProfileImage =>
       accountsService.updateProfileImage(

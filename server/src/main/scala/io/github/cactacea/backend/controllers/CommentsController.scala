@@ -31,7 +31,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[GetComments]
         .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
 
     } { request: GetComments =>
       commentsService.findAll(
@@ -48,7 +48,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .request[PostComment]
         .responseWith[CommentCreated](Status.Created.code, successfulMessage)
 
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
 
     } { request: PostComment =>
       commentsService.create(
@@ -63,7 +63,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[GetComment]
         .responseWith[Comment](Status.Ok.code, successfulMessage)
-        .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
+        .responseWith[Array[CommentNotFound.type]](CommentNotFound.status.code, CommentNotFound.message)
 
     } { request: GetComment =>
       commentsService.find(
@@ -77,7 +77,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[DeleteComment]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
+        .responseWith[Array[CommentNotFound.type]](CommentNotFound.status.code, CommentNotFound.message)
 
     } { request: DeleteComment =>
       commentsService.delete(
@@ -91,7 +91,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[GetCommentLikes]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
+        .responseWith[Array[CommentNotFound.type]](CommentNotFound.status.code, CommentNotFound.message)
 
     } { request: GetCommentLikes =>
       commentLikesService.findAccounts(
@@ -108,8 +108,8 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[PostCommentLike]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[CommentAlreadyLikedType]](CommentAlreadyLiked.status.code, CommentAlreadyLiked.message)
-        .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
+        .responseWith[Array[CommentAlreadyLiked.type]](CommentAlreadyLiked.status.code, CommentAlreadyLiked.message)
+        .responseWith[Array[CommentNotFound.type]](CommentNotFound.status.code, CommentNotFound.message)
 
     } { request: PostCommentLike =>
       commentLikesService.create(
@@ -123,8 +123,8 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[DeleteCommentLike]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[CommentNotLikedType]](CommentNotLiked.status.code, CommentNotLiked.message)
-        .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
+        .responseWith[Array[CommentNotLiked.type]](CommentNotLiked.status.code, CommentNotLiked.message)
+        .responseWith[Array[CommentNotFound.type]](CommentNotFound.status.code, CommentNotFound.message)
 
     } { request: DeleteCommentLike =>
       commentLikesService.delete(

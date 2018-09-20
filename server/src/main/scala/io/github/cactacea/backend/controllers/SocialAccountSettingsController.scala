@@ -8,7 +8,7 @@ import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{SocialAccountAlreadyConnected, SocialAccountAlreadyConnectedType, SocialAccountNotConnected, SocialAccountNotConnectedType}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{SocialAccountAlreadyConnected, SocialAccountNotConnected}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -22,12 +22,12 @@ class SocialAccountSettingsController @Inject()(@Flag("cactacea.api.prefix") api
 
   prefix(apiPrefix) {
 
-    postWithPermission(s"/social_accounts/:social_account_type")(Permissions.basic) { o =>
+    postWithPermission(s"/social_accounts")(Permissions.basic) { o =>
       o.summary(s"Connect to social account")
         .tag(tagName)
         .request[PostSocialAccount]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[SocialAccountAlreadyConnectedType]](SocialAccountAlreadyConnected.status.code, SocialAccountAlreadyConnected.message)
+        .responseWith[Array[SocialAccountAlreadyConnected.type]](SocialAccountAlreadyConnected.status.code, SocialAccountAlreadyConnected.message)
 
     } { request: PostSocialAccount =>
       settingsService.connectSocialAccount(
@@ -38,11 +38,11 @@ class SocialAccountSettingsController @Inject()(@Flag("cactacea.api.prefix") api
       ).map(_ => response.noContent)
     }
 
-    deleteWithPermission(s"/social_accounts/:social_account_type")(Permissions.basic) { o =>
+    deleteWithPermission(s"/social_accounts")(Permissions.basic) { o =>
       o.summary(s"Disconnect from social account")
         .tag(tagName)
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[SocialAccountNotConnectedType]](SocialAccountNotConnected.status.code, SocialAccountNotConnected.message)
+        .responseWith[Array[SocialAccountNotConnected.type]](SocialAccountNotConnected.status.code, SocialAccountNotConnected.message)
 
     } { request: DeleteSocialAccount =>
       settingsService.disconnectSocialAccount(

@@ -50,7 +50,7 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .request[PostAcceptFriendRequest]
         .responseWith(Status.NoContent.code, successfulMessage)
 
-        .responseWith[Array[FriendRequestNotFoundType]](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
+        .responseWith[Array[FriendRequestNotFound.type]](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
 
     } { request: PostAcceptFriendRequest =>
       friendRequestsService.accept(
@@ -65,7 +65,7 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .request[PostRejectFriendRequest]
         .responseWith(Status.NoContent.code, successfulMessage)
 
-        .responseWith[Array[FriendRequestNotFoundType]](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
+        .responseWith[Array[FriendRequestNotFound.type]](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
 
     } { request: PostRejectFriendRequest =>
       friendRequestsService.reject(
@@ -80,8 +80,8 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .request[PostFriendRequest]
         .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
 
-        .responseWith[AccountAlreadyRequestedType](AccountAlreadyRequested.status.code, AccountAlreadyRequested.message)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountAlreadyRequested.type]](AccountAlreadyRequested.status.code, AccountAlreadyRequested.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: PostFriendRequest =>
       friendRequestsService.create(
@@ -96,8 +96,8 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .request[DeleteFriendRequest]
         .responseWith(Status.NoContent.code, successfulMessage)
 
-        .responseWith[FriendRequestNotFoundType](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[FriendRequestNotFound.type]](FriendRequestNotFound.status.code, FriendRequestNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: DeleteFriendRequest =>
       friendRequestsService.delete(

@@ -31,7 +31,7 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .request[GetMessages]
         .responseWith[Message](Status.Ok.code, successfulMessage)
 
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: GetMessages =>
       messagesService.find(
@@ -62,9 +62,9 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[PostMessage]
         .responseWith[MessageCreated](Status.Created.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
-        .responseWith[Array[AccountNotJoinedType]](AccountNotJoined.status.code, AccountNotJoined.message)
-        .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[AccountNotJoined.type]](AccountNotJoined.status.code, AccountNotJoined.message)
+        .responseWith[Array[MediumNotFound.type]](MediumNotFound.status.code, MediumNotFound.message)
 
     } { request: PostMessage =>
       messagesService.create(
