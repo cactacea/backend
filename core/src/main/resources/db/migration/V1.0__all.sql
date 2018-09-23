@@ -687,6 +687,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`relationships` (
   `follower` TINYINT NOT NULL DEFAULT 0,
   `in_progress` TINYINT NOT NULL DEFAULT 0,
   `followed_at` BIGINT NOT NULL DEFAULT 0,
+  `being_followed_at` BIGINT NOT NULL DEFAULT 0,
   `muted_at` BIGINT NOT NULL DEFAULT 0,
   `friended_at` BIGINT NOT NULL DEFAULT 0,
   UNIQUE INDEX `unique` (`account_id` ASC, `by` ASC),

@@ -3,11 +3,12 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Relationships}
 
 @Singleton
-class FollowersDAO @Inject()(db: DatabaseService) {
+class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
 
@@ -31,13 +32,15 @@ class FollowersDAO @Inject()(db: DatabaseService) {
   }
 
   private def _insertFollower(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    val beFollowedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.follower          -> true
+          _.follower          -> true,
+          _.beingFollowedAt      -> lift(beFollowedAt)
         )
     }
     run(q).map(_ => Unit)
@@ -66,13 +69,15 @@ class FollowersDAO @Inject()(db: DatabaseService) {
   }
 
   private def _updateFollower(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+    val beFollowedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.follower        -> true
+          _.follower        -> true,
+            _.beingFollowedAt  -> lift(beFollowedAt)
         )
     }
     run(q).map(_ == 1)
@@ -104,7 +109,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(p => (p._3.followedAt, p._1.id))(Ord(Ord.desc, Ord.desc))
+        .sortBy(p => (p._3.beingFollowedAt, p._1.id))(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }
@@ -130,7 +135,7 @@ class FollowersDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(p => (p._3.followedAt, p._1.id))(Ord(Ord.desc, Ord.desc))
+        .sortBy(p => (p._3.beingFollowedAt, p._1.id))(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }

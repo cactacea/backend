@@ -12,6 +12,7 @@ case class Relationships(
                           friend: Boolean,
                           inProgress: Boolean,
                           followedAt: Long,
+                          beingFollowedAt: Long,
                           mutedAt: Long,
                           friendedAt: Long
                       )
