@@ -1,6 +1,5 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
-
 lazy val versions = new {
   val cactacea = "0.5.0-SNAPSHOT"
   val finagle = "18.5.0"
@@ -27,7 +26,10 @@ buildInfoKeys := Seq[BuildInfoKey](name, version)
 
 
 lazy val root = (project in file("."))
-  .aggregate(doc, externals)
+  .settings(migrationSetting)
+  .aggregate(server, core, externals)
+  .enablePlugins(FlywayPlugin)
+
 
 lazy val doc = (project in file("doc"))
   .settings(
@@ -53,7 +55,8 @@ lazy val server = (project in file("server"))
   )
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.finagle" %% "finagle-oauth2" % "18.4.0"
+      "com.github.finagle" %% "finagle-oauth2" % "18.4.0",
+      "mysql" % "mysql-connector-java" % "6.0.6"
     )
   )
   .settings(commonResolverSetting)
@@ -78,8 +81,6 @@ lazy val core = (project in file("core"))
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
   .dependsOn(finagger)
-  .settings(migrationSetting)
-  .enablePlugins(FlywayPlugin)
 
 
 lazy val externals = (project in file("externals"))
@@ -117,7 +118,6 @@ lazy val coreLibrarySetting = Seq(
     "io.getquill" %% "quill-finagle-mysql" % "2.5.4",
     "io.jsonwebtoken" % "jjwt" % "0.9.0",
     "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
-    "mysql" % "mysql-connector-java" % "6.0.6",
     "org.flywaydb" % "flyway-core" % "5.0.7",
     "com.jsuereth" %% "scala-arm" % "2.0",
     "com.roundeights" %% "hasher" % "1.2.0",
@@ -164,6 +164,7 @@ lazy val commonResolverSetting = Seq(
   )
 )
 
+
 lazy val testDBUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
 lazy val testDBPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
 lazy val testDBDatabase = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
@@ -184,7 +185,10 @@ lazy val migrationSetting = Seq(
   },
   (testQuick in Test) := {
     (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
-  }
+  },
+  libraryDependencies ++= Seq(
+    "mysql" % "mysql-connector-java" % "6.0.6"
+  )
 )
 
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
