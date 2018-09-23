@@ -26,6 +26,8 @@ buildInfoPackage := "io.github.cactacea.backend"
 buildInfoKeys := Seq[BuildInfoKey](name, version)
 
 
+lazy val root = (project in file("."))
+  .aggregate(doc)
 
 lazy val doc = (project in file("doc"))
   .settings(
