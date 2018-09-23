@@ -7,7 +7,7 @@ branches:
 scala:
   - 2.12.5
 jdk:
-  - oraclejdk8
+  - oraclejdk10
 
 sudo: required
 
