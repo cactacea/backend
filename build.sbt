@@ -27,7 +27,7 @@ buildInfoKeys := Seq[BuildInfoKey](name, version)
 
 
 lazy val root = (project in file("."))
-  .aggregate(doc)
+  .aggregate(doc, externals)
 
 lazy val doc = (project in file("doc"))
   .settings(
@@ -43,7 +43,6 @@ lazy val doc = (project in file("doc"))
     dockerRepository := Some("cactacea")
   )
   .dependsOn(server % "compile->compile;test->test")
-  .dependsOn(externals)
   .dependsOn(finagger)
   .enablePlugins(JavaAppPackaging)
 
