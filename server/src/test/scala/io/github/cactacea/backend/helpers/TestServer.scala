@@ -10,6 +10,8 @@ import io.github.cactacea.backend.utils.filters._
 
 class TestServer extends BaseServer {
 
+  flag(name = "cactacea.api.prefix", default = "/", help = "Cactacea Api endpoint prefix")
+
   override def configureHttp(router: HttpRouter) = {
     router
       .filter[LoggingMDCFilter[Request, Response]]

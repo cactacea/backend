@@ -60,8 +60,6 @@ lazy val server = (project in file("server"))
   .settings(coreLibrarySetting)
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
-//  .settings(migrationSetting)
-//  .enablePlugins(FlywayPlugin)
   .dependsOn(core % "compile->compile;test->test")
 
 lazy val core = (project in file("core"))
