@@ -5,8 +5,8 @@ import com.twitter.finatra.validation.Max
 import io.swagger.annotations.ApiModelProperty
 
 case class GetSessionFriends(
-                            @QueryParam since: Option[Long],
                             @ApiModelProperty(value = "Filters friends which started on since or later.")
+                            @QueryParam since: Option[Long],
 
                             @ApiModelProperty(value = "The offset of friends. By default the value is 0.")
                             @QueryParam offset: Option[Int],

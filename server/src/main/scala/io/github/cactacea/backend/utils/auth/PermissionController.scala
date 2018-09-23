@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.utils.swagger
+package io.github.cactacea.backend.utils.auth
 
 import com.twitter.finatra.http.{Controller, PermissionRouteDSL}
 

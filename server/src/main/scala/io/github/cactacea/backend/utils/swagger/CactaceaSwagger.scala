@@ -1,36 +1,34 @@
 package io.github.cactacea.backend.utils.swagger
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
-import io.github.cactacea.backend.core.infrastructure.identifiers._
+import io.cactacea.finagger.{ParadoxicalWrappedValueModelResolver, Resolvers, WrappedValueModelResolver}
+import io.swagger.converter.{ModelConverter, ModelConverters}
 import io.swagger.models.Swagger
-import io.swagger.util.{Json, PrimitiveType}
+import io.swagger.scala.converter.SwaggerScalaModelConverter
+import io.swagger.util.Json
 
 object CactaceaSwagger extends Swagger {
-  Json.mapper().setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy)
 
-  val map: Map[Class[_], PrimitiveType] = Map(
-    classOf[AccountId]          -> PrimitiveType.LONG,
-    classOf[AccountGroupId]     -> PrimitiveType.LONG,
-    classOf[AccountId]          -> PrimitiveType.LONG,
-    classOf[AccountReportId]    -> PrimitiveType.LONG,
-    classOf[BlockId]            -> PrimitiveType.LONG,
-    classOf[CommentId]          -> PrimitiveType.LONG,
-    classOf[CommentLikeId]      -> PrimitiveType.LONG,
-    classOf[CommentReportId]    -> PrimitiveType.LONG,
-    classOf[DeviceId]           -> PrimitiveType.LONG,
-    classOf[FeedId]             -> PrimitiveType.LONG,
-    classOf[FeedLikeId]         -> PrimitiveType.LONG,
-    classOf[FeedReportId]       -> PrimitiveType.LONG,
-    classOf[FriendRequestId]    -> PrimitiveType.LONG,
-    classOf[GroupId]            -> PrimitiveType.LONG,
-    classOf[GroupInvitationId]  -> PrimitiveType.LONG,
-    classOf[GroupReportId]      -> PrimitiveType.LONG,
-    classOf[MediumId]           -> PrimitiveType.LONG,
-    classOf[MessageId]          -> PrimitiveType.LONG,
-    classOf[NotificationId]     -> PrimitiveType.LONG,
-    classOf[SessionId]          -> PrimitiveType.LONG,
-    classOf[StampId]            -> PrimitiveType.LONG,
-  )
-//  SwaggerTypeRegister.setExternalTypes(map.asJava)
+  swaggerConverters.reverse.foreach(ModelConverters.getInstance().addConverter)
+
+  /**
+    * Ordered stack of converters.  First element has highest priority
+    */
+  protected def swaggerConverters: List[ModelConverter] = List(
+    new Resolvers.ParameterzedTypeOption,
+    new SwaggerScalaModelConverter,
+    new ParadoxicalWrappedValueModelResolver,
+    new WrappedValueModelResolver
+  ) ++ swaggerTypeOverrides
+
+  /**
+    * Custom type overrides to hook in for swager
+    */
+  protected lazy val swaggerTypeOverrides: List[ModelConverter] = List()
+
+  /**
+    * Model property name
+    */
+  Json.mapper().setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy)
 
 }

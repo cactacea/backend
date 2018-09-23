@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.swagger
 
-import io.github.cactacea.backend.utils.swagger.PermissionController
-import io.github.cactacea.swagger.SwaggerController
+import io.cactacea.finagger.SwaggerController
+import io.github.cactacea.backend.utils.auth.PermissionController
 
 trait CactaceaDocController extends SwaggerController with PermissionController {
 

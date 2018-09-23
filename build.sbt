@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.4.8-SNAPSHOT"
+  val cactacea = "0.5.0-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -11,7 +11,6 @@ lazy val versions = new {
   val specs2 = "3.8.6"
   val aws = "1.11.289"
 }
-
 
 version in ThisBuild      := versions.cactacea
 organization in ThisBuild := "io.github.cactacea.backend"
