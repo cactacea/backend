@@ -95,7 +95,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
         .map({ case ((b, a), r) => (a, r, b)})
-        .sortBy(_._3.id)(Ord.desc)
+        .sortBy( r => (r._3.blockedAt, r._1.id) )(Ord(Ord.desc, Ord.desc))
         .drop(lift(o))
         .take(lift(c))
     }
