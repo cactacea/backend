@@ -1,5 +1,6 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
+
 lazy val versions = new {
   val cactacea = "0.5.0-SNAPSHOT"
   val finagle = "18.5.0"
@@ -9,12 +10,11 @@ lazy val versions = new {
   val scalaCheck = "1.13.4"
   val scalaTest = "3.0.4"
   val specs2 = "3.8.6"
-  val aws = "1.11.289"
 }
 
 version in ThisBuild      := versions.cactacea
 organization in ThisBuild := "io.github.cactacea.backend"
-scalaVersion in ThisBuild := "2.12.5"
+scalaVersion in ThisBuild := "2.12.6"
 testOptions in Test in ThisBuild += Tests.Argument("-oI")
 concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
 parallelExecution in ThisBuild := false
