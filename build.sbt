@@ -36,7 +36,7 @@ lazy val doc = (project in file("doc"))
     version in Docker := "latest",
     maintainer in Docker := "Cactacea",
     packageName in Docker := "backend",
-    dockerBaseImage := "robsonoduarte/8-jre-alpine-bash",
+    dockerBaseImage := "adoptopenjdk/openjdk10",
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea")
   )
