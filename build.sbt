@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.5.0-SNAPSHOT"
+  val cactacea = "0.5.1-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -26,9 +26,10 @@ buildInfoKeys := Seq[BuildInfoKey](name, version)
 
 
 lazy val root = (project in file("."))
-  .settings(migrationSetting)
+  .settings(
+    name := "backend"
+  )
   .aggregate(server, core, externals)
-  .enablePlugins(FlywayPlugin)
 
 
 lazy val doc = (project in file("doc"))
@@ -64,6 +65,8 @@ lazy val server = (project in file("server"))
   .settings(coreLibrarySetting)
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
+  .settings(migrationSetting)
+  .enablePlugins(FlywayPlugin)
   .dependsOn(core % "compile->compile;test->test")
 
 lazy val core = (project in file("core"))
@@ -80,6 +83,8 @@ lazy val core = (project in file("core"))
   .settings(coreLibrarySetting)
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
+  .settings(migrationSetting)
+  .enablePlugins(FlywayPlugin)
   .dependsOn(finagger)
 
 
@@ -192,3 +197,4 @@ lazy val migrationSetting = Seq(
 )
 
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
+
