@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.3.3-SNAPSHOT"
+  val cactacea = "0.5.1-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -9,17 +9,30 @@ lazy val versions = new {
   val scalaCheck = "1.13.4"
   val scalaTest = "3.0.4"
   val specs2 = "3.8.6"
-  val aws = "1.11.289"
 }
-
 
 version in ThisBuild      := versions.cactacea
 organization in ThisBuild := "io.github.cactacea.backend"
-scalaVersion in ThisBuild := "2.12.5"
-testOptions in ThisBuild += Tests.Argument("-oI")
+scalaVersion in ThisBuild := "2.12.6"
+testOptions in Test in ThisBuild += Tests.Argument("-oI")
 concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
 parallelExecution in ThisBuild := false
 fork in ThisBuild := true
+
+
+enablePlugins(BuildInfoPlugin)
+buildInfoPackage := "io.github.cactacea.backend"
+buildInfoKeys := Seq[BuildInfoKey](name, version)
+
+
+lazy val root = (project in file("."))
+  .settings(
+    name := "backend"
+  )
+  .aggregate(server, core, externals)
+  .settings(migrationSetting)
+  .enablePlugins(FlywayPlugin)
+
 
 lazy val doc = (project in file("doc"))
   .settings(
@@ -30,12 +43,11 @@ lazy val doc = (project in file("doc"))
     version in Docker := "latest",
     maintainer in Docker := "Cactacea",
     packageName in Docker := "backend",
-    dockerBaseImage := "robsonoduarte/8-jre-alpine-bash",
+    dockerBaseImage := "adoptopenjdk/openjdk10",
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea")
   )
   .dependsOn(server % "compile->compile;test->test")
-  .dependsOn(externals)
   .dependsOn(finagger)
   .enablePlugins(JavaAppPackaging)
 
@@ -46,7 +58,8 @@ lazy val server = (project in file("server"))
   )
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.finagle" %% "finagle-oauth2" % "18.4.0"
+      "com.github.finagle" %% "finagle-oauth2" % "18.4.0",
+      "mysql" % "mysql-connector-java" % "6.0.6"
     )
   )
   .settings(commonResolverSetting)
@@ -54,8 +67,7 @@ lazy val server = (project in file("server"))
   .settings(coreLibrarySetting)
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
-//  .settings(migrationSetting)
-//  .enablePlugins(FlywayPlugin)
+  .enablePlugins(FlywayPlugin)
   .dependsOn(core % "compile->compile;test->test")
 
 lazy val core = (project in file("core"))
@@ -73,8 +85,6 @@ lazy val core = (project in file("core"))
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
   .dependsOn(finagger)
-  .settings(migrationSetting)
-  .enablePlugins(FlywayPlugin)
 
 
 lazy val externals = (project in file("externals"))
@@ -112,7 +122,6 @@ lazy val coreLibrarySetting = Seq(
     "io.getquill" %% "quill-finagle-mysql" % "2.5.4",
     "io.jsonwebtoken" % "jjwt" % "0.9.0",
     "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
-    "mysql" % "mysql-connector-java" % "6.0.6",
     "org.flywaydb" % "flyway-core" % "5.0.7",
     "com.jsuereth" %% "scala-arm" % "2.0",
     "com.roundeights" %% "hasher" % "1.2.0",
@@ -159,6 +168,7 @@ lazy val commonResolverSetting = Seq(
   )
 )
 
+
 lazy val testDBUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
 lazy val testDBPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
 lazy val testDBDatabase = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
@@ -179,7 +189,11 @@ lazy val migrationSetting = Seq(
   },
   (testQuick in Test) := {
     (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
-  }
+  },
+  libraryDependencies ++= Seq(
+    "mysql" % "mysql-connector-java" % "6.0.6"
+  )
 )
 
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
+

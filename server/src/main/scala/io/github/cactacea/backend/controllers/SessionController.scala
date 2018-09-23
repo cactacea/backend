@@ -4,17 +4,17 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.session.{PutSessionAccountName, PutSessionPassword, PutSessionProfile, PutSessionProfileImage}
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.{Account, SocialAccount}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNameAlreadyUsed, AccountNameAlreadyUsedType, MediumNotFound, MediumNotFoundType}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNameAlreadyUsed,  MediumNotFound}
 import io.swagger.models.Swagger
 
 
 @Singleton
-class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 
@@ -57,7 +57,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(tagName)
         .request[PutSessionAccountName]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNameAlreadyUsedType]](AccountNameAlreadyUsed.status.code, AccountNameAlreadyUsed.message)
+        .responseWith[Array[AccountNameAlreadyUsed.type]](AccountNameAlreadyUsed.status.code, AccountNameAlreadyUsed.message)
 
 
     } { request: PutSessionAccountName =>
@@ -105,7 +105,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(tagName)
         .request[PutSessionProfileImage]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[MediumNotFoundType]](MediumNotFound.status.code, MediumNotFound.message)
+        .responseWith[Array[MediumNotFound.type]](MediumNotFound.status.code, MediumNotFound.message)
 
     }  { request: PutSessionProfileImage =>
       accountsService.updateProfileImage(

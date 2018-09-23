@@ -7,7 +7,7 @@ import io.github.cactacea.backend.models.requests.account.PostAccountReport
 import io.github.cactacea.backend.models.requests.comment.PostCommentReport
 import io.github.cactacea.backend.models.requests.feed.PostFeedReport
 import io.github.cactacea.backend.models.requests.group.PostGroupReport
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
@@ -16,7 +16,7 @@ import io.swagger.models.Swagger
 
 
 @Singleton
-class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 
@@ -35,7 +35,7 @@ class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(tagName)
         .request[PostAccountReport]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: PostAccountReport =>
       accountsService.report(
@@ -52,7 +52,7 @@ class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(tagName)
         .request[PostFeedReport]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedNotFoundType]](FeedNotFound.status.code, FeedNotFound.message)
+        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
 
     } { request: PostFeedReport =>
       feedsService.report(
@@ -69,7 +69,7 @@ class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(tagName)
         .request[PostCommentReport]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[CommentNotFoundType]](CommentNotFound.status.code, CommentNotFound.message)
+        .responseWith[Array[CommentNotFound.type]](CommentNotFound.status.code, CommentNotFound.message)
 
     } { request: PostCommentReport =>
       commentsService.report(
@@ -86,7 +86,7 @@ class ReportsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(tagName)
         .request[PostGroupReport]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PostGroupReport =>
       groupsService.report(

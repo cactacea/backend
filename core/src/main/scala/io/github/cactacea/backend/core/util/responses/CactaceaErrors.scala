@@ -4,51 +4,6 @@ import io.swagger.annotations.ApiModelProperty
 
 object CactaceaErrors {
 
-  type AccountNotFoundType = AccountNotFound.type
-  type CommentNotFoundType = CommentNotFound.type
-  type MediumNotFoundType = MediumNotFound.type
-  type FeedNotFoundType = FeedNotFound.type
-  type FriendRequestNotFoundType = FriendRequestNotFound.type
-  type GroupNotFoundType = GroupNotFound.type
-  type GroupInvitationNotFoundType = GroupInvitationNotFound.type
-  type SocialAccountNotFoundType = SocialAccountNotFound.type
-  type AccountAlreadyFollowedType = AccountAlreadyFollowed.type
-  type AccountNotFollowedType = AccountNotFollowed.type
-  type AccountAlreadyBlockedType = AccountAlreadyBlocked.type
-  type AccountNotBlockedType = AccountNotBlocked.type
-  type AccountAlreadyMutedType = AccountAlreadyMuted.type
-  type AccountNotMutedType = AccountNotMuted.type
-  type AccountAlreadyFriendType = AccountAlreadyFriend.type
-  type AccountNotFriendType = AccountNotFriend.type
-  type AccountAlreadyInvitedType = AccountAlreadyInvited.type
-  type AccountAlreadyRequestedType = AccountAlreadyRequested.type
-  type AccountAlreadyJoinedType = AccountAlreadyJoined.type
-  type AccountNotJoinedType = AccountNotJoined.type
-  type AccountNotSignedUpType = AccountNotSignedUp.type
-  type AccountDeletedType = AccountDeleted.type
-  type AccountTerminatedType = AccountTerminated.type
-  type OperationNotAllowedType = OperationNotAllowed.type
-  type CommentAlreadyLikedType = CommentAlreadyLiked.type
-  type CommentNotLikedType = CommentNotLiked.type
-  type FeedAlreadyLikedType = FeedAlreadyLiked.type
-  type FeedNotLikedType = FeedNotLiked.type
-  type SocialAccountAlreadyConnectedType = SocialAccountAlreadyConnected.type
-  type SocialAccountNotConnectedType = SocialAccountNotConnected.type
-  type FileUploadErrorOccurredType = FileUploadErrorOccurred.type
-  type AuthorityNotFoundType = AuthorityNotFound.type
-  type GroupIsInvitationOnlyType = GroupIsInvitationOnly.type
-  type DirectMessageGroupCanNotUpdatedType = DirectMessageGroupCanNotUpdated.type
-  type APIKeyIsInValidType = APIKeyIsInValid.type
-  type AccountNameAlreadyUsedType = AccountNameAlreadyUsed.type
-  type CanNotSpecifyMyselfType = CanNotSpecifyMyself.type
-  type PasswordNotMatchedType = PasswordNotMatched.type
-  type InvalidAccountNameOrPasswordType = InvalidAccountNameOrPassword.type
-  type GroupAccountsCountLimitErrorType = GroupAccountsCountLimitError.type
-  type GroupAlreadyHiddenType = GroupAlreadyHidden.type
-  type GroupNotHiddenType = GroupNotHidden.type
-  type SessionNotAuthorizedType = SessionNotAuthorized.type
-  type SessionTimeoutType = SessionTimeout.type
-
   final val c40400 = "40400"
   final val c40401 = "40401"
   final val c40402 = "40402"
@@ -57,28 +12,28 @@ object CactaceaErrors {
   final val c40405 = "40405"
   final val c40406 = "40406"
   final val c40407 = "40407"
-  final val c40000 = "40000"
-  final val c40001 = "40001"
-  final val c40002 = "40002"
-  final val c40003 = "40003"
-  final val c40004 = "40004"
-  final val c40005 = "40005"
-  final val c40006 = "40006"
-  final val c40007 = "40007"
-  final val c40008 = "40008"
-  final val c40009 = "40009"
-  final val c40010 = "40010"
-  final val c40011 = "40011"
+  final val c30400 = "40000"
+  final val c30401 = "40001"
+  final val c30402 = "40002"
+  final val c30403 = "40003"
+  final val c30404 = "40004"
+  final val c30405 = "40005"
+  final val c30406 = "40006"
+  final val c30407 = "40007"
+  final val c30408 = "40008"
+  final val c30409 = "40009"
+  final val c30410 = "40010"
+  final val c30411 = "40011"
   final val c40012 = "40012"
   final val c40013 = "40013"
   final val c40014 = "40014"
   final val c40015 = "40015"
-  final val c40016 = "40016"
-  final val c40017 = "40017"
-  final val c40018 = "40018"
-  final val c40019 = "40019"
-  final val c40020 = "40020"
-  final val c40021 = "40021"
+  final val c30416 = "40016"
+  final val c30417 = "40017"
+  final val c30418 = "40018"
+  final val c30419 = "40019"
+  final val c30420 = "40020"
+  final val c30421 = "40021"
   final val c40022 = "40022"
   final val c40023 = "40023"
   final val c40024 = "40024"
@@ -89,8 +44,8 @@ object CactaceaErrors {
   final val c40029 = "40029"
   final val c40030 = "40030"
   final val c40031 = "40031"
-  final val c40032 = "40032"
-  final val c40033 = "40033"
+  final val c30432 = "40032"
+  final val c30433 = "40033"
   final val c40034 = "40034"
   final val c40600 = "40100"
   final val c40601 = "40101"
@@ -104,28 +59,28 @@ object CactaceaErrors {
   final val m40405 = "Group not found."
   final val m40406 = "Group invitation not found."
   final val m40407 = "Social account not found."
-  final val m40000 = "Account already follow."
-  final val m40001 = "Account not follow."
-  final val m40002 = "Account already blocked."
-  final val m40003 = "Account not blocked."
-  final val m40004 = "Account already muted."
-  final val m40005 = "Account not muted."
-  final val m40006 = "Account already friend."
-  final val m40007 = "Account not friend."
-  final val m40008 = "Account already invitationd."
-  final val m40009 = "Account already requested."
-  final val m40010 = "Account already joined."
-  final val m40011 = "Account not joined."
+  final val m30400 = "Account already follow."
+  final val m30401 = "Account not follow."
+  final val m30402 = "Account already blocked."
+  final val m30403 = "Account not blocked."
+  final val m30404 = "Account already muted."
+  final val m30405 = "Account not muted."
+  final val m30406 = "Account already friend."
+  final val m30407 = "Account not friend."
+  final val m30408 = "Account already invitationd."
+  final val m30409 = "Account already requested."
+  final val m30410 = "Account already joined."
+  final val m30411 = "Account not joined."
   final val m40012 = "Account not signed up."
   final val m40013 = "Account deleted."
   final val m40014 = "Account terminated."
   final val m40015 = "Operation not allowed."
-  final val m40016 = "Comment already liked."
-  final val m40017 = "Comment not liked."
-  final val m40018 = "Feed already liked."
-  final val m40019 = "Feed not liked."
-  final val m40020 = "Social Account already connected."
-  final val m40021 = "Social Account not connected"
+  final val m30416 = "Comment already liked."
+  final val m30417 = "Comment not liked."
+  final val m30418 = "Feed already liked."
+  final val m30419 = "Feed not liked."
+  final val m30420 = "Social Account already connected."
+  final val m30421 = "Social Account not connected"
   final val m40022 = "File upload error occurred."
   final val m40023 = "Authority not found."
   final val m40024 = "Group is invitation only."
@@ -136,116 +91,119 @@ object CactaceaErrors {
   final val m40029 = "Password not matched."
   final val m40030 = "Invalid Account name or password."
   final val m40031 = "Maximum number of group accounts reached."
-  final val m40032 = "Group already hidden."
-  final val m40033 = "Group not hidden."
+  final val m30432 = "Group already hidden."
+  final val m30433 = "Group not hidden."
   final val m40034 = "Not acceptable mime type found."
   final val m40600 = "Session not authorized."
   final val m40601 = "Access token expired."
   final val m40080 = "Validation error message is here."
 
-  // 404 Not Found
+  // 304 Not Modified
 
-  final object AccountNotFound extends NotFound {
-    @ApiModelProperty(example = c40400)  override val code: Int =       c40400.toInt
-    @ApiModelProperty(example = m40400)  override val message: String = m40400
+  final object AccountAlreadyFollowed extends NotModified {
+    @ApiModelProperty(example = c30400)  override val code: Int =       c30400.toInt
+    @ApiModelProperty(example = m30400)  override val message: String = m30400
   }
 
-  final object CommentNotFound extends NotFound {
-    @ApiModelProperty(example = c40401)  override val code: Int =       c40401.toInt
-    @ApiModelProperty(example = m40401)  override val message: String = m40401
+  final object AccountNotFollowed extends NotModified {
+    @ApiModelProperty(example = c30401)  override val code: Int =       c30401.toInt
+    @ApiModelProperty(example = m30401)  override val message: String = m30401
   }
 
-  final object MediumNotFound extends NotFound {
-    @ApiModelProperty(example = c40402)  override val code: Int =       c40402.toInt
-    @ApiModelProperty(example = m40402)  override val message: String = m40402
+  final object AccountAlreadyBlocked extends NotModified {
+    @ApiModelProperty(example = c30402)  override val code: Int =       c30402.toInt
+    @ApiModelProperty(example = m30402)  override val message: String = m30402
   }
 
-  final object FeedNotFound extends NotFound {
-    @ApiModelProperty(example = c40403)  override val code: Int =       c40403.toInt
-    @ApiModelProperty(example = m40403)  override val message: String = m40403
+  final object AccountNotBlocked extends NotModified {
+    @ApiModelProperty(example = c30403)  override val code: Int =       c30403.toInt
+    @ApiModelProperty(example = m30403)  override val message: String = m30403
   }
 
-  final object FriendRequestNotFound extends NotFound {
-    @ApiModelProperty(example = c40404)  override val code: Int =       c40404.toInt
-    @ApiModelProperty(example = m40404)  override val message: String = m40404
+  final object AccountAlreadyMuted extends NotModified {
+    @ApiModelProperty(example = c30404)  override val code: Int =       c30404.toInt
+    @ApiModelProperty(example = m30404)  override val message: String = m30404
   }
 
-  final object GroupNotFound extends NotFound {
-    @ApiModelProperty(example = c40405)  override val code: Int =       c40405.toInt
-    @ApiModelProperty(example = m40405)  override val message: String = m40405
+  final object AccountNotMuted extends NotModified {
+    @ApiModelProperty(example = c30405)  override val code: Int =       c30405.toInt
+    @ApiModelProperty(example = m30405)  override val message: String = m30405
   }
 
-  final object GroupInvitationNotFound extends NotFound {
-    @ApiModelProperty(example = c40406)  override val code: Int =       c40406.toInt
-    @ApiModelProperty(example = m40406)  override val message: String = m40406
+  final object AccountAlreadyFriend extends NotModified {
+    @ApiModelProperty(example = c30406)  override val code: Int =       c30406.toInt
+    @ApiModelProperty(example = m30406)  override val message: String = m30406
   }
 
-  final object SocialAccountNotFound extends NotFound {
-    @ApiModelProperty(example = c40407)  override val code: Int =       c40407.toInt
-    @ApiModelProperty(example = m40407)  override val message: String = m40407
+  final object AccountNotFriend extends NotModified {
+    @ApiModelProperty(example = c30407)  override val code: Int =       c30407.toInt
+    @ApiModelProperty(example = m30407)  override val message: String = m30407
   }
+
+  final object AccountAlreadyInvited extends NotModified {
+    @ApiModelProperty(example = c30408)  override val code: Int =       c30408.toInt
+    @ApiModelProperty(example = m30408)  override val message: String = m30408
+  }
+
+  final object AccountAlreadyRequested extends NotModified {
+    @ApiModelProperty(example = c30409)  override val code: Int =       c30409.toInt
+    @ApiModelProperty(example = m30409)  override val message: String = m30409
+  }
+
+  final object AccountAlreadyJoined extends NotModified {
+    @ApiModelProperty(example = c30410)  override val code: Int =       c30410.toInt
+    @ApiModelProperty(example = m30410)  override val message: String = m30410
+  }
+
+  final object AccountNotJoined extends NotModified {
+    @ApiModelProperty(example = c30411)  override val code: Int =       c30411.toInt
+    @ApiModelProperty(example = m30411)  override val message: String = m30411
+  }
+
+  final object CommentAlreadyLiked extends NotModified {
+    @ApiModelProperty(example = c30416)  override val code: Int =       c30416.toInt
+    @ApiModelProperty(example = m30416)  override val message: String = m30416
+  }
+
+  final object CommentNotLiked extends NotModified {
+    @ApiModelProperty(example = c30417)  override val code: Int =       c30417.toInt
+    @ApiModelProperty(example = m30417)  override val message: String = m30417
+  }
+
+  final object FeedAlreadyLiked extends NotModified {
+    @ApiModelProperty(example = c30418)  override val code: Int =       c30418.toInt
+    @ApiModelProperty(example = m30418)  override val message: String = m30418
+  }
+
+  final object FeedNotLiked extends NotModified {
+    @ApiModelProperty(example = c30419)  override val code: Int =       c30419.toInt
+    @ApiModelProperty(example = m30419)  override val message: String = m30419
+  }
+
+  final object SocialAccountAlreadyConnected extends NotModified {
+    @ApiModelProperty(example = c30420)  override val code: Int =       c30420.toInt
+    @ApiModelProperty(example = m30420)  override val message: String = m30420
+  }
+
+  final object SocialAccountNotConnected extends NotModified {
+    @ApiModelProperty(example = c30421)  override val code: Int =       c30421.toInt
+    @ApiModelProperty(example = m30421)  override val message: String = m30421
+  }
+
+  final object GroupAlreadyHidden extends NotModified {
+    @ApiModelProperty(example = c30432)  override val code: Int =       c30432.toInt
+    @ApiModelProperty(example = m30432)  override val message: String = m30432
+  }
+
+  final object GroupNotHidden extends NotModified {
+    @ApiModelProperty(example = c30433)  override val code: Int =       c30433.toInt
+    @ApiModelProperty(example = m30433)  override val message: String = m30433
+  }
+
+
+
 
   // 400 Bad Request
-
-  final object AccountAlreadyFollowed extends BadRequest {
-    @ApiModelProperty(example = c40000)  override val code: Int =       c40000.toInt
-    @ApiModelProperty(example = m40000)  override val message: String = m40000
-  }
-
-  final object AccountNotFollowed extends BadRequest {
-    @ApiModelProperty(example = c40001)  override val code: Int =       c40001.toInt
-    @ApiModelProperty(example = m40001)  override val message: String = m40001
-  }
-
-  final object AccountAlreadyBlocked extends BadRequest {
-    @ApiModelProperty(example = c40002)  override val code: Int =       c40002.toInt
-    @ApiModelProperty(example = m40002)  override val message: String = m40002
-  }
-
-  final object AccountNotBlocked extends BadRequest {
-    @ApiModelProperty(example = c40003)  override val code: Int =       c40003.toInt
-    @ApiModelProperty(example = m40003)  override val message: String = m40003
-  }
-
-  final object AccountAlreadyMuted extends BadRequest {
-    @ApiModelProperty(example = c40004)  override val code: Int =       c40004.toInt
-    @ApiModelProperty(example = m40004)  override val message: String = m40004
-  }
-
-  final object AccountNotMuted extends BadRequest {
-    @ApiModelProperty(example = c40005)  override val code: Int =       c40005.toInt
-    @ApiModelProperty(example = m40005)  override val message: String = m40005
-  }
-
-  final object AccountAlreadyFriend extends BadRequest {
-    @ApiModelProperty(example = c40006)  override val code: Int =       c40006.toInt
-    @ApiModelProperty(example = m40006)  override val message: String = m40006
-  }
-
-  final object AccountNotFriend extends BadRequest {
-    @ApiModelProperty(example = c40007)  override val code: Int =       c40007.toInt
-    @ApiModelProperty(example = m40007)  override val message: String = m40007
-  }
-
-  final object AccountAlreadyInvited extends BadRequest {
-    @ApiModelProperty(example = c40008)  override val code: Int =       c40008.toInt
-    @ApiModelProperty(example = m40008)  override val message: String = m40008
-  }
-
-  final object AccountAlreadyRequested extends BadRequest {
-    @ApiModelProperty(example = c40009)  override val code: Int =       c40009.toInt
-    @ApiModelProperty(example = m40009)  override val message: String = m40009
-  }
-
-  final object AccountAlreadyJoined extends BadRequest {
-    @ApiModelProperty(example = c40010)  override val code: Int =       c40010.toInt
-    @ApiModelProperty(example = m40010)  override val message: String = m40010
-  }
-
-  final object AccountNotJoined extends BadRequest {
-    @ApiModelProperty(example = c40011)  override val code: Int =       c40011.toInt
-    @ApiModelProperty(example = m40011)  override val message: String = m40011
-  }
 
   final object AccountNotSignedUp extends BadRequest {
     @ApiModelProperty(example = c40012)  override val code: Int =       c40012.toInt
@@ -265,36 +223,6 @@ object CactaceaErrors {
   final object OperationNotAllowed extends BadRequest {
     @ApiModelProperty(example = c40015)  override val code: Int =       c40015.toInt
     @ApiModelProperty(example = m40015)  override val message: String = m40015
-  }
-
-  final object CommentAlreadyLiked extends BadRequest {
-    @ApiModelProperty(example = c40016)  override val code: Int =       c40016.toInt
-    @ApiModelProperty(example = m40016)  override val message: String = m40016
-  }
-
-  final object CommentNotLiked extends BadRequest {
-    @ApiModelProperty(example = c40017)  override val code: Int =       c40017.toInt
-    @ApiModelProperty(example = m40017)  override val message: String = m40017
-  }
-
-  final object FeedAlreadyLiked extends BadRequest {
-    @ApiModelProperty(example = c40018)  override val code: Int =       c40018.toInt
-    @ApiModelProperty(example = m40018)  override val message: String = m40018
-  }
-
-  final object FeedNotLiked extends BadRequest {
-    @ApiModelProperty(example = c40019)  override val code: Int =       c40019.toInt
-    @ApiModelProperty(example = m40019)  override val message: String = m40019
-  }
-
-  final object SocialAccountAlreadyConnected extends BadRequest {
-    @ApiModelProperty(example = c40020)  override val code: Int =       c40020.toInt
-    @ApiModelProperty(example = m40020)  override val message: String = m40020
-  }
-
-  final object SocialAccountNotConnected extends BadRequest {
-    @ApiModelProperty(example = c40021)  override val code: Int =       c40021.toInt
-    @ApiModelProperty(example = m40021)  override val message: String = m40021
   }
 
   final object FileUploadErrorOccurred extends BadRequest {
@@ -347,20 +275,55 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40031)  override val message: String = m40031
   }
 
-  final object GroupAlreadyHidden extends BadRequest {
-    @ApiModelProperty(example = c40032)  override val code: Int =       c40032.toInt
-    @ApiModelProperty(example = m40032)  override val message: String = m40032
-  }
-
-  final object GroupNotHidden extends BadRequest {
-    @ApiModelProperty(example = c40033)  override val code: Int =       c40033.toInt
-    @ApiModelProperty(example = m40033)  override val message: String = m40033
-  }
-
   final object NotAcceptableMimeTypeFound extends BadRequest {
     @ApiModelProperty(example = c40034)  override val code: Int =       c40034.toInt
     @ApiModelProperty(example = m40034)  override val message: String = m40034
   }
+
+
+  // 404 Not Found
+
+  final object AccountNotFound extends NotFound {
+    @ApiModelProperty(example = c40400)  override val code: Int =       c40400.toInt
+    @ApiModelProperty(example = m40400)  override val message: String = m40400
+  }
+
+  final object CommentNotFound extends NotFound {
+    @ApiModelProperty(example = c40401)  override val code: Int =       c40401.toInt
+    @ApiModelProperty(example = m40401)  override val message: String = m40401
+  }
+
+  final object MediumNotFound extends NotFound {
+    @ApiModelProperty(example = c40402)  override val code: Int =       c40402.toInt
+    @ApiModelProperty(example = m40402)  override val message: String = m40402
+  }
+
+  final object FeedNotFound extends NotFound {
+    @ApiModelProperty(example = c40403)  override val code: Int =       c40403.toInt
+    @ApiModelProperty(example = m40403)  override val message: String = m40403
+  }
+
+  final object FriendRequestNotFound extends NotFound {
+    @ApiModelProperty(example = c40404)  override val code: Int =       c40404.toInt
+    @ApiModelProperty(example = m40404)  override val message: String = m40404
+  }
+
+  final object GroupNotFound extends NotFound {
+    @ApiModelProperty(example = c40405)  override val code: Int =       c40405.toInt
+    @ApiModelProperty(example = m40405)  override val message: String = m40405
+  }
+
+  final object GroupInvitationNotFound extends NotFound {
+    @ApiModelProperty(example = c40406)  override val code: Int =       c40406.toInt
+    @ApiModelProperty(example = m40406)  override val message: String = m40406
+  }
+
+  final object SocialAccountNotFound extends NotFound {
+    @ApiModelProperty(example = c40407)  override val code: Int =       c40407.toInt
+    @ApiModelProperty(example = m40407)  override val message: String = m40407
+  }
+
+
 
   // 406 Unauthorized
 

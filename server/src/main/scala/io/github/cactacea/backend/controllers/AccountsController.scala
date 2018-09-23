@@ -5,16 +5,16 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, AccountNotFoundType}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound}
 import io.swagger.models.Swagger
 
 @Singleton
-class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 
@@ -46,7 +46,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[GetAccount]
         .responseWith[Account](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetAccount =>
       accountsService.find(
@@ -60,7 +60,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[GetAccountStatus]
         .responseWith[AccountStatus](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetAccountStatus =>
       accountsService.findAccountStatus(
@@ -74,7 +74,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .request[PutAccountDisplayName]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: PutAccountDisplayName =>
       accountsService.update(

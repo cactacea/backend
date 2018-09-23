@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account.{PostAccountJoinGroup, PostAccountLeaveGroup}
 import io.github.cactacea.backend.models.requests.group._
 import io.github.cactacea.backend.models.responses.GroupCreated
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
@@ -15,7 +15,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 
@@ -51,7 +51,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[GetGroup]
         .responseWith[Group](Status.Ok.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
 
     } { request: GetGroup =>
@@ -82,7 +82,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[PutGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PutGroup =>
       groupsService.update(
@@ -101,9 +101,9 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[PostJoinGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[AuthorityNotFoundType](AuthorityNotFound.status.code, AuthorityNotFound.message)
-        .responseWith[AccountAlreadyJoinedType](AccountAlreadyJoined.status.code, AccountAlreadyJoined.message)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[AuthorityNotFound.type]](AuthorityNotFound.status.code, AuthorityNotFound.message)
+        .responseWith[Array[AccountAlreadyJoined.type]](AccountAlreadyJoined.status.code, AccountAlreadyJoined.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PostJoinGroup =>
       groupAccountsService.create(
@@ -117,9 +117,9 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[PostLeaveGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[AuthorityNotFoundType](AuthorityNotFound.status.code, AuthorityNotFound.message)
-        .responseWith[AccountNotJoinedType](AccountNotJoined.status.code, AccountNotJoined.message)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[AuthorityNotFound.type]](AuthorityNotFound.status.code, AuthorityNotFound.message)
+        .responseWith[Array[AccountAlreadyJoined.type]](AccountAlreadyJoined.status.code, AccountAlreadyJoined.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PostLeaveGroup =>
       groupAccountsService.delete(
@@ -133,7 +133,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[GetGroupAccounts]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: GetGroupAccounts =>
       groupAccountsService.find(
@@ -150,8 +150,8 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[PostAccountJoinGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PostAccountJoinGroup =>
       groupAccountsService.create(
@@ -166,8 +166,8 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[PostAccountJoinGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PostAccountLeaveGroup =>
       groupAccountsService.delete(
@@ -183,7 +183,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[GetAccountGroup]
         .responseWith[Group](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetAccountGroup =>
       accountGroupsService.find(
@@ -197,7 +197,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[GetAccountGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetAccountGroups =>
       accountGroupsService.findAll(
@@ -246,7 +246,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[DeleteGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: DeleteGroup =>
       accountGroupsService.delete(
@@ -260,7 +260,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[PostHideGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: PostHideGroup =>
       accountGroupsService.hide(
@@ -274,7 +274,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(tagName)
         .request[DeleteHideGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[GroupNotFoundType]](GroupNotFound.status.code, GroupNotFound.message)
+        .responseWith[Array[GroupNotFound.type]](GroupNotFound.status.code, GroupNotFound.message)
 
     } { request: DeleteHideGroup =>
       accountGroupsService.show(

@@ -10,14 +10,14 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{MediumNotFound, NotAcceptableMimeTypeFound}
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.utils.media.MediaExtractor
+import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 
@@ -35,6 +35,8 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
     postWithPermission("/mediums")(Permissions.media) { o =>
       o.summary("Upload a medium")
         .tag(tagName)
+        .responseWith[MediumCreated](Status.Ok.code, successfulMessage)
+        .responseWith(Status.BadRequest.code, NotAcceptableMimeTypeFound.message)
 
     } { request: Request =>
 
@@ -47,7 +49,7 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
             media.data,
             media.contentType,
             SessionContext.id
-          ).map({ case (id, url) => MediumCreated(id, url) })
+          ).map({ case (id, url) => response.created(MediumCreated(id, url)) })
         case None =>
           Future.exception(CactaceaException(NotAcceptableMimeTypeFound))
       }

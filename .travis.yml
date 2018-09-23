@@ -5,7 +5,7 @@ branches:
   - master
 
 scala:
-  - 2.12.5
+  - 2.12.6
 jdk:
   - oraclejdk8
 
@@ -39,7 +39,7 @@ before_install:
 script:
 #  - bash ./scripts/travis_db_migrate.sh
   - sbt ++$TRAVIS_SCALA_VERSION
-  - sbt "project core" clean coverage test coverageReport
+  - sbt test clean coverage test coverageReport
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

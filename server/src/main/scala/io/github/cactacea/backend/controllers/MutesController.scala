@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
 import io.github.cactacea.backend.models.requests.session.GetSessionMutes
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services.MutesService
@@ -14,7 +14,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 
@@ -45,8 +45,8 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[PostMute]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountAlreadyBlockedType]](AccountAlreadyBlocked.status.code, AccountAlreadyBlocked.message)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountAlreadyBlocked.type]](AccountAlreadyBlocked.status.code, AccountAlreadyBlocked.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: PostMute =>
       mutesService.create(
@@ -60,8 +60,8 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(tagName)
         .request[DeleteMute]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNotBlockedType]](AccountNotBlocked.status.code, AccountNotBlocked.message)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotBlocked.type]](AccountNotBlocked.status.code, AccountNotBlocked.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: DeleteMute =>
       mutesService.delete(

@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollowing}
-import io.github.cactacea.backend.swagger.BackendController
+import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
@@ -14,7 +14,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNot
 import io.swagger.models.Swagger
 
 @Singleton
-class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends BackendController {
+class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
 
   protected implicit val swagger = s
 
@@ -31,7 +31,7 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .tag(tagName)
         .request[GetFollowing]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetFollowing =>
       followingService.find(
@@ -48,8 +48,8 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .tag(tagName)
         .request[PostFollowing]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountAlreadyFollowedType]](AccountAlreadyFollowed.status.code, AccountAlreadyFollowed.message)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountAlreadyFollowed.type]](AccountAlreadyFollowed.status.code, AccountAlreadyFollowed.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: PostFollowing =>
       followingService.create(
@@ -63,8 +63,8 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .tag(tagName)
         .request[DeleteFollowing]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNotFollowedType]](AccountNotFollowed.status.code, AccountNotFollowed.message)
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFollowed.type]](AccountNotFollowed.status.code, AccountNotFollowed.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: DeleteFollowing =>
       followingService.delete(
@@ -95,7 +95,7 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .request[GetFollowers]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
 
-        .responseWith[Array[AccountNotFoundType]](AccountNotFound.status.code, AccountNotFound.message)
+        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: GetFollowers =>
       followersService.find(
