@@ -19,22 +19,22 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
   protected implicit val swagger = s
 
 
-  @Inject private var followerService: FollowsService = _
+  @Inject private var followsService: FollowsService = _
   @Inject private var followersService: FollowersService = _
 
   protected val tagName = "Followers"
 
   prefix(apiPrefix) {
 
-    getWithPermission("/accounts/:id/follower")(Permissions.followerList) { o =>
+    getWithPermission("/accounts/:id/follows")(Permissions.followerList) { o =>
       o.summary("Get accounts list this user followed")
         .tag(tagName)
-        .request[GetFollow]
+        .request[GetFollows]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
-    } { request: GetFollow =>
-      followerService.find(
+    } { request: GetFollows =>
+      followsService.find(
         request.id,
         request.since,
         request.offset,
@@ -43,7 +43,7 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
       )
     }
 
-    postWithPermission("/accounts/:id/follower")(Permissions.relationships) { o =>
+    postWithPermission("/accounts/:id/follows")(Permissions.relationships) { o =>
       o.summary("Follow this account")
         .tag(tagName)
         .request[PostFollow]
@@ -52,13 +52,13 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: PostFollow =>
-      followerService.create(
+      followsService.create(
         request.id,
         SessionContext.id
       ).map(_ => response.noContent)
     }
 
-    deleteWithPermission("/accounts/:id/follower")(Permissions.relationships) { o =>
+    deleteWithPermission("/accounts/:id/follows")(Permissions.relationships) { o =>
       o.summary("UnFollow this account")
         .tag(tagName)
         .request[DeleteFollow]
@@ -67,13 +67,13 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
     } { request: DeleteFollow =>
-      followerService.delete(
+      followsService.delete(
         request.id,
         SessionContext.id
       ).map(_ => response.noContent)
     }
 
-    getWithPermission("/session/follower")(Permissions.followerList) { o =>
+    getWithPermission("/session/follows")(Permissions.followerList) { o =>
       o.summary("Get accounts list session account followed")
         .tag(tagName)
         .request[GetSessionFollows]
@@ -81,7 +81,7 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
 
 
     } { request: GetSessionFollows =>
-      followerService.find(
+      followsService.find(
         request.since,
         request.offset,
         request.count,

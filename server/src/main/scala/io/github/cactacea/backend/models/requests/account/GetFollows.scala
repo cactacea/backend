@@ -5,7 +5,7 @@ import com.twitter.finatra.validation._
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.swagger.annotations.ApiModelProperty
 
-case class GetFollow(
+case class GetFollows(
                          @ApiModelProperty(value = "Account Identifier.")
                          @RouteParam id: AccountId,
 
