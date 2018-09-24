@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.backend.core.helpers.DAOSpec
-import io.github.cactacea.backend.core.infrastructure.models.Relationships
+import io.github.cactacea.backend.core.infrastructure.models.Mutes
 
 class MutesDAOSpec extends DAOSpec {
 
@@ -18,10 +18,10 @@ class MutesDAOSpec extends DAOSpec {
     Await.result(mutesDAO.create(sessionAccount.id, mutedAccount1.id.toSessionId))
     Await.result(mutesDAO.create(sessionAccount.id, mutedAccount2.id.toSessionId))
 
-    val result1 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(mutedAccount1.id))))).head
-    val result2 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(mutedAccount2.id))))).head
-    assert(result1.mute == true)
-    assert(result2.mute == true)
+    val result1 = Await.result(db.run(quote(query[Mutes].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(mutedAccount1.id)))))
+    val result2 = Await.result(db.run(quote(query[Mutes].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(mutedAccount2.id)))))
+    assert(result1.nonEmpty)
+    assert(result2.nonEmpty)
 
     Await.result(mutesDAO.delete(sessionAccount.id, mutedAccount1.id.toSessionId))
     Await.result(mutesDAO.delete(sessionAccount.id, mutedAccount2.id.toSessionId))
@@ -29,10 +29,10 @@ class MutesDAOSpec extends DAOSpec {
     Await.result(mutesDAO.create(sessionAccount.id, mutedAccount1.id.toSessionId))
     Await.result(mutesDAO.create(sessionAccount.id, mutedAccount2.id.toSessionId))
 
-    val result3 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(mutedAccount1.id))))).head
-    val result4 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(mutedAccount2.id))))).head
-    assert(result3.mute == true)
-    assert(result4.mute == true)
+    val result3 = Await.result(db.run(quote(query[Mutes].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(mutedAccount1.id)))))
+    val result4 = Await.result(db.run(quote(query[Mutes].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(mutedAccount2.id)))))
+    assert(result3.nonEmpty)
+    assert(result4.nonEmpty)
 
   }
 
@@ -45,10 +45,10 @@ class MutesDAOSpec extends DAOSpec {
     Await.result(mutesDAO.create(sessionAccount.id, muteAccount2.id.toSessionId))
     Await.result(mutesDAO.delete(sessionAccount.id, muteAccount1.id.toSessionId))
     Await.result(mutesDAO.delete(sessionAccount.id, muteAccount2.id.toSessionId))
-    val result1 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(muteAccount1.id))))).head
-    val result2 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(muteAccount2.id))))).head
-    assert(result1.mute == false)
-    assert(result2.mute == false)
+    val result1 = Await.result(db.run(quote(query[Mutes].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(muteAccount1.id)))))
+    val result2 = Await.result(db.run(quote(query[Mutes].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(muteAccount2.id)))))
+    assert(result1.isEmpty)
+    assert(result2.isEmpty)
 
   }
 
@@ -92,7 +92,7 @@ class MutesDAOSpec extends DAOSpec {
     assert(result1(1)._1.id == sessionAccount5.id)
     assert(result1(2)._1.id == sessionAccount4.id)
 
-    val result2 = Await.result(mutesDAO.findAll(Some(result1(2)._3), None, Some(3), muteUser.id.toSessionId))
+    val result2 = Await.result(mutesDAO.findAll(Some(result1(2)._3.id.value), None, Some(3), muteUser.id.toSessionId))
     assert(result2(0)._1.id == sessionAccount3.id)
     assert(result2(1)._1.id == sessionAccount2.id)
     assert(result2(2)._1.id == sessionAccount1.id)

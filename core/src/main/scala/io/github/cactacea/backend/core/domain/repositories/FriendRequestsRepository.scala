@@ -19,6 +19,7 @@ class FriendRequestsRepository {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistFriendRequest(accountId, sessionId)
       _ <- friendRequestsStatusDAO.create(accountId, sessionId)
       id <- friendRequestsDAO.create(accountId, sessionId)
@@ -29,6 +30,7 @@ class FriendRequestsRepository {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.existFriendRequest(accountId, sessionId)
       _ <- friendRequestsStatusDAO.delete(accountId, sessionId)
       _ <- friendRequestsDAO.delete(accountId, sessionId)

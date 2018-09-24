@@ -61,8 +61,12 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     val c = count.getOrElse(20)
     val accountId = sessionId.toAccountId
     val q = quote {
-      query[Notifications].filter(n => n.accountId == lift(accountId) && (n.id < lift(s) || lift(s) == -1L) &&
-        query[Blocks].filter(b => b.accountId == n.by && b.by == lift(accountId) && (b.blocked || b.beingBlocked)).isEmpty)
+      query[Notifications]
+        .filter(n => n.accountId == lift(accountId) && (n.id < lift(s) || lift(s) == -1L))
+        .filter(n => query[Blocks]
+          .filter(_.accountId == n.by)
+          .filter(_.by == lift(accountId))
+          .isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(accountId)})
         .map({ case ((n, a), r) => (n, a, r)})

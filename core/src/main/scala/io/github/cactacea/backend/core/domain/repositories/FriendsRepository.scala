@@ -12,7 +12,7 @@ class FriendsRepository {
 
   @Inject private var friendsDAO: FriendsDAO = _
   @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var followingDAO: FollowingDAO = _
+  @Inject private var followsDAO: FollowsDAO = _
   @Inject private var followersDAO: FollowersDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
@@ -20,12 +20,13 @@ class FriendsRepository {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistFriend(accountId, sessionId)
       _ <- friendsDAO.create(accountId, sessionId)
-      _ <- followingDAO.create(accountId, sessionId)
+      _ <- followsDAO.create(accountId, sessionId)
       _ <- followersDAO.create(accountId, sessionId)
       _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
-      _ <- followingDAO.create(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followsDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
     } yield (Future.value(Unit))
   }
@@ -34,6 +35,7 @@ class FriendsRepository {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.existFriend(accountId, sessionId)
       _ <- friendsDAO.delete(accountId, sessionId)
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
@@ -44,12 +46,12 @@ class FriendsRepository {
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     friendsDAO.findAll(since, offset, count, sessionId)
-      .map(_.map({ case (a, r, n) => Account(a, r, n.friendedAt)}))
+      .map(_.map({ case (a, r, f) => Account(a, r, f)}))
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     friendsDAO.findAll(accountId, since, offset, count, sessionId)
-      .map(_.map({ case (a, r, n) => Account(a, r, n.friendedAt)}))
+      .map(_.map({ case (a, r, f) => Account(a, r, f)}))
   }
 
 

@@ -4,7 +4,7 @@ import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.swagger.annotations.ApiModelProperty
 
-case class DeleteFollowing(
+case class DeleteFollow(
                             @ApiModelProperty(value = "Account Identifier.")
                             @RouteParam id: AccountId
                        )

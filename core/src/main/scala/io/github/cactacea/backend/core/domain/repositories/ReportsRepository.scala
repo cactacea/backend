@@ -18,6 +18,7 @@ class ReportsRepository {
   def createAccountReport(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       id <- accountReportsDAO.create(accountId, reportType, reportContent, sessionId)
     } yield (Future.value(Unit))
   }

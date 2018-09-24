@@ -26,12 +26,12 @@ class MutesRepositorySpec extends RepositorySpec {
   test("mute a blocked user") {
 
     val sessionUser = signUp("MutesRepositorySpec3", "session user password", "session user udid")
-    val blockedUser = signUp("MutesRepositorySpec4", "blocked user password", "blocked user udid")
+    val blockingUser = signUp("MutesRepositorySpec4", "blocked user password", "blocked user udid")
 
-    Await.result(blocksRepository.create(blockedUser.id, sessionUser.id.toSessionId))
+    Await.result(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(mutesRepository.create(blockedUser.id, sessionUser.id.toSessionId))
+      Await.result(mutesRepository.create(sessionUser.id, blockingUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }

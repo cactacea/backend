@@ -15,7 +15,7 @@ class ValidationDAO {
   @Inject private var blocksDAO: BlocksDAO = _
   @Inject private var commentsDAO: CommentsDAO = _
   @Inject private var commentLikesDAO: CommentLikesDAO = _
-  @Inject private var followingDAO: FollowingDAO = _
+  @Inject private var followsDAO: FollowsDAO = _
   @Inject private var followersDAO: FollowersDAO = _
   @Inject private var friendsDAO: FriendsDAO = _
   @Inject private var friendRequestsDAO: FriendRequestsDAO = _
@@ -91,8 +91,8 @@ class ValidationDAO {
     })
   }
 
-  def existAccount(accountId: AccountId, sessionId: SessionId, ignoreBlockedUser: Boolean = true): Future[Unit] = {
-    accountsDAO.exist(accountId, sessionId, ignoreBlockedUser).flatMap(_ match {
+  def existAccount(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    accountsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -119,7 +119,7 @@ class ValidationDAO {
   }
 
   def existFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    followingDAO.exist(accountId, sessionId).flatMap(_ match {
+    followsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -128,7 +128,7 @@ class ValidationDAO {
   }
 
   def notExistFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    followingDAO.exist(accountId, sessionId).flatMap(_ match {
+    followsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyFollowed))
       case false =>

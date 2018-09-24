@@ -19,12 +19,6 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
   @Inject private var blocksCountDAO: BlockCountDAO = _
 
   def create(accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
-    for {
-      id <- insert(accountName, displayName, password, web, birthday, location, bio)
-    } yield (id)
-  }
-
-  private def insert(accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
     val accountStatus = AccountStatusType.normally
     val hashedPassword = hashService.hash(password)
     val q = quote {
@@ -41,6 +35,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
     }
     run(q)
   }
+
 
   def updateProfile(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
@@ -116,32 +111,20 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
     run(q)
   }
 
-  def exist(accountId: AccountId, sessionId: SessionId, ignoreBlockedUser: Boolean = true): Future[Boolean] = {
-    if (ignoreBlockedUser) {
-      val by = sessionId.toAccountId
-      val status = AccountStatusType.normally
-      val q = quote {
-        query[Accounts]
-          .filter(_.id == lift(accountId))
-          .filter(_.accountStatus  == lift(status))
-          .filter(u => query[Blocks]
-            .filter(_.accountId    == u.id)
-            .filter(_.by        == lift(by))
-            .filter(b => b.blocked == true || b.beingBlocked == true)
-            .isEmpty)
-          .nonEmpty
-      }
-      run(q)
-    } else {
-      val status = AccountStatusType.normally
-      val q = quote {
-        query[Accounts]
-          .filter(_.id == lift(accountId))
-          .filter(_.accountStatus  == lift(status))
-          .nonEmpty
-      }
-      run(q)
+  def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.toAccountId
+    val status = AccountStatusType.normally
+    val q = quote {
+      query[Accounts]
+        .filter(_.id == lift(accountId))
+        .filter(_.accountStatus  == lift(status))
+        .filter(u => query[Blocks]
+          .filter(_.accountId    == lift(by))
+          .filter(_.by           == u.id)
+          .isEmpty)
+        .nonEmpty
     }
+    run(q)
   }
 
   def exist(accountIds: List[AccountId], sessionId: SessionId): Future[Boolean] = {
@@ -153,9 +136,8 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
         .filter(u => liftQuery(accountIds).contains(u.id))
         .filter(_.accountStatus  == lift(status))
         .filter(u => query[Blocks]
-          .filter(_.accountId    == u.id)
-          .filter(_.by        == lift(by))
-          .filter(b => b.blocked == true || b.beingBlocked == true)
+          .filter(_.accountId    == lift(by))
+          .filter(_.by           == u.id)
           .isEmpty)
         .size
     }
@@ -198,12 +180,11 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
     val q = quote {
       for {
         a <- query[Accounts]
-          .filter(_.id      == lift(accountId))
-          .filter(_.accountStatus  == lift(status))
+          .filter(_.id              == lift(accountId))
+          .filter(_.accountStatus   == lift(status))
           .filter(a => query[Blocks]
-            .filter(_.accountId == a.id)
-            .filter(_.by        == lift(by))
-            .filter(b => b.blocked == true || b.beingBlocked == true)
+            .filter(_.accountId == lift(by))
+            .filter(_.by        == a.id)
             .isEmpty)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
@@ -244,9 +225,13 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
 
     val q2 = quote {
       query[Accounts]
-        .filter({a => a.id !=  lift(by) && ((a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == "")) &&
-          a.accountStatus  == lift(status) && (a.id < lift(s) || lift(s) == -1L) &&
-          query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty})
+        .filter({a => a.id !=  lift(by)})
+        .filter(a => (a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == ""))
+        .filter(a => a.accountStatus  == lift(status) && (a.id < lift(s) || lift(s) == -1L))
+        .filter(a => query[Blocks]
+          .filter(_.accountId == lift(by))
+          .filter(_.by        == a.id)
+          .isEmpty)
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
       .sortBy({ case (a, _) => a.id})(Ord.desc)
       .drop(lift(o))

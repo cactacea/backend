@@ -11,7 +11,7 @@ final object Permissions {
   final object groupInvitations extends Permission(64, "group_invitations"   , "to create, delete, accept and reject invitations on a user's behalf")
   final object messages extends Permission(128, "messages"                   , "to post and delete messages on a user's behalf")
   final object followerList extends Permission(256, "follower_list"          , "to read the list of followers and followed-by users")
-  final object relationships extends Permission(512, "relationships"         , "to follow and unfollow accounts on a user’s behalf")
+  final object relationships extends Permission(512, "relationships"         , "to follows and unfollow accounts on a user’s behalf")
   final object friendRequests extends Permission(1024, "friend_requests"     , "to create and delete friend request on a user’s behalf")
   final object media extends Permission(2048, "media"                        , "to create and delete media on a user’s behalf")
   final object reports extends Permission(4096, "reports"                    , "to report account, feed, group and comment on a user’s behalf")

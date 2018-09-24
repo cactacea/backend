@@ -111,16 +111,15 @@ class FeedsDAO @Inject()(db: DatabaseService) {
       query[Feeds]
         .filter(_.id == lift(feedId))
         .filter({ f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty})
+        .filter(t => query[Blocks]
+          .filter(_.accountId == lift(by))
+          .filter(_.by          == t.by)
+          .isEmpty)
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
             || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
             || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
-        .filter(t => query[Blocks]
-          .filter(_.accountId  == t.by)
-          .filter(_.by      == lift(by))
-          .filter(us => us.blocked == true || us.beingBlocked == true)
-          .isEmpty)
         .nonEmpty
     }
     run(q)
@@ -192,9 +191,12 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.normally
     val e = timeService.currentTimeMillis()
     val q = quote {
-      query[Feeds].filter(f => f.id == lift(feedId) && (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty) &&
-        query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&
-        ((f.privacyType == lift(FeedPrivacyType.everyone))
+      query[Feeds].filter(f => f.id == lift(feedId) && (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty))
+        .filter(f => query[Blocks]
+          .filter(_.accountId == lift(by))
+          .filter(_.by        == f.by)
+          .isEmpty)
+        .filter(f => ((f.privacyType == lift(FeedPrivacyType.everyone))
           || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
           || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
           || (f.by == lift(by))))

@@ -119,8 +119,13 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.normally
 
     val q = quote {
-      query[FeedLikes].filter(ff => ff.feedId == lift(feedId) && (ff.id < lift(s) || lift(s) == -1L) &&
-        query[Blocks].filter(b => b.accountId == ff.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
+      query[FeedLikes]
+        .filter(ff => ff.feedId == lift(feedId) && (ff.id < lift(s) || lift(s) == -1L))
+        .filter(ff =>
+          query[Blocks]
+            .filter(_.accountId == lift(by))
+            .filter(_.by        == ff.by)
+            .isEmpty)
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((ff, a), r) => (a, r, ff)})
@@ -140,8 +145,11 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
 
     val q = quote {
       query[FeedLikes].filter(ff => ff.by == lift(by) && (ff.id < lift(s) || lift(s) == -1L))
+        .filter(f => query[Blocks]
+          .filter(_.accountId == lift(by))
+          .filter(_.by        == f.by)
+          .isEmpty)
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
-        query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
         || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
         || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
@@ -165,7 +173,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[FeedLikes].filter(ff => ff.by == lift(accountId) && (ff.id < lift(s) || lift(s) == -1L))
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
-        (query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty) &&
+        (query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty) &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
         || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
         || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))

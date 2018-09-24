@@ -25,8 +25,24 @@ case class Account(id: AccountId,
 
 object Account {
 
+  def apply(a: Accounts, r: Option[Relationships], f: Followers): Account = {
+    apply(a, r, None, f.id.value)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships], f: Friends): Account = {
+    apply(a, r, None, f.id.value)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships], f: Follows): Account = {
+    apply(a, r, None, f.id.value)
+  }
+
   def apply(a: Accounts, r: Option[Relationships], b: Blocks): Account = {
     apply(a, r, None, b.id.value)
+  }
+
+  def apply(a: Accounts, r: Option[Relationships], m: Mutes): Account = {
+    apply(a, r, None, m.id.value)
   }
 
   def apply(a: Accounts, r: Option[Relationships], ag: AccountGroups): Account = {
@@ -47,10 +63,6 @@ object Account {
 
   def apply(a: Accounts): Account = {
     apply(a, None, None, a.id.value)
-  }
-
-  def apply(a: Accounts, r: Option[Relationships], next: Long): Account = {
-    apply(a, None, None, next)
   }
 
   private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Long): Account = {

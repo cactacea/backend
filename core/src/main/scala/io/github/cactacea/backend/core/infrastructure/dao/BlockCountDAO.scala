@@ -20,7 +20,7 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
                        select
                        a.`by` id,
                        count(a.follower = true and a.account_id = b.account_id) follower_count,
-                       count(a.follow = true and a.`by` = b.account_id) follow_count,
+                       count(a.follow  = true and a.`by` = b.account_id) follow_count,
                        count(a.friend = true and  a.`by` = b.account_id) friend_count
                        from
                        relationships a,

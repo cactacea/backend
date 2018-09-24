@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account._
-import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollowing}
+import io.github.cactacea.backend.models.requests.session.{GetSessionFollowers, GetSessionFollows}
 import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
@@ -19,22 +19,22 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
   protected implicit val swagger = s
 
 
-  @Inject private var followingService: FollowingService = _
+  @Inject private var followerService: FollowsService = _
   @Inject private var followersService: FollowersService = _
 
   protected val tagName = "Followers"
 
   prefix(apiPrefix) {
 
-    getWithPermission("/accounts/:id/following")(Permissions.followerList) { o =>
+    getWithPermission("/accounts/:id/follower")(Permissions.followerList) { o =>
       o.summary("Get accounts list this user followed")
         .tag(tagName)
-        .request[GetFollowing]
+        .request[GetFollow]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
-    } { request: GetFollowing =>
-      followingService.find(
+    } { request: GetFollow =>
+      followerService.find(
         request.id,
         request.since,
         request.offset,
@@ -43,45 +43,45 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
       )
     }
 
-    postWithPermission("/accounts/:id/following")(Permissions.relationships) { o =>
+    postWithPermission("/accounts/:id/follower")(Permissions.relationships) { o =>
       o.summary("Follow this account")
         .tag(tagName)
-        .request[PostFollowing]
+        .request[PostFollow]
         .responseWith(Status.NoContent.code, successfulMessage)
         .responseWith[Array[AccountAlreadyFollowed.type]](AccountAlreadyFollowed.status.code, AccountAlreadyFollowed.message)
         .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
-    } { request: PostFollowing =>
-      followingService.create(
+    } { request: PostFollow =>
+      followerService.create(
         request.id,
         SessionContext.id
       ).map(_ => response.noContent)
     }
 
-    deleteWithPermission("/accounts/:id/following")(Permissions.relationships) { o =>
+    deleteWithPermission("/accounts/:id/follower")(Permissions.relationships) { o =>
       o.summary("UnFollow this account")
         .tag(tagName)
-        .request[DeleteFollowing]
+        .request[DeleteFollow]
         .responseWith(Status.NoContent.code, successfulMessage)
         .responseWith[Array[AccountNotFollowed.type]](AccountNotFollowed.status.code, AccountNotFollowed.message)
         .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
 
-    } { request: DeleteFollowing =>
-      followingService.delete(
+    } { request: DeleteFollow =>
+      followerService.delete(
         request.id,
         SessionContext.id
       ).map(_ => response.noContent)
     }
 
-    getWithPermission("/session/following")(Permissions.followerList) { o =>
+    getWithPermission("/session/follower")(Permissions.followerList) { o =>
       o.summary("Get accounts list session account followed")
         .tag(tagName)
-        .request[GetSessionFollowing]
+        .request[GetSessionFollows]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
 
 
-    } { request: GetSessionFollowing =>
-      followingService.find(
+    } { request: GetSessionFollows =>
+      followerService.find(
         request.since,
         request.offset,
         request.count,

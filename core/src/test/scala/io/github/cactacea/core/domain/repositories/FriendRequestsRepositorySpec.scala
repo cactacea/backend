@@ -29,12 +29,12 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
   test("create friend request a blocked user") {
 
     val sessionUser = signUp("FriendRequestsRepositorySpec3", "session user password", "session user udid")
-    val blockedUser = signUp("FriendRequestsRepositorySpec4", "blocked user password", "blocked user udid")
+    val blockingUser = signUp("FriendRequestsRepositorySpec4", "blocked user password", "blocked user udid")
 
-    Await.result(blocksRepository.create(blockedUser.id, sessionUser.id.toSessionId))
+    Await.result(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.create(blockedUser.id, sessionUser.id.toSessionId))
+      Await.result(friendRequestsRepository.create(blockingUser.id, sessionUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }

@@ -23,6 +23,7 @@ class GroupInvitationsRepository {
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       p <- validationDAO.findGroup(groupId)
       _ <- validationDAO.notExistGroupAccount(accountId, groupId)
       _ <- validationDAO.notExistGroupInvitation(accountId, groupId)

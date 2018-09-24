@@ -295,13 +295,10 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`blocks` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT NOT NULL,
   `by` BIGINT NOT NULL,
-  `blocked` TINYINT NOT NULL DEFAULT 0,
-  `being_blocked` TINYINT NOT NULL DEFAULT 0,
   `blocked_at` BIGINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_blocks_accounts1_idx` (`account_id` ASC),
   INDEX `fk_blocks_accounts2_idx` (`by` ASC),
-  INDEX `search_idx1` (`blocked` ASC, `being_blocked` ASC),
   CONSTRAINT `fk_blocks_accounts1`
     FOREIGN KEY (`account_id`)
     REFERENCES `${schema}`.`accounts` (`id`)
@@ -314,6 +311,110 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`blocks` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `${schema}`.`mutes`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `${schema}`.`mutes` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `muted_at` BIGINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  INDEX `fk_mutes_accounts1_idx` (`account_id` ASC),
+  INDEX `fk_mutes_accounts2_idx` (`by` ASC),
+  CONSTRAINT `fk_mutes_accounts1`
+    FOREIGN KEY (`account_id`)
+    REFERENCES `${schema}`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_mute_accounts2`
+    FOREIGN KEY (`by`)
+    REFERENCES `${schema}`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+
+-- -----------------------------------------------------
+-- Table `${schema}`.`follows`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `${schema}`.`follows` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `followed_at` BIGINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  INDEX `fk_follow_accounts1_idx` (`account_id` ASC),
+  INDEX `fk_follow_accounts2_idx` (`by` ASC),
+  CONSTRAINT `fk_follow_accounts1`
+    FOREIGN KEY (`account_id`)
+    REFERENCES `${schema}`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_follow_accounts2`
+    FOREIGN KEY (`by`)
+    REFERENCES `${schema}`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+
+-- -----------------------------------------------------
+-- Table `${schema}`.`follows`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `${schema}`.`followers` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `followed_at` BIGINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  INDEX `fk_follower_accounts1_idx` (`account_id` ASC),
+  INDEX `fk_follower_accounts2_idx` (`by` ASC),
+  CONSTRAINT `fk_follower_accounts1`
+    FOREIGN KEY (`account_id`)
+    REFERENCES `${schema}`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_follower_accounts2`
+    FOREIGN KEY (`by`)
+    REFERENCES `${schema}`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+
+-- -----------------------------------------------------
+-- Table `${schema}`.`friends`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `${schema}`.`friends` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `account_id` BIGINT NOT NULL,
+  `by` BIGINT NOT NULL,
+  `friended_at` BIGINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  INDEX `fk_friend_accounts1_idx` (`account_id` ASC),
+  INDEX `fk_friend_accounts2_idx` (`by` ASC),
+  CONSTRAINT `fk_friend_accounts1`
+    FOREIGN KEY (`account_id`)
+    REFERENCES `${schema}`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_friend_accounts2`
+    FOREIGN KEY (`by`)
+    REFERENCES `${schema}`.`accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
 
 
 -- -----------------------------------------------------
@@ -686,9 +787,6 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`relationships` (
   `friend` TINYINT NOT NULL DEFAULT 0,
   `follower` TINYINT NOT NULL DEFAULT 0,
   `in_progress` TINYINT NOT NULL DEFAULT 0,
-  `followed_at` BIGINT NOT NULL DEFAULT 0,
-  `being_followed_at` BIGINT NOT NULL DEFAULT 0,
-  `muted_at` BIGINT NOT NULL DEFAULT 0,
   `friended_at` BIGINT NOT NULL DEFAULT 0,
   UNIQUE INDEX `unique` (`account_id` ASC, `by` ASC),
   INDEX `fk_account_relationships_accounts1_idx` (`account_id` ASC),
