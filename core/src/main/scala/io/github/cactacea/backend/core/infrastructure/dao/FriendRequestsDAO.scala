@@ -9,11 +9,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class FriendRequestsDAO @Inject()(db: DatabaseService) {
+class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
-
-  @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
     val requestedAt = timeService.currentTimeMillis()

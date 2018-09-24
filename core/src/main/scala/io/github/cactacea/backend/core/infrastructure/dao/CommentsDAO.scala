@@ -133,9 +133,8 @@ class CommentsDAO @Inject()(db: DatabaseService) {
       query[Comments]
         .filter(_.id == lift(commentId))
         .filter(c => query[Blocks]
-          .filter(_.accountId == c.by)
-          .filter(_.by     == lift(by))
-          .filter(ur => (ur.blocked == true || ur.beingBlocked == true))
+          .filter(_.accountId == lift(by))
+          .filter(_.by        == c.by)
           .isEmpty)
         .nonEmpty
     )
@@ -146,8 +145,13 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Comments].filter(c => c.id == lift(commentId) &&
-          query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
+      query[Comments]
+        .filter(c => c.id == lift(commentId))
+        .filter(c =>
+          query[Blocks]
+            .filter(_.accountId == lift(by))
+            .filter(_.by        == c.by)
+            .isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
     }
@@ -175,8 +179,13 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Comments].filter(c => c.feedId == lift(feedId) && (c.id < lift(s) || lift(s) == -1L) &&
-        query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by) && (b.blocked || b.beingBlocked)).isEmpty)
+      query[Comments]
+        .filter(c => c.feedId == lift(feedId) && (c.id < lift(s) || lift(s) == -1L))
+        .filter(c =>
+          query[Blocks]
+            .filter(_.accountId == lift(by))
+            .filter(_.by        == c.by)
+            .isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .sortBy({ case ((c, _), _) => c.id })(Ord.desc)

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum GroupPrivacyType {
     everyone((byte)0),
-    following((byte)1),
+    follows((byte)1),
     followers((byte)2),
     friends((byte)3);
 

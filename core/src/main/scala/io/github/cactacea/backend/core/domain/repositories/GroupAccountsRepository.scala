@@ -44,6 +44,7 @@ class GroupAccountsRepository {
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistGroupAccount(accountId, groupId)
       g <- validationDAO.findNotInvitationOnlyGroup(groupId)
       _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
@@ -83,6 +84,7 @@ class GroupAccountsRepository {
     (for {
       g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.existGroupAccount(accountId, groupId)
       _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
       _ <- accountMessagesDAO.delete(accountId, groupId)

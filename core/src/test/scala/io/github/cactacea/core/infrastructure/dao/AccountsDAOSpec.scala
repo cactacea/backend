@@ -11,8 +11,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
   val blocksDAO: BlocksDAO = injector.instance[BlocksDAO]
-  val blockersDAO: BlockersDAO = injector.instance[BlockersDAO]
-  val followingDAO: FollowingDAO = injector.instance[FollowingDAO]
+  val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
   val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
   val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
   val hashService: HashService = injector.instance[HashService]
@@ -141,21 +140,21 @@ class AccountsDAOSpec extends DAOSpec with Logging {
   test("exist") {
 
     val sessionAccount = createAccount("AccountsDAOSpec14")
-    val noBlockedUser = createAccount("AccountsDAOSpec15")
-    val blockedAccount1 = createAccount("AccountsDAOSpec16")
-    val blockedAccount2 = createAccount("AccountsDAOSpec17")
+    val noBlockingUser = createAccount("AccountsDAOSpec15")
+    val blockingAccount1 = createAccount("AccountsDAOSpec16")
+    val blockingAccount2 = createAccount("AccountsDAOSpec17")
 
-    val result1 = Await.result(accountsDAO.exist(blockedAccount1.id, sessionAccount.id.toSessionId))
-    val result2 = Await.result(accountsDAO.exist(blockedAccount1.id, sessionAccount.id.toSessionId))
+    val result1 = Await.result(accountsDAO.exist(blockingAccount1.id, sessionAccount.id.toSessionId))
+    val result2 = Await.result(accountsDAO.exist(blockingAccount1.id, sessionAccount.id.toSessionId))
     assert(result1 == true)
     assert(result2 == true)
 
-    Await.result(blocksDAO.create(blockedAccount1.id, sessionAccount.id.toSessionId))
-    Await.result(blocksDAO.create(blockedAccount2.id, sessionAccount.id.toSessionId))
+    Await.result(blocksDAO.create(sessionAccount.id, blockingAccount1.id.toSessionId))
+    Await.result(blocksDAO.create(sessionAccount.id, blockingAccount2.id.toSessionId))
 
-    assert(Await.result(accountsDAO.exist(blockedAccount1.id, sessionAccount.id.toSessionId)) == false)
-    assert(Await.result(accountsDAO.exist(blockedAccount2.id, sessionAccount.id.toSessionId)) == false)
-    assert(Await.result(accountsDAO.exist(noBlockedUser.id, sessionAccount.id.toSessionId)) == true)
+    assert(Await.result(accountsDAO.exist(blockingAccount1.id, sessionAccount.id.toSessionId)) == false)
+    assert(Await.result(accountsDAO.exist(blockingAccount2.id, sessionAccount.id.toSessionId)) == false)
+    assert(Await.result(accountsDAO.exist(noBlockingUser.id, sessionAccount.id.toSessionId)) == true)
 
   }
 
@@ -169,16 +168,16 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     val user4 = createAccount("AccountsDAOSpec23")
     val friend1 = createAccount("AccountsDAOSpec24")
     val friend2 = createAccount("AccountsDAOSpec25")
-    val blockedUser = createAccount("AccountsDAOSpec26")
+    val blockingUser = createAccount("AccountsDAOSpec26")
 
-    // account1 follow user1
-    Await.result(followingDAO.create(user1.id, account1.id.toSessionId))
+    // account1 follows user1
+    Await.result(followsDAO.create(user1.id, account1.id.toSessionId))
     Await.result(followersDAO.create(user1.id, account1.id.toSessionId))
 
-    // user2, user3, user4 follow account1
-    Await.result(followingDAO.create(account1.id, user2.id.toSessionId))
-    Await.result(followingDAO.create(account1.id, user3.id.toSessionId))
-    Await.result(followingDAO.create(account1.id, user4.id.toSessionId))
+    // user2, user3, user4 follows account1
+    Await.result(followsDAO.create(account1.id, user2.id.toSessionId))
+    Await.result(followsDAO.create(account1.id, user3.id.toSessionId))
+    Await.result(followsDAO.create(account1.id, user4.id.toSessionId))
 
     Await.result(followersDAO.create(account1.id, user2.id.toSessionId))
     Await.result(followersDAO.create(account1.id, user3.id.toSessionId))
@@ -196,7 +195,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     val account1Result = Await.result(accountsDAO.find(account1.id, sessionAccount.id.toSessionId))
     assert(account1Result.isDefined == true)
 
-    // follow count, follower count, friend count
+    // follows count, follower count, friend count
     assert(account1Result.get._1.accountName == account1.accountName)
     assert(account1Result.get._1.displayName == account1.displayName)
     assert(account1Result.get._1.id == account1.id)
@@ -211,9 +210,8 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     assert(user.accountStatus == account1.accountStatus)
 
     // find blocked user
-    Await.result(blocksDAO.create(account1.id, blockedUser.id.toSessionId))
-    Await.result(blockersDAO.create(blockedUser.id, account1.id.toSessionId))
-    assert(Await.result(accountsDAO.find(blockedUser.id, account1.id.toSessionId)).isDefined == false)
+    Await.result(blocksDAO.create(account1.id, blockingUser.id.toSessionId))
+    assert(Await.result(accountsDAO.find(blockingUser.id, account1.id.toSessionId)).isEmpty)
 
   }
 
@@ -236,7 +234,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
   test("findAll") {
 
     val sessionAccount = createAccount("AccountsDAOSpec28")
-    val blockedUser = createAccount("AccountsDAOSpec29")
+    val blockingUser = createAccount("AccountsDAOSpec29")
     val account1 = createAccount("AccountsDAOSpec30")
     val account2 = createAccount("AccountsDAOSpec31")
     val account3 = createAccount("AccountsDAOSpec32")
@@ -250,8 +248,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     Await.result(accountsDAO.updateAccountName("userName5", account5.id.toSessionId))
 
     // blocked user
-    Await.result(blocksDAO.create(sessionAccount.id, blockedUser.id.toSessionId))
-    Await.result(blockersDAO.create(blockedUser.id, sessionAccount.id.toSessionId))
+    Await.result(blocksDAO.create(sessionAccount.id, blockingUser.id.toSessionId))
 
     // find by userName
     val result1 = Await.result(accountsDAO.findAll(Some("userName1"), None, None, Some(5), sessionAccount.id.toSessionId))

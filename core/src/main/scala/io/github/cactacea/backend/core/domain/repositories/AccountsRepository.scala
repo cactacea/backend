@@ -44,14 +44,16 @@ class AccountsRepository {
   }
 
   def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
-    validationDAO.existAccount(accountId, sessionId).flatMap(_ =>
-      devicesDAO.findActiveStatus(accountId).map(_ match {
-        case Some(s) =>
-          AccountStatus(accountId, s)
-        case None =>
-          AccountStatus(accountId, ActiveStatus.inactive)
-      })
-    )
+    (for {
+      _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
+      r <- devicesDAO.findActiveStatus(accountId)
+    } yield (r)).map(_ match {
+      case Some(s) =>
+        AccountStatus(accountId, s)
+      case None =>
+        AccountStatus(accountId, ActiveStatus.inactive)
+    })
   }
 
   def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
@@ -64,6 +66,7 @@ class AccountsRepository {
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- accountsDAO.updateDisplayName(accountId, userName, sessionId)
     } yield (Future.value(Unit))
   }

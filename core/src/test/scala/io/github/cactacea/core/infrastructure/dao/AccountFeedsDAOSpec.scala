@@ -33,7 +33,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     // create feed
     val feedId = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
-    // create follow
+    // create follows
     Await.result(followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId))
     Await.result(followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId))
     Await.result(followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId))
@@ -69,7 +69,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     // create feed
     val feedId = Await.result(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
-    // create follow
+    // create follows
     Await.result(followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId))
     Await.result(followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId))
     Await.result(followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId))

@@ -4,7 +4,7 @@ import com.twitter.finatra.request.RouteParam
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.swagger.annotations.ApiModelProperty
 
-case class PostFollowing(
+case class PostFollow(
                           @ApiModelProperty(value = "Account Identifier.")
                           @RouteParam id: AccountId
                         )

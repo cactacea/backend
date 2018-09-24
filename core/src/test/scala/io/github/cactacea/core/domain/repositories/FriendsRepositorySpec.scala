@@ -41,11 +41,11 @@ class FriendsRepositorySpec extends RepositorySpec {
   test("create friendship a blocked user") {
 
     val sessionUser = signUp("FriendsRepositorySpec3", "session user password", "session user udid")
-    val blockedUser = signUp("FriendsRepositorySpec4", "blocked user password", "blocked user udid")
+    val blockingUser = signUp("FriendsRepositorySpec4", "blocked user password", "blocked user udid")
 
-    Await.result(blocksRepository.create(blockedUser.id, sessionUser.id.toSessionId))
+    Await.result(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
     val result = try {
-      Await.result(friendsRepository.create(blockedUser.id, sessionUser.id.toSessionId))
+      Await.result(friendsRepository.create(sessionUser.id, blockingUser.id.toSessionId))
       false
     } catch {
       case e: CactaceaException => {
@@ -211,13 +211,13 @@ class FriendsRepositorySpec extends RepositorySpec {
     Await.result(friendsRepository.create(friendUser4.id, sessionUser.id.toSessionId))
     Await.result(friendsRepository.create(friendUser5.id, sessionUser.id.toSessionId))
 
-    val friends1 = Await.result(friendsRepository.findAll(None, None, Some(3), sessionUser.id.toSessionId))
-    assert(friends1.size == 3)
-    assert(friends1(0).id == friendUser5.id)
-    assert(friends1(1).id == friendUser4.id)
-    assert(friends1(2).id == friendUser3.id)
+    val friends = Await.result(friendsRepository.findAll(None, None, Some(3), sessionUser.id.toSessionId))
+    assert(friends.size == 3)
+    assert(friends(0).id == friendUser5.id)
+    assert(friends(1).id == friendUser4.id)
+    assert(friends(2).id == friendUser3.id)
 
-    val friends2 = Await.result(friendsRepository.findAll(Some(friends1(2).next), None, Some(3), sessionUser.id.toSessionId))
+    val friends2 = Await.result(friendsRepository.findAll(Some(friends(2).next), None, Some(3), sessionUser.id.toSessionId))
     assert(friends2.size == 2)
     assert(friends2(0).id == friendUser2.id)
     assert(friends2(1).id == friendUser1.id)

@@ -16,6 +16,7 @@ class MutesRepository {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistMute(accountId, sessionId)
       _ <- mutesDAO.create(accountId, sessionId)
     } yield (Future.value(Unit))
@@ -25,6 +26,7 @@ class MutesRepository {
     for {
       _ <- validationDAO.notSessionId(accountId, sessionId)
       _ <- validationDAO.existAccount(accountId, sessionId)
+      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.existMute(accountId, sessionId)
       _ <- mutesDAO.delete(accountId, sessionId)
     } yield (Future.value(Unit))

@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, BlockId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Relationships}
 
 @Singleton
@@ -16,19 +16,6 @@ class BlocksDAO @Inject()(db: DatabaseService) {
   @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    _updateBlocks(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        _insertBlocks(accountId, sessionId).map(_ => Unit)
-    })
-  }
-
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    _updateUnblocks(accountId, sessionId)
-  }
-
-  private def _insertBlocks(accountId: AccountId, sessionId: SessionId): Future[BlockId] = {
     val by = sessionId.toAccountId
     val blockedAt = timeService.currentTimeMillis()
     val q = quote {
@@ -36,39 +23,21 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId     -> lift(accountId),
           _.by            -> lift(by),
-          _.blocked       -> true,
           _.blockedAt     -> lift(blockedAt)
         ).returning(_.id)
     }
-    run(q)
+    run(q).map(_ => Unit)
   }
 
-  private def _updateBlocks(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
-    val blockedAt = timeService.currentTimeMillis()
-    val q = quote {
-      query[Blocks]
-        .filter(_.accountId == lift(accountId))
-        .filter(_.by        == lift(by))
-        .update(
-          _.blocked        -> true,
-          _.blockedAt       -> lift(blockedAt)
-        )
-    }
-    run(q).map(_ == 1)
-  }
-
-  private def _updateUnblocks(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Blocks]
-        .filter(_.accountId == lift(accountId))
-        .filter(_.by        == lift(by))
-        .update(
-          _.blocked        -> false
-        )
+        .filter(_.accountId   == lift(accountId))
+        .filter(_.by          == lift(by))
+        .delete
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
@@ -77,7 +46,6 @@ class BlocksDAO @Inject()(db: DatabaseService) {
       query[Blocks]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
-        .filter(_.blocked    == true)
         .nonEmpty
     }
     run(q)
@@ -91,11 +59,12 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.normally
 
     val q = quote {
-      query[Blocks].filter(b => b.by == lift(by) && b.blocked == true && (b.id < lift(s) || lift(s) == -1L))
+      query[Blocks]
+        .filter(b => b.by == lift(by) && (b.id < lift(s) || lift(s) == -1L) )
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
         .map({ case ((b, a), r) => (a, r, b)})
-        .sortBy( r => (r._3.blockedAt, r._1.id) )(Ord(Ord.desc, Ord.desc))
+        .sortBy(_._3.id)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

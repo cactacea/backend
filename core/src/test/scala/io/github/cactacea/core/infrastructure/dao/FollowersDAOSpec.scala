@@ -2,13 +2,12 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.util.Await
 import io.github.cactacea.backend.core.helpers.DAOSpec
-import io.github.cactacea.backend.core.infrastructure.models.Relationships
+import io.github.cactacea.backend.core.infrastructure.models.{Followers, Relationships}
 
 class FollowersDAOSpec extends DAOSpec {
 
   import db._
 
-  val followingDAO: FollowingDAO = injector.instance[FollowingDAO]
   val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
   val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
 
@@ -51,10 +50,10 @@ class FollowersDAOSpec extends DAOSpec {
     Await.result(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
     Await.result(followersDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
     Await.result(followersDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
-    val result1 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
-    val result2 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.follow == false)
-    assert(result2.follow == false)
+    val result1 = Await.result(db.run(quote(query[Followers].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id)))))
+    val result2 = Await.result(db.run(quote(query[Followers].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id)))))
+    assert(result1.isEmpty)
+    assert(result2.isEmpty)
 
   }
 
@@ -68,12 +67,12 @@ class FollowersDAOSpec extends DAOSpec {
     val sessionAccount6 = createAccount("FollowersDAOSpec12")
     val followedUser = createAccount("FollowersDAOSpec13")
 
-    Await.result(followingDAO.create(followedUser.id, sessionAccount1.id.toSessionId))
-    Await.result(followingDAO.create(followedUser.id, sessionAccount2.id.toSessionId))
-    Await.result(followingDAO.create(followedUser.id, sessionAccount3.id.toSessionId))
-    Await.result(followingDAO.create(followedUser.id, sessionAccount4.id.toSessionId))
-    Await.result(followingDAO.create(followedUser.id, sessionAccount5.id.toSessionId))
-    Await.result(followingDAO.create(followedUser.id, sessionAccount6.id.toSessionId))
+    Await.result(followersDAO.create(followedUser.id, sessionAccount1.id.toSessionId))
+    Await.result(followersDAO.create(followedUser.id, sessionAccount2.id.toSessionId))
+    Await.result(followersDAO.create(followedUser.id, sessionAccount3.id.toSessionId))
+    Await.result(followersDAO.create(followedUser.id, sessionAccount4.id.toSessionId))
+    Await.result(followersDAO.create(followedUser.id, sessionAccount5.id.toSessionId))
+    Await.result(followersDAO.create(followedUser.id, sessionAccount6.id.toSessionId))
 
     val result1 = Await.result(followersDAO.findAll(followedUser.id, None, None, Some(3), sessionAccount1.id.toSessionId))
     val account1 = result1(0)._1
@@ -84,7 +83,7 @@ class FollowersDAOSpec extends DAOSpec {
     assert(account2.id == sessionAccount5.id)
     assert(account3.id == sessionAccount4.id)
 
-    val result2 = Await.result(followersDAO.findAll(followedUser.id, Some(follower1.followedAt), None, Some(3), sessionAccount1.id.toSessionId))
+    val result2 = Await.result(followersDAO.findAll(followedUser.id, Some(follower1.id.value), None, Some(3), sessionAccount1.id.toSessionId))
     val account4 = result2(0)._1
     val account5 = result2(1)._1
     val account6 = result2(2)._1

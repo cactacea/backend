@@ -9,13 +9,12 @@ import io.github.cactacea.backend.core.infrastructure.models._
 class FeedsDAOSpec extends DAOSpec {
 
   val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
-  val followingDAO: FollowingDAO = injector.instance[FollowingDAO]
+  val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
   val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
   val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
   val feedLikesDAO: FeedLikesDAO = injector.instance[FeedLikesDAO]
   val feedReportsDAO: FeedReportsDAO = injector.instance[FeedReportsDAO]
   val commentsDAO: CommentsDAO = injector.instance[CommentsDAO]
-  val blocksDAO: BlocksDAO = injector.instance[BlocksDAO]
 
   import db._
 
@@ -420,12 +419,12 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId7 = Await.result(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
     val feedId8 = Await.result(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
 
-    // follow user
-    Await.result(followingDAO.create(sessionAccount.id, followerUser.id.toSessionId))
+    // follows user
+    Await.result(followsDAO.create(sessionAccount.id, followerUser.id.toSessionId))
     Await.result(followersDAO.create(followerUser.id, sessionAccount.id.toSessionId))
 
     // friend user
-    Await.result(followingDAO.create(sessionAccount.id, friendUser.id.toSessionId))
+    Await.result(followsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
     Await.result(friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
     Await.result(followersDAO.create(friendUser.id, sessionAccount.id.toSessionId))
 
@@ -497,12 +496,12 @@ class FeedsDAOSpec extends DAOSpec {
     Await.result(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
     Await.result(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
 
-    // follow user
-    Await.result(followingDAO.create(sessionAccount.id, followerUser.id.toSessionId))
+    // follows user
+    Await.result(followsDAO.create(sessionAccount.id, followerUser.id.toSessionId))
     Await.result(followersDAO.create(followerUser.id, sessionAccount.id.toSessionId))
 
     // friend user
-    Await.result(followingDAO.create(sessionAccount.id, friendUser.id.toSessionId))
+    Await.result(followsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
     Await.result(friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
     Await.result(followersDAO.create(friendUser.id, sessionAccount.id.toSessionId))
 
@@ -553,12 +552,12 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId7 = Await.result(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
     val feedId8 = Await.result(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
 
-    // follow user
-    Await.result(followingDAO.create(sessionAccount.id, followerUser.id.toSessionId))
+    // follows user
+    Await.result(followsDAO.create(sessionAccount.id, followerUser.id.toSessionId))
     Await.result(followersDAO.create(followerUser.id, sessionAccount.id.toSessionId))
 
     // friend user
-    Await.result(followingDAO.create(sessionAccount.id, friendUser.id.toSessionId))
+    Await.result(followsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
     Await.result(friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
     Await.result(followersDAO.create(friendUser.id, sessionAccount.id.toSessionId))
 

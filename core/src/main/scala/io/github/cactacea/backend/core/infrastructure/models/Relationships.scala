@@ -10,9 +10,5 @@ case class Relationships(
                           follower: Boolean,
                           mute: Boolean,
                           friend: Boolean,
-                          inProgress: Boolean,
-                          followedAt: Long,
-                          beingFollowedAt: Long,
-                          mutedAt: Long,
-                          friendedAt: Long
+                          inProgress: Boolean
                       )

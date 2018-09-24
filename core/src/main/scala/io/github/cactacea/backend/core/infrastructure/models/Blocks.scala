@@ -6,7 +6,5 @@ case class Blocks(
                    id: BlockId,
                    accountId: AccountId,
                    by: AccountId,
-                   blocked: Boolean,
-                   beingBlocked: Boolean,
                    blockedAt: Long
                         )

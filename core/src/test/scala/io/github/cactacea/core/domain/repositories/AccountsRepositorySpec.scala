@@ -68,15 +68,15 @@ class AccountsRepositorySpec extends RepositorySpec {
 
     val session = signUp("AccountsRepositorySpec16", "password", "udid")
     val account = signUp("AccountsRepositorySpec17", "password", "udid")
-    val blockAccount = signUp("AccountsRepositorySpec18", "password", "udid")
+    val blockingUser = signUp("AccountsRepositorySpec18", "password", "udid")
 
-    Await.result(blocksRepository.create(blockAccount.id, session.id.toSessionId))
+    Await.result(blocksRepository.create(session.id, blockingUser.id.toSessionId))
 
     val result1 = Await.result(accountsRepository.find(account.id, session.id.toSessionId))
     assert(result1.id == account.id)
 
     assert(intercept[CactaceaException] {
-      Await.result(accountsRepository.find(blockAccount.id, session.id.toSessionId))
+      Await.result(accountsRepository.find(blockingUser.id, session.id.toSessionId))
     }.error == AccountNotFound)
 
   }
