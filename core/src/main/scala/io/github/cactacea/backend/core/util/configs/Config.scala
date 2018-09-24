@@ -18,8 +18,8 @@ object Config extends DurationReader {
     lazy val password = dbConfig.password.getOrElse("root")
     lazy val database = dbConfig.database.getOrElse("cactacea")
     lazy val dest = (dbConfig.hostname.getOrElse("localhost") + ":" + dbConfig.port.getOrElse("3306"))
-    lazy val poolWatermarkLow = dbConfig.poolWatermarkLow.getOrElse(0)
-    lazy val poolWatermarkMax = dbConfig.poolWatermarkMax.getOrElse(10)
+    lazy val poolWatermarkLow = dbConfig.poolWatermarkLow.getOrElse(1)
+    lazy val poolWatermarkMax = dbConfig.poolWatermarkMax.getOrElse(1)
   }
 
   object auth {
