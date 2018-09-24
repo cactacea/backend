@@ -8,7 +8,7 @@ import io.github.cactacea.backend.swagger.CactaceaDocController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.models.{AdvertisementSetting, PushNotificationSetting}
+import io.github.cactacea.backend.core.domain.models.{PushNotificationSetting}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -48,34 +48,6 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.groupMessage,
         request.directMessage,
         request.showMessage,
-        SessionContext.id
-      ).map(_ => response.noContent)
-    }
-
-    getWithPermission("/session/advertisement") (Permissions.basic) { o =>
-      o.summary("Get the advertisement settings")
-        .tag(tagName)
-        .responseWith[AdvertisementSetting](Status.Ok.code, successfulMessage)
-
-    } { _: Request =>
-      settingsService.findAdvertisementSettings(
-        SessionContext.id
-      )
-    }
-
-    putWithPermission("/session/advertisement") (Permissions.basic) { o =>
-      o.summary("Update the advertisement settings")
-        .tag(tagName)
-        .request[PutAdvertisementSetting]
-        .responseWith(Status.NoContent.code, successfulMessage)
-
-    } { request: PutAdvertisementSetting =>
-      settingsService.updateAdvertisementSettings(
-        request.ad1,
-        request.ad2,
-        request.ad3,
-        request.ad4,
-        request.ad5,
         SessionContext.id
       ).map(_ => response.noContent)
     }

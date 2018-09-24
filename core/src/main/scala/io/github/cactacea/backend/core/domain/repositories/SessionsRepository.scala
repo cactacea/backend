@@ -13,7 +13,6 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 @Singleton
 class SessionsRepository {
 
-  @Inject private var advertisementSettingsDAO: AdvertisementSettingsDAO = _
   @Inject private var devicesDAO: DevicesDAO = _
   @Inject private var notificationSettingsDAO: PushNotificationSettingsDAO = _
   @Inject private var accountsDAO: AccountsDAO = _
@@ -80,7 +79,6 @@ class SessionsRepository {
       sessionId = accountId.toSessionId
       _             <- devicesDAO.create(udid, deviceType, userAgent, sessionId)
       _             <- notificationSettingsDAO.create(true, true, true, true, true, true, sessionId)
-      _             <- advertisementSettingsDAO.create(true, true, true, true, true, sessionId)
       account       <- accountsDAO.find(sessionId)
     } yield (account)).flatMap( _ match {
       case Some(a) =>
