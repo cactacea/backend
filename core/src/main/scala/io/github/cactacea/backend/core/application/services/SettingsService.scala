@@ -4,8 +4,8 @@ import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, SocialAccountsService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.{AdvertisementSetting, PushNotificationSetting, SocialAccount}
-import io.github.cactacea.backend.core.domain.repositories.{AdvertisementSettingsRepository, PushNotificationSettingsRepository, SocialAccountsRepository}
+import io.github.cactacea.backend.core.domain.models.{PushNotificationSetting, SocialAccount}
+import io.github.cactacea.backend.core.domain.repositories.{PushNotificationSettingsRepository, SocialAccountsRepository}
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
 class SettingsService {
@@ -32,25 +32,6 @@ class SettingsService {
         sessionId)
     }
   }
-
-  @Inject private var advertisementSettingsRepository: AdvertisementSettingsRepository = _
-
-  def findAdvertisementSettings(sessionId: SessionId): Future[AdvertisementSetting] = {
-    advertisementSettingsRepository.find(sessionId)
-  }
-
-  def updateAdvertisementSettings(ad1: Boolean, ad2: Boolean, ad3: Boolean, ad4: Boolean, ad5: Boolean, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      advertisementSettingsRepository.update(
-        ad1,
-        ad2,
-        ad3,
-        ad4,
-        ad5,
-        sessionId)
-    }
-  }
-
 
   def connectSocialAccount(providerId: String, providerKey: String, authenticationCode: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {

@@ -22,8 +22,8 @@ env:
 cache:
   directories:
    - $HOME/.ivy2
-   - $HOME/.sbt/boot/scala-$TRAVIS_SCALA_VERSION
    - $HOME/.dodo
+   - $HOME/.sbt/boot/scala-$TRAVIS_SCALA_VERSION
 
 before_cache:
   # Tricks to avoid unnecessary cache updates
@@ -37,9 +37,9 @@ before_install:
   - bash ./scripts/travis_mysql-reset-root-password.sh
 
 script:
-#  - bash ./scripts/travis_db_migrate.sh
-  - sbt ++$TRAVIS_SCALA_VERSION
-  - sbt test clean coverage test coverageReport
+  - sbt ++$TRAVIS_SCALA_VERSION clean test coverage coverageReport
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

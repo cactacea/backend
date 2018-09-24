@@ -14,7 +14,6 @@ class SessionsRepositorySpec extends RepositorySpec {
   val sessionsRepository = injector.instance[SessionsRepository]
   val devicesDAO = injector.instance[DevicesDAO]
   val socialAccountsDAO = injector.instance[SocialAccountsDAO]
-  var advertisementSettingsDAO = injector.instance[AdvertisementSettingsDAO]
   var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
   val accountsDAO = injector.instance[AccountsDAO]
   val timeService = injector.instance[TimeService]
@@ -36,10 +35,6 @@ class SessionsRepositorySpec extends RepositorySpec {
     // result device
     val devices = Await.result(devicesDAO.exist(account.id.toSessionId, udid))
     assert(devices == true)
-
-    // result advertisementSettings
-    val advertisementSettings = Await.result(advertisementSettingsDAO.find(account.id.toSessionId))
-    assert(advertisementSettings.isDefined == true)
 
     // result notificationSettings
     val notificationSettings = Await.result(notificationSettingsDAO.find(account.id.toSessionId))
