@@ -86,12 +86,12 @@ class BackendServerSpec extends ServerSpec {
 
         // Follow Accounts
         accounts.foreach({ a =>
-          val c = post("/accounts/" + a.id + "/follower", "", signInAuth.accessToken)
+          val c = post("/accounts/" + a.id + "/follows", "", signInAuth.accessToken)
           assert(c.statusCode == Status.NoContent.code)
         })
 
         // Get Follow
-        val f = get(s"/session/follower", signInAuth.accessToken)
+        val f = get(s"/session/follows", signInAuth.accessToken)
         val g = mapper.parse[List[Account]](f.getContentString())
         assert(g.size == (accountsCount - 1))
 
@@ -116,7 +116,7 @@ class BackendServerSpec extends ServerSpec {
         assert(signInRes.statusCode == Status.Ok.code)
 
         // Get Follow
-        val f = get(s"/session/follower", signInAuth.accessToken)
+        val f = get(s"/session/follows", signInAuth.accessToken)
         val g = mapper.parse[List[Account]](f.getContentString())
         assert(g.size == (accountsCount - 1))
 
