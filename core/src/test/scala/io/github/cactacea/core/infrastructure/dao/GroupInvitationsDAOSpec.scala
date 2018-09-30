@@ -9,8 +9,6 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
   import db._
 
-  val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]
-  val groupInvitationsDAO: GroupInvitationsDAO = injector.instance[GroupInvitationsDAO]
 
   test("create") {
 

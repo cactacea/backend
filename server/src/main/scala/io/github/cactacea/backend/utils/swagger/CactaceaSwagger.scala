@@ -1,11 +1,9 @@
 package io.github.cactacea.backend.utils.swagger
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import io.cactacea.finagger.{ParadoxicalWrappedValueModelResolver, Resolvers, WrappedValueModelResolver}
 import io.swagger.converter.{ModelConverter, ModelConverters}
 import io.swagger.models.Swagger
 import io.swagger.scala.converter.SwaggerScalaModelConverter
-import io.swagger.util.Json
 
 object CactaceaSwagger extends Swagger {
 
@@ -26,9 +24,9 @@ object CactaceaSwagger extends Swagger {
     */
   protected lazy val swaggerTypeOverrides: List[ModelConverter] = List()
 
-  /**
-    * Model property name
-    */
-  Json.mapper().setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy)
+//  /**
+//    * Model property name
+//    */
+//  Json.mapper().setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy)
 
 }

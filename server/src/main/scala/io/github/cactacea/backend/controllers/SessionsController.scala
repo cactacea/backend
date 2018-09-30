@@ -4,32 +4,30 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
+import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountTerminated, InvalidAccountNameOrPassword}
 import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.models.responses.Authentication
-import io.github.cactacea.backend.swagger.CactaceaDocController
+import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.{AuthTokenGenerator, SessionContext}
 import io.swagger.models.Swagger
 
 @Singleton
-class SessionsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
+class SessionsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  protected implicit val swagger = s
-
+  implicit val swagger = s
 
   @Inject private var sessionService: SessionsService = _
   @Inject private var tokenGenerator: AuthTokenGenerator = _
-
-  protected val tagName = "Sessions"
 
   prefix(apiPrefix) {
 
     postWithDoc("/sessions") { o =>
       o.summary("Sign up")
-        .tag(tagName)
+        .tag(sessionsTag)
+        .operationId("signUp")
         .request[PostSignUp]
         .responseWith[Authentication](Status.Ok.code, successfulMessage)
-
     } { request: PostSignUp =>
       sessionService.signUp(
         request.name,
@@ -50,11 +48,11 @@ class SessionsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
 
     getWithPermission("/sessions")() { o =>
       o.summary("Sign in")
-        .tag(tagName)
+        .tag(sessionsTag)
+        .operationId("signIn")
         .request[GetSignIn]
         .responseWith[Authentication](Status.Ok.code, successfulMessage)
-        .responseWith[Array[InvalidAccountNameOrPassword.type]](InvalidAccountNameOrPassword.status.code, InvalidAccountNameOrPassword.message)
-        .responseWith[Array[AccountTerminated.type]](AccountTerminated.status.code, AccountTerminated.message)
+        .responseWithArray[CactaceaError](Status.BadRequest, Array(InvalidAccountNameOrPassword, AccountTerminated))
 
     } { request: GetSignIn =>
       sessionService.signIn(

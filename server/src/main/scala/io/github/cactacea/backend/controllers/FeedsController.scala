@@ -3,24 +3,21 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.models.requests.account.GetLikes
+import io.github.cactacea.backend.core.application.services._
+import io.github.cactacea.backend.core.domain.models.Feed
+import io.github.cactacea.backend.core.util.responses.CactaceaError
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
-import io.github.cactacea.backend.swagger.CactaceaDocController
+import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
-import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.models.{Account, Feed}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
+class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  protected implicit val swagger = s
-
-
-  protected val tagName = "Feeds"
+  implicit val swagger = s
 
   @Inject private var feedsService: FeedsService = _
   @Inject private var feedLikesService: FeedLikesService = _
@@ -29,11 +26,11 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
 
     getWithPermission("/feeds")(Permissions.basic) { o =>
       o.summary("Search feeds")
-        .tag(tagName)
+        .tag(feedsTag)
+        .operationId("findFeeds")
         .request[GetFeeds]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
     } { request: GetFeeds =>
       feedsService.find(
         request.since,
@@ -46,11 +43,11 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
 
     postWithPermission("/feeds")(Permissions.feeds) { o =>
       o.summary("Post a feed")
-        .tag(tagName)
+        .tag(feedsTag)
+        .operationId("postFeed")
         .request[PostFeed]
         .responseWith[FeedCreated](Status.Created.code, successfulMessage)
-        .responseWith[Array[MediumNotFound.type]](MediumNotFound.status.code, MediumNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.NotFound, Array(MediumNotFound))
     } { request: PostFeed =>
       feedsService.create(
         request.message,
@@ -65,11 +62,11 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
 
     getWithPermission("/feeds/:id")(Permissions.basic) { o =>
       o.summary("Get basic information about this feed")
-        .tag(tagName)
+        .tag(feedsTag)
+        .operationId("findFeed")
         .request[GetFeed]
         .responseWith[Feed](Status.Ok.code, successfulMessage)
-        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
     } { request: GetFeed =>
       feedsService.find(
         request.id,
@@ -79,12 +76,11 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
 
     putWithPermission("/feeds/:id")(Permissions.feeds) { o =>
       o.summary("Update this feed")
-        .tag(tagName)
+        .tag(feedsTag)
+        .operationId("updateFeed")
         .request[PutFeed]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
-        .responseWith[Array[MediumNotFound.type]](MediumNotFound.status.code, MediumNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound, MediumNotFound))
     } { request: PutFeed =>
       feedsService.edit(
         request.id,
@@ -100,11 +96,11 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
 
     deleteWithPermission("/feeds/:id")(Permissions.feeds) { o =>
       o.summary("Delete this feed")
-        .tag(tagName)
+        .tag(feedsTag)
+        .operationId("deleteFeed")
         .request[DeleteFeed]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
     } { request: DeleteFeed =>
       feedsService.delete(
         request.id,
@@ -112,118 +108,20 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
       ).map(_ => response.noContent)
     }
 
-    getWithPermission("/accounts/:id/feeds")(Permissions.basic) { o =>
-      o.summary("Get feeds list this account posted")
-        .tag(tagName)
-        .request[GetAccountFeeds]
-        .responseWith[Feed](Status.Ok.code, successfulMessage)
-        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
-
-    } { request: GetAccountFeeds =>
-      feedsService.find(
-        request.id,
-        request.since,
-        request.offset,
-        request.count,
-        SessionContext.id
-      )
-    }
-
-
-    getWithPermission("/feeds/:id/likes")(Permissions.basic) { o =>
-      o.summary("Get accounts list who set a like to this feed")
-        .tag(tagName)
-        .request[GetFeedLikes]
-        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
-
-    } { request: GetFeedLikes =>
-      feedLikesService.findAccounts(
-        request.id,
-        request.since,
-        request.offset,
-        request.count,
-        SessionContext.id
-      )
-    }
-
-    postWithPermission("/feeds/:id/likes")(Permissions.feedLikes) { o =>
-      o.summary("Set a like on this feed")
-        .tag(tagName)
-        .request[PostFeedLike]
+    postWithPermission("/feeds/:id/reports")(Permissions.reports) { o =>
+      o.summary("Report this feed")
+        .tag(feedsTag)
+        .operationId("reportFeed")
+        .request[PostFeedReport]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedAlreadyLiked.type]](FeedAlreadyLiked.status.code, FeedAlreadyLiked.message)
-        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
-
-    } { request: PostFeedLike =>
-      feedLikesService.create(
+        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
+    } { request: PostFeedReport =>
+      feedsService.report(
         request.id,
+        request.reportType,
+        request.reportContent,
         SessionContext.id
       ).map(_ => response.noContent)
-    }
-
-    deleteWithPermission("/feeds/:id/likes")(Permissions.feeds) { o =>
-      o.summary("Remove a like on this feed")
-        .tag(tagName)
-        .request[DeleteFeedLike]
-        .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[FeedNotLiked.type]](FeedNotLiked.status.code, FeedNotLiked.message)
-        .responseWith[Array[FeedNotFound.type]](FeedNotFound.status.code, FeedNotFound.message)
-
-    } { request: DeleteFeedLike =>
-      feedLikesService.delete(
-        request.id,
-        SessionContext.id
-      ).map(_ => response.noContent)
-    }
-
-    getWithPermission("/accounts/:id/likes")(Permissions.basic) { o =>
-      o.summary("Get account's liked feeds")
-        .tag(tagName)
-        .request[GetLikes]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-
-        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
-
-    } { request: GetLikes =>
-      feedLikesService.find(
-        request.id,
-        request.since,
-        request.offset,
-        request.count,
-        SessionContext.id
-      )
-    }
-
-    getWithPermission("/session/feeds")(Permissions.basic) { o =>
-      o.summary("Get feeds list session account posted")
-        .tag(tagName)
-        .request[GetSessionFeeds]
-        .responseWith[Feed](Status.Ok.code, successfulMessage)
-
-    } { request: GetSessionFeeds =>
-      feedsService.find(
-        request.since,
-        request.offset,
-        request.count,
-        SessionContext.id
-      )
-    }
-
-    getWithPermission("/session/likes")(Permissions.basic) { o =>
-      o.summary("Get feeds list session account set a like")
-        .tag(tagName)
-        .request[GetSessionLikedFeeds]
-        .responseWith[Feed](Status.Ok.code, successfulMessage)
-
-
-    } { request: GetSessionLikedFeeds =>
-      feedLikesService.find(
-        request.since,
-        request.offset,
-        request.count,
-        SessionContext.id
-      )
     }
 
   }

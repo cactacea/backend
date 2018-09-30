@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.core.helpers
 
+import com.google.inject.Inject
 import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
 import com.twitter.util.Await
@@ -20,11 +21,11 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
       )
     ).create
 
-  val db = injector.instance[DatabaseService]
+  val db: DatabaseService = injector.instance[DatabaseService]
+  @Inject private var sessionsRepository: SessionsRepository = _
 
   def signUp(accountName: String, password: String, udid: String) = {
 
-    val sessionsRepository = injector.instance[SessionsRepository]
     Await.result(sessionsRepository.signUp(accountName, None, password, udid, DeviceType.ios,
       Some("test@example.com"),
       None,
@@ -37,7 +38,6 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
 
   def signIn(accountName: String, password: String, udid: String) = {
 
-    val sessionsRepository = injector.instance[SessionsRepository]
     val result = Await.result(sessionsRepository.signIn(accountName, password, udid, DeviceType.ios, Some("user agent")))
     val authentication = Await.result(sessionsRepository.signIn(result.accountName, password, udid, DeviceType.ios, Some("user agent")))
     authentication

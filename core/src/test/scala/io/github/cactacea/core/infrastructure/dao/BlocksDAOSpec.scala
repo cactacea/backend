@@ -8,8 +8,6 @@ class BlocksDAOSpec extends DAOSpec {
 
   import db._
 
-  val blocksDAO: BlocksDAO = injector.instance[BlocksDAO]
-
   test("create") {
 
     val account1 = createAccount("BlocksDAOSpec1")

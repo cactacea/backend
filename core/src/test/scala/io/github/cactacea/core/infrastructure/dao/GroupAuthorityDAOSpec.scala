@@ -7,12 +7,6 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AuthorityNo
 
 class GroupAuthorityDAOSpec extends DAOSpec {
 
-  val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]
-  val accountGroupsDAO: AccountGroupsDAO = injector.instance[AccountGroupsDAO]
-  val groupAuthorityDAO: GroupAuthorityDAO = injector.instance[GroupAuthorityDAO]
-  val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
-  val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
-  val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
 
   test("hasInviteAuthority") {
 

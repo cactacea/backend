@@ -8,9 +8,6 @@ class FollowersDAOSpec extends DAOSpec {
 
   import db._
 
-  val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
-  val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
-
   test("create") {
 
     val sessionAccount = createAccount("FollowersDAOSpec1")

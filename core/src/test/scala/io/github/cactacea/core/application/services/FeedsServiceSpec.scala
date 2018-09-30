@@ -6,9 +6,6 @@ import io.github.cactacea.backend.core.helpers.ServiceSpec
 
 class FeedsServiceSpec extends ServiceSpec {
 
-  val feedsService = injector.instance[FeedsService]
-  val timeService = injector.instance[TimeService]
-
   test("create a message feed") {
 
     val session = signUp("account name", "account password", "ffc1ded6f4570d557ad65f986684fc10c7f8d51f")

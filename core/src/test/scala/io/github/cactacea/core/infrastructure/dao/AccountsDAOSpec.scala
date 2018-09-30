@@ -9,13 +9,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
 class AccountsDAOSpec extends DAOSpec with Logging {
 
-  val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
-  val blocksDAO: BlocksDAO = injector.instance[BlocksDAO]
-  val followsDAO: FollowsDAO = injector.instance[FollowsDAO]
-  val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
-  val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
-  val hashService: HashService = injector.instance[HashService]
-
   test("create") {
 
     val sessionAccount = createAccount("AccountsDAOSpec1")

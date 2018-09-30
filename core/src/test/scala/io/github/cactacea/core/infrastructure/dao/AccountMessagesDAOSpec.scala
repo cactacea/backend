@@ -7,11 +7,6 @@ import io.github.cactacea.backend.core.infrastructure.models.AccountMessages
 
 class AccountMessagesDAOSpec extends DAOSpec {
 
-  val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]
-  val accountGroupsDAO: AccountGroupsDAO = injector.instance[AccountGroupsDAO]
-  val messagesDAO: MessagesDAO = injector.instance[MessagesDAO]
-  val accountMessagesDAO: AccountMessagesDAO = injector.instance[AccountMessagesDAO]
-
   import db._
 
   test("create") {

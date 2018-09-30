@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.helpers.DAOSpec
 
 class FriendRequestsDAOSpec extends DAOSpec {
 
-  val friendRequestsDAO: FriendRequestsDAO = injector.instance[FriendRequestsDAO]
-
   test("create") {
 
     val sessionAccount = createAccount("FriendRequestsDAOSpec1")

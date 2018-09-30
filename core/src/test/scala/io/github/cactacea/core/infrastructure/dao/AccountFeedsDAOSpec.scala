@@ -9,10 +9,6 @@ class AccountFeedsDAOSpec extends DAOSpec {
 
   import db._
 
-  val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
-  val accountFeedsDAO: AccountFeedsDAO = injector.instance[AccountFeedsDAO]
-  val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
-
   test("create") {
 
     val sessionAccount1 = createAccount("AccountFeedsDAOSpec0")

@@ -31,7 +31,6 @@ class MessagesRepository {
 
   private def create(groupId: GroupId, message: String, sessionId: SessionId): Future[MessageId] = {
     for {
-      _  <- validationDAO.existGroup(groupId, sessionId)
       _  <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
       a  <- groupAccountsDAO.findCount(groupId)
       id  <- messagesDAO.create(groupId, Some(message), a, None, sessionId)
@@ -43,7 +42,6 @@ class MessagesRepository {
 
   private def create(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[MessageId] = {
     for {
-      _  <- validationDAO.existGroup(groupId, sessionId)
       _  <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
       _  <- validationDAO.existMediums(mediumId, sessionId)
       a  <- groupAccountsDAO.findCount(groupId)

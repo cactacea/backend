@@ -7,10 +7,6 @@ import io.github.cactacea.backend.core.infrastructure.models.AccountGroups
 
 class AccountGroupsDAOSpec extends DAOSpec {
 
-  val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]
-  val accountGroupsDAO: AccountGroupsDAO = injector.instance[AccountGroupsDAO]
-  val messagesDAO: MessagesDAO = injector.instance[MessagesDAO]
-
   import db._
 
   test("create one to one group") {

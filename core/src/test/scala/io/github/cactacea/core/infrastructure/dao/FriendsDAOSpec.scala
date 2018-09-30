@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.infrastructure.models.Relationships
 
 class FriendsDAOSpec extends DAOSpec {
 
-  val friendsDAO: FriendsDAO = injector.instance[FriendsDAO]
-
   import db._
 
   test("create") {

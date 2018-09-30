@@ -7,9 +7,6 @@ import io.github.cactacea.backend.core.infrastructure.models.FeedLikes
 
 class FeedLikesDAOSpec extends DAOSpec {
 
-  val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
-  val feedLikesDAO: FeedLikesDAO = injector.instance[FeedLikesDAO]
-
   import db._
 
   test("create") {

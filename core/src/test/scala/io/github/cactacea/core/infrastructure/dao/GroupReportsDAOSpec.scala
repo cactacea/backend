@@ -9,9 +9,6 @@ class GroupReportsDAOSpec extends DAOSpec {
 
   import db._
 
-  val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]
-  val groupReportsDAO: GroupReportsDAO = injector.instance[GroupReportsDAO]
-
   test("create") {
 
     val sessionAccount = createAccount("GroupReportsDAOSpec1")

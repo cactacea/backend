@@ -8,8 +8,6 @@ import io.github.cactacea.backend.core.infrastructure.models.Mediums
 
 class MediumsDAOSpec extends DAOSpec {
 
-  val mediumsDAO: MediumsDAO = injector.instance[MediumsDAO]
-
   import db._
 
   test("create") {

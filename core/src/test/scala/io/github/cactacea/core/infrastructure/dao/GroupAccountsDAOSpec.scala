@@ -6,9 +6,6 @@ import io.github.cactacea.backend.core.helpers.DAOSpec
 
 class GroupAccountsDAOSpec extends DAOSpec {
 
-  val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]
-  val groupUsersDAO: GroupAccountsDAO = injector.instance[GroupAccountsDAO]
-  val accountGroupsDAO: AccountGroupsDAO = injector.instance[AccountGroupsDAO]
 
 //  test("create user") {
 //

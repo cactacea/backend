@@ -3,51 +3,32 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
+import io.github.cactacea.backend.core.application.services.MutesService
+import io.github.cactacea.backend.core.util.responses.CactaceaError
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
-import io.github.cactacea.backend.models.requests.session.GetSessionMutes
-import io.github.cactacea.backend.swagger.CactaceaDocController
+import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
-import io.github.cactacea.backend.core.application.services.MutesService
-import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
+class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  protected implicit val swagger = s
-
-
-  protected val tagName = "Mutes"
+  implicit val swagger = s
 
   @Inject private var mutesService: MutesService = _
 
   prefix(apiPrefix) {
 
-    getWithPermission("/session/mutes")(Permissions.basic) { o =>
-      o.summary("Get accounts list session account muted")
-        .tag(tagName)
-        .request[GetSessionMutes]
-        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-
-    } { request: GetSessionMutes =>
-      mutesService.find(
-        request.since,
-        request.offset,
-        request.count,
-        SessionContext.id
-      )
-    }
-
     postWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
       o.summary("Mute this account")
-        .tag(tagName)
+        .tag(mutesTag)
+        .operationId("muteAccount")
         .request[PostMute]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountAlreadyBlocked.type]](AccountAlreadyBlocked.status.code, AccountAlreadyBlocked.message)
-        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[CactaceaError](Status.BadRequest, Array(AccountAlreadyBlocked))
     } { request: PostMute =>
       mutesService.create(
         request.id,
@@ -57,12 +38,12 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
 
     deleteWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
       o.summary("UnMute this account")
-        .tag(tagName)
+        .tag(mutesTag)
+        .operationId("unmuteAccount")
         .request[DeleteMute]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[AccountNotBlocked.type]](AccountNotBlocked.status.code, AccountNotBlocked.message)
-        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[CactaceaError](Status.BadRequest, Array(AccountNotBlocked))
     } { request: DeleteMute =>
       mutesService.delete(
         request.id,

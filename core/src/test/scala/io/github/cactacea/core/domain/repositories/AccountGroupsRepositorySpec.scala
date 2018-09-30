@@ -9,6 +9,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotJ
 
 class AccountGroupsRepositorySpec extends RepositorySpec {
 
+  import db._
+
   val accountGroupsRepository = injector.instance[AccountGroupsRepository]
   val messagesRepository = injector.instance[MessagesRepository]
   val groupsRepository = injector.instance[GroupsRepository]
