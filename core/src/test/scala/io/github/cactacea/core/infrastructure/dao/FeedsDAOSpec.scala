@@ -15,11 +15,11 @@ class FeedsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("FeedsDAOSpec1")
     val sessionAccount2 = createAccount("FeedsDAOSpec2")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
-    val medium3 = this.createMedium(sessionAccount1.id)
-    val medium4 = this.createMedium(sessionAccount2.id)
-    val medium5 = this.createMedium(sessionAccount2.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
+    val medium3 = createMedium(sessionAccount1.id)
+    val medium4 = createMedium(sessionAccount2.id)
+    val medium5 = createMedium(sessionAccount2.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -53,27 +53,45 @@ class FeedsDAOSpec extends DAOSpec {
     val contentWarning6 = true
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId))
-    val feedId4 = Await.result(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId))
-    val feedId5 = Await.result(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId))
-    val feedId6 = Await.result(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId)))
+    val feedId4 = Await.result(db.transaction(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId)))
+    val feedId5 = Await.result(db.transaction(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId)))
+    val feedId6 = Await.result(db.transaction(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId)))
 
     // create comments
-    Await.result(commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId))
-    Await.result(commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
+    Await.result(
+      db.transaction {
+        for {
+          _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
+          _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
+        } yield (Unit)
+      }
+    )
 
     // create feed likes
-    Await.result(feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId))
-    Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
+    Await.result(
+      db.transaction {
+        for {
+          _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
+          _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
+        } yield (Unit)
+      }
+    )
 
     // create report
-    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId))
+    Await.result(
+      db.transaction {
+        for {
+          _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
+        } yield (Unit)
+      }
+    )
 
     // create feeds result
     val feed1 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId1))))).head
@@ -124,11 +142,11 @@ class FeedsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("FeedsDAOSpec3")
     val sessionAccount2 = createAccount("FeedsDAOSpec4")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
-    val medium3 = this.createMedium(sessionAccount1.id)
-    val medium4 = this.createMedium(sessionAccount2.id)
-    val medium5 = this.createMedium(sessionAccount2.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
+    val medium3 = createMedium(sessionAccount1.id)
+    val medium4 = createMedium(sessionAccount2.id)
+    val medium5 = createMedium(sessionAccount2.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -162,27 +180,45 @@ class FeedsDAOSpec extends DAOSpec {
     val contentWarning6 = true
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId))
-    val feedId4 = Await.result(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId))
-    val feedId5 = Await.result(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId))
-    val feedId6 = Await.result(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId)))
+    val feedId4 = Await.result(db.transaction(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId)))
+    val feedId5 = Await.result(db.transaction(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId)))
+    val feedId6 = Await.result(db.transaction(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId)))
 
     // create comments
-    Await.result(commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId))
-    Await.result(commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId))
+          _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId))
+          _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId))
+          _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId))
+          _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
+          _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
+        } yield (Unit)
+      )
+    )
 
     // create feed likes
-    Await.result(feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId))
-    Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
+          _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // create report
-    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // create feeds result
     val feed1 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId1))))).head
@@ -232,7 +268,8 @@ class FeedsDAOSpec extends DAOSpec {
     val newTags6 = List("tag4", "tag5")
     val newPrivacyType6 = FeedPrivacyType.followers
     val newContentWarning6 = false
-    val editResult6 = Await.result(feedsDAO.update(feedId6, newMessage6, Some(newMediums6), Some(newTags6), newPrivacyType6, newContentWarning6, None, sessionAccount2.id.toSessionId))
+
+    val editResult6 = Await.result(db.transaction(feedsDAO.update(feedId6, newMessage6, Some(newMediums6), Some(newTags6), newPrivacyType6, newContentWarning6, None, sessionAccount2.id.toSessionId)))
     val newFeed6 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId6))))).head
     val newFeedTags6 = Await.result(db.run(quote(query[FeedTags].filter(_.feedId == lift(feedId6)))))
     val newFeedMediums6 = Await.result(db.run(quote(query[FeedMediums].filter(_.feedId == lift(feedId6)))))
@@ -242,7 +279,7 @@ class FeedsDAOSpec extends DAOSpec {
     assert((newFeedMediums6.size, newFeedMediums6.map(_.mediumId)) == (newMediums6.size, newMediums6))
 
     // edit not found
-    val editResult7 = Await.result(feedsDAO.update(feedId6, newMessage6, Some(newMediums6), Some(newTags6), newPrivacyType6, newContentWarning6, None, sessionAccount1.id.toSessionId))
+    val editResult7 = Await.result(db.transaction(feedsDAO.update(feedId6, newMessage6, Some(newMediums6), Some(newTags6), newPrivacyType6, newContentWarning6, None, sessionAccount1.id.toSessionId)))
     assert(editResult7 == false)
 
   }
@@ -290,27 +327,45 @@ class FeedsDAOSpec extends DAOSpec {
     val contentWarning6 = true
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId))
-    val feedId4 = Await.result(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId))
-    val feedId5 = Await.result(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId))
-    val feedId6 = Await.result(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId)))
+    val feedId4 = Await.result(db.transaction(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId)))
+    val feedId5 = Await.result(db.transaction(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId)))
+    val feedId6 = Await.result(db.transaction(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId)))
 
     // create comments
-    Await.result(commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId))
-    Await.result(commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
+          _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // create feed likes
-    Await.result(feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId))
-    Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
+          _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // create report
-    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // create feeds result
     val feed1 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId1))))).head
@@ -355,7 +410,7 @@ class FeedsDAOSpec extends DAOSpec {
     assert((feedMediums6.size, feedMediums6.map(_.mediumId)) == (mediums6.size, mediums6))
 
     // delete
-    val deleteResult1 = Await.result(feedsDAO.delete(feedId6, sessionAccount2.id.toSessionId))
+    val deleteResult1 = Await.result(db.transaction(feedsDAO.delete(feedId6, sessionAccount2.id.toSessionId)))
     assert(deleteResult1 == true)
     val deleteResultFeeds = Await.result(db.run(query[Feeds].filter(_.id == lift(feedId6)).size))
     val deleteResultTags = Await.result(db.run(query[FeedTags].filter(_.feedId == lift(feedId6)).size))
@@ -368,7 +423,7 @@ class FeedsDAOSpec extends DAOSpec {
     assert(deleteResultComments == 0L)
 
     // delete not found
-    val deleteResult2 = Await.result(feedsDAO.delete(feedId5, sessionAccount1.id.toSessionId))
+    val deleteResult2 = Await.result(db.transaction(feedsDAO.delete(feedId5, sessionAccount1.id.toSessionId)))
     assert(deleteResult2 == false)
 
 
@@ -377,16 +432,16 @@ class FeedsDAOSpec extends DAOSpec {
 
   test("exist") {
 
-    val sessionAccount = createAccount("FeedsDAOSpec7")
-    val followerUser = createAccount("FeedsDAOSpec8")
+    val sessionUser = createAccount("FeedsDAOSpec7")
+    val followUser = createAccount("FeedsDAOSpec8")
     val friendUser = createAccount("FeedsDAOSpec9")
     val noRelationshipUser = createAccount("FeedsDAOSpec10")
 
-    val medium1 = this.createMedium(sessionAccount.id)
-    val medium2 = this.createMedium(sessionAccount.id)
-    val medium3 = this.createMedium(sessionAccount.id)
-    val medium4 = this.createMedium(sessionAccount.id)
-    val medium5 = this.createMedium(sessionAccount.id)
+    val medium1 = createMedium(sessionUser.id)
+    val medium2 = createMedium(sessionUser.id)
+    val medium3 = createMedium(sessionUser.id)
+    val medium4 = createMedium(sessionUser.id)
+    val medium5 = createMedium(sessionUser.id)
 
     val mediums1 = List[MediumId]()
     val mediums2 = List(medium1.id)
@@ -402,33 +457,45 @@ class FeedsDAOSpec extends DAOSpec {
     val tags6 = List("tag1", "tag2", "tag3")
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create("everyone" , Some(mediums1), Some(tags1), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create("followers", Some(mediums2), Some(tags2), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create("friends"  , Some(mediums3), Some(tags3), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
-    val feedId4 = Await.result(feedsDAO.create("self"     , Some(mediums4), Some(tags4), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
-    val feedId5 = Await.result(feedsDAO.create("everyone" , Some(mediums5), Some(tags5), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId))
-    val feedId6 = Await.result(feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId))
-    val feedId7 = Await.result(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
-    val feedId8 = Await.result(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create("everyone" , Some(mediums1), Some(tags1), FeedPrivacyType.everyone,        false, None, sessionUser.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create("followers", Some(mediums2), Some(tags2), FeedPrivacyType.followers,  false, None, sessionUser.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create("friends"  , Some(mediums3), Some(tags3), FeedPrivacyType.friends,    false, None, sessionUser.id.toSessionId)))
+    val feedId4 = Await.result(db.transaction(feedsDAO.create("self"     , Some(mediums4), Some(tags4), FeedPrivacyType.self,       false, None, sessionUser.id.toSessionId)))
+    val feedId5 = Await.result(db.transaction(feedsDAO.create("everyone" , Some(mediums5), Some(tags5), FeedPrivacyType.everyone,        false, None, sessionUser.id.toSessionId)))
+    val feedId6 = Await.result(db.transaction(feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionUser.id.toSessionId)))
+    val feedId7 = Await.result(db.transaction(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionUser.id.toSessionId)))
+    val feedId8 = Await.result(db.transaction(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionUser.id.toSessionId)))
 
     // follows user
-    Await.result(followsDAO.create(sessionAccount.id, followerUser.id.toSessionId))
-    Await.result(followersDAO.create(followerUser.id, sessionAccount.id.toSessionId))
+    Await.result(
+      db.transaction {
+        for {
+          _ <- followsDAO.create(sessionUser.id, followUser.id.toSessionId)
+          _ <- followersDAO.create(followUser.id, sessionUser.id.toSessionId)
+        } yield (Unit)
+      }
+    )
 
     // friend user
-    Await.result(followsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
-    Await.result(friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
-    Await.result(followersDAO.create(friendUser.id, sessionAccount.id.toSessionId))
+    Await.result(
+      db.transaction {
+        for {
+          _ <- followsDAO.create(sessionUser.id, friendUser.id.toSessionId)
+          _ <- followersDAO.create(friendUser.id, sessionUser.id.toSessionId)
+          _ <- friendsDAO.create(sessionUser.id, friendUser.id.toSessionId)
+        } yield (Unit)
+      }
+    )
 
     // exist by follower
-    assert(Await.result(feedsDAO.exist(feedId1, followerUser.id.toSessionId)) == true)
-    assert(Await.result(feedsDAO.exist(feedId2, followerUser.id.toSessionId)) == true)
-    assert(Await.result(feedsDAO.exist(feedId3, followerUser.id.toSessionId)) == false)
-    assert(Await.result(feedsDAO.exist(feedId4, followerUser.id.toSessionId)) == false)
-    assert(Await.result(feedsDAO.exist(feedId5, followerUser.id.toSessionId)) == true)
-    assert(Await.result(feedsDAO.exist(feedId6, followerUser.id.toSessionId)) == true)
-    assert(Await.result(feedsDAO.exist(feedId7, followerUser.id.toSessionId)) == false)
-    assert(Await.result(feedsDAO.exist(feedId8, followerUser.id.toSessionId)) == false)
+    assert(Await.result(feedsDAO.exist(feedId1, followUser.id.toSessionId)) == true)
+    assert(Await.result(feedsDAO.exist(feedId2, followUser.id.toSessionId)) == true)
+    assert(Await.result(feedsDAO.exist(feedId3, followUser.id.toSessionId)) == false)
+    assert(Await.result(feedsDAO.exist(feedId4, followUser.id.toSessionId)) == false)
+    assert(Await.result(feedsDAO.exist(feedId5, followUser.id.toSessionId)) == true)
+    assert(Await.result(feedsDAO.exist(feedId6, followUser.id.toSessionId)) == true)
+    assert(Await.result(feedsDAO.exist(feedId7, followUser.id.toSessionId)) == false)
+    assert(Await.result(feedsDAO.exist(feedId8, followUser.id.toSessionId)) == false)
 
     // exist by friend
     assert(Await.result(feedsDAO.exist(feedId1, friendUser.id.toSessionId)) == true)
@@ -479,23 +546,42 @@ class FeedsDAOSpec extends DAOSpec {
     val tags6 = List("tag1", "tag2", "tag3")
 
     // create feeds
-    Await.result(feedsDAO.create("everyone"      , Some(mediums1), Some(tags1), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId))
-    Await.result(feedsDAO.create("followers", Some(mediums2), Some(tags2), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId))
-    Await.result(feedsDAO.create("friends"  , Some(mediums3), Some(tags3), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
-    Await.result(feedsDAO.create("self"     , Some(mediums4), Some(tags4), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
-    Await.result(feedsDAO.create("everyone"      , Some(mediums5), Some(tags5), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId))
-    Await.result(feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId))
-    Await.result(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
-    Await.result(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- feedsDAO.create("everyone"      , Some(mediums1), Some(tags1), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId))
+          _ <- feedsDAO.create("followers", Some(mediums2), Some(tags2), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId))
+          _ <- feedsDAO.create("friends"  , Some(mediums3), Some(tags3), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
+          _ <- feedsDAO.create("self"     , Some(mediums4), Some(tags4), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
+          _ <- feedsDAO.create("everyone"      , Some(mediums5), Some(tags5), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId))
+          _ <- feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId))
+          _ <- feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
+          _ <- feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
+        } yield (Unit)
+      )
+    )
 
     // follows user
-    Await.result(followsDAO.create(sessionAccount.id, followerUser.id.toSessionId))
-    Await.result(followersDAO.create(followerUser.id, sessionAccount.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+          _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // friend user
-    Await.result(followsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
-    Await.result(friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
-    Await.result(followersDAO.create(friendUser.id, sessionAccount.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+          _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+          _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
+
+        } yield (Unit)
+      )
+    )
 
     // find by follower
     assert(Await.result(feedsDAO.findAll(sessionAccount.id, None, None, Some(10), followerUser.id.toSessionId)).size == 4)
@@ -515,11 +601,11 @@ class FeedsDAOSpec extends DAOSpec {
     val friendUser = createAccount("FeedsDAOSpec17")
     val noRelationshipUser = createAccount("FeedsDAOSpec18")
 
-    val medium1 = this.createMedium(sessionAccount.id)
-    val medium2 = this.createMedium(sessionAccount.id)
-    val medium3 = this.createMedium(sessionAccount.id)
-    val medium4 = this.createMedium(sessionAccount.id)
-    val medium5 = this.createMedium(sessionAccount.id)
+    val medium1 = createMedium(sessionAccount.id)
+    val medium2 = createMedium(sessionAccount.id)
+    val medium3 = createMedium(sessionAccount.id)
+    val medium4 = createMedium(sessionAccount.id)
+    val medium5 = createMedium(sessionAccount.id)
 
     val mediums1 = List[MediumId]()
     val mediums2 = List(medium1.id)
@@ -535,23 +621,35 @@ class FeedsDAOSpec extends DAOSpec {
     val tags6 = List("tag1", "tag2", "tag3")
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create("everyone"      , Some(mediums1), Some(tags1), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create("followers", Some(mediums2), Some(tags2), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create("friends"  , Some(mediums3), Some(tags3), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
-    val feedId4 = Await.result(feedsDAO.create("self"     , Some(mediums4), Some(tags4), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
-    val feedId5 = Await.result(feedsDAO.create("everyone"      , Some(mediums5), Some(tags5), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId))
-    val feedId6 = Await.result(feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId))
-    val feedId7 = Await.result(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
-    val feedId8 = Await.result(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create("everyone"      , Some(mediums1), Some(tags1), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create("followers", Some(mediums2), Some(tags2), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create("friends"  , Some(mediums3), Some(tags3), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId)))
+    val feedId4 = Await.result(db.transaction(feedsDAO.create("self"     , Some(mediums4), Some(tags4), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId)))
+    val feedId5 = Await.result(db.transaction(feedsDAO.create("everyone"      , Some(mediums5), Some(tags5), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId)))
+    val feedId6 = Await.result(db.transaction(feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId)))
+    val feedId7 = Await.result(db.transaction(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId)))
+    val feedId8 = Await.result(db.transaction(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId)))
 
     // follows user
-    Await.result(followsDAO.create(sessionAccount.id, followerUser.id.toSessionId))
-    Await.result(followersDAO.create(followerUser.id, sessionAccount.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+          _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // friend user
-    Await.result(followsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
-    Await.result(friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId))
-    Await.result(followersDAO.create(friendUser.id, sessionAccount.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+          _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+          _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // find by follower
     assert(Await.result(feedsDAO.find(feedId1, followerUser.id.toSessionId)).isDefined == true)
@@ -600,11 +698,11 @@ class FeedsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("FeedsDAOSpec19")
     val sessionAccount2 = createAccount("FeedsDAOSpec20")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
-    val medium3 = this.createMedium(sessionAccount1.id)
-    val medium4 = this.createMedium(sessionAccount2.id)
-    val medium5 = this.createMedium(sessionAccount2.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
+    val medium3 = createMedium(sessionAccount1.id)
+    val medium4 = createMedium(sessionAccount2.id)
+    val medium5 = createMedium(sessionAccount2.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -638,27 +736,45 @@ class FeedsDAOSpec extends DAOSpec {
     val contentWarning6 = true
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId))
-    val feedId4 = Await.result(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId))
-    val feedId5 = Await.result(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId))
-    val feedId6 = Await.result(feedsDAO.create(message6, None, None, privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId)))
+    val feedId4 = Await.result(db.transaction(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId)))
+    val feedId5 = Await.result(db.transaction(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId)))
+    val feedId6 = Await.result(db.transaction(feedsDAO.create(message6, None, None, privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId)))
 
     // create comments
-    Await.result(commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId))
-    Await.result(commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId))
-    Await.result(commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
+          _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
+          _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // create feed likes
-    Await.result(feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId))
-    Await.result(feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
+          _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // create report
-    Await.result(feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
+        } yield (Unit)
+      )
+    )
 
     // create feeds result
     val feed1 = Await.result(db.run(quote(query[Feeds].filter(_.id == lift(feedId1))))).head
@@ -779,12 +895,12 @@ class FeedsDAOSpec extends DAOSpec {
     val contentWarning6 = true
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId))
-    val feedId4 = Await.result(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId))
-    val feedId5 = Await.result(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId))
-    val feedId6 = Await.result(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId)))
+    val feedId4 = Await.result(db.transaction(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId)))
+    val feedId5 = Await.result(db.transaction(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId)))
+    val feedId6 = Await.result(db.transaction(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId)))
 
 
     val result1 = Await.result(feedsDAO.find(feedId1))
@@ -823,9 +939,9 @@ class FeedsDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("FeedsDAOSpec23")
 
-    val medium1 = this.createMedium(sessionAccount.id)
-    val medium2 = this.createMedium(sessionAccount.id)
-    val medium3 = this.createMedium(sessionAccount.id)
+    val medium1 = createMedium(sessionAccount.id)
+    val medium2 = createMedium(sessionAccount.id)
+    val medium3 = createMedium(sessionAccount.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -859,13 +975,19 @@ class FeedsDAOSpec extends DAOSpec {
     val contentWarning6 = true
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId)))
 
-    Await.ready(feedsDAO.updateNotified(feedId1, true))
-    Await.ready(feedsDAO.updateNotified(feedId2, false))
-    Await.ready(feedsDAO.updateNotified(feedId3, true))
+    Await.result(
+      db.transaction(
+        for {
+          _ <- feedsDAO.updateNotified(feedId1, true)
+          _ <- feedsDAO.updateNotified(feedId2, false)
+          _ <- feedsDAO.updateNotified(feedId3, true)
+        } yield (Unit)
+      )
+    )
 
     val result1 = Await.result(feedsDAO.find(feedId1))
     val result2 = Await.result(feedsDAO.find(feedId2))
@@ -925,9 +1047,9 @@ class FeedsDAOSpec extends DAOSpec {
     val contentWarning6 = true
 
     // create feeds
-    val feedId1 = Await.result(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
-    val feedId2 = Await.result(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId))
-    val feedId3 = Await.result(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
+    val feedId1 = Await.result(db.transaction(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId)))
+    val feedId2 = Await.result(db.transaction(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId)))
+    val feedId3 = Await.result(db.transaction(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId)))
 
     val result1 = Await.result(feedsDAO.find(feedId1))
     val result2 = Await.result(feedsDAO.find(feedId2))

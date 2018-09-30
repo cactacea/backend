@@ -67,7 +67,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
 
   def createMedium(accountId: AccountId): Mediums = {
     val m: Mediums = FactoryHelper.createMediums(accountId)
-    val id = this.insertMediums(m)
+    val id = insertMediums(m)
     m.copy(id = id)
   }
 
@@ -82,29 +82,33 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
 
   def insertMediums(m: Mediums): MediumId = {
     Await.result(
-      mediumsDAO.create(
-        m.key,
-        m.uri,
-        m.thumbnailUri,
-        m.mediumType,
-        m.width,
-        m.height,
-        m.size,
-        m.by.toSessionId
+      db.transaction(
+        mediumsDAO.create(
+          m.key,
+          m.uri,
+          m.thumbnailUri,
+          m.mediumType,
+          m.width,
+          m.height,
+          m.size,
+          m.by.toSessionId
+        )
       )
     )
   }
 
   def insertAccounts(a: Accounts): AccountId = {
     Await.result(
-      accountsDAO.create(
-        a.accountName,
-        a.displayName,
-        a.password,
-        None,
-        None,
-        None,
-        None
+      db.transaction(
+        accountsDAO.create(
+          a.accountName,
+          a.displayName,
+          a.password,
+          None,
+          None,
+          None,
+          None
+        )
       )
     )
   }
