@@ -14,7 +14,7 @@ import io.swagger.models.Swagger
 @Singleton
 class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  implicit val swagger = s
+  implicit val swagger: Swagger = s
 
   protected val tagName = "Settings"
 
