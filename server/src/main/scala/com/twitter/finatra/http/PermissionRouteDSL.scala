@@ -23,7 +23,7 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
                                                                  (callback: RequestType => ResponseType): Unit = {
 
     val securedDoc = createSecuredOperation(scopes)(doc)
-    super.postWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
+    postWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
   }
 
   def getWithPermission[RequestType: Manifest, ResponseType: Manifest](route: String,
@@ -35,7 +35,7 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
                                                                 (callback: RequestType => ResponseType): Unit = {
 
     val securedDoc = createSecuredOperation(scopes)(doc)
-    super.getWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
+    getWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
   }
 
   def putWithPermission[RequestType: Manifest, ResponseType: Manifest](route: String,
@@ -46,7 +46,7 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
                                                                 (doc: Operation => Unit)
                                                                 (callback: RequestType => ResponseType): Unit = {
     val securedDoc = createSecuredOperation(scopes)(doc)
-    super.putWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
+    putWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
   }
 
   def patchWithPermission[RequestType: Manifest, ResponseType: Manifest](route: String,
@@ -58,7 +58,7 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
                                                                   (callback: RequestType => ResponseType): Unit = {
 
     val securedDoc = createSecuredOperation(scopes)(doc)
-    super.patchWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
+    patchWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
   }
 
   def headWithPermission[RequestType: Manifest, ResponseType: Manifest](route: String,
@@ -70,7 +70,7 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
                                                                  (callback: RequestType => ResponseType): Unit = {
 
     val securedDoc = createSecuredOperation(scopes)(doc)
-    super.headWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
+    headWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
   }
 
   def deleteWithPermission[RequestType: Manifest, ResponseType: Manifest](route: String,
@@ -81,7 +81,7 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
                                                                    (doc: Operation => Unit)
                                                                    (callback: RequestType => ResponseType): Unit = {
     val securedDoc = createSecuredOperation(scopes)(doc)
-    super.deleteWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
+    deleteWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
   }
 
   def optionsWithPermission[RequestType: Manifest, ResponseType: Manifest](route: String,
@@ -92,7 +92,7 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
                                                                     (doc: Operation => Unit)
                                                                     (callback: RequestType => ResponseType): Unit = {
     val securedDoc = createSecuredOperation(scopes)(doc)
-    super.optionsWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
+    optionsWithDoc(route, name, admin, routeIndex)(securedDoc)(callback)
   }
 
   protected def createSecuredOperation(scopes: Seq[Permission])(doc: Operation => Unit) = {
