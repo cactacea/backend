@@ -5,8 +5,6 @@ import io.github.cactacea.backend.core.helpers.DAOSpec
 
 class SocialAccountsDAOSpec extends DAOSpec {
 
-  val socialAccountsDAO: SocialAccountsDAO = injector.instance[SocialAccountsDAO]
-
   test("create find exist delete") {
 
     // create

@@ -9,8 +9,6 @@ class AccountReportsDAOSpec extends DAOSpec {
 
   import db._
 
-  val userReportsDAO: AccountReportsDAO = injector.instance[AccountReportsDAO]
-
   test("create") {
 
     val sessionAccount = createAccount("AccountReportsDAOSpec1")

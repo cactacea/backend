@@ -9,10 +9,6 @@ class CommentReportsDAOSpec extends DAOSpec {
 
   import db._
 
-  val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
-  val commentsDAO: CommentsDAO = injector.instance[CommentsDAO]
-  val commentReportsDAO: CommentReportsDAO = injector.instance[CommentReportsDAO]
-
   test("create") {
 
     val sessionAccount1 = createAccount("CommentReportsDAOSpec1")

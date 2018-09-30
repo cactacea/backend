@@ -7,14 +7,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, Fe
 
 class CommentsDAOSpec extends DAOSpec {
 
-  val commentLikesDAO = injector.instance[CommentLikesDAO]
-  val commentsDAO: CommentsDAO = injector.instance[CommentsDAO]
-  val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
-
-  val pushNotificationSettingDAO: PushNotificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
-  val devicesDAO: DevicesDAO = injector.instance[DevicesDAO]
-  val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
-  val pushNotificationsDAO: PushNotificationsDAO = injector.instance[PushNotificationsDAO]
 
 
   test("create") {

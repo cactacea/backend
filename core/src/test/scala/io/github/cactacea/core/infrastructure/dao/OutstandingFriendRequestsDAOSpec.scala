@@ -9,8 +9,6 @@ class OutstandingFriendRequestsDAOSpec extends DAOSpec {
 
   import db._
 
-  val outstandingFriendRequestsDAO: FriendRequestsStatusDAO = injector.instance[FriendRequestsStatusDAO]
-
   test("create") {
 
     val sessionAccount = createAccount("OutstandingFriendRequestsDAOSpec1")

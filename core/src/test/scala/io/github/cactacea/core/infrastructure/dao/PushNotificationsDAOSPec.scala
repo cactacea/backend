@@ -7,19 +7,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.MessageId
 
 class PushNotificationsDAOSPec extends DAOSpec {
 
-  val groupsDAO: GroupsDAO = injector.instance[GroupsDAO]
-  val groupAccountsDAO: GroupAccountsDAO = injector.instance[GroupAccountsDAO]
-  val messagesDAO: MessagesDAO = injector.instance[MessagesDAO]
-  val accountMessagesDAO: AccountMessagesDAO = injector.instance[AccountMessagesDAO]
-  val pushNotificationsDAO: PushNotificationsDAO = injector.instance[PushNotificationsDAO]
-  val pushNotificationSettingDAO: PushNotificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
-  val devicesDAO: DevicesDAO = injector.instance[DevicesDAO]
-  val accountsDAO: AccountsDAO = injector.instance[AccountsDAO]
-  val accountGroupsDAO: AccountGroupsDAO = injector.instance[AccountGroupsDAO]
-  val feedsDAO: FeedsDAO = injector.instance[FeedsDAO]
-  val accountFeedsDAO: AccountFeedsDAO = injector.instance[AccountFeedsDAO]
-  val followersDAO: FollowersDAO = injector.instance[FollowersDAO]
-
   test("findMessage - direct message") {
 
     val sessionAccount = createAccount("PushNotificationsDAOSPec1")

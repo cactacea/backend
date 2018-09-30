@@ -9,8 +9,6 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
 
   import db._
 
-  val pushNotificationSettingsDAO: PushNotificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
-
   test("create") {
 
     val sessionAccount1 = createAccount("PushNotificationSettingsDAOSpec1")

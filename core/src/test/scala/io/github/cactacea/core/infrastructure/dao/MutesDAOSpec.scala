@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.infrastructure.models.Mutes
 
 class MutesDAOSpec extends DAOSpec {
 
-  val mutesDAO: MutesDAO = injector.instance[MutesDAO]
-
   import db._
 
   test("create") {
