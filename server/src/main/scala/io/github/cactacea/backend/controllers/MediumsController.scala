@@ -10,19 +10,16 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{MediumNotFound, NotAcceptableMimeTypeFound}
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
-import io.github.cactacea.backend.swagger.CactaceaDocController
+import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.media.MediaExtractor
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
+class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  protected implicit val swagger = s
-
-
-  protected val tagName = "Mediums"
+  implicit val swagger = s
 
   @Inject private var mediumsService: MediumsService = _
 
@@ -34,12 +31,12 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
 
     postWithPermission("/mediums")(Permissions.media) { o =>
       o.summary("Upload a medium")
-        .tag(tagName)
+        .tag(mediumsTag)
+        .operationId("uploadMedium")
         .responseWith[MediumCreated](Status.Ok.code, successfulMessage)
         .responseWith(Status.BadRequest.code, NotAcceptableMimeTypeFound.message)
 
     } { request: Request =>
-
       val multiParams = RequestUtils.multiParams(request)
       multiParams.toList.flatMap({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) }).headOption match {
         case Some(media) =>
@@ -56,8 +53,9 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
     }
 
     deleteWithPermission("/mediums/:id")(Permissions.media) { o =>
-      o.summary("Remove this medium")
-        .tag(tagName)
+      o.summary("Delete this medium")
+        .tag(mediumsTag)
+        .operationId("deleteMedium")
         .request[DeleteMedium]
         .responseWith(Status.NoContent.code, MediumNotFound.message)
 

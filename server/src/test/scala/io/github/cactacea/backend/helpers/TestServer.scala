@@ -28,7 +28,6 @@ class TestServer extends BaseServer {
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, MediumsController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, MessagesController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, MutesController]
-      .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, ReportsController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, RequestsController]
       .add[ApplicationFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, SessionController]
       .add[ApplicationFilter, AuthFilter, ETagFilter, CorsFilter, SocialAccountSettingsController]

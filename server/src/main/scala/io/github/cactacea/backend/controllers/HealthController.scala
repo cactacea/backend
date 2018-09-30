@@ -3,14 +3,13 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Request
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.swagger.CactaceaDocController
+import io.github.cactacea.backend.swagger.CactaceaController
 import io.swagger.models.Swagger
 
 @Singleton
-class HealthController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
+class HealthController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  protected implicit val swagger = s
-
+  implicit val swagger = s
 
   prefix(apiPrefix) {
 

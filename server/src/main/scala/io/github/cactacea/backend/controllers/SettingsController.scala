@@ -3,19 +3,18 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.models.requests.setting.{PostActiveStatus, PostDevicePushToken, PutAdvertisementSetting, PutNotificationSetting}
-import io.github.cactacea.backend.swagger.CactaceaDocController
+import io.github.cactacea.backend.core.application.services._
+import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
+import io.github.cactacea.backend.models.requests.setting.{PostActiveStatus, PostDevicePushToken, PutNotificationSetting}
+import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
-import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.models.{PushNotificationSetting}
 import io.swagger.models.Swagger
 
 @Singleton
-class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
+class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  protected implicit val swagger = s
-
+  implicit val swagger = s
 
   protected val tagName = "Settings"
 
@@ -27,8 +26,8 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     getWithPermission("/session/push_notification") (Permissions.basic) { o =>
       o.summary("Get this push notification settings")
         .tag(tagName)
+        .operationId("findSessionPushNotificationSettings")
         .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
-
     } { _: Request =>
       settingsService.findPushNotificationSettings(
         SessionContext.id
@@ -38,8 +37,8 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     putWithPermission("/session/push_notification") (Permissions.basic) { o =>
       o.summary("Update ths push notification settings")
         .tag(tagName)
+        .operationId("updateSessionPushNotificationSettings")
         .responseWith(Status.NoContent.code, successfulMessage)
-
     } { request: PutNotificationSetting =>
       settingsService.updatePushNotificationSettings(
         request.groupInvitation,
@@ -55,9 +54,9 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     postWithPermission("/session/push_token") (Permissions.basic) { o =>
       o.summary("Update device push token")
         .tag(tagName)
+        .operationId("updateSessionPushToken")
         .request[PostDevicePushToken]
         .responseWith(Status.NoContent.code, successfulMessage)
-
     } { request: PostDevicePushToken =>
       deviceTokenService.update(
         request.pushToken,
@@ -69,9 +68,9 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     postWithPermission("/session/status") (Permissions.basic) { o =>
       o.summary("Update device status")
         .tag(tagName)
+        .operationId("updateSessionDeviceStatus")
         .request[PostActiveStatus]
         .responseWith(Status.NoContent.code, successfulMessage)
-
     } { request: PostActiveStatus =>
       deviceTokenService.update(
         request.status,

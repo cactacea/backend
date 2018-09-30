@@ -5,21 +5,19 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
-import io.github.cactacea.backend.swagger.CactaceaDocController
+import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.core.application.services.BlocksService
 import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaDocController {
+class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  protected implicit val swagger = s
-
-
-  protected val tagName = "Blocks"
+  implicit val swagger = s
 
   @Inject private var blocksService: BlocksService = _
 
@@ -27,10 +25,10 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
 
     getWithPermission("/session/blocks")(Permissions.basic) { o =>
       o.summary("Get blocking accounts list")
-        .tag(tagName)
+        .tag(blocksTag)
+        .operationId("findBlockingAccounts")
         .request[GetSessionBlocks]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-
     } { request: GetSessionBlocks =>
       blocksService.find(
         request.since,
@@ -42,13 +40,12 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
 
     postWithPermission("/accounts/:id/blocks")(Permissions.relationships) { o =>
       o.summary("Block a account")
-        .tag(tagName)
+        .tag(blocksTag)
+        .operationId("block")
         .request[PostBlock]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[CanNotSpecifyMyself.type]](CanNotSpecifyMyself.status.code, CanNotSpecifyMyself.message)
-        .responseWith[Array[AccountAlreadyBlocked.type]](AccountAlreadyBlocked.status.code, AccountAlreadyBlocked.message)
-        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.BadRequest, Array(CanNotSpecifyMyself, AccountAlreadyBlocked))
+        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
     } { request: PostBlock =>
       blocksService.create(
         request.id,
@@ -58,13 +55,12 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
 
     deleteWithPermission("/accounts/:id/blocks")(Permissions.relationships) { o =>
       o.summary("Unblock a account")
-        .tag(tagName)
+        .tag(blocksTag)
+        .operationId("unblock")
         .request[DeleteBlock]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWith[Array[CanNotSpecifyMyself.type]](CanNotSpecifyMyself.status.code, CanNotSpecifyMyself.message)
-        .responseWith[Array[AccountNotBlocked.type]](AccountNotBlocked.status.code, AccountNotBlocked.message)
-        .responseWith[Array[AccountNotFound.type]](AccountNotFound.status.code, AccountNotFound.message)
-
+        .responseWithArray[CactaceaError](Status.BadRequest, Array(CanNotSpecifyMyself, AccountNotBlocked))
+        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
     } { request: DeleteBlock =>
       blocksService.delete(
         request.id,

@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.5.1-SNAPSHOT"
+  val cactacea = "0.6.1-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -19,12 +19,6 @@ concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
 parallelExecution in ThisBuild := false
 fork in ThisBuild := true
 
-
-enablePlugins(BuildInfoPlugin)
-buildInfoPackage := "io.github.cactacea.backend"
-buildInfoKeys := Seq[BuildInfoKey](name, version)
-
-
 lazy val root = (project in file("."))
   .settings(
     name := "backend"
@@ -37,7 +31,7 @@ lazy val root = (project in file("."))
 lazy val doc = (project in file("doc"))
   .settings(
     name := "doc",
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DocServerApp")
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DocServerApp"),
   )
   .settings(
     version in Docker := "latest",
@@ -57,6 +51,11 @@ lazy val server = (project in file("server"))
     name := "server"
   )
   .settings(
+    buildInfoPackage := "io.github.cactacea.backend",
+    buildInfoKeys := Seq[BuildInfoKey](version),
+    buildInfoObject := "CactaceaBuildInfo"
+  )
+  .settings(
     libraryDependencies ++= Seq(
       "com.github.finagle" %% "finagle-oauth2" % "18.4.0",
       "mysql" % "mysql-connector-java" % "6.0.6"
@@ -68,7 +67,9 @@ lazy val server = (project in file("server"))
   .settings(logLibrarySetting)
   .settings(testLibrarySetting)
   .enablePlugins(FlywayPlugin)
+  .enablePlugins(BuildInfoPlugin)
   .dependsOn(core % "compile->compile;test->test")
+
 
 lazy val core = (project in file("core"))
   .settings(

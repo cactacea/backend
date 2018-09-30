@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.helpers.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.dao.MessagesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, MediumId}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{GroupNotFound, MediumNotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotJoined, GroupNotFound, MediumNotFound}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 
 class MessagesRepositorySpec extends RepositorySpec {
@@ -39,7 +39,7 @@ class MessagesRepositorySpec extends RepositorySpec {
 
     assert(intercept[CactaceaException] {
       Await.result(messagesRepository.create(GroupId(0L), Some("test"), None, user.id.toSessionId))
-    }.error == GroupNotFound)
+    }.error == AccountNotJoined)
 
   }
 
