@@ -15,7 +15,7 @@ import io.swagger.models.Swagger
 @Singleton
 class SocialAccountSettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
 
-  implicit val swagger = s
+  implicit val swagger: Swagger = s
 
   @Inject private var settingsService: SettingsService = _
 
