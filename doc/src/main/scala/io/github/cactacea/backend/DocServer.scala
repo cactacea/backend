@@ -7,6 +7,7 @@ import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.utils.filters._
 import io.cactacea.finagger.DocsController
+import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
 
 class DocServer extends BaseServer {
 
@@ -43,5 +44,10 @@ class DocServer extends BaseServer {
   }
 
   addFrameworkModule(CactaceaSwaggerModule)
+
+
+  override def warmup() {
+    handle[DatabaseMigrationHandler]()
+  }
 
 }
