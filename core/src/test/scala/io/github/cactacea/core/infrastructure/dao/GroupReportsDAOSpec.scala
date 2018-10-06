@@ -15,10 +15,10 @@ class GroupReportsDAOSpec extends DAOSpec {
     val reportedUser = createAccount("GroupReportsDAOSpec2")
     val reportContent = Some("report content")
 
-    val groupId = Await.result(groupsDAO.create(sessionAccount.id.toSessionId))
-    val groupReportId = Await.result(groupReportsDAO.create(groupId, ReportType.spam, reportContent, reportedUser.id.toSessionId))
+    val groupId = execute(groupsDAO.create(sessionAccount.id.toSessionId))
+    val groupReportId = execute(groupReportsDAO.create(groupId, ReportType.spam, reportContent, reportedUser.id.toSessionId))
 
-    val result = Await.result(db.run(query[GroupReports].filter(_.id == lift(groupReportId)))).head
+    val result = execute(db.run(query[GroupReports].filter(_.id == lift(groupReportId)))).head
     assert(result.id == groupReportId)
     assert(result.by == reportedUser.id)
     assert(result.groupId == groupId)
@@ -32,10 +32,10 @@ class GroupReportsDAOSpec extends DAOSpec {
     val reportedUser = createAccount("GroupReportsDAOSpec4")
     val reportContent = Some("report content")
 
-    val groupId = Await.result(groupsDAO.create(sessionAccount.id.toSessionId))
-    Await.result(groupReportsDAO.create(groupId, ReportType.spam, reportContent, reportedUser.id.toSessionId))
+    val groupId = execute(groupsDAO.create(sessionAccount.id.toSessionId))
+    execute(groupReportsDAO.create(groupId, ReportType.spam, reportContent, reportedUser.id.toSessionId))
 
-    val result = Await.result(groupReportsDAO.delete(groupId))
+    val result = execute(groupReportsDAO.delete(groupId))
     assert(result == true)
 
   }

@@ -13,26 +13,26 @@ class FollowersDAOSpec extends DAOSpec {
     val sessionAccount = createAccount("FollowersDAOSpec1")
     val followAccount1 = createAccount("FollowersDAOSpec2")
     val followAccount2 = createAccount("FollowersDAOSpec3")
-    Await.result(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
-    Await.result(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
+    execute(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
+    execute(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
-    val result1 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount1.id))))).headOption
-    val result2 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount2.id))))).headOption
+    val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount1.id))))).headOption
+    val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount2.id))))).headOption
     assert(result1.isDefined == true)
     assert(result2.isDefined == true)
 
-    assert(Await.result(accountsDAO.find(sessionAccount.id.toSessionId)).get.followerCount == 2)
+    assert(execute(accountsDAO.find(sessionAccount.id.toSessionId)).get.followerCount == 2)
 
-    Await.result(followersDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
-    Await.result(followersDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
+    execute(followersDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
+    execute(followersDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
 
-    assert(Await.result(accountsDAO.find(sessionAccount.id.toSessionId)).get.followerCount == 0)
+    assert(execute(accountsDAO.find(sessionAccount.id.toSessionId)).get.followerCount == 0)
 
-    Await.result(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
-    Await.result(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
+    execute(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
+    execute(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
-    val result3 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount1.id))))).headOption
-    val result4 = Await.result(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount2.id))))).headOption
+    val result3 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount1.id))))).headOption
+    val result4 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount2.id))))).headOption
     assert(result3.isDefined == true)
     assert(result4.isDefined == true)
 
@@ -43,12 +43,12 @@ class FollowersDAOSpec extends DAOSpec {
     val sessionAccount = createAccount("FollowersDAOSpec4")
     val followAccount1 = createAccount("FollowersDAOSpec5")
     val followAccount2 = createAccount("FollowersDAOSpec6")
-    Await.result(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
-    Await.result(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
-    Await.result(followersDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
-    Await.result(followersDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
-    val result1 = Await.result(db.run(quote(query[Followers].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id)))))
-    val result2 = Await.result(db.run(quote(query[Followers].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id)))))
+    execute(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
+    execute(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
+    execute(followersDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
+    execute(followersDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
+    val result1 = execute(db.run(quote(query[Followers].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id)))))
+    val result2 = execute(db.run(quote(query[Followers].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id)))))
     assert(result1.isEmpty)
     assert(result2.isEmpty)
 
@@ -64,14 +64,14 @@ class FollowersDAOSpec extends DAOSpec {
     val sessionAccount6 = createAccount("FollowersDAOSpec12")
     val followedUser = createAccount("FollowersDAOSpec13")
 
-    Await.result(followersDAO.create(followedUser.id, sessionAccount1.id.toSessionId))
-    Await.result(followersDAO.create(followedUser.id, sessionAccount2.id.toSessionId))
-    Await.result(followersDAO.create(followedUser.id, sessionAccount3.id.toSessionId))
-    Await.result(followersDAO.create(followedUser.id, sessionAccount4.id.toSessionId))
-    Await.result(followersDAO.create(followedUser.id, sessionAccount5.id.toSessionId))
-    Await.result(followersDAO.create(followedUser.id, sessionAccount6.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount1.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount2.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount3.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount4.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount5.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount6.id.toSessionId))
 
-    val result1 = Await.result(followersDAO.findAll(followedUser.id, None, None, Some(3), sessionAccount1.id.toSessionId))
+    val result1 = execute(followersDAO.findAll(followedUser.id, None, None, Some(3), sessionAccount1.id.toSessionId))
     val account1 = result1(0)._1
     val account2 = result1(1)._1
     val account3 = result1(2)._1
@@ -80,7 +80,7 @@ class FollowersDAOSpec extends DAOSpec {
     assert(account2.id == sessionAccount5.id)
     assert(account3.id == sessionAccount4.id)
 
-    val result2 = Await.result(followersDAO.findAll(followedUser.id, Some(follower1.id.value), None, Some(3), sessionAccount1.id.toSessionId))
+    val result2 = execute(followersDAO.findAll(followedUser.id, Some(follower1.id.value), None, Some(3), sessionAccount1.id.toSessionId))
     val account4 = result2(0)._1
     val account5 = result2(1)._1
     val account6 = result2(2)._1

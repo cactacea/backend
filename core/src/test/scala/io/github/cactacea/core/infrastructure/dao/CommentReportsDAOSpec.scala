@@ -14,12 +14,12 @@ class CommentReportsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("CommentReportsDAOSpec1")
     val sessionAccount2 = createAccount("CommentReportsDAOSpec2")
 
-    val feedId = Await.result(feedsDAO.create("message", None, None, FeedPrivacyType.followers, false, None, sessionAccount1.id.toSessionId))
-    val commentId = Await.result(commentsDAO.create(feedId, "0123456789" * 100, sessionAccount1.id.toSessionId))
+    val feedId = execute(feedsDAO.create("message", None, None, FeedPrivacyType.followers, false, None, sessionAccount1.id.toSessionId))
+    val commentId = execute(commentsDAO.create(feedId, "0123456789" * 100, sessionAccount1.id.toSessionId))
     val reportContent = Some("report content")
-    val commentReportId = Await.result(commentReportsDAO.create(commentId, ReportType.spam, reportContent, sessionAccount2.id.toSessionId))
+    val commentReportId = execute(commentReportsDAO.create(commentId, ReportType.spam, reportContent, sessionAccount2.id.toSessionId))
 
-    val result = Await.result(db.run(query[CommentReports].filter(_.id == lift(commentReportId)))).head
+    val result = execute(db.run(query[CommentReports].filter(_.id == lift(commentReportId)))).head
     assert(result.id == commentReportId)
     assert(result.by == sessionAccount2.id)
     assert(result.commentId == commentId)

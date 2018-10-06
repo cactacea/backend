@@ -27,10 +27,10 @@ class AccountFeedsDAOSpec extends DAOSpec {
     val contentWarning = true
 
     // create feed
-    val feedId = Await.result(db.transaction(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId)))
+    val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
     // create follows
-    Await.result(db.transaction(
+    execute(
       for {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId)
@@ -38,13 +38,13 @@ class AccountFeedsDAOSpec extends DAOSpec {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId)
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId)
       } yield (Unit)
-    ))
+    )
 
     // create account feeds
-    Await.result(db.transaction(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId)))
+    execute(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId))
 
     val q = quote { query[AccountFeeds].filter(_.feedId == lift(feedId)).size}
-    val result = Await.result(db.run(q))
+    val result = execute(db.run(q))
     assert(result == 5)
 
   }
@@ -67,10 +67,10 @@ class AccountFeedsDAOSpec extends DAOSpec {
     val contentWarning = true
 
     // create feed
-    val feedId = Await.result(db.transaction(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId)))
+    val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
     // create follows
-    Await.result(
+    execute(
       db.transaction(
         for {
           _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)
@@ -83,7 +83,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     )
 
     // create account feeds
-    Await.result(db.transaction(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId)))
+    execute(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId))
 
     val ids =  List(
       sessionAccount1.id,
@@ -94,11 +94,11 @@ class AccountFeedsDAOSpec extends DAOSpec {
     )
 
     // update notified
-    Await.result(db.transaction(accountFeedsDAO.update(feedId, ids, true)))
+    execute(accountFeedsDAO.update(feedId, ids, true))
 
     //
     val q = quote { query[AccountFeeds].filter(_.feedId == lift(feedId)).filter(_.notified == true).size}
-    val result = Await.result(db.run(q))
+    val result = execute(db.run(q))
     assert(result == ids.size)
 
 

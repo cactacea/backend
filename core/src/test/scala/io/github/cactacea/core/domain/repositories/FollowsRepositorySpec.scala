@@ -17,18 +17,18 @@ class FollowsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FollowRepositorySpec1", "session user password", "session user udid")
     val followedUser = signUp("FollowRepositorySpec2", "followed user password", "followed user udid")
 
-    Await.result(followerRepository.create(followedUser.id, sessionUser.id.toSessionId))
+    execute(followerRepository.create(followedUser.id, sessionUser.id.toSessionId))
 
-    val result = Await.result(followerRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
+    val result = execute(followerRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
     assert(result.size == 1)
 
     val resultFollowedUser = result(0)
     assert(followedUser.id == resultFollowedUser.id)
 
-    val account1 = Await.result(accountsRepository.find(sessionUser.id.toSessionId))
+    val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
     assert(account1.followCount == Some(1L))
 
-    val account2 = Await.result(accountsRepository.find(followedUser.id.toSessionId))
+    val account2 = execute(accountsRepository.find(followedUser.id.toSessionId))
     assert(account2.followerCount == Some(0L))
 
   }
@@ -38,10 +38,10 @@ class FollowsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FollowRepositorySpec3", "session user password", "session user udid")
     val blockingUser = signUp("FollowRepositorySpec4", "blocked user password", "blocked user udid")
 
-    Await.result(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
+    execute(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
     val session = signUp("FollowRepositorySpec4-2", "session password", "udid")
     assert(intercept[CactaceaException] {
-      Await.result(followerRepository.create(blockingUser.id, sessionUser.id.toSessionId))
+      execute(followerRepository.create(blockingUser.id, sessionUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -51,10 +51,10 @@ class FollowsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FollowRepositorySpec5", "session user password", "session user udid")
     val user = signUp("FollowRepositorySpec6", "user password", "user udid")
 
-    Await.result(followerRepository.create(user.id, sessionUser.id.toSessionId))
+    execute(followerRepository.create(user.id, sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(followerRepository.create(user.id, sessionUser.id.toSessionId))
+      execute(followerRepository.create(user.id, sessionUser.id.toSessionId))
     }.error == AccountAlreadyFollowed)
 
   }
@@ -64,7 +64,7 @@ class FollowsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FollowRepositorySpec7", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(followerRepository.create(sessionUser.id, sessionUser.id.toSessionId))
+      execute(followerRepository.create(sessionUser.id, sessionUser.id.toSessionId))
     }.error == CanNotSpecifyMyself)
 
   }
@@ -74,14 +74,14 @@ class FollowsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FollowRepositorySpec8", "session user password", "session user udid")
     val user = signUp("FollowRepositorySpec9", "user password", "user udid")
 
-    Await.result(followerRepository.create(user.id, sessionUser.id.toSessionId))
+    execute(followerRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val account1 = Await.result(accountsRepository.find(sessionUser.id.toSessionId))
+    val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
     assert(account1.followCount == Some(1L))
 
-    Await.result(followerRepository.delete(user.id, sessionUser.id.toSessionId))
+    execute(followerRepository.delete(user.id, sessionUser.id.toSessionId))
 
-    val account2 = Await.result(accountsRepository.find(sessionUser.id.toSessionId))
+    val account2 = execute(accountsRepository.find(sessionUser.id.toSessionId))
     assert(account2.followCount == Some(0L))
 
   }
@@ -92,7 +92,7 @@ class FollowsRepositorySpec extends RepositorySpec {
     val user = signUp("FollowRepositorySpec11", "user password", "user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(followerRepository.delete(user.id, sessionUser.id.toSessionId))
+      execute(followerRepository.delete(user.id, sessionUser.id.toSessionId))
     }.error == AccountNotFollowed)
 
   }
@@ -102,7 +102,7 @@ class FollowsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FollowRepositorySpec12", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(followerRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
+      execute(followerRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -112,7 +112,7 @@ class FollowsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FollowRepositorySpec13", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(followerRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
+      execute(followerRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
     }.error == CanNotSpecifyMyself)
 
   }
@@ -126,19 +126,19 @@ class FollowsRepositorySpec extends RepositorySpec {
     val followedUser4 = signUp("FollowRepositorySpec18", "user password 4", "user udid 4")
     val followedUser5 = signUp("FollowRepositorySpec19", "user password 5", "user udid 5")
 
-    Await.result(followerRepository.create(followedUser1.id, sessionUser.id.toSessionId))
-    Await.result(followerRepository.create(followedUser2.id, sessionUser.id.toSessionId))
-    Await.result(followerRepository.create(followedUser3.id, sessionUser.id.toSessionId))
-    Await.result(followerRepository.create(followedUser4.id, sessionUser.id.toSessionId))
-    Await.result(followerRepository.create(followedUser5.id, sessionUser.id.toSessionId))
+    execute(followerRepository.create(followedUser1.id, sessionUser.id.toSessionId))
+    execute(followerRepository.create(followedUser2.id, sessionUser.id.toSessionId))
+    execute(followerRepository.create(followedUser3.id, sessionUser.id.toSessionId))
+    execute(followerRepository.create(followedUser4.id, sessionUser.id.toSessionId))
+    execute(followerRepository.create(followedUser5.id, sessionUser.id.toSessionId))
 
-    val follower1 = Await.result(followerRepository.findAll(None, None, Some(3), sessionUser.id.toSessionId))
+    val follower1 = execute(followerRepository.findAll(None, None, Some(3), sessionUser.id.toSessionId))
     assert(follower1.size == 3)
     assert(follower1(0).id == followedUser5.id)
     assert(follower1(1).id == followedUser4.id)
     assert(follower1(2).id == followedUser3.id)
 
-    val follower2 = Await.result(followerRepository.findAll(Some(follower1(2).next), None, Some(3), sessionUser.id.toSessionId))
+    val follower2 = execute(followerRepository.findAll(Some(follower1(2).next), None, Some(3), sessionUser.id.toSessionId))
     assert(follower2.size == 2)
     assert(follower2(0).id == followedUser2.id)
     assert(follower2(1).id == followedUser1.id)
@@ -155,19 +155,19 @@ class FollowsRepositorySpec extends RepositorySpec {
     val followedUser4 = signUp("FollowRepositorySpec25", "user password 4", "user udid 4")
     val followedUser5 = signUp("FollowRepositorySpec26", "user password 5", "user udid 5")
 
-    Await.result(followerRepository.create(followedUser1.id, user.id.toSessionId))
-    Await.result(followerRepository.create(followedUser2.id, user.id.toSessionId))
-    Await.result(followerRepository.create(followedUser3.id, user.id.toSessionId))
-    Await.result(followerRepository.create(followedUser4.id, user.id.toSessionId))
-    Await.result(followerRepository.create(followedUser5.id, user.id.toSessionId))
+    execute(followerRepository.create(followedUser1.id, user.id.toSessionId))
+    execute(followerRepository.create(followedUser2.id, user.id.toSessionId))
+    execute(followerRepository.create(followedUser3.id, user.id.toSessionId))
+    execute(followerRepository.create(followedUser4.id, user.id.toSessionId))
+    execute(followerRepository.create(followedUser5.id, user.id.toSessionId))
 
-    val follower1 = Await.result(followerRepository.findAll(user.id, None, None, Some(3), sessionUser.id.toSessionId))
+    val follower1 = execute(followerRepository.findAll(user.id, None, None, Some(3), sessionUser.id.toSessionId))
     assert(follower1.size == 3)
     assert(follower1(0).id == followedUser5.id)
     assert(follower1(1).id == followedUser4.id)
     assert(follower1(2).id == followedUser3.id)
 
-    val follower2 = Await.result(followerRepository.findAll(user.id, Some(follower1(2).next), None, Some(3), sessionUser.id.toSessionId))
+    val follower2 = execute(followerRepository.findAll(user.id, Some(follower1(2).next), None, Some(3), sessionUser.id.toSessionId))
     assert(follower2.size == 2)
     assert(follower2(0).id == followedUser2.id)
     assert(follower2(1).id == followedUser1.id)

@@ -20,10 +20,10 @@ class FeedsRepositorySpec extends RepositorySpec {
     val tags = Some(List("tag1", "tag2", "tag3"))
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
-    val (id, url) = Await.result(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, url) = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
-    val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feed = Await.result(feedsRepository.find(feedId, session.id.toSessionId))
+    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feed = execute(feedsRepository.find(feedId, session.id.toSessionId))
     assert(feed.message == "feed message")
     assert(feed.tags == tags)
     assert(feed.mediums.map(_.map(_.id)) == Some(List(id)))
@@ -44,7 +44,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val mediums = Some(List(MediumId(0L)))
 
     assert(intercept[CactaceaException] {
-      Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+      execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     }.error == MediumNotFound)
 
   }
@@ -54,14 +54,14 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec3", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id1, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id1, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id1))
-    val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
     val tags2 = Some(List("tag4", "tag5", "tag6"))
-    val (id2, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id2, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums2 = Some(List(id2))
-    Await.result(feedsRepository.update(feedId, "feed message 2", mediums2, tags2, FeedPrivacyType.followers, true, None, session.id.toSessionId))
+    execute(feedsRepository.update(feedId, "feed message 2", mediums2, tags2, FeedPrivacyType.followers, true, None, session.id.toSessionId))
     // TODO : Check
 
   }
@@ -71,12 +71,12 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec4", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
-    Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(feedsRepository.update(FeedId(0L), "feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+      execute(feedsRepository.update(FeedId(0L), "feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     }.error == FeedNotFound)
 
   }
@@ -86,12 +86,12 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec5", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
-    val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(feedsRepository.update(feedId, "feed message", Some(List(MediumId(0L))), tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+      execute(feedsRepository.update(feedId, "feed message", Some(List(MediumId(0L))), tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     }.error == MediumNotFound)
 
   }
@@ -102,12 +102,12 @@ class FeedsRepositorySpec extends RepositorySpec {
     val user = signUp("FeedsRepositorySpec6-2", "user password", "user udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
-    val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val reportContent = Some("report content")
-    Await.result(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, reportContent, user.id.toSessionId))
-    Await.result(feedsRepository.delete(feedId, session.id.toSessionId))
+    execute(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, reportContent, user.id.toSessionId))
+    execute(feedsRepository.delete(feedId, session.id.toSessionId))
     // TODO : Check
 
   }
@@ -117,7 +117,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec7", "session password", "udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(feedsRepository.delete(FeedId(0L), session.id.toSessionId))
+      execute(feedsRepository.delete(FeedId(0L), session.id.toSessionId))
     }.error == FeedNotFound)
 
   }
@@ -127,10 +127,10 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec8", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
-    val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val result = Await.result(feedsRepository.find(feedId, session.id.toSessionId))
+    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val result = execute(feedsRepository.find(feedId, session.id.toSessionId))
     assert(result.id == feedId)
 
   }
@@ -139,13 +139,13 @@ class FeedsRepositorySpec extends RepositorySpec {
 
     val session = signUp("FeedsRepositorySpec9", "session password", "udid")
     val user = signUp("FeedsRepositorySpec9-2", "user password", "udid")
-    val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId4 = Await.result(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId5 = Await.result(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId1 = execute(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId2 = execute(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId3 = execute(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId4 = execute(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId5 = execute(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
-    val result1 = Await.result(feedsRepository.findAll(session.id, None, None, Some(3), user.id.toSessionId))
+    val result1 = execute(feedsRepository.findAll(session.id, None, None, Some(3), user.id.toSessionId))
     assert(result1.size == 3)
     val feed1 = result1(0)
     val feed2 = result1(1)
@@ -154,7 +154,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     assert(feed2.id == feedId4)
     assert(feed3.id == feedId3)
 
-    val result2 = Await.result(feedsRepository.findAll(session.id, Some(feed3.next), None, Some(3), user.id.toSessionId))
+    val result2 = execute(feedsRepository.findAll(session.id, Some(feed3.next), None, Some(3), user.id.toSessionId))
     assert(result2.size == 2)
     val feed4 = result2(0)
     val feed5 = result2(1)
@@ -168,7 +168,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec10", "session password", "udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(feedsRepository.findAll(AccountId(0L), None, None, Some(3), session.id.toSessionId))
+      execute(feedsRepository.findAll(AccountId(0L), None, None, Some(3), session.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -177,13 +177,13 @@ class FeedsRepositorySpec extends RepositorySpec {
   test("find session's feeds") {
 
     val session = signUp("FeedsRepositorySpec11", "session password", "udid")
-    val feedId1 = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId2 = Await.result(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId3 = Await.result(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId4 = Await.result(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId5 = Await.result(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId1 = execute(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId2 = execute(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId3 = execute(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId4 = execute(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId5 = execute(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
-    val result1 = Await.result(feedsRepository.findAll(None, None, Some(3), session.id.toSessionId))
+    val result1 = execute(feedsRepository.findAll(None, None, Some(3), session.id.toSessionId))
     assert(result1.size == 3)
     val feed1 = result1(0)
     val feed2 = result1(1)
@@ -192,7 +192,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     assert(feed2.id == feedId4)
     assert(feed3.id == feedId3)
 
-    val result2 = Await.result(feedsRepository.findAll(Some(feed3.next), None, Some(3), session.id.toSessionId))
+    val result2 = execute(feedsRepository.findAll(Some(feed3.next), None, Some(3), session.id.toSessionId))
     assert(result2.size == 2)
     val feed4 = result2(0)
     val feed5 = result2(1)
@@ -204,8 +204,8 @@ class FeedsRepositorySpec extends RepositorySpec {
   test("find a feed") {
 
     val session = signUp("FeedsRepositorySpec12", "session password", "udid")
-    val feedId = Await.result(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val result = Await.result(feedsRepository.find(feedId, session.id.toSessionId))
+    val feedId = execute(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val result = execute(feedsRepository.find(feedId, session.id.toSessionId))
     assert(result.id == feedId)
 
   }
@@ -214,7 +214,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
     val session = signUp("FeedsRepositorySpec13", "session password", "udid")
     assert(intercept[CactaceaException] {
-      Await.result(feedsRepository.find(FeedId(0L), session.id.toSessionId))
+      execute(feedsRepository.find(FeedId(0L), session.id.toSessionId))
     }.error == FeedNotFound)
 
   }

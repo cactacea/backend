@@ -26,22 +26,22 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
-    val account = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val account = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     // result user
     assert(account.accountName == accountName)
     assert(account.displayName == displayName)
 
     // result device
-    val devices = Await.result(devicesDAO.exist(account.id.toSessionId, udid))
+    val devices = execute(devicesDAO.exist(account.id.toSessionId, udid))
     assert(devices == true)
 
     // result notificationSettings
-    val notificationSettings = Await.result(notificationSettingsDAO.find(account.id.toSessionId))
+    val notificationSettings = execute(notificationSettingsDAO.find(account.id.toSessionId))
     assert(notificationSettings.isDefined == true)
 
     // result users
-    val users = Await.result(accountsDAO.find(account.id.toSessionId))
+    val users = execute(accountsDAO.find(account.id.toSessionId))
     assert(users.isDefined == true)
 
   }
@@ -53,8 +53,8 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
-    val result = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
-    val account = Await.result(sessionsRepository.signIn(result.accountName, password, udid,  DeviceType.ios, userAgent))
+    val result = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val account = execute(sessionsRepository.signIn(result.accountName, password, udid,  DeviceType.ios, userAgent))
 
     assert(account.displayName == displayName)
 
@@ -68,10 +68,10 @@ class SessionsRepositorySpec extends RepositorySpec {
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
 
-    Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     assert(intercept[CactaceaException] {
-      Await.result(sessionsRepository.signIn(accountName, "invalid password", udid,  DeviceType.ios, userAgent))
+      execute(sessionsRepository.signIn(accountName, "invalid password", udid,  DeviceType.ios, userAgent))
     }.error == InvalidAccountNameOrPassword)
 
   }
@@ -82,8 +82,8 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
-    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
-    val result = Await.result(sessionsRepository.signOut(udid, session.id.toSessionId))
+    val session = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val result = execute(sessionsRepository.signOut(udid, session.id.toSessionId))
     assert(result == true)
 
   }
@@ -95,15 +95,15 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
-    val session = Await.result(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val session = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     val expired = timeService.currentTimeMillis()
-    assert(Await.result(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired)) == true)
+    assert(execute(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired)) == true)
 
     // Session Timeout
-    Await.result(sessionsRepository.signOut(udid, session.id.toSessionId))
+    execute(sessionsRepository.signOut(udid, session.id.toSessionId))
     assert(intercept[CactaceaException] {
-      Await.result(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired))
+      execute(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired))
     }.error == SessionTimeout)
 
     // Terminated user
@@ -114,16 +114,16 @@ class SessionsRepositorySpec extends RepositorySpec {
         .filter(_.id == lift(sessionId))
         .update(_.accountStatus -> lift(terminated))
     }
-    Await.result(db.run(q1))
+    execute(db.run(q1))
 
     assert(intercept[CactaceaException] {
-      Await.result(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired))
+      execute(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired))
     }.error == AccountTerminated)
 
   }
 
   test("social account signUp") {
-    val result = Await.result(sessionsRepository.signUp(
+    val result = execute(sessionsRepository.signUp(
       "facebook",
       "SessionsRepositorySpec6",
       Some("SessionsRepositorySpec6"),
@@ -146,7 +146,7 @@ class SessionsRepositorySpec extends RepositorySpec {
   test("social account signIn") {
 
     assert(intercept[CactaceaException] {
-      Await.result(sessionsRepository.signIn("tokenkey", "token secret", "udid", DeviceType.ios, Some("user agent")))
+      execute(sessionsRepository.signIn("tokenkey", "token secret", "udid", DeviceType.ios, Some("user agent")))
     }.error == InvalidAccountNameOrPassword)
 
   }

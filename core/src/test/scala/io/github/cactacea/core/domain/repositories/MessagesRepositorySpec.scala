@@ -22,23 +22,23 @@ class MessagesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MessagesRepositorySpec1", "session user password", "session user udid")
     val user = signUp("MessagesRepositorySpec2", "user password", "user udid")
 
-    val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
+    val groupId = execute(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    execute(groupAccountsRepository.create(groupId, user.id.toSessionId))
 
-    val messageId = Await.result(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
+    val messageId = execute(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
 
-    Await.result(messagesRepository.delete(groupId, user.id.toSessionId))
+    execute(messagesRepository.delete(groupId, user.id.toSessionId))
     // TODO : Check
 
-    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
-    Await.result(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
+    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
+    execute(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(messagesRepository.create(groupId, None, Some(MediumId(0L)), sessionUser.id.toSessionId))
+      execute(messagesRepository.create(groupId, None, Some(MediumId(0L)), sessionUser.id.toSessionId))
     }.error == MediumNotFound)
 
     assert(intercept[CactaceaException] {
-      Await.result(messagesRepository.create(GroupId(0L), Some("test"), None, user.id.toSessionId))
+      execute(messagesRepository.create(GroupId(0L), Some("test"), None, user.id.toSessionId))
     }.error == AccountNotJoined)
 
   }
@@ -48,32 +48,32 @@ class MessagesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MessagesRepositorySpec3", "session user password", "session user udid")
     val user = signUp("MessagesRepositorySpec4", "user password", "user udid")
 
-    val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    Await.result(groupAccountsRepository.create(groupId, user.id.toSessionId))
-    val messageId = Await.result(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
-//    Await.result(deliveryMessagesRepository.create(messageId))
+    val groupId = execute(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    execute(groupAccountsRepository.create(groupId, user.id.toSessionId))
+    val messageId = execute(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
+//    execute(deliveryMessagesRepository.create(messageId))
 
-    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
-    val messageId2 = Await.result(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
-//    Await.result(deliveryMessagesRepository.create(messageId2))
+    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
+    val messageId2 = execute(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
+//    execute(deliveryMessagesRepository.create(messageId2))
 
-    val messages = Await.result(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))
+    val messages = execute(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))
     assert(messages.size == 2)
 
-    Await.result(messagesRepository.updateReadStatus(messages, user.id.toSessionId))
+    execute(messagesRepository.updateReadStatus(messages, user.id.toSessionId))
     // TODO : Check
 
     assert(intercept[CactaceaException] {
-      Await.result(messagesRepository.findAll(GroupId(0L), None, None, None, false, user.id.toSessionId))
+      execute(messagesRepository.findAll(GroupId(0L), None, None, None, false, user.id.toSessionId))
     }.error == GroupNotFound)
 
-    val messages3 = Await.result(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))
+    val messages3 = execute(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))
     assert(messages3.filter(_.unread == false).size == 2)
 
-    Await.result(messagesRepository.updateReadStatus(messages3, user.id.toSessionId))
+    execute(messagesRepository.updateReadStatus(messages3, user.id.toSessionId))
     // TODO : Check
 
-    Await.result(messagesRepository.updateReadStatus(List[Message](), user.id.toSessionId))
+    execute(messagesRepository.updateReadStatus(List[Message](), user.id.toSessionId))
     // TODO : Check
 
   }

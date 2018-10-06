@@ -26,17 +26,17 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
     val user4 = signUp("GroupInvitationsRepositorySpec5", "user password 4", "user udid 4")
     val user5 = signUp("GroupInvitationsRepositorySpec6", "user password 5", "user udid 5")
 
-    val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    Await.result(groupInvitationsRepository.create(user1.id, groupId, sessionUser.id.toSessionId))
-    Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
-    Await.result(groupInvitationsRepository.create(user3.id, groupId, sessionUser.id.toSessionId))
-    Await.result(groupInvitationsRepository.create(user4.id, groupId, sessionUser.id.toSessionId))
-    Await.result(groupInvitationsRepository.create(user5.id, groupId, sessionUser.id.toSessionId))
-    val result1 = Await.result(groupInvitationsRepository.findAll(None, None, None, user1.id.toSessionId))
-    val result2 = Await.result(groupInvitationsRepository.findAll(None, None, None, user2.id.toSessionId))
-    val result3 = Await.result(groupInvitationsRepository.findAll(None, None, None, user3.id.toSessionId))
-    val result4 = Await.result(groupInvitationsRepository.findAll(None, None, None, user4.id.toSessionId))
-    val result5 = Await.result(groupInvitationsRepository.findAll(None, None, None, user5.id.toSessionId))
+    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    execute(groupInvitationsRepository.create(user1.id, groupId, sessionUser.id.toSessionId))
+    execute(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
+    execute(groupInvitationsRepository.create(user3.id, groupId, sessionUser.id.toSessionId))
+    execute(groupInvitationsRepository.create(user4.id, groupId, sessionUser.id.toSessionId))
+    execute(groupInvitationsRepository.create(user5.id, groupId, sessionUser.id.toSessionId))
+    val result1 = execute(groupInvitationsRepository.findAll(None, None, None, user1.id.toSessionId))
+    val result2 = execute(groupInvitationsRepository.findAll(None, None, None, user2.id.toSessionId))
+    val result3 = execute(groupInvitationsRepository.findAll(None, None, None, user3.id.toSessionId))
+    val result4 = execute(groupInvitationsRepository.findAll(None, None, None, user4.id.toSessionId))
+    val result5 = execute(groupInvitationsRepository.findAll(None, None, None, user5.id.toSessionId))
     assert(result1.size == 1)
     assert(result2.size == 1)
     assert(result3.size == 1)
@@ -52,9 +52,9 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
     val user2 = signUp("GroupInvitationsRepositorySpec9", "user password 2", "user udid 2")
     val user3 = signUp("GroupInvitationsRepositorySpec10", "user password 2", "user udid 2")
 
-    val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupInvitationId = Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
-    val groupInvitation = Await.result(groupInvitationDAO.find(groupInvitationId, user2.id.toSessionId))
+    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupInvitationId = execute(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
+    val groupInvitation = execute(groupInvitationDAO.find(groupInvitationId, user2.id.toSessionId))
     assert(groupInvitation.isDefined)
     assert(groupInvitation.get.groupId == groupId)
     assert(groupInvitation.get.accountId == user2.id)
@@ -62,23 +62,23 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
     assert(groupInvitation.get.invitationStatus == GroupInvitationStatusType.noResponded)
 
     assert(intercept[CactaceaException] {
-      Await.result(groupInvitationsRepository.create(AccountId(0L), groupId, sessionUser.id.toSessionId))
+      execute(groupInvitationsRepository.create(AccountId(0L), groupId, sessionUser.id.toSessionId))
     }.error == AccountNotFound)
 
     assert(intercept[CactaceaException] {
-      Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
+      execute(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
     }.error == AccountAlreadyInvited)
 
     assert(intercept[CactaceaException] {
-      Await.result(groupInvitationsRepository.create(user2.id, GroupId(0L), sessionUser.id.toSessionId))
+      execute(groupInvitationsRepository.create(user2.id, GroupId(0L), sessionUser.id.toSessionId))
     }.error == GroupNotFound)
 
     assert(intercept[CactaceaException] {
-      Await.result(groupInvitationsRepository.create(user2.id, GroupId(0L), sessionUser.id.toSessionId))
+      execute(groupInvitationsRepository.create(user2.id, GroupId(0L), sessionUser.id.toSessionId))
     }.error == GroupNotFound)
 
     assert(intercept[CactaceaException] {
-      Await.result(groupInvitationsRepository.create(user1.id, groupId, user3.id.toSessionId))
+      execute(groupInvitationsRepository.create(user1.id, groupId, user3.id.toSessionId))
     }.error == AuthorityNotFound)
 
   }
@@ -89,24 +89,24 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
     val user1 = signUp("GroupInvitationsRepositorySpec12", "user password 1", "user udid 1")
     val user2 = signUp("GroupInvitationsRepositorySpec13", "user password 2", "user udid 2")
 
-    val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupInvitationId = Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
-    Await.result(groupInvitationsRepository.accept(groupInvitationId, user2.id.toSessionId))
-    assert(Await.result(groupAccountsDAO.exist(user2.id, groupId)) == true)
+    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupInvitationId = execute(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
+    execute(groupInvitationsRepository.accept(groupInvitationId, user2.id.toSessionId))
+    assert(execute(groupAccountsDAO.exist(user2.id, groupId)) == true)
 
     assert(intercept[CactaceaException] {
-      Await.result(groupInvitationsRepository.accept(GroupInvitationId(0L), user2.id.toSessionId))
+      execute(groupInvitationsRepository.accept(GroupInvitationId(0L), user2.id.toSessionId))
     }.error == GroupInvitationNotFound)
 
-    val groupId2 = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupInvitationId2 = Await.result(groupInvitationsRepository.create(user1.id, groupId2, sessionUser.id.toSessionId))
-    Await.result(groupAccountsRepository.create(groupId2, user1.id.toSessionId))
+    val groupId2 = execute(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupInvitationId2 = execute(groupInvitationsRepository.create(user1.id, groupId2, sessionUser.id.toSessionId))
+    execute(groupAccountsRepository.create(groupId2, user1.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(groupInvitationsRepository.create(user1.id, groupId2, sessionUser.id.toSessionId))
+      execute(groupInvitationsRepository.create(user1.id, groupId2, sessionUser.id.toSessionId))
     }.error == AccountAlreadyJoined)
 
-    Await.result(groupInvitationsRepository.accept(groupInvitationId2, user1.id.toSessionId))
+    execute(groupInvitationsRepository.accept(groupInvitationId2, user1.id.toSessionId))
     // TODO : Check
 
   }
@@ -116,13 +116,13 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("GroupInvitationsRepositorySpec14", "session user password", "session user udid")
     val user2 = signUp("GroupInvitationsRepositorySpec15", "user password 2", "user udid 2")
 
-    val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupInvitationId = Await.result(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
+    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupInvitationId = execute(groupInvitationsRepository.create(user2.id, groupId, sessionUser.id.toSessionId))
     groupInvitationsRepository.reject(groupInvitationId, user2.id.toSessionId)
-    assert(Await.result(groupAccountsDAO.exist(user2.id, groupId)) == false)
+    assert(execute(groupAccountsDAO.exist(user2.id, groupId)) == false)
 
     assert(intercept[CactaceaException] {
-      Await.result(groupInvitationsRepository.reject(GroupInvitationId(0L), user2.id.toSessionId))
+      execute(groupInvitationsRepository.reject(GroupInvitationId(0L), user2.id.toSessionId))
     }.error == GroupInvitationNotFound)
 
   }

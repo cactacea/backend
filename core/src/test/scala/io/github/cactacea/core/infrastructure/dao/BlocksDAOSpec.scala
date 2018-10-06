@@ -15,24 +15,24 @@ class BlocksDAOSpec extends DAOSpec {
     val account3 = createAccount("BlocksDAOSpec3")
 
     // create
-    Await.result(blocksDAO.create(account1.id, account2.id.toSessionId))
-    Await.result(blocksDAO.create(account2.id, account3.id.toSessionId))
-    Await.result(blocksDAO.create(account3.id, account1.id.toSessionId))
-    val b1 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account1.id)).filter(_.by == lift(account2.id)))))
-    val b2 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account2.id)).filter(_.by == lift(account3.id)))))
-    val b3 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account3.id)).filter(_.by == lift(account1.id)))))
+    execute(blocksDAO.create(account1.id, account2.id.toSessionId))
+    execute(blocksDAO.create(account2.id, account3.id.toSessionId))
+    execute(blocksDAO.create(account3.id, account1.id.toSessionId))
+    val b1 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account1.id)).filter(_.by == lift(account2.id)))))
+    val b2 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account2.id)).filter(_.by == lift(account3.id)))))
+    val b3 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account3.id)).filter(_.by == lift(account1.id)))))
     assert(b1.nonEmpty)
     assert(b2.nonEmpty)
     assert(b3.nonEmpty)
 
     // delete
-    Await.result(blocksDAO.create(account1.id, account2.id.toSessionId))
-    Await.result(blocksDAO.create(account2.id, account3.id.toSessionId))
-    Await.result(blocksDAO.create(account3.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account1.id, account2.id.toSessionId))
+    execute(blocksDAO.create(account2.id, account3.id.toSessionId))
+    execute(blocksDAO.create(account3.id, account1.id.toSessionId))
 
-    val b4 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account1.id)).filter(_.by == lift(account2.id)))))
-    val b5 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account2.id)).filter(_.by == lift(account3.id)))))
-    val b6 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account3.id)).filter(_.by == lift(account1.id)))))
+    val b4 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account1.id)).filter(_.by == lift(account2.id)))))
+    val b5 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account2.id)).filter(_.by == lift(account3.id)))))
+    val b6 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account3.id)).filter(_.by == lift(account1.id)))))
     assert(b4.nonEmpty)
     assert(b5.nonEmpty)
     assert(b6.nonEmpty)
@@ -46,18 +46,18 @@ class BlocksDAOSpec extends DAOSpec {
     val account3 = createAccount("BlocksDAOSpec6")
 
     // create
-    Await.result(blocksDAO.create(account1.id, account2.id.toSessionId))
-    Await.result(blocksDAO.create(account2.id, account3.id.toSessionId))
-    Await.result(blocksDAO.create(account3.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account1.id, account2.id.toSessionId))
+    execute(blocksDAO.create(account2.id, account3.id.toSessionId))
+    execute(blocksDAO.create(account3.id, account1.id.toSessionId))
 
     // delete
-    Await.result(blocksDAO.delete(account1.id, account2.id.toSessionId))
-    Await.result(blocksDAO.delete(account2.id, account3.id.toSessionId))
-    Await.result(blocksDAO.delete(account3.id, account1.id.toSessionId))
+    execute(blocksDAO.delete(account1.id, account2.id.toSessionId))
+    execute(blocksDAO.delete(account2.id, account3.id.toSessionId))
+    execute(blocksDAO.delete(account3.id, account1.id.toSessionId))
 
-    val d4 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account1.id)).filter(_.by == lift(account2.id)))))
-    val d5 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account2.id)).filter(_.by == lift(account3.id)))))
-    val d6 = Await.result(db.run(quote(query[Blocks].filter(_.accountId == lift(account3.id)).filter(_.by == lift(account1.id)))))
+    val d4 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account1.id)).filter(_.by == lift(account2.id)))))
+    val d5 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account2.id)).filter(_.by == lift(account3.id)))))
+    val d6 = execute(db.run(quote(query[Blocks].filter(_.accountId == lift(account3.id)).filter(_.by == lift(account1.id)))))
     assert(d4.isEmpty)
     assert(d5.isEmpty)
     assert(d6.isEmpty)
@@ -71,40 +71,40 @@ class BlocksDAOSpec extends DAOSpec {
     val account3 = createAccount("BlocksDAOSpec9")
 
     // create
-    Await.result(blocksDAO.create(account1.id, account2.id.toSessionId))
-    Await.result(blocksDAO.create(account2.id, account3.id.toSessionId))
-    Await.result(blocksDAO.create(account3.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account1.id, account2.id.toSessionId))
+    execute(blocksDAO.create(account2.id, account3.id.toSessionId))
+    execute(blocksDAO.create(account3.id, account1.id.toSessionId))
 
-    assert(Await.result(blocksDAO.exist(account1.id, account2.id.toSessionId)) == true)
-    assert(Await.result(blocksDAO.exist(account1.id, account3.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account2.id, account1.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account2.id, account3.id.toSessionId)) == true)
-    assert(Await.result(blocksDAO.exist(account3.id, account1.id.toSessionId)) == true)
-    assert(Await.result(blocksDAO.exist(account3.id, account2.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account1.id, account2.id.toSessionId)) == true)
+    assert(execute(blocksDAO.exist(account1.id, account3.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account2.id, account1.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account2.id, account3.id.toSessionId)) == true)
+    assert(execute(blocksDAO.exist(account3.id, account1.id.toSessionId)) == true)
+    assert(execute(blocksDAO.exist(account3.id, account2.id.toSessionId)) == false)
 
     // delete
-    Await.result(blocksDAO.delete(account1.id, account2.id.toSessionId))
-    Await.result(blocksDAO.delete(account2.id, account3.id.toSessionId))
-    Await.result(blocksDAO.delete(account3.id, account1.id.toSessionId))
+    execute(blocksDAO.delete(account1.id, account2.id.toSessionId))
+    execute(blocksDAO.delete(account2.id, account3.id.toSessionId))
+    execute(blocksDAO.delete(account3.id, account1.id.toSessionId))
 
-    assert(Await.result(blocksDAO.exist(account1.id, account2.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account1.id, account3.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account2.id, account1.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account2.id, account3.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account3.id, account1.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account3.id, account2.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account1.id, account2.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account1.id, account3.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account2.id, account1.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account2.id, account3.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account3.id, account1.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account3.id, account2.id.toSessionId)) == false)
 
     // create
-    Await.result(blocksDAO.create(account1.id, account2.id.toSessionId))
-    Await.result(blocksDAO.create(account2.id, account3.id.toSessionId))
-    Await.result(blocksDAO.create(account3.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account1.id, account2.id.toSessionId))
+    execute(blocksDAO.create(account2.id, account3.id.toSessionId))
+    execute(blocksDAO.create(account3.id, account1.id.toSessionId))
 
-    assert(Await.result(blocksDAO.exist(account1.id, account2.id.toSessionId)) == true)
-    assert(Await.result(blocksDAO.exist(account1.id, account3.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account2.id, account1.id.toSessionId)) == false)
-    assert(Await.result(blocksDAO.exist(account2.id, account3.id.toSessionId)) == true)
-    assert(Await.result(blocksDAO.exist(account3.id, account1.id.toSessionId)) == true)
-    assert(Await.result(blocksDAO.exist(account3.id, account2.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account1.id, account2.id.toSessionId)) == true)
+    assert(execute(blocksDAO.exist(account1.id, account3.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account2.id, account1.id.toSessionId)) == false)
+    assert(execute(blocksDAO.exist(account2.id, account3.id.toSessionId)) == true)
+    assert(execute(blocksDAO.exist(account3.id, account1.id.toSessionId)) == true)
+    assert(execute(blocksDAO.exist(account3.id, account2.id.toSessionId)) == false)
 
   }
 
@@ -121,20 +121,20 @@ class BlocksDAOSpec extends DAOSpec {
     val account9 = createAccount("BlocksDAOSpec17")
 
     // create
-    Await.result(blocksDAO.create(account4.id, account2.id.toSessionId))
-    Await.result(blocksDAO.create(account4.id, account3.id.toSessionId))
+    execute(blocksDAO.create(account4.id, account2.id.toSessionId))
+    execute(blocksDAO.create(account4.id, account3.id.toSessionId))
 
-    Await.result(blocksDAO.create(account2.id, account1.id.toSessionId))
-    Await.result(blocksDAO.create(account3.id, account1.id.toSessionId))
-    Await.result(blocksDAO.create(account4.id, account1.id.toSessionId))
-    Await.result(blocksDAO.create(account5.id, account1.id.toSessionId))
-    Await.result(blocksDAO.create(account6.id, account1.id.toSessionId))
-    Await.result(blocksDAO.create(account7.id, account1.id.toSessionId))
-    Await.result(blocksDAO.create(account8.id, account1.id.toSessionId))
-    Await.result(blocksDAO.create(account9.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account2.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account3.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account4.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account5.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account6.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account7.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account8.id, account1.id.toSessionId))
+    execute(blocksDAO.create(account9.id, account1.id.toSessionId))
 
     // find
-    val result1 = Await.result(blocksDAO.findAll(None, None, Some(3), account1.id.toSessionId))
+    val result1 = execute(blocksDAO.findAll(None, None, Some(3), account1.id.toSessionId))
     assert(result1.size == 3)
     val blockedAccount1 = result1(0)._1
     val blockedAccount2 = result1(1)._1
@@ -144,7 +144,7 @@ class BlocksDAOSpec extends DAOSpec {
     assert(blockedAccount2.id == account8.id)
     assert(blockedAccount3.id == account7.id)
 
-    val result2 = Await.result(blocksDAO.findAll(Some(blocked3.id.value), None, Some(3), account1.id.toSessionId))
+    val result2 = execute(blocksDAO.findAll(Some(blocked3.id.value), None, Some(3), account1.id.toSessionId))
     assert(result2.size == 3)
     val blockedAccount4 = result2(0)._1
     val blockedAccount5 = result2(1)._1
@@ -154,7 +154,7 @@ class BlocksDAOSpec extends DAOSpec {
     assert(blockedAccount6.id == account4.id)
     val blocked6 = result2(2)._3
 
-    val result3 = Await.result(blocksDAO.findAll(Some(blocked6.id.value), None, Some(3), account1.id.toSessionId))
+    val result3 = execute(blocksDAO.findAll(Some(blocked6.id.value), None, Some(3), account1.id.toSessionId))
     assert(result3.size == 2)
     val blockedAccount7 = result3(0)._1
     val blockedAccount8 = result3(1)._1

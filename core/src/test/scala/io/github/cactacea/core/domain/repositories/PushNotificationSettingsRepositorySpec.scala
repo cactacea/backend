@@ -13,7 +13,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
   test("find session setting") {
 
     val sessionUser = signUp("PushNotificationSettingsRepositorySpec1", "session user password", "session udid")
-    val result = Await.result(notificationSettingsRepository.find(sessionUser.id.toSessionId))
+    val result = execute(notificationSettingsRepository.find(sessionUser.id.toSessionId))
     assert(result.groupMessage == true)
     assert(result.directMessage == true)
     assert(result.feedComment == true)
@@ -25,7 +25,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
   test("find no exist session setting") {
 
     assert(intercept[CactaceaException] {
-      Await.result(notificationSettingsRepository.find(SessionId(0L)))
+      execute(notificationSettingsRepository.find(SessionId(0L)))
     }.error == AccountNotFound)
 
   }
@@ -34,8 +34,8 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("PushNotificationSettingsRepositorySpec2", "session user password", "session udid")
 
-    Await.result(notificationSettingsRepository.update(false, false, false, false, false, false, sessionUser.id.toSessionId))
-    val result = Await.result(notificationSettingsRepository.find(sessionUser.id.toSessionId))
+    execute(notificationSettingsRepository.update(false, false, false, false, false, false, sessionUser.id.toSessionId))
+    val result = execute(notificationSettingsRepository.find(sessionUser.id.toSessionId))
     assert(result.groupMessage == false)
     assert(result.directMessage == false)
     assert(result.feedComment == false)
@@ -47,7 +47,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
   test("update no exist session setting") {
 
     assert(intercept[CactaceaException] {
-      Await.result(notificationSettingsRepository.update(false, false, false, false, false, false, SessionId(0L)))
+      execute(notificationSettingsRepository.update(false, false, false, false, false, false, SessionId(0L)))
     }.error == AccountNotFound)
 
   }

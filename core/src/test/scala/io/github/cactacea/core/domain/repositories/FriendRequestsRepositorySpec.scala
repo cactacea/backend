@@ -19,10 +19,10 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("FriendRequestsRepositorySpec1", "session user password", "session user udid")
     val friendUser = signUp("FriendRequestsRepositorySpec2", "friend user password", "friend user udid")
-    Await.result(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
-    assert(Await.result(friendRequestsDAO.exist(friendUser.id, sessionUser.id.toSessionId)) == true)
-    assert(Await.result(friendRequestsStatusDAO.exist(friendUser.id, sessionUser.id.toSessionId)) == true)
+    assert(execute(friendRequestsDAO.exist(friendUser.id, sessionUser.id.toSessionId)) == true)
+    assert(execute(friendRequestsStatusDAO.exist(friendUser.id, sessionUser.id.toSessionId)) == true)
 
   }
 
@@ -31,10 +31,10 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FriendRequestsRepositorySpec3", "session user password", "session user udid")
     val blockingUser = signUp("FriendRequestsRepositorySpec4", "blocked user password", "blocked user udid")
 
-    Await.result(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
+    execute(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.create(blockingUser.id, sessionUser.id.toSessionId))
+      execute(friendRequestsRepository.create(blockingUser.id, sessionUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -44,10 +44,10 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FriendRequestsRepositorySpec5", "session user password", "session user udid")
     val friendUser = signUp("FriendRequestsRepositorySpec6", "friend user password", "friend user udid")
 
-    Await.result(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
+      execute(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
     }.error == AccountAlreadyRequested)
 
   }
@@ -57,7 +57,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FriendRequestsRepositorySpec7", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.create(sessionUser.id, sessionUser.id.toSessionId))
+      execute(friendRequestsRepository.create(sessionUser.id, sessionUser.id.toSessionId))
     }.error == CanNotSpecifyMyself)
 
   }
@@ -69,8 +69,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FriendRequestsRepositorySpec8", "session user password", "session user udid")
     val friendUser = signUp("FriendRequestsRepositorySpec9", "friend user password", "friend user udid")
 
-    Await.result(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
-    val result = Await.result(friendRequestsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
+    val result = execute(friendRequestsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
     // TODO : Check
 
   }
@@ -81,7 +81,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val friendUser = signUp("FriendRequestsRepositorySpec11", "friend user password", "friend user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
+      execute(friendRequestsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
     }.error == FriendRequestNotFound)
 
   }
@@ -91,7 +91,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FriendRequestsRepositorySpec12", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
+      execute(friendRequestsRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -101,7 +101,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("FriendRequestsRepositorySpec13", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
+      execute(friendRequestsRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
     }.error == CanNotSpecifyMyself)
 
 
@@ -117,19 +117,19 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val requestingUser4 = signUp("FriendRequestsRepositorySpec18", "user password 4", "user udid 4")
     val requestingUser5 = signUp("FriendRequestsRepositorySpec19", "user password 5", "user udid 5")
 
-    val request1 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
-    val request2 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))
-    val request3 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser3.id.toSessionId))
-    val request4 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser4.id.toSessionId))
-    val request5 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser5.id.toSessionId))
+    val request1 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
+    val request2 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))
+    val request3 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser3.id.toSessionId))
+    val request4 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser4.id.toSessionId))
+    val request5 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser5.id.toSessionId))
 
-    val requests1 = Await.result(friendRequestsRepository.findAll(None, None, Some(3), true, sessionUser.id.toSessionId))
+    val requests1 = execute(friendRequestsRepository.findAll(None, None, Some(3), true, sessionUser.id.toSessionId))
     assert(requests1.size == 3)
     assert(requests1(0).id == request5)
     assert(requests1(1).id == request4)
     assert(requests1(2).id == request3)
 
-    val requests2 = Await.result(friendRequestsRepository.findAll(Some(requests1(2).next), None, Some(3), true, sessionUser.id.toSessionId))
+    val requests2 = execute(friendRequestsRepository.findAll(Some(requests1(2).next), None, Some(3), true, sessionUser.id.toSessionId))
     assert(requests2.size == 2)
     assert(requests2(0).id == request2)
     assert(requests2(1).id == request1)
@@ -140,7 +140,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("FriendRequestsRepositorySpec20", "session user password", "session user udid")
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.accept(FriendRequestId(0L), sessionUser.id.toSessionId))
+      execute(friendRequestsRepository.accept(FriendRequestId(0L), sessionUser.id.toSessionId))
     }.error == FriendRequestNotFound)
 
   }
@@ -149,7 +149,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("FriendRequestsRepositorySpec21", "session user password", "session user udid")
     assert(intercept[CactaceaException] {
-      Await.result(friendRequestsRepository.reject(FriendRequestId(0L), sessionUser.id.toSessionId))
+      execute(friendRequestsRepository.reject(FriendRequestId(0L), sessionUser.id.toSessionId))
     }.error == FriendRequestNotFound)
 
   }
@@ -163,35 +163,35 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val requestingUser4 = signUp("FriendRequestsRepositorySpec26", "user password 4", "user udid 4")
     val requestingUser5 = signUp("FriendRequestsRepositorySpec27", "user password 5", "user udid 5")
 
-    val requestId1 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
-    val requestId2 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))
-    val requestId3 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser3.id.toSessionId))
-    val requestId4 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser4.id.toSessionId))
-    val requestId5 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser5.id.toSessionId))
+    val requestId1 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
+    val requestId2 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))
+    val requestId3 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser3.id.toSessionId))
+    val requestId4 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser4.id.toSessionId))
+    val requestId5 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser5.id.toSessionId))
 
-    Await.result(friendRequestsRepository.accept(requestId1, sessionUser.id.toSessionId))
-    Await.result(friendRequestsRepository.accept(requestId2, sessionUser.id.toSessionId))
-    Await.result(friendRequestsRepository.accept(requestId3, sessionUser.id.toSessionId))
-    Await.result(friendRequestsRepository.accept(requestId4, sessionUser.id.toSessionId))
-    Await.result(friendRequestsRepository.accept(requestId5, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.accept(requestId1, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.accept(requestId2, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.accept(requestId3, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.accept(requestId4, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.accept(requestId5, sessionUser.id.toSessionId))
 
-    assert(Await.result(friendsDAO.exist(requestingUser1.id ,sessionUser.id.toSessionId)) == true)
-    assert(Await.result(friendsDAO.exist(requestingUser2.id ,sessionUser.id.toSessionId)) == true)
-    assert(Await.result(friendsDAO.exist(requestingUser3.id ,sessionUser.id.toSessionId)) == true)
-    assert(Await.result(friendsDAO.exist(requestingUser4.id ,sessionUser.id.toSessionId)) == true)
-    assert(Await.result(friendsDAO.exist(requestingUser5.id ,sessionUser.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(requestingUser1.id ,sessionUser.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(requestingUser2.id ,sessionUser.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(requestingUser3.id ,sessionUser.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(requestingUser4.id ,sessionUser.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(requestingUser5.id ,sessionUser.id.toSessionId)) == true)
 
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser1.id.toSessionId)) == true)
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser2.id.toSessionId)) == true)
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser3.id.toSessionId)) == true)
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser4.id.toSessionId)) == true)
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser5.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser1.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser2.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser3.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser4.id.toSessionId)) == true)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser5.id.toSessionId)) == true)
 
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser1.id.toSessionId)) == false)
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser2.id.toSessionId)) == false)
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser3.id.toSessionId)) == false)
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser4.id.toSessionId)) == false)
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser5.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser1.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser2.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser3.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser4.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser5.id.toSessionId)) == false)
 
   }
 
@@ -204,35 +204,35 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val requestingUser4 = signUp("FriendRequestsRepositorySpec32", "user password 4", "user udid 4")
     val requestingUser5 = signUp("FriendRequestsRepositorySpec33", "user password 5", "user udid 5")
 
-    val requestId1 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
-    val requestId2 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))
-    val requestId3 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser3.id.toSessionId))
-    val requestId4 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser4.id.toSessionId))
-    val requestId5 = Await.result(friendRequestsRepository.create(sessionUser.id, requestingUser5.id.toSessionId))
+    val requestId1 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser1.id.toSessionId))
+    val requestId2 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser2.id.toSessionId))
+    val requestId3 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser3.id.toSessionId))
+    val requestId4 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser4.id.toSessionId))
+    val requestId5 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser5.id.toSessionId))
 
-    Await.result(friendRequestsRepository.reject(requestId1, sessionUser.id.toSessionId))
-    Await.result(friendRequestsRepository.reject(requestId2, sessionUser.id.toSessionId))
-    Await.result(friendRequestsRepository.reject(requestId3, sessionUser.id.toSessionId))
-    Await.result(friendRequestsRepository.reject(requestId4, sessionUser.id.toSessionId))
-    Await.result(friendRequestsRepository.reject(requestId5, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.reject(requestId1, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.reject(requestId2, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.reject(requestId3, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.reject(requestId4, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.reject(requestId5, sessionUser.id.toSessionId))
 
-    assert(Await.result(friendsDAO.exist(requestingUser1.id ,sessionUser.id.toSessionId)) == false)
-    assert(Await.result(friendsDAO.exist(requestingUser2.id ,sessionUser.id.toSessionId)) == false)
-    assert(Await.result(friendsDAO.exist(requestingUser3.id ,sessionUser.id.toSessionId)) == false)
-    assert(Await.result(friendsDAO.exist(requestingUser4.id ,sessionUser.id.toSessionId)) == false)
-    assert(Await.result(friendsDAO.exist(requestingUser5.id ,sessionUser.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(requestingUser1.id ,sessionUser.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(requestingUser2.id ,sessionUser.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(requestingUser3.id ,sessionUser.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(requestingUser4.id ,sessionUser.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(requestingUser5.id ,sessionUser.id.toSessionId)) == false)
 
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser1.id.toSessionId)) == false)
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser2.id.toSessionId)) == false)
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser3.id.toSessionId)) == false)
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser4.id.toSessionId)) == false)
-    assert(Await.result(friendsDAO.exist(sessionUser.id ,requestingUser5.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser1.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser2.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser3.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser4.id.toSessionId)) == false)
+    assert(execute(friendsDAO.exist(sessionUser.id ,requestingUser5.id.toSessionId)) == false)
 
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser1.id.toSessionId)) == false)
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser2.id.toSessionId)) == false)
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser3.id.toSessionId)) == false)
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser4.id.toSessionId)) == false)
-    assert(Await.result(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser5.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser1.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser2.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser3.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser4.id.toSessionId)) == false)
+    assert(execute(friendRequestsStatusDAO.exist(sessionUser.id ,requestingUser5.id.toSessionId)) == false)
 
   }
 

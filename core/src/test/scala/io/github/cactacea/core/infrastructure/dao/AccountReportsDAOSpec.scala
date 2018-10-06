@@ -15,9 +15,9 @@ class AccountReportsDAOSpec extends DAOSpec {
     val reportedUser = createAccount("AccountReportsDAOSpec2")
     val reportContent = Some("report content")
 
-    val userReportId = Await.result(userReportsDAO.create(reportedUser.id, ReportType.spam, reportContent, sessionAccount.id.toSessionId))
+    val userReportId = execute(userReportsDAO.create(reportedUser.id, ReportType.spam, reportContent, sessionAccount.id.toSessionId))
 
-    val result = Await.result(db.run(query[AccountReports].filter(_.id == lift(userReportId)))).head
+    val result = execute(db.run(query[AccountReports].filter(_.id == lift(userReportId)))).head
     assert(result.id == userReportId)
     assert(result.by == sessionAccount.id)
     assert(result.accountId == reportedUser.id)
