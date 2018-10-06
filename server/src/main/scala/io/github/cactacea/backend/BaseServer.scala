@@ -47,9 +47,5 @@ trait BaseServer extends HttpServer {
       .exceptionMapper[CactaceaExceptionMapper]
   }
 
-  override def warmup() {
-    handle[DatabaseMigrationHandler]()
-  }
-
 }
 

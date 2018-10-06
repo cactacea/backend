@@ -7,6 +7,7 @@ import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.BaseServer
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.utils.filters._
+import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
 
 class TestServer extends BaseServer {
 
@@ -37,6 +38,10 @@ class TestServer extends BaseServer {
       .add[CorsFilter, OAuthController]
       .add[ResourcesController]
       .add[HealthController]
+  }
+
+  override def warmup() {
+    handle[DatabaseMigrationHandler]()
   }
 
 }
