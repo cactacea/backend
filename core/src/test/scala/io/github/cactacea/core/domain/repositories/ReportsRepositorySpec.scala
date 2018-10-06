@@ -20,10 +20,10 @@ class ReportsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("ReportsRepositorySpec1", "session user password", "session udid")
     val user = signUp("ReportsRepositorySpec2", "user password", "user udid")
     val reportContent = Some("report content")
-    Await.result(reportsRepository.createAccountReport(user.id, ReportType.inappropriate, reportContent, sessionUser.id.toSessionId))
+    execute(reportsRepository.createAccountReport(user.id, ReportType.inappropriate, reportContent, sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(reportsRepository.createAccountReport(AccountId(0L), ReportType.inappropriate, reportContent, sessionUser.id.toSessionId))
+      execute(reportsRepository.createAccountReport(AccountId(0L), ReportType.inappropriate, reportContent, sessionUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -34,14 +34,14 @@ class ReportsRepositorySpec extends RepositorySpec {
     val user = signUp("ReportsRepositorySpec4", "user password", "user udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = Await.result(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
-    val feedId = Await.result(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val reportContent = Some("report content")
-    Await.result(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, reportContent, user.id.toSessionId))
+    execute(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, reportContent, user.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(reportsRepository.createFeedReport(FeedId(0L), ReportType.inappropriate, reportContent, user.id.toSessionId))
+      execute(reportsRepository.createFeedReport(FeedId(0L), ReportType.inappropriate, reportContent, user.id.toSessionId))
     }.error == FeedNotFound)
 
   }
@@ -50,13 +50,13 @@ class ReportsRepositorySpec extends RepositorySpec {
 
     val session = signUp("ReportsRepositorySpec5", "session password", "udid")
     val user = signUp("ReportsRepositorySpec6", "user password", "user udid")
-    val feedId = Await.result(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val commentId = Await.result(commentsRepository.create(feedId, "comment", session.id.toSessionId))
+    val feedId = execute(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+    val commentId = execute(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     val reportContent = Some("report content")
     reportsRepository.createCommentReport(commentId, ReportType.inappropriate, reportContent, user.id.toSessionId)
 
     assert(intercept[CactaceaException] {
-      Await.result(reportsRepository.createCommentReport(CommentId(0L), ReportType.inappropriate, reportContent, user.id.toSessionId))
+      execute(reportsRepository.createCommentReport(CommentId(0L), ReportType.inappropriate, reportContent, user.id.toSessionId))
     }.error == CommentNotFound)
 
   }
@@ -65,12 +65,12 @@ class ReportsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("ReportsRepositorySpec7", "session user password", "session user udid")
     val user = signUp("ReportsRepositorySpec8", "user password", "user udid")
-    val groupId = Await.result(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId = execute(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     val reportContent = Some("report content")
-    Await.result(reportsRepository.createGroupReport(groupId, ReportType.inappropriate, reportContent, user.id.toSessionId))
+    execute(reportsRepository.createGroupReport(groupId, ReportType.inappropriate, reportContent, user.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(reportsRepository.createGroupReport(GroupId(0L), ReportType.inappropriate, reportContent, user.id.toSessionId))
+      execute(reportsRepository.createGroupReport(GroupId(0L), ReportType.inappropriate, reportContent, user.id.toSessionId))
     }.error == GroupNotFound)
 
   }

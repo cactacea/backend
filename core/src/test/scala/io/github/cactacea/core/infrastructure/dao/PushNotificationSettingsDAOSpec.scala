@@ -19,18 +19,18 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     val sessionAccount6 = createAccount("PushNotificationSettingsDAOSpec6")
 
     // create settings
-    Await.result(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, true, false,  false, false, false, sessionAccount2.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, true,  false, false, false, sessionAccount3.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false, false, false, false, sessionAccount4.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false,  true, false, false, sessionAccount5.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false,  false, false, true, sessionAccount6.id.toSessionId))
-    val setting1 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount1.id))))).head
-    val setting2 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount2.id))))).head
-    val setting3 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount3.id))))).head
-    val setting4 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount4.id))))).head
-    val setting5 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount5.id))))).head
-    val setting6 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount6.id))))).head
+    execute(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, true, false,  false, false, false, sessionAccount2.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, true,  false, false, false, sessionAccount3.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false, false, false, false, sessionAccount4.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false,  true, false, false, sessionAccount5.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false,  false, false, true, sessionAccount6.id.toSessionId))
+    val setting1 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount1.id))))).head
+    val setting2 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount2.id))))).head
+    val setting3 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount3.id))))).head
+    val setting4 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount4.id))))).head
+    val setting5 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount5.id))))).head
+    val setting6 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount6.id))))).head
     assert((setting1.groupInvitation, setting1.followerFeed, setting1.feedComment, setting1.groupMessage, setting1.directMessage, setting1.showMessage) == (true, false, false, false, false, false))
     assert((setting2.groupInvitation, setting2.followerFeed, setting2.feedComment, setting2.groupMessage, setting2.directMessage, setting2.showMessage) == (false, true, false, false, false, false))
     assert((setting3.groupInvitation, setting3.followerFeed, setting3.feedComment, setting3.groupMessage, setting3.directMessage, setting3.showMessage) == (false, false, true, false, false, false))
@@ -49,26 +49,26 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     val sessionAccount5 = createAccount("PushNotificationSettingsDAOSpec11")
     val sessionAccount6 = createAccount("PushNotificationSettingsDAOSpec12")
 
-    Await.result(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, true, false,  false, false, false, sessionAccount2.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, true,  false, false, false, sessionAccount3.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false, false, false, false, sessionAccount4.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false,  true, false, false, sessionAccount5.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false,  false, false, true, sessionAccount6.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, true, false,  false, false, false, sessionAccount2.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, true,  false, false, false, sessionAccount3.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false, false, false, false, sessionAccount4.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false,  true, false, false, sessionAccount5.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false,  false, false, true, sessionAccount6.id.toSessionId))
 
     // edit settings
-    Await.result(pushNotificationSettingsDAO.update(false, false, false,  true, true, false, sessionAccount1.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.update(false, false, false, false, true, false, sessionAccount2.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.update(false, true, false,  false, true, false, sessionAccount3.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.update(false, false, true,  false, true, false, sessionAccount4.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.update(true, false, false,  false, true, false, sessionAccount5.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.update(true, false, false,  false, false, true, sessionAccount6.id.toSessionId))
-    val ed1 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount1.id))))).head
-    val ed2 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount2.id))))).head
-    val ed3 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount3.id))))).head
-    val ed4 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount4.id))))).head
-    val ed5 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount5.id))))).head
-    val ed6 = Await.result(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount6.id))))).head
+    execute(pushNotificationSettingsDAO.update(false, false, false,  true, true, false, sessionAccount1.id.toSessionId))
+    execute(pushNotificationSettingsDAO.update(false, false, false, false, true, false, sessionAccount2.id.toSessionId))
+    execute(pushNotificationSettingsDAO.update(false, true, false,  false, true, false, sessionAccount3.id.toSessionId))
+    execute(pushNotificationSettingsDAO.update(false, false, true,  false, true, false, sessionAccount4.id.toSessionId))
+    execute(pushNotificationSettingsDAO.update(true, false, false,  false, true, false, sessionAccount5.id.toSessionId))
+    execute(pushNotificationSettingsDAO.update(true, false, false,  false, false, true, sessionAccount6.id.toSessionId))
+    val ed1 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount1.id))))).head
+    val ed2 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount2.id))))).head
+    val ed3 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount3.id))))).head
+    val ed4 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount4.id))))).head
+    val ed5 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount5.id))))).head
+    val ed6 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount6.id))))).head
     assert((ed1.groupInvitation, ed1.followerFeed, ed1.feedComment, ed1.groupMessage, ed1.directMessage, ed1.showMessage) == (false, false, false, true, true, false))
     assert((ed2.groupInvitation, ed2.followerFeed, ed2.feedComment, ed2.groupMessage, ed2.directMessage, ed2.showMessage) == (false, false, false, false, true, false))
     assert((ed3.groupInvitation, ed3.followerFeed, ed3.feedComment, ed3.groupMessage, ed3.directMessage, ed3.showMessage) == (false, true, false, false, true, false))
@@ -87,21 +87,21 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     val sessionAccount5 = createAccount("PushNotificationSettingsDAOSpec17")
     val sessionAccount6 = createAccount("PushNotificationSettingsDAOSpec18")
 
-    Await.result(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, true, false,  false, false, false, sessionAccount2.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, true,  false, false, false, sessionAccount3.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false, false, false, false, sessionAccount4.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false,  true, false, false, sessionAccount5.id.toSessionId))
-    Await.result(pushNotificationSettingsDAO.create(false, false, false,  false, false, true, sessionAccount6.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(true, false, false,  false, false, false, sessionAccount1.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, true, false,  false, false, false, sessionAccount2.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, true,  false, false, false, sessionAccount3.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false, false, false, false, sessionAccount4.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false,  true, false, false, sessionAccount5.id.toSessionId))
+    execute(pushNotificationSettingsDAO.create(false, false, false,  false, false, true, sessionAccount6.id.toSessionId))
 
     // find settings
-    val fd1 = Await.result(pushNotificationSettingsDAO.find(sessionAccount1.id.toSessionId)).head
-    val fd2 = Await.result(pushNotificationSettingsDAO.find(sessionAccount2.id.toSessionId)).head
-    val fd3 = Await.result(pushNotificationSettingsDAO.find(sessionAccount3.id.toSessionId)).head
-    val fd4 = Await.result(pushNotificationSettingsDAO.find(sessionAccount4.id.toSessionId)).head
-    val fd5 = Await.result(pushNotificationSettingsDAO.find(sessionAccount5.id.toSessionId)).head
-    val fd6 = Await.result(pushNotificationSettingsDAO.find(sessionAccount6.id.toSessionId)).head
-    val fd7 = Await.result(pushNotificationSettingsDAO.find(SessionId(0L)))
+    val fd1 = execute(pushNotificationSettingsDAO.find(sessionAccount1.id.toSessionId)).head
+    val fd2 = execute(pushNotificationSettingsDAO.find(sessionAccount2.id.toSessionId)).head
+    val fd3 = execute(pushNotificationSettingsDAO.find(sessionAccount3.id.toSessionId)).head
+    val fd4 = execute(pushNotificationSettingsDAO.find(sessionAccount4.id.toSessionId)).head
+    val fd5 = execute(pushNotificationSettingsDAO.find(sessionAccount5.id.toSessionId)).head
+    val fd6 = execute(pushNotificationSettingsDAO.find(sessionAccount6.id.toSessionId)).head
+    val fd7 = execute(pushNotificationSettingsDAO.find(SessionId(0L)))
 
     assert((fd1.groupInvitation, fd1.followerFeed, fd1.feedComment, fd1.groupMessage, fd1.directMessage, fd1.showMessage) == (true, false, false, false, false, false))
     assert((fd2.groupInvitation, fd2.followerFeed, fd2.feedComment, fd2.groupMessage, fd2.directMessage, fd2.showMessage) == (false, true, false, false, false, false))

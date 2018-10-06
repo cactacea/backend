@@ -12,10 +12,10 @@ class MessagesDAOSpec extends DAOSpec {
   test("create") {
 
     val sessionAccount = createAccount("MediumsDAOSpec4")
-    val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
 
-    val result = Await.result(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
+    val result = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result.size == 1)
     val message = result(0)
     assert(message.id == messageId)
@@ -24,9 +24,9 @@ class MessagesDAOSpec extends DAOSpec {
     assert(message.contentWarning == false)
     assert(message.notified == false)
 
-    val mediumId2 = Await.result(mediumsDAO.create("key1", "http://example.com/test1.jpeg", Some("http://example.com/test1.jpeg"), MediumType.image, 1, 4, 100L, sessionAccount.id.toSessionId))
-    Await.result(messagesDAO.create(groupId, None, 1, Some(mediumId2), sessionAccount.id.toSessionId))
-    val result2 = Await.result(messagesDAO.find(messageId))
+    val mediumId2 = execute(mediumsDAO.create("key1", "http://example.com/test1.jpeg", Some("http://example.com/test1.jpeg"), MediumType.image, 1, 4, 100L, sessionAccount.id.toSessionId))
+    execute(messagesDAO.create(groupId, None, 1, Some(mediumId2), sessionAccount.id.toSessionId))
+    val result2 = execute(messagesDAO.find(messageId))
     assert(result2.isDefined)
 
   }
@@ -34,23 +34,23 @@ class MessagesDAOSpec extends DAOSpec {
   test("delete") {
 
     val sessionAccount = createAccount("MediumsDAOSpec5")
-    val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
 
-    Await.result(messagesDAO.delete(groupId))
-    val result = Await.result(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
+    execute(messagesDAO.delete(groupId))
+    val result = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result.size == 0)
   }
 
   test("updateReadStatus") {
 
     val sessionAccount = createAccount("MediumsDAOSpec6")
-    val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     // TODO : check
-    Await.result(messagesDAO.updateReadAccountCount(List(messageId)))
+    execute(messagesDAO.updateReadAccountCount(List(messageId)))
 
-    val result2 = Await.result(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
+    val result2 = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result2.size == 1)
     val message = result2(0)
     assert(message.readAccountCount == 1)
@@ -60,12 +60,12 @@ class MessagesDAOSpec extends DAOSpec {
   test("updateNotified") {
 
     val sessionAccount = createAccount("MediumsDAOSpec7")
-    val groupId = Await.result(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = Await.result(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     // TODO : Check
-    Await.result(messagesDAO.updateNotified(messageId))
+    execute(messagesDAO.updateNotified(messageId))
 
-    val result2 = Await.result(db.run(quote(query[Messages].filter(_.id == lift(messageId)))))
+    val result2 = execute(db.run(quote(query[Messages].filter(_.id == lift(messageId)))))
     assert(result2.size == 1)
     val message = result2(0)
     assert(message.notified == true)

@@ -19,16 +19,16 @@ class GroupsRepositorySpec extends RepositorySpec {
   test("create a group") {
 
     val sessionUser = signUp("GroupsRepositorySpec1", "session user password", "session user udid")
-    val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    assert(Await.result(groupsDAO.exist(groupId)) == true)
+    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    assert(execute(groupsDAO.exist(groupId)) == true)
 
   }
 
   test("update a group") {
 
     val sessionUser = signUp("GroupsRepositorySpec2", "session user password", "session user udid")
-    val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val result = Await.result(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val result = execute(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     // TODO : Check
 
   }
@@ -36,8 +36,8 @@ class GroupsRepositorySpec extends RepositorySpec {
   test("update privacy type") {
 
     val sessionUser = signUp("GroupsRepositorySpec3", "session user password", "session user udid")
-    val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val result = Await.result(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val result = execute(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
     // TODO : Check
 
   }
@@ -46,10 +46,10 @@ class GroupsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("GroupsRepositorySpec4", "session user password", "session user udid")
     val user = signUp("GroupsRepositorySpec5", "session user password", "session user udid")
-    val group = Await.result(accountGroupsRepository.findOrCreate(user.id, sessionUser.id.toSessionId))
+    val group = execute(accountGroupsRepository.findOrCreate(user.id, sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(groupsRepository.update(group.id, Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+      execute(groupsRepository.update(group.id, Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     }.error == DirectMessageGroupCanNotUpdated)
 
   }
@@ -57,8 +57,8 @@ class GroupsRepositorySpec extends RepositorySpec {
   test("find a exist group") {
 
     val sessionUser = signUp("GroupsRepositorySpec6", "session user password", "session user udid")
-    val groupId = Await.result(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val group = Await.result(groupsRepository.find(groupId, sessionUser.id.toSessionId))
+    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val group = execute(groupsRepository.find(groupId, sessionUser.id.toSessionId))
     assert(group.id == groupId)
 
   }
@@ -68,7 +68,7 @@ class GroupsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("GroupsRepositorySpec7", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(groupsRepository.find(GroupId(0L), sessionUser.id.toSessionId))
+      execute(groupsRepository.find(GroupId(0L), sessionUser.id.toSessionId))
     }.error == GroupNotFound)
 
   }
@@ -78,7 +78,7 @@ class GroupsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("GroupsRepositorySpec8", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(groupsRepository.update(GroupId(0L), Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+      execute(groupsRepository.update(GroupId(0L), Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     }.error == GroupNotFound)
 
   }
@@ -92,50 +92,50 @@ class GroupsRepositorySpec extends RepositorySpec {
     val user4 = signUp("GroupsRepositorySpec13", "user password 4", "user udid 4")
     val user5 = signUp("GroupsRepositorySpec14", "user password 5", "user udid 5")
 
-    val groupId10 = Await.result(groupsRepository.create(Some("group name 10"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId11 = Await.result(groupsRepository.create(Some("group name 11"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId12 = Await.result(groupsRepository.create(Some("group name 12"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId13 = Await.result(groupsRepository.create(Some("group name 13"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId14 = Await.result(groupsRepository.create(Some("group name 14"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId10 = execute(groupsRepository.create(Some("group name 10"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId11 = execute(groupsRepository.create(Some("group name 11"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId12 = execute(groupsRepository.create(Some("group name 12"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId13 = execute(groupsRepository.create(Some("group name 13"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId14 = execute(groupsRepository.create(Some("group name 14"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
 
-    Await.result(accountGroupsDAO.create(List(user1.id, user2.id, user3.id, user4.id, user5.id),groupId10))
-    Await.result(accountGroupsDAO.create(List(user1.id, user2.id, user3.id, user4.id),groupId11))
-    Await.result(accountGroupsDAO.create(List(user1.id, user2.id, user3.id),groupId12))
-    Await.result(accountGroupsDAO.create(List(user1.id, user2.id),groupId13))
-    Await.result(accountGroupsDAO.create(List(user1.id),groupId14))
+    execute(accountGroupsDAO.create(List(user1.id, user2.id, user3.id, user4.id, user5.id),groupId10))
+    execute(accountGroupsDAO.create(List(user1.id, user2.id, user3.id, user4.id),groupId11))
+    execute(accountGroupsDAO.create(List(user1.id, user2.id, user3.id),groupId12))
+    execute(accountGroupsDAO.create(List(user1.id, user2.id),groupId13))
+    execute(accountGroupsDAO.create(List(user1.id),groupId14))
 
-    val groupId1 = Await.result(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId2 = Await.result(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId3 = Await.result(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId4 = Await.result(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId5 = Await.result(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId1 = execute(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId2 = execute(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId3 = execute(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId4 = execute(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    val groupId5 = execute(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
 
-    Await.result(accountGroupsDAO.create(List(user1.id, user2.id, user3.id, user4.id, user5.id), groupId1))
-    Await.result(accountGroupsDAO.create(List(user1.id, user2.id, user3.id, user4.id), groupId2))
-    Await.result(accountGroupsDAO.create(List(user1.id, user2.id, user3.id), groupId3))
-    Await.result(accountGroupsDAO.create(List(user1.id, user2.id), groupId4))
-    Await.result(accountGroupsDAO.create(List(user1.id), groupId5))
+    execute(accountGroupsDAO.create(List(user1.id, user2.id, user3.id, user4.id, user5.id), groupId1))
+    execute(accountGroupsDAO.create(List(user1.id, user2.id, user3.id, user4.id), groupId2))
+    execute(accountGroupsDAO.create(List(user1.id, user2.id, user3.id), groupId3))
+    execute(accountGroupsDAO.create(List(user1.id, user2.id), groupId4))
+    execute(accountGroupsDAO.create(List(user1.id), groupId5))
 
-    assert(Await.result(groupsRepository.findAll(None , None, None, None, None, Some(10), sessionUser.id.toSessionId)).size == 10)
+    assert(execute(groupsRepository.findAll(None , None, None, None, None, Some(10), sessionUser.id.toSessionId)).size == 10)
 
-    val result1 = Await.result(groupsRepository.findAll(None , None, None, None, None, Some(10), user1.id.toSessionId))
+    val result1 = execute(groupsRepository.findAll(None , None, None, None, None, Some(10), user1.id.toSessionId))
     assert(result1.size == 10)
     assert(result1(0).id == groupId5)
     assert(result1(1).id == groupId4)
     assert(result1(2).id == groupId3)
 
-    val result2 = Await.result(groupsRepository.findAll(None , None, None, Some(result1(2).next), None, Some(2), user1.id.toSessionId))
+    val result2 = execute(groupsRepository.findAll(None , None, None, Some(result1(2).next), None, Some(2), user1.id.toSessionId))
     assert(result2.size == 2)
     assert(result2(0).id == groupId2)
     assert(result2(1).id == groupId1)
 
-    val result3 = Await.result(groupsRepository.findAll(Some("group name 1") , None, None, None, None, Some(3), user1.id.toSessionId))
+    val result3 = execute(groupsRepository.findAll(Some("group name 1") , None, None, None, None, Some(3), user1.id.toSessionId))
     assert(result3.size == 3)
     assert(result3(0).id == groupId1)
     assert(result3(1).id == groupId14)
     assert(result3(2).id == groupId13)
 
-    val result4 = Await.result(groupsRepository.findAll(Some("group name 1") , None, None, Some(result3(2).next), None, Some(3), user1.id.toSessionId))
+    val result4 = execute(groupsRepository.findAll(Some("group name 1") , None, None, Some(result3(2).next), None, Some(3), user1.id.toSessionId))
     assert(result4.size == 3)
     assert(result4(0).id == groupId12)
     assert(result4(1).id == groupId11)

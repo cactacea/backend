@@ -15,8 +15,8 @@ class MutesRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("MutesRepositorySpec1", "session user password", "session user udid")
     val user = signUp("MutesRepositorySpec2", "muted user password", "muted user udid")
-    Await.result(mutesRepository.create(user.id, sessionUser.id.toSessionId))
-    val results = Await.result(mutesRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
+    execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
+    val results = execute(mutesRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
     assert(results.size == 1)
     val result = results(0)
     assert(user.id == result.id)
@@ -28,10 +28,10 @@ class MutesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MutesRepositorySpec3", "session user password", "session user udid")
     val blockingUser = signUp("MutesRepositorySpec4", "blocked user password", "blocked user udid")
 
-    Await.result(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
+    execute(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(mutesRepository.create(sessionUser.id, blockingUser.id.toSessionId))
+      execute(mutesRepository.create(sessionUser.id, blockingUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -41,10 +41,10 @@ class MutesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MutesRepositorySpec5", "session user password", "session user udid")
     val user = signUp("MutesRepositorySpec6", "mute password", "mute udid")
 
-    Await.result(mutesRepository.create(user.id, sessionUser.id.toSessionId))
+    execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(mutesRepository.create(user.id, sessionUser.id.toSessionId))
+      execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
     }.error == AccountAlreadyMuted)
 
   }
@@ -54,7 +54,7 @@ class MutesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MutesRepositorySpec7", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(mutesRepository.create(sessionUser.id, sessionUser.id.toSessionId))
+      execute(mutesRepository.create(sessionUser.id, sessionUser.id.toSessionId))
     }.error == CanNotSpecifyMyself)
 
   }
@@ -64,8 +64,8 @@ class MutesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MutesRepositorySpec8", "session user password", "session user udid")
     val user = signUp("MutesRepositorySpec9", "user password", "user udid")
 
-    Await.result(mutesRepository.create(user.id, sessionUser.id.toSessionId))
-    Await.result(mutesRepository.delete(user.id, sessionUser.id.toSessionId))
+    execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
+    execute(mutesRepository.delete(user.id, sessionUser.id.toSessionId))
 
     // TODO : Check
   }
@@ -75,7 +75,7 @@ class MutesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MutesRepositorySpec10", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(mutesRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
+      execute(mutesRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -86,7 +86,7 @@ class MutesRepositorySpec extends RepositorySpec {
     val user = signUp("MutesRepositorySpec12", "user password", "user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(mutesRepository.delete(user.id, sessionUser.id.toSessionId))
+      execute(mutesRepository.delete(user.id, sessionUser.id.toSessionId))
     }.error == AccountNotMuted)
 
   }
@@ -96,7 +96,7 @@ class MutesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MutesRepositorySpec13", "session user password", "session user udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(mutesRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
+      execute(mutesRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
     }.error == CanNotSpecifyMyself)
 
   }

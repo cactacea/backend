@@ -19,19 +19,19 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec5")
     val owner5 = createAccount("GroupInvitationsDAOSpec6")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = Await.result(groupInvitationsDAO.findAll(None, None, Some(3), sessionAccount.id.toSessionId))
+    val result1 = execute(groupInvitationsDAO.findAll(None, None, Some(3), sessionAccount.id.toSessionId))
     assert(result1.size == 3)
     val invitation1 = result1(0)
     val invitation2 = result1(1)
@@ -40,7 +40,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert((invitation2._1.accountId, invitation2._1.by) == (sessionAccount.id, owner4.id))
     assert((invitation3._1.accountId, invitation3._1.by) == (sessionAccount.id, owner3.id))
 
-    val result2 = Await.result(groupInvitationsDAO.findAll(Some(invitation3._1.id.value), None, Some(3), sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation3._1.id.value), None, Some(3), sessionAccount.id.toSessionId))
     assert(result2.size == 2)
     val invitation4 = result2(0)
     val invitation5 = result2(1)
@@ -54,9 +54,9 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("GroupInvitationsDAOSpec7")
     val owner = createAccount("GroupInvitationsDAOSpec8")
-    val groupId = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
-    val groupInvitationId = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId, owner.id.toSessionId))
-    val result = Await.result(groupInvitationsDAO.delete(groupInvitationId))
+    val groupId = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
+    val groupInvitationId = execute(groupInvitationsDAO.create(sessionAccount.id, groupId, owner.id.toSessionId))
+    val result = execute(groupInvitationsDAO.delete(groupInvitationId))
     assert(result == true)
 
   }
@@ -70,21 +70,21 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec13")
     val owner5 = createAccount("GroupInvitationsDAOSpec14")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = Await.result(groupInvitationsDAO.exist(sessionAccount.id, groupId1))
-    val result2 = Await.result(groupInvitationsDAO.exist(sessionAccount.id, groupId2))
-    val result3 = Await.result(groupInvitationsDAO.exist(sessionAccount.id, groupId3))
-    val result4 = Await.result(groupInvitationsDAO.exist(sessionAccount.id, groupId4))
-    val result5 = Await.result(groupInvitationsDAO.exist(sessionAccount.id, groupId5))
+    val result1 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId1))
+    val result2 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId2))
+    val result3 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId3))
+    val result4 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId4))
+    val result5 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId5))
 
     assert(result1 == true)
     assert(result2 == false)
@@ -104,23 +104,23 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec20")
     val owner5 = createAccount("GroupInvitationsDAOSpec21")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    val invitationId1 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    val invitationId2 = Await.result(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
-    val invitationId3 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    val invitationId4 = Await.result(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
-    val invitationId5 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    val invitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    val invitationId2 = execute(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
+    val invitationId3 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    val invitationId4 = execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
+    val invitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = Await.result(groupInvitationsDAO.find(invitationId1, sessionAccount.id.toSessionId))
-    val result2 = Await.result(groupInvitationsDAO.find(invitationId2, sessionAccount.id.toSessionId))
-    val result3 = Await.result(groupInvitationsDAO.find(invitationId3, sessionAccount.id.toSessionId))
-    val result4 = Await.result(groupInvitationsDAO.find(invitationId4, sessionAccount.id.toSessionId))
-    val result5 = Await.result(groupInvitationsDAO.find(invitationId5, sessionAccount.id.toSessionId))
+    val result1 = execute(groupInvitationsDAO.find(invitationId1, sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.find(invitationId2, sessionAccount.id.toSessionId))
+    val result3 = execute(groupInvitationsDAO.find(invitationId3, sessionAccount.id.toSessionId))
+    val result4 = execute(groupInvitationsDAO.find(invitationId4, sessionAccount.id.toSessionId))
+    val result5 = execute(groupInvitationsDAO.find(invitationId5, sessionAccount.id.toSessionId))
 
     assert(result1.isDefined == true)
     assert(result2.isDefined == false)
@@ -140,26 +140,26 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec27")
     val owner5 = createAccount("GroupInvitationsDAOSpec28")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    val invitationId1 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
-    val invitationId3 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
-    val invitationId5 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    val invitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    execute(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
+    val invitationId3 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
+    val invitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = Await.result(groupInvitationsDAO.findAll(None, None, Some(2), sessionAccount.id.toSessionId))
+    val result1 = execute(groupInvitationsDAO.findAll(None, None, Some(2), sessionAccount.id.toSessionId))
     assert(result1.size == 2)
     val invitation1 = result1(0)._1
     val invitation2 = result1(1)._1
     assert((invitation1.groupId, invitation1.id) == (groupId5, invitationId5))
     assert((invitation2.groupId, invitation2.id) == (groupId3, invitationId3))
 
-    val result2 = Await.result(groupInvitationsDAO.findAll(Some(invitation2.id.value), None, Some(2), sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation2.id.value), None, Some(2), sessionAccount.id.toSessionId))
     assert(result2.size == 1)
     val invitation3 = result2(0)._1
     assert((invitation3.groupId, invitation3.id) == (groupId1, invitationId1))
@@ -176,23 +176,23 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec34")
     val owner5 = createAccount("GroupInvitationsDAOSpec35")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    execute(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = Await.result(groupInvitationsDAO.deleteByGroupId(groupId1))
-    val result2 = Await.result(groupInvitationsDAO.deleteByGroupId(groupId2))
-    val result3 = Await.result(groupInvitationsDAO.deleteByGroupId(groupId3))
-    val result4 = Await.result(groupInvitationsDAO.deleteByGroupId(groupId4))
-    val result5 = Await.result(groupInvitationsDAO.deleteByGroupId(groupId5))
+    val result1 = execute(groupInvitationsDAO.deleteByGroupId(groupId1))
+    val result2 = execute(groupInvitationsDAO.deleteByGroupId(groupId2))
+    val result3 = execute(groupInvitationsDAO.deleteByGroupId(groupId3))
+    val result4 = execute(groupInvitationsDAO.deleteByGroupId(groupId4))
+    val result5 = execute(groupInvitationsDAO.deleteByGroupId(groupId5))
 
     assert(result1 == true)
     assert(result2 == true)
@@ -200,11 +200,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(result4 == true)
     assert(result5 == true)
 
-    val count1 = Await.result(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId1)).size))
-    val count2 = Await.result(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId2)).size))
-    val count3 = Await.result(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId3)).size))
-    val count4 = Await.result(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId4)).size))
-    val count5 = Await.result(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId5)).size))
+    val count1 = execute(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId1)).size))
+    val count2 = execute(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId2)).size))
+    val count3 = execute(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId3)).size))
+    val count4 = execute(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId4)).size))
+    val count5 = execute(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId5)).size))
 
     assert(count1 == 0)
     assert(count2 == 0)
@@ -224,24 +224,24 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec41")
     val owner5 = createAccount("GroupInvitationsDAOSpec42")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
-    Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    execute(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
+    execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = Await.result(groupInvitationsDAO.delete(sessionAccount.id, GroupPrivacyType.everyone, owner1.id.toSessionId))
-    val result5 = Await.result(groupInvitationsDAO.delete(sessionAccount.id, GroupPrivacyType.everyone, owner5.id.toSessionId))
+    val result1 = execute(groupInvitationsDAO.delete(sessionAccount.id, GroupPrivacyType.everyone, owner1.id.toSessionId))
+    val result5 = execute(groupInvitationsDAO.delete(sessionAccount.id, GroupPrivacyType.everyone, owner5.id.toSessionId))
     assert(result1 == true)
     assert(result5 == true)
 
-    val count = Await.result(db.run(query[GroupInvitations].filter(_.accountId == lift(sessionAccount.id)).size))
+    val count = execute(db.run(query[GroupInvitations].filter(_.accountId == lift(sessionAccount.id)).size))
     assert(count == 1)
 
   }
@@ -256,29 +256,29 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec47")
     val owner5 = createAccount("GroupInvitationsDAOSpec48")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    val groupInvitationId1 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    val groupInvitationId2 = Await.result(groupInvitationsDAO.create(account1.id,       groupId2, owner2.id.toSessionId))
-    val groupInvitationId3 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    val groupInvitationId4 = Await.result(groupInvitationsDAO.create(account1.id,       groupId4, owner4.id.toSessionId))
-    val groupInvitationId5 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    val groupInvitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    val groupInvitationId2 = execute(groupInvitationsDAO.create(account1.id,       groupId2, owner2.id.toSessionId))
+    val groupInvitationId3 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    val groupInvitationId4 = execute(groupInvitationsDAO.create(account1.id,       groupId4, owner4.id.toSessionId))
+    val groupInvitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    Await.result(groupInvitationsDAO.update(groupInvitationId1, GroupInvitationStatusType.rejected,     sessionAccount.id.toSessionId))
-    Await.result(groupInvitationsDAO.update(groupInvitationId2, GroupInvitationStatusType.accepted,     account1.id.toSessionId))
-    Await.result(groupInvitationsDAO.update(groupInvitationId3, GroupInvitationStatusType.noResponded,  sessionAccount.id.toSessionId))
-    Await.result(groupInvitationsDAO.update(groupInvitationId4, GroupInvitationStatusType.rejected,     account1.id.toSessionId))
-    Await.result(groupInvitationsDAO.update(groupInvitationId5, GroupInvitationStatusType.accepted,     sessionAccount.id.toSessionId))
+    execute(groupInvitationsDAO.update(groupInvitationId1, GroupInvitationStatusType.rejected,     sessionAccount.id.toSessionId))
+    execute(groupInvitationsDAO.update(groupInvitationId2, GroupInvitationStatusType.accepted,     account1.id.toSessionId))
+    execute(groupInvitationsDAO.update(groupInvitationId3, GroupInvitationStatusType.noResponded,  sessionAccount.id.toSessionId))
+    execute(groupInvitationsDAO.update(groupInvitationId4, GroupInvitationStatusType.rejected,     account1.id.toSessionId))
+    execute(groupInvitationsDAO.update(groupInvitationId5, GroupInvitationStatusType.accepted,     sessionAccount.id.toSessionId))
 
-    val invitation1 = Await.result(groupInvitationsDAO.find(groupInvitationId1, sessionAccount.id.toSessionId)).get
-    val invitation2 = Await.result(groupInvitationsDAO.find(groupInvitationId2, account1.id.toSessionId)).get
-    val invitation3 = Await.result(groupInvitationsDAO.find(groupInvitationId3, sessionAccount.id.toSessionId)).get
-    val invitation4 = Await.result(groupInvitationsDAO.find(groupInvitationId4, account1.id.toSessionId)).get
-    val invitation5 = Await.result(groupInvitationsDAO.find(groupInvitationId5, sessionAccount.id.toSessionId)).get
+    val invitation1 = execute(groupInvitationsDAO.find(groupInvitationId1, sessionAccount.id.toSessionId)).get
+    val invitation2 = execute(groupInvitationsDAO.find(groupInvitationId2, account1.id.toSessionId)).get
+    val invitation3 = execute(groupInvitationsDAO.find(groupInvitationId3, sessionAccount.id.toSessionId)).get
+    val invitation4 = execute(groupInvitationsDAO.find(groupInvitationId4, account1.id.toSessionId)).get
+    val invitation5 = execute(groupInvitationsDAO.find(groupInvitationId5, sessionAccount.id.toSessionId)).get
 
     assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected)
     assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted)
@@ -298,29 +298,29 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec54")
     val owner5 = createAccount("GroupInvitationsDAOSpec55")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    val groupInvitationId1 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    val groupInvitationId2 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))
-    val groupInvitationId3 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    val groupInvitationId4 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
-    val groupInvitationId5 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    val groupInvitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    val groupInvitationId2 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))
+    val groupInvitationId3 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    val groupInvitationId4 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
+    val groupInvitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId1, GroupInvitationStatusType.rejected))
-    Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId2, GroupInvitationStatusType.accepted))
-    Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId3, GroupInvitationStatusType.noResponded))
-    Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId4, GroupInvitationStatusType.rejected))
-    Await.result(groupInvitationsDAO.update(sessionAccount.id, groupId5, GroupInvitationStatusType.accepted))
+    execute(groupInvitationsDAO.update(sessionAccount.id, groupId1, GroupInvitationStatusType.rejected))
+    execute(groupInvitationsDAO.update(sessionAccount.id, groupId2, GroupInvitationStatusType.accepted))
+    execute(groupInvitationsDAO.update(sessionAccount.id, groupId3, GroupInvitationStatusType.noResponded))
+    execute(groupInvitationsDAO.update(sessionAccount.id, groupId4, GroupInvitationStatusType.rejected))
+    execute(groupInvitationsDAO.update(sessionAccount.id, groupId5, GroupInvitationStatusType.accepted))
 
-    val invitation1 = Await.result(groupInvitationsDAO.find(groupInvitationId1, sessionAccount.id.toSessionId)).get
-    val invitation2 = Await.result(groupInvitationsDAO.find(groupInvitationId2, sessionAccount.id.toSessionId)).get
-    val invitation3 = Await.result(groupInvitationsDAO.find(groupInvitationId3, sessionAccount.id.toSessionId)).get
-    val invitation4 = Await.result(groupInvitationsDAO.find(groupInvitationId4, sessionAccount.id.toSessionId)).get
-    val invitation5 = Await.result(groupInvitationsDAO.find(groupInvitationId5, sessionAccount.id.toSessionId)).get
+    val invitation1 = execute(groupInvitationsDAO.find(groupInvitationId1, sessionAccount.id.toSessionId)).get
+    val invitation2 = execute(groupInvitationsDAO.find(groupInvitationId2, sessionAccount.id.toSessionId)).get
+    val invitation3 = execute(groupInvitationsDAO.find(groupInvitationId3, sessionAccount.id.toSessionId)).get
+    val invitation4 = execute(groupInvitationsDAO.find(groupInvitationId4, sessionAccount.id.toSessionId)).get
+    val invitation5 = execute(groupInvitationsDAO.find(groupInvitationId5, sessionAccount.id.toSessionId)).get
 
     assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected)
     assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted)
@@ -340,34 +340,34 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec61")
     val owner5 = createAccount("GroupInvitationsDAOSpec62")
 
-    val groupId1 = Await.result(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = Await.result(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = Await.result(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = Await.result(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = Await.result(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
 
-    val groupInvitationId1 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
-    val groupInvitationId2 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))
-    val groupInvitationId3 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
-    val groupInvitationId4 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
-    val groupInvitationId5 = Await.result(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
+    val groupInvitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
+    val groupInvitationId2 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))
+    val groupInvitationId3 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
+    val groupInvitationId4 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
+    val groupInvitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = Await.result(groupInvitationsDAO.updateNotified(groupInvitationId1, true))
-    val result2 = Await.result(groupInvitationsDAO.updateNotified(groupInvitationId2, false))
-    val result3 = Await.result(groupInvitationsDAO.updateNotified(groupInvitationId3, true))
-    val result4 = Await.result(groupInvitationsDAO.updateNotified(groupInvitationId4, false))
-    val result5 = Await.result(groupInvitationsDAO.updateNotified(groupInvitationId5, true))
+    val result1 = execute(groupInvitationsDAO.updateNotified(groupInvitationId1, true))
+    val result2 = execute(groupInvitationsDAO.updateNotified(groupInvitationId2, false))
+    val result3 = execute(groupInvitationsDAO.updateNotified(groupInvitationId3, true))
+    val result4 = execute(groupInvitationsDAO.updateNotified(groupInvitationId4, false))
+    val result5 = execute(groupInvitationsDAO.updateNotified(groupInvitationId5, true))
     assert(result1 == true)
     assert(result2 == true)
     assert(result3 == true)
     assert(result4 == true)
     assert(result5 == true)
 
-    val invitation1 = Await.result(groupInvitationsDAO.find(groupInvitationId1)).get
-    val invitation2 = Await.result(groupInvitationsDAO.find(groupInvitationId2)).get
-    val invitation3 = Await.result(groupInvitationsDAO.find(groupInvitationId3)).get
-    val invitation4 = Await.result(groupInvitationsDAO.find(groupInvitationId4)).get
-    val invitation5 = Await.result(groupInvitationsDAO.find(groupInvitationId5)).get
+    val invitation1 = execute(groupInvitationsDAO.find(groupInvitationId1)).get
+    val invitation2 = execute(groupInvitationsDAO.find(groupInvitationId2)).get
+    val invitation3 = execute(groupInvitationsDAO.find(groupInvitationId3)).get
+    val invitation4 = execute(groupInvitationsDAO.find(groupInvitationId4)).get
+    val invitation5 = execute(groupInvitationsDAO.find(groupInvitationId5)).get
 
     assert(invitation1.notified == true)
     assert(invitation2.notified == false)
@@ -375,7 +375,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(invitation4.notified == false)
     assert(invitation5.notified == true)
 
-    val result6 = Await.result(groupInvitationsDAO.find(invitation2.id))
+    val result6 = execute(groupInvitationsDAO.find(invitation2.id))
     assert(result6.get.notified == false)
 
   }

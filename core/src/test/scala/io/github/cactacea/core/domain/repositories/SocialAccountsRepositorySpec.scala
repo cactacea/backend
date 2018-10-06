@@ -14,19 +14,19 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
   test("connect a social account") {
 
     val sessionUser = signUp("SocialAccountsRepositorySpec1", "SocialAccountsRepositorySpec1", "session udid")
-    Await.result(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec2", sessionUser.id.toSessionId))
-    assert(Await.result(socialAccountsDAO.exist("facebook", sessionUser.id.toSessionId)) == true)
+    execute(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec2", sessionUser.id.toSessionId))
+    assert(execute(socialAccountsDAO.exist("facebook", sessionUser.id.toSessionId)) == true)
 
   }
 
   test("find social accounts") {
 
     val sessionUser = signUp("SocialAccountsRepositorySpec2", "session user password", "session udid")
-    Await.result(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec3", sessionUser.id.toSessionId))
-    Await.result(socialAccountsRepository.create("google", "SocialAccountsRepositorySpec4", sessionUser.id.toSessionId))
-    Await.result(socialAccountsRepository.create("twitter", "SocialAccountsRepositorySpec5", sessionUser.id.toSessionId))
+    execute(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec3", sessionUser.id.toSessionId))
+    execute(socialAccountsRepository.create("google", "SocialAccountsRepositorySpec4", sessionUser.id.toSessionId))
+    execute(socialAccountsRepository.create("twitter", "SocialAccountsRepositorySpec5", sessionUser.id.toSessionId))
 
-    val result = Await.result(socialAccountsRepository.findAll(sessionUser.id.toSessionId))
+    val result = execute(socialAccountsRepository.findAll(sessionUser.id.toSessionId))
     assert(result.size == 3)
 
   }
@@ -34,10 +34,10 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
   test("connect connected social account") {
 
     val sessionUser = signUp("SocialAccountsRepositorySpec3", "session user password", "session udid")
-    Await.result(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec6", sessionUser.id.toSessionId))
+    execute(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec6", sessionUser.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      Await.result(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec7", sessionUser.id.toSessionId))
+      execute(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec7", sessionUser.id.toSessionId))
     }.error == SocialAccountAlreadyConnected)
 
   }
@@ -45,9 +45,9 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
   test("disconnect a social account") {
 
     val sessionUser = signUp("SocialAccountsRepositorySpec4", "session user password", "session udid")
-    Await.result(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec8", sessionUser.id.toSessionId))
-    Await.result(socialAccountsRepository.delete("facebook", sessionUser.id.toSessionId))
-    assert(Await.result(socialAccountsDAO.exist("facebook", sessionUser.id.toSessionId)) == false)
+    execute(socialAccountsRepository.create("facebook", "SocialAccountsRepositorySpec8", sessionUser.id.toSessionId))
+    execute(socialAccountsRepository.delete("facebook", sessionUser.id.toSessionId))
+    assert(execute(socialAccountsDAO.exist("facebook", sessionUser.id.toSessionId)) == false)
 
   }
 
@@ -56,7 +56,7 @@ class SocialAccountsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("SocialAccountsRepositorySpec5", "session user password", "session udid")
 
     assert(intercept[CactaceaException] {
-      Await.result(socialAccountsRepository.delete("facebook", sessionUser.id.toSessionId))
+      execute(socialAccountsRepository.delete("facebook", sessionUser.id.toSessionId))
     }.error == SocialAccountNotConnected)
 
   }

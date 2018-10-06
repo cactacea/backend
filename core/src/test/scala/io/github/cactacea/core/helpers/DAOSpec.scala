@@ -3,8 +3,8 @@ package io.github.cactacea.backend.core.helpers
 import com.google.inject.Inject
 import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
-import com.twitter.util.Await
 import com.twitter.util.logging.Logging
+import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
@@ -22,6 +22,10 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultHashModule
       )
     ).create
+
+  def execute[T](f: => Future[T]) = {
+    Await.result(db.transaction(f))
+  }
 
   val db: DatabaseService = injector.instance[DatabaseService]
 
@@ -72,7 +76,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   }
 
   def selectAccounts(accountId: AccountId, sessionId: SessionId) = {
-    Await.result(
+    execute(
       accountsDAO.find(
         accountId,
         sessionId
@@ -81,7 +85,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   }
 
   def insertMediums(m: Mediums): MediumId = {
-    Await.result(
+    execute(
       db.transaction(
         mediumsDAO.create(
           m.key,
@@ -98,7 +102,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   }
 
   def insertAccounts(a: Accounts): AccountId = {
-    Await.result(
+    execute(
       db.transaction(
         accountsDAO.create(
           a.accountName,
