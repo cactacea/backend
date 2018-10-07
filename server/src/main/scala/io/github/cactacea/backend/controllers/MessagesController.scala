@@ -5,8 +5,8 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Message
-import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.backend.models.requests.message.{DeleteMessages, GetMessages, PostMessage}
 import io.github.cactacea.backend.models.responses.MessageCreated
 import io.github.cactacea.backend.swagger.CactaceaController
@@ -31,7 +31,7 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findMessages")
         .request[GetMessages]
         .responseWith[Message](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(GroupNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
     } { request: GetMessages =>
       messagesService.find(
         request.id,
@@ -49,8 +49,8 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("postMessage")
         .request[PostMessage]
         .responseWith[MessageCreated](Status.Created.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(MediumNotFound))
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(AccountNotJoined))
+        .responseWithArray[NotFound](Status.NotFound, Array(MediumNotFound))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNotJoined))
     } { request: PostMessage =>
       messagesService.create(
         request.id,

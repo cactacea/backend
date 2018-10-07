@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.util.responses.CactaceaError
+import io.github.cactacea.backend.core.util.responses.BadRequest
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{SocialAccountAlreadyConnected, SocialAccountNotConnected}
 import io.github.cactacea.backend.models.requests.setting.{DeleteSocialAccount, PostSocialAccount}
 import io.github.cactacea.backend.swagger.CactaceaController
@@ -27,7 +27,7 @@ class SocialAccountSettingsController @Inject()(@Flag("cactacea.api.prefix") api
         .operationId("connect")
         .request[PostSocialAccount]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(SocialAccountAlreadyConnected))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(SocialAccountAlreadyConnected))
     } { request: PostSocialAccount =>
       settingsService.connectSocialAccount(
         request.providerId,
@@ -42,7 +42,7 @@ class SocialAccountSettingsController @Inject()(@Flag("cactacea.api.prefix") api
         .tag(socialAccountsTag)
         .operationId("disconnect")
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(SocialAccountNotConnected))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(SocialAccountNotConnected))
     } { request: DeleteSocialAccount =>
       settingsService.disconnectSocialAccount(
         request.providerId,

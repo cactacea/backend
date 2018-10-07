@@ -4,8 +4,8 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.MutesService
-import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
 import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
@@ -27,8 +27,8 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .operationId("muteAccount")
         .request[PostMute]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(AccountAlreadyBlocked))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyBlocked))
     } { request: PostMute =>
       mutesService.create(
         request.id,
@@ -42,8 +42,8 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .operationId("unmuteAccount")
         .request[DeleteMute]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(AccountNotBlocked))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNotBlocked))
     } { request: DeleteMute =>
       mutesService.delete(
         request.id,

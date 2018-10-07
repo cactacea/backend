@@ -5,8 +5,8 @@ import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models._
-import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.backend.models.requests.account.{PostAcceptFriendRequest, PostRejectFriendRequest}
 import io.github.cactacea.backend.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
 import io.github.cactacea.backend.models.requests.group.{GetSessionGroups, GetSessionInvitations}
@@ -68,7 +68,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .operationId("updateSessionAccountName")
         .request[PutSessionAccountName]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(AccountNameAlreadyUsed))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNameAlreadyUsed))
     } { request: PutSessionAccountName =>
       accountsService.update(
         request.name,
@@ -115,7 +115,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .operationId("updateSessionProfileImage")
         .request[PutSessionProfileImage]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(MediumNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(MediumNotFound))
     }  { request: PutSessionProfileImage =>
       accountsService.updateProfileImage(
         request.id,
@@ -305,7 +305,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .operationId("accept")
         .request[PostAcceptFriendRequest]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FriendRequestNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(FriendRequestNotFound))
     } { request: PostAcceptFriendRequest =>
       friendRequestsService.accept(
         request.id,
@@ -319,7 +319,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .operationId("reject")
         .request[PostRejectFriendRequest]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FriendRequestNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(FriendRequestNotFound))
     } { request: PostRejectFriendRequest =>
       friendRequestsService.reject(
         request.id,

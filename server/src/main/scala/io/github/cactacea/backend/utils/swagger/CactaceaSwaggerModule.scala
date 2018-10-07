@@ -3,6 +3,7 @@ package io.github.cactacea.backend.swagger
 import com.google.inject.Provides
 import io.cactacea.finagger.SwaggerModule
 import io.github.cactacea.backend.CactaceaBuildInfo
+import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.utils.swagger.CactaceaSwagger
 import io.swagger.models._
@@ -23,6 +24,9 @@ object CactaceaSwaggerModule extends SwaggerModule {
     info.setVendorExtension("x-logo", Map("url" -> "https://avatars3.githubusercontent.com/u/36766951?s=100&v=4\"", "altText" -> "Cactacea logo").asJava)
 
     val swaggerDefine = CactaceaSwagger.info(info)
+
+    // Model defines
+    swaggerDefine.addDefinition("CactaceaError", CactaceaError.swaggerModel)
 
     // Tags
     swaggerDefine.addTag(new Tag().name("Accounts").description("Manage accounts"))

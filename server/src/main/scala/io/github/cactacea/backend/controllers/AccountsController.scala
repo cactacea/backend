@@ -5,8 +5,8 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus, Feed, Group}
-import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, GroupNotFound}
+import io.github.cactacea.backend.core.util.responses.NotFound
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.feed.GetAccountFeeds
 import io.github.cactacea.backend.models.requests.group.{GetAccountGroup, GetAccountGroups}
@@ -54,7 +54,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findAccount")
         .request[GetAccount]
         .responseWith[Account](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: GetAccount =>
       accountsService.find(
         request.id,
@@ -68,7 +68,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findAccountStatus")
         .request[GetAccountStatus]
         .responseWith[AccountStatus](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: GetAccountStatus =>
       accountsService.findAccountStatus(
         request.id,
@@ -82,7 +82,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("updateDisplayName")
         .request[PutAccountDisplayName]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
 
     } { request: PutAccountDisplayName =>
       accountsService.update(
@@ -111,7 +111,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findAccountFeeds")
         .request[GetAccountFeeds]
         .responseWith[Feed](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: GetAccountFeeds =>
       feedsService.find(
         request.id,
@@ -128,7 +128,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findAccountLikes")
         .request[GetLikes]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: GetLikes =>
       feedLikesService.find(
         request.id,
@@ -145,7 +145,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findAccountFollowers")
         .request[GetFollowers]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: GetFollowers =>
       followersService.find(
         request.id,
@@ -162,7 +162,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findAccountFriends")
         .request[GetFriends]
         .responseWith[Account](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: GetFriends =>
       friendsService.find(
         request.id,
@@ -180,7 +180,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("joinAccountToGroup")
         .request[PostAccountJoinGroup]
         .responseWith(Status.NoContent.code, Status.NoContent.reason)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(GroupNotFound, AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound, AccountNotFound))
     } { request: PostAccountJoinGroup =>
       groupAccountsService.create(
         request.accountId,
@@ -195,7 +195,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("leaveAccountFromGroup")
         .request[PostAccountJoinGroup]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound, GroupNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound, GroupNotFound))
     } { request: PostAccountLeaveGroup =>
       groupAccountsService.delete(
         request.accountId,
@@ -211,7 +211,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findAccountGroup")
         .request[GetAccountGroup]
         .responseWith[Group](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
 
     } { request: GetAccountGroup =>
       accountGroupsService.find(
@@ -226,7 +226,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findAccountGroups")
         .request[GetAccountGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
 
     } { request: GetAccountGroups =>
       accountGroupsService.findAll(
@@ -244,7 +244,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("reportAccount")
         .request[PostAccountReport]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
 
     } { request: PostAccountReport =>
       accountsService.report(
