@@ -20,7 +20,7 @@ object CactaceaSwaggerModule extends SwaggerModule {
       .description("Cactacea / Cactacea backend API for web and mobile applications")
       .version(CactaceaBuildInfo.version)
 
-    info.setVendorExtension("x-logo", Map("url" -> "https://avatars3.githubusercontent.com/u/36766951?s=100&v=4\"", "altText" -> "Cactacea logo").asJava)
+//    info.setVendorExtension("x-logo", Map("url" -> "https://avatars3.githubusercontent.com/u/36766951?s=100&v=4\"", "altText" -> "Cactacea logo").asJava)
 
     val swaggerDefine = CactaceaSwagger.info(info)
 
