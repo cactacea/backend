@@ -1,5 +1,6 @@
 package io.github.cactacea.backend
 
+import java.io.PrintWriter
 import java.util.UUID
 
 import com.google.inject.Inject
@@ -17,6 +18,18 @@ class BackendServerSpec extends ServerSpec {
   @Inject private var mapper: FinatraObjectMapper = _
 
   val accountsCount = 1
+
+  test("swagger") {
+
+    val swagger = get(s"/docs/model")
+    assert(swagger.contentString != "")
+
+    val path = CactaceaBuildInfo.baseDirectory.getParent + "/docs/swagger.json"
+    val file = new PrintWriter(path)
+    file.write(swagger.contentString)
+    file.close()
+
+  }
 
   test("Sign up") {
 
