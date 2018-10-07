@@ -3,7 +3,6 @@ package io.github.cactacea.backend.swagger
 import com.google.inject.Provides
 import io.cactacea.finagger.SwaggerModule
 import io.github.cactacea.backend.CactaceaBuildInfo
-import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.utils.oauth.Permissions
 import io.github.cactacea.backend.utils.swagger.CactaceaSwagger
 import io.swagger.models._
@@ -26,7 +25,9 @@ object CactaceaSwaggerModule extends SwaggerModule {
     val swaggerDefine = CactaceaSwagger.info(info)
 
     // Model defines
-    swaggerDefine.addDefinition("CactaceaError", CactaceaError.swaggerModel)
+    swaggerDefine.addDefinition("NotFound", errorResponseScheme("NotFound"))
+    swaggerDefine.addDefinition("BadRequest", errorResponseScheme("BadRequest"))
+    swaggerDefine.addDefinition("Unauthorized", errorResponseScheme("Unauthorized"))
 
     // Tags
     swaggerDefine.addTag(new Tag().name("Accounts").description("Manage accounts"))
@@ -59,6 +60,19 @@ object CactaceaSwaggerModule extends SwaggerModule {
 
     swaggerDefine
 
+  }
+
+  def errorResponseScheme(name: String) = {
+    import io.swagger.models.ModelImpl
+    import io.swagger.models.properties.{LongProperty, StringProperty}
+
+    val code = new LongProperty().description("code")
+    val message = new StringProperty().description("message")
+    code.setRequired(true)
+    message.setRequired(true)
+    new ModelImpl().name(name).`type`("object")
+      .property("code", code)
+      .property("message", message)
   }
 
 }
