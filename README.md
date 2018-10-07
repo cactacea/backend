@@ -8,19 +8,8 @@
 
 ## Documentation ##
 
-- [`REST API`](https://cactacea.github.io/backend/)
-
-## Features ##
-
-Cactacea provides the following features.
-
-- `Accounts` - friends, following, followers, blocks and muting.
-- `Groups` - privacy settings and group invitations.
-- `Messages` - direct messages and group messages.
-- `Feeds` - text, images, movies, content warning and privacy settings.
-- `Links` - Linking social network accounts.
-- `Notifications` - new users, feeds, group invitations and messages. 
-- `Authentication`, `Authorization` - API Key, OAuth2
+- [`Japanese Documents`](https://cactacea.github.io/docs/)
+- [`API Reference`](https://cactacea.github.io/backend/)
 
 ## Related Projects ##
 
