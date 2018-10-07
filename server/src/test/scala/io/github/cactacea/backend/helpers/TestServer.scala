@@ -4,8 +4,10 @@ package io.github.cactacea.backend.helpers
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
+import io.cactacea.finagger.DocsController
 import io.github.cactacea.backend.BaseServer
 import io.github.cactacea.backend.controllers._
+import io.github.cactacea.backend.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.utils.filters._
 import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
 
@@ -38,7 +40,10 @@ class TestServer extends BaseServer {
       .add[CorsFilter, OAuthController]
       .add[ResourcesController]
       .add[HealthController]
+      .add[DocsController]
   }
+
+  addFrameworkModule(CactaceaSwaggerModule)
 
   override def warmup() {
     handle[DatabaseMigrationHandler]()
