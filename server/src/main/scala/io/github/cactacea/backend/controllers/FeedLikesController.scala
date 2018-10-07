@@ -5,8 +5,8 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
@@ -29,7 +29,7 @@ class FeedLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .operationId("findFeedLikes")
         .request[GetFeedLikes]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: GetFeedLikes =>
       feedLikesService.findAccounts(
         request.id,
@@ -46,8 +46,8 @@ class FeedLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .operationId("likeFeed")
         .request[PostFeedLike]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(FeedAlreadyLiked))
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(FeedAlreadyLiked))
+        .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: PostFeedLike =>
       feedLikesService.create(
         request.id,
@@ -61,8 +61,8 @@ class FeedLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .operationId("unlikeFeed")
         .request[DeleteFeedLike]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(FeedNotLiked))
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(FeedNotLiked))
+        .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: DeleteFeedLike =>
       feedLikesService.delete(
         request.id,

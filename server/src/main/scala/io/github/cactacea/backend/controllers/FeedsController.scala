@@ -5,8 +5,8 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Feed
-import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import io.github.cactacea.backend.core.util.responses.NotFound
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
 import io.github.cactacea.backend.swagger.CactaceaController
@@ -30,7 +30,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .operationId("findFeeds")
         .request[GetFeeds]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: GetFeeds =>
       feedsService.find(
         request.since,
@@ -47,7 +47,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .operationId("postFeed")
         .request[PostFeed]
         .responseWith[FeedCreated](Status.Created.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(MediumNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(MediumNotFound))
     } { request: PostFeed =>
       feedsService.create(
         request.message,
@@ -66,7 +66,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .operationId("findFeed")
         .request[GetFeed]
         .responseWith[Feed](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: GetFeed =>
       feedsService.find(
         request.id,
@@ -80,7 +80,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .operationId("updateFeed")
         .request[PutFeed]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound, MediumNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound, MediumNotFound))
     } { request: PutFeed =>
       feedsService.edit(
         request.id,
@@ -100,7 +100,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .operationId("deleteFeed")
         .request[DeleteFeed]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: DeleteFeed =>
       feedsService.delete(
         request.id,
@@ -114,7 +114,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .operationId("reportFeed")
         .request[PostFeedReport]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(FeedNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: PostFeedReport =>
       feedsService.report(
         request.id,

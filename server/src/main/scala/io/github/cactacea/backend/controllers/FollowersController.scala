@@ -5,8 +5,8 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.util.responses.CactaceaError
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFollowed, _}
+import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
@@ -29,7 +29,7 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .operationId("findFollows")
         .request[GetFollows]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: GetFollows =>
       followsService.find(
         request.id,
@@ -46,8 +46,8 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .operationId("follow")
         .request[PostFollow]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(AccountAlreadyFollowed))
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyFollowed))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: PostFollow =>
       followsService.create(
         request.id,
@@ -61,8 +61,8 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .operationId("unfollow")
         .request[DeleteFollow]
         .responseWith(Status.NoContent.code, successfulMessage)
-        .responseWithArray[CactaceaError](Status.BadRequest, Array(AccountNotFollowed))
-        .responseWithArray[CactaceaError](Status.NotFound, Array(AccountNotFound))
+        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNotFollowed))
+        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: DeleteFollow =>
       followsService.delete(
         request.id,
