@@ -1,14 +1,14 @@
 package io.github.cactacea.backend.core.util.configs
 
-import com.typesafe.config.{ConfigFactory, Config => TypeSafeConfig}
+import com.twitter.util.TimeConversions._
+import com.typesafe.config.ConfigFactory
+import io.github.cactacea.backend.core.domain.enums.DeviceType
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
-import io.github.cactacea.backend.core.domain.enums.DeviceType
-import com.twitter.util.TimeConversions._
 
 object Config extends DurationReader {
 
-  private val config = ConfigFactory.load().as[TypeSafeConfig]("cactacea")
+  private val config = ConfigFactory.load()
   private val dbConfig = config.as[DatabaseConfig]("db")
   private val authConfig = config.as[AuthConfig]("auth")
   private val passwordConfig = config.as[PasswordConfig]("password")
