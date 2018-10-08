@@ -9,7 +9,7 @@ swagger-codegen generate \
 
 swagger-codegen generate \
     -i docs/swagger.json  \
-    -l kotlin
+    -l kotlin \
     --model-package io.github.cactacea.backend \
-    --model-name-suffix Json
+    --model-name-suffix Json \
     -o ../android
