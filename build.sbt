@@ -181,7 +181,6 @@ lazy val migrationSetting = Seq(
   flywayPassword := testDBPassword,
   flywayUrl := s"jdbc:mysql://$testDBHostName:$testDBPort/$testDBDatabase",
   flywayPlaceholders := Map("schema" -> testDBDatabase),
-  flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
   (test in Test) := {
     (test in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).value
   },
