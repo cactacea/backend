@@ -183,13 +183,13 @@ lazy val migrationSetting = Seq(
   flywayPlaceholders := Map("schema" -> testDBDatabase),
   flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
   (test in Test) := {
-    (test in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).value
+    (test in Test).dependsOn(Def.sequential(flywayMigrate)).value
   },
   (testOnly in Test) := {
-    (testOnly in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
+    (testOnly in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
   },
   (testQuick in Test) := {
-    (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
+    (testQuick in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
   },
   libraryDependencies ++= Seq(
     "mysql" % "mysql-connector-java" % "6.0.6"
