@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.6.4-SNAPSHOT"
+  val cactacea = "0.6.5-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
