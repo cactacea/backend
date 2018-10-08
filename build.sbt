@@ -1,7 +1,7 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
 lazy val versions = new {
-  val cactacea = "0.6.3-SNAPSHOT"
+  val cactacea = "0.6.4-SNAPSHOT"
   val finagle = "18.5.0"
   val guice = "4.0"
   val logback = "1.2.3"
@@ -183,13 +183,13 @@ lazy val migrationSetting = Seq(
   flywayPlaceholders := Map("schema" -> testDBDatabase),
   flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
   (test in Test) := {
-    (test in Test).dependsOn(Def.sequential(flywayMigrate)).value
+    (test in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).value
   },
   (testOnly in Test) := {
-    (testOnly in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
+    (testOnly in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
   },
   (testQuick in Test) := {
-    (testQuick in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
+    (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
   },
   libraryDependencies ++= Seq(
     "mysql" % "mysql-connector-java" % "6.0.6"
