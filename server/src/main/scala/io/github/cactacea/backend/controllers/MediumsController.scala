@@ -33,7 +33,7 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
       o.summary("Upload a medium")
         .tag(mediumsTag)
         .operationId("uploadMedium")
-        .responseWith[MediumCreated](Status.Ok.code, successfulMessage)
+        .responseWith[MediumCreated](Status.Created.code, successfulMessage)
         .responseWith(Status.BadRequest.code, NotAcceptableMimeTypeFound.message)
 
     } { request: Request =>

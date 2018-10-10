@@ -62,7 +62,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(groupsTag)
         .operationId("createGroup")
         .request[PostGroup]
-        .responseWith[GroupCreated](Status.NoContent.code, successfulMessage)
+        .responseWith[GroupCreated](Status.Created.code, successfulMessage)
     } { request: PostGroup =>
       groupsService.create(
         request.name,

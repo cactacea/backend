@@ -57,7 +57,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .tag(invitationsTag)
         .operationId("createGroupInvitationToAccounts")
         .request[PostInvitationAccounts]
-        .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
+        .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
     } { request: PostInvitationAccounts =>
       invitationService.create(
@@ -72,7 +72,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .tag(invitationsTag)
         .operationId("createGroupInvitationToAccount")
         .request[PostInvitationAccount]
-        .responseWith[InvitationCreated](Status.Ok.code, successfulMessage)
+        .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound, GroupNotFound))
     }  { request: PostInvitationAccount =>
       invitationService.create(
