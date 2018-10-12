@@ -1,3 +1,3 @@
-SERVER
+Server
 ==========================================================
-cactacea-server is a server for providing RESTful API service with Cactacea.
+cactacea-server is a library for providing RESTful API service with Cactacea.
