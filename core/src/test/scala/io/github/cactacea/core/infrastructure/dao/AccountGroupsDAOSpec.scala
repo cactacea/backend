@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.AccountGroups
@@ -194,8 +193,8 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    accountGroupsDAO.create(account1.id, groupId1, sessionAccount.id.toSessionId)
-    accountGroupsDAO.create(account2.id, groupId2, sessionAccount.id.toSessionId)
+    execute(accountGroupsDAO.create(account1.id, groupId1, sessionAccount.id.toSessionId))
+    execute(accountGroupsDAO.create(account2.id, groupId2, sessionAccount.id.toSessionId))
 
     val result = execute(accountGroupsDAO.findByAccountId(account1.id, sessionAccount.id.toSessionId))
     assert(result.isDefined == true)
