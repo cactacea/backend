@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, CommentId, FeedId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.models.{Blocks, CommentLikes, Comments, FeedLikes}
 import io.github.cactacea.backend.core.infrastructure.results.{CommentBlocksCount, FeedBlocksCount, RelationshipBlocksCount}
 
 @Singleton
@@ -37,52 +38,46 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
   }
 
   def findCommentLikeBlocks(commentIds: List[CommentId], sessionId: SessionId): Future[List[CommentBlocksCount]] = {
-    if (commentIds.size == 0) {
-      return Future.value(List[CommentBlocksCount]())
-    }
-    val ids = commentIds.mkString(",")
-    val q = quote { infix"""
-                       select comment_id id,
-                       count(*) count
-                       from comment_likes a
-                       where comment_id in (${lift(ids)})
-                       and exists ( select * from blocks b where `by` = ${lift(sessionId)} and a.`by` = b.account_id )
-                       group by id
-      """.as[Query[CommentBlocksCount]]
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[CommentLikes]
+        .filter(c => liftQuery(commentIds).contains(c.commentId))
+        .filter(c => query[Blocks].filter(b => b.by == lift(by) && c.by == b.accountId).nonEmpty)
+        .groupBy(c => c.commentId).map {
+        case (commentId, comments) => (commentId, comments.size)
+      }.map {
+        case (commentId, count) => CommentBlocksCount(commentId, count)
+      }
     }
     run(q)
   }
 
   def findFeedLikeBlocks(feedIds: List[FeedId], sessionId: SessionId): Future[List[FeedBlocksCount]] = {
-    if (feedIds.size == 0) {
-      return Future.value(List[FeedBlocksCount]())
-    }
-    val ids = feedIds.mkString(",")
-    val q = quote { infix"""
-                       select feed_id id,
-                       count(*) count
-                       from feed_likes a
-                       where feed_id in (${lift(ids)})
-                       and exists ( select * from blocks b where `by` = ${lift(sessionId)} and a.`by` = b.account_id )
-                       group by id
-      """.as[Query[FeedBlocksCount]]
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[FeedLikes]
+        .filter(f => liftQuery(feedIds).contains(f.feedId))
+        .filter(f => query[Blocks].filter(b => b.by == lift(by) && f.by == b.accountId).nonEmpty)
+        .groupBy(f => f.feedId).map {
+        case (feedId, comments) => (feedId, comments.size)
+      }.map {
+        case (feedId, count) => FeedBlocksCount(feedId, count)
+      }
     }
     run(q)
   }
 
   def findFeedCommentBlocks(feedIds: List[FeedId], sessionId: SessionId): Future[List[FeedBlocksCount]] = {
-    if (feedIds.size == 0) {
-      return Future.value(List[FeedBlocksCount]())
-    }
-    val ids = feedIds.mkString(",")
-    val q = quote { infix"""
-                       select feed_id id,
-                       count(*) count
-                       from comments a
-                       where feed_id in (${lift(ids)})
-                       and exists ( select * from blocks b where `by` = ${lift(sessionId)} and a.`by` = b.account_id )
-                       group by id
-      """.as[Query[FeedBlocksCount]]
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[Comments]
+        .filter(c => liftQuery(feedIds).contains(c.feedId))
+        .filter(c => query[Blocks].filter(b => b.by == lift(by) && c.by == b.accountId).nonEmpty)
+        .groupBy(c => c.feedId).map {
+        case (feedId, comments) => (feedId, comments.size)
+      }.map {
+        case (feedId, count) => FeedBlocksCount(feedId, count)
+      }
     }
     run(q)
   }
