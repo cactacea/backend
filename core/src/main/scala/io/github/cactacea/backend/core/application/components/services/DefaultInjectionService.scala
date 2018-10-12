@@ -191,12 +191,4 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  override def socialAccountConnected(providerId: String, sessionId: SessionId): Future[Unit] = {
-    Future.Unit
-  }
-
-  override def socialAccountDisconnected(providerId: String, sessionId: SessionId): Future[Unit] = {
-    Future.Unit
-  }
-
 }

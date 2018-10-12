@@ -134,17 +134,6 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
       ).map(_ => response.noContent)
     }
 
-    getWithPermission("/social_accounts")(Permissions.basic) { o =>
-      o.summary("Get status abount social accounts")
-        .tag("Social Accounts")
-        .operationId("findSessionSocialAccounts")
-        .responseWith[Array[SocialAccount]](Status.Ok.code, successfulMessage)
-    } { _: Request =>
-      settingsService.findSocialAccounts(
-        SessionContext.id
-      )
-    }
-
     getWithPermission("/session/feeds")(Permissions.basic) { o =>
       o.summary("Get feeds list session account posted")
         .tag(sessionTag)

@@ -25,7 +25,6 @@ trait BaseServer extends HttpServer {
   def subScribeModule: TwitterModule = DefaultSubScribeModule
   def deepLinkModule: TwitterModule = DefaultDeepLinkModule
   def transcodeModule: TwitterModule = DefaultTranscodeModule
-  def socialAccountsModule: TwitterModule = DefaultSocialAccountsModule
   def hashModule: TwitterModule = DefaultHashModule
 
   addFrameworkModule(injectionModule)
@@ -38,7 +37,6 @@ trait BaseServer extends HttpServer {
   addFrameworkModule(deepLinkModule)
   addFrameworkModule(transcodeModule)
   addFrameworkModule(databaseModule)
-  addFrameworkModule(socialAccountsModule)
   addFrameworkModule(hashModule)
 
   override def configureHttp(router: HttpRouter) = {

@@ -61,7 +61,6 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   @Inject var outstandingFriendRequestsDAO: FriendRequestsStatusDAO = _
   @Inject var groupAccountsDAO: GroupAccountsDAO = _
   @Inject var pushNotificationSettingsDAO: PushNotificationSettingsDAO = _
-  @Inject var socialAccountsDAO: SocialAccountsDAO = injector.instance[SocialAccountsDAO]
 
   def createAccount(accountName: String): Accounts = {
     val u: Accounts = FactoryHelper.createAccounts(accountName)

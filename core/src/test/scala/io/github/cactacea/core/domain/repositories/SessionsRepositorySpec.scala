@@ -13,7 +13,6 @@ class SessionsRepositorySpec extends RepositorySpec {
 
   val sessionsRepository = injector.instance[SessionsRepository]
   val devicesDAO = injector.instance[DevicesDAO]
-  val socialAccountsDAO = injector.instance[SocialAccountsDAO]
   var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
   val accountsDAO = injector.instance[AccountsDAO]
   val timeService = injector.instance[TimeService]
@@ -121,35 +120,5 @@ class SessionsRepositorySpec extends RepositorySpec {
     }.error == AccountTerminated)
 
   }
-
-  test("social account signUp") {
-    val result = execute(sessionsRepository.signUp(
-      "facebook",
-      "SessionsRepositorySpec6",
-      Some("SessionsRepositorySpec6"),
-      "accountPassword",
-      "facebook",
-      "token key",
-      "token secret",
-      "udid",
-      DeviceType.ios,
-      Some("test@example.com"),
-      None,
-      Some("location"),
-      Some("bio"),
-      Some("userAgent")
-    ))
-    assert(result.accountName == "SessionsRepositorySpec6")
-
-  }
-
-  test("social account signIn") {
-
-    assert(intercept[CactaceaException] {
-      execute(sessionsRepository.signIn("tokenkey", "token secret", "udid", DeviceType.ios, Some("user agent")))
-    }.error == InvalidAccountNameOrPassword)
-
-  }
-
 
 }

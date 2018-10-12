@@ -24,7 +24,6 @@ trait CactaceaController extends SwaggerController with PermissionController {
   protected val notificationsTag = "Notifications"
   protected val RequestsTag = "Requests"
   protected val sessionsTag = "Sessions"
-  protected val socialAccountsTag = "Social Accounts"
 
 
 }

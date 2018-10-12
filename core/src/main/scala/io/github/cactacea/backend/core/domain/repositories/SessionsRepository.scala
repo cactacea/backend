@@ -16,7 +16,6 @@ class SessionsRepository {
   @Inject private var devicesDAO: DevicesDAO = _
   @Inject private var notificationSettingsDAO: PushNotificationSettingsDAO = _
   @Inject private var accountsDAO: AccountsDAO = _
-  @Inject private var socialAccountsDAO: SocialAccountsDAO = _
   @Inject private var validationDAO: ValidationDAO = _
 
   def signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
@@ -47,32 +46,6 @@ class SessionsRepository {
   }
 
 
-  def signUp(socialAccountType: String, accountName: String, displayName: Option[String], password: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
-    socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
-      case Some(sa) =>
-        accountsDAO.find(sa.accountId.toSessionId).flatMap(_ match {
-          case Some(account) =>
-            if (account.isTerminated) {
-              Future.exception(CactaceaException(AccountTerminated))
-            } else {
-              _signIn(account, udid, deviceType, userAgent)
-            }
-          case None =>
-            Future.exception(CactaceaException(AccountNotFound))
-        })
-      case None =>
-        _signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent).flatMap({ a =>
-          socialAccountsDAO.update(socialAccountType, true, a.id.toSessionId).flatMap(_ match {
-            case true =>
-              Future.value(a)
-            case false =>
-              socialAccountsDAO.create(socialAccountType, socialAccountId, None, true, a.id.toSessionId).flatMap(_ => Future.value(a))
-          })
-        })
-    })
-
-  }
-
   private def _signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
     (for {
       accountId <- accountsDAO.create(accountName, displayName, password, web, birthday, location, bio)
@@ -87,26 +60,6 @@ class SessionsRepository {
         Future.exception(CactaceaException(AccountNotFound))
     })
   }
-
-
-  def signIn(socialAccountType: String, socialAccountId: String, accessTokenKey: String, accessTokenSecret: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
-    socialAccountsDAO.find(socialAccountType, socialAccountId).flatMap(_ match {
-      case Some(socialAccount) =>
-        accountsDAO.find(socialAccount.accountId.toSessionId).flatMap(_ match {
-          case Some(account) =>
-            if (account.isTerminated) {
-              Future.exception(CactaceaException(AccountTerminated))
-            } else {
-              _signIn(account, udid, deviceType, userAgent)
-            }
-          case None =>
-            Future.exception(CactaceaException(AccountNotFound))
-        })
-      case None =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-  }
-
 
   private def _signIn(account: Accounts, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
     devicesDAO.exist(account.id.toSessionId, udid).flatMap(_ match {
