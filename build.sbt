@@ -170,26 +170,27 @@ lazy val commonResolverSetting = Seq(
 )
 
 
-lazy val testDBUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
-lazy val testDBPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
-lazy val testDBDatabase = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
-lazy val testDBHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
-lazy val testDBPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
+lazy val migrationUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
+lazy val migrationPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
+lazy val migrationDatabaseName = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
+lazy val migrationHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
+lazy val migrationPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
 
 lazy val migrationSetting = Seq(
-  flywayUser := testDBUser,
-  flywayPassword := testDBPassword,
-  flywayUrl := s"jdbc:mysql://$testDBHostName:$testDBPort/$testDBDatabase",
-  flywayPlaceholders := Map("schema" -> testDBDatabase),
+  flywayUser := migrationUser,
+  flywayPassword := migrationPassword,
+  flywayUrl := s"jdbc:mysql://$migrationHostName:$migrationPort/$migrationDatabaseName",
+  flywayPlaceholders := Map("schema" -> migrationDatabaseName),
   flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
+  clean := clean.dependsOn(Def.sequential(flywayClean)).value,
   (test in Test) := {
-    (test in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).value
+    (test in Test).dependsOn(Def.sequential(flywayMigrate)).value
   },
   (testOnly in Test) := {
-    (testOnly in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
+    (testOnly in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
   },
   (testQuick in Test) := {
-    (testQuick in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).evaluated
+    (testQuick in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
   },
   libraryDependencies ++= Seq(
     "mysql" % "mysql-connector-java" % "6.0.6"
