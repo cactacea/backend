@@ -808,26 +808,6 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`social_accounts`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`social_accounts` (
-  `provider_id` VARCHAR(255) NOT NULL,
-  `account_id` BIGINT NOT NULL,
-  `provider_key` VARCHAR(1024) NOT NULL,
-  `authentication_code` VARCHAR(4) NULL,
-  `verified` TINYINT NOT NULL,
-  UNIQUE INDEX `UNIQUE` (`account_id` ASC, `provider_id` ASC),
-  INDEX `fk_social_accounts_accounts1_idx` (`account_id` ASC),
-  CONSTRAINT `fk_social_accounts_accounts1`
-    FOREIGN KEY (`account_id`)
-    REFERENCES `${schema}`.`accounts` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
 -- Table `${schema}`.`tickets`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`tickets` (

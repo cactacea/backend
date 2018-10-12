@@ -36,10 +36,8 @@ object CactaceaErrors {
   final val c40033 = "40033"
   final val c40034 = "40034"
   final val c40035 = "40035"
-  final val c40036 = "40036"
-  final val c40037 = "40037"
-  final val c40038 = "40038"
-  final val c40039 = "40039"
+  final val c40036 = "40038"
+  final val c40037 = "40039"
 
   final val c40400 = "40400"
   final val c40401 = "40401"
@@ -85,10 +83,8 @@ object CactaceaErrors {
   final val m40033 = "Comment not liked."
   final val m40034 = "Feed already liked."
   final val m40035 = "Feed not liked."
-  final val m40036 = "Social Account already connected."
-  final val m40037 = "Social Account not connected"
-  final val m40038 = "Group already hidden."
-  final val m40039 = "Group not hidden."
+  final val m40036 = "Group already hidden."
+  final val m40037 = "Group not hidden."
 
   final val m40400 = "Account not found."
   final val m40401 = "Comment not found."
@@ -97,7 +93,6 @@ object CactaceaErrors {
   final val m40404 = "Request not found."
   final val m40405 = "Group not found."
   final val m40406 = "Group invitation not found."
-  final val m40407 = "Social account not found."
 
   final val m40600 = "Session not authorized."
   final val m40601 = "Access token expired."
@@ -259,24 +254,14 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40035)  override val message: String = m40035
   }
 
-  final object SocialAccountAlreadyConnected extends BadRequest {
+  final object GroupAlreadyHidden extends BadRequest {
     @ApiModelProperty(example = c40036)  override val code: Int =       c40036.toInt
     @ApiModelProperty(example = m40036)  override val message: String = m40036
   }
 
-  final object SocialAccountNotConnected extends BadRequest {
+  final object GroupNotHidden extends BadRequest {
     @ApiModelProperty(example = c40037)  override val code: Int =       c40037.toInt
     @ApiModelProperty(example = m40037)  override val message: String = m40037
-  }
-
-  final object GroupAlreadyHidden extends BadRequest {
-    @ApiModelProperty(example = c40038)  override val code: Int =       c40038.toInt
-    @ApiModelProperty(example = m40038)  override val message: String = m40038
-  }
-
-  final object GroupNotHidden extends BadRequest {
-    @ApiModelProperty(example = c40039)  override val code: Int =       c40039.toInt
-    @ApiModelProperty(example = m40039)  override val message: String = m40039
   }
 
   // 404 Not Found
@@ -314,11 +299,6 @@ object CactaceaErrors {
   final object GroupInvitationNotFound extends NotFound {
     @ApiModelProperty(example = c40406)  override val code: Int =       c40406.toInt
     @ApiModelProperty(example = m40406)  override val message: String = m40406
-  }
-
-  final object SocialAccountNotFound extends NotFound {
-    @ApiModelProperty(example = c40407)  override val code: Int =       c40407.toInt
-    @ApiModelProperty(example = m40407)  override val message: String = m40407
   }
 
   // 406 Unauthorized

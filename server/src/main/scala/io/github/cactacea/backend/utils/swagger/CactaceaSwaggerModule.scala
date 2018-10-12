@@ -44,7 +44,6 @@ object CactaceaSwaggerModule extends SwaggerModule {
     swaggerDefine.addTag(new Tag().name("Friend Requests").description("Manage friend requests"))
     swaggerDefine.addTag(new Tag().name("Session").description("Manage session"))
     swaggerDefine.addTag(new Tag().name("Sessions").description("Manage sessions"))
-    swaggerDefine.addTag(new Tag().name("Social Accounts").description("Manage social accounts"))
     swaggerDefine.addTag(new Tag().name("Settings").description("Manage session settings"))
     swaggerDefine.addTag(new Tag().name("System").description("Health checking and etc"))
 
