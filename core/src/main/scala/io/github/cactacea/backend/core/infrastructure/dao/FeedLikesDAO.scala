@@ -15,10 +15,10 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
 
   @Inject private var timeService: TimeService = _
 
-  def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- _insertFeedLikes(feedId, sessionId)
-      r <- _updateLikeCount(feedId)
+      r <- _updateLikeCount(feedId, 1L)
     } yield (r)
   }
 
@@ -36,34 +36,34 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  private def _updateLikeCount(feedId: FeedId): Future[Boolean] = {
+  private def _updateLikeCount(feedId: FeedId, count: Long): Future[Unit] = {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
         .update(
-          a => a.likeCount -> (a.likeCount + 1)
+          a => a.likeCount -> (a.likeCount + lift(count))
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def delete(feedId: FeedId) = {
+  def delete(feedId: FeedId): Future[Unit] = {
     val q = quote {
       query[FeedLikes]
         .filter(_.feedId == lift(feedId))
         .delete
     }
-    run(q).map(_ => true)
+    run(q).map(_ => Unit)
   }
 
-  def delete(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- _deleteFeedLikes(feedId, sessionId)
-      r <- _updateUnlikeCount(feedId)
+      r <- _updateLikeCount(feedId, -1L)
     } yield (r)
   }
 
-  private def _deleteFeedLikes(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  private def _deleteFeedLikes(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[FeedLikes]
@@ -71,21 +71,10 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         .filter(_.by      == lift(by))
         .delete
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  private def _updateUnlikeCount(feedId: FeedId): Future[Boolean] = {
-    val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
-        .update(
-          a => a.likeCount -> (a.likeCount - 1)
-        )
-    }
-    run(q).map(_ == 1)
-  }
-
-  def deleteLikes(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def deleteLikes(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[FeedLikes]
@@ -96,7 +85,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
           .nonEmpty)
         .delete
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
   }
 
   def exist(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {

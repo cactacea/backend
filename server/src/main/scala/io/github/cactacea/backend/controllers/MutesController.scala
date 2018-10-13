@@ -26,14 +26,14 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(mutesTag)
         .operationId("muteAccount")
         .request[PostMute]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyBlocked))
     } { request: PostMute =>
       mutesService.create(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     deleteWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
@@ -41,14 +41,14 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(mutesTag)
         .operationId("unmuteAccount")
         .request[DeleteMute]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNotBlocked))
     } { request: DeleteMute =>
       mutesService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

@@ -13,16 +13,11 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    (for {
+    for {
       _ <- _insertFriend(accountId, sessionId)
       _ <- _updateAccount(1L, sessionId)
-      r <- _updateRelationship(accountId, true, sessionId)
-    } yield (r)).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        _insertRelationship(accountId, sessionId)
-    })
+      r <- _insertRelationship(accountId, sessionId)
+    } yield (r)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -53,12 +48,12 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
           _.friend            -> true
-        )
+        ).onConflictUpdate((t, _) => t.friend -> true)
     }
     run(q).map(_ => Unit)
   }
 
-  private def _updateRelationship(accountId: AccountId, friend: Boolean, sessionId: SessionId): Future[Boolean] = {
+  private def _updateRelationship(accountId: AccountId, friend: Boolean, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -68,7 +63,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
           _.friend          -> lift(friend)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   private def _insertFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

@@ -98,9 +98,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(account2.id, groupId))
     execute(accountGroupsDAO.create(account3.id, groupId))
     execute(accountGroupsDAO.create(account4.id, groupId))
-
-    val result1 = execute(accountGroupsDAO.updateUnreadCount(groupId))
-    assert(result1 == true)
+    execute(accountGroupsDAO.updateUnreadCount(groupId))
 
     val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
     assert(accountGroups.size == 4)

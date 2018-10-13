@@ -15,7 +15,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
   @Inject private var feedTagsDAO: FeedTagsDAO = _
   @Inject private var feedMediumDAO: FeedMediumDAO = _
 
-  def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       infix"""
@@ -23,17 +23,17 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
            select `by`, ${lift(feedId)}, account_id, false as notified, CURRENT_TIMESTAMP from relationships where account_id = ${lift(by)} and follower = true
           """.as[Action[Long]]
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
   }
 
-  def update(feedId: FeedId, accountIds: List[AccountId], notified: Boolean = true): Future[Boolean] = {
+  def update(feedId: FeedId, accountIds: List[AccountId], notified: Boolean = true): Future[Unit] = {
     val q = quote {
       query[AccountFeeds]
         .filter(_.feedId == lift(feedId))
         .filter(m => liftQuery(accountIds).contains(m.accountId))
         .update(_.notified -> lift(notified))
     }
-    run(q).map(_ == accountIds.size)
+    run(q).map(_ => Unit)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: FeedPrivacyType, sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {

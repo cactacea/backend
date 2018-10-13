@@ -91,13 +91,13 @@ class GroupsDAO @Inject()(db: DatabaseService) {
     run(r).map(_ => Unit)
   }
 
-  def updateAccountCount(groupId: GroupId, count: Long): Future[Boolean] = {
+  def updateAccountCount(groupId: GroupId, count: Long): Future[Unit] = {
     val r = quote {
       query[Groups]
         .filter(_.id == lift(groupId))
         .update(g => g.accountCount -> (g.accountCount + lift(count)))
     }
-    run(r).map(_ == 1)
+    run(r).map(_ => Unit)
   }
 
   def findAll(name: Option[String], invitationOnly: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Groups]] = {

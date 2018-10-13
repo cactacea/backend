@@ -29,7 +29,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
     run(q)
   }
 
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
@@ -38,7 +38,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
         .filter(_.requestStatus == lift(FriendRequestStatusType.noResponded))
         .delete
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
@@ -104,7 +104,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
 
   }
 
-  def update(id: FriendRequestId, status: FriendRequestStatusType, sessionId: SessionId): Future[Boolean] = {
+  def update(id: FriendRequestId, status: FriendRequestStatusType, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
@@ -112,17 +112,17 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
         .filter(_.accountId     == lift(accountId))
         .update(_.requestStatus -> lift(status))
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
 
   }
 
-  def updateNotified(id: FriendRequestId, notified: Boolean = true): Future[Boolean] = {
+  def updateNotified(id: FriendRequestId, notified: Boolean = true): Future[Unit] = {
     val q = quote {
       query[FriendRequests]
         .filter(_.id == lift(id))
         .update(_.notified -> lift(notified))
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
 }

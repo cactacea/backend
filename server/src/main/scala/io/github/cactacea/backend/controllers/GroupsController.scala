@@ -78,7 +78,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(groupsTag)
         .operationId("updateGroup")
         .request[PutGroup]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
     } { request: PutGroup =>
       groupsService.update(
@@ -88,7 +88,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         request.privacyType,
         request.authorityType,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
 
@@ -97,14 +97,14 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(groupsTag)
         .operationId("joinToGroup")
         .request[PostJoinGroup]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyJoined, AuthorityNotFound))
     } { request: PostJoinGroup =>
       groupAccountsService.create(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/groups/:id/leave")(Permissions.groups) { o =>
@@ -112,14 +112,14 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(groupsTag)
         .operationId("leaveFromGroup")
         .request[PostLeaveGroup]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyJoined, AuthorityNotFound))
     } { request: PostLeaveGroup =>
       groupAccountsService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     getWithPermission("/groups/:id/accounts")(Permissions.basic) { o =>
@@ -144,13 +144,13 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(groupsTag)
         .operationId("deleteGroup")
         .request[DeleteGroup]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
     } { request: DeleteGroup =>
       accountGroupsService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/groups/:id/hides")(Permissions.groups) { o =>
@@ -158,13 +158,13 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(groupsTag)
         .operationId("hideGroup")
         .request[PostHideGroup]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
     } { request: PostHideGroup =>
       accountGroupsService.hide(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     deleteWithPermission("/groups/:id/hides")(Permissions.groups) { o =>
@@ -172,13 +172,13 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(groupsTag)
         .operationId("showGroup")
         .request[DeleteHideGroup]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
     } { request: DeleteHideGroup =>
       accountGroupsService.show(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/groups/:id/reports")(Permissions.reports) { o =>
@@ -186,7 +186,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(groupsTag)
         .operationId("reportGroup")
         .request[PostGroupReport]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
     } { request: PostGroupReport =>
       groupsService.report(
@@ -194,7 +194,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         request.reportType,
         request.reportContent,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

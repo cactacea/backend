@@ -27,24 +27,18 @@ class FeedsRepository {
 
   def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
     val ids = mediumIds.map(_.distinct)
-    (for {
+    for {
       _ <- validationDAO.existMediums(ids, sessionId)
+      _ <- validationDAO.existFeed(feedId, sessionId)
       r <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
-    } yield (r)).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(FeedNotFound))
-    })
+    } yield (r)
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    feedsDAO.delete(feedId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(FeedNotFound))
-    })
+    for {
+      _ <- validationDAO.existFeed(feedId, sessionId)
+      r <- feedsDAO.delete(feedId, sessionId)
+    } yield (r)
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {

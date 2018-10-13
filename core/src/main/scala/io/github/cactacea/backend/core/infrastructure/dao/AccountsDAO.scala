@@ -259,42 +259,21 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
 
   }
 
-  def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Boolean] = {
+  def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
-    _updateDisplayName(accountId, displayName, by).flatMap(_ match {
-      case true =>
-        Future.True
-      case false =>
-        _insertUserName(accountId, displayName, by)
-    })
-  }
-
-  private def _insertUserName(accountId: AccountId, userName: Option[String], by: AccountId): Future[Boolean] = {
     val q = quote {
       query[Relationships]
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.editedDisplayName -> lift(userName)
-        )
+          _.editedDisplayName -> lift(displayName)
+        ).onConflictUpdate((t, _) => t.editedDisplayName -> lift(displayName))
     }
-    run(q).map(_ == 1)
-  }
-
-  private def _updateDisplayName(accountId: AccountId, displayName: Option[String], by: AccountId): Future[Boolean] = {
-    val q = quote {
-      query[Relationships]
-        .filter(_.accountId     == lift(accountId))
-        .filter(_.by            == lift(by))
-        .update(
-          _.editedDisplayName   -> lift(displayName)
-        )
-    }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
 
-  def signOut(sessionId: SessionId): Future[Boolean] = {
+  def signOut(sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val signedOutAt: Option[Long] = Some(timeService.currentTimeMillis())
     val q = quote {
@@ -304,7 +283,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
           _.signedOutAt   -> lift(signedOutAt)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
 }

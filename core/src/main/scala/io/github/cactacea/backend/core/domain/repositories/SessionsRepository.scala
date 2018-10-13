@@ -38,11 +38,11 @@ class SessionsRepository {
     })
   }
 
-  def signOut(udid: String, sessionId: SessionId): Future[Boolean] = {
+  def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
     for {
-      a <- accountsDAO.signOut(sessionId)
-      b <- devicesDAO.delete(udid, sessionId)
-    } yield (a && b)
+      r <- accountsDAO.signOut(sessionId)
+      _ <- devicesDAO.delete(udid, sessionId)
+    } yield (r)
   }
 
 
@@ -74,7 +74,7 @@ class SessionsRepository {
 
 
 
-  def checkAccountStatus(sessionId: SessionId, expiresIn: Long): Future[Boolean] = {
+  def checkAccountStatus(sessionId: SessionId, expiresIn: Long): Future[Unit] = {
     accountsDAO.findStatus(sessionId).flatMap( _ match {
       case Some((accountStatusType, signedOutAt)) =>
         if (accountStatusType == AccountStatusType.deleted) {
@@ -84,7 +84,7 @@ class SessionsRepository {
         } else if (signedOutAt.map(_ > expiresIn).getOrElse(false)) {
           Future.exception(CactaceaException(SessionTimeout))
         } else {
-          Future.True
+          Future.Unit
         }
       case None =>
         Future.exception(CactaceaException(SessionNotAuthorized))

@@ -34,9 +34,7 @@ class GroupReportsDAOSpec extends DAOSpec {
 
     val groupId = execute(groupsDAO.create(sessionAccount.id.toSessionId))
     execute(groupReportsDAO.create(groupId, ReportType.spam, reportContent, reportedUser.id.toSessionId))
-
-    val result = execute(groupReportsDAO.delete(groupId))
-    assert(result == true)
+    execute(groupReportsDAO.delete(groupId))
 
   }
 

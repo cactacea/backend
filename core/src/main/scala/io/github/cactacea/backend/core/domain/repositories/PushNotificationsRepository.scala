@@ -131,23 +131,23 @@ class PushNotificationsRepository {
     })
   }
 
-  def updateFeedNotified(id: FeedId, accountIds: List[AccountId]) : Future[Boolean] = {
+  def updateFeedNotified(id: FeedId, accountIds: List[AccountId]) : Future[Unit] = {
     accountFeedsDAO.update(id, accountIds)
   }
 
-  def updateInvitationNotified(id: GroupInvitationId): Future[Boolean] = {
+  def updateInvitationNotified(id: GroupInvitationId): Future[Unit] = {
     groupInvitationsDAO.updateNotified(id)
   }
 
-  def updateFriendRequestNotified(id: FriendRequestId): Future[Boolean] = {
+  def updateFriendRequestNotified(id: FriendRequestId): Future[Unit] = {
     friendRequestsDAO.updateNotified(id)
   }
 
-  def updateMessageNotified(id: MessageId, accountIds: List[AccountId]): Future[Boolean] = {
+  def updateMessageNotified(id: MessageId, accountIds: List[AccountId]): Future[Unit] = {
     accountMessagesDAO.updateNotified(id, accountIds)
   }
 
-  def updateCommentNotified(id: CommentId): Future[Boolean] = {
+  def updateCommentNotified(id: CommentId): Future[Unit] = {
     commentsDAO.updateNotified(id)
   }
 

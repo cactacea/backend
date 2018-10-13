@@ -25,13 +25,13 @@ class GroupReportsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def delete(groupId: GroupId): Future[Boolean] = {
+  def delete(groupId: GroupId): Future[Unit] = {
     val q = quote {
       query[GroupReports]
         .filter(_.groupId == lift(groupId))
         .delete
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
   }
 
 }

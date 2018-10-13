@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
@@ -269,18 +268,16 @@ class FeedsDAOSpec extends DAOSpec {
     val newPrivacyType6 = FeedPrivacyType.followers
     val newContentWarning6 = false
 
-    val editResult6 = execute(feedsDAO.update(feedId6, newMessage6, Some(newMediums6), Some(newTags6), newPrivacyType6, newContentWarning6, None, sessionAccount2.id.toSessionId))
+    execute(feedsDAO.update(feedId6, newMessage6, Some(newMediums6), Some(newTags6), newPrivacyType6, newContentWarning6, None, sessionAccount2.id.toSessionId))
     val newFeed6 = execute(db.run(quote(query[Feeds].filter(_.id == lift(feedId6))))).head
     val newFeedTags6 = execute(db.run(quote(query[FeedTags].filter(_.feedId == lift(feedId6)))))
     val newFeedMediums6 = execute(db.run(quote(query[FeedMediums].filter(_.feedId == lift(feedId6)))))
-    assert(editResult6 == true)
     assert((newFeed6.id, newFeed6.message, newFeed6.privacyType, newFeed6.contentWarning, newFeed6.by) == (feedId6, newMessage6, newPrivacyType6, newContentWarning6, sessionAccount2.id))
     assert((newFeedTags6.size, newFeedTags6.map(_.name)) == (newTags6.size, newTags6))
     assert((newFeedMediums6.size, newFeedMediums6.map(_.mediumId)) == (newMediums6.size, newMediums6))
 
     // edit not found
-    val editResult7 = execute(feedsDAO.update(feedId6, newMessage6, Some(newMediums6), Some(newTags6), newPrivacyType6, newContentWarning6, None, sessionAccount1.id.toSessionId))
-    assert(editResult7 == false)
+    execute(feedsDAO.update(feedId6, newMessage6, Some(newMediums6), Some(newTags6), newPrivacyType6, newContentWarning6, None, sessionAccount1.id.toSessionId))
 
   }
 
@@ -410,8 +407,8 @@ class FeedsDAOSpec extends DAOSpec {
     assert((feedMediums6.size, feedMediums6.map(_.mediumId)) == (mediums6.size, mediums6))
 
     // delete
-    val deleteResult1 = execute(feedsDAO.delete(feedId6, sessionAccount2.id.toSessionId))
-    assert(deleteResult1 == true)
+    execute(feedsDAO.delete(feedId6, sessionAccount2.id.toSessionId))
+
     val deleteResultFeeds = execute(db.run(query[Feeds].filter(_.id == lift(feedId6)).size))
     val deleteResultTags = execute(db.run(query[FeedTags].filter(_.feedId == lift(feedId6)).size))
     val deleteResultLikes = execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId6)).size))
@@ -423,8 +420,7 @@ class FeedsDAOSpec extends DAOSpec {
     assert(deleteResultComments == 0L)
 
     // delete not found
-    val deleteResult2 = execute(feedsDAO.delete(feedId5, sessionAccount1.id.toSessionId))
-    assert(deleteResult2 == false)
+    execute(feedsDAO.delete(feedId5, sessionAccount1.id.toSessionId))
 
 
   }

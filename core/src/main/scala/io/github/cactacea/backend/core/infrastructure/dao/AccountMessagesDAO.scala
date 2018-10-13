@@ -14,7 +14,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
 
   @Inject private var timeService: TimeService = _
 
-  def create(groupId: GroupId, messageId: MessageId, sessionId: SessionId): Future[Boolean] = {
+  def create(groupId: GroupId, messageId: MessageId, sessionId: SessionId): Future[Unit] = {
     val postedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
@@ -23,19 +23,19 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
          select account_id, group_id, ${lift(messageId)} as message_id, ${lift(by)} as `by`, true as unread, false as notified, ${lift(postedAt)} posted_at from account_groups where group_id = ${lift(groupId)}
           """.as[Action[Long]]
     }
-    run(q).map(_ > 0)
+    run(q).map(_ => Unit)
   }
 
 
 
-  def delete(accountId: AccountId, groupId: GroupId): Future[Boolean] = {
+  def delete(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     val q = quote {
       query[AccountMessages]
         .filter(_.groupId == lift(groupId))
         .filter(_.accountId == lift(accountId))
         .delete
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
   }
 
   def findEarlier(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) = {
@@ -86,7 +86,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def updateUnread(messageIds: List[MessageId], sessionId: SessionId): Future[Boolean] = {
+  def updateUnread(messageIds: List[MessageId], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[AccountMessages]
@@ -94,17 +94,17 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .filter(m => liftQuery(messageIds).contains(m.messageId))
         .update(_.unread -> false)
     }
-    run(q).map(_ == messageIds.size)
+    run(q).map(_ => Unit)
   }
 
-  def updateNotified(messageId: MessageId, accountIds: List[AccountId]): Future[Boolean] = {
+  def updateNotified(messageId: MessageId, accountIds: List[AccountId]): Future[Unit] = {
     val q = quote {
       query[AccountMessages]
         .filter(_.messageId == lift(messageId))
         .filter(m => liftQuery(accountIds).contains(m.accountId))
         .update(_.notified -> true)
     }
-    run(q).map(_ == accountIds.size)
+    run(q).map(_ => Unit)
   }
 
 }

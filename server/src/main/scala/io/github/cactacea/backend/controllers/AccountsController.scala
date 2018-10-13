@@ -81,7 +81,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(accountsTag)
         .operationId("updateDisplayName")
         .request[PutAccountDisplayName]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
 
     } { request: PutAccountDisplayName =>
@@ -89,7 +89,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.id,
         request.displayName,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     getWithPermission("/account/:account_name")(Permissions.basic) { o =>
@@ -179,14 +179,14 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(groupsTag)
         .operationId("joinAccountToGroup")
         .request[PostAccountJoinGroup]
-        .responseWith(Status.NoContent.code, Status.NoContent.reason)
+        .responseWith(Status.Ok.code, Status.NoContent.reason)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound, AccountNotFound))
     } { request: PostAccountJoinGroup =>
       groupAccountsService.create(
         request.accountId,
         request.groupId,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/accounts/:account_id/groups/:group_id/leave")(Permissions.groups) { o =>
@@ -194,14 +194,14 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(groupsTag)
         .operationId("leaveAccountFromGroup")
         .request[PostAccountJoinGroup]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound, GroupNotFound))
     } { request: PostAccountLeaveGroup =>
       groupAccountsService.delete(
         request.accountId,
         request.groupId,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
 
@@ -243,7 +243,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(accountsTag)
         .operationId("reportAccount")
         .request[PostAccountReport]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
 
     } { request: PostAccountReport =>
@@ -252,7 +252,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.reportType,
         request.reportContent,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
 

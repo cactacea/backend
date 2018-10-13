@@ -45,14 +45,14 @@ class FeedLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .tag(feedsTag)
         .operationId("likeFeed")
         .request[PostFeedLike]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(FeedAlreadyLiked))
         .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: PostFeedLike =>
       feedLikesService.create(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     deleteWithPermission("/feeds/:id/likes")(Permissions.feeds) { o =>
@@ -60,14 +60,14 @@ class FeedLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
         .tag(feedsTag)
         .operationId("unlikeFeed")
         .request[DeleteFeedLike]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(FeedNotLiked))
         .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: DeleteFeedLike =>
       feedLikesService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

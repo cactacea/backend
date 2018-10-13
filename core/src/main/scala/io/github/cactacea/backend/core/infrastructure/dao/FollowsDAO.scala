@@ -13,22 +13,17 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    (for {
+    for {
       _ <- _insertFollow(accountId, sessionId)
-      r <- _updateRelationship(accountId, true, sessionId)
+      r <- _insertRelationship(accountId, sessionId)
       _ <- _updateAccount(1L, sessionId)
-    } yield (r)).map(_ match {
-      case true =>
-        Future.value(Unit)
-      case false =>
-        _insertRelationship(accountId, true, sessionId)
-    })
+    } yield (r)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- _deleteFollow(accountId, sessionId)
-      _ <- _updateRelationship(accountId, false, sessionId)
+      _ <- _updateRelationship(accountId, sessionId)
       r <- _updateAccount(-1L, sessionId)
     } yield (r)
   }
@@ -45,30 +40,30 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _insertRelationship(accountId: AccountId, follow: Boolean, sessionId: SessionId): Future[Unit] = {
+  private def _insertRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
         .insert(
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
-          _.follow          -> lift(follow)
-        )
+          _.follow          -> true
+        ).onConflictUpdate((t, _) => t.follow -> true)
     }
     run(q).map(_ => Unit)
   }
 
-  private def _updateRelationship(accountId: AccountId, follow: Boolean, sessionId: SessionId): Future[Boolean] = {
+  private def _updateRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
         .filter(_.accountId     == lift(accountId))
         .filter(_.by            == lift(by))
         .update(
-          _.follow          -> lift(follow)
+          _.follow          -> false
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   private def _insertFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupInvitationStatusType, GroupPrivacyType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.GroupInvitations
@@ -56,8 +55,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner = createAccount("GroupInvitationsDAOSpec8")
     val groupId = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
     val groupInvitationId = execute(groupInvitationsDAO.create(sessionAccount.id, groupId, owner.id.toSessionId))
-    val result = execute(groupInvitationsDAO.delete(groupInvitationId))
-    assert(result == true)
+    execute(groupInvitationsDAO.delete(groupInvitationId))
 
   }
 
@@ -188,17 +186,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = execute(groupInvitationsDAO.deleteByGroupId(groupId1))
-    val result2 = execute(groupInvitationsDAO.deleteByGroupId(groupId2))
-    val result3 = execute(groupInvitationsDAO.deleteByGroupId(groupId3))
-    val result4 = execute(groupInvitationsDAO.deleteByGroupId(groupId4))
-    val result5 = execute(groupInvitationsDAO.deleteByGroupId(groupId5))
-
-    assert(result1 == true)
-    assert(result2 == true)
-    assert(result3 == true)
-    assert(result4 == true)
-    assert(result5 == true)
+    execute(groupInvitationsDAO.deleteByGroupId(groupId1))
+    execute(groupInvitationsDAO.deleteByGroupId(groupId2))
+    execute(groupInvitationsDAO.deleteByGroupId(groupId3))
+    execute(groupInvitationsDAO.deleteByGroupId(groupId4))
+    execute(groupInvitationsDAO.deleteByGroupId(groupId5))
 
     val count1 = execute(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId1)).size))
     val count2 = execute(db.run(query[GroupInvitations].filter(_.groupId == lift(groupId2)).size))
@@ -235,11 +227,8 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
     execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
-
-    val result1 = execute(groupInvitationsDAO.delete(sessionAccount.id, GroupPrivacyType.everyone, owner1.id.toSessionId))
-    val result5 = execute(groupInvitationsDAO.delete(sessionAccount.id, GroupPrivacyType.everyone, owner5.id.toSessionId))
-    assert(result1 == true)
-    assert(result5 == true)
+    execute(groupInvitationsDAO.delete(sessionAccount.id, GroupPrivacyType.everyone, owner1.id.toSessionId))
+    execute(groupInvitationsDAO.delete(sessionAccount.id, GroupPrivacyType.everyone, owner5.id.toSessionId))
 
     val count = execute(db.run(query[GroupInvitations].filter(_.accountId == lift(sessionAccount.id)).size))
     assert(count == 1)
@@ -352,16 +341,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val groupInvitationId4 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
     val groupInvitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = execute(groupInvitationsDAO.updateNotified(groupInvitationId1, true))
-    val result2 = execute(groupInvitationsDAO.updateNotified(groupInvitationId2, false))
-    val result3 = execute(groupInvitationsDAO.updateNotified(groupInvitationId3, true))
-    val result4 = execute(groupInvitationsDAO.updateNotified(groupInvitationId4, false))
-    val result5 = execute(groupInvitationsDAO.updateNotified(groupInvitationId5, true))
-    assert(result1 == true)
-    assert(result2 == true)
-    assert(result3 == true)
-    assert(result4 == true)
-    assert(result5 == true)
+    execute(groupInvitationsDAO.updateNotified(groupInvitationId1, true))
+    execute(groupInvitationsDAO.updateNotified(groupInvitationId2, false))
+    execute(groupInvitationsDAO.updateNotified(groupInvitationId3, true))
+    execute(groupInvitationsDAO.updateNotified(groupInvitationId4, false))
+    execute(groupInvitationsDAO.updateNotified(groupInvitationId5, true))
 
     val invitation1 = execute(groupInvitationsDAO.find(groupInvitationId1)).get
     val invitation2 = execute(groupInvitationsDAO.find(groupInvitationId2)).get

@@ -44,14 +44,14 @@ class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: S
         .tag(commentsTag)
         .operationId("likeComment")
         .request[PostCommentLike]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(CommentAlreadyLiked))
         .responseWithArray[NotFound](Status.NotFound, Array(CommentNotFound))
     } { request: PostCommentLike =>
       commentLikesService.create(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     deleteWithPermission("/comments/:id/likes")(Permissions.comments) { o =>
@@ -59,14 +59,14 @@ class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: S
         .tag(commentsTag)
         .operationId("unlikeComment")
         .request[DeleteCommentLike]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(CommentNotLiked))
         .responseWithArray[NotFound](Status.NotFound, Array(CommentNotFound))
     } { request: DeleteCommentLike =>
       commentLikesService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

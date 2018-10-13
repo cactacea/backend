@@ -28,14 +28,14 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .tag(invitationsTag)
         .operationId("acceptGroupInvitation")
         .request[PostAcceptInvitation]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyJoined, AuthorityNotFound))
     } { request: PostAcceptInvitation =>
       invitationService.accept(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/invitations/:id/reject")(Permissions.groupInvitations) { o =>
@@ -43,13 +43,13 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .tag(invitationsTag)
         .operationId("rejectGroupInvitation")
         .request[PostRejectInvitation]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(GroupInvitationNotFound))
     } { request: PostRejectInvitation =>
       invitationService.reject(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/groups/:id/invitations")(Permissions.groupInvitations) { o =>

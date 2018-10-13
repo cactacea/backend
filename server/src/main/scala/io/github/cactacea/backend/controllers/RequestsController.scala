@@ -44,14 +44,14 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(RequestsTag)
         .operationId("deleteRequest")
         .request[DeleteFriendRequest]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound, FriendRequestNotFound))
 
     } { request: DeleteFriendRequest =>
       friendRequestsService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

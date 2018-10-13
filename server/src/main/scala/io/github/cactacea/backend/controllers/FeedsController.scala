@@ -79,7 +79,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(feedsTag)
         .operationId("updateFeed")
         .request[PutFeed]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound, MediumNotFound))
     } { request: PutFeed =>
       feedsService.edit(
@@ -91,7 +91,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         request.contentWarning,
         request.expiration,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     deleteWithPermission("/feeds/:id")(Permissions.feeds) { o =>
@@ -99,13 +99,13 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(feedsTag)
         .operationId("deleteFeed")
         .request[DeleteFeed]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: DeleteFeed =>
       feedsService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/feeds/:id/reports")(Permissions.reports) { o =>
@@ -113,7 +113,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         .tag(feedsTag)
         .operationId("reportFeed")
         .request[PostFeedReport]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(FeedNotFound))
     } { request: PostFeedReport =>
       feedsService.report(
@@ -121,7 +121,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         request.reportType,
         request.reportContent,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.AccountMessages
@@ -17,8 +16,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
     val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
-    val result = execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
-    assert(result == true)
+    execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
 
   }
 
@@ -40,9 +38,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
     execute(accountMessagesDAO.create(groupId, messageId3, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId4, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId5, sessionAccount.id.toSessionId))
-
-    val result = execute(accountMessagesDAO.delete(sessionAccount.id, groupId))
-    assert(result == true)
+    execute(accountMessagesDAO.delete(sessionAccount.id, groupId))
 
     val result2 = execute(db.run(quote(query[AccountMessages].filter(_.groupId == lift(groupId)).filter(_.accountId == lift(sessionAccount.id)).size)))
     assert(result2 == 0)
@@ -173,8 +169,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
     val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
-    val result1 = execute(accountMessagesDAO.updateUnread(List(messageId), sessionAccount.id.toSessionId))
-    assert(result1 == true)
+    execute(accountMessagesDAO.updateUnread(List(messageId), sessionAccount.id.toSessionId))
 
     val result2 = execute(db.run(quote(query[AccountMessages].filter(_.accountId == lift(sessionAccount.id)).filter(_.messageId == lift(messageId)))))
     assert(result2.size == 1)
@@ -198,7 +193,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
     val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
-    assert(execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId)) == true)
+    execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
 
     val ids = List(
       sessionAccount.id,
@@ -206,7 +201,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
       account2.id,
       account3.id
     )
-    assert(execute(accountMessagesDAO.updateNotified(messageId, ids)) == true)
+    execute(accountMessagesDAO.updateNotified(messageId, ids))
 
     val result2 = execute(db.run(quote(query[AccountMessages].filter(_.messageId == lift(messageId)).filter(_.notified == true)).size))
     assert(result2 == ids.size)

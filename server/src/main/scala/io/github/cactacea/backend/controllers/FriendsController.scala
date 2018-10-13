@@ -26,14 +26,14 @@ class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(friendsTag)
         .operationId("deleteFriend")
         .request[DeleteFriend]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNotFriend))
 
     } { request: DeleteFriend =>
       friendsService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

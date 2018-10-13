@@ -70,7 +70,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => Unit)
   }
 
-  def updateUnreadCount(groupId: GroupId): Future[Boolean] = {
+  def updateUnreadCount(groupId: GroupId): Future[Unit] = {
     val q = quote {
       query[AccountGroups]
         .filter(_.groupId == lift(groupId))
@@ -79,7 +79,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
           ug => ug.unreadCount  -> (ug.unreadCount + lift(1))
         )
     }
-    run(q).map(_ > 0)
+    run(q).map(_ => Unit)
   }
 
   def updateHidden(groupId: GroupId, hidden: Boolean, sessionId: SessionId): Future[Unit] = {

@@ -204,16 +204,11 @@ class FriendRequestsDAOSpec extends DAOSpec {
     val friendRequestId5 = execute(friendRequestsDAO.create(sessionAccount.id, requestedAccount5.id.toSessionId))
 
     // update friend requests
-    val updateResult1 = execute(friendRequestsDAO.update(friendRequestId1, FriendRequestStatusType.rejected, sessionAccount.id.toSessionId))
-    val updateResult2 = execute(friendRequestsDAO.update(friendRequestId2, FriendRequestStatusType.accepted, sessionAccount.id.toSessionId))
-    val updateResult3 = execute(friendRequestsDAO.update(friendRequestId3, FriendRequestStatusType.rejected, sessionAccount.id.toSessionId))
-    val updateResult4 = execute(friendRequestsDAO.update(friendRequestId4, FriendRequestStatusType.accepted, sessionAccount.id.toSessionId))
-    val updateResult5 = execute(friendRequestsDAO.update(friendRequestId5, FriendRequestStatusType.rejected, sessionAccount.id.toSessionId))
-    assert(updateResult1 == true)
-    assert(updateResult2 == true)
-    assert(updateResult3 == true)
-    assert(updateResult4 == true)
-    assert(updateResult5 == true)
+    execute(friendRequestsDAO.update(friendRequestId1, FriendRequestStatusType.rejected, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.update(friendRequestId2, FriendRequestStatusType.accepted, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.update(friendRequestId3, FriendRequestStatusType.rejected, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.update(friendRequestId4, FriendRequestStatusType.accepted, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.update(friendRequestId5, FriendRequestStatusType.rejected, sessionAccount.id.toSessionId))
 
     // find requests
     val friendRequested1 = execute(friendRequestsDAO.find(friendRequestId1, sessionAccount.id.toSessionId)).get

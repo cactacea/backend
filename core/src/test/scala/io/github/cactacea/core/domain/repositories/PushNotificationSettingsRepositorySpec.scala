@@ -1,10 +1,9 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.helpers.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotFound
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotFound
 
 class PushNotificationSettingsRepositorySpec extends RepositorySpec {
 
@@ -41,14 +40,6 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
     assert(result.feedComment == false)
     assert(result.groupInvitation == false)
     assert(result.followerFeed == false)
-
-  }
-
-  test("update no exist session setting") {
-
-    assert(intercept[CactaceaException] {
-      execute(notificationSettingsRepository.update(false, false, false, false, false, false, SessionId(0L)))
-    }.error == AccountNotFound)
 
   }
 

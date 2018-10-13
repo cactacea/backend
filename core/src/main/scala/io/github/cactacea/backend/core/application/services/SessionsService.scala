@@ -34,7 +34,7 @@ class SessionsService {
     }
   }
 
-  def signOut(udid: String, sessionId: SessionId): Future[Boolean] = {
+  def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
         r <- sessionsRepository.signOut(udid, sessionId)
