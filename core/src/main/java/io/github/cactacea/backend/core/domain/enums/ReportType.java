@@ -3,9 +3,9 @@ package io.github.cactacea.backend.core.domain.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum ReportType {
-    @JsonProperty("0")none((byte)0),
-    @JsonProperty("1")spam((byte)1),
-    @JsonProperty("2")inappropriate((byte)2);
+    @JsonProperty("none")none((byte)0),
+    @JsonProperty("spam")spam((byte)1),
+    @JsonProperty("inappropriate")inappropriate((byte)2);
 
     private byte value;
 
