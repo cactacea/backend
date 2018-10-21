@@ -49,7 +49,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     getWithPermission("/accounts/:id")(Permissions.basic) { o =>
-      o.summary("Get information about this account")
+      o.summary("Get information about a account")
         .tag(accountsTag)
         .operationId("findAccount")
         .request[GetAccount]
@@ -106,7 +106,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
 
 
     getWithPermission("/accounts/:id/feeds")(Permissions.basic) { o =>
-      o.summary("Get feeds list this account posted")
+      o.summary("Get feeds list a account posted")
         .tag(feedsTag)
         .operationId("findAccountFeeds")
         .request[GetAccountFeeds]
@@ -140,7 +140,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     getWithPermission("/accounts/:id/followers")(Permissions.followerList) { o =>
-      o.summary("Get accounts list this account is followed by")
+      o.summary("Get accounts list a account is followed by")
         .tag(followsTag)
         .operationId("findAccountFollowers")
         .request[GetFollowers]
@@ -157,7 +157,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     getWithPermission("/accounts/:id/friends")(Permissions.followerList) { o =>
-      o.summary("Get this account's friends list")
+      o.summary("Get a account's friends list")
         .tag(friendsTag)
         .operationId("findAccountFriends")
         .request[GetFriends]
@@ -175,7 +175,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
 
 
     postWithPermission("/accounts/:account_id/groups/:group_id/join")(Permissions.groups) { o =>
-      o.summary("Join this account in this group")
+      o.summary("Join a account in a group")
         .tag(groupsTag)
         .operationId("joinAccountToGroup")
         .request[PostAccountJoinGroup]
@@ -190,7 +190,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     postWithPermission("/accounts/:account_id/groups/:group_id/leave")(Permissions.groups) { o =>
-      o.summary("Leave this account from this group")
+      o.summary("Leave a account from a group")
         .tag(groupsTag)
         .operationId("leaveAccountFromGroup")
         .request[PostAccountJoinGroup]
@@ -206,7 +206,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
 
 
     getWithPermission("/accounts/:id/group")(Permissions.basic) { o =>
-      o.summary("Get a direct message group to this account")
+      o.summary("Get a direct message group to a account")
         .tag(groupsTag)
         .operationId("findAccountGroup")
         .request[GetAccountGroup]
@@ -221,7 +221,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     getWithPermission("/accounts/:id/groups")(Permissions.basic) { o =>
-      o.summary("Get groups list this account joined")
+      o.summary("Get groups list a account joined")
         .tag(groupsTag)
         .operationId("findAccountGroups")
         .request[GetAccountGroups]
@@ -239,7 +239,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     postWithPermission("/accounts/:id/reports")(Permissions.reports) { o =>
-      o.summary("Report this account")
+      o.summary("Report a account")
         .tag(accountsTag)
         .operationId("reportAccount")
         .request[PostAccountReport]

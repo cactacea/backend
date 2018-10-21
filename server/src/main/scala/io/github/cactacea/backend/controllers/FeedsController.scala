@@ -61,7 +61,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
     }
 
     getWithPermission("/feeds/:id")(Permissions.basic) { o =>
-      o.summary("Get basic information about this feed")
+      o.summary("Get basic information about a feed")
         .tag(feedsTag)
         .operationId("findFeed")
         .request[GetFeed]
@@ -75,7 +75,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
     }
 
     putWithPermission("/feeds/:id")(Permissions.feeds) { o =>
-      o.summary("Update this feed")
+      o.summary("Update a feed")
         .tag(feedsTag)
         .operationId("updateFeed")
         .request[PutFeed]
@@ -95,7 +95,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
     }
 
     deleteWithPermission("/feeds/:id")(Permissions.feeds) { o =>
-      o.summary("Delete this feed")
+      o.summary("Delete a feed")
         .tag(feedsTag)
         .operationId("deleteFeed")
         .request[DeleteFeed]
@@ -109,7 +109,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
     }
 
     postWithPermission("/feeds/:id/reports")(Permissions.reports) { o =>
-      o.summary("Report this feed")
+      o.summary("Report a feed")
         .tag(feedsTag)
         .operationId("reportFeed")
         .request[PostFeedReport]

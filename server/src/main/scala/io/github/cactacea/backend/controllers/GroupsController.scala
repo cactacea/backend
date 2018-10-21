@@ -44,7 +44,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     }
 
     getWithPermission("/groups/:id")(Permissions.basic) { o =>
-      o.summary("Get basic information about this group")
+      o.summary("Get basic information about a group")
         .tag(groupsTag)
         .operationId("findGroup")
         .request[GetGroup]
@@ -74,7 +74,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     }
 
     putWithPermission("/groups/:id")(Permissions.groups) { o =>
-      o.summary("Update this group")
+      o.summary("Update a group")
         .tag(groupsTag)
         .operationId("updateGroup")
         .request[PutGroup]
@@ -93,7 +93,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
 
 
     postWithPermission("/groups/:id/join")(Permissions.groups) { o =>
-      o.summary("Join to this group,")
+      o.summary("Join to a group,")
         .tag(groupsTag)
         .operationId("joinToGroup")
         .request[PostJoinGroup]
@@ -108,7 +108,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     }
 
     postWithPermission("/groups/:id/leave")(Permissions.groups) { o =>
-      o.summary("Leave from this group")
+      o.summary("Leave from a group")
         .tag(groupsTag)
         .operationId("leaveFromGroup")
         .request[PostLeaveGroup]
@@ -123,7 +123,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     }
 
     getWithPermission("/groups/:id/accounts")(Permissions.basic) { o =>
-      o.summary("Get accounts list of this group")
+      o.summary("Get accounts list of a group")
         .tag(groupsTag)
         .operationId("findGroupAccounts")
         .request[GetGroupAccounts]
@@ -140,7 +140,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     }
 
     deleteWithPermission("/groups/:id")(Permissions.groups) { o =>
-      o.summary("Hide this group and delete all messages")
+      o.summary("Hide a group and delete all messages")
         .tag(groupsTag)
         .operationId("deleteGroup")
         .request[DeleteGroup]
@@ -154,7 +154,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     }
 
     postWithPermission("/groups/:id/hides")(Permissions.groups) { o =>
-      o.summary("Hide this group")
+      o.summary("Hide a group")
         .tag(groupsTag)
         .operationId("hideGroup")
         .request[PostHideGroup]
@@ -168,7 +168,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     }
 
     deleteWithPermission("/groups/:id/hides")(Permissions.groups) { o =>
-      o.summary("Show this group")
+      o.summary("Show a group")
         .tag(groupsTag)
         .operationId("showGroup")
         .request[DeleteHideGroup]
@@ -182,7 +182,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     }
 
     postWithPermission("/groups/:id/reports")(Permissions.reports) { o =>
-      o.summary("Report this group")
+      o.summary("Report a group")
         .tag(groupsTag)
         .operationId("reportGroup")
         .request[PostGroupReport]

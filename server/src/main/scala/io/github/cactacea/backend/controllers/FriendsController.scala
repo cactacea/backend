@@ -22,7 +22,7 @@ class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
   prefix(apiPrefix) {
 
     deleteWithPermission("/accounts/:id/friends")(Permissions.relationships) { o =>
-      o.summary("Remove friendship to this account")
+      o.summary("Remove friendship to a account")
         .tag(friendsTag)
         .operationId("deleteFriend")
         .request[DeleteFriend]

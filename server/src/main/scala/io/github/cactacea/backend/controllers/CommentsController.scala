@@ -55,7 +55,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     getWithPermission("/comments/:id")(Permissions.basic) { o =>
-      o.summary("Get basic information about this comment")
+      o.summary("Get basic information about a comment")
         .tag(commentsTag)
         .operationId("findComment")
         .request[GetComment]
@@ -83,7 +83,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     postWithPermission("/comments/:id/reports")(Permissions.reports) { o =>
-      o.summary("Report this comment")
+      o.summary("Report a comment")
         .tag(commentsTag)
         .operationId("reportComment")
         .request[PostCommentReport]

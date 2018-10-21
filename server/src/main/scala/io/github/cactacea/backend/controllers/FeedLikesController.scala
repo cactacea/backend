@@ -24,7 +24,7 @@ class FeedLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
   prefix(apiPrefix) {
 
     getWithPermission("/feeds/:id/likes")(Permissions.basic) { o =>
-      o.summary("Get accounts list who set a like to this feed")
+      o.summary("Get accounts list who set a like to a feed")
         .tag(feedsTag)
         .operationId("findFeedLikes")
         .request[GetFeedLikes]
@@ -41,7 +41,7 @@ class FeedLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
     }
 
     postWithPermission("/feeds/:id/likes")(Permissions.feedLikes) { o =>
-      o.summary("Set a like on this feed")
+      o.summary("Set a like on a feed")
         .tag(feedsTag)
         .operationId("likeFeed")
         .request[PostFeedLike]
@@ -56,7 +56,7 @@ class FeedLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
     }
 
     deleteWithPermission("/feeds/:id/likes")(Permissions.feeds) { o =>
-      o.summary("Remove a like on this feed")
+      o.summary("Remove a like on a feed")
         .tag(feedsTag)
         .operationId("unlikeFeed")
         .request[DeleteFeedLike]

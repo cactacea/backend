@@ -68,7 +68,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
     }
 
     postWithPermission("/accounts/:account_id/groups/:group_id/invitations")(Permissions.groupInvitations) { o =>
-      o.summary("Create a invitation to this account")
+      o.summary("Create a invitation to a account")
         .tag(invitationsTag)
         .operationId("createGroupInvitationToAccount")
         .request[PostInvitationAccount]

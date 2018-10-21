@@ -22,7 +22,7 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
   prefix(apiPrefix) {
 
     postWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
-      o.summary("Mute this account")
+      o.summary("Mute a account")
         .tag(mutesTag)
         .operationId("muteAccount")
         .request[PostMute]
@@ -37,7 +37,7 @@ class MutesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
     }
 
     deleteWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
-      o.summary("UnMute this account")
+      o.summary("UnMute a account")
         .tag(mutesTag)
         .operationId("unmuteAccount")
         .request[DeleteMute]

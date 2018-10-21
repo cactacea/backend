@@ -40,7 +40,7 @@ class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: S
     }
 
     postWithPermission("/comments/:id/likes")(Permissions.commentLikes) { o =>
-      o.summary("Set a like on this comment")
+      o.summary("Set a like on a comment")
         .tag(commentsTag)
         .operationId("likeComment")
         .request[PostCommentLike]
@@ -55,7 +55,7 @@ class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: S
     }
 
     deleteWithPermission("/comments/:id/likes")(Permissions.comments) { o =>
-      o.summary("Remove a like on this comment")
+      o.summary("Remove a like on a comment")
         .tag(commentsTag)
         .operationId("unlikeComment")
         .request[DeleteCommentLike]

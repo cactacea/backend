@@ -24,7 +24,7 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
   prefix(apiPrefix) {
 
     postWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
-      o.summary("Create a friend request to this account")
+      o.summary("Create a friend request to a account")
         .tag(RequestsTag)
         .operationId("createFriendRequest")
         .request[PostFriendRequest]
@@ -40,7 +40,7 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     deleteWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
-      o.summary("Remove a friend request to this account")
+      o.summary("Remove a friend request to a account")
         .tag(RequestsTag)
         .operationId("deleteRequest")
         .request[DeleteFriendRequest]

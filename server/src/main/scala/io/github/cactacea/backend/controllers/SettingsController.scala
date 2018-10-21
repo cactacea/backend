@@ -24,7 +24,7 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
   prefix(apiPrefix) {
 
     getWithPermission("/session/push_notification") (Permissions.basic) { o =>
-      o.summary("Get this push notification settings")
+      o.summary("Get push notification settings")
         .tag(tagName)
         .operationId("findSessionPushNotificationSettings")
         .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)

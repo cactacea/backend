@@ -19,6 +19,6 @@ case class PutGroup (
                       @ApiModelProperty(value = "Which accounts can join in.")
                       privacyType: GroupPrivacyType,
 
-                      @ApiModelProperty(value = "Which accounts can manage this group.")
+                      @ApiModelProperty(value = "Which accounts can manage a group.")
                       authorityType: GroupAuthorityType
                      )
