@@ -1,7 +1,5 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public enum ContentStatusType {
     unchecked((byte)0),
     accepted((byte)1),

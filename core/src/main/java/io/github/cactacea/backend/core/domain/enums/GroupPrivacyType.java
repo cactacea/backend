@@ -1,7 +1,5 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public enum GroupPrivacyType {
     everyone((byte)0),
     follows((byte)1),
