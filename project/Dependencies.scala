@@ -24,6 +24,7 @@ object Dependencies {
     val logstash = "4.11"
     val awscala = "0.6.+"
     val twitter4s = "5.3"
+    val i18n = "1.0.2"
   }
 
   object mysql {
@@ -44,8 +45,8 @@ object Dependencies {
     val ficus = "com.iheart" %% "ficus" % versions.ficus
     val getquill = "io.getquill" %% "quill-finagle-mysql" % versions.quill
     val jwt = "io.jsonwebtoken" % "jjwt" % versions.jjwt
-    val i18n = "com.osinka.i18n" %% "scala-i18n"
-    val flyway = "org.flywaydb" % "flyway-core" % flyway
+    val i18n = "com.osinka.i18n" %% "scala-i18n" % versions.i18n
+    val flyway = "org.flywaydb" % "flyway-core" % versions.flyway
     val arm = "com.jsuereth" %% "scala-arm" % versions.arm
     val hasher = "com.roundeights" %% "hasher" % versions.hasher
     val extractor = "com.drewnoakes" % "metadata-extractor" % versions.extractor
@@ -82,7 +83,7 @@ object Dependencies {
       val scalacheck = "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test"
     }
     object scalatest {
-      val scalatest = "scalatest" %  versions.scalaTest % "test"
+      val scalatest = "org.scalatest" %% "scalatest" %  versions.scalaTest % "test"
     }
     object spec2 {
       val core = "org.specs2" %% "specs2-core" % versions.specs2 % "test"
