@@ -4,7 +4,6 @@ import sbt._
 object Dependencies {
 
   val versions = new {
-    val cactacea = "18.9.1"
     val finagle = "18.9.1"
     val guice = "4.0"
     val logback = "1.2.3"
@@ -25,10 +24,6 @@ object Dependencies {
     val awscala = "0.6.+"
     val twitter4s = "5.3"
     val i18n = "1.0.2"
-  }
-
-  object mysql {
-    val connector = "mysql" % "mysql-connector-java" % versions.mysql
   }
 
   object finagle {
@@ -56,49 +51,70 @@ object Dependencies {
     val oauth2 = "com.github.finagle" %% "finagle-oauth2" % "18.8.0"
   }
 
+  object mysql {
+    val connector = "mysql" % "mysql-connector-java" % versions.mysql
+  }
+
   object tests {
+
     object finatra {
+      val http = "com.twitter" %% "finatra-http" % versions.finagle % "test"
+      val jackson = "com.twitter" %% "finatra-jackson" % versions.finagle % "test"
+    }
+
+    object finatraClassifier {
       val http = "com.twitter" %% "finatra-http" % versions.finagle % "test" classifier "tests"
       val jackson = "com.twitter" %% "finatra-jackson" % versions.finagle % "test" classifier "tests"
     }
+
     object inject {
       val server = "com.twitter" %% "inject-server" % versions.finagle % "test"
       val app = "com.twitter" %% "inject-app" % versions.finagle% "test"
       val core = "com.twitter" %% "inject-core" % versions.finagle % "test"
       val modules = "com.twitter" %% "inject-modules" % versions.finagle % "test"
     }
+
     object injectClassifier {
       val server = "com.twitter" %% "inject-server" % versions.finagle % "test" classifier "tests"
       val app = "com.twitter" %% "inject-app" % versions.finagle % "test" classifier "tests"
       val core = "com.twitter" %% "inject-core" % versions.finagle % "test" classifier "tests"
       val modules = "com.twitter" %% "inject-modules" % versions.finagle % "test" classifier "tests"
     }
+
     object guice {
       val extensions = "com.google.inject.extensions" % "guice-testlib" % versions.guice % "test"
     }
+
     object mockito {
       val core = "org.mockito" % "mockito-core" %  versions.mockito % "test"
     }
+
     object scalacheck {
       val scalacheck = "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test"
     }
+
     object scalatest {
       val scalatest = "org.scalatest" %% "scalatest" %  versions.scalaTest % "test"
     }
+
     object spec2 {
       val core = "org.specs2" %% "specs2-core" % versions.specs2 % "test"
       val junit = "org.specs2" %% "specs2-junit" % versions.specs2 % "test"
       val mock = "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
     }
+
   }
 
   object log {
+
     object logback {
       val classic = "ch.qos.logback" % "logback-classic" % versions.logback
     }
+
     object logstash {
       val encoder = "net.logstash.logback" % "logstash-logback-encoder" % versions.logstash
     }
+
   }
 
   object addons {
@@ -128,6 +144,10 @@ object Dependencies {
     oauth2.oauth2
   )
 
+  lazy val mysqlLibrarySettings = Seq(
+    mysql.connector
+  )
+
   lazy val addonsLibrarySettings = Seq(addons.awscala, addons.twitters, addons.guice)
 
   lazy val logLibrarySettings = Seq(logback.classic, logstash.encoder)
@@ -135,6 +155,8 @@ object Dependencies {
   lazy val testLibrarySettings = Seq(
     tests.finatra.http,
     tests.finatra.jackson,
+    tests.finatraClassifier.http,
+    tests.finatraClassifier.jackson,
     tests.guice.extensions,
     tests.inject.app,
     tests.inject.core,
