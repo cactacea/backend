@@ -1,17 +1,6 @@
 import sbt.Keys.{organization, resolvers, testOptions}
 
-lazy val versions = new {
-  val cactacea = "0.6.5-SNAPSHOT"
-  val finagle = "18.5.0"
-  val guice = "4.0"
-  val logback = "1.2.3"
-  val mockito = "1.10.19"
-  val scalaCheck = "1.13.4"
-  val scalaTest = "3.0.4"
-  val specs2 = "3.8.6"
-}
-
-version in ThisBuild      := versions.cactacea
+version in ThisBuild      := "18.9.1"
 organization in ThisBuild := "io.github.cactacea.backend"
 scalaVersion in ThisBuild := "2.12.6"
 testOptions in Test in ThisBuild += Tests.Argument("-oI")
@@ -23,8 +12,8 @@ lazy val root = (project in file("."))
   .settings(
     name := "backend"
   )
-  .aggregate(server, core, externals)
-  .settings(migrationSetting)
+  .aggregate(server, core, addons)
+  .settings(Migration.settings)
   .enablePlugins(FlywayPlugin)
 
 
@@ -55,17 +44,12 @@ lazy val server = (project in file("server"))
     buildInfoKeys := Seq[BuildInfoKey](version, baseDirectory),
     buildInfoObject := "CactaceaBuildInfo"
   )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.github.finagle" %% "finagle-oauth2" % "18.4.0",
-      "mysql" % "mysql-connector-java" % "6.0.6"
-    )
-  )
   .settings(commonResolverSetting)
-  .settings(finatraLibrarySetting)
-  .settings(coreLibrarySetting)
-  .settings(logLibrarySetting)
-  .settings(testLibrarySetting)
+  .settings(libraryDependencies ++= Dependencies.oauth2LibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.coreLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
   .enablePlugins(FlywayPlugin)
   .enablePlugins(BuildInfoPlugin)
   .dependsOn(core % "compile->compile;test->test")
@@ -75,92 +59,27 @@ lazy val core = (project in file("core"))
   .settings(
     name := "core"
   )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.iheart" %% "ficus" % "1.4.3"
-    )
-  )
   .settings(commonResolverSetting)
-  .settings(finatraLibrarySetting)
-  .settings(coreLibrarySetting)
-  .settings(logLibrarySetting)
-  .settings(testLibrarySetting)
+  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.coreLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
   .dependsOn(finagger)
 
 
-lazy val externals = (project in file("externals"))
+lazy val addons = (project in file("addons"))
   .settings(
-    name := "externals",
+    name := "addons",
     concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
     testOptions in Test += Tests.Argument("-oI")
   )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.github.seratch" %% "awscala" % "0.6.+",
-      "com.danielasfregola" %% "twitter4s" % "5.3",
-      "com.google.inject" % "guice" % versions.guice
-    )
-  )
   .settings(commonResolverSetting)
-  .settings(finatraLibrarySetting)
-  .settings(coreLibrarySetting)
-  .settings(logLibrarySetting)
-  .settings(testLibrarySetting)
+  .settings(libraryDependencies ++= Dependencies.addonsLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.coreLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
   .dependsOn(core)
-
-lazy val finatraLibrarySetting = Seq(
-  libraryDependencies ++= Seq(
-    "com.twitter" %% "finatra-http" % versions.finagle,
-    "com.twitter" %% "finatra-httpclient" % versions.finagle,
-    "com.twitter" %% "finatra-http" % versions.finagle % "test",
-    "com.twitter" %% "finatra-jackson" % versions.finagle % "test"
-  )
-)
-
-lazy val coreLibrarySetting = Seq(
-  libraryDependencies ++= Seq(
-    "com.typesafe" % "config" % "1.3.2",
-    "io.getquill" %% "quill-finagle-mysql" % "2.5.4",
-    "io.jsonwebtoken" % "jjwt" % "0.9.0",
-    "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
-    "org.flywaydb" % "flyway-core" % "5.0.7",
-    "com.jsuereth" %% "scala-arm" % "2.0",
-    "com.roundeights" %% "hasher" % "1.2.0",
-    "com.drewnoakes" % "metadata-extractor" % "2.11.0",
-    "com.iheart" %% "ficus" % "1.4.3",
-  )
-)
-
-lazy val testLibrarySetting = Seq(
-  libraryDependencies ++= Seq(
-
-    "com.twitter" %% "inject-server" % versions.finagle % "test",
-    "com.twitter" %% "inject-app" % versions.finagle % "test",
-    "com.twitter" %% "inject-core" % versions.finagle % "test",
-    "com.twitter" %% "inject-modules" % versions.finagle % "test",
-    "com.google.inject.extensions" % "guice-testlib" % versions.guice % "test",
-    "com.twitter" %% "finatra-http" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "finatra-jackson" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "inject-server" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "inject-app" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "inject-core" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "inject-modules" % versions.finagle % "test" classifier "tests",
-    "org.mockito" % "mockito-core" %  versions.mockito % "test",
-
-    "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
-    "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
-    "org.specs2" %% "specs2-core" % versions.specs2 % "test",
-    "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-    "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
-  )
-)
-
-lazy val logLibrarySetting = Seq(
-  libraryDependencies ++= Seq(
-    "ch.qos.logback" % "logback-classic" % versions.logback,
-    "net.logstash.logback" % "logstash-logback-encoder" % "4.11"
-  )
-)
 
 lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
@@ -170,32 +89,6 @@ lazy val commonResolverSetting = Seq(
 )
 
 
-lazy val migrationUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
-lazy val migrationPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
-lazy val migrationDatabaseName = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
-lazy val migrationHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
-lazy val migrationPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
-
-lazy val migrationSetting = Seq(
-  flywayUser := migrationUser,
-  flywayPassword := migrationPassword,
-  flywayUrl := s"jdbc:mysql://$migrationHostName:$migrationPort/$migrationDatabaseName",
-  flywayPlaceholders := Map("schema" -> migrationDatabaseName),
-  flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
-  clean := clean.dependsOn(Def.sequential(flywayClean)).value,
-  (test in Test) := {
-    (test in Test).dependsOn(Def.sequential(flywayMigrate)).value
-  },
-  (testOnly in Test) := {
-    (testOnly in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
-  },
-  (testQuick in Test) := {
-    (testQuick in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
-  },
-  libraryDependencies ++= Seq(
-    "mysql" % "mysql-connector-java" % "6.0.6"
-  )
-)
 
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
 
