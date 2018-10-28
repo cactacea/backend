@@ -8,8 +8,8 @@
 
 ## Documentation ##
 
-- [`Japanese Documents`](https://cactacea.github.io/docs/)
 - [`API Reference`](https://cactacea.github.io/backend/)
+- [`Japanese Documents(TODO)`](https://cactacea.github.io/docs/)
 
 ## Related Projects ##
 
