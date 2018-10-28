@@ -4,7 +4,7 @@ import sbt._
 object Dependencies {
 
   val versions = new {
-    val finagle = "18.9.1"
+    val twitter = "18.9.1"
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
@@ -26,13 +26,9 @@ object Dependencies {
     val i18n = "1.0.2"
   }
 
-  object finagle {
-    val http = "com.twitter" %% "finatra-http" % versions.finagle
-  }
-
   object finatra {
-    val http = "com.twitter" %% "finatra-http" % versions.finagle
-    val httpClient = "com.twitter" %% "finatra-httpclient" % versions.finagle
+    val http = "com.twitter" %% "finatra-http" % versions.twitter
+    val httpClient = "com.twitter" %% "finatra-httpclient" % versions.twitter
   }
 
   object core {
@@ -58,27 +54,27 @@ object Dependencies {
   object tests {
 
     object finatra {
-      val http = "com.twitter" %% "finatra-http" % versions.finagle % "test"
-      val jackson = "com.twitter" %% "finatra-jackson" % versions.finagle % "test"
+      val http = "com.twitter" %% "finatra-http" % versions.twitter % "test"
+      val jackson = "com.twitter" %% "finatra-jackson" % versions.twitter % "test"
     }
 
     object finatraClassifier {
-      val http = "com.twitter" %% "finatra-http" % versions.finagle % "test" classifier "tests"
-      val jackson = "com.twitter" %% "finatra-jackson" % versions.finagle % "test" classifier "tests"
+      val http = "com.twitter" %% "finatra-http" % versions.twitter % "test" classifier "tests"
+      val jackson = "com.twitter" %% "finatra-jackson" % versions.twitter % "test" classifier "tests"
     }
 
     object inject {
-      val server = "com.twitter" %% "inject-server" % versions.finagle % "test"
-      val app = "com.twitter" %% "inject-app" % versions.finagle% "test"
-      val core = "com.twitter" %% "inject-core" % versions.finagle % "test"
-      val modules = "com.twitter" %% "inject-modules" % versions.finagle % "test"
+      val server = "com.twitter" %% "inject-server" % versions.twitter % "test"
+      val app = "com.twitter" %% "inject-app" % versions.twitter% "test"
+      val core = "com.twitter" %% "inject-core" % versions.twitter % "test"
+      val modules = "com.twitter" %% "inject-modules" % versions.twitter % "test"
     }
 
     object injectClassifier {
-      val server = "com.twitter" %% "inject-server" % versions.finagle % "test" classifier "tests"
-      val app = "com.twitter" %% "inject-app" % versions.finagle % "test" classifier "tests"
-      val core = "com.twitter" %% "inject-core" % versions.finagle % "test" classifier "tests"
-      val modules = "com.twitter" %% "inject-modules" % versions.finagle % "test" classifier "tests"
+      val server = "com.twitter" %% "inject-server" % versions.twitter % "test" classifier "tests"
+      val app = "com.twitter" %% "inject-app" % versions.twitter % "test" classifier "tests"
+      val core = "com.twitter" %% "inject-core" % versions.twitter % "test" classifier "tests"
+      val modules = "com.twitter" %% "inject-modules" % versions.twitter % "test" classifier "tests"
     }
 
     object guice {
