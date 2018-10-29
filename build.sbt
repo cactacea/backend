@@ -87,7 +87,5 @@ lazy val commonResolverSetting = Seq(
   )
 )
 
-
-
 lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
 
