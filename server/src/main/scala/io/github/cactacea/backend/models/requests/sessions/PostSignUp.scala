@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty
 
 case class PostSignUp(
                        @ApiModelProperty(value = "Account name.")
-                       @Size(min = 2, max = 30) name: String,
+                       @Size(min = 2, max = 30) accountName: String,
 
                        @ApiModelProperty(value = "Display name.")
                        @Size(min = 1, max = 50) displayName: Option[String],
@@ -35,7 +35,7 @@ case class PostSignUp(
                   ) {
 
   @MethodValidation
-  def accountNameCheck = Validations.validateAccountName(name)
+  def accountNameCheck = Validations.validateAccountName(accountName)
 
   @MethodValidation
   def passwordCheck = Validations.validatePassword(password)

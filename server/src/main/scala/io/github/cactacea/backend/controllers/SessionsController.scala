@@ -30,7 +30,7 @@ class SessionsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .responseWith[Authentication](Status.Ok.code, successfulMessage)
     } { request: PostSignUp =>
       sessionService.signUp(
-        request.name,
+        request.accountName,
         request.displayName,
         request.password,
         request.udid,
