@@ -53,7 +53,7 @@ object Dependencies {
   }
 
   object cactacea {
-    val finagger = "io.github.cactacea" % "finagger_2.12" % versions.cactacea
+    val finagger = "io.github.cactacea" %% "finagger" % versions.cactacea
   }
 
   object tests {
