@@ -31,7 +31,6 @@ lazy val doc = (project in file("doc"))
     dockerRepository := Some("cactacea")
   )
   .dependsOn(server % "compile->compile;test->test")
-  .dependsOn(finagger)
   .enablePlugins(JavaAppPackaging)
 
 
@@ -62,9 +61,9 @@ lazy val core = (project in file("core"))
   .settings(commonResolverSetting)
   .settings(libraryDependencies ++= Dependencies.coreLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.cactaceaLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
-  .dependsOn(finagger)
 
 
 lazy val addons = (project in file("addons"))
@@ -86,6 +85,3 @@ lazy val commonResolverSetting = Seq(
     "Maven central" at "http://central.maven.org/maven2/"
   )
 )
-
-lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
-
