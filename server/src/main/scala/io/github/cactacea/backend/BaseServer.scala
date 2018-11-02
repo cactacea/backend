@@ -8,11 +8,6 @@ import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseCl
 
 trait BaseServer extends HttpServer {
 
-  override val disableAdminHttpServer = false
-  override val defaultHttpPort = ":9000"
-  override val defaultAdminPort = 9001
-  override val defaultHttpServerName = "Backend Server"
-
   protected  def databaseModule = DatabaseProviderModule
 
   def injectionModule: TwitterModule =  DefaultInjectionModule

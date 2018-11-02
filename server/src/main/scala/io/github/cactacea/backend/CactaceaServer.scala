@@ -3,15 +3,20 @@ package io.github.cactacea.backend
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
+import io.cactacea.finagger.DocsController
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.utils.filters._
-import io.cactacea.finagger.DocsController
 import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
 
-class DocServer extends BaseServer {
+class CactaceaServer extends BaseServer {
 
   flag(name = "cactacea.api.prefix", default = "/", help = "Cactacea Api endpoint prefix")
+
+  override val disableAdminHttpServer = false
+  override val defaultHttpPort = ":9000"
+  override val defaultAdminPort = 9001
+  override val defaultHttpServerName = "Backend Server"
 
   override def configureHttp(router: HttpRouter) = {
     super.configureHttp(router)

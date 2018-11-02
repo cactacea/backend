@@ -1,3 +1,3 @@
 package io.github.cactacea.backend
 
-object DocServerApp extends DocServer
+object DocServerApp extends CactaceaServer
