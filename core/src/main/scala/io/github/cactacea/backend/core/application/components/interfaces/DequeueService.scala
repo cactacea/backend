@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.application.components.interfaces
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-trait SubScribeService {
+trait DequeueService {
   def dequeueFeed(feedId: FeedId): Future[Unit]
   def dequeueComment(commentId: CommentId): Future[Unit]
   def dequeueMessage(messageId: MessageId): Future[Unit]
