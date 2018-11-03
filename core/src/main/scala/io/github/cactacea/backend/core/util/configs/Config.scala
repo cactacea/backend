@@ -23,20 +23,29 @@ object Config extends DurationReader {
   }
 
   object auth {
-    lazy val iosApiKey = authConfig.iosApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
-    lazy val androidApiKey = authConfig.androidApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
-    lazy val webApiKey = authConfig.webApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
 
-    lazy val apiKeys = List(
-      (DeviceType.ios, iosApiKey),
-      (DeviceType.android, androidApiKey),
-      (DeviceType.web, webApiKey))
+    object keys {
+      lazy val ios = authConfig.iosApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
+      lazy val android = authConfig.androidApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
+      lazy val web = authConfig.webApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
+      lazy val all = List(
+        (DeviceType.ios, ios),
+        (DeviceType.android, android),
+        (DeviceType.web, web))
+    }
 
-    lazy val signingKey = authConfig.signingKey.getOrElse("/hYFwm7UmiCf5tW3bL9UbxdQYw15mWSLpAsDinEacQauR6pFcBPDkGC7Kd5triYtiIR3QMlzkzRClMgcsZeS1Q\\=\\=")
-    lazy val algorithm = authConfig.algorithm.getOrElse("HS256")
-    lazy val expire = authConfig.expire.getOrElse(30 days)
-    lazy val issuer = authConfig.issuer.getOrElse("cactacea")
-    lazy val subject = authConfig.subject.getOrElse("cactacea")
+    object token {
+      lazy val signingKey = authConfig.signingKey.getOrElse("/hYFwm7UmiCf5tW3bL9UbxdQYw15mWSLpAsDinEacQauR6pFcBPDkGC7Kd5triYtiIR3QMlzkzRClMgcsZeS1Q\\=\\=")
+      lazy val algorithm = authConfig.algorithm.getOrElse("HS256")
+      lazy val expire = authConfig.expire.getOrElse(30 days)
+      lazy val issuer = authConfig.issuer.getOrElse("cactacea")
+      lazy val subject = authConfig.subject.getOrElse("cactacea")
+    }
+
+    object headerNames {
+      lazy val apiKey = authConfig.apiKeyHeaderName.getOrElse("X-API-KEY")
+      lazy val authorization = authConfig.authorizationHeaderName.getOrElse("X-AUTHORIZATION")
+    }
   }
 
   object password {
@@ -58,14 +67,16 @@ object Config extends DurationReader {
   println(s"db.dest = ${db.dest}")
   println(s"db.poolWatermarkLow = ${db.poolWatermarkLow}")
   println(s"db.poolWatermarkMax = ${db.poolWatermarkMax}")
-  println(s"auth.iosApiKey = ${auth.iosApiKey}")
-  println(s"auth.androidApiKey = ${auth.androidApiKey}")
-  println(s"auth.webApiKey = ${auth.webApiKey}")
-  println(s"auth.signingKey = ${auth.signingKey}")
-  println(s"auth.algorithm = ${auth.algorithm}")
-  println(s"auth.expire = ${auth.expire}")
-  println(s"auth.issuer = ${auth.issuer}")
-  println(s"auth.subject = ${auth.subject}")
+  println(s"auth.apiKeyHeaderName = ${auth.headerNames.apiKey}")
+  println(s"auth.authorizationHeaderName = ${auth.headerNames.authorization}")
+  println(s"auth.iosApiKey = ${auth.keys.ios}")
+  println(s"auth.androidApiKey = ${auth.keys.android}")
+  println(s"auth.webApiKey = ${auth.keys.web}")
+  println(s"auth.signingKey = ${auth.token.signingKey}")
+  println(s"auth.algorithm = ${auth.token.algorithm}")
+  println(s"auth.expire = ${auth.token.expire}")
+  println(s"auth.issuer = ${auth.token.issuer}")
+  println(s"auth.subject = ${auth.token.subject}")
   println(s"password.salt = ${password.salt}")
   println(s"password.iterations = ${password.iterations}")
   println(s"password.keyLength = ${password.keyLength}")

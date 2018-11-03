@@ -3,6 +3,8 @@ package io.github.cactacea.backend.core.util.configs
 import com.twitter.util.Duration
 
 case class AuthConfig (
+                      apiKeyHeaderName: Option[String],
+                      authorizationHeaderName: Option[String],
                       iosApiKey: Option[String],
                       androidApiKey: Option[String],
                       webApiKey: Option[String],
