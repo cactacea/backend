@@ -57,18 +57,6 @@ lazy val demo = (project in file("demo"))
   .dependsOn(server % "compile->compile;test->test")
   .enablePlugins(JavaAppPackaging)
 
-
-lazy val addons = (project in file("addons"))
-  .settings(commonSettings)
-  .settings(commonResolverSetting)
-  .settings(noPublishSettings)
-  .settings(libraryDependencies ++= Dependencies.addonsLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
-  .dependsOn(core)
-
-
 lazy val commonSettings = Seq(
   organization := "io.github.cactacea",
   scalaVersion  := "2.12.7",

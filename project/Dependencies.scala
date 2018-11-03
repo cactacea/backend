@@ -22,8 +22,6 @@ object Dependencies {
     val hasher = "1.2.0"
     val extractor = "2.11.0"
     val logstash = "4.11"
-    val awscala = "0.6.+"
-    val twitter4s = "5.3"
     val i18n = "1.0.2"
   }
 
@@ -118,12 +116,6 @@ object Dependencies {
 
   }
 
-  object addons {
-    val awscala = "com.github.seratch" %% "awscala" % versions.awscala
-    val twitters = "com.danielasfregola" %% "twitter4s" % versions.twitter4s
-    val guice = "com.google.inject" % "guice" % versions.guice
-  }
-
   lazy val finatraLibrarySettings = Seq(
     finatra.http,
     finatra.httpClient
@@ -152,8 +144,6 @@ object Dependencies {
   lazy val mysqlLibrarySettings = Seq(
     mysql.connector
   )
-
-  lazy val addonsLibrarySettings = Seq(addons.awscala, addons.twitters, addons.guice)
 
   lazy val logLibrarySettings = Seq(logback.classic, logstash.encoder)
 
