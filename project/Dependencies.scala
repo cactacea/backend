@@ -4,8 +4,8 @@ import sbt._
 object Dependencies {
 
   val versions = new {
-    val twitter = "18.9.1"
-    val cactacea = "18.11.0"
+    val twitter = "18.9.+"
+    val cactacea = "18.11.+"
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
