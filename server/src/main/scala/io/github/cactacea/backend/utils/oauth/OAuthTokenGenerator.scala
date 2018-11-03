@@ -21,17 +21,17 @@ class OAuthTokenGenerator {
 
   private def generate(subject: String, audience: Long, clientId: String, scope: String, expired: Long): String = {
 
-    val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.algorithm)
+    val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
 
     Jwts.builder()
-      .setIssuer(Config.auth.issuer)
+      .setIssuer(Config.auth.token.issuer)
       .setIssuedAt(new Date())
       .setSubject(subject)
       .setHeaderParam("client_id", clientId)
       .setHeaderParam("scope", scope)
       .setHeaderParam("expired", expired.toString)
       .setAudience(audience.toString())
-      .signWith(signatureAlgorithm, Config.auth.signingKey)
+      .signWith(signatureAlgorithm, Config.auth.token.signingKey)
       .compact()
 
   }
@@ -49,8 +49,8 @@ class OAuthTokenGenerator {
 
     try {
 
-      val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.algorithm)
-      val parsed = Jwts.parser().setSigningKey(Config.auth.signingKey).parseClaimsJws(token)
+      val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
+      val parsed = Jwts.parser().setSigningKey(Config.auth.token.signingKey).parseClaimsJws(token)
       val header = parsed.getHeader()
       val body = parsed.getBody()
       val issuedAt = body.getIssuedAt
@@ -65,7 +65,7 @@ class OAuthTokenGenerator {
       } else if (body.getSubject.equals(subject) == false) {
         None
 
-      } else if (body.getIssuer.equals(Config.auth.issuer) == false) {
+      } else if (body.getIssuer.equals(Config.auth.token.issuer) == false) {
         None
 
       } else {

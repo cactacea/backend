@@ -38,7 +38,7 @@ class ServerSpec extends FeatureTest {
     server.httpPost(
       path = root + path,
       headers = Map(
-        "X-API-KEY" -> Config.auth.apiKeys.head._2,
+        "X-API-KEY" -> Config.auth.keys.all.head._2,
         "X-AUTHORIZATION" -> accessToken
       ),
       postBody = postBody
@@ -48,7 +48,7 @@ class ServerSpec extends FeatureTest {
   def delete(path: String, accessToken: String): Response = server.httpDelete(
     path = root + path,
     headers = Map(
-      "X-API-KEY" -> Config.auth.apiKeys.head._2,
+      "X-API-KEY" -> Config.auth.keys.all.head._2,
       "X-AUTHORIZATION" -> accessToken
     )
   )
@@ -57,7 +57,7 @@ class ServerSpec extends FeatureTest {
     server.httpPost(
       path = root + path,
       headers = Map(
-        "X-API-KEY" -> Config.auth.apiKeys.head._2,
+        "X-API-KEY" -> Config.auth.keys.all.head._2,
         "User-Agent" -> "ios"
       ),
       postBody = postBody
@@ -68,7 +68,7 @@ class ServerSpec extends FeatureTest {
     server.httpGet(
       path = root + path,
       headers = Map(
-        "X-API-KEY" -> Config.auth.apiKeys.head._2,
+        "X-API-KEY" -> Config.auth.keys.all.head._2,
         "User-Agent" -> "ios"
       )
     )
@@ -78,7 +78,7 @@ class ServerSpec extends FeatureTest {
     server.httpGet(
       path = root + path,
       headers = Map(
-        "X-API-KEY" -> Config.auth.apiKeys.head._2,
+        "X-API-KEY" -> Config.auth.keys.all.head._2,
         "X-AUTHORIZATION" -> accessToken
       )
     )

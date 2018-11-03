@@ -18,17 +18,17 @@ class AuthTokenGenerator {
 
   def generate(audience: Long, udid: String): String = {
 
-    val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.algorithm)
-    val expired = new DateTime().plusMinutes(Config.auth.expire.inMinutes).toDate
+    val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
+    val expired = new DateTime().plusMinutes(Config.auth.token.expire.inMinutes).toDate
 
     val token = Jwts.builder()
-      .setIssuer(Config.auth.issuer)
+      .setIssuer(Config.auth.token.issuer)
       .setIssuedAt(new Date())
-      .setSubject(Config.auth.subject)
+      .setSubject(Config.auth.token.subject)
       .setHeaderParam("udid", udid)
       .setAudience(audience.toString())
       .setExpiration(expired)
-      .signWith(signatureAlgorithm, Config.auth.signingKey)
+      .signWith(signatureAlgorithm, Config.auth.token.signingKey)
       .compact()
 
     token
@@ -43,9 +43,9 @@ class AuthTokenGenerator {
       case Some(token) =>
         try {
 
-          val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.algorithm)
+          val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
           val parsed = Jwts.parser()
-            .setSigningKey(Config.auth.signingKey)
+            .setSigningKey(Config.auth.token.signingKey)
             .parseClaimsJws(token)
           val header = parsed.getHeader()
           val body = parsed.getBody()
@@ -56,10 +56,10 @@ class AuthTokenGenerator {
           if (header.getAlgorithm().equals(signatureAlgorithm.getValue) == false) {
             Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
-          } else if (body.getSubject.equals(Config.auth.subject) == false) {
+          } else if (body.getSubject.equals(Config.auth.token.subject) == false) {
             Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
-          } else if (body.getIssuer.equals(Config.auth.issuer) == false) {
+          } else if (body.getIssuer.equals(Config.auth.token.issuer) == false) {
             Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
           } else {
@@ -81,7 +81,7 @@ class AuthTokenGenerator {
   }
 
   def check(requestApiKey: Option[String]): Future[DeviceType] = {
-    requestApiKey.flatMap(key => Config.auth.apiKeys.filter(_._2 == key).headOption.map(_._1)) match {
+    requestApiKey.flatMap(key => Config.auth.keys.all.filter(_._2 == key).headOption.map(_._1)) match {
       case Some(t) =>
         Future.value(t)
       case _ =>
