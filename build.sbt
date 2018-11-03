@@ -1,7 +1,6 @@
 import sbt.Keys.{organization, publishArtifact, resolvers, testOptions}
 import sbt.url
 
-version in ThisBuild      := "18.11.0"
 organization in ThisBuild := "io.github.cactacea.backend"
 
 scalaVersion in ThisBuild := "2.12.7"
