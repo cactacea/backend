@@ -9,8 +9,8 @@ case class GetGroupAccounts(
                              @ApiModelProperty(value = "Group identifier.")
                              @RouteParam id: GroupId,
 
-                             @QueryParam since: Option[Long],
                              @ApiModelProperty(value = "Filters accounts which started on since or later.")
+                             @QueryParam since: Option[Long],
 
                              @ApiModelProperty(value = "The offset of accounts. By default the value is 0.")
                              @QueryParam offset: Option[Int],
