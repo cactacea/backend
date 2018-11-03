@@ -70,16 +70,14 @@ lazy val addons = (project in file("addons"))
 
 
 lazy val commonSettings = Seq(
-  organization in ThisBuild := "io.github.cactacea",
-  scalaVersion in ThisBuild  := "2.12.7",
-  crossScalaVersions in ThisBuild  := Seq("2.11.12", "2.12.7"),
-
-  testOptions in Test in ThisBuild += Tests.Argument("-oI"),
-  concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-  parallelExecution in ThisBuild := false,
-  fork in ThisBuild := true
+  organization := "io.github.cactacea",
+  scalaVersion  := "2.12.7",
+  crossScalaVersions := Seq("2.11.12", "2.12.7"),
+  testOptions in Test += Tests.Argument("-oI"),
+  concurrentRestrictions += Tags.limit(Tags.Test, 1),
+  parallelExecution := false,
+  fork := true
 )
-
 
 lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
