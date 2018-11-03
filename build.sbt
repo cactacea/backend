@@ -1,35 +1,23 @@
-import sbt.Keys.{organization, publishArtifact, resolvers, testOptions}
+import sbt.Keys.{publishArtifact, resolvers}
 import sbt.url
-
-organization in ThisBuild := "io.github.cactacea"
-
-scalaVersion in ThisBuild := "2.12.7"
-scalaVersion in ThisBuild  := "2.12.7"
-crossScalaVersions in ThisBuild  := Seq("2.11.12", "2.12.7")
-
-testOptions in Test in ThisBuild += Tests.Argument("-oI")
-concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
-parallelExecution in ThisBuild := false
-fork in ThisBuild := true
 
 lazy val root = (project in file("."))
   .settings(
     name := "backend"
   )
-  .aggregate(server, core, addons)
+  .settings(commonSettings)
+  .settings(noPublishSettings)
   .settings(Migration.settings)
+  .aggregate(server, core)
   .enablePlugins(FlywayPlugin)
 
-
 lazy val server = (project in file("server"))
-  .settings(
-    name := "server"
-  )
   .settings(
     buildInfoPackage := "io.github.cactacea.backend",
     buildInfoKeys := Seq[BuildInfoKey](version, baseDirectory),
     buildInfoObject := "CactaceaBuildInfo"
   )
+  .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.oauth2LibrarySettings)
@@ -43,9 +31,7 @@ lazy val server = (project in file("server"))
 
 
 lazy val core = (project in file("core"))
-  .settings(
-    name := "core"
-  )
+  .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.coreLibrarySettings)
@@ -57,10 +43,7 @@ lazy val core = (project in file("core"))
 
 lazy val demo = (project in file("demo"))
   .settings(
-    name := "demo",
     mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp"),
-  )
-  .settings(
     version in Docker := "latest",
     maintainer in Docker := "Cactacea",
     packageName in Docker := "backend",
@@ -68,17 +51,15 @@ lazy val demo = (project in file("demo"))
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea")
   )
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
   .settings(noPublishSettings)
   .dependsOn(server % "compile->compile;test->test")
   .enablePlugins(JavaAppPackaging)
 
 
 lazy val addons = (project in file("addons"))
-  .settings(
-    name := "addons",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
-  )
+  .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(noPublishSettings)
   .settings(libraryDependencies ++= Dependencies.addonsLibrarySettings)
@@ -87,11 +68,28 @@ lazy val addons = (project in file("addons"))
   .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
   .dependsOn(core)
 
+
+lazy val commonSettings = Seq(
+  organization in ThisBuild := "io.github.cactacea",
+  scalaVersion in ThisBuild  := "2.12.7",
+  crossScalaVersions in ThisBuild  := Seq("2.11.12", "2.12.7"),
+
+  testOptions in Test in ThisBuild += Tests.Argument("-oI"),
+  concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+  parallelExecution in ThisBuild := false,
+  fork in ThisBuild := true
+)
+
+
 lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     "Maven central" at "http://central.maven.org/maven2/")
   )
+
+
+
+// Publish Settings
 
 lazy val publishSettings = Seq(
 
@@ -144,7 +142,10 @@ lazy val noPublishSettings = Seq(
   publishTo := Some(Resolver.file("Unused transient repository", file("target/unusedrepo")))
 )
 
-import ReleaseTransformations._
+
+// Release Process
+
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 releaseVersionFile := baseDirectory.value / "version.sbt"
 
