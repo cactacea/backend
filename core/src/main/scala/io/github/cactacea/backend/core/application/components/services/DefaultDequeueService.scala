@@ -2,31 +2,31 @@ package io.github.cactacea.backend.core.application.components.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{NotificationService, SubScribeService}
+import io.github.cactacea.backend.core.application.components.interfaces.{NotificationService, DequeueService}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-class DefaultSubScribeService extends SubScribeService {
+class DefaultDequeueService extends DequeueService {
 
-  @Inject private var fanOutService: NotificationService = _
+  @Inject private var notificationService: NotificationService = _
 
   def dequeueFeed(feedId: FeedId): Future[Unit] = {
-    fanOutService.fanOutFeed(feedId)
+    notificationService.fanOutFeed(feedId)
   }
 
   def dequeueComment(commentId: CommentId): Future[Unit] = {
-    fanOutService.fanOutComment(commentId)
+    notificationService.fanOutComment(commentId)
   }
 
   def dequeueMessage(messageId: MessageId): Future[Unit] = {
-    fanOutService.fanOutMessage(messageId)
+    notificationService.fanOutMessage(messageId)
   }
 
   def dequeueGroupInvitation(groupInvitationId: GroupInvitationId): Future[Unit] = {
-    fanOutService.fanOutGroupInvitation(groupInvitationId)
+    notificationService.fanOutGroupInvitation(groupInvitationId)
   }
 
   def dequeueFriendRequest(friendRequestId: FriendRequestId): Future[Unit] = {
-    fanOutService.fanOutFriendRequest(friendRequestId)
+    notificationService.fanOutFriendRequest(friendRequestId)
   }
 
 }
