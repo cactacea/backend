@@ -16,7 +16,7 @@ object Migration {
     flywayPassword := password,
     flywayUrl := s"jdbc:mysql://${hostName}:${port}/${databaseName}",
     flywayPlaceholders := Map("schema" -> databaseName),
-    flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
+    flywayLocations := Seq("filesystem:core/src/main/resources/db/migration/cactacea"),
     (test in Test) := {
       (test in Test).dependsOn(Def.sequential(flywayClean, flywayMigrate)).value
     },

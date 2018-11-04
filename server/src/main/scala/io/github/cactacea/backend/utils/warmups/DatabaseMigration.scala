@@ -15,6 +15,7 @@ object DatabaseMigration {
     val url = s"jdbc:mysql://$dest/$database"
     val flyway = new Flyway()
     flyway.setDataSource(url, user, password)
+    flyway.setLocations("classpath:db/migration/cactacea")
     flyway.setPlaceholders(Map("schema" -> database).asJava)
     flyway.migrate()
   }
