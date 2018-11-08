@@ -18,7 +18,7 @@ class ServerSpec extends FeatureTest {
   override val injector =
     TestInjector(
       modules = Seq(
-        DatabaseProviderModule,
+        DatabaseModule,
         DefaultInjectionModule,
         DefaultNotificationModule,
         DefaultNotificationMessagesModule,

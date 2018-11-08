@@ -16,7 +16,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
   override val injector =
     TestInjector(
       modules = Seq(
-        DatabaseProviderModule,
+        DatabaseModule,
         DefaultInjectionModule,
         DefaultNotificationModule,
         DefaultNotificationMessagesModule,

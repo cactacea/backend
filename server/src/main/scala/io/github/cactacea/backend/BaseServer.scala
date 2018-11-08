@@ -8,7 +8,7 @@ import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseCl
 
 trait BaseServer extends HttpServer {
 
-  protected  def databaseModule = DatabaseProviderModule
+  protected  def databaseModule = DatabaseModule
 
   def injectionModule: TwitterModule =  DefaultInjectionModule
   def fanOutModule: TwitterModule = DefaultNotificationModule

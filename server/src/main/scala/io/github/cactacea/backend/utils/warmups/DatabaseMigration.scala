@@ -8,10 +8,10 @@ import scala.collection.JavaConverters._
 object DatabaseMigration {
 
   def execute() = {
-    val database = Config.db.database
-    val user = Config.db.user
-    val password = Config.db.password
-    val dest = Config.db.dest
+    val database = Config.db.master.database
+    val user = Config.db.master.user
+    val password = Config.db.master.password
+    val dest = Config.db.master.dest
     val url = s"jdbc:mysql://$dest/$database"
     val flyway = new Flyway()
     flyway.setDataSource(url, user, password)
