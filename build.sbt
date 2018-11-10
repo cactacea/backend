@@ -91,7 +91,7 @@ lazy val publishSettings = Seq(
   },
 
 
-  licenses := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+  licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/cactacea/backend")),
 
   publishMavenStyle := true,
