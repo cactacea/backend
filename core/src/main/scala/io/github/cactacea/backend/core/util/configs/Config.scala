@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.core.util.configs
 
 import com.twitter.util.Duration
-import com.twitter.util.TimeConversions._
+import com.twitter.conversions.time._
 import com.typesafe.config.ConfigFactory
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import net.ceedubs.ficus.Ficus._

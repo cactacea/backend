@@ -4,7 +4,7 @@ import sbt._
 object Dependencies {
 
   val versions = new {
-    val twitter = "18.9.+"
+    val twitter = "18.10.+"
     val cactacea = "18.11.+"
     val guice = "4.0"
     val logback = "1.2.3"
