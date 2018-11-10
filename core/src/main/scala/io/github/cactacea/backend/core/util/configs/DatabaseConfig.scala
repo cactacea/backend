@@ -14,6 +14,4 @@ case class DatabaseConfig(
                            maxPrepareStatements: Option[Int],
                            connectTimeout: Option[Int],
                            maxWaiters: Option[Int]
-                         ) {
-
-}
+                         )
