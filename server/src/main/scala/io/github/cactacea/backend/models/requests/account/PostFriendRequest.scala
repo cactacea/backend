@@ -5,6 +5,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.swagger.annotations.ApiModelProperty
 
 case class PostFriendRequest(
-                              @ApiModelProperty(value = "Account Identifier.")
+                              @ApiModelProperty(value = "Account Identifier.", required = true)
                               @RouteParam id: AccountId
                        )

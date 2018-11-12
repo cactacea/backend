@@ -8,6 +8,8 @@ class AccountFeedsDAOSpec extends DAOSpec {
 
   import db._
 
+  test("findALl") (pending)
+
   test("create") {
 
     val sessionAccount1 = createAccount("AccountFeedsDAOSpec0")

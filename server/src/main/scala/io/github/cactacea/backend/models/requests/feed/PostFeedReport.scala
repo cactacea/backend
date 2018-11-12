@@ -6,10 +6,10 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
 import io.swagger.annotations.ApiModelProperty
 
 case class PostFeedReport(
-                           @ApiModelProperty(value = "Feed identifier.")
+                           @ApiModelProperty(value = "Feed identifier.", required = true)
                            @RouteParam id: FeedId,
 
-                           @ApiModelProperty(value = "Report type.")
+                           @ApiModelProperty(value = "Report type.", required = true)
                            reportType: ReportType,
 
                            @ApiModelProperty(value = "Description about this report.")

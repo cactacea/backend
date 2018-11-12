@@ -5,6 +5,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.swagger.annotations.ApiModelProperty
 
 case class DeleteMute (
-                        @ApiModelProperty(value = "Account identifier.")
+                        @ApiModelProperty(value = "Account identifier.", required = true)
                         @RouteParam id: AccountId
                        )

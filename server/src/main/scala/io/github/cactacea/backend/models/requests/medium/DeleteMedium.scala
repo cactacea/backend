@@ -5,6 +5,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
 import io.swagger.annotations.ApiModelProperty
 
 case class DeleteMedium (
-                          @ApiModelProperty(value = "Medium identifier.")
+                          @ApiModelProperty(value = "Medium identifier.", required = true)
                           @RouteParam id: MediumId
                         )

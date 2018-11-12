@@ -1,21 +1,21 @@
 package io.github.cactacea.backend.models.requests.sessions
 
-import com.twitter.finatra.request.{FormParam, Header}
+import com.twitter.finatra.request.Header
 import com.twitter.finatra.validation._
 import io.github.cactacea.backend.utils.validaters.Validations
 import io.swagger.annotations.ApiModelProperty
 
 case class PostSignUp(
-                       @ApiModelProperty(value = "Account name.")
+                       @ApiModelProperty(value = "Account name.", required = true)
                        @Size(min = 2, max = 30) accountName: String,
 
                        @ApiModelProperty(value = "Display name.")
                        @Size(min = 1, max = 50) displayName: Option[String],
 
-                       @ApiModelProperty(value = "Account password.")
+                       @ApiModelProperty(value = "Account password.", required = true)
                        @Size(min = 8, max = 255) password: String,
 
-                       @ApiModelProperty(value = "Unique Device Identifier.")
+                       @ApiModelProperty(value = "Unique Device Identifier.", required = true)
                        @UUID udid: String,
 
                        @ApiModelProperty(value = "Profile URL.")

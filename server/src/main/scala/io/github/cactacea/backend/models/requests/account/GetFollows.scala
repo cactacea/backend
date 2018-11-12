@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.swagger.annotations.ApiModelProperty
 
 case class GetFollows(
-                         @ApiModelProperty(value = "Account Identifier.")
+                         @ApiModelProperty(value = "Account Identifier.", required = true)
                          @RouteParam id: AccountId,
 
                          @ApiModelProperty(value = "Filters follower which started on since or later.")

@@ -5,10 +5,10 @@ import io.github.cactacea.backend.utils.validaters.Validations
 import io.swagger.annotations.ApiModelProperty
 
 case class PutSessionPassword(
-                               @ApiModelProperty(value = "Account old password.")
+                               @ApiModelProperty(value = "Account old password.", required = true)
                                @Size(min = 8, max = 255) oldPassword: String,
 
-                               @ApiModelProperty(value = "Account new password.")
+                               @ApiModelProperty(value = "Account new password.", required = true)
                                @Size(min = 8, max = 255) newPassword: String
                              ) {
 

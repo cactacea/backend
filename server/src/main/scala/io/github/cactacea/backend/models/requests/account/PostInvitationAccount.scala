@@ -5,9 +5,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Gr
 import io.swagger.annotations.ApiModelProperty
 
 case class PostInvitationAccount(
-                                  @ApiModelProperty(value = "Account Identifier.")
+                                  @ApiModelProperty(value = "Account Identifier.", required = true)
                                   @RouteParam accountId: AccountId,
 
-                                  @ApiModelProperty(value = "Group Identifier.")
+                                  @ApiModelProperty(value = "Group Identifier.", required = true)
                                   @RouteParam groupId: GroupId
                             )

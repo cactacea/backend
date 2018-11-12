@@ -5,7 +5,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, Medi
 import io.swagger.annotations.ApiModelProperty
 
 case class PostMessage(
-                        @ApiModelProperty(value = "Group identifier.")
+                        @ApiModelProperty(value = "Group identifier.", required = true)
                         id: GroupId,
 
                         @ApiModelProperty(value = "A message will be posted.")
