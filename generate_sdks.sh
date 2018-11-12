@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+# Fixme
 swagger-codegen generate \
     -i docs/swagger.json \
     -l swift4 \
@@ -7,9 +9,9 @@ swagger-codegen generate \
     --additional-properties projectName="Cactacea" \
     --additional-properties podVersion="18.11.0" \
     --additional-properties podSummary="Cactacea iOS SDK" \
-    --additional-properties projectDescription="An iOS library to interface with Cactacea backend API" \
+    --additional-properties podDescription="An iOS library to interface with Cactacea backend API" \
     --additional-properties podSource="" \
-    --additional-properties podAuthors="Takeshi Shimada" \
+    --additional-properties podAuthors="" \
     --additional-properties podLicense="" \
     --additional-properties podHomepage=https://github.com/cactacea/ios \
     --additional-properties responseAs=RxSwift \
