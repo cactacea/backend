@@ -134,6 +134,13 @@ class FeedsDAOSpec extends DAOSpec {
     assert((feedMediums5.size, feedMediums5.map(_.mediumId)) == (mediums5.size, mediums5))
     assert((feedMediums6.size, feedMediums6.map(_.mediumId)) == (mediums6.size, mediums6))
 
+    // Feeds count
+    val session1 = execute(accountsDAO.find(sessionAccount1.id.toSessionId))
+    assert(session1.head.feedsCount == 4L)
+
+    val session2 = execute(accountsDAO.find(sessionAccount2.id.toSessionId))
+    assert(session2.head.feedsCount == 2L)
+
   }
 
   test("edit") {
@@ -422,6 +429,12 @@ class FeedsDAOSpec extends DAOSpec {
     // delete not found
     execute(feedsDAO.delete(feedId5, sessionAccount1.id.toSessionId))
 
+    // Feeds count
+    val session1 = execute(accountsDAO.find(sessionAccount1.id.toSessionId))
+    assert(session1.head.feedsCount == 4L)
+
+    val session2 = execute(accountsDAO.find(sessionAccount2.id.toSessionId))
+    assert(session2.head.feedsCount == 0L)
 
   }
 

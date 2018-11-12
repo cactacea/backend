@@ -7,4 +7,4 @@ case class RelationshipBlocksCount(
                                     followerCount: Long,
                                     followCount: Long,
                                     friendCount: Long
-                                    )
+                                  )
