@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.AccountFeeds
@@ -71,15 +70,13 @@ class AccountFeedsDAOSpec extends DAOSpec {
 
     // create follows
     execute(
-      db.transaction(
-        for {
-          _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)
-          _ <- followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId)
-          _ <- followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId)
-          _ <- followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId)
-          _ <- followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId)
-        } yield (Unit)
-      )
+      for {
+        _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)
+        _ <- followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId)
+        _ <- followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId)
+        _ <- followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId)
+        _ <- followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId)
+      } yield (Unit)
     )
 
     // create account feeds

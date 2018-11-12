@@ -52,6 +52,7 @@ class FeedsDAOSpec extends DAOSpec {
     val contentWarning6 = true
 
     // create feeds
+
     val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId))
     val feedId2 = execute(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId))
     val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId))
@@ -61,35 +62,29 @@ class FeedsDAOSpec extends DAOSpec {
 
     // create comments
     execute(
-      db.transaction {
-        for {
-          _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
-          _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
+        _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
+      } yield (Unit)
     )
 
     // create feed likes
     execute(
-      db.transaction {
-        for {
-          _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
-          _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
+        _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
+      } yield (Unit)
     )
 
     // create report
     execute(
-      db.transaction {
-        for {
-          _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
+      } yield (Unit)
     )
 
     // create feeds result
@@ -195,35 +190,29 @@ class FeedsDAOSpec extends DAOSpec {
 
     // create comments
     execute(
-      db.transaction {
-        for {
-          _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
-          _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
+        _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
+      } yield (Unit)
     )
 
     // create feed likes
     execute(
-      db.transaction(
-        for {
-          _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
-          _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
-        } yield (Unit)
-      )
+      for {
+        _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
+        _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
+      } yield (Unit)
     )
 
     // create report
     execute(
-      db.transaction(
-        for {
-          _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
-        } yield (Unit)
-      )
+      for {
+        _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
+      } yield (Unit)
     )
 
     // create feeds result
@@ -340,35 +329,29 @@ class FeedsDAOSpec extends DAOSpec {
 
     // create comments
     execute(
-      db.transaction(
-        for {
-          _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
-          _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
-        } yield (Unit)
-      )
+      for {
+        _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
+        _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
+      } yield (Unit)
     )
 
     // create feed likes
     execute(
-      db.transaction(
-        for {
-          _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
-          _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
-        } yield (Unit)
-      )
+      for {
+        _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
+        _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
+      } yield (Unit)
     )
 
     // create report
     execute(
-      db.transaction(
-        for {
-          _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
-        } yield (Unit)
-      )
+      for {
+        _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
+      } yield (Unit)
     )
 
     // create feeds result
@@ -434,7 +417,7 @@ class FeedsDAOSpec extends DAOSpec {
     assert(session1.head.feedsCount == 4L)
 
     val session2 = execute(accountsDAO.find(sessionAccount2.id.toSessionId))
-    assert(session2.head.feedsCount == 0L)
+    assert(session2.head.feedsCount == 1L)
 
   }
 
@@ -477,23 +460,19 @@ class FeedsDAOSpec extends DAOSpec {
 
     // follows user
     execute(
-      db.transaction {
-        for {
-          _ <- followsDAO.create(sessionUser.id, followUser.id.toSessionId)
-          _ <- followersDAO.create(followUser.id, sessionUser.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- followsDAO.create(sessionUser.id, followUser.id.toSessionId)
+        _ <- followersDAO.create(followUser.id, sessionUser.id.toSessionId)
+      } yield (Unit)
     )
 
     // friend user
     execute(
-      db.transaction {
-        for {
-          _ <- followsDAO.create(sessionUser.id, friendUser.id.toSessionId)
-          _ <- followersDAO.create(friendUser.id, sessionUser.id.toSessionId)
-          _ <- friendsDAO.create(sessionUser.id, friendUser.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- followsDAO.create(sessionUser.id, friendUser.id.toSessionId)
+        _ <- followersDAO.create(friendUser.id, sessionUser.id.toSessionId)
+        _ <- friendsDAO.create(sessionUser.id, friendUser.id.toSessionId)
+      } yield (Unit)
     )
 
     // exist by follower
@@ -556,40 +535,33 @@ class FeedsDAOSpec extends DAOSpec {
 
     // create feeds
     execute(
-      db.transaction {
-        for {
-          _ <- feedsDAO.create("everyone"      , Some(mediums1), Some(tags1), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId)
-          _ <- feedsDAO.create("followers", Some(mediums2), Some(tags2), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId)
-          _ <- feedsDAO.create("friends"  , Some(mediums3), Some(tags3), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId)
-          _ <- feedsDAO.create("self"     , Some(mediums4), Some(tags4), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId)
-          _ <- feedsDAO.create("everyone"      , Some(mediums5), Some(tags5), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId)
-          _ <- feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId)
-          _ <- feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId)
-          _ <- feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- feedsDAO.create("everyone"      , Some(mediums1), Some(tags1), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId)
+        _ <- feedsDAO.create("followers", Some(mediums2), Some(tags2), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId)
+        _ <- feedsDAO.create("friends"  , Some(mediums3), Some(tags3), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId)
+        _ <- feedsDAO.create("self"     , Some(mediums4), Some(tags4), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId)
+        _ <- feedsDAO.create("everyone"      , Some(mediums5), Some(tags5), FeedPrivacyType.everyone,        false, None, sessionAccount.id.toSessionId)
+        _ <- feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId)
+        _ <- feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId)
+        _ <- feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId)
+      } yield (Unit)
     )
 
     // follows user
     execute(
-      db.transaction {
-        for {
-          _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
-          _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+        _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
+      } yield (Unit)
     )
 
     // friend user
     execute(
-      db.transaction {
-        for {
-          _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
-          _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
-          _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
-
-        } yield (Unit)
-      }
+      for {
+        _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
+      } yield (Unit)
     )
 
     // find by follower
@@ -641,23 +613,19 @@ class FeedsDAOSpec extends DAOSpec {
 
     // follows user
     execute(
-      db.transaction {
-        for {
-          _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
-          _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+        _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
+      } yield (Unit)
     )
 
     // friend user
     execute(
-      db.transaction {
-        for {
-          _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
-          _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
-          _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
+      } yield (Unit)
     )
 
     // find by follower
@@ -754,35 +722,29 @@ class FeedsDAOSpec extends DAOSpec {
 
     // create comments
     execute(
-      db.transaction {
-        for {
-          _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
-          _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
-          _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- commentsDAO.create(feedId1, "feed1 comment1", sessionAccount1.id.toSessionId)
+        _ <- commentsDAO.create(feedId1, "feed1 comment2", sessionAccount1.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment1", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
+        _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
+      } yield (Unit)
     )
 
     // create feed likes
     execute(
-      db.transaction {
-        for {
-          _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
-          _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
+        _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
+      } yield (Unit)
     )
 
     // create report
     execute(
-      db.transaction {
-        for {
-          _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
-        } yield (Unit)
-      }
+      for {
+        _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
+      } yield (Unit)
     )
 
     // create feeds result
@@ -989,13 +951,11 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
 
     execute(
-      db.transaction {
-        for {
-          _ <- feedsDAO.updateNotified(feedId1, true)
-          _ <- feedsDAO.updateNotified(feedId2, false)
-          _ <- feedsDAO.updateNotified(feedId3, true)
-        } yield (Unit)
-      }
+      for {
+        _ <- feedsDAO.updateNotified(feedId1, true)
+        _ <- feedsDAO.updateNotified(feedId2, false)
+        _ <- feedsDAO.updateNotified(feedId3, true)
+      } yield (Unit)
     )
 
     val result1 = execute(feedsDAO.find(feedId1))
