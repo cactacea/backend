@@ -8,6 +8,10 @@ import io.swagger.annotations.ApiModelProperty
 case class PostAccountReport(
                               @ApiModelProperty(value = "Account Identifier.")
                               @RouteParam id: AccountId,
+
+                              @ApiModelProperty(value = "Report type.")
                               reportType: ReportType,
+
+                              @ApiModelProperty(value = "Description about this report.")
                               reportContent: Option[String]
                      )
