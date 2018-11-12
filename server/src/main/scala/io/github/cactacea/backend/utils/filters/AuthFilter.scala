@@ -17,7 +17,7 @@ class AuthFilter @Inject()(sessionsRepository: SessionsRepository, authTokenGene
       case true =>
         service(request)
       case false =>
-        authTokenGenerator.parse(request.headerMap.get(Config.auth.headerNames.authorization)).flatMap({ auth =>
+        authTokenGenerator.parse(request.headerMap.get(Config.auth.headerNames.authorizationKey)).flatMap({ auth =>
           val expiresIn = auth.expiresIn
           sessionsRepository.checkAccountStatus(auth.sessionId, expiresIn).flatMap({ _ =>
             SessionContext.setAuthenticated(true)

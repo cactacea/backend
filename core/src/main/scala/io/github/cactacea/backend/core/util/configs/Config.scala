@@ -87,7 +87,7 @@ object Config extends DurationReader {
 
     object headerNames {
       lazy val apiKey = authConfig.apiKeyHeaderName.getOrElse("X-API-KEY")
-      lazy val authorization = authConfig.authorizationHeaderName.getOrElse("X-AUTHORIZATION")
+      lazy val authorizationKey = authConfig.authorizationHeaderName.getOrElse("X-AUTHORIZATION")
     }
   }
 
@@ -132,7 +132,7 @@ object Config extends DurationReader {
     println(s"db.slave.maxWaiters = ${db.slave.maxWaiters}")
   }
   println(s"auth.apiKeyHeaderName = ${auth.headerNames.apiKey}")
-  println(s"auth.authorizationHeaderName = ${auth.headerNames.authorization}")
+  println(s"auth.authorizationHeaderName = ${auth.headerNames.authorizationKey}")
   println(s"auth.iosApiKey = ${auth.keys.ios}")
   println(s"auth.androidApiKey = ${auth.keys.android}")
   println(s"auth.webApiKey = ${auth.keys.web}")
