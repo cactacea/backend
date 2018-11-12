@@ -34,6 +34,7 @@ object FactoryHelper {
       followCount = 0L,
       followerCount = 0L,
       friendCount = 0L,
+      feedsCount = 0L,
       web = Some("test@example.com"),
       birthday = None,
       location = Some("location"),

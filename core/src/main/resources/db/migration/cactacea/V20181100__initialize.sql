@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`accounts` (
   `profile_image_url` VARCHAR(2083) NULL DEFAULT NULL,
   `follower_count` BIGINT NOT NULL DEFAULT 0,
   `friend_count` BIGINT NOT NULL DEFAULT 0,
+  `feeds_count` BIGINT NOT NULL DEFAULT 0,
   `web` VARCHAR(2083) NULL DEFAULT NULL,
   `birthday` BIGINT NULL DEFAULT NULL,
   `location` VARCHAR(255) NULL DEFAULT NULL,
