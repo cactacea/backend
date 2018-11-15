@@ -33,12 +33,12 @@ object DatabaseModule extends TwitterModule {
     .withMaxConcurrentPrepareStatements(config.maxPrepareStatements)
     .withTransport
     .connectTimeout(config.connectTimeout.second)
-    .configured(DefaultPool.Param(
-    low = config.lowWatermark, high = config.highWatermark,
-    idleTime = config.idleTime,
-    bufferSize = config.bufferSize,
-    maxWaiters = config.maxWaiters
-    ))
+      .configured(DefaultPool.Param(
+        low = config.lowWatermark, high = config.highWatermark,
+        idleTime = config.idleTime,
+        bufferSize = config.bufferSize,
+        maxWaiters = config.maxWaiters
+      ))
     client.newRichClient(config.dest)
   }
 
