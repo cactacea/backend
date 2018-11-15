@@ -47,7 +47,7 @@ lazy val demo = (project in file("demo"))
     version in Docker := "latest",
     maintainer in Docker := "Cactacea",
     packageName in Docker := "backend",
-    dockerBaseImage := "adoptopenjdk/openjdk10",
+    dockerBaseImage := "adoptopenjdk/openjdk8",
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea")
   )
