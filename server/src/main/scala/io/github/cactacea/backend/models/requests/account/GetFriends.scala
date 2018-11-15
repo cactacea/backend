@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty
 
 
 case class GetFriends (
-                        @ApiModelProperty(value = "Account Identifier.")
+                        @ApiModelProperty(value = "Account Identifier.", required = true)
                         @RouteParam id: AccountId,
 
                         @ApiModelProperty(value = "Filters friends which started on since or later.")

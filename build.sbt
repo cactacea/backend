@@ -1,201 +1,154 @@
-import sbt.Keys.{organization, resolvers, testOptions}
-
-lazy val versions = new {
-  val cactacea = "0.6.5-SNAPSHOT"
-  val finagle = "18.5.0"
-  val guice = "4.0"
-  val logback = "1.2.3"
-  val mockito = "1.10.19"
-  val scalaCheck = "1.13.4"
-  val scalaTest = "3.0.4"
-  val specs2 = "3.8.6"
-}
-
-version in ThisBuild      := versions.cactacea
-organization in ThisBuild := "io.github.cactacea.backend"
-scalaVersion in ThisBuild := "2.12.6"
-testOptions in Test in ThisBuild += Tests.Argument("-oI")
-concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
-parallelExecution in ThisBuild := false
-fork in ThisBuild := true
+import sbt.Keys.{publishArtifact, resolvers}
+import sbt.url
 
 lazy val root = (project in file("."))
   .settings(
     name := "backend"
   )
-  .aggregate(server, core, externals)
-  .settings(migrationSetting)
+  .settings(commonSettings)
+  .settings(noPublishSettings)
+  .settings(Migration.settings)
+  .aggregate(server, core)
   .enablePlugins(FlywayPlugin)
 
-
-lazy val doc = (project in file("doc"))
-  .settings(
-    name := "doc",
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DocServerApp"),
-  )
-  .settings(
-    version in Docker := "latest",
-    maintainer in Docker := "Cactacea",
-    packageName in Docker := "backend",
-    dockerBaseImage := "adoptopenjdk/openjdk10",
-    dockerExposedPorts := Seq(9000, 9001),
-    dockerRepository := Some("cactacea")
-  )
-  .dependsOn(server % "compile->compile;test->test")
-  .dependsOn(finagger)
-  .enablePlugins(JavaAppPackaging)
-
-
 lazy val server = (project in file("server"))
-  .settings(
-    name := "server"
-  )
   .settings(
     buildInfoPackage := "io.github.cactacea.backend",
     buildInfoKeys := Seq[BuildInfoKey](version, baseDirectory),
     buildInfoObject := "CactaceaBuildInfo"
   )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.github.finagle" %% "finagle-oauth2" % "18.4.0",
-      "mysql" % "mysql-connector-java" % "6.0.6"
-    )
-  )
+  .settings(commonSettings)
   .settings(commonResolverSetting)
-  .settings(finatraLibrarySetting)
-  .settings(coreLibrarySetting)
-  .settings(logLibrarySetting)
-  .settings(testLibrarySetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.oauth2LibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.mysqlLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
   .enablePlugins(FlywayPlugin)
   .enablePlugins(BuildInfoPlugin)
   .dependsOn(core % "compile->compile;test->test")
 
 
 lazy val core = (project in file("core"))
-  .settings(
-    name := "core"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.iheart" %% "ficus" % "1.4.3"
-    )
-  )
+  .settings(commonSettings)
   .settings(commonResolverSetting)
-  .settings(finatraLibrarySetting)
-  .settings(coreLibrarySetting)
-  .settings(logLibrarySetting)
-  .settings(testLibrarySetting)
-  .dependsOn(finagger)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.coreLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.cactaceaLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
 
 
-lazy val externals = (project in file("externals"))
+lazy val demo = (project in file("demo"))
   .settings(
-    name := "externals",
-    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
-    testOptions in Test += Tests.Argument("-oI")
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp"),
+    version in Docker := "latest",
+    maintainer in Docker := "Cactacea",
+    packageName in Docker := "backend",
+    dockerBaseImage := "adoptopenjdk/openjdk8",
+    dockerExposedPorts := Seq(9000, 9001),
+    dockerRepository := Some("cactacea")
   )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.github.seratch" %% "awscala" % "0.6.+",
-      "com.danielasfregola" %% "twitter4s" % "5.3",
-      "com.google.inject" % "guice" % versions.guice
-    )
-  )
+  .settings(commonSettings)
   .settings(commonResolverSetting)
-  .settings(finatraLibrarySetting)
-  .settings(coreLibrarySetting)
-  .settings(logLibrarySetting)
-  .settings(testLibrarySetting)
-  .dependsOn(core)
+  .settings(noPublishSettings)
+  .dependsOn(server % "compile->compile;test->test")
+  .enablePlugins(JavaAppPackaging)
 
-lazy val finatraLibrarySetting = Seq(
-  libraryDependencies ++= Seq(
-    "com.twitter" %% "finatra-http" % versions.finagle,
-    "com.twitter" %% "finatra-httpclient" % versions.finagle,
-    "com.twitter" %% "finatra-http" % versions.finagle % "test",
-    "com.twitter" %% "finatra-jackson" % versions.finagle % "test"
-  )
-)
-
-lazy val coreLibrarySetting = Seq(
-  libraryDependencies ++= Seq(
-    "com.typesafe" % "config" % "1.3.2",
-    "io.getquill" %% "quill-finagle-mysql" % "2.5.4",
-    "io.jsonwebtoken" % "jjwt" % "0.9.0",
-    "com.osinka.i18n" %% "scala-i18n" % "1.0.2",
-    "org.flywaydb" % "flyway-core" % "5.0.7",
-    "com.jsuereth" %% "scala-arm" % "2.0",
-    "com.roundeights" %% "hasher" % "1.2.0",
-    "com.drewnoakes" % "metadata-extractor" % "2.11.0",
-    "com.iheart" %% "ficus" % "1.4.3",
-  )
-)
-
-lazy val testLibrarySetting = Seq(
-  libraryDependencies ++= Seq(
-
-    "com.twitter" %% "inject-server" % versions.finagle % "test",
-    "com.twitter" %% "inject-app" % versions.finagle % "test",
-    "com.twitter" %% "inject-core" % versions.finagle % "test",
-    "com.twitter" %% "inject-modules" % versions.finagle % "test",
-    "com.google.inject.extensions" % "guice-testlib" % versions.guice % "test",
-    "com.twitter" %% "finatra-http" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "finatra-jackson" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "inject-server" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "inject-app" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "inject-core" % versions.finagle % "test" classifier "tests",
-    "com.twitter" %% "inject-modules" % versions.finagle % "test" classifier "tests",
-    "org.mockito" % "mockito-core" %  versions.mockito % "test",
-
-    "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
-    "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
-    "org.specs2" %% "specs2-core" % versions.specs2 % "test",
-    "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
-    "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
-  )
-)
-
-lazy val logLibrarySetting = Seq(
-  libraryDependencies ++= Seq(
-    "ch.qos.logback" % "logback-classic" % versions.logback,
-    "net.logstash.logback" % "logstash-logback-encoder" % "4.11"
-  )
+lazy val commonSettings = Seq(
+  organization := "io.github.cactacea",
+  scalaVersion  := "2.12.7",
+  crossScalaVersions := Seq("2.11.12", "2.12.7"),
+  testOptions in Test += Tests.Argument("-oI"),
+  concurrentRestrictions += Tags.limit(Tags.Test, 1),
+  parallelExecution := false,
+  fork := true
 )
 
 lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    "Maven central" at "http://central.maven.org/maven2/"
+    "Maven central" at "http://central.maven.org/maven2/")
+  )
+
+
+
+// Publish Settings
+
+lazy val publishSettings = Seq(
+
+  publishMavenStyle := true,
+  publishArtifact in Test := false,
+  pomIncludeRepository := { _ => false },
+  publishTo := {
+    val nexus = "https://oss.sonatype.org/"
+    if (isSnapshot.value)
+      Some("snapshots" at nexus + "content/repositories/snapshots")
+    else
+      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+  },
+
+
+  licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
+  homepage := Some(url("https://github.com/cactacea/backend")),
+
+  publishMavenStyle := true,
+  publishArtifact in Test := false,
+  publishTo := Some(
+    if (isSnapshot.value)
+      Opts.resolver.sonatypeSnapshots
+    else
+      Opts.resolver.sonatypeStaging
+  ),
+
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/cactacea/backend"),
+      "scm:git:https://github.com/cactacea/backend.git"
+    )
+  ),
+
+  developers := List(
+    Developer(
+      id    = "takeshishimada",
+      name  = "Takeshi Shimada",
+      email = "expensivegasprices@gmail.com",
+      url   = url("https://github.com/takeshishimada")
+    )
   )
 )
 
-
-lazy val migrationUser = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
-lazy val migrationPassword = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
-lazy val migrationDatabaseName = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
-lazy val migrationHostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
-lazy val migrationPort = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
-
-lazy val migrationSetting = Seq(
-  flywayUser := migrationUser,
-  flywayPassword := migrationPassword,
-  flywayUrl := s"jdbc:mysql://$migrationHostName:$migrationPort/$migrationDatabaseName",
-  flywayPlaceholders := Map("schema" -> migrationDatabaseName),
-  flywayLocations := Seq("filesystem:core/src/main/resources/db/migration"),
-  clean := clean.dependsOn(Def.sequential(flywayClean)).value,
-  (test in Test) := {
-    (test in Test).dependsOn(Def.sequential(flywayMigrate)).value
-  },
-  (testOnly in Test) := {
-    (testOnly in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
-  },
-  (testQuick in Test) := {
-    (testQuick in Test).dependsOn(Def.sequential(flywayMigrate)).evaluated
-  },
-  libraryDependencies ++= Seq(
-    "mysql" % "mysql-connector-java" % "6.0.6"
-  )
+lazy val noPublishSettings = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false,
+  // sbt-pgp's publishSigned task needs this defined even though it is not publishing.
+  publishTo := Some(Resolver.file("Unused transient repository", file("target/unusedrepo")))
 )
 
-lazy val finagger = RootProject(uri("git://github.com/cactacea/finagger.git"))
 
+// Release Process
+
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
+
+releaseVersionFile := baseDirectory.value / "version.sbt"
+
+releaseCrossBuild := true
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  ReleaseStep(action = Command.process("publish", _)),
+  setNextVersion,
+  commitNextVersion,
+  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+  pushChanges,
+  ReleaseStep(action = Command.process("demo/docker:publish", _))
+
+)

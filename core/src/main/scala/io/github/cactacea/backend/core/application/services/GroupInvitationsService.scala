@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, PublishService}
+import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, EnqueueService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.NotificationType
 import io.github.cactacea.backend.core.domain.models.GroupInvitation
@@ -14,7 +14,7 @@ class GroupInvitationsService {
 
   @Inject private var db: DatabaseService = _
   @Inject private var groupInvitationsRepository: GroupInvitationsRepository = _
-  @Inject private var publishService: PublishService = _
+  @Inject private var publishService: EnqueueService = _
   @Inject private var injectionService: InjectionService = _
 
   def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInvitationId]] = {

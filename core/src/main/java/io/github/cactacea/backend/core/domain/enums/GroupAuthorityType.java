@@ -1,7 +1,5 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public enum GroupAuthorityType {
     owner((byte)0),
     member((byte)1);

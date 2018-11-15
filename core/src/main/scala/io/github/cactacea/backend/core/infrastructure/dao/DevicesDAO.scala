@@ -61,7 +61,7 @@ class DevicesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def delete(udid: String, sessionId: SessionId): Future[Boolean] = {
+  def delete(udid: String, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val r = quote {
       query[Devices]
@@ -69,10 +69,10 @@ class DevicesDAO @Inject()(db: DatabaseService) {
         .filter(_.udid        == lift(udid))
         .delete
     }
-    run(r).map(_ == 1)
+    run(r).map(_ => Unit)
   }
 
-  def update(udid: String, deviceStatus: ActiveStatus, sessionId: SessionId): Future[Boolean] = {
+  def update(udid: String, deviceStatus: ActiveStatus, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val r = quote {
       query[Devices]
@@ -82,10 +82,10 @@ class DevicesDAO @Inject()(db: DatabaseService) {
           _.activeStatus   -> lift(deviceStatus)
         )
     }
-    run(r).map(_ >= 1)
+    run(r).map(_ => Unit)
   }
 
-  def update(udid: String, pushToken: Option[String], sessionId: SessionId): Future[Boolean] = {
+  def update(udid: String, pushToken: Option[String], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val r = quote {
       query[Devices]
@@ -95,7 +95,7 @@ class DevicesDAO @Inject()(db: DatabaseService) {
           _.pushToken   -> lift(pushToken)
         )
     }
-    run(r).map(_ >= 1)
+    run(r).map(_ => Unit)
   }
 
 

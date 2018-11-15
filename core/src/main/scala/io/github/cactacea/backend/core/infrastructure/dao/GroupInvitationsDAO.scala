@@ -87,26 +87,26 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def deleteByGroupId(groupId: GroupId): Future[Boolean] = {
+  def deleteByGroupId(groupId: GroupId): Future[Unit] = {
     val q = quote {
       query[GroupInvitations]
         .filter(_.groupId       == lift(groupId))
         .filter(_.invitationStatus  == lift(GroupInvitationStatusType.noResponded))
         .delete
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
   }
 
-  def delete(id: GroupInvitationId): Future[Boolean] = {
+  def delete(id: GroupInvitationId): Future[Unit] = {
     val q = quote {
       query[GroupInvitations]
         .filter(_.id       == lift(id))
         .delete
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
   }
 
-  def delete(accountId: AccountId, groupPrivacyType: GroupPrivacyType, sessionId: SessionId): Future[Boolean] = {
+  def delete(accountId: AccountId, groupPrivacyType: GroupPrivacyType, sessionId: SessionId): Future[Unit] = {
 
     // http://getquill.io/
 
@@ -118,16 +118,16 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
       query[GroupInvitations]
         .filter(group_invitations => group_invitations.accountId        == lift(accountId))
         .filter(group_invitations => group_invitations.invitationStatus  == lift(GroupInvitationStatusType.noResponded))
-        .filter(group_invitations => (
+        .filter(group_invitations =>
           query[Groups]
             .filter(_.id          == group_invitations.groupId)
             .filter(_.by          == lift(by))
             .filter(_.privacyType == lift(groupPrivacyType))
-            .nonEmpty)
+            .nonEmpty
         )
         .delete
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
 
   }
 
@@ -161,13 +161,13 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def updateNotified(id: GroupInvitationId, notified: Boolean = true): Future[Boolean] = {
+  def updateNotified(id: GroupInvitationId, notified: Boolean = true): Future[Unit] = {
     val q = quote {
       query[GroupInvitations]
         .filter(_.id == lift(id))
         .update(_.notified -> lift(notified))
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
 }

@@ -53,12 +53,12 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
       o.summary("Sign out")
         .tag(sessionTag)
         .operationId("signOut")
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
     } { _: Request =>
       sessionService.signOut(
         SessionContext.udid,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
 
@@ -67,13 +67,13 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(sessionTag)
         .operationId("updateSessionAccountName")
         .request[PutSessionAccountName]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNameAlreadyUsed))
     } { request: PutSessionAccountName =>
       accountsService.update(
         request.name,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
 
@@ -82,13 +82,13 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(sessionTag)
         .operationId("updateSessionPassword")
         .request[PutSessionPassword]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutSessionPassword =>
       accountsService.update(
         request.oldPassword,
         request.newPassword,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
 
@@ -97,7 +97,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(sessionTag)
         .operationId("updateSessionProfile")
         .request[PutSessionProfile]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
     }  { request: PutSessionProfile =>
       accountsService.update(
         request.displayName,
@@ -106,7 +106,7 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         request.location,
         request.bio,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     putWithPermission("/session/profile_image")(Permissions.basic) { o =>
@@ -114,24 +114,24 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(sessionTag)
         .operationId("updateSessionProfileImage")
         .request[PutSessionProfileImage]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(MediumNotFound))
     }  { request: PutSessionProfileImage =>
       accountsService.updateProfileImage(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     deleteWithPermission("/session/profile_image")(Permissions.basic) { o =>
       o.summary("Remove the profile image")
         .tag(sessionTag)
         .operationId("deleteSessionProfileImage")
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
     }  { _: Request =>
       accountsService.deleteProfileImage(
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     getWithPermission("/session/feeds")(Permissions.basic) { o =>
@@ -293,13 +293,13 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(RequestsTag)
         .operationId("accept")
         .request[PostAcceptFriendRequest]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(FriendRequestNotFound))
     } { request: PostAcceptFriendRequest =>
       friendRequestsService.accept(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/session/requests/:id/reject")(Permissions.friendRequests) { o =>
@@ -307,13 +307,13 @@ class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .tag(RequestsTag)
         .operationId("reject")
         .request[PostRejectFriendRequest]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(FriendRequestNotFound))
     } { request: PostRejectFriendRequest =>
       friendRequestsService.reject(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

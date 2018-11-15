@@ -6,11 +6,11 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
 import io.swagger.annotations.ApiModelProperty
 
 case class GetGroupAccounts(
-                             @ApiModelProperty(value = "Group identifier.")
+                             @ApiModelProperty(value = "Group identifier.", required = true)
                              @RouteParam id: GroupId,
 
-                             @QueryParam since: Option[Long],
                              @ApiModelProperty(value = "Filters accounts which started on since or later.")
+                             @QueryParam since: Option[Long],
 
                              @ApiModelProperty(value = "The offset of accounts. By default the value is 0.")
                              @QueryParam offset: Option[Int],

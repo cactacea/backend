@@ -53,17 +53,17 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
     }
 
     deleteWithPermission("/mediums/:id")(Permissions.media) { o =>
-      o.summary("Delete this medium")
+      o.summary("Delete a medium")
         .tag(mediumsTag)
         .operationId("deleteMedium")
         .request[DeleteMedium]
-        .responseWith(Status.NoContent.code, MediumNotFound.message)
+        .responseWith(Status.Ok.code, MediumNotFound.message)
 
     } { request: DeleteMedium =>
       mediumsService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

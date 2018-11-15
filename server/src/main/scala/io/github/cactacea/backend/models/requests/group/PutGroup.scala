@@ -7,18 +7,18 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
 import io.swagger.annotations.ApiModelProperty
 
 case class PutGroup (
-                      @ApiModelProperty(value = "Group identifier.")
+                      @ApiModelProperty(value = "Group identifier.", required = true)
                       @RouteParam id: GroupId,
 
-                      @ApiModelProperty(value = "Group name.")
+                      @ApiModelProperty(value = "Group name.", required = true)
                       @Size(min = 1, max = 1000) name: String,
 
-                      @ApiModelProperty(value = "Only invited accounts can join in.")
+                      @ApiModelProperty(value = "Only invited accounts can join in.", required = true)
                       byInvitationOnly: Boolean,
 
-                      @ApiModelProperty(value = "Which accounts can join in.")
+                      @ApiModelProperty(value = "Which accounts can join in.", required = true)
                       privacyType: GroupPrivacyType,
 
-                      @ApiModelProperty(value = "Which accounts can manage this group.")
+                      @ApiModelProperty(value = "Which accounts can manage a group.", required = true)
                       authorityType: GroupAuthorityType
                      )

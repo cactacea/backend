@@ -6,12 +6,28 @@
 
 **Cactacea** is a framework to construct social networking applications and built on top of [Finatra](https://twitter.github.io/finatra/), [Finagle](https://twitter.github.io/finagle/), Twitter Server.
 
-## Documentation ##
+### Getting Started
+
+To get started, add a dependency on cactacea depending.
+
+```
+"io.github.cactacea" %% "server" % "18.11.2"
+```
+Or similarily with Maven:
+```
+<dependency>
+  <groupId>io.github.cactacea</groupId>
+  <artifactId>server_2.12</artifactId>
+  <version>18.11.2</version>
+</dependency>
+```
+
+### Documentation
 
 - [`API Reference`](https://cactacea.github.io/backend/)
 - [`Japanese Documents(TODO)`](https://cactacea.github.io/docs/)
 
-## Related Projects ##
+### Related Projects
 
 - [`Fiagger`](https://github.com/cactacea/finagger) - Swagger Finatra Integration
 - [`Filhouette`](https://github.com/cactacea/filhouette) - Authentication library for Finatra

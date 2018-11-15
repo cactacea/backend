@@ -43,14 +43,14 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(blocksTag)
         .operationId("block")
         .request[PostBlock]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(CanNotSpecifyMyself, AccountAlreadyBlocked))
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: PostBlock =>
       blocksService.create(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     deleteWithPermission("/accounts/:id/blocks")(Permissions.relationships) { o =>
@@ -58,14 +58,14 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag(blocksTag)
         .operationId("unblock")
         .request[DeleteBlock]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(CanNotSpecifyMyself, AccountNotBlocked))
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: DeleteBlock =>
       blocksService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

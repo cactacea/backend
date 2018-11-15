@@ -1,7 +1,5 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public enum MessageType {
     text((byte)0),
     medium((byte)1),

@@ -11,43 +11,30 @@ class FriendRequestsStatusDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    _updateRelationship(accountId, true, sessionId).flatMap(_ match {
-      case true =>
-        Future.True
-      case false =>
-        _insertRelationship(accountId, true, sessionId)
-    })
-  }
-
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    _updateRelationship(accountId, false, sessionId)
-  }
-
-  private def _insertRelationship(accountId: AccountId, inProgress: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
         .insert(
           _.accountId    -> lift(accountId),
           _.by           -> lift(by),
-          _.inProgress   -> lift(inProgress)
-        )
+          _.inProgress   -> true
+        ).onConflictUpdate((t, _) => t.inProgress -> true)
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  private def _updateRelationship(accountId: AccountId, inProgress: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
         .filter(_.accountId     == lift(accountId))
         .filter(_.by            == lift(by))
         .update(
-          _.inProgress      -> lift(inProgress)
+          _.inProgress          -> false
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {

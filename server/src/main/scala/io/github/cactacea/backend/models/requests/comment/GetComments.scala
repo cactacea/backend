@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
 import io.swagger.annotations.ApiModelProperty
 
 case class GetComments(
-                        @ApiModelProperty(value = "Feed identifier.")
+                        @ApiModelProperty(value = "Feed identifier.", required = true)
                         @QueryParam id: FeedId,
 
                         @ApiModelProperty(value = "Filters comments which started on since or later.")

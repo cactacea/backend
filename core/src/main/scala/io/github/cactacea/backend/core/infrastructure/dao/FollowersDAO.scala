@@ -13,22 +13,17 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    (for {
+    for {
       _ <- _insertFollower(accountId, sessionId)
-      r <- _updateRelationship(accountId, true, sessionId)
+      r <- _insertRelationship(accountId, sessionId)
       _ <- _updateAccount(accountId, 1L)
-    } yield (r)).flatMap(_ match {
-      case true =>
-        Future.value(Unit)
-      case false =>
-        _insertRelationship(accountId, sessionId)
-    })
+    } yield (r)
   }
 
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- _deleteFollower(accountId, sessionId)
-      r <- _updateRelationship(accountId, false, sessionId)
+      r <- _updateRelationship(accountId, sessionId)
       _ <- _updateAccount(accountId, -1L)
     } yield (r)
   }
@@ -41,25 +36,25 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
           _.follower          -> true
-        )
+        ).onConflictUpdate((t, _) => t.follower -> true)
     }
     run(q).map(_ => Unit)
   }
 
-  private def _updateRelationship(accountId: AccountId, follower: Boolean, sessionId: SessionId): Future[Boolean] = {
+  private def _updateRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.follower        -> lift(follower)
+          _.follower        -> false
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  private def _updateAccount(accountId: AccountId, followerCount: Long): Future[Boolean] = {
+  private def _updateAccount(accountId: AccountId, followerCount: Long): Future[Unit] = {
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
@@ -67,7 +62,7 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
           a => a.followerCount -> (a.followerCount + lift(followerCount))
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   private def _insertFollower(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

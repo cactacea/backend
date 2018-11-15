@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 
@@ -70,8 +69,7 @@ class GroupsDAOSpec extends DAOSpec {
     val sessionAccount = createAccount("GroupsDAOSpec8")
 
     val groupId1 = execute(groupsDAO.create(sessionAccount.id.toSessionId))
-    val result = execute(groupsDAO.updateAccountCount(groupId1, 1L))
-    assert(result == true)
+    execute(groupsDAO.updateAccountCount(groupId1, 1L))
 
   }
 

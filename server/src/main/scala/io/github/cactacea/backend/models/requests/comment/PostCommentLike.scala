@@ -5,7 +5,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.CommentId
 import io.swagger.annotations.ApiModelProperty
 
 case class PostCommentLike(
-                            @ApiModelProperty(value = "Comment Identifier.")
+                            @ApiModelProperty(value = "Comment Identifier.", required = true)
                             @RouteParam id: CommentId
                               )
 

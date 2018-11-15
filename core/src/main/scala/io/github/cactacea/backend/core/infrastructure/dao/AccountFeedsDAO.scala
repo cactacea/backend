@@ -15,7 +15,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
   @Inject private var feedTagsDAO: FeedTagsDAO = _
   @Inject private var feedMediumDAO: FeedMediumDAO = _
 
-  def create(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       infix"""
@@ -23,23 +23,24 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
            select `by`, ${lift(feedId)}, account_id, false as notified, CURRENT_TIMESTAMP from relationships where account_id = ${lift(by)} and follower = true
           """.as[Action[Long]]
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
   }
 
-  def update(feedId: FeedId, accountIds: List[AccountId], notified: Boolean = true): Future[Boolean] = {
+  def update(feedId: FeedId, accountIds: List[AccountId], notified: Boolean = true): Future[Unit] = {
     val q = quote {
       query[AccountFeeds]
         .filter(_.feedId == lift(feedId))
         .filter(m => liftQuery(accountIds).contains(m.accountId))
         .update(_.notified -> lift(notified))
     }
-    run(q).map(_ == accountIds.size)
+    run(q).map(_ => Unit)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: FeedPrivacyType, sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
+  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
     val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)
+    val p = privacyType.getOrElse(FeedPrivacyType.everyone)
     val by = sessionId.toAccountId
     val q = quote {
       for {
@@ -47,9 +48,10 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
           .filter(_.accountId == lift(by))
           .filter(_.feedId < lift(s)  || lift(s) == -1)
           .sortBy(_.feedId)(Ord.desc)
+          .drop(lift(o))
           .take(lift(c))
         f <- query[Feeds]
-          .join(f => f.id == af.feedId && (f.privacyType == lift(privacyType) || lift(privacyType) == lift(FeedPrivacyType.everyone)) )
+          .join(f => f.id == af.feedId && (f.privacyType == lift(p) || lift(p) == lift(FeedPrivacyType.everyone)) )
         a <- query[Accounts]
           .join(a => a.id == f.by)
         r <- query[Relationships]
@@ -63,7 +65,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
   private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds, Accounts, Option[Relationships])], sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
     val feedIds = feeds.map(_._2.id)
 
-    ((for {
+    (for {
       tags <- feedTagsDAO.findAll(feedIds)
       medium <- feedMediumDAO.findAll(feedIds)
     } yield (tags, medium)).map {
@@ -73,7 +75,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
           val image = medium.filter(_._1 == t._2.id).map(_._2)
           (t._1, t._2, tag, image, t._3, t._4)
         })
-    })
+    }
   }
 
 }

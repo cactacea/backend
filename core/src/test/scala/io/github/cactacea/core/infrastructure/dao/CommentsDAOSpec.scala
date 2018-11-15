@@ -1,9 +1,8 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.{DeviceType, FeedPrivacyType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
-import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
 
 class CommentsDAOSpec extends DAOSpec {
 
@@ -100,10 +99,8 @@ class CommentsDAOSpec extends DAOSpec {
     val feed1 = execute(feedsDAO.find(feedId, sessionAccount1.id.toSessionId))
     assert(feed1.get._1.commentCount == 2)
 
-    val result1 = execute(commentsDAO.delete(commentId1, sessionAccount2.id.toSessionId))
-    val result2 = execute(commentsDAO.delete(commentId2, sessionAccount1.id.toSessionId))
-    assert(result1 == true)
-    assert(result2 == true)
+    execute(commentsDAO.delete(commentId1, sessionAccount2.id.toSessionId))
+    execute(commentsDAO.delete(commentId2, sessionAccount1.id.toSessionId))
 
     val exist3 = execute(commentsDAO.exist(commentId1, sessionAccount2.id.toSessionId))
     val exist4 = execute(commentsDAO.exist(commentId2, sessionAccount1.id.toSessionId))
@@ -113,8 +110,6 @@ class CommentsDAOSpec extends DAOSpec {
     val feed2 = execute(feedsDAO.find(feedId, sessionAccount1.id.toSessionId)).get._1.commentCount
     assert(feed2 == 0)
 
-    val result3 = execute(commentsDAO.delete(CommentId(0L), sessionAccount2.id.toSessionId))
-    assert(result3 == false)
   }
 
   test("find") {

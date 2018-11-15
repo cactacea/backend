@@ -87,8 +87,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     assert(execute(feedLikesDAO.exist(feedId3, sessionAccount1.id.toSessionId)) == false)
     assert(execute(feedLikesDAO.exist(feedId4, sessionAccount1.id.toSessionId)) == false)
 
-    val result = execute(feedLikesDAO.deleteLikes(sessionAccount3.id, sessionAccount2.id.toSessionId))
-    assert(result == true)
+    execute(feedLikesDAO.deleteLikes(sessionAccount3.id, sessionAccount2.id.toSessionId))
   }
 
   test("exist") {

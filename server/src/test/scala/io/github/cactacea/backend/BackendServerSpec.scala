@@ -46,7 +46,7 @@ class BackendServerSpec extends ServerSpec {
 
         val signUpAuth = mapper.parse[Authentication](signUpResponse.contentString)
 
-        assert(delete("/session", signUpAuth.accessToken).statusCode == Status.NoContent.code)
+        assert(delete("/session", signUpAuth.accessToken).statusCode == Status.Ok.code)
 
       }
     })
@@ -69,7 +69,7 @@ class BackendServerSpec extends ServerSpec {
         assert(signInRes.statusCode == Status.Ok.code)
 
         // SignOut
-        assert(delete("/session", signInAuth.accessToken).statusCode == Status.NoContent.code)
+        assert(delete("/session", signInAuth.accessToken).statusCode == Status.Ok.code)
 
       }
     })
@@ -100,7 +100,7 @@ class BackendServerSpec extends ServerSpec {
         // Follow Accounts
         accounts.foreach({ a =>
           val c = post("/accounts/" + a.id + "/follows", "", signInAuth.accessToken)
-          assert(c.statusCode == Status.NoContent.code)
+          assert(c.statusCode == Status.Ok.code)
         })
 
         // Get Follow

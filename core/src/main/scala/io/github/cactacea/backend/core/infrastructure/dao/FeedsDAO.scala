@@ -25,6 +25,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
     for {
       id  <- _insertFeed(message, privacyType, contentWarning, expiration, by)
+      _ <- _updateAccount(1L, sessionId)
       _  <- feedTagsDAO.create(id, tags)
       _  <- feedMediumDAO.create(id, mediumIds)
     } yield (id)
@@ -50,22 +51,18 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Boolean] = {
+  def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
-    _updateFeeds(feedId, message, privacyType, contentWarning, expiration, by).flatMap(_ match {
-      case true =>
-        for {
-          t1 <- feedTagsDAO.delete(feedId)
-          m1 <- feedMediumDAO.delete(feedId)
-          t2 <- feedTagsDAO.create(feedId, tags)
-          m2 <- feedMediumDAO.create(feedId, mediumIds)
-        } yield (t1 && m1 && t2 && m2)
-      case false =>
-        Future.False
-    })
+    for {
+      r <- _updateFeeds(feedId, message, privacyType, contentWarning, expiration, by)
+      _ <- feedTagsDAO.delete(feedId)
+      _ <- feedMediumDAO.delete(feedId)
+      _ <- feedTagsDAO.create(feedId, tags)
+      _ <- feedMediumDAO.create(feedId, mediumIds)
+    } yield (r)
   }
 
-  private def _updateFeeds(feedId: FeedId, message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], by: AccountId): Future[Boolean] = {
+  private def _updateFeeds(feedId: FeedId, message: String, privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], by: AccountId): Future[Unit] = {
     val privacy = privacyType
     val q = quote {
       query[Feeds]
@@ -78,10 +75,10 @@ class FeedsDAO @Inject()(db: DatabaseService) {
           _.privacyType     -> lift(privacy)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def delete(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     for {
       _ <- feedTagsDAO.delete(feedId)
@@ -90,19 +87,31 @@ class FeedsDAO @Inject()(db: DatabaseService) {
       _ <- feedReportsDAO.delete(feedId)
       _ <- commentsDAO.delete(feedId)
       r <- _deleteFeeds(feedId, by)
+      _ <- _updateAccount((r * -1L), sessionId)
     } yield (r)
   }
 
-  private def _deleteFeeds(feedId: FeedId, by: AccountId) = {
+  private def _deleteFeeds(feedId: FeedId, by: AccountId): Future[Long] = {
     val q = quote {
       query[Feeds]
         .filter(_.by == lift(by))
         .filter(_.id == lift(feedId))
         .delete
     }
-    run(q).map(_ == 1)
+    run(q)
   }
 
+  private def _updateAccount(count: Long, sessionId: SessionId): Future[Unit] = {
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[Accounts]
+        .filter(_.id == lift(accountId))
+        .update(
+          a => a.feedsCount -> (a.feedsCount + lift(count))
+        )
+    }
+    run(q).map(_ => Unit)
+  }
 
   def exist(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     val e = timeService.currentTimeMillis()
@@ -233,13 +242,13 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def updateNotified(feedId: FeedId, notified: Boolean): Future[Boolean] = {
+  def updateNotified(feedId: FeedId, notified: Boolean): Future[Unit] = {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
         .update(_.notified -> lift(notified))
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
 }

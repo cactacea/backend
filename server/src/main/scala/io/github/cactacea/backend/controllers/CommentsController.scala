@@ -55,7 +55,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     getWithPermission("/comments/:id")(Permissions.basic) { o =>
-      o.summary("Get basic information about this comment")
+      o.summary("Get basic information about a comment")
         .tag(commentsTag)
         .operationId("findComment")
         .request[GetComment]
@@ -73,21 +73,21 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(commentsTag)
         .operationId("deleteComment")
         .request[DeleteComment]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(CommentNotFound))
     } { request: DeleteComment =>
       commentsService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/comments/:id/reports")(Permissions.reports) { o =>
-      o.summary("Report this comment")
+      o.summary("Report a comment")
         .tag(commentsTag)
         .operationId("reportComment")
         .request[PostCommentReport]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[NotFound](Status.NotFound, Array(CommentNotFound))
     } { request: PostCommentReport =>
       commentsService.report(

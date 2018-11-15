@@ -5,6 +5,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
 import io.swagger.annotations.ApiModelProperty
 
 case class DeleteFeed(
-                       @ApiModelProperty(value = "Feed identifier.")
+                       @ApiModelProperty(value = "Feed identifier.", required = true)
                        @RouteParam id: FeedId
                   )

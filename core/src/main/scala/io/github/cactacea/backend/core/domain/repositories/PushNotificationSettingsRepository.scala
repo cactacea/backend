@@ -31,13 +31,7 @@ class PushNotificationSettingsRepository {
       directMessage,
       showMessage,
       sessionId
-    ).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-
+    )
   }
 
 

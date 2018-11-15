@@ -65,12 +65,12 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(messagesTag)
         .operationId("deleteMessage")
         .request[DeleteMessages]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
     } { request: DeleteMessages =>
       messagesService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

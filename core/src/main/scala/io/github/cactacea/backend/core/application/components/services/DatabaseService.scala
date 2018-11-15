@@ -1,17 +1,29 @@
 package io.github.cactacea.backend.core.application.components.services
 
-import java.util.Date
+import java.util.{Date, TimeZone}
 
+import com.twitter.finagle.mysql
 import com.twitter.inject.domain.WrappedValue
-import com.typesafe.config.Config
-import io.getquill._
+import io.getquill.{PluralizedTableNames, _}
 import io.github.cactacea.backend.core.domain.enums._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import org.joda.time.DateTime
 
-class DatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config) {
+class DatabaseService(client: OperationType => mysql.Client with mysql.Transactions, timeZone: TimeZone) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), client, timeZone, timeZone) {
 
-  // java objects
+  def this(master: mysql.Client with mysql.Transactions, slave: mysql.Client with mysql.Transactions, timeZone: TimeZone) = {
+    this(_ match {
+      case OperationType.Read  => slave
+      case OperationType.Write => master
+    }, timeZone)
+  }
+
+  def this(client: mysql.Client with mysql.Transactions,timeZone: TimeZone) = {
+    this(_ => client, timeZone)
+  }
+
+//class DatabaseService(config: Config) extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), config) {
+
   implicit val datetimeDecode: MappedEncoding[Date, DateTime] = MappedEncoding[Date, DateTime] (date => new DateTime(date.getTime()))
   implicit val datetimeEncode: MappedEncoding[DateTime, Date] = MappedEncoding[DateTime, Date] (dateTime => dateTime.toDate)
 

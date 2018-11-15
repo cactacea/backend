@@ -5,7 +5,7 @@ import io.github.cactacea.backend.utils.validaters.Validations
 import io.swagger.annotations.ApiModelProperty
 
 case class PutSessionAccountName(
-                                  @ApiModelProperty(value = "Account name.")
+                                  @ApiModelProperty(value = "Account name.", required = true)
                                   @Size(min = 2, max = 30) name: String
                                 ) {
 

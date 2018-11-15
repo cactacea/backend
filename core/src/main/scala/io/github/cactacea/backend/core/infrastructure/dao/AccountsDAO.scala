@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{HashService}
+import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
@@ -200,12 +200,12 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
         accounts.map({ t =>
           val a = t._1
           val r = t._2
-          val b = blocksCount.filter(_.id == a.id).headOption.getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
+          val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
           val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
           val friendCount = a.friendCount - b.friendCount
           val followCount = a.followCount - b.followCount
           val followerCount = a.followerCount - b.followerCount
-          val na = a.copy(displayName = displayName, friendCount = friendCount, followCount = followCount, followerCount = followerCount)
+          val na = a.copy(displayName = displayName, friendCount = friendCount, followCount = followCount, followerCount = followerCount, feedsCount = a.feedsCount)
           (na, r)
         }).headOption
     })
@@ -247,54 +247,33 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
         accounts.map({ t =>
           val a = t._1
           val r = t._2
-          val b = blocksCount.filter(_.id == a.id).headOption
+          val b = blocksCount.find(_.id == a.id)
           val friendCount = a.friendCount - b.map(_.friendCount).getOrElse(0L)
           val followCount = a.followCount - b.map(_.followCount).getOrElse(0L)
           val followerCount = a.followerCount - b.map(_.followerCount).getOrElse(0L)
           val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
-          val na = a.copy(displayName = displayName, friendCount = friendCount, followCount = followCount, followerCount = followerCount)
+          val na = a.copy(displayName = displayName, friendCount = friendCount, followCount = followCount, followerCount = followerCount, feedsCount = a.feedsCount)
           (na, r)
         })
       })
 
   }
 
-  def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Boolean] = {
+  def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
-    _updateDisplayName(accountId, displayName, by).flatMap(_ match {
-      case true =>
-        Future.True
-      case false =>
-        _insertUserName(accountId, displayName, by)
-    })
-  }
-
-  private def _insertUserName(accountId: AccountId, userName: Option[String], by: AccountId): Future[Boolean] = {
     val q = quote {
       query[Relationships]
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.editedDisplayName -> lift(userName)
-        )
+          _.editedDisplayName -> lift(displayName)
+        ).onConflictUpdate((t, _) => t.editedDisplayName -> lift(displayName))
     }
-    run(q).map(_ == 1)
-  }
-
-  private def _updateDisplayName(accountId: AccountId, displayName: Option[String], by: AccountId): Future[Boolean] = {
-    val q = quote {
-      query[Relationships]
-        .filter(_.accountId     == lift(accountId))
-        .filter(_.by            == lift(by))
-        .update(
-          _.editedDisplayName   -> lift(displayName)
-        )
-    }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
 
-  def signOut(sessionId: SessionId): Future[Boolean] = {
+  def signOut(sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val signedOutAt: Option[Long] = Some(timeService.currentTimeMillis())
     val q = quote {
@@ -304,7 +283,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
           _.signedOutAt   -> lift(signedOutAt)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
 }

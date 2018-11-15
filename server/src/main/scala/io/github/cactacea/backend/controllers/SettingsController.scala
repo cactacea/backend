@@ -24,7 +24,7 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
   prefix(apiPrefix) {
 
     getWithPermission("/session/push_notification") (Permissions.basic) { o =>
-      o.summary("Get this push notification settings")
+      o.summary("Get push notification settings")
         .tag(tagName)
         .operationId("findSessionPushNotificationSettings")
         .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
@@ -38,7 +38,7 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
       o.summary("Update ths push notification settings")
         .tag(tagName)
         .operationId("updateSessionPushNotificationSettings")
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutNotificationSetting =>
       settingsService.updatePushNotificationSettings(
         request.groupInvitation,
@@ -48,7 +48,7 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.directMessage,
         request.showMessage,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/session/push_token") (Permissions.basic) { o =>
@@ -56,13 +56,13 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .operationId("updateSessionPushToken")
         .request[PostDevicePushToken]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
     } { request: PostDevicePushToken =>
       deviceTokenService.update(
         request.pushToken,
         SessionContext.id,
         SessionContext.udid
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     postWithPermission("/session/status") (Permissions.basic) { o =>
@@ -70,13 +70,13 @@ class SettingsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(tagName)
         .operationId("updateSessionDeviceStatus")
         .request[PostActiveStatus]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
     } { request: PostActiveStatus =>
       deviceTokenService.update(
         request.status,
         SessionContext.id,
         SessionContext.udid
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

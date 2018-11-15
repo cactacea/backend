@@ -44,7 +44,7 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     run(q)
   }
 
-  def updateUnread(notificationIds: List[NotificationId], sessionId: SessionId): Future[Boolean] = {
+  def updateUnread(notificationIds: List[NotificationId], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Notifications]
@@ -52,7 +52,7 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
         .filter(n => liftQuery(notificationIds).contains(n.id))
         .update(_.unread -> false)
     }
-    run(q).map(_ == notificationIds.size)
+    run(q).map(_ => Unit)
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Notifications, Accounts, Option[Relationships])]] = {

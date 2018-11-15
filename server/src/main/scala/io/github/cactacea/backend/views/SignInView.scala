@@ -1,7 +1,6 @@
 package io.github.cactacea.backend.views
 
-import com.twitter.finatra.response.Mustache
-
+import com.twitter.finatra.http.response.Mustache
 
 @Mustache("signIn")
 case class SignInView (

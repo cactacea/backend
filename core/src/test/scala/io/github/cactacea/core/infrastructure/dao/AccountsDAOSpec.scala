@@ -1,8 +1,6 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.inject.Logging
-import com.twitter.util.Await
-import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
@@ -195,6 +193,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     assert(account1Result.get._1.followCount == 1)
     assert(account1Result.get._1.followerCount == 3)
     assert(account1Result.get._1.friendCount == 2)
+    assert(account1Result.get._1.feedsCount == 0) // TODO : Test me
 
     val user = account1Result.get._1
     assert(user.id == account1.id)

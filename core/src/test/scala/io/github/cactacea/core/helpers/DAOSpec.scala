@@ -18,7 +18,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   override val injector =
     TestInjector(
       modules = Seq(
-        DatabaseProviderModule,
+        DatabaseModule,
         DefaultHashModule
       )
     ).create

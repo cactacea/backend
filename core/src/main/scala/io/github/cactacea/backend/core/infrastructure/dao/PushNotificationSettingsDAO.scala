@@ -11,7 +11,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(groupInvitation: Boolean, followerFeed: Boolean, feedComment:Boolean, groupMessage: Boolean, direcrtMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def create(groupInvitation: Boolean, followerFeed: Boolean, feedComment:Boolean, groupMessage: Boolean, direcrtMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[PushNotificationSettings].insert(
@@ -24,10 +24,10 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
         _.showMessage         -> lift(showMessage)
       )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def update(groupInvitation: Boolean, followerFeed: Boolean, feedComment:Boolean, groupMessage: Boolean, directMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Boolean] = {
+  def update(groupInvitation: Boolean, followerFeed: Boolean, feedComment:Boolean, groupMessage: Boolean, directMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[PushNotificationSettings]
@@ -41,7 +41,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
           _.showMessage         -> lift(showMessage)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   def find(sessionId: SessionId): Future[Option[PushNotificationSettings]] = {

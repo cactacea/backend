@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty
 
 
 case class GetFollowers (
-                          @ApiModelProperty(value = "Account Identifier.")
+                          @ApiModelProperty(value = "Account Identifier.", required = true)
                           @RouteParam id: AccountId,
 
                           @ApiModelProperty(value = "Filters followers which started on since or later.")

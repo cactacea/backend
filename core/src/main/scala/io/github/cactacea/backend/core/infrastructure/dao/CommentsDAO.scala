@@ -19,7 +19,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     for {
       id <- _insertComments(feedId, message, sessionId)
-      _ <- _updateCommentCount(feedId)
+      _ <- _updateCommentCount(feedId, 1L)
     } yield (id)
   }
 
@@ -44,58 +44,58 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  private def _updateCommentCount(feedId: FeedId): Future[Boolean] = {
+  private def _updateCommentCount(feedId: FeedId, count: Long): Future[Unit] = {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
         .update(
-          a => a.commentCount -> (a.commentCount + 1)
+          a => a.commentCount -> (a.commentCount + lift(count))
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def delete(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     _findFeedId(commentId).flatMap(_ match {
       case Some(feedId) =>
         for {
-          _ <- _updateUnCommentCount(feedId)
+          _ <- _updateCommentCount(feedId, -1L)
           _ <- _deleteCommentReports(commentId)
           _ <- _deleteCommentLikes(commentId)
-          _ <- _deleteComments(commentId, by)
-        } yield (true)
+          r <- _deleteComments(commentId, by)
+        } yield (r)
       case None =>
-        Future.False
+        Future.Unit
     })
   }
 
-  private def _deleteComments(commentId: CommentId, by: AccountId): Future[Boolean] = {
+  private def _deleteComments(commentId: CommentId, by: AccountId): Future[Unit] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
         .filter(_.by == lift(by))
         .delete
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  private def _deleteCommentLikes(commentId: CommentId): Future[Long] = {
+  private def _deleteCommentLikes(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[CommentLikes]
         .filter(_.commentId == lift(commentId))
         .delete
     }
-    run(q)
+    run(q).map(_ => Unit)
   }
 
-  private def _deleteCommentReports(commentId: CommentId): Future[Long] = {
+  private def _deleteCommentReports(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[CommentReports]
         .filter(_.commentId == lift(commentId))
         .delete
     }
-    run(q)
+    run(q).map(_ => Unit)
   }
 
   private def _findFeedId(commentId: CommentId): Future[Option[FeedId]] = {
@@ -107,24 +107,13 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  private def _updateUnCommentCount(feedId: FeedId): Future[Boolean] = {
-    val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
-        .update(
-          a => a.commentCount -> (a.commentCount - 1)
-        )
-    }
-    run(q).map(_ == 1)
-  }
-
-  def delete(feedId: FeedId) = {
+  def delete(feedId: FeedId): Future[Unit] = {
     val q = quote {
       query[Comments]
         .filter(_.feedId == lift(feedId))
         .delete
     }
-    run(q).map(_ => true)
+    run(q).map(_ => Unit)
   }
 
   def exist(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
@@ -203,10 +192,6 @@ class CommentsDAO @Inject()(db: DatabaseService) {
           (comment.copy(likeCount = comment.likeCount - b.getOrElse(0L)), account, relationship)
         })
       })
-
-//
-//      // TODO : Fix me
-//    v.map(_.sortWith(_._1.id.value > _._1.id.value))
   }
 
   def find(commentId: CommentId): Future[Option[Comments]] = {
@@ -217,6 +202,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
+  // TODO
   def findUnNotified(commentId: CommentId): Future[Option[Comments]] = {
     val q = quote {
       query[Comments]
@@ -226,13 +212,13 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def updateNotified(commentId: CommentId): Future[Boolean] = {
+  def updateNotified(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
         .update(_.notified -> true)
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
 }

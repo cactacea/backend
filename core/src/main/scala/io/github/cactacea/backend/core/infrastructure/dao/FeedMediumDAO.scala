@@ -12,7 +12,7 @@ class FeedMediumDAO @Inject()(db: DatabaseService) {
   import db._
 
   def findAll(feedIds: List[FeedId]): Future[List[(FeedId, Mediums)]] = {
-    if (feedIds.size == 0) {
+    if (feedIds.isEmpty) {
       Future.value(List[(FeedId, Mediums)]())
     } else {
       val q = quote {
@@ -25,26 +25,26 @@ class FeedMediumDAO @Inject()(db: DatabaseService) {
     }
   }
 
-  def create(feedId: FeedId, mediumIdsOpt: Option[List[MediumId]]) = {
+  def create(feedId: FeedId, mediumIdsOpt: Option[List[MediumId]]): Future[Unit] = {
     mediumIdsOpt match {
       case Some(mediumIds) =>
         val feedImages = mediumIds.zipWithIndex.map({case (mediumId, index) => FeedMediums(feedId, mediumId, index)})
         val q = quote {
           liftQuery(feedImages).foreach(c => query[FeedMediums].insert(c))
         }
-        run(q).map(_ => true)
+        run(q).map(_ => Unit)
       case None =>
-        Future.True
+        Future.Unit
     }
   }
 
-  def delete(feedId: FeedId) = {
+  def delete(feedId: FeedId): Future[Unit] = {
     val q = quote {
       query[FeedMediums]
         .filter(_.feedId == lift(feedId))
         .delete
     }
-    run(q).map(_ >= 0)
+    run(q).map(_ => Unit)
   }
 
 }

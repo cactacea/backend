@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty
 
 
 case class GetAccountGroups(
-                             @ApiModelProperty(value = "Account identifier.")
+                             @ApiModelProperty(value = "Account identifier.", required = true)
                              @RouteParam id: AccountId,
 
                              @ApiModelProperty(value = "Filters groups which started on since or later.")

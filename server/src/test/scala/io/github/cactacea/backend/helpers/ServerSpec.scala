@@ -5,19 +5,20 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
+import io.github.cactacea.backend.CactaceaServer
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.util.configs.Config
 
 class ServerSpec extends FeatureTest {
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new TestServer
+    twitterServer = new CactaceaServer
   )
 
   override val injector =
     TestInjector(
       modules = Seq(
-        DatabaseProviderModule,
+        DatabaseModule,
         DefaultInjectionModule,
         DefaultNotificationModule,
         DefaultNotificationMessagesModule,
@@ -37,7 +38,7 @@ class ServerSpec extends FeatureTest {
     server.httpPost(
       path = root + path,
       headers = Map(
-        "X-API-KEY" -> Config.auth.apiKeys.head._2,
+        Config.auth.headerNames.apiKey -> Config.auth.keys.all.head._2,
         "X-AUTHORIZATION" -> accessToken
       ),
       postBody = postBody
@@ -47,7 +48,7 @@ class ServerSpec extends FeatureTest {
   def delete(path: String, accessToken: String): Response = server.httpDelete(
     path = root + path,
     headers = Map(
-      "X-API-KEY" -> Config.auth.apiKeys.head._2,
+      Config.auth.headerNames.apiKey -> Config.auth.keys.all.head._2,
       "X-AUTHORIZATION" -> accessToken
     )
   )
@@ -56,7 +57,7 @@ class ServerSpec extends FeatureTest {
     server.httpPost(
       path = root + path,
       headers = Map(
-        "X-API-KEY" -> Config.auth.apiKeys.head._2,
+        Config.auth.headerNames.apiKey -> Config.auth.keys.all.head._2,
         "User-Agent" -> "ios"
       ),
       postBody = postBody
@@ -67,7 +68,7 @@ class ServerSpec extends FeatureTest {
     server.httpGet(
       path = root + path,
       headers = Map(
-        "X-API-KEY" -> Config.auth.apiKeys.head._2,
+        Config.auth.headerNames.apiKey -> Config.auth.keys.all.head._2,
         "User-Agent" -> "ios"
       )
     )
@@ -77,7 +78,7 @@ class ServerSpec extends FeatureTest {
     server.httpGet(
       path = root + path,
       headers = Map(
-        "X-API-KEY" -> Config.auth.apiKeys.head._2,
+        Config.auth.headerNames.apiKey -> Config.auth.keys.all.head._2,
         "X-AUTHORIZATION" -> accessToken
       )
     )

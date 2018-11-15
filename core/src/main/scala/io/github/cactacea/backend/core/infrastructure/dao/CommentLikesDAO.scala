@@ -14,9 +14,9 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
 
   @Inject private var timeService: TimeService = _
 
-  def create(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
-      id <- _insertCommentLikes(commentId, sessionId)
+      _ <- _insertCommentLikes(commentId, sessionId)
       r <- _updateLikeCount(commentId)
     } yield (r)
   }
@@ -35,7 +35,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  private def _updateLikeCount(commentId: CommentId): Future[Boolean] = {
+  private def _updateLikeCount(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
@@ -43,17 +43,17 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
           a => a.likeCount -> (a.likeCount + 1)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  def delete(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- _deleteCommentLikes(commentId, sessionId)
       r <- _updateUnlikeCount(commentId)
     } yield (r)
   }
 
-  private def _deleteCommentLikes(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  private def _deleteCommentLikes(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[CommentLikes]
@@ -61,10 +61,10 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
         .filter(_.commentId == lift(commentId))
         .delete
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
-  private def _updateUnlikeCount(commentId: CommentId): Future[Boolean] = {
+  private def _updateUnlikeCount(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
@@ -72,7 +72,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
           a => a.likeCount -> (a.likeCount - 1)
         )
     }
-    run(q).map(_ == 1)
+    run(q).map(_ => Unit)
   }
 
   def exist(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {

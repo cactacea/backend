@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
 import io.github.cactacea.backend.core.helpers.RepositorySpec
@@ -82,8 +81,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
     val session = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
-    val result = execute(sessionsRepository.signOut(udid, session.id.toSessionId))
-    assert(result == true)
+    execute(sessionsRepository.signOut(udid, session.id.toSessionId))
 
   }
 
@@ -97,7 +95,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val session = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
 
     val expired = timeService.currentTimeMillis()
-    assert(execute(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired)) == true)
+    execute(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired))
 
     // Session Timeout
     execute(sessionsRepository.signOut(udid, session.id.toSessionId))

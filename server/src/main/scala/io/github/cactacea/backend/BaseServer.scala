@@ -5,16 +5,10 @@ import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
-import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
 
 trait BaseServer extends HttpServer {
 
-  override val disableAdminHttpServer = false
-  override val defaultFinatraHttpPort = ":9000"
-  override val defaultAdminPort = 9001
-  override val defaultHttpServerName = "Backend Server"
-
-  protected  def databaseModule = DatabaseProviderModule
+  protected  def databaseModule = DatabaseModule
 
   def injectionModule: TwitterModule =  DefaultInjectionModule
   def fanOutModule: TwitterModule = DefaultNotificationModule

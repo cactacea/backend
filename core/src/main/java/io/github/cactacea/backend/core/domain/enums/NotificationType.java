@@ -1,7 +1,5 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public enum NotificationType {
     operator((byte)0),
     groupInvitation((byte)1),

@@ -24,7 +24,7 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
   prefix(apiPrefix) {
 
     getWithPermission("/accounts/:id/follows")(Permissions.followerList) { o =>
-      o.summary("Get accounts list this user followed")
+      o.summary("Get accounts list a account followed")
         .tag(followsTag)
         .operationId("findFollows")
         .request[GetFollows]
@@ -41,33 +41,33 @@ class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Stri
     }
 
     postWithPermission("/accounts/:id/follows")(Permissions.relationships) { o =>
-      o.summary("Follow this account")
+      o.summary("Follow a account")
         .tag(followsTag)
         .operationId("follow")
         .request[PostFollow]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyFollowed))
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: PostFollow =>
       followsService.create(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
     deleteWithPermission("/accounts/:id/follows")(Permissions.relationships) { o =>
-      o.summary("UnFollow this account")
+      o.summary("UnFollow a account")
         .tag(followsTag)
         .operationId("unfollow")
         .request[DeleteFollow]
-        .responseWith(Status.NoContent.code, successfulMessage)
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNotFollowed))
         .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
     } { request: DeleteFollow =>
       followsService.delete(
         request.id,
         SessionContext.id
-      ).map(_ => response.noContent)
+      ).map(_ => response.ok)
     }
 
   }

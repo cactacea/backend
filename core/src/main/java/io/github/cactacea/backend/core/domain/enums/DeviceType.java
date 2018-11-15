@@ -1,7 +1,5 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public enum DeviceType {
     ios((byte)0),
     android((byte)1),

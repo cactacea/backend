@@ -5,6 +5,7 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.repositories.SessionsRepository
+import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.backend.utils.auth.{AuthTokenGenerator, SessionContext}
 import io.github.cactacea.backend.utils.oauth.Permissions
 
@@ -16,7 +17,7 @@ class AuthFilter @Inject()(sessionsRepository: SessionsRepository, authTokenGene
       case true =>
         service(request)
       case false =>
-        authTokenGenerator.parse(request.headerMap.get("X-AUTHORIZATION")).flatMap({ auth =>
+        authTokenGenerator.parse(request.headerMap.get(Config.auth.headerNames.authorizationKey)).flatMap({ auth =>
           val expiresIn = auth.expiresIn
           sessionsRepository.checkAccountStatus(auth.sessionId, expiresIn).flatMap({ _ =>
             SessionContext.setAuthenticated(true)
