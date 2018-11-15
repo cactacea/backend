@@ -118,12 +118,12 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
       query[GroupInvitations]
         .filter(group_invitations => group_invitations.accountId        == lift(accountId))
         .filter(group_invitations => group_invitations.invitationStatus  == lift(GroupInvitationStatusType.noResponded))
-        .filter(group_invitations => (
+        .filter(group_invitations =>
           query[Groups]
             .filter(_.id          == group_invitations.groupId)
             .filter(_.by          == lift(by))
             .filter(_.privacyType == lift(groupPrivacyType))
-            .nonEmpty)
+            .nonEmpty
         )
         .delete
     }

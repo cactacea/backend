@@ -13,14 +13,14 @@ class AuthDAO @Inject()(db: DatabaseService) {
   def findClient(clientId: String): Future[Option[Clients]] = {
     val grantType = "authorization_code"
     val q = quote {
-      (for {
+      for {
         oc <- query[Clients]
           .filter(_.id == lift(clientId))
         ocg <- query[ClientGrantTypes]
           .filter(_.clientId == oc.id)
         og <- query[GrantTypes]
           .filter(_.id == ocg.grantTypeId).filter(_.grantType == lift(grantType))
-      } yield (oc))
+      } yield (oc)
     }
     run(q).map(_.headOption)
   }

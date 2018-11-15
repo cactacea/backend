@@ -24,7 +24,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     for {
       _ <- _deleteFriend(accountId, sessionId)
       r <- _updateAccount(-1L, sessionId)
-      _ <- _updateRelationship(accountId, false, sessionId)
+      _ <- _updateRelationship(accountId, friend = false, sessionId)
     } yield (r)
   }
 

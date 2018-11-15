@@ -33,7 +33,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
       val name = editedDisplayName.getOrElse(displayName).getOrElse(accountName)
       val token = pushToken.get
-      PushNotifications(accountId, name, token, false)
+      PushNotifications(accountId, name, token, showContent = false)
     }}))
 
   }
@@ -51,7 +51,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
       val name = editedDisplayName.getOrElse(displayName).getOrElse(accountName)
       val token = pushToken.get
-      PushNotifications(accountId, name, token, false)
+      PushNotifications(accountId, name, token, showContent = false)
     }}))
   }
 
@@ -68,7 +68,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
       val name = editedDisplayName.getOrElse(displayName).getOrElse(accountName)
       val token = pushToken.get
-      PushNotifications(accountId, name, token, false)
+      PushNotifications(accountId, name, token, showContent = false)
     }}))
   }
 
@@ -112,7 +112,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
       run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
         val name = editedDisplayName.getOrElse(displayName).getOrElse(accountName)
         val token = pushToken.get
-        PushNotifications(accountId, name, token, false)
+        PushNotifications(accountId, name, token, showContent = false)
       }}))
 
     } else {
@@ -131,7 +131,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
       run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
         val name = editedDisplayName.getOrElse(displayName).getOrElse(accountName)
         val token = pushToken.get
-        PushNotifications(accountId, name, token, false)
+        PushNotifications(accountId, name, token, showContent = false)
       }}))
 
     }

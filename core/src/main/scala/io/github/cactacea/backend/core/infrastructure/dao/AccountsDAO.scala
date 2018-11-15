@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{HashService}
+import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
@@ -200,7 +200,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
         accounts.map({ t =>
           val a = t._1
           val r = t._2
-          val b = blocksCount.filter(_.id == a.id).headOption.getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
+          val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
           val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
           val friendCount = a.friendCount - b.friendCount
           val followCount = a.followCount - b.followCount
@@ -247,7 +247,7 @@ class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
         accounts.map({ t =>
           val a = t._1
           val r = t._2
-          val b = blocksCount.filter(_.id == a.id).headOption
+          val b = blocksCount.find(_.id == a.id)
           val friendCount = a.friendCount - b.map(_.friendCount).getOrElse(0L)
           val followCount = a.followCount - b.map(_.followCount).getOrElse(0L)
           val followerCount = a.followerCount - b.map(_.followerCount).getOrElse(0L)

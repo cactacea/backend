@@ -13,7 +13,7 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
   import db._
 
   def findRelationshipBlocks(accountIds: List[AccountId], sessionId: SessionId): Future[List[RelationshipBlocksCount]] = {
-    if (accountIds.size == 0) {
+    if (accountIds.isEmpty) {
       return Future.value(List[RelationshipBlocksCount]())
     }
     val ids = accountIds.mkString(",")
