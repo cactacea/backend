@@ -60,7 +60,7 @@ lazy val demo = (project in file("demo"))
 lazy val commonSettings = Seq(
   organization := "io.github.cactacea",
   scalaVersion  := "2.12.7",
-  crossScalaVersions := Seq("2.11.12", "2.12.7"),
+//  crossScalaVersions := Seq("2.11.12", "2.12.7"),
   testOptions in Test += Tests.Argument("-oI"),
   concurrentRestrictions += Tags.limit(Tags.Test, 1),
   parallelExecution := false,
@@ -135,7 +135,7 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 releaseVersionFile := baseDirectory.value / "version.sbt"
 
-releaseCrossBuild := true
+//releaseCrossBuild := true
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
