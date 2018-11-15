@@ -8,7 +8,7 @@
 
 ### Getting Started
 
-To get started, add a dependency on filhouette depending if you are building a server based on Finatra.
+To get started, add a dependency on cactacea depending.
 
 ```
 "io.github.cactacea" %% "server" % "18.11.2"
