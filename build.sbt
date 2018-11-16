@@ -136,7 +136,6 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 releaseVersionFile := baseDirectory.value / "version.sbt"
 
 //releaseCrossBuild := true
-
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
