@@ -5,7 +5,7 @@ object Dependencies {
 
   val versions = new {
     val twitter = "18.11.0"
-    val cactacea = "18.11.2"
+    val cactacea = "18.11.3"
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
