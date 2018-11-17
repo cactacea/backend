@@ -92,7 +92,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
       ).map(_ => response.ok)
     }
 
-    getWithPermission("/account/:account_name")(Permissions.basic) { o =>
+    getWithPermission("/account/:accountName")(Permissions.basic) { o =>
       o.summary("Confirm account name exist")
         .tag(accountsTag)
         .operationId("existAccountName")
@@ -174,7 +174,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
 
-    postWithPermission("/accounts/:account_id/groups/:group_id/join")(Permissions.groups) { o =>
+    postWithPermission("/accounts/:accountId/groups/:groupId/join")(Permissions.groups) { o =>
       o.summary("Join a account in a group")
         .tag(groupsTag)
         .operationId("joinAccountToGroup")
@@ -189,7 +189,7 @@ class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/accounts/:account_id/groups/:group_id/leave")(Permissions.groups) { o =>
+    postWithPermission("/accounts/:accountId/groups/:groupId/leave")(Permissions.groups) { o =>
       o.summary("Leave a account from a group")
         .tag(groupsTag)
         .operationId("leaveAccountFromGroup")
