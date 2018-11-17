@@ -64,7 +64,7 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"BackendServerSpec$i", s"Backend_Server_Spec_99$i", uuid, Some("ios"))
-        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?accountName=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 
@@ -87,13 +87,13 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"BackendServerSpec$i", s"Backend_Server_Spec_99$i", uuid, Some("ios"))
-        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?accountName=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 
         // Get Accounts
         val a = GetAccounts(Some("BackendServerSpec"), None, None, None)
-        val b = get(s"/accounts${a.displayName.map(name => "?display_name=" + name).getOrElse("")}", signInAuth.accessToken)
+        val b = get(s"/accounts${a.displayName.map(name => "?displayName=" + name).getOrElse("")}", signInAuth.accessToken)
         val accounts = mapper.parse[List[Account]](b.getContentString())
         assert(accounts.size == (accountsCount - 1))
 
@@ -124,7 +124,7 @@ class BackendServerSpec extends ServerSpec {
 
         // SignIn
         val getSignIn = GetSignIn(s"BackendServerSpec$i", s"Backend_Server_Spec_99$i", uuid, Some("ios"))
-        val signInRes = get(s"/sessions?name=${getSignIn.name}&password=${getSignIn.password}&udid=${getSignIn.udid}")
+        val signInRes = get(s"/sessions?accountName=${getSignIn.accountName}&password=${getSignIn.password}&udid=${getSignIn.udid}")
         val signInAuth = mapper.parse[Authentication](signInRes.getContentString())
         assert(signInRes.statusCode == Status.Ok.code)
 

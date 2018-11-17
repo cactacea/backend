@@ -2,7 +2,6 @@ package io.github.cactacea.backend.helpers
 
 import com.twitter.finagle.http.Response
 import com.twitter.finatra.http.EmbeddedHttpServer
-import com.twitter.finatra.json.modules.FinatraJacksonModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.CactaceaServer
@@ -28,7 +27,7 @@ class ServerSpec extends FeatureTest {
         DefaultSubScribeModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,
-        FinatraJacksonModule
+        DefaultJacksonModule
       )
     ).create
 

@@ -44,12 +44,13 @@ lazy val core = (project in file("core"))
 lazy val demo = (project in file("demo"))
   .settings(
     mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp"),
-    version in Docker := "latest",
+    version in Docker := ( version in ThisBuild ).value,
     maintainer in Docker := "Cactacea",
     packageName in Docker := "backend",
     dockerBaseImage := "adoptopenjdk/openjdk8",
     dockerExposedPorts := Seq(9000, 9001),
-    dockerRepository := Some("cactacea")
+    dockerRepository := Some("cactacea"),
+    dockerUpdateLatest := true
   )
   .settings(commonSettings)
   .settings(commonResolverSetting)
