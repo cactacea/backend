@@ -10,6 +10,8 @@ trait BaseServer extends HttpServer {
 
   protected  def databaseModule = DatabaseModule
 
+  override def jacksonModule = DefaultJacksonModule
+
   def injectionModule: TwitterModule =  DefaultInjectionModule
   def fanOutModule: TwitterModule = DefaultNotificationModule
   def notificationMessagesModule: TwitterModule = DefaultNotificationMessagesModule

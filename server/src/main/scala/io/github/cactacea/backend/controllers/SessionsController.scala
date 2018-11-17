@@ -56,7 +56,7 @@ class SessionsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
 
     } { request: GetSignIn =>
       sessionService.signIn(
-        request.name,
+        request.accountName,
         request.password,
         request.udid,
         request.userAgent,

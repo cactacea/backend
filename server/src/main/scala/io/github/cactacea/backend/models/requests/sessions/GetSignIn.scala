@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty
 
 case class GetSignIn(
                       @ApiModelProperty(value = "Account name.", required = true)
-                      @QueryParam name: String,
+                      @QueryParam accountName: String,
 
                       @ApiModelProperty(value = "Account password.", required = true)
                       @QueryParam password: String,
