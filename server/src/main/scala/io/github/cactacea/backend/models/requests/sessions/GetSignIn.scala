@@ -13,6 +13,7 @@ case class GetSignIn(
                       @ApiModelProperty(value = "Unique Device Identifier.", required = true)
                       @QueryParam udid: String,
 
+                      @ApiModelProperty(hidden = true)
                       @Header("user-agent") userAgent: Option[String]
 
                     )
