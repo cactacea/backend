@@ -13,7 +13,7 @@ case class GetGroups(
                       @QueryParam invitationOnly: Option[Boolean],
 
                       @ApiModelProperty(value = "Filters groups which can join in.")
-                      @QueryParam privacyType: Option[GroupPrivacyType],
+                      @QueryParam groupPrivacyType: Option[GroupPrivacyType],
 
                       @ApiModelProperty(value = "Filters groups which started on since or later.")
                       @QueryParam since: Option[Long],
