@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.util.responses.BadRequest
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountTerminated, InvalidAccountNameOrPassword}
 import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.models.responses.Authentication
@@ -52,7 +52,7 @@ class SessionsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("signIn")
         .request[GetSignIn]
         .responseWith[Authentication](Status.Ok.code, successfulMessage)
-        .responseWithArray[BadRequest](Status.BadRequest, Array(InvalidAccountNameOrPassword, AccountTerminated))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(InvalidAccountNameOrPassword, AccountTerminated))))
 
     } { request: GetSignIn =>
       sessionService.signIn(

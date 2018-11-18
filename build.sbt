@@ -146,10 +146,10 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   tagRelease,
   ReleaseStep(action = Command.process("publish", _)),
+  ReleaseStep(action = Command.process("demo/docker:publish", _)),
   setNextVersion,
   commitNextVersion,
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
-  pushChanges,
-  ReleaseStep(action = Command.process("demo/docker:publish", _))
+  pushChanges
 
 )

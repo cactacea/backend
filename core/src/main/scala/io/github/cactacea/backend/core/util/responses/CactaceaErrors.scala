@@ -2,6 +2,8 @@ package io.github.cactacea.backend.core.util.responses
 
 import io.swagger.annotations.ApiModelProperty
 
+case class CactaceaErrors(errors: Seq[CactaceaError])
+
 object CactaceaErrors {
 
   final val c40000 = "40000"
