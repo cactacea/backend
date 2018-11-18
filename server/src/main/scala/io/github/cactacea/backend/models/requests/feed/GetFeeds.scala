@@ -13,7 +13,7 @@ case class GetFeeds(
                      @QueryParam offset: Option[Int],
 
                      @ApiModelProperty(value = "Feed privacy type. By default the value is everyone.")
-                     privacyType : Option[FeedPrivacyType],
+                     @QueryParam feedPrivacyType : Option[FeedPrivacyType],
 
                      @ApiModelProperty(value = "Maximum number of feeds returned on one result page. By default the value is 20 entries. The page size can never be larger than 50.")
                      @QueryParam @Max(50) count: Option[Int]

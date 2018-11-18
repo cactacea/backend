@@ -35,7 +35,7 @@ class GroupsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
       groupsService.find(
         request.groupName,
         request.invitationOnly,
-        request.privacyType,
+        request.groupPrivacyType,
         request.since,
         request.offset,
         request.count,

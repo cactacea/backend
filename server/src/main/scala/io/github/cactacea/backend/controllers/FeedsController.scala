@@ -36,7 +36,7 @@ class FeedsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, 
         request.since,
         request.offset,
         request.count,
-        request.privacyType,
+        request.feedPrivacyType,
         SessionContext.id
       )
     }
