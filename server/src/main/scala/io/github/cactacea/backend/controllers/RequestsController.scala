@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.{FriendRequestsService, FriendsService}
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.account.{DeleteFriendRequest, PostFriendRequest}
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.backend.swagger.CactaceaController
@@ -29,8 +29,8 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("createFriendRequest")
         .request[PostFriendRequest]
         .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
-        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyRequested))
-        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyRequested))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
 
     } { request: PostFriendRequest =>
       friendRequestsService.create(
@@ -45,7 +45,7 @@ class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("deleteRequest")
         .request[DeleteFriendRequest]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound, FriendRequestNotFound))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, FriendRequestNotFound))))
 
     } { request: DeleteFriendRequest =>
       friendRequestsService.delete(

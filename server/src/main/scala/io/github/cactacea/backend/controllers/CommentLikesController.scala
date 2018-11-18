@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.CommentLikesService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.comment._
 import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
@@ -28,7 +28,7 @@ class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: S
         .operationId("findCommentLikes")
         .request[GetCommentLikes]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-        .responseWithArray[NotFound](Status.NotFound, Array(CommentNotFound))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Array(CommentNotFound))))
     } { request: GetCommentLikes =>
       commentLikesService.findAccounts(
         request.id,
@@ -45,8 +45,8 @@ class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: S
         .operationId("likeComment")
         .request[PostCommentLike]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWithArray[BadRequest](Status.BadRequest, Array(CommentAlreadyLiked))
-        .responseWithArray[NotFound](Status.NotFound, Array(CommentNotFound))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CommentAlreadyLiked))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(CommentNotFound))))
     } { request: PostCommentLike =>
       commentLikesService.create(
         request.id,
@@ -60,8 +60,8 @@ class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: S
         .operationId("unlikeComment")
         .request[DeleteCommentLike]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWithArray[BadRequest](Status.BadRequest, Array(CommentNotLiked))
-        .responseWithArray[NotFound](Status.NotFound, Array(CommentNotFound))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CommentNotLiked))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(CommentNotFound))))
     } { request: DeleteCommentLike =>
       commentLikesService.delete(
         request.id,

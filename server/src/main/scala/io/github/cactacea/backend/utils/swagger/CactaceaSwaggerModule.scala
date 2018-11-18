@@ -26,9 +26,7 @@ object CactaceaSwaggerModule extends SwaggerModule {
     val swaggerDefine = CactaceaSwagger.info(info)
 
     // Model defines
-    swaggerDefine.addDefinition("NotFound", errorResponseScheme("NotFound"))
-    swaggerDefine.addDefinition("BadRequest", errorResponseScheme("BadRequest"))
-    swaggerDefine.addDefinition("Unauthorized", errorResponseScheme("Unauthorized"))
+    swaggerDefine.addDefinition("CactaceaError", errorResponseScheme("CactaceaError"))
 
     // Tags
     swaggerDefine.addTag(new Tag().name("Accounts").description("Manage accounts"))

@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.FriendsService
-import io.github.cactacea.backend.core.util.responses.BadRequest
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotFriend
 import io.github.cactacea.backend.models.requests.account.DeleteFriend
 import io.github.cactacea.backend.swagger.CactaceaController
@@ -27,7 +27,7 @@ class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .operationId("deleteFriend")
         .request[DeleteFriend]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountNotFriend))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotFriend))))
 
     } { request: DeleteFriend =>
       friendsService.delete(

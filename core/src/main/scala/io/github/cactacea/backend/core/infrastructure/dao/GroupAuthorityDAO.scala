@@ -6,8 +6,8 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{AccountGroups, Groups, Relationships}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaError
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class GroupAuthorityDAO @Inject()(db: DatabaseService) {

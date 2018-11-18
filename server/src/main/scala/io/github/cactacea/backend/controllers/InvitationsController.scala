@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.GroupInvitationsService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount, PostInvitationAccounts}
 import io.github.cactacea.backend.models.requests.group.{PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
@@ -29,8 +29,8 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .operationId("acceptGroupInvitation")
         .request[PostAcceptInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
-        .responseWithArray[BadRequest](Status.BadRequest, Array(AccountAlreadyJoined, AuthorityNotFound))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyJoined, AuthorityNotFound))))
     } { request: PostAcceptInvitation =>
       invitationService.accept(
         request.id,
@@ -44,7 +44,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .operationId("rejectGroupInvitation")
         .request[PostRejectInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWithArray[NotFound](Status.NotFound, Array(GroupInvitationNotFound))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupInvitationNotFound))))
     } { request: PostRejectInvitation =>
       invitationService.reject(
         request.id,
@@ -58,7 +58,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .operationId("createGroupInvitationToAccounts")
         .request[PostInvitationAccounts]
         .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
-        .responseWithArray[NotFound](Status.NotFound, Array(GroupNotFound))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
     } { request: PostInvitationAccounts =>
       invitationService.create(
         request.accountIds.toList,
@@ -73,7 +73,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         .operationId("createGroupInvitationToAccount")
         .request[PostInvitationAccount]
         .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
-        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound, GroupNotFound))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
     }  { request: PostInvitationAccount =>
       invitationService.create(
         request.accountId,

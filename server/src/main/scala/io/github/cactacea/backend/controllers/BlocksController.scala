@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.BlocksService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.core.util.responses.{BadRequest, NotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
 import io.github.cactacea.backend.swagger.CactaceaController
@@ -44,8 +44,8 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .operationId("block")
         .request[PostBlock]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWithArray[BadRequest](Status.BadRequest, Array(CanNotSpecifyMyself, AccountAlreadyBlocked))
-        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CanNotSpecifyMyself, AccountAlreadyBlocked))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: PostBlock =>
       blocksService.create(
         request.id,
@@ -59,8 +59,8 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .operationId("unblock")
         .request[DeleteBlock]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWithArray[BadRequest](Status.BadRequest, Array(CanNotSpecifyMyself, AccountNotBlocked))
-        .responseWithArray[NotFound](Status.NotFound, Array(AccountNotFound))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CanNotSpecifyMyself, AccountNotBlocked))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: DeleteBlock =>
       blocksService.delete(
         request.id,

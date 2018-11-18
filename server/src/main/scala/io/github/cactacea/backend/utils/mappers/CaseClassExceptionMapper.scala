@@ -34,7 +34,7 @@ class CaseClassExceptionMapper @Inject()(response: ResponseBuilder)
         case Unknown                        => CactaceaErrors.Unknown(s"${error.getMessage()}")
       }
     })
-    Errors(errors)
+    CactaceaErrors(errors)
   }
 }
 
