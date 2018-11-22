@@ -1,7 +1,8 @@
 # Cactacea
-
-[![Build Status](https://travis-ci.org/cactacea/backend.svg?branch=master)](https://travis-ci.org/cactacea/backend)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/server_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/server_2.12)
+[![](https://images.microbadger.com/badges/version/cactacea/backend.svg)](https://microbadger.com/images/cactacea/backend "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/cactacea/backend.svg)](https://microbadger.com/images/cactacea/backend "Get your own image badge on microbadger.com")
+[![Build Status](https://travis-ci.org/cactacea/backend.svg?branch=master)](https://travis-ci.org/cactacea/backend)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3ccea187e3644f4d89666516b46bce67)](https://www.codacy.com/app/takeshishimada/backend?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cactacea/backend&amp;utm_campaign=Badge_Grade)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 [![codecov](https://codecov.io/gh/cactacea/backend/branch/master/graph/badge.svg)](https://codecov.io/gh/cactacea/backend)
