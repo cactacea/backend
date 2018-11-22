@@ -14,7 +14,6 @@ services:
     image: cactacea/backend
     depends_on:
          - mysql
-         - localstack
     environment:
       CACTACEA_MASTER_DB_NAME: cactacea
       CACTACEA_MASTER_DB_USERNAME: cactacea
