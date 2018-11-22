@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7.24
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_DATABASE: cactacea
+      MYSQL_USER: cactacea
+      MYSQL_PASSWORD: cactacea
+      MYSQL_ROOT_PASSWORD: root
+
+  cactacea:
+    image: cactacea/backend
+    depends_on:
+         - mysql
+         - localstack
+    environment:
+      CACTACEA_MASTER_DB_NAME: cactacea
+      CACTACEA_MASTER_DB_USERNAME: cactacea
+      CACTACEA_MASTER_DB_PASSWORD: cactacea
+      CACTACEA_MASTER_DB_DEST: docker.for.mac.host.internal:3306
+    ports:
+      - "9000:9000"

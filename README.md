@@ -22,6 +22,16 @@ Or similarily with Maven:
 </dependency>
 ```
 
+### Launch Demo
+
+```
+### Clone this repo
+git clone https://github.com/cactacea/backend.git
+
+### Start the containners
+docker-compose up -d
+```
+
 ### Documentation
 
 - [`API Reference`](https://cactacea.github.io/backend/)
