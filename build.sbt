@@ -1,5 +1,6 @@
-import sbt.Keys.{publishArtifact, resolvers}
+import sbt.Keys.{libraryDependencies, publishArtifact, resolvers, scalacOptions}
 import sbt.url
+import sbtbuildinfo.BuildInfoPlugin.autoImport.buildInfoKeys
 
 lazy val root = (project in file("."))
   .settings(
@@ -8,8 +9,9 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(Migration.settings)
-  .aggregate(server, core)
+  .aggregate(server, core, plugin, finagger, filhouette)
   .enablePlugins(FlywayPlugin)
+
 
 lazy val server = (project in file("server"))
   .settings(
@@ -28,6 +30,7 @@ lazy val server = (project in file("server"))
   .enablePlugins(FlywayPlugin)
   .enablePlugins(BuildInfoPlugin)
   .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(finagger % "compile->compile;test->test")
 
 
 lazy val core = (project in file("core"))
@@ -36,10 +39,41 @@ lazy val core = (project in file("core"))
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.coreLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.cactaceaLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
+  .dependsOn(finagger % "compile->compile;test->test")
 
+
+lazy val filhouette = (project in file("filhouette"))
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.filhouette)
+
+
+lazy val swaggerUIVersion = SettingKey[String]("swaggerUIVersion")
+
+lazy val finagger = (project in file("finagger"))
+  .settings(
+    swaggerUIVersion := "3.19.0",
+    buildInfoPackage := "io.github.cactacea.finagger",
+    buildInfoKeys := Seq[BuildInfoKey](swaggerUIVersion)
+  )
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finagger)
+  .enablePlugins(BuildInfoPlugin)
+
+lazy val plugin = (project in file("plugin"))
+  .settings(
+    sbtPlugin     := true,
+    scalacOptions ++= Seq("-feature", "-deprecation")
+  )
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
 
 lazy val demo = (project in file("demo"))
   .settings(
@@ -58,10 +92,12 @@ lazy val demo = (project in file("demo"))
   .dependsOn(server % "compile->compile;test->test")
   .enablePlugins(JavaAppPackaging)
 
+
 lazy val commonSettings = Seq(
   organization := "io.github.cactacea",
   scalaVersion  := "2.12.7",
-//  crossScalaVersions := Seq("2.11.12", "2.12.7"),
+  crossScalaVersions := Seq("2.11.12", "2.12.7"),
+  scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
   testOptions in Test += Tests.Argument("-oI"),
   concurrentRestrictions += Tags.limit(Tags.Test, 1),
   parallelExecution := false,
@@ -121,6 +157,10 @@ lazy val publishSettings = Seq(
   )
 )
 
+
+
+// No Publish Settings
+
 lazy val noPublishSettings = Seq(
   publish := {},
   publishLocal := {},
@@ -136,7 +176,7 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 releaseVersionFile := baseDirectory.value / "version.sbt"
 
-//releaseCrossBuild := true
+releaseCrossBuild := true
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
