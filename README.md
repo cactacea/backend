@@ -11,15 +11,25 @@
 To get started, add a dependency on cactacea depending.
 
 ```
-"io.github.cactacea" %% "server" % "18.11.6"
+"io.github.cactacea" %% "server" % "18.11.7"
 ```
 Or similarily with Maven:
 ```
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>server_2.12</artifactId>
-  <version>18.11.6</version>
+  <version>18.11.7</version>
 </dependency>
+```
+
+### Launch Demo
+
+```
+### Clone this repo
+git clone https://github.com/cactacea/backend.git
+
+### Start the containners
+docker-compose up -d
 ```
 
 ### Documentation
@@ -29,5 +39,5 @@ Or similarily with Maven:
 
 ### Related Projects
 
-- [`Fiagger`](https://github.com/cactacea/finagger) - Swagger Finatra Integration
-- [`Filhouette`](https://github.com/cactacea/filhouette) - Authentication library for Finatra
+- [`Fiagger`](https://github.com/cactacea/backend/finagger) - Swagger Finatra Integration
+- [`Filhouette`](https://github.com/cactacea/backend/filhouette) - Authentication library for Finatra

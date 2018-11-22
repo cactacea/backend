@@ -1,5 +1,7 @@
 package io.github.cactacea.backend.controllers
 
+import java.io.File
+
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.finatra.http.request.RequestUtils
@@ -30,9 +32,12 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
     }
 
     postWithPermission("/mediums")(Permissions.media) { o =>
+
       o.summary("Upload a medium")
         .tag(mediumsTag)
         .operationId("uploadMedium")
+        .consumes("multipart/form-data")
+        .formParam[File](name = "file", description = "Upload a medium file", true)
         .responseWith[MediumCreated](Status.Created.code, successfulMessage)
         .responseWith(Status.BadRequest.code, NotAcceptableMimeTypeFound.message)
 
