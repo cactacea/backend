@@ -50,10 +50,6 @@ object Dependencies {
     val connector = "mysql" % "mysql-connector-java" % versions.mysql
   }
 
-  object cactacea {
-    val finagger = "io.github.cactacea" %% "finagger" % versions.cactacea
-  }
-
   object tests {
 
     object finatra {
@@ -121,10 +117,6 @@ object Dependencies {
     finatra.httpClient
   )
 
-  lazy val cactaceaLibrarySettings = Seq(
-    cactacea.finagger
-  )
-
   lazy val coreLibrarySettings = Seq(
     core.config,
     core.ficus,
@@ -170,5 +162,32 @@ object Dependencies {
 
   )
 
+  lazy val filhouette = Seq(
+    "io.jsonwebtoken" % "jjwt" % "0.9.1",
+    "ch.qos.logback" % "logback-classic" % "1.2.3",
+    "org.apache.commons" % "commons-lang3" % "3.8.1",
+    "de.svenkubiak" % "jBCrypt" % "0.4.1",
+    "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
+    "org.scalatest" %% "scalatest" %  "3.0.4" % "test",
+    "org.specs2" %% "specs2-core" % "3.8.6" % "test",
+    "org.specs2" %% "specs2-junit" % "3.8.6" % "test",
+    "org.specs2" %% "specs2-matcher-extra" % "3.8.6" % "test",
+    "org.specs2" %% "specs2-mock" % "3.8.6" % "test"
+  )
+
+  lazy val finagger = Seq(
+    "com.twitter" %% "finatra-http" % "18.11.0",
+    "org.joda" % "joda-convert" % "2.1.1",
+    "org.reflections" % "reflections" % "0.9.10",
+    "org.projectlombok" % "lombok" % "1.16.22" % "provided",
+    "org.assertj" % "assertj-core" % "3.0.0" % Test,
+    "junit" % "junit" % "4.12" % Test,
+    "uk.co.jemos.podam" % "podam" % "4.7.2.RELEASE" % Test,
+    "io.swagger" % "swagger-core" % "1.5.21",
+    "io.swagger" %% "swagger-scala-module" % "1.0.4",
+    "org.webjars" % "swagger-ui" % "3.19.0",
+    "net.bytebuddy" % "byte-buddy" % "1.8.17",
+    "javax.xml.bind" % "jaxb-api" % "2.1"
+  )
 }
 
