@@ -71,8 +71,6 @@ lazy val plugin = (project in file("plugin"))
     sbtPlugin     := true,
     scalacOptions ++= Seq("-feature", "-deprecation")
   )
-  .settings(commonSettings)
-  .settings(commonResolverSetting)
   .settings(publishSettings)
 
 lazy val demo = (project in file("demo"))
