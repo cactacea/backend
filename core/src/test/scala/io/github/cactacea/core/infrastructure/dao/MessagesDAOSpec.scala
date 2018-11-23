@@ -39,7 +39,6 @@ class MessagesDAOSpec extends DAOSpec {
     execute(messagesDAO.delete(groupId))
     val result = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result.size == 0)
-    assert(result.head.id == messageId)
   }
 
   test("updateReadStatus") {
