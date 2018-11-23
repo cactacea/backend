@@ -192,14 +192,15 @@ trait OAuth2Provider extends SocialStateProvider with OAuth2Constants with Logge
       case Some(rUri) => List((RedirectURI, resolveCallbackURL(rUri)))
       case None       => Nil
     }
-    val params = Map(
-      ClientID -> Seq(settings.clientID),
-      ClientSecret -> Seq(settings.clientSecret),
-      GrantType -> Seq(AuthorizationCode),
-      Code -> Seq(code)) ++ settings.accessTokenParams.mapValues(Seq(_)) ++ redirectParam.toMap.mapValues(Seq(_))
+    val params: Map[String, String] = Map(
+      ClientID -> settings.clientID,
+      ClientSecret -> settings.clientSecret,
+      GrantType -> AuthorizationCode,
+      Code -> code) ++ settings.accessTokenParams ++ (redirectParam.toMap[String, String])
 
-    val r = Request(Version.Http11, Method.Post, settings.accessTokenURL)
-    headers.foreach({ case (k, v) => r.headerMap.add(k, v) })
+    val r = RequestBuilder().url(Request.queryString(settings.accessTokenURL, params)).build(Method.Post, None)
+    headers.foreach({ case (k, v) => request.headerMap.add(k, v) })
+
     httpLayer.execute(r).flatMap({ response =>
       logger.debug("[Filhouette][%s] Access token response: [%s]".format(id, response.contentString))
       Future.const(buildInfo(response))
