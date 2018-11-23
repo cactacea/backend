@@ -1,4 +1,7 @@
 # Filhouette
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/filhouette_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/filhouette_2.12)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 An authentication library for Finatra Framework applications forked from [`Silhouette`](https://github.com/mohiva/play-silhouette).
 
 ### Getting Started
