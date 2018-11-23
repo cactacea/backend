@@ -44,7 +44,6 @@ before_install:
 
 script:
   - export CODACY_PROJECT_TOKEN=272e483af831425ba3d30673b81281ef
-  - sbt ++$TRAVIS_SCALA_VERSION clean test coverage coverageReport coverageAggregate
-  - sbt codacyCoverage
+  - sbt ++$TRAVIS_SCALA_VERSION clean test coverage coverageReport coverageAggregate codacyCoverage
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
