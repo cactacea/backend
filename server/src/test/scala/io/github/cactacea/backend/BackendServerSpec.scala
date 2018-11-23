@@ -3,7 +3,7 @@ package io.github.cactacea.backend
 import java.io.PrintWriter
 import java.util.UUID
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Singleton
 import com.twitter.finagle.http.Status
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util.{Await, Future}
@@ -14,9 +14,9 @@ import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignU
 import io.github.cactacea.backend.models.responses.Authentication
 
 @Singleton
-class BackendServerSpec @Inject()(mapper: FinatraObjectMapper) extends ServerSpec {
+class BackendServerSpec extends ServerSpec {
 
-//  @Inject private var mapper: FinatraObjectMapper = _
+  val mapper = injector.instance[FinatraObjectMapper]
 
   val accountsCount = 1
 
