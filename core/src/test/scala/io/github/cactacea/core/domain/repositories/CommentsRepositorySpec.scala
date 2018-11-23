@@ -43,7 +43,7 @@ class CommentsRepositorySpec extends RepositorySpec {
     val commentId = execute(commentsRepository.create(feedId, "comment", session.id.toSessionId))
     val reportContent = Some("report content")
     execute(reportsRepository.createCommentReport(commentId, ReportType.inappropriate, reportContent, user.id.toSessionId))
-    val result = execute(commentsRepository.delete(commentId, session.id.toSessionId))
+    execute(commentsRepository.delete(commentId, session.id.toSessionId))
     // TODO : Check
 
   }

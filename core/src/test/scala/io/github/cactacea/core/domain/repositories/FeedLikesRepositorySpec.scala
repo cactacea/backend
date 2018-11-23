@@ -49,7 +49,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
     val user = signUp("FeedLikesRepositorySpec7", "user password", "user udid")
     val feedId = execute(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     execute(feedLikesRepository.create(feedId, user.id.toSessionId))
-    val result = execute(feedLikesRepository.delete(feedId, user.id.toSessionId))
+    execute(feedLikesRepository.delete(feedId, user.id.toSessionId))
     // TODO : Check
 
 

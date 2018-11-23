@@ -135,7 +135,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
-    val (id, url) = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, _) = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     execute(accountsRepository.updateProfileImage(Some(id), session.id.toSessionId))
     // TODO : Check
 
@@ -171,7 +171,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   test("exist account name") {
 
-    val session = signUp("AccountsRepositorySpec27", "password", "udid")
+    signUp("AccountsRepositorySpec27", "password", "udid")
 
     val notExistAccountNameResult = execute(accountsRepository.notExist("AccountsRepositorySpec5 2"))
     assert(notExistAccountNameResult == true)

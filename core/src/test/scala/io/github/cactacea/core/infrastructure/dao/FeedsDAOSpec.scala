@@ -727,8 +727,8 @@ class FeedsDAOSpec extends DAOSpec {
     val medium1 = createMedium(sessionAccount.id)
     val medium2 = createMedium(sessionAccount.id)
     val medium3 = createMedium(sessionAccount.id)
-    val medium4 = createMedium(sessionAccount.id)
-    val medium5 = createMedium(sessionAccount.id)
+    createMedium(sessionAccount.id)
+    createMedium(sessionAccount.id)
 
     val mediums1 = List[MediumId]()
     val mediums2 = List(medium1.id)
@@ -820,8 +820,8 @@ class FeedsDAOSpec extends DAOSpec {
     val medium1 = createMedium(sessionAccount1.id)
     val medium2 = createMedium(sessionAccount1.id)
     val medium3 = createMedium(sessionAccount1.id)
-    val medium4 = createMedium(sessionAccount2.id)
-    val medium5 = createMedium(sessionAccount2.id)
+    createMedium(sessionAccount2.id)
+    createMedium(sessionAccount2.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -834,13 +834,13 @@ class FeedsDAOSpec extends DAOSpec {
     val mediums3 = List(medium1.id, medium2.id)
     val mediums4 = List(medium1.id, medium2.id, medium3.id)
     val mediums5 = List(medium1.id, medium2.id)
-    val mediums6 = List(medium1.id, medium2.id, medium3.id)
+//    val mediums6 = List(medium1.id, medium2.id, medium3.id)
     val tags1 = List[String]()
     val tags2 = List("tag1")
     val tags3 = List("tag1", "tag2")
     val tags4 = List("tag1", "tag2", "tag3")
     val tags5 = List("tag1")
-    val tags6 = List("tag1", "tag2", "tag3")
+//    val tags6 = List("tag1", "tag2", "tag3")
     val privacyType1 = FeedPrivacyType.self
     val privacyType2 = FeedPrivacyType.friends
     val privacyType3 = FeedPrivacyType.self
@@ -1132,33 +1132,33 @@ class FeedsDAOSpec extends DAOSpec {
     val message1 = "message1"
     val message2 = "message2"
     val message3 = "message3"
-    val message4 = "message4"
-    val message5 = "message5"
-    val message6 = "message6"
+//    val message4 = "message4"
+//    val message5 = "message5"
+//    val message6 = "message6"
     val mediums1 = List[MediumId]()
     val mediums2 = List(medium1.id)
     val mediums3 = List(medium1.id, medium2.id)
-    val mediums4 = List(medium1.id, medium2.id, medium3.id)
-    val mediums5 = List(medium1.id, medium2.id)
-    val mediums6 = List(medium1.id, medium2.id, medium3.id)
+//    val mediums4 = List(medium1.id, medium2.id, medium3.id)
+//    val mediums5 = List(medium1.id, medium2.id)
+//    val mediums6 = List(medium1.id, medium2.id, medium3.id)
     val tags1 = List[String]()
     val tags2 = List("tag1")
     val tags3 = List("tag1", "tag2")
-    val tags4 = List("tag1", "tag2", "tag3")
-    val tags5 = List("tag1")
-    val tags6 = List("tag1", "tag2", "tag3")
+//    val tags4 = List("tag1", "tag2", "tag3")
+//    val tags5 = List("tag1")
+//    val tags6 = List("tag1", "tag2", "tag3")
     val privacyType1 = FeedPrivacyType.self
     val privacyType2 = FeedPrivacyType.friends
     val privacyType3 = FeedPrivacyType.self
-    val privacyType4 = FeedPrivacyType.followers
-    val privacyType5 = FeedPrivacyType.friends
-    val privacyType6 = FeedPrivacyType.self
+//    val privacyType4 = FeedPrivacyType.followers
+//    val privacyType5 = FeedPrivacyType.friends
+//    val privacyType6 = FeedPrivacyType.self
     val contentWarning1 = false
     val contentWarning2 = true
     val contentWarning3 = false
-    val contentWarning4 = true
-    val contentWarning5 = false
-    val contentWarning6 = true
+//    val contentWarning4 = true
+//    val contentWarning5 = false
+//    val contentWarning6 = true
 
     // create feeds
     val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))

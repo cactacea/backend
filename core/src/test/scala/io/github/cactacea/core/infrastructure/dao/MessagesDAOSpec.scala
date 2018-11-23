@@ -34,7 +34,7 @@ class MessagesDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("MediumsDAOSpec5")
     val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
 
     execute(messagesDAO.delete(groupId))
     val result = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
