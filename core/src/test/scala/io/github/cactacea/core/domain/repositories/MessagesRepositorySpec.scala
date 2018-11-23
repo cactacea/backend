@@ -11,10 +11,10 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 
 class MessagesRepositorySpec extends RepositorySpec {
 
-  var groupsRepository = injector.instance[GroupsRepository]
-  var groupAccountsRepository = injector.instance[GroupAccountsRepository]
-  var messagesRepository = injector.instance[MessagesRepository]
-  var messagesDAO = injector.instance[MessagesDAO]
+  val groupsRepository = injector.instance[GroupsRepository]
+  val groupAccountsRepository = injector.instance[GroupAccountsRepository]
+  val messagesRepository = injector.instance[MessagesRepository]
+  val messagesDAO = injector.instance[MessagesDAO]
   val mediumRepository = injector.instance[MediumsRepository]
 
   test("create and delete") {

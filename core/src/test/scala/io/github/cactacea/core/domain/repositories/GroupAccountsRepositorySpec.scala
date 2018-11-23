@@ -9,9 +9,9 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 
 class GroupAccountsRepositorySpec extends RepositorySpec {
 
-  var groupAccountsRepository = injector.instance[GroupAccountsRepository]
-  var groupsRepository = injector.instance[GroupsRepository]
-  var reportsRepository = injector.instance[ReportsRepository]
+  val groupAccountsRepository = injector.instance[GroupAccountsRepository]
+  val groupsRepository = injector.instance[GroupsRepository]
+  val reportsRepository = injector.instance[ReportsRepository]
 
   test("find accounts") {
 

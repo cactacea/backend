@@ -25,7 +25,7 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
   }
 
   val db = injector.instance[DatabaseService]
-  var sessionsRepository = injector.instance[SessionsRepository]
+  val sessionsRepository = injector.instance[SessionsRepository]
 
   def signUp(accountName: String, password: String, udid: String) = {
 
