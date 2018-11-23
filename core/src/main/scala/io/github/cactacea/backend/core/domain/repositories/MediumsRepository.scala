@@ -7,10 +7,10 @@ import io.github.cactacea.backend.core.infrastructure.dao.{MediumsDAO, Validatio
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 
 @Singleton
-class MediumsRepository {
-
-  @Inject private var mediumsDAO: MediumsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class MediumsRepository @Inject()(
+                                   mediumsDAO: MediumsDAO,
+                                   validationDAO: ValidationDAO
+                                 ) {
 
   def create(key: String, url: String, thumbnailUri: Option[String], mediumType: MediumType, width: Int, height: Int, size: Long, sessionId: SessionId): Future[(MediumId, String)] = {
     for {

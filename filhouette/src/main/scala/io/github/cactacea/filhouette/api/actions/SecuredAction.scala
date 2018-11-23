@@ -90,7 +90,7 @@ case class SecuredRequestHandlerBuilder[I <: Identity, A <: Authenticator](
       case (Some(authenticator), Some(identity), Some(authorized)) if authorized =>
         handleBlock(authenticator, a => block(SecuredRequest(identity, a, request)))
       // A user is authenticated but not authorized. The request will be forbidden
-      case (Some(authenticator), Some(identity), _) =>
+      case (Some(authenticator), Some(_), _) =>
         handleBlock(authenticator, _ => errorHandler.onNotAuthorized.map(r => HandlerResult(r)))
       // An authenticator but no user was found. The request will ask for authentication and the authenticator will be discarded
       case (Some(authenticator), None, _) =>

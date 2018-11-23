@@ -10,14 +10,13 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
 
 @Singleton
-class FeedsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var feedsRepository: FeedsRepository = _
-  @Inject private var reportsRepository: ReportsRepository = _
-  @Inject private var publishService: EnqueueService = _
-  @Inject private var timeService: TimeService = _
-  @Inject private var actionService: InjectionService = _
+class FeedsService @Inject()(
+                              db: DatabaseService,
+                              feedsRepository: FeedsRepository,
+                              reportsRepository: ReportsRepository,
+                              publishService: EnqueueService,
+                              actionService: InjectionService
+                            ) {
 
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
     db.transaction {

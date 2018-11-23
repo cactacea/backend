@@ -9,13 +9,11 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class MessagesDAO @Inject()(db: DatabaseService) {
+class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
 
-  @Inject private var timeService: TimeService = _
-
-  def create(groupId: GroupId, accountCount: Long, accountId: AccountId, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
+  def create(groupId: GroupId, accountCount: Long, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.currentTimeMillis()
     val mt = messageType

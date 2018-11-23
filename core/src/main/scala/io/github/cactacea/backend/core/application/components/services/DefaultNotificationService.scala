@@ -6,11 +6,12 @@ import io.github.cactacea.backend.core.application.components.interfaces.{Notifi
 import io.github.cactacea.backend.core.domain.repositories.{NotificationsRepository, PushNotificationsRepository}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-class DefaultNotificationService @Inject()(db: DatabaseService) extends NotificationService {
-
-  @Inject private var pushNotificationService: PushNotificationService = _
-  @Inject private var pushNotificationsRepository: PushNotificationsRepository = _
-  @Inject private var notificationsRepository: NotificationsRepository = _
+class DefaultNotificationService @Inject()(
+                                            db: DatabaseService,
+                                            pushNotificationService: PushNotificationService,
+                                            pushNotificationsRepository: PushNotificationsRepository,
+                                            notificationsRepository: NotificationsRepository
+                                          ) extends NotificationService {
 
   def fanOutFeed(id: FeedId): Future[Unit] = {
     db.transaction{

@@ -10,11 +10,11 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class GroupsRepository {
-
-  @Inject private var groupsDAO: GroupsDAO = _
-  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
+class GroupsRepository @Inject()(
+                                  groupsDAO: GroupsDAO,
+                                  groupInvitationsDAO: GroupInvitationsDAO,
+                                  accountGroupsDAO: AccountGroupsDAO,
+                                ) {
 
   def create(name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupId] = {
     for {

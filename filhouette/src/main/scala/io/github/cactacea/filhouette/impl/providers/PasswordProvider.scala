@@ -64,7 +64,7 @@ trait PasswordProvider extends Provider {
           } else {
             Future.value(Authenticated)
           }
-        case Some(hasher) => Future.value(InvalidPassword(PasswordDoesNotMatch.format(id)))
+        case Some(_) => Future.value(InvalidPassword(PasswordDoesNotMatch.format(id)))
         case None => Future.value(UnsupportedHasher(HasherIsNotRegistered.format(
           id, passwordInfo.hasher, passwordHasherRegistry.all.map(_.id).mkString(", ")
         )))

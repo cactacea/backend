@@ -10,11 +10,11 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class AccountsRepository {
-
-  @Inject private var accountsDAO: AccountsDAO = _
-  @Inject private var devicesDAO: DevicesDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class AccountsRepository @Inject()(
+                                    accountsDAO: AccountsDAO,
+                                    devicesDAO: DevicesDAO,
+                                    validationDAO: ValidationDAO
+                                  ) {
 
   def find(sessionId: SessionId) = {
     validationDAO.findAccount(sessionId.toAccountId).map(Account(_))

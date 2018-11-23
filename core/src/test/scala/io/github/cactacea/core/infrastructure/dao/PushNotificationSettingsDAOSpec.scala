@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.infrastructure.models.PushNotificationSettings
@@ -31,12 +30,48 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     val setting4 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount4.id))))).head
     val setting5 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount5.id))))).head
     val setting6 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount6.id))))).head
-    assert((setting1.groupInvitation, setting1.followerFeed, setting1.feedComment, setting1.groupMessage, setting1.directMessage, setting1.showMessage) == (true, false, false, false, false, false))
-    assert((setting2.groupInvitation, setting2.followerFeed, setting2.feedComment, setting2.groupMessage, setting2.directMessage, setting2.showMessage) == (false, true, false, false, false, false))
-    assert((setting3.groupInvitation, setting3.followerFeed, setting3.feedComment, setting3.groupMessage, setting3.directMessage, setting3.showMessage) == (false, false, true, false, false, false))
-    assert((setting4.groupInvitation, setting4.followerFeed, setting4.feedComment, setting4.groupMessage, setting4.directMessage, setting4.showMessage) == (false, false, false,false, false, false))
-    assert((setting5.groupInvitation, setting5.followerFeed, setting5.feedComment, setting5.groupMessage, setting5.directMessage, setting5.showMessage) == (false, false, false, true, false, false))
-    assert((setting6.groupInvitation, setting6.followerFeed, setting6.feedComment, setting6.groupMessage, setting6.directMessage, setting6.showMessage) == (false, false, false, false, false, true))
+
+    assert(setting1.groupInvitation == true)
+    assert(setting2.groupInvitation == false)
+    assert(setting3.groupInvitation == false)
+    assert(setting4.groupInvitation == false)
+    assert(setting5.groupInvitation == false)
+    assert(setting6.groupInvitation == false)
+
+    assert(setting1.followerFeed == false)
+    assert(setting2.followerFeed == true)
+    assert(setting3.followerFeed == false)
+    assert(setting4.followerFeed == false)
+    assert(setting5.followerFeed == false)
+    assert(setting6.followerFeed == false)
+
+    assert(setting1.feedComment == false)
+    assert(setting2.feedComment == false)
+    assert(setting3.feedComment == true)
+    assert(setting4.feedComment == false)
+    assert(setting5.feedComment == false)
+    assert(setting6.feedComment == false)
+
+    assert(setting1.groupMessage == false)
+    assert(setting2.groupMessage == false)
+    assert(setting3.groupMessage == false)
+    assert(setting4.groupMessage == false)
+    assert(setting5.groupMessage == true)
+    assert(setting6.groupMessage == false)
+
+    assert(setting1.directMessage == false)
+    assert(setting2.directMessage == false)
+    assert(setting3.directMessage == false)
+    assert(setting4.directMessage == false)
+    assert(setting5.directMessage == false)
+    assert(setting6.directMessage == false)
+
+    assert(setting1.showMessage == false)
+    assert(setting2.showMessage == false)
+    assert(setting3.showMessage == false)
+    assert(setting4.showMessage == false)
+    assert(setting5.showMessage == false)
+    assert(setting6.showMessage == true)
 
   }
 
@@ -69,12 +104,48 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     val ed4 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount4.id))))).head
     val ed5 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount5.id))))).head
     val ed6 = execute(db.run(quote(query[PushNotificationSettings].filter(_.accountId == lift(sessionAccount6.id))))).head
-    assert((ed1.groupInvitation, ed1.followerFeed, ed1.feedComment, ed1.groupMessage, ed1.directMessage, ed1.showMessage) == (false, false, false, true, true, false))
-    assert((ed2.groupInvitation, ed2.followerFeed, ed2.feedComment, ed2.groupMessage, ed2.directMessage, ed2.showMessage) == (false, false, false, false, true, false))
-    assert((ed3.groupInvitation, ed3.followerFeed, ed3.feedComment, ed3.groupMessage, ed3.directMessage, ed3.showMessage) == (false, true, false, false, true, false))
-    assert((ed4.groupInvitation, ed4.followerFeed, ed4.feedComment, ed4.groupMessage, ed4.directMessage, ed4.showMessage) == (false, false, true, false, true, false))
-    assert((ed5.groupInvitation, ed5.followerFeed, ed5.feedComment, ed5.groupMessage, ed5.directMessage, ed5.showMessage) == (true, false, false, false, true, false))
-    assert((ed6.groupInvitation, ed6.followerFeed, ed6.feedComment, ed6.groupMessage, ed6.directMessage, ed6.showMessage) == (true, false, false, false, false, true))
+
+    assert(ed1.groupInvitation == false)
+    assert(ed2.groupInvitation == false)
+    assert(ed3.groupInvitation == false)
+    assert(ed4.groupInvitation == false)
+    assert(ed5.groupInvitation == true)
+    assert(ed6.groupInvitation == true)
+
+    assert(ed1.followerFeed ==  false)
+    assert(ed2.followerFeed ==  false)
+    assert(ed3.followerFeed ==  true)
+    assert(ed4.followerFeed ==  false)
+    assert(ed5.followerFeed == false)
+    assert(ed6.followerFeed == false)
+
+    assert(ed1.feedComment ==  false)
+    assert(ed2.feedComment ==  false)
+    assert(ed3.feedComment == false)
+    assert(ed4.feedComment ==  true)
+    assert(ed5.feedComment == false)
+    assert(ed6.feedComment == false)
+
+    assert(ed1.groupMessage ==  true)
+    assert(ed2.groupMessage ==  false)
+    assert(ed3.groupMessage == false)
+    assert(ed4.groupMessage == false)
+    assert(ed5.groupMessage ==  false)
+    assert(ed6.groupMessage ==  false)
+
+    assert(ed1.directMessage == true)
+    assert(ed2.directMessage ==  true)
+    assert(ed3.directMessage == true)
+    assert(ed4.directMessage == true)
+    assert(ed5.directMessage ==  true)
+    assert(ed6.directMessage ==  false)
+
+    assert(ed1.showMessage == false)
+    assert(ed2.showMessage == false)
+    assert(ed3.showMessage == false)
+    assert(ed4.showMessage == false)
+    assert(ed5.showMessage == false)
+    assert(ed6.showMessage == true)
 
   }
 
@@ -103,12 +174,47 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     val fd6 = execute(pushNotificationSettingsDAO.find(sessionAccount6.id.toSessionId)).head
     val fd7 = execute(pushNotificationSettingsDAO.find(SessionId(0L)))
 
-    assert((fd1.groupInvitation, fd1.followerFeed, fd1.feedComment, fd1.groupMessage, fd1.directMessage, fd1.showMessage) == (true, false, false, false, false, false))
-    assert((fd2.groupInvitation, fd2.followerFeed, fd2.feedComment, fd2.groupMessage, fd2.directMessage, fd2.showMessage) == (false, true, false, false, false, false))
-    assert((fd3.groupInvitation, fd3.followerFeed, fd3.feedComment, fd3.groupMessage, fd3.directMessage, fd3.showMessage) == (false, false, true, false, false, false))
-    assert((fd4.groupInvitation, fd4.followerFeed, fd4.feedComment, fd4.groupMessage, fd4.directMessage, fd4.showMessage) == (false, false, false, false, false, false))
-    assert((fd5.groupInvitation, fd5.followerFeed, fd5.feedComment, fd5.groupMessage, fd5.directMessage, fd5.showMessage) == (false, false, false, true, false, false))
-    assert((fd6.groupInvitation, fd6.followerFeed, fd6.feedComment, fd6.groupMessage, fd6.directMessage, fd6.showMessage) == (false, false, false, false, false, true))
+    assert(fd1.groupInvitation == true)
+    assert(fd2.groupInvitation == false)
+    assert(fd3.groupInvitation == false)
+    assert(fd4.groupInvitation == false)
+    assert(fd5.groupInvitation == false)
+    assert(fd6.groupInvitation == false)
+
+    assert(fd1.followerFeed == false)
+    assert(fd2.followerFeed == true)
+    assert(fd3.followerFeed == false)
+    assert(fd4.followerFeed == false)
+    assert(fd5.followerFeed == false)
+    assert(fd6.followerFeed == false)
+
+    assert(fd1.feedComment == false)
+    assert(fd2.feedComment == false)
+    assert(fd3.feedComment == true)
+    assert(fd4.feedComment == false)
+    assert(fd5.feedComment == false)
+    assert(fd6.feedComment == false)
+
+    assert(fd1.groupMessage == false)
+    assert(fd2.groupMessage == false)
+    assert(fd3.groupMessage == false)
+    assert(fd4.groupMessage == false)
+    assert(fd5.groupMessage == true)
+    assert(fd6.groupMessage == false)
+
+    assert(fd1.directMessage == false)
+    assert(fd2.directMessage == false)
+    assert(fd3.directMessage == false)
+    assert(fd4.directMessage == false)
+    assert(fd5.directMessage == false)
+    assert(fd6.directMessage == false)
+
+    assert(fd1.showMessage == false)
+    assert(fd2.showMessage == false)
+    assert(fd3.showMessage == false)
+    assert(fd4.showMessage == false)
+    assert(fd5.showMessage == false)
+    assert(fd6.showMessage == true)
 
     assert(fd7.isEmpty)
   }

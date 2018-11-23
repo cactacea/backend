@@ -8,12 +8,12 @@ import io.github.cactacea.backend.core.infrastructure.dao.{FollowersDAO, Follows
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 
 @Singleton
-class FollowsRepository {
-
-  @Inject private var followsDAO: FollowsDAO = _
-  @Inject private var followersDAO: FollowersDAO = _
-  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class FollowsRepository @Inject()(
+                                   followsDAO: FollowsDAO,
+                                   followersDAO: FollowersDAO,
+                                   groupInvitationsDAO: GroupInvitationsDAO,
+                                   validationDAO: ValidationDAO
+                                ) {
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     for {

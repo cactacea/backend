@@ -1019,6 +1019,9 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
     val feedId2 = execute(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId))
     val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
+    val feedId4 = execute(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount.id.toSessionId))
+    val feedId5 = execute(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount.id.toSessionId))
+    val feedId6 = execute(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount.id.toSessionId))
 
     val result1 = execute(feedsDAO.find(feedId1))
     val result2 = execute(feedsDAO.find(feedId2))

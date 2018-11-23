@@ -9,9 +9,9 @@ import com.twitter.util.Future
 
 @Singleton
 class CorsFilter extends SimpleFilter[Request, Response] {
-  val allowsOrigin  = { origin: String => Some("http://localhost:4200") }
-  val allowsMethods = { method: String => Some(Seq("GET", "POST", "PUT", "DELETE", "OPTIONS")) }
-  val allowsHeaders = { headers: Seq[String] => Some(Seq("Origin","Authorization","Accept", "Content-Type")) }
+  val allowsOrigin  = (_: String) => Some("http://localhost:4200")
+  val allowsMethods = (_: String) => Some(Seq("GET", "POST", "PUT", "DELETE", "OPTIONS"))
+  val allowsHeaders = (_: Seq[String]) => Some(Seq("Origin","Authorization","Accept", "Content-Type"))
 
   val policy = Cors.Policy(allowsOrigin, allowsMethods, allowsHeaders, supportsCredentials = true)
   val cors = new HttpFilter(policy)

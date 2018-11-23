@@ -18,7 +18,7 @@ class AuthDAO @Inject()(db: DatabaseService) {
           .filter(_.id == lift(clientId))
         ocg <- query[ClientGrantTypes]
           .filter(_.clientId == oc.id)
-        og <- query[GrantTypes]
+        _ <- query[GrantTypes]
           .filter(_.id == ocg.grantTypeId).filter(_.grantType == lift(grantType))
       } yield (oc)
     }

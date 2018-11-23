@@ -10,11 +10,11 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class FeedsRepository {
-
-  @Inject private var feedsDAO: FeedsDAO = _
-  @Inject private var accountFeedsDAO: AccountFeedsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class FeedsRepository @Inject()(
+                                 feedsDAO: FeedsDAO,
+                                 accountFeedsDAO: AccountFeedsDAO,
+                                 validationDAO: ValidationDAO
+                               ) {
 
   def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
     val ids = mediumIds.map(_.distinct)
@@ -53,7 +53,7 @@ class FeedsRepository {
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
     for {
       r <- accountFeedsDAO.findAll(since, offset, count, privacyType, sessionId)
-        .map(_.map(t => Feed(t._1, t._2, t._3, t._4, t._5, t._6)))
+        .map(_.map(t => Feed(t._2, t._3, t._4, t._5, t._6)))
     } yield (r)
   }
 

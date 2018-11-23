@@ -11,12 +11,12 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class SessionsRepository {
-
-  @Inject private var devicesDAO: DevicesDAO = _
-  @Inject private var notificationSettingsDAO: PushNotificationSettingsDAO = _
-  @Inject private var accountsDAO: AccountsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class SessionsRepository @Inject()(
+                                    devicesDAO: DevicesDAO,
+                                    notificationSettingsDAO: PushNotificationSettingsDAO,
+                                    accountsDAO: AccountsDAO,
+                                    validationDAO: ValidationDAO
+                                  ) {
 
   def signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
     for {

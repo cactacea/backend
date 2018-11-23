@@ -9,11 +9,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Fe
 import io.github.cactacea.backend.core.infrastructure.models.{FeedLikes, _}
 
 @Singleton
-class FeedLikesDAO @Inject()(db: DatabaseService) {
+class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
-
-  @Inject private var timeService: TimeService = _
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {

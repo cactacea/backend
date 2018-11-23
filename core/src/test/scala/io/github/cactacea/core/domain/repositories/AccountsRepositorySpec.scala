@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.MediumType
 import io.github.cactacea.backend.core.helpers.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId}
@@ -138,7 +137,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
     val (id, url) = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val result = execute(accountsRepository.updateProfileImage(Some(id), session.id.toSessionId))
+    execute(accountsRepository.updateProfileImage(Some(id), session.id.toSessionId))
     // TODO : Check
 
   }
@@ -146,7 +145,7 @@ class AccountsRepositorySpec extends RepositorySpec {
   test("delete profile image") {
 
     val session = signUp("AccountsRepositorySpec24", "session password", "udid")
-    val result = execute(accountsRepository.updateProfileImage(None, session.id.toSessionId))
+    execute(accountsRepository.updateProfileImage(None, session.id.toSessionId))
     // TODO : Check
 
   }

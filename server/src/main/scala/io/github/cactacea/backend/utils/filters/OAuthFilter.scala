@@ -11,9 +11,10 @@ import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.OAuthHandler
 
 @Singleton
-class OAuthFilter @Inject()(dataHandler: OAuthHandler) extends SimpleFilter[Request, Response] with OAuth2 with OAuthErrorInJson with Logging {
-
-  @Inject private var sessionsRepository: SessionsRepository = _
+class OAuthFilter @Inject()(
+                             dataHandler: OAuthHandler,
+                             sessionsRepository: SessionsRepository
+                           ) extends SimpleFilter[Request, Response] with OAuth2 with OAuthErrorInJson with Logging {
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     SessionContext.authenticated match {

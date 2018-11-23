@@ -9,12 +9,13 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class CommentsDAO @Inject()(db: DatabaseService) {
+class CommentsDAO @Inject()(
+                             db: DatabaseService,
+                             blocksCountDAO: BlockCountDAO,
+                             timeService: TimeService
+                           ) {
 
   import db._
-
-  @Inject private var blocksCountDAO: BlockCountDAO = _
-  @Inject private var timeService: TimeService = _
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     for {

@@ -15,13 +15,11 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
+class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, messagesService: MessagesService, s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
 
   protected val messagesTag = "Messages"
-
-  @Inject private var messagesService: MessagesService = _
 
   prefix(apiPrefix) {
 

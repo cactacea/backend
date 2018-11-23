@@ -17,17 +17,19 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class AccountsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
+class AccountsController @Inject()(
+                                    @Flag("cactacea.api.prefix") apiPrefix: String,
+                                    accountsService: AccountsService,
+                                    feedsService: FeedsService,
+                                    feedLikesService: FeedLikesService,
+                                    followersService: FollowersService,
+                                    friendsService: FriendsService,
+                                    groupAccountsService: GroupAccountsService,
+                                    accountGroupsService: AccountGroupsService,
+                                    s: Swagger
+                                  ) extends CactaceaController {
 
   implicit val swagger: Swagger = s
-
-  @Inject private var accountsService: AccountsService = _
-  @Inject private var feedsService: FeedsService = _
-  @Inject private var feedLikesService: FeedLikesService = _
-  @Inject private var followersService: FollowersService = _
-  @Inject private var friendsService: FriendsService = _
-  @Inject private var groupAccountsService: GroupAccountsService = _
-  @Inject private var accountGroupsService: AccountGroupsService = _
 
   prefix(apiPrefix) {
 

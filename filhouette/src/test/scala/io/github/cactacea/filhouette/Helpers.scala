@@ -146,13 +146,12 @@ trait SocialProviderSpec[A <: AuthInfo] extends Specification with Mockito with 
    */
   def failed[E <: Throwable: ClassTag](providerResult: Future[_])(f: => PartialFunction[Throwable, MatchResult[_]]) = {
     implicit class Rethrow(t: Throwable) {
-      def rethrow = { throw t; t }
+      def rethrow = { throw t; }
     }
 
     lazy val result = Await.result(providerResult.rescue { case e: Exception => Future.value(e) })
 
-    result must not(throwAn[E])
-//    result.rethrow must throwAn[E].like(f)
+    result must not(throwAn[E].like(f))
   }
 }
 

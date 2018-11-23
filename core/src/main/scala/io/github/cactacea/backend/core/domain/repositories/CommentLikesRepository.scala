@@ -7,10 +7,10 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, SessionId}
 
 @Singleton
-class CommentLikesRepository {
-
-  @Inject private var commentLikesDAO: CommentLikesDAO = _
-  @Inject private var validationRepository: ValidationDAO = _
+class CommentLikesRepository @Inject()(
+                                        commentLikesDAO: CommentLikesDAO,
+                                        validationRepository: ValidationDAO
+                                      ) {
 
   def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {

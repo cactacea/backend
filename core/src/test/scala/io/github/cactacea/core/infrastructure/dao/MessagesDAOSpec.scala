@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, MediumType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.Messages
@@ -40,6 +39,7 @@ class MessagesDAOSpec extends DAOSpec {
     execute(messagesDAO.delete(groupId))
     val result = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result.size == 0)
+    assert(result.head.id == messageId)
   }
 
   test("updateReadStatus") {

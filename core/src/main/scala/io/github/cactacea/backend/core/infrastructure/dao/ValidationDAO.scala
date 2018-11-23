@@ -8,25 +8,24 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class ValidationDAO {
-
-  @Inject private var accountsDAO: AccountsDAO = _
-  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
-  @Inject private var blocksDAO: BlocksDAO = _
-  @Inject private var commentsDAO: CommentsDAO = _
-  @Inject private var commentLikesDAO: CommentLikesDAO = _
-  @Inject private var followsDAO: FollowsDAO = _
-  @Inject private var followersDAO: FollowersDAO = _
-  @Inject private var friendsDAO: FriendsDAO = _
-  @Inject private var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject private var feedsDAO: FeedsDAO = _
-  @Inject private var feedLikesDAO: FeedLikesDAO = _
-  @Inject private var groupsDAO: GroupsDAO = _
-  @Inject private var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var groupAuthorityDAO: GroupAuthorityDAO = _
-  @Inject private var mediumsDAO: MediumsDAO = _
-  @Inject private var mutesDAO: MutesDAO = _
+class ValidationDAO @Inject()(
+                               accountsDAO: AccountsDAO,
+                               accountGroupsDAO: AccountGroupsDAO,
+                               blocksDAO: BlocksDAO,
+                               commentsDAO: CommentsDAO,
+                               commentLikesDAO: CommentLikesDAO,
+                               followsDAO: FollowsDAO,
+                               friendsDAO: FriendsDAO,
+                               friendRequestsDAO: FriendRequestsDAO,
+                               feedsDAO: FeedsDAO,
+                               feedLikesDAO: FeedLikesDAO,
+                               groupsDAO: GroupsDAO,
+                               groupAccountsDAO: GroupAccountsDAO,
+                               groupInvitationsDAO: GroupInvitationsDAO,
+                               groupAuthorityDAO: GroupAuthorityDAO,
+                               mediumsDAO: MediumsDAO,
+                               mutesDAO: MutesDAO
+                             ) {
 
   def notSessionId(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId

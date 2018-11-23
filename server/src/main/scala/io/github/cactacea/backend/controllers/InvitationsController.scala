@@ -15,11 +15,9 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
+class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, invitationService: GroupInvitationsService, s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
-
-  @Inject private var invitationService: GroupInvitationsService = _
 
   prefix(apiPrefix) {
 

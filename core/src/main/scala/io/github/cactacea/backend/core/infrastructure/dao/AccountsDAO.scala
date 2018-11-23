@@ -11,12 +11,14 @@ import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.infrastructure.results.RelationshipBlocksCount
 
 @Singleton
-class AccountsDAO @Inject()(db: DatabaseService, hashService: HashService) {
+class AccountsDAO @Inject()(
+                             db: DatabaseService,
+                             hashService: HashService,
+                             timeService: TimeService,
+                             blocksCountDAO: BlockCountDAO
+                           ) {
 
   import db._
-
-  @Inject private var timeService: TimeService = _
-  @Inject private var blocksCountDAO: BlockCountDAO = _
 
   def create(accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
     val accountStatus = AccountStatusType.normally

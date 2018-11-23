@@ -9,11 +9,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class GroupsDAO @Inject()(db: DatabaseService) {
+class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
-
-  @Inject private var timeService: TimeService = _
 
   def create(sessionId: SessionId): Future[GroupId] = {
     val organizedAt = timeService.currentTimeMillis()

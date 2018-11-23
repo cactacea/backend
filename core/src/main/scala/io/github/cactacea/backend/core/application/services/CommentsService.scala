@@ -10,13 +10,13 @@ import io.github.cactacea.backend.core.domain.repositories.{CommentsRepository, 
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
 
 @Singleton
-class CommentsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var commentsRepository: CommentsRepository = _
-  @Inject private var reportsRepository: ReportsRepository = _
-  @Inject private var publishService: EnqueueService = _
-  @Inject private var actionService: InjectionService = _
+class CommentsService @Inject()(
+                                 db: DatabaseService,
+                                 commentsRepository: CommentsRepository,
+                                 reportsRepository: ReportsRepository,
+                                 publishService: EnqueueService,
+                                 actionService: InjectionService
+                               ) {
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     db.transaction {

@@ -8,12 +8,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Fe
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class AccountFeedsDAO @Inject()(db: DatabaseService) {
+class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, feedMediumDAO: FeedMediumDAO) {
 
   import db._
-
-  @Inject private var feedTagsDAO: FeedTagsDAO = _
-  @Inject private var feedMediumDAO: FeedMediumDAO = _
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
@@ -58,11 +55,11 @@ class AccountFeedsDAO @Inject()(db: DatabaseService) {
           .leftJoin(r => r.accountId == f.by && r.by == lift(by))
       } yield (af, f, a, r)
     }
-    run(q).flatMap(findTagsAndImages(_, sessionId))
+    run(q).flatMap(findTagsAndImages(_))
 
   }
 
-  private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds, Accounts, Option[Relationships])], sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
+  private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds, Accounts, Option[Relationships])]): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
     val feedIds = feeds.map(_._2.id)
 
     (for {

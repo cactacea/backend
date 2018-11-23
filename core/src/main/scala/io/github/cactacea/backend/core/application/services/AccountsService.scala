@@ -10,12 +10,12 @@ import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, 
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 
 @Singleton
-class AccountsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var accountsRepository: AccountsRepository = _
-  @Inject private var reportsRepository: ReportsRepository = _
-  @Inject private var actionService: InjectionService = _
+class AccountsService @Inject()(
+                                 db: DatabaseService,
+                                 accountsRepository: AccountsRepository,
+                                 reportsRepository: ReportsRepository,
+                                 actionService: InjectionService
+                               ) {
 
   def find(sessionId: SessionId): Future[Account] = {
     accountsRepository.find(sessionId)

@@ -9,11 +9,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class GroupInvitationsDAO @Inject()(db: DatabaseService) {
+class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
-
-  @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
     for {
@@ -76,8 +74,8 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (gi.id < lift(s) || lift(s) == -1L)})
         .join(query[Groups]).on((gi, g) => g.id == gi.groupId)
-        .join(query[Accounts]).on({ case ((gi, g), a) => a.id == gi.by})
-        .leftJoin(query[Relationships]).on({ case (((_, g), a), r) => r.accountId == a.id && r.by == lift(by)})
+        .join(query[Accounts]).on({ case ((gi, _), a) => a.id == gi.by})
+        .leftJoin(query[Relationships]).on({ case (((_, _), a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({case (((gi, g), a), r) => (gi, a, r, g)})
         .sortBy(_._1.id)(Ord.desc)
         .drop(lift(o))

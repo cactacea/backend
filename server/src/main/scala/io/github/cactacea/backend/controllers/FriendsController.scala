@@ -13,11 +13,9 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
+class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, friendsService: FriendsService, s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
-
-  @Inject private var friendsService: FriendsService = _
 
   prefix(apiPrefix) {
 

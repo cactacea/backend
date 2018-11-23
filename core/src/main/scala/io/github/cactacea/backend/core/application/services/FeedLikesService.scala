@@ -9,11 +9,11 @@ import io.github.cactacea.backend.core.domain.repositories.FeedLikesRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
 
 @Singleton
-class FeedLikesService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var feedLikesRepository: FeedLikesRepository = _
-  @Inject private var actionService: InjectionService = _
+class FeedLikesService @Inject()(
+                                  db: DatabaseService,
+                                  feedLikesRepository: FeedLikesRepository,
+                                  actionService: InjectionService
+                                ) {
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     db.transaction {

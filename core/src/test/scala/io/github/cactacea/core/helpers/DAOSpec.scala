@@ -52,14 +52,13 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   @Inject var followersDAO: FollowersDAO = _
   @Inject var friendRequestsDAO: FriendRequestsDAO = _
   @Inject var friendRequestsStatusDAO: FriendRequestsStatusDAO = _
-  @Inject var groupUsersDAO: GroupAccountsDAO = _
+  @Inject var groupAccountsDAO: GroupAccountsDAO = _
   @Inject var groupAuthorityDAO: GroupAuthorityDAO = _
   @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
   @Inject var groupReportsDAO: GroupReportsDAO = _
   @Inject var blocksDAO: BlocksDAO = _
   @Inject var mutesDAO: MutesDAO = _
   @Inject var outstandingFriendRequestsDAO: FriendRequestsStatusDAO = _
-  @Inject var groupAccountsDAO: GroupAccountsDAO = _
   @Inject var pushNotificationSettingsDAO: PushNotificationSettingsDAO = _
 
   def createAccount(accountName: String): Accounts = {

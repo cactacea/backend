@@ -8,12 +8,12 @@ import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.domain.repositories.FriendRequestsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
 
-class FriendRequestsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var friendRequestsRepository: FriendRequestsRepository = _
-  @Inject private var publishService: EnqueueService = _
-  @Inject private var actionService: InjectionService = _
+class FriendRequestsService @Inject()(
+                                       db: DatabaseService,
+                                       friendRequestsRepository: FriendRequestsRepository,
+                                       publishService: EnqueueService,
+                                       actionService: InjectionService
+                                     ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
     db.transaction {

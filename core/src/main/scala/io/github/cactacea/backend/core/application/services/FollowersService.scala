@@ -7,9 +7,7 @@ import io.github.cactacea.backend.core.domain.repositories.FollowersRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{SessionId, AccountId}
 
 @Singleton
-class FollowersService {
-
-  @Inject private var followersRepository: FollowersRepository = _
+class FollowersService @Inject()(followersRepository: FollowersRepository) {
 
   def find(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     followersRepository.findAll(accountId, since, offset, count, sessionId)

@@ -7,10 +7,10 @@ import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, AuthDAO}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Clients}
 
 @Singleton
-class OAuthService {
-
-  @Inject private var authDAO: AuthDAO = _
-  @Inject private var accountsDAO: AccountsDAO = _
+class OAuthService @Inject()(
+                              authDAO: AuthDAO,
+                              accountsDAO: AccountsDAO
+                            ) {
 
   def validateClient(clientId: String): Future[Either[OAuthError, (Clients, List[Permission])]] = {
     authDAO.findClient(clientId).map(_ match {

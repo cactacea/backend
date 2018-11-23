@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 
@@ -61,13 +60,16 @@ class GroupAccountsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(member4.id, groupId))
     execute(accountGroupsDAO.create(member5.id, groupId))
 
-    val result1 = execute(groupUsersDAO.findAll(groupId, None, None, Some(3), sessionAccount.id.toSessionId))
+    val result1 = execute(groupAccountsDAO.findAll(groupId, None, None, Some(3))) //, sessionAccount.id.toSessionId))
     assert(result1.size == 3)
     val joinedAccount1 = result1(0)._3
     val joinedAccount2 = result1(1)._3
     val joinedAccount3 = result1(2)._3
+    assert(joinedAccount1.accountId == member5.id)
+    assert(joinedAccount2.accountId == member4.id)
+    assert(joinedAccount3.accountId == member5.id)
 
-    val result2 = execute(groupUsersDAO.findAll(groupId, Some(result1(2)._3.id.value), None, Some(3), sessionAccount.id.toSessionId))
+    val result2 = execute(groupAccountsDAO.findAll(groupId, Some(result1(2)._3.id.value), None, Some(3))) //, sessionAccount.id.toSessionId))
     assert(result2.size == 2)
 
   }
@@ -89,7 +91,7 @@ class GroupAccountsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.delete(member3.id, groupId))
     execute(accountGroupsDAO.delete(member5.id, groupId))
 
-    val result1 = execute(groupUsersDAO.findAll(groupId, None, None, Some(3), sessionAccount.id.toSessionId))
+    val result1 = execute(groupAccountsDAO.findAll(groupId, None, None, Some(3))) //, sessionAccount.id.toSessionId))
     assert(result1.size == 2)
 
 
@@ -112,11 +114,11 @@ class GroupAccountsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.delete(member3.id, groupId))
     execute(accountGroupsDAO.delete(member5.id, groupId))
 
-    val result1 = execute(groupUsersDAO.exist(member1.id, groupId))
-    val result2 = execute(groupUsersDAO.exist(member2.id, groupId))
-    val result3 = execute(groupUsersDAO.exist(member3.id, groupId))
-    val result4 = execute(groupUsersDAO.exist(member4.id, groupId))
-    val result5 = execute(groupUsersDAO.exist(member5.id, groupId))
+    val result1 = execute(groupAccountsDAO.exist(member1.id, groupId))
+    val result2 = execute(groupAccountsDAO.exist(member2.id, groupId))
+    val result3 = execute(groupAccountsDAO.exist(member3.id, groupId))
+    val result4 = execute(groupAccountsDAO.exist(member4.id, groupId))
+    val result5 = execute(groupAccountsDAO.exist(member5.id, groupId))
 
     assert(result1 == false)
     assert(result2 == true)
@@ -140,7 +142,7 @@ class GroupAccountsDAOSpec extends DAOSpec {
     val groupId = execute(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(accountIds, groupId))
 
-    val result = execute(groupUsersDAO.findCount(groupId))
+    val result = execute(groupAccountsDAO.findCount(groupId))
     assert(result == 5)
 
   }

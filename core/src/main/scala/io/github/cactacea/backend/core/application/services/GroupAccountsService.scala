@@ -9,11 +9,11 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 
 @Singleton
-class GroupAccountsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var groupAccountsRepository: GroupAccountsRepository = _
-  @Inject private var injectionService: InjectionService = _
+class GroupAccountsService @Inject()(
+                                      db: DatabaseService,
+                                      groupAccountsRepository: GroupAccountsRepository,
+                                      injectionService: InjectionService
+                                    ) {
 
   def find(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
     groupAccountsRepository.findAll(groupId, since, offset, count, sessionId)

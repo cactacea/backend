@@ -187,6 +187,8 @@ abstract class OAuth2ProviderSpec extends SocialStateProviderSpec[OAuth2Info, So
 
           c.oAuthSettings.redirectURL returns redirectURL
 
+          // TODO : secure
+
           c.stateProvider.serialize(c.state) returns sessionValue
           c.stateProvider.unserialize(anyString)(any[Request]) returns Future.value(c.state)
           c.stateProvider.state() returns Future.value(c.state)

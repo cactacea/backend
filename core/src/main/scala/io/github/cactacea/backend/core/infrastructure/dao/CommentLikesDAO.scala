@@ -8,11 +8,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, Co
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class CommentLikesDAO @Inject()(db: DatabaseService) {
+class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
-
-  @Inject private var timeService: TimeService = _
 
   def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {

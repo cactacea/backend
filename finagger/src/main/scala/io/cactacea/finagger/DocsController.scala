@@ -15,17 +15,17 @@ case class Redoc(modelPath: String)
 @Singleton
 class DocsController @Inject()(swagger: Swagger, @Flag("swagger.docs.endpoint") docPath: String) extends Controller {
 
-  get(s"${docPath}/model") { request: Request =>
+  get(s"${docPath}/model") { _: Request =>
     response.ok.body(Json.mapper.writeValueAsString(swagger).replace("""$"""", """""""))
       .contentType("application/json").toFuture
   }
 
-  get(s"${docPath}/ui") { request: Request =>
+  get(s"${docPath}/ui") { _: Request =>
     response.temporaryRedirect
       .location(s"../../webjars/swagger-ui//${BuildInfo.swaggerUIVersion}/index.html?url=/$docPath/model")
   }
 
-  get(s"$docPath/redoc") { request: Request =>
+  get(s"$docPath/redoc") { _: Request =>
     Redoc(modelPath = s"$docPath/model")
   }
 }
