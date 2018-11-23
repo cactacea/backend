@@ -44,9 +44,12 @@ before_install:
   - sudo service mysql restart
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION clean test coverage coverageReport
+  - sbt ++$TRAVIS_SCALA_VERSION clean test coverage coverageReport coverageAggregate
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 
 after_success:
+  - sbt coveralls
   - bash <(curl -s https://codecov.io/bash)
+  - export CODACY_PROJECT_TOKEN=272e483af831425ba3d30673b81281ef
+  - sbt codacyCoverage
