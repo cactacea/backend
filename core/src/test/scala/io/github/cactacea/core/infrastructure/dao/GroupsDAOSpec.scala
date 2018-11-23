@@ -205,9 +205,25 @@ class GroupsDAOSpec extends DAOSpec {
     val group5 = result2(0)
     val group6 = result2(1)
     val group7 = result2(2)
-    assert((group5.id, group5.name, group5.invitationOnly, group5.privacyType, group5.authorityType) == (groupId3, Some("New Group Name3"),  true, GroupPrivacyType.follows,    GroupAuthorityType.member))
-    assert((group6.id, group6.name, group6.invitationOnly, group6.privacyType, group6.authorityType) == (groupId2, Some("New Group Name2"),  true, GroupPrivacyType.followers,  GroupAuthorityType.member))
-    assert((group7.id, group7.name, group7.invitationOnly, group7.privacyType, group7.authorityType) == (groupId1, Some("New Group Name1"),  true, GroupPrivacyType.everyone,       GroupAuthorityType.member))
+    assert(group5.id == groupId3)
+    assert(group6.id == groupId2)
+    assert(group7.id == groupId1)
+
+    assert(group5.name == Some("New Group Name3"))
+    assert(group6.name == Some("New Group Name2"))
+    assert(group7.name == Some("New Group Name1"))
+
+    assert(group5.invitationOnly == true)
+    assert(group6.invitationOnly == true)
+    assert(group7.invitationOnly == true)
+
+    assert(group5.privacyType == GroupPrivacyType.follows)
+    assert(group6.privacyType == GroupPrivacyType.followers)
+    assert(group7.privacyType == GroupPrivacyType.everyone)
+
+    assert(group5.authorityType == GroupAuthorityType.member)
+    assert(group6.authorityType == GroupAuthorityType.member)
+    assert(group7.authorityType == GroupAuthorityType.member)
 
   }
 

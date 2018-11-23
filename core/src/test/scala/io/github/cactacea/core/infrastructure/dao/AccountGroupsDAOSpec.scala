@@ -20,7 +20,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(accountGroups.size == 1)
     val userGroup1 = accountGroups(0)
 
-    assert((userGroup1.accountId, userGroup1.groupId, userGroup1.hidden, userGroup1.toAccountId, userGroup1.unreadCount) == (account1.id, groupId, false, sessionAccount.id, 0))
+    assert(userGroup1.accountId == account1.id)
+    assert(userGroup1.groupId == groupId)
+    assert(userGroup1.hidden == false)
+    assert(userGroup1.toAccountId == sessionAccount.id)
+    assert(userGroup1.unreadCount == 0L)
 
   }
 
@@ -207,10 +211,10 @@ class AccountGroupsDAOSpec extends DAOSpec {
   test("findAll") {
 
     val sessionAccount = createAccount("AccountGroupsDAOSpec23")
-    val account1 = createAccount("AccountGroupsDAOSpec24")
-    val account2 = createAccount("AccountGroupsDAOSpec25")
-    val account3 = createAccount("AccountGroupsDAOSpec26")
-    val account4 = createAccount("AccountGroupsDAOSpec27")
+    createAccount("AccountGroupsDAOSpec24")
+    createAccount("AccountGroupsDAOSpec25")
+    createAccount("AccountGroupsDAOSpec26")
+    createAccount("AccountGroupsDAOSpec27")
 
     val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
@@ -257,7 +261,12 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(result.isDefined == true)
     val group = result.get._2
 
-    assert((group.id, group.name, group.by, group.invitationOnly, group.privacyType, group.authorityType, group.accountCount) == (groupId1, Some("new group name1"), sessionAccount.id, true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0))
+    assert(group.id == groupId1)
+    assert(group.name == Some("new group name1"))
+    assert(group.by == sessionAccount.id)
+    assert(group.invitationOnly == true)
+    assert(group.privacyType == GroupPrivacyType.everyone)
+    assert(group.accountCount == 0)
 
   }
 

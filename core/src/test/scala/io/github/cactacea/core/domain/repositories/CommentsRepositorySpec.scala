@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.twitter.util.Await
+
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.helpers.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO
