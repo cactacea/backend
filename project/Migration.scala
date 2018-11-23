@@ -5,8 +5,8 @@ import sbt.{Def, _}
 
 object Migration {
 
-  lazy val user = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("root")
-  lazy val password = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("root")
+  lazy val user = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("cactacea")
+  lazy val password = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("cactacea")
   lazy val databaseName = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
   lazy val hostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
   lazy val port = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
