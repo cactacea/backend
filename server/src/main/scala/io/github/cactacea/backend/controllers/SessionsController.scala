@@ -13,12 +13,14 @@ import io.github.cactacea.backend.utils.auth.{AuthTokenGenerator, SessionContext
 import io.swagger.models.Swagger
 
 @Singleton
-class SessionsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
+class SessionsController @Inject()(
+                                    @Flag("cactacea.api.prefix") apiPrefix: String,
+                                    s: Swagger,
+                                    sessionService: SessionsService,
+                                    tokenGenerator: AuthTokenGenerator
+                                  ) extends CactaceaController {
 
   implicit val swagger: Swagger = s
-
-  @Inject private var sessionService: SessionsService = _
-  @Inject private var tokenGenerator: AuthTokenGenerator = _
 
   prefix(apiPrefix) {
 

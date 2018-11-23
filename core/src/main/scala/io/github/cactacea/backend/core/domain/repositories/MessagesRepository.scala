@@ -9,14 +9,14 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 
 @Singleton
-class MessagesRepository {
-
-  @Inject private var groupsDAO: GroupsDAO = _
-  @Inject private var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject private var messagesDAO:  MessagesDAO = _
-  @Inject private var accountMessagesDAO: AccountMessagesDAO = _
-  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class MessagesRepository @Inject()(
+                                    groupsDAO: GroupsDAO,
+                                    groupAccountsDAO: GroupAccountsDAO,
+                                    messagesDAO:  MessagesDAO,
+                                    accountMessagesDAO: AccountMessagesDAO,
+                                    accountGroupsDAO: AccountGroupsDAO,
+                                    validationDAO: ValidationDAO
+                                  ) {
 
   def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
     (message, mediumId) match {

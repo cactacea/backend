@@ -7,10 +7,10 @@ import io.github.cactacea.backend.core.infrastructure.dao.{MutesDAO, ValidationD
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 
 @Singleton
-class MutesRepository {
-
-  @Inject private var mutesDAO: MutesDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class MutesRepository @Inject()(
+                                 mutesDAO: MutesDAO,
+                                 validationDAO: ValidationDAO
+                               ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {

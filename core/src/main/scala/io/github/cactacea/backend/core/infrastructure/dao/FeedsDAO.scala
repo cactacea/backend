@@ -9,15 +9,16 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class FeedsDAO @Inject()(db: DatabaseService) {
-
-  @Inject private var feedTagsDAO: FeedTagsDAO = _
-  @Inject private var feedMediumDAO: FeedMediumDAO = _
-  @Inject private var feedLikesDAO: FeedLikesDAO = _
-  @Inject private var feedReportsDAO: FeedReportsDAO = _
-  @Inject private var commentsDAO: CommentsDAO = _
-  @Inject private var blocksCountDAO: BlockCountDAO = _
-  @Inject private var timeService: TimeService = _
+class FeedsDAO @Inject()(
+                          db: DatabaseService,
+                          feedTagsDAO: FeedTagsDAO,
+                          feedMediumDAO: FeedMediumDAO,
+                          feedLikesDAO: FeedLikesDAO,
+                          feedReportsDAO: FeedReportsDAO,
+                          commentsDAO: CommentsDAO,
+                          blocksCountDAO: BlockCountDAO,
+                          timeService: TimeService
+                        ) {
 
   import db._
 
@@ -88,7 +89,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
       _ <- commentsDAO.delete(feedId)
       r <- _deleteFeeds(feedId, by)
       _ <- _updateAccount((r * -1L), sessionId)
-    } yield (r)
+    } yield (())
   }
 
   private def _deleteFeeds(feedId: FeedId, by: AccountId): Future[Long] = {

@@ -9,10 +9,10 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class CommentsRepository {
-
-  @Inject private var commentsDAO: CommentsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class CommentsRepository @Inject()(
+                                    commentsDAO: CommentsDAO,
+                                    validationDAO: ValidationDAO
+                                  ) {
 
   def findAll(feedId: FeedId, since: Option[Long], count: Option[Int], sessionId: SessionId): Future[List[Comment]] = {
     for {

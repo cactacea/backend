@@ -3,9 +3,9 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.core.application.services.{FriendRequestsService, FriendsService}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import io.github.cactacea.backend.core.application.services.FriendRequestsService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{DeleteFriendRequest, PostFriendRequest}
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.backend.swagger.CactaceaController
@@ -14,12 +14,13 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class RequestsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
+class RequestsController @Inject()(
+                                    @Flag("cactacea.api.prefix") apiPrefix: String,
+                                    s: Swagger,
+                                    friendRequestsService: FriendRequestsService,
+                                  ) extends CactaceaController {
 
   protected implicit val swagger: Swagger = s
-
-  @Inject private var friendRequestsService: FriendRequestsService = _
-  @Inject private var friendsService: FriendsService = _
 
   prefix(apiPrefix) {
 

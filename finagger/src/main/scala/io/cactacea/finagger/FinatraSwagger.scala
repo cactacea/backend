@@ -122,7 +122,7 @@ class FinatraSwagger(swagger: Swagger) {
     // get runtime mirror
     val runtimeMirror = universe.runtimeMirror(getClass.getClassLoader)
 
-    val ds = universe.asInstanceOf[Definitions with SymbolTable with StdNames]
+    val _ = universe.asInstanceOf[Definitions with SymbolTable with StdNames]
 
     val t = typeOf[T]
 
@@ -310,7 +310,7 @@ class FinatraSwagger(swagger: Swagger) {
         f.annotateField(body.annotations.asJava)
       }
 
-      val a = bodyFields.make()
+      val _ = bodyFields.make()
 
       Some(bodyFields.make().load(getClass.getClassLoader).getLoaded)
     } catch {
@@ -400,7 +400,7 @@ class FinatraSwagger(swagger: Swagger) {
           val typ = toJavaType(paramType)
           registerProperty(typ, typ, example)
         } catch {
-          case ex: Exception =>
+          case _: Exception =>
             // if this fails just register it best we can
             val typeClass = currentMirror.runtimeClass(paramType)
             registerProperty(typeClass, typeClass, example)
@@ -420,7 +420,7 @@ class FinatraSwagger(swagger: Swagger) {
     }
   }
 
-  private def registerProperty(typeConstructor: java.lang.reflect.Type, typ: java.lang.reflect.Type, example: Option[_] = None, name: Option[String] = None): Property = {
+  private def registerProperty(typeConstructor: java.lang.reflect.Type, typ: java.lang.reflect.Type, example: Option[_] = None): Property = {
     val modelConverters = ModelConverters.getInstance()
     val models = modelConverters.readAll(typ)
     for (entry <- models.entrySet().asScala) {

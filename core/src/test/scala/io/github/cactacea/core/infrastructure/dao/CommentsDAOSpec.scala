@@ -26,15 +26,35 @@ class CommentsDAOSpec extends DAOSpec {
     val comment2 = result1(1)._1
     val comment3 = result1(2)._1
     val comment4 = result1(3)._1
-    assert((comment1.id, comment1.feedId, comment1.by, comment1.message) == (commentId5, feedId, sessionAccount2.id, "5" * 100))
-    assert((comment2.id, comment2.feedId, comment2.by, comment2.message) == (commentId4, feedId, sessionAccount1.id, "4" * 100))
-    assert((comment3.id, comment3.feedId, comment3.by, comment3.message) == (commentId3, feedId, sessionAccount2.id, "3" * 100))
-    assert((comment4.id, comment4.feedId, comment4.by, comment4.message) == (commentId2, feedId, sessionAccount1.id, "2" * 100))
+    assert(comment1.id == commentId5)
+    assert(comment2.id == commentId4)
+    assert(comment3.id == commentId3)
+    assert(comment4.id == commentId2)
+
+    assert(comment1.feedId == feedId)
+    assert(comment2.feedId == feedId)
+    assert(comment3.feedId == feedId)
+    assert(comment4.feedId == feedId)
+
+    assert(comment1.by == sessionAccount2.id)
+    assert(comment2.by == sessionAccount1.id)
+    assert(comment3.by == sessionAccount2.id)
+    assert(comment4.by == sessionAccount1.id)
+
+    assert(comment1.message == "5" * 100)
+    assert(comment2.message == "4" * 100)
+    assert(comment3.message == "3" * 100)
+    assert(comment4.message == "2" * 100)
 
     val result2 = execute(commentsDAO.findAll(feedId, Some(comment4.id.value), Some(4), sessionAccount1.id.toSessionId))
     assert(result2.size == 1)
     val comment5 = result2(0)._1
-    assert((comment5.id, comment5.feedId, comment5.by, comment5.message) == (commentId1, feedId, sessionAccount2.id, "1" * 100))
+
+
+    assert(comment5.id == commentId1)
+    assert(comment5.feedId == feedId)
+    assert(comment5.by == sessionAccount2.id)
+    assert(comment5.message == "1" * 100)
 
     val feed1 = execute(feedsDAO.find(feedId, sessionAccount1.id.toSessionId)).head._1.commentCount
     assert(feed1 == 5)

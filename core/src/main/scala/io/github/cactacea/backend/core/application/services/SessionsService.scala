@@ -10,11 +10,11 @@ import io.github.cactacea.backend.core.domain.repositories.SessionsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
 @Singleton
-class SessionsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var sessionsRepository: SessionsRepository = _
-  @Inject private var actionService: InjectionService = _
+class SessionsService @Inject()(
+                                 db: DatabaseService,
+                                 sessionsRepository: SessionsRepository,
+                                 actionService: InjectionService
+                               ) {
 
   def signUp(accountName: String, displayName: Option[String], password: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String], deviceType: DeviceType): Future[Account] = {
     db.transaction {

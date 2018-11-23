@@ -1,10 +1,8 @@
 package io.github.cactacea.backend.core.domain.models
 
-import com.google.inject.Inject
-import io.github.cactacea.backend.core.application.components.interfaces.NotificationMessagesService
 import io.github.cactacea.backend.core.domain.enums.ContentStatusType
 import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
-import io.github.cactacea.backend.core.infrastructure.models.{AccountFeeds, Feeds, _}
+import io.github.cactacea.backend.core.infrastructure.models.{Feeds, _}
 
 case class Feed(
                  id: FeedId,
@@ -22,8 +20,6 @@ case class Feed(
 
 object Feed {
 
-  @Inject private var notificationMessagesService: NotificationMessagesService = _
-
   def apply(f: Feeds): Feed = {
     _apply(f, None, None, None, None, f.id.value)
   }
@@ -40,9 +36,9 @@ object Feed {
     _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
   }
 
-  def apply(af: AccountFeeds, f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
-    _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
-  }
+//  def apply(af: AccountFeeds, f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
+//    _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
+//  }
 
   private def _apply(f: Feeds, ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships], next: Long): Feed = {
     f.contentStatus match {

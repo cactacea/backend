@@ -80,7 +80,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         .join(query[Groups]).on((am, g) => g.id == am.groupId)
         .join(query[PushNotificationSettings]).on({ case ((am, g), p) => p.accountId == am.accountId &&
         ((p.directMessage == true && g.directMessage == true) || (p.groupMessage == true && g.directMessage == false))})
-        .leftJoin(query[Relationships]).on({ case (((am, g), _), r) =>  r.accountId == am.by && r.by == am.accountId })
+        .leftJoin(query[Relationships]).on({ case (((am, _), _), r) =>  r.accountId == am.by && r.by == am.accountId })
         .join(query[Accounts]).on({ case ((((am, _), _), _), a) =>  a.id == am.by})
         .join(query[Devices]).on({ case (((((am, _), _), _), _), d) => d.accountId == am.accountId && d.pushToken.isDefined})
         .map({case (((((am, _), p), r), a), d) => (a.accountName, a.displayName, r.map(_.editedDisplayName), p.showMessage, am.accountId, d.pushToken) })

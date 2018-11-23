@@ -14,12 +14,12 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class FollowersController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
+class FollowersController @Inject()(
+                                     @Flag("cactacea.api.prefix") apiPrefix: String,
+                                     followsService: FollowsService,
+                                     s: Swagger) extends CactaceaController {
 
   protected implicit val swagger: Swagger = s
-
-  @Inject private var followsService: FollowsService = _
-  @Inject private var followersService: FollowersService = _
 
   prefix(apiPrefix) {
 

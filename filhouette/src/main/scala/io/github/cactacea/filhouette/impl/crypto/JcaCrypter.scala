@@ -64,7 +64,7 @@ class JcaCrypter(settings: JcaCrypterSettings) extends Crypter {
     value.split("-", 2) match {
       case Array(version, data) if version == "1" => decryptVersion1(data, settings.key)
       case Array(version, _)                      => throw new CryptoException(UnknownVersion.format(version))
-      case v                                      => throw new CryptoException(UnexpectedFormat)
+      case _                                      => throw new CryptoException(UnexpectedFormat)
     }
   }
 

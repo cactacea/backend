@@ -26,7 +26,7 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.util.Future
 import io.github.cactacea.filhouette.api.services.{AuthenticatorService, IdentityService}
 
-import scala.language.higherKinds
+//import scala.language.higherKinds
 
 /**
   * A result which can transport a result as also additional data through the request handler process.
@@ -213,12 +213,12 @@ trait RequestHandlerBuilder[I <: Identity, A <: Authenticator, +R] {
   private def handleInitializedAuthenticator[T](authenticator: A, block: A => Future[HandlerResult[T]])(implicit request: Request) = {
     val auth = authenticatorService.touch(authenticator)
     block(auth.fold(identity, identity)).flatMap {
-      case hr @ HandlerResult(pr: Response, _) => Future.value(hr)
+      case hr @ HandlerResult(_: Response, _) => Future.value(hr)
       case hr @ HandlerResult(pr, _) => auth match {
         // Authenticator was touched so we update the authenticator and maybe the result
         case Left(a)  => authenticatorService.update(a, pr).map(pr => hr.copy(pr))
         // Authenticator was not touched so we return the original result
-        case Right(a) => Future.value(hr)
+        case Right(_) => Future.value(hr)
       }
     }
   }
@@ -237,7 +237,7 @@ trait RequestHandlerBuilder[I <: Identity, A <: Authenticator, +R] {
     */
   private def handleUninitializedAuthenticator[T](authenticator: A, block: A => Future[HandlerResult[T]])(implicit request: Request) = {
     block(authenticator).flatMap {
-      case hr @ HandlerResult(pr: Response, _) => Future.value(hr)
+      case hr @ HandlerResult(_: Response, _) => Future.value(hr)
       case hr @ HandlerResult(pr, _) =>
         authenticatorService.init(authenticator).flatMap { value =>
           authenticatorService.embed(value, pr)

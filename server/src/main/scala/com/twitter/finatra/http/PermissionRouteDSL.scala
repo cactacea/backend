@@ -1,8 +1,7 @@
 package com.twitter.finatra.http
 
 import com.twitter.finagle.http.RouteIndex
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{Permission, Permissions}
+import io.github.cactacea.backend.utils.oauth.Permission
 import io.swagger.models.{Operation, Swagger}
 
 /**
@@ -123,15 +122,15 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
 //    }
 //  }
 
-  private def validatePermission(requireScopes: List[Permission]): Boolean = {
-    if (SessionContext.permissions == Permissions.all) {
-      true
-    } else {
-      val s = SessionContext.permissions
-      val r = requireScopes.map(_.key).foldLeft(0) {_ + _}
-      (s & r) > r
-    }
-  }
+//  private def validatePermission(requireScopes: List[Permission]): Boolean = {
+//    if (SessionContext.permissions == Permissions.all) {
+//      true
+//    } else {
+//      val s = SessionContext.permissions
+//      val r = requireScopes.map(_.key).foldLeft(0) {_ + _}
+//      (s & r) > r
+//    }
+//  }
 
 }
 

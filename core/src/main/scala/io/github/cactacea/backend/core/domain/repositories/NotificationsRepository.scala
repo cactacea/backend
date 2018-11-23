@@ -11,16 +11,15 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 @Singleton
-class NotificationsRepository {
-
-
-  @Inject private var notificationsDAO: NotificationsDAO = _
-  @Inject private var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var feedsDAO: FeedsDAO = _
-  @Inject private var commentsDAO: CommentsDAO = _
-  @Inject private var deepLinkService: DeepLinkService = _
-  @Inject private var notificationMessagesService: NotificationMessagesService = _
+class NotificationsRepository @Inject()(
+                                         notificationsDAO: NotificationsDAO,
+                                         friendRequestsDAO: FriendRequestsDAO,
+                                         groupInvitationsDAO: GroupInvitationsDAO,
+                                         feedsDAO: FeedsDAO,
+                                         commentsDAO: CommentsDAO,
+                                         deepLinkService: DeepLinkService,
+                                         notificationMessagesService: NotificationMessagesService
+                                       ) {
 
   def createFeed(id: FeedId, accountIds: List[AccountId]): Future[Unit] = {
     val url = deepLinkService.getFeed(id)

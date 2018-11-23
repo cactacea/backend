@@ -36,7 +36,7 @@ class WebjarsController @Inject()(resolver: FileResolver) extends Controller {
     } else {
       val eTagNameTry = Try(getETagName(webjarsResourceURI))
       eTagNameTry match {
-        case Failure(e) =>
+        case Failure(_) =>
           response.notFound
         case Success(eTagName) =>
           if (!disableCache) {

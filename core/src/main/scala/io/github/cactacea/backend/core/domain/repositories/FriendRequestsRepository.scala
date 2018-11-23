@@ -8,12 +8,12 @@ import io.github.cactacea.backend.core.infrastructure.dao.{FriendRequestsDAO, Fr
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
 
 @Singleton
-class FriendRequestsRepository {
-
-  @Inject private var friendRequestsStatusDAO: FriendRequestsStatusDAO = _
-  @Inject private var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject private var friendsRepository: FriendsRepository = _
-  @Inject private var validationDAO: ValidationDAO = _
+class FriendRequestsRepository @Inject()(
+                                          friendRequestsStatusDAO: FriendRequestsStatusDAO,
+                                          friendRequestsDAO: FriendRequestsDAO,
+                                          friendsRepository: FriendsRepository,
+                                          validationDAO: ValidationDAO
+                                        ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
     for {

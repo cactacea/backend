@@ -59,7 +59,7 @@ object Account {
   }
 
   def apply(a: Accounts, r: Option[Relationships]): Account = {
-    apply(a, None, None, a.id.value)
+    apply(a, r, None, a.id.value)
   }
 
   def apply(a: Accounts): Account = {

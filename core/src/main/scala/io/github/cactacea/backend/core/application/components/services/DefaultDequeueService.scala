@@ -5,9 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.{NotificationService, DequeueService}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-class DefaultDequeueService extends DequeueService {
-
-  @Inject private var notificationService: NotificationService = _
+class DefaultDequeueService @Inject()(notificationService: NotificationService) extends DequeueService {
 
   def dequeueFeed(feedId: FeedId): Future[Unit] = {
     notificationService.fanOutFeed(feedId)

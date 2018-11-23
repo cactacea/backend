@@ -11,17 +11,17 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 // TODO : Refactoring
 
 @Singleton
-class PushNotificationsRepository {
-
-  @Inject private var pushNotificationsDAO: PushNotificationsDAO = _
-  @Inject private var feedsDAO: FeedsDAO = _
-  @Inject private var accountFeedsDAO: AccountFeedsDAO = _
-  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var messagesDAO: MessagesDAO = _
-  @Inject private var accountMessagesDAO: AccountMessagesDAO = _
-  @Inject private var commentsDAO: CommentsDAO = _
-  @Inject private var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject private var deepLinkService: DeepLinkService = _
+class PushNotificationsRepository @Inject()(
+                                             pushNotificationsDAO: PushNotificationsDAO,
+                                             feedsDAO: FeedsDAO,
+                                             accountFeedsDAO: AccountFeedsDAO,
+                                             groupInvitationsDAO: GroupInvitationsDAO,
+                                             messagesDAO: MessagesDAO,
+                                             accountMessagesDAO: AccountMessagesDAO,
+                                             commentsDAO: CommentsDAO,
+                                             friendRequestsDAO: FriendRequestsDAO,
+                                             deepLinkService: DeepLinkService
+                                           ) {
 
   def findByFeedId(id: FeedId) : Future[List[PushNotification]] = {
     feedsDAO.find(id).flatMap(_ match {

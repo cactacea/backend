@@ -7,15 +7,15 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 
 @Singleton
-class BlocksRepository {
-
-  @Inject private var blocksDAO: BlocksDAO = _
-  @Inject private var followsDAO: FollowsDAO = _
-  @Inject private var followersDAO: FollowersDAO = _
-  @Inject private var friendsDAO: FriendsDAO = _
-  @Inject private var mutesDAO: MutesDAO = _
-  @Inject private var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class BlocksRepository @Inject()(
+                                  blocksDAO: BlocksDAO,
+                                  followsDAO: FollowsDAO,
+                                  followersDAO: FollowersDAO,
+                                  friendsDAO: FriendsDAO,
+                                  mutesDAO: MutesDAO,
+                                  friendRequestsDAO: FriendRequestsDAO,
+                                  validationDAO: ValidationDAO
+                                ) {
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
     blocksDAO.findAll(since, offset, count, sessionId).map(_.map({ case (a, r, b) => Account(a, r, b)}))

@@ -7,19 +7,19 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 @Singleton
-class ReportsRepository {
-
-  @Inject private var accountReportsDAO: AccountReportsDAO = _
-  @Inject private var feedReportsDAO: FeedReportsDAO = _
-  @Inject private var commentReportsDAO: CommentReportsDAO = _
-  @Inject private var groupReportsDAO: GroupReportsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class ReportsRepository @Inject()(
+                                   accountReportsDAO: AccountReportsDAO,
+                                   feedReportsDAO: FeedReportsDAO,
+                                   commentReportsDAO: CommentReportsDAO,
+                                   groupReportsDAO: GroupReportsDAO,
+                                   validationDAO: ValidationDAO
+                                 ) {
 
   def createAccountReport(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
-      id <- accountReportsDAO.create(accountId, reportType, reportContent, sessionId)
+      _ <- accountReportsDAO.create(accountId, reportType, reportContent, sessionId)
     } yield (Future.value(Unit))
   }
 

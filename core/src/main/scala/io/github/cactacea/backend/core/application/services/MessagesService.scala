@@ -8,12 +8,12 @@ import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.domain.repositories.MessagesRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-class MessagesService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var messagesRepository: MessagesRepository = _
-  @Inject private var publishService: EnqueueService = _
-  @Inject private var injectionService: InjectionService = _
+class MessagesService @Inject()(
+                                 db: DatabaseService,
+                                 messagesRepository: MessagesRepository,
+                                 publishService: EnqueueService,
+                                 injectionService: InjectionService
+                               ) {
 
   def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
     db.transaction {

@@ -9,11 +9,11 @@ import io.github.cactacea.backend.core.domain.repositories.DevicesRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
 @Singleton
-class DevicesService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var deviceTokensRepository: DevicesRepository = _
-  @Inject private var actionService: InjectionService = _
+class DevicesService @Inject()(
+                                db: DatabaseService,
+                                deviceTokensRepository: DevicesRepository,
+                                actionService: InjectionService
+                              ) {
 
   def update(pushToken: Option[String], sessionId: SessionId, udid: String): Future[Unit] = {
     db.transaction {

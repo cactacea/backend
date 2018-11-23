@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.helpers.ServiceSpec
 

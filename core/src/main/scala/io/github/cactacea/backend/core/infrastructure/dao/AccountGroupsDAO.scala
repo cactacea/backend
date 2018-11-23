@@ -8,11 +8,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class AccountGroupsDAO @Inject()(db: DatabaseService) {
+class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
-
-  @Inject private var timeService: TimeService = _
 
   def exist(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId

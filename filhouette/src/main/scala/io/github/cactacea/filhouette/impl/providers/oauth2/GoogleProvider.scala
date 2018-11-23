@@ -110,7 +110,7 @@ class GoogleProfileParser extends SocialProfileParser[JsonNode, CommonSocialProf
 //    }
 
     // TODO
-    val emailIndex = ""
+//    val emailIndex = ""
     val emailValue = Some("")
 
     CommonSocialProfile(

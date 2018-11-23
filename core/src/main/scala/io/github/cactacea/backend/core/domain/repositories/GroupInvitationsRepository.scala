@@ -10,15 +10,14 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class GroupInvitationsRepository {
-
-  @Inject private var accountsDAO: AccountsDAO = _
-  @Inject private var groupsDAO: GroupsDAO = _
-  @Inject private var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
-  @Inject private var messagesDAO: MessagesDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class GroupInvitationsRepository @Inject()(
+                                            groupsDAO: GroupsDAO,
+                                            groupAccountsDAO: GroupAccountsDAO,
+                                            groupInvitationsDAO: GroupInvitationsDAO,
+                                            accountGroupsDAO: AccountGroupsDAO,
+                                            messagesDAO: MessagesDAO,
+                                            validationDAO: ValidationDAO
+                                          ) {
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
     for {
@@ -52,7 +51,7 @@ class GroupInvitationsRepository {
           _ <- accountGroupsDAO.create(i.accountId, i.groupId)
           _ <- groupInvitationsDAO.update(i.accountId, i.groupId, GroupInvitationStatusType.accepted)
           _ <- groupsDAO.updateAccountCount(i.groupId, 1L)
-          _ <- messagesDAO.create(i.groupId, g.accountCount, i.accountId, MessageType.invitation, i.accountId.toSessionId)
+          _ <- messagesDAO.create(i.groupId, g.accountCount, MessageType.invitation, i.accountId.toSessionId)
         } yield (Future.value(Unit))
     })
   }

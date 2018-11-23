@@ -8,22 +8,22 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 
 @Singleton
-class GroupAccountsRepository {
-
-  @Inject private var groupsDAO: GroupsDAO = _
-  @Inject private var accountMessagesDAO: AccountMessagesDAO = _
-  @Inject private var accountGroupsDAO: AccountGroupsDAO = _
-  @Inject private var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject private var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject private var messagesDAO: MessagesDAO = _
-  @Inject private var groupReportsDAO: GroupReportsDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class GroupAccountsRepository @Inject()(
+                                         groupsDAO: GroupsDAO,
+                                         accountMessagesDAO: AccountMessagesDAO,
+                                         accountGroupsDAO: AccountGroupsDAO,
+                                         groupAccountsDAO: GroupAccountsDAO,
+                                         groupInvitationsDAO: GroupInvitationsDAO,
+                                         messagesDAO: MessagesDAO,
+                                         groupReportsDAO: GroupReportsDAO,
+                                         validationDAO: ValidationDAO
+                                       ) {
 
   def findAll(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
     for {
       g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.hasJoinAuthority(g, sessionId)
-      r <- groupAccountsDAO.findAll(groupId, since, offset, count, sessionId).map(_.map({ case (a, r, ag) => Account(a, r, ag)}))
+      r <- groupAccountsDAO.findAll(groupId, since, offset, count).map(_.map({ case (a, r, ag) => Account(a, r, ag)}))
     } yield (r)
   }
 
@@ -37,7 +37,7 @@ class GroupAccountsRepository {
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupsDAO.updateAccountCount(groupId, 1L)
       _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
-      _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.joined, sessionId)
+      _ <- messagesDAO.create(groupId, g.accountCount, MessageType.joined, sessionId)
     } yield (Future.value(Unit))
   }
 
@@ -52,7 +52,7 @@ class GroupAccountsRepository {
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupsDAO.updateAccountCount(groupId, 1L)
       _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
-      _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.joined, sessionId)
+      _ <- messagesDAO.create(groupId, g.accountCount, MessageType.joined, accountId.toSessionId)
     } yield (Future.value(Unit))
   }
 
@@ -74,7 +74,7 @@ class GroupAccountsRepository {
       } else {
         (for {
           _ <- groupsDAO.updateAccountCount(groupId, -1L)
-          _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.left, accountId.toSessionId).map(_ => true)
+          _ <- messagesDAO.create(groupId, g.accountCount, MessageType.left, accountId.toSessionId).map(_ => true)
         } yield (Future.value(Unit)))
       }
     )
@@ -100,7 +100,7 @@ class GroupAccountsRepository {
       } else {
         (for {
           _ <- groupsDAO.updateAccountCount(groupId, -1L)
-          _ <- messagesDAO.create(groupId, g.accountCount, accountId, MessageType.left, accountId.toSessionId).map(_ => true)
+          _ <- messagesDAO.create(groupId, g.accountCount, MessageType.left, accountId.toSessionId).map(_ => true)
         } yield (Future.value(Unit)))
       }
     )

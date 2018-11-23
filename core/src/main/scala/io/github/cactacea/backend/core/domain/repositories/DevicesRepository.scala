@@ -7,9 +7,9 @@ import io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
 @Singleton
-class DevicesRepository {
-
-  @Inject private var devicesDAO: DevicesDAO = _
+class DevicesRepository @Inject()(
+                                   devicesDAO: DevicesDAO
+                                 ) {
 
   def update(udid: String, pushToken: Option[String], sessionId: SessionId): Future[Unit] = {
     devicesDAO.update(udid, pushToken, sessionId).flatMap(_ => Future.Unit)

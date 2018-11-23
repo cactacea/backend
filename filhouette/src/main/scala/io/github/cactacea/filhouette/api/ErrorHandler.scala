@@ -53,7 +53,7 @@ trait NotAuthorizedErrorHandler extends ErrorHandler {
     * @return A partial function which maps an exception to a Play result.
     */
   def exceptionHandler(implicit request: Request): PartialFunction[Throwable, Future[Response]] = {
-    case e: NotAuthorizedException => onNotAuthorized
+    case _: NotAuthorizedException => onNotAuthorized
   }
 
   /**
@@ -114,7 +114,7 @@ trait NotAuthenticatedErrorHandler extends ErrorHandler {
     * @return A partial function which maps an exception to a Play result.
     */
   def exceptionHandler(implicit request: Request): PartialFunction[Throwable, Future[Response]] = {
-    case e: NotAuthenticatedException => onNotAuthenticated
+    case _: NotAuthenticatedException => onNotAuthenticated
   }
 
   /**

@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import com.twitter.util.Await
 import io.github.cactacea.backend.core.domain.enums.MediumType
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
@@ -23,9 +22,42 @@ class MediumsDAOSpec extends DAOSpec {
     val medium2 = result(1)
     val medium3 = result(2)
 
-    assert((medium1.id, medium1.by, medium1.width, medium1.height, medium1.size, medium1.key, medium1.mediumType, medium1.uri, medium1.thumbnailUri) == (mediumId1, sessionAccount.id, 1, 4, 100L, "key1", MediumType.image, "http://example.com/test1.jpeg", Some("http://example.com/test1.jpeg")))
-    assert((medium2.id, medium2.by, medium2.width, medium2.height, medium2.size, medium2.key, medium2.mediumType, medium2.uri, medium2.thumbnailUri) == (mediumId2, sessionAccount.id, 2, 5, 200L, "key2", MediumType.movie, "http://example.com/test2.mov", Some("http://example.com/test2.mov")))
-    assert((medium3.id, medium3.by, medium3.width, medium3.height, medium3.size, medium3.key, medium3.mediumType, medium3.uri, medium3.thumbnailUri) == (mediumId3, sessionAccount.id, 3, 6, 300L, "key3", MediumType.image, "http://example.com/test3.jpeg", Some("http://example.com/test3.jpeg")))
+    assert(medium1.id == mediumId1)
+    assert(medium2.id == mediumId2)
+    assert(medium3.id == mediumId3)
+
+    assert(medium1.by == sessionAccount.id)
+    assert(medium2.by == sessionAccount.id)
+    assert(medium3.by == sessionAccount.id)
+
+    assert(medium1.width == 1)
+    assert(medium2.width == 2)
+    assert(medium3.width == 3)
+
+    assert(medium1.height == 4)
+    assert(medium2.height == 5)
+    assert(medium3.height == 6)
+
+    assert(medium1.size == 100L)
+    assert(medium2.size == 200L)
+    assert(medium3.size == 300L)
+
+    assert(medium1.key == "key1")
+    assert(medium2.key == "key2")
+    assert(medium3.key == "key3")
+
+    assert(medium1.mediumType == MediumType.image)
+    assert(medium2.mediumType == MediumType.movie)
+    assert(medium3.mediumType == MediumType.image)
+
+    assert(medium1.uri == "http://example.com/test1.jpeg")
+    assert(medium2.uri == "http://example.com/test2.mov")
+    assert(medium3.uri == "http://example.com/test3.jpeg")
+
+    assert(medium1.thumbnailUri == Some("http://example.com/test1.jpeg"))
+    assert(medium2.thumbnailUri == Some("http://example.com/test2.mov"))
+    assert(medium3.thumbnailUri == Some("http://example.com/test3.jpeg"))
+
 
   }
 

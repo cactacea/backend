@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.application.services
 
-
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, StorageService}
@@ -9,14 +8,12 @@ import io.github.cactacea.backend.core.domain.enums.MediumType
 import io.github.cactacea.backend.core.domain.repositories.MediumsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 
-class MediumsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var injectionService: InjectionService = _
-  @Inject private var storageService: StorageService = _
-  @Inject private var mediumsRepository: MediumsRepository = _
-
-
+class MediumsService @Inject()(
+                                db: DatabaseService,
+                                injectionService: InjectionService,
+                                storageService: StorageService,
+                                mediumsRepository: MediumsRepository
+                              ) {
 
   def create(width: Int, height: Int, data: Array[Byte], contentType: Option[String], sessionId: SessionId): Future[(MediumId, String)] = {
     for {

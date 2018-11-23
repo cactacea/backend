@@ -7,10 +7,10 @@ import io.github.cactacea.backend.core.infrastructure.dao.{FeedLikesDAO, Validat
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
 
 @Singleton
-class FeedLikesRepository {
-
-  @Inject private var feedLikesDAO: FeedLikesDAO = _
-  @Inject private var validationDAO: ValidationDAO = _
+class FeedLikesRepository @Inject()(
+                                     feedLikesDAO: FeedLikesDAO,
+                                     validationDAO: ValidationDAO
+                                   ) {
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {

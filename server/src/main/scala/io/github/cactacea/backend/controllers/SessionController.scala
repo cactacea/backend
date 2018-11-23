@@ -18,22 +18,23 @@ import io.swagger.models.Swagger
 
 
 @Singleton
-class SessionController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, s: Swagger) extends CactaceaController {
+class SessionController @Inject()(
+                                   @Flag("cactacea.api.prefix") apiPrefix: String,
+                                   s: Swagger,
+                                   accountsService: AccountsService,
+                                   accountGroupsService: AccountGroupsService,
+                                   feedsService: FeedsService,
+                                   feedLikesService: FeedLikesService,
+                                   followsService: FollowsService,
+                                   followersService: FollowersService,
+                                   friendsService: FriendsService,
+                                   invitationService: GroupInvitationsService,
+                                   mutesService: MutesService,
+                                   sessionService: SessionsService,
+                                   friendRequestsService: FriendRequestsService
+                                 ) extends CactaceaController {
 
   implicit val swagger: Swagger = s
-
-  @Inject private var accountsService: AccountsService = _
-  @Inject private var accountGroupsService: AccountGroupsService = _
-  @Inject private var feedsService: FeedsService = _
-  @Inject private var feedLikesService: FeedLikesService = _
-  @Inject private var followsService: FollowsService = _
-  @Inject private var followersService: FollowersService = _
-  @Inject private var friendsService: FriendsService = _
-  @Inject private var invitationService: GroupInvitationsService = _
-  @Inject private var mutesService: MutesService = _
-  @Inject private var sessionService: SessionsService = _
-  @Inject private var settingsService: SettingsService = _
-  @Inject private var friendRequestsService: FriendRequestsService = _
 
   prefix(apiPrefix) {
 

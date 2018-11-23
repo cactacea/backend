@@ -9,11 +9,11 @@ import io.github.cactacea.backend.core.domain.repositories.MutesRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 
 @Singleton
-class MutesService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var mutesRepository: MutesRepository = _
-  @Inject private var injectionService: InjectionService = _
+class MutesService @Inject()(
+                              db: DatabaseService,
+                              mutesRepository: MutesRepository,
+                              injectionService: InjectionService
+                            ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {

@@ -10,12 +10,12 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, SessionId}
 
 @Singleton
-class GroupsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var groupsRepository: GroupsRepository = _
-  @Inject private var reportsRepository: ReportsRepository = _
-  @Inject private var injectionService: InjectionService = _
+class GroupsService @Inject()(
+                               db: DatabaseService,
+                               groupsRepository: GroupsRepository,
+                               reportsRepository: ReportsRepository,
+                               injectionService: InjectionService
+                             ) {
 
   def create(name: String, byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupId] = {
     db.transaction {

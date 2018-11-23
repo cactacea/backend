@@ -9,11 +9,9 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Relationships}
 
 @Singleton
-class BlocksDAO @Inject()(db: DatabaseService) {
+class BlocksDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
-
-  @Inject private var timeService: TimeService = _
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId

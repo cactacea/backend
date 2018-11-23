@@ -2,17 +2,18 @@ package io.github.cactacea.backend.core.application.services
 
 import java.util.Locale
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.domain.repositories.NotificationsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
-class NotificationsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var notificationsRepository: NotificationsRepository = _
+@Singleton
+class NotificationsService @Inject()(
+                                      db: DatabaseService,
+                                      notificationsRepository: NotificationsRepository
+                                    ) {
 
   def find(since: Option[Long], offset: Option[Int], count: Option[Int], locales: Seq[Locale], sessionId: SessionId): Future[List[Notification]] = {
     db.transaction {

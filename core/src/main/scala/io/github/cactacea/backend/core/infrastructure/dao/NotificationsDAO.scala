@@ -34,6 +34,7 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     val q = quote {
       query[Notifications].insert(
         _.accountId         -> lift(accountId),
+        _.by                -> lift(by),
         _.notificationType  -> lift(notificationType),
         _.contentId         -> lift(contentIdOpt),
         _.url               -> lift(url),

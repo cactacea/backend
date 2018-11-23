@@ -9,11 +9,11 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 
 @Singleton
-class AccountGroupsService {
-
-  @Inject private var db: DatabaseService = _
-  @Inject private var accountGroupsRepository: AccountGroupsRepository = _
-  @Inject private var actionService: InjectionService = _
+class AccountGroupsService @Inject()(
+                                      db: DatabaseService,
+                                      accountGroupsRepository: AccountGroupsRepository,
+                                      actionService: InjectionService
+                                    ) {
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
