@@ -72,6 +72,7 @@ lazy val plugin = (project in file("plugin"))
     scalacOptions ++= Seq("-feature", "-deprecation")
   )
   .settings(publishSettings)
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val demo = (project in file("demo"))
   .settings(
