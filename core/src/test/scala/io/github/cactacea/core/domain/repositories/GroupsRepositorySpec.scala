@@ -28,7 +28,7 @@ class GroupsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("GroupsRepositorySpec2", "session user password", "session user udid")
     val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val result = execute(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    execute(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     // TODO : Check
 
   }
@@ -37,7 +37,7 @@ class GroupsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("GroupsRepositorySpec3", "session user password", "session user udid")
     val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val result = execute(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
+    execute(groupsRepository.update(groupId, Some("new group name"), false, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
     // TODO : Check
 
   }

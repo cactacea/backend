@@ -9,7 +9,6 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNot
 class AccountsRepositorySpec extends RepositorySpec {
 
   val accountsRepository = injector.instance[AccountsRepository]
-  val sessionsRepository = injector.instance[SessionsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
   val mediumRepository = injector.instance[MediumsRepository]
 
