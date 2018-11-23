@@ -9,8 +9,8 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 
 class FeedLikesRepositorySpec extends RepositorySpec {
 
-  var feedsRepository = injector.instance[FeedsRepository]
-  var feedLikesRepository = injector.instance[FeedLikesRepository]
+  val feedsRepository = injector.instance[FeedsRepository]
+  val feedLikesRepository = injector.instance[FeedLikesRepository]
 
   test("create a feed like") {
 
