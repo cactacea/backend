@@ -33,8 +33,8 @@ object Config extends DurationReader {
     }
 
     object master extends config {
-      lazy val user = masterDBConfig.user.getOrElse("root")
-      lazy val password = masterDBConfig.password.getOrElse("root")
+      lazy val user = masterDBConfig.user.getOrElse("cactacea")
+      lazy val password = masterDBConfig.password.getOrElse("cactacea")
       lazy val database = masterDBConfig.database.getOrElse("cactacea")
       lazy val dest = masterDBConfig.dest.getOrElse("localhost:3306")
       lazy val lowWatermark = masterDBConfig.lowWatermark.getOrElse(0)
@@ -49,8 +49,8 @@ object Config extends DurationReader {
     lazy val useSlave = slaveDBConfig.dest.isDefined
 
     object slave extends config {
-      lazy val user = slaveDBConfig.user.getOrElse("root")
-      lazy val password = slaveDBConfig.password.getOrElse("root")
+      lazy val user = slaveDBConfig.user.getOrElse("cactacea")
+      lazy val password = slaveDBConfig.password.getOrElse("cactacea")
       lazy val database = slaveDBConfig.database.getOrElse("cactacea")
       lazy val dest = slaveDBConfig.dest.getOrElse("localhost:3306")
       lazy val lowWatermark = slaveDBConfig.lowWatermark.getOrElse(0)

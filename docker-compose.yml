@@ -1,13 +1,22 @@
 version: '3'
 services:
   mysql:
-    image: mysql:8.0.4
+    image: mysql:8.0.3
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-    ports:
-      - "127.0.0.1:3306:3306"
     environment:
       MYSQL_DATABASE: cactacea
       MYSQL_USER: cactacea
       MYSQL_PASSWORD: cactacea
       MYSQL_ROOT_PASSWORD: root
 
+  cactacea:
+    image: cactacea/backend
+    depends_on:
+    - mysql
+    environment:
+      CACTACEA_MASTER_DB_NAME: cactacea
+      CACTACEA_MASTER_DB_USERNAME: cactacea
+      CACTACEA_MASTER_DB_PASSWORD: cactacea
+      CACTACEA_MASTER_DB_DEST: docker.for.mac.host.internal:3306
+    ports:
+    - "9000:9000"
