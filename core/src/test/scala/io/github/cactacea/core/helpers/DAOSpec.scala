@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.helpers
 
-import com.google.inject.Inject
 import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
 import com.twitter.util.logging.Logging
@@ -29,37 +28,37 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
 
   val db: DatabaseService = injector.instance[DatabaseService]
 
-  @Inject var accountsDAO: AccountsDAO = _
-  @Inject var mediumsDAO: MediumsDAO = _
-  @Inject var feedsDAO: FeedsDAO = _
-  @Inject var accountFeedsDAO: AccountFeedsDAO = _
-  @Inject var groupsDAO: GroupsDAO = _
-  @Inject var accountGroupsDAO: AccountGroupsDAO = _
-  @Inject var messagesDAO: MessagesDAO = _
-  @Inject var accountMessagesDAO: AccountMessagesDAO = _
-  @Inject var userReportsDAO: AccountReportsDAO = _
-  @Inject var followsDAO: FollowsDAO = _
-  @Inject var friendsDAO: FriendsDAO = _
-  @Inject var hashService: HashService = _
-  @Inject var commentLikesDAO: CommentLikesDAO = _
-  @Inject var commentReportsDAO: CommentReportsDAO = _
-  @Inject var pushNotificationSettingDAO: PushNotificationSettingsDAO = _
-  @Inject var devicesDAO: DevicesDAO = _
-  @Inject var pushNotificationsDAO: PushNotificationsDAO = _
-  @Inject var feedLikesDAO: FeedLikesDAO = _
-  @Inject var feedReportsDAO: FeedReportsDAO = _
-  @Inject var commentsDAO: CommentsDAO = _
-  @Inject var followersDAO: FollowersDAO = _
-  @Inject var friendRequestsDAO: FriendRequestsDAO = _
-  @Inject var friendRequestsStatusDAO: FriendRequestsStatusDAO = _
-  @Inject var groupAccountsDAO: GroupAccountsDAO = _
-  @Inject var groupAuthorityDAO: GroupAuthorityDAO = _
-  @Inject var groupInvitationsDAO: GroupInvitationsDAO = _
-  @Inject var groupReportsDAO: GroupReportsDAO = _
-  @Inject var blocksDAO: BlocksDAO = _
-  @Inject var mutesDAO: MutesDAO = _
-  @Inject var outstandingFriendRequestsDAO: FriendRequestsStatusDAO = _
-  @Inject var pushNotificationSettingsDAO: PushNotificationSettingsDAO = _
+  val accountsDAO = injector.instance[AccountsDAO]
+  val mediumsDAO = injector.instance[MediumsDAO]
+  val feedsDAO = injector.instance[FeedsDAO]
+  val accountFeedsDAO = injector.instance[AccountFeedsDAO]
+  val groupsDAO = injector.instance[GroupsDAO]
+  val accountGroupsDAO = injector.instance[AccountGroupsDAO]
+  val messagesDAO = injector.instance[MessagesDAO]
+  val accountMessagesDAO = injector.instance[AccountMessagesDAO]
+  val userReportsDAO = injector.instance[AccountReportsDAO]
+  val followsDAO = injector.instance[FollowsDAO]
+  val friendsDAO = injector.instance[FriendsDAO]
+  val hashService = injector.instance[HashService]
+  val commentLikesDAO = injector.instance[CommentLikesDAO]
+  val commentReportsDAO = injector.instance[CommentReportsDAO]
+  val pushNotificationSettingDAO = injector.instance[PushNotificationSettingsDAO]
+  val devicesDAO = injector.instance[DevicesDAO]
+  val pushNotificationsDAO = injector.instance[PushNotificationsDAO]
+  val feedLikesDAO = injector.instance[FeedLikesDAO]
+  val feedReportsDAO = injector.instance[FeedReportsDAO]
+  val commentsDAO = injector.instance[CommentsDAO]
+  val followersDAO = injector.instance[FollowersDAO]
+  val friendRequestsDAO = injector.instance[FriendRequestsDAO]
+  val friendRequestsStatusDAO = injector.instance[FriendRequestsStatusDAO]
+  val groupAccountsDAO = injector.instance[GroupAccountsDAO]
+  val groupAuthorityDAO = injector.instance[GroupAuthorityDAO]
+  val groupInvitationsDAO = injector.instance[GroupInvitationsDAO]
+  val groupReportsDAO = injector.instance[GroupReportsDAO]
+  val blocksDAO = injector.instance[BlocksDAO]
+  val mutesDAO = injector.instance[MutesDAO]
+  val outstandingFriendRequestsDAO = injector.instance[FriendRequestsStatusDAO]
+  val pushNotificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
 
   def createAccount(accountName: String): Accounts = {
     val u: Accounts = FactoryHelper.createAccounts(accountName)

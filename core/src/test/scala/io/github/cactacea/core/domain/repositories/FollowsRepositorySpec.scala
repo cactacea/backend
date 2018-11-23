@@ -39,7 +39,7 @@ class FollowsRepositorySpec extends RepositorySpec {
     val blockingUser = signUp("FollowRepositorySpec4", "blocked user password", "blocked user udid")
 
     execute(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
-    val session = signUp("FollowRepositorySpec4-2", "session password", "udid")
+    signUp("FollowRepositorySpec4-2", "session password", "udid")
     assert(intercept[CactaceaException] {
       execute(followerRepository.create(blockingUser.id, sessionUser.id.toSessionId))
     }.error == AccountNotFound)

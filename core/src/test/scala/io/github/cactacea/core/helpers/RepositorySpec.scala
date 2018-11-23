@@ -1,10 +1,9 @@
 package io.github.cactacea.backend.core.helpers
 
-import com.google.inject.Inject
 import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
-import com.twitter.util.{Await, Future}
 import com.twitter.util.logging.Logging
+import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.DeviceType
@@ -25,8 +24,8 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
     Await.result(db.transaction(f))
   }
 
-  val db: DatabaseService = injector.instance[DatabaseService]
-  @Inject private var sessionsRepository: SessionsRepository = _
+  val db = injector.instance[DatabaseService]
+  var sessionsRepository = injector.instance[SessionsRepository]
 
   def signUp(accountName: String, password: String, udid: String) = {
 

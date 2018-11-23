@@ -32,11 +32,11 @@ class FriendRequestsDAOSpec extends DAOSpec {
     execute(friendRequestsDAO.delete(requestedAccount4.id, sessionAccount.id.toSessionId))
     execute(friendRequestsDAO.delete(requestedAccount5.id, sessionAccount.id.toSessionId))
 
-    val friendRequestId6 = execute(friendRequestsDAO.create(requestedAccount1.id, sessionAccount.id.toSessionId))
-    val friendRequestId7 = execute(friendRequestsDAO.create(requestedAccount2.id, sessionAccount.id.toSessionId))
-    val friendRequestId8 = execute(friendRequestsDAO.create(requestedAccount3.id, sessionAccount.id.toSessionId))
-    val friendRequestId9 = execute(friendRequestsDAO.create(requestedAccount4.id, sessionAccount.id.toSessionId))
-    val friendRequestId10 = execute(friendRequestsDAO.create(requestedAccount5.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount1.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount2.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount3.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount4.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount5.id, sessionAccount.id.toSessionId))
 
     assert(execute(friendRequestsDAO.exist(requestedAccount1.id, sessionAccount.id.toSessionId)) == true)
     assert(execute(friendRequestsDAO.exist(requestedAccount2.id, sessionAccount.id.toSessionId)) == true)
@@ -55,11 +55,11 @@ class FriendRequestsDAOSpec extends DAOSpec {
     val requestedAccount4 = createAccount("FriendRequestsDAOSpec11")
     val requestedAccount5 = createAccount("FriendRequestsDAOSpec12")
 
-    val friendRequestId1 = execute(friendRequestsDAO.create(requestedAccount1.id, sessionAccount.id.toSessionId))
-    val friendRequestId2 = execute(friendRequestsDAO.create(requestedAccount2.id, sessionAccount.id.toSessionId))
-    val friendRequestId3 = execute(friendRequestsDAO.create(requestedAccount3.id, sessionAccount.id.toSessionId))
-    val friendRequestId4 = execute(friendRequestsDAO.create(requestedAccount4.id, sessionAccount.id.toSessionId))
-    val friendRequestId5 = execute(friendRequestsDAO.create(requestedAccount5.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount1.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount2.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount3.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount4.id, sessionAccount.id.toSessionId))
+    execute(friendRequestsDAO.create(requestedAccount5.id, sessionAccount.id.toSessionId))
 
     // delete requests
     execute(friendRequestsDAO.delete(requestedAccount1.id, sessionAccount.id.toSessionId))

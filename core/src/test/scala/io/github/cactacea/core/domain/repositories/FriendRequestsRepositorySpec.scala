@@ -70,7 +70,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val friendUser = signUp("FriendRequestsRepositorySpec9", "friend user password", "friend user udid")
 
     execute(friendRequestsRepository.create(friendUser.id, sessionUser.id.toSessionId))
-    val result = execute(friendRequestsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
+    execute(friendRequestsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
     // TODO : Check
 
   }

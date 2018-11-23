@@ -25,7 +25,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     val groupId = execute(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     execute(groupAccountsRepository.create(groupId, user.id.toSessionId))
 
-    val messageId = execute(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
+    execute(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
 
     execute(messagesRepository.delete(groupId, user.id.toSessionId))
     // TODO : Check
@@ -50,11 +50,11 @@ class MessagesRepositorySpec extends RepositorySpec {
 
     val groupId = execute(groupsRepository.create(Some("group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
     execute(groupAccountsRepository.create(groupId, user.id.toSessionId))
-    val messageId = execute(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
+    execute(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
 //    execute(deliveryMessagesRepository.create(messageId))
 
     val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
-    val messageId2 = execute(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
+    execute(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
 //    execute(deliveryMessagesRepository.create(messageId2))
 
     val messages = execute(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))

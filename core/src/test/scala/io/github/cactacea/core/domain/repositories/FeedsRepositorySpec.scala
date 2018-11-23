@@ -20,7 +20,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val tags = Some(List("tag1", "tag2", "tag3"))
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
-    val (id, url) = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val (id, _) = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
     val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feed = execute(feedsRepository.find(feedId, session.id.toSessionId))

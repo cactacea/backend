@@ -10,7 +10,6 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountTer
 
 class SessionsRepositorySpec extends RepositorySpec {
 
-  val sessionsRepository = injector.instance[SessionsRepository]
   val devicesDAO = injector.instance[DevicesDAO]
   var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
   val accountsDAO = injector.instance[AccountsDAO]
