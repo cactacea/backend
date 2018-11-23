@@ -13,14 +13,14 @@ sudo: required
 
 services:
   - mysql
-  - docker
+#  - docker
 
-addons:
-  apt:
-    sources:
-    - mysql-5.7-trusty
-    packages:
-    - mysql-server
+#addons:
+#  apt:
+#    sources:
+#    - mysql-5.7-trusty
+#    packages:
+#    - mysql-server
 
 env:
   - JAVA_OPTS="-Dsbt.log.noformat=true"
