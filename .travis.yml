@@ -44,7 +44,7 @@ before_install:
   - mkdir -p target/scala-2.12/coverage-report/
 
 script:
-  - sbt clean test
-  - if [[ -n "$CODACY_PROJECT_TOKEN" ]]; then sbt coverageReport coverageAggregate codacyCoverage; else echo "Skipped coverage reporting since no token was found"; fi
+  - sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport coverageAggregate
+  - if [[ -n "$CODACY_PROJECT_TOKEN" ]]; then sbt ++$TRAVIS_SCALA_VERSION codacyCoverage; else echo "Skipped coverage reporting since no token was found"; fi
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm

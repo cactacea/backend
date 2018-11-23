@@ -3,7 +3,7 @@ logLevel := Level.Warn
 resolvers += "Flyway" at "https://flywaydb.org/repo"
 resolvers += "Typesafe Repository" at "https://repo.typesafe.com/typesafe/releases/"
 
-addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "1.3.15")
+addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "1.3.12")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.6")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
 addSbtPlugin("io.github.davidmweber" % "flyway-sbt" % "5.2.0")
