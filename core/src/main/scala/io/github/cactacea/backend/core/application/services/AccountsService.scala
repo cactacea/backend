@@ -29,7 +29,12 @@ class AccountsService @Inject()(
     accountsRepository.notExist(accountName)
   }
 
-  def find(displayName: Option[String], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def find(displayName: Option[String],
+           since: Option[Long],
+           offset: Option[Int],
+           count: Option[Int],
+           sessionId: SessionId) : Future[List[Account]]= {
+
     accountsRepository.findAll(displayName, since, offset, count, sessionId)
   }
 
@@ -46,7 +51,13 @@ class AccountsService @Inject()(
     }
   }
 
-  def update(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
+  def update(displayName: Option[String],
+             web: Option[String],
+             birthday: Option[Long],
+             location: Option[String],
+             bio: Option[String],
+             sessionId: SessionId): Future[Unit] = {
+
     db.transaction {
       for {
         r <- accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId)

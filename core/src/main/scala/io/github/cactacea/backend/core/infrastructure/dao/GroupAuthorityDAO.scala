@@ -15,10 +15,10 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
   import db._
 
   def hasJoinAndManagingAuthority(g: Groups, accountId: AccountId, sessionId: SessionId): Future[Either[CactaceaError, Boolean]] = {
-    _hasManagingAuthority(sessionId.toAccountId, g).flatMap(_ match {
+    hasManagingAuthority(sessionId.toAccountId, g).flatMap(_ match {
       case true =>
-        _findRelationship(accountId, g.by.toSessionId).flatMap(r =>
-          _hasJoinAuthority(g, r, accountId.toSessionId).flatMap(_ match {
+        findRelationship(accountId, g.by.toSessionId).flatMap(r =>
+          hasJoinAuthority(g, r, accountId.toSessionId).flatMap(_ match {
             case false =>
               Future.value(Left(OperationNotAllowed))
             case true =>
@@ -31,7 +31,7 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
   }
 
   def hasManagingAuthority(g: Groups, sessionId: SessionId): Future[Either[CactaceaError, Boolean]] = {
-    _hasManagingAuthority(sessionId.toAccountId, g).flatMap(_ match {
+    hasManagingAuthority(sessionId.toAccountId, g).flatMap(_ match {
       case true =>
         Future.value(Right(true))
       case false =>
@@ -40,8 +40,8 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
   }
 
   def hasJoinAuthority(g: Groups, sessionId: SessionId): Future[Either[CactaceaError, Boolean]] = {
-    _findRelationship(sessionId.toAccountId, g.by.toSessionId).flatMap(r =>
-      _hasJoinAuthority(g, r, sessionId).flatMap(_ match {
+    findRelationship(sessionId.toAccountId, g.by.toSessionId).flatMap(r =>
+      hasJoinAuthority(g, r, sessionId).flatMap(_ match {
         case false =>
           Future.value(Left(AuthorityNotFound))
         case true =>
@@ -50,17 +50,17 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
     )
   }
 
-  private def _hasManagingAuthority(accountId: AccountId, g: Groups): Future[Boolean] = {
+  private def hasManagingAuthority(accountId: AccountId, g: Groups): Future[Boolean] = {
     if (accountId == g.by) {
       Future.True
     } else if (g.authorityType == GroupAuthorityType.owner && g.by != accountId) {
       Future.value(false)
     } else {
-      _exist(g.id, accountId)
+      exist(g.id, accountId)
     }
   }
 
-  private def _hasJoinAuthority(g: Groups, r: Option[Relationships], sessionId: SessionId): Future[Boolean] = {
+  private def hasJoinAuthority(g: Groups, r: Option[Relationships], sessionId: SessionId): Future[Boolean] = {
     val follow = r.fold(false)(_.follow)
     val follower = r.fold(false)(_.follower)
     val friend = r.fold(false)(_.friend)
@@ -79,7 +79,7 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
     }
   }
 
-  private def _exist(groupId: GroupId, accountId: AccountId): Future[Boolean] = {
+  private def exist(groupId: GroupId, accountId: AccountId): Future[Boolean] = {
     val q = quote {
       query[AccountGroups]
         .filter(_.accountId   == lift(accountId))
@@ -89,7 +89,7 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  private def _findRelationship(accountId: AccountId, sessionId: SessionId): Future[Option[Relationships]] = {
+  private def findRelationship(accountId: AccountId, sessionId: SessionId): Future[Option[Relationships]] = {
     val by = sessionId.toAccountId
     val select = quote {
       for {

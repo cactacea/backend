@@ -18,7 +18,8 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
     val q = quote {
       infix"""
          insert into account_messages (account_id, group_id, message_id, `by`, unread, notified, posted_at)
-         select account_id, group_id, ${lift(messageId)} as message_id, ${lift(by)} as `by`, true as unread, false as notified, ${lift(postedAt)} posted_at from account_groups where group_id = ${lift(groupId)}
+         select account_id, group_id, ${lift(messageId)} as message_id, ${lift(by)} as `by`, true as unread, false as notified, ${lift(postedAt)} posted_at
+         from account_groups where group_id = ${lift(groupId)}
           """.as[Action[Long]]
     }
     run(q).map(_ => Unit)
@@ -36,7 +37,11 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
     run(q).map(_ => Unit)
   }
 
-  def findEarlier(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) = {
+  def findEarlier(groupId: GroupId,
+                  since: Option[Long],
+                  offset: Option[Int],
+                  count: Option[Int],
+                  sessionId: SessionId): Future[List[(Messages, AccountMessages, Option[Mediums], Accounts, Option[Relationships])]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
@@ -60,7 +65,11 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
 
   }
 
-  def findOlder(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) = {
+  def findOlder(groupId: GroupId,
+                since: Option[Long],
+                offset: Option[Int],
+                count: Option[Int],
+                sessionId: SessionId): Future[List[(Messages, AccountMessages, Option[Mediums], Accounts, Option[Relationships])]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)

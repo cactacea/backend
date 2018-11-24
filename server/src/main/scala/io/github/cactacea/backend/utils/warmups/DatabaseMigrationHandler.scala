@@ -6,7 +6,7 @@ import com.twitter.inject.utils.Handler
 @Singleton
 class DatabaseMigrationHandler extends Handler {
 
-  override def handle() = {
+  override def handle(): Unit = {
     DatabaseMigration.execute()
   }
 

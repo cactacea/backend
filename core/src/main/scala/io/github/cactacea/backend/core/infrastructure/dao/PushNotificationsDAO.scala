@@ -22,8 +22,10 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         .join(query[Feeds]).on({ case ((af, _), f) =>
         f.id == af.feedId &&
           ((f.privacyType == lift(FeedPrivacyType.everyone))
-            || (f.privacyType == lift(FeedPrivacyType.followers) && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.follow == true)).nonEmpty))
-            || (f.privacyType == lift(FeedPrivacyType.friends)   && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.friend == true)).nonEmpty))
+            || (f.privacyType == lift(FeedPrivacyType.followers)
+                && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.follow == true)).nonEmpty))
+            || (f.privacyType == lift(FeedPrivacyType.friends)
+                && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.friend == true)).nonEmpty))
             || (f.by == af.accountId))})
         .join(query[Accounts]).on({ case (((af, _), _), a) =>  a.id == af.by})
         .join(query[Devices]).on({ case ((((af, _), _), _), d) => d.accountId == af.accountId && d.pushToken.isDefined})

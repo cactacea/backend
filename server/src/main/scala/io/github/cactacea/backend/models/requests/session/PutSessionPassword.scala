@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.models.requests.session
 
-import com.twitter.finatra.validation.{MethodValidation, Size}
+import com.twitter.finatra.validation.{MethodValidation, Size, ValidationResult}
 import io.github.cactacea.backend.utils.validaters.Validations
 import io.swagger.annotations.ApiModelProperty
 
@@ -13,9 +13,9 @@ case class PutSessionPassword(
                              ) {
 
   @MethodValidation
-  def oldPasswordCheck = Validations.validatePassword(oldPassword)
+  def oldPasswordCheck: ValidationResult = Validations.validatePassword(oldPassword)
 
   @MethodValidation
-  def newPasswordCheck = Validations.validatePassword(newPassword)
+  def newPasswordCheck: ValidationResult = Validations.validatePassword(newPassword)
 
 }

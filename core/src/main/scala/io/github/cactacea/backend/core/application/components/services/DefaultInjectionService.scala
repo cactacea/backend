@@ -26,7 +26,12 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  override def profileUpdated(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
+  override def profileUpdated(displayName: Option[String],
+                              web: Option[String],
+                              birthday: Option[Long],
+                              location: Option[String],
+                              bio: Option[String],
+                              sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
@@ -90,7 +95,8 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  override  def feedCreated(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
+  override  def feedCreated(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]],
+                            privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
@@ -131,11 +137,21 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  override def groupCreated(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit] = {
+  override def groupCreated(groupId: GroupId,
+                            name: Option[String],
+                            byInvitationOnly: Boolean,
+                            privacyType: GroupPrivacyType,
+                            authority: GroupAuthorityType,
+                            sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
-  override def groupUpdated(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit] = {
+  override def groupUpdated(groupId: GroupId,
+                            name: Option[String],
+                            byInvitationOnly: Boolean,
+                            privacyType: GroupPrivacyType,
+                            authority: GroupAuthorityType,
+                            sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 
@@ -183,7 +199,11 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  override def messageCreated(id: MessageId, groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[Unit] = {
+  override def messageCreated(id: MessageId,
+                              groupId: GroupId,
+                              message: Option[String],
+                              mediumId: Option[MediumId],
+                              sessionId: SessionId): Future[Unit] = {
     Future.Unit
   }
 

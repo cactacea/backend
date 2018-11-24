@@ -36,5 +36,4 @@ class CommentLikesRepository @Inject()(
     } yield (r)
   }
 
-
 }

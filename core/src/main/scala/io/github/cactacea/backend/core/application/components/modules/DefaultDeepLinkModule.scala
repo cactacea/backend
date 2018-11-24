@@ -8,7 +8,7 @@ object DefaultDeepLinkModule extends TwitterModule {
 
   flag(name = "scheme", default = "cactacea", help = "Deep link scheme name. default value is cactacea.")
 
-  override def configure() = {
+  override def configure(): Unit = {
     bindSingleton[DeepLinkService].to[DefaultDeepLinkService]
   }
 

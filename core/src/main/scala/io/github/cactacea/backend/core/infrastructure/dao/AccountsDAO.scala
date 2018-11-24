@@ -20,7 +20,14 @@ class AccountsDAO @Inject()(
 
   import db._
 
-  def create(accountName: String, displayName: Option[String], password: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String]): Future[AccountId] = {
+  def create(accountName: String,
+             displayName: Option[String],
+             password: String,
+             web: Option[String],
+             birthday: Option[Long],
+             location: Option[String],
+             bio: Option[String]): Future[AccountId] = {
+
     val accountStatus = AccountStatusType.normally
     val hashedPassword = hashService.hash(password)
     val q = quote {
@@ -39,7 +46,13 @@ class AccountsDAO @Inject()(
   }
 
 
-  def updateProfile(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
+  def updateProfile(displayName: Option[String],
+                    web: Option[String],
+                    birthday: Option[Long],
+                    location: Option[String],
+                    bio: Option[String],
+                    sessionId: SessionId): Future[Unit] = {
+
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
@@ -207,14 +220,22 @@ class AccountsDAO @Inject()(
           val friendCount = a.friendCount - b.friendCount
           val followCount = a.followCount - b.followCount
           val followerCount = a.followerCount - b.followerCount
-          val na = a.copy(displayName = displayName, friendCount = friendCount, followCount = followCount, followerCount = followerCount, feedsCount = a.feedsCount)
+          val na = a.copy(displayName = displayName,
+                          friendCount = friendCount,
+                          followCount = followCount,
+                          followerCount = followerCount,
+                          feedsCount = a.feedsCount)
           (na, r)
         }).headOption
     })
 
   }
 
-  def findAll(displayName: Option[String] = None, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships])]] = {
+  def findAll(displayName: Option[String],
+              since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              sessionId: SessionId): Future[List[(Accounts, Option[Relationships])]] = {
 
     val by = sessionId.toAccountId
 

@@ -65,7 +65,10 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeServic
     run(q).map(_.headOption)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(GroupInvitations, Accounts, Option[Relationships], Groups)]] = {
+  def findAll(since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int], sessionId: SessionId): Future[List[(GroupInvitations, Accounts, Option[Relationships], Groups)]] = {
+
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)

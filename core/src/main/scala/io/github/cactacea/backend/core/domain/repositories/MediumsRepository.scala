@@ -12,7 +12,15 @@ class MediumsRepository @Inject()(
                                    validationDAO: ValidationDAO
                                  ) {
 
-  def create(key: String, url: String, thumbnailUri: Option[String], mediumType: MediumType, width: Int, height: Int, size: Long, sessionId: SessionId): Future[(MediumId, String)] = {
+  def create(key: String,
+             url: String,
+             thumbnailUri: Option[String],
+             mediumType: MediumType,
+             width: Int,
+             height: Int,
+             size: Long,
+             sessionId: SessionId): Future[(MediumId, String)] = {
+
     for {
       id <- mediumsDAO.create(key, url, thumbnailUri, mediumType, width, height, size, sessionId).map((_, url))
     } yield (id)

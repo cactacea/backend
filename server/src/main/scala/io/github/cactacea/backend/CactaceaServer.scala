@@ -18,7 +18,7 @@ class CactaceaServer extends BaseServer {
   override val defaultAdminPort = 9001
   override val defaultHttpServerName = "Backend Server"
 
-  override def configureHttp(router: HttpRouter) = {
+  override def configureHttp(router: HttpRouter): Unit = {
     super.configureHttp(router)
     router
       .filter[LoggingMDCFilter[Request, Response]]

@@ -61,7 +61,7 @@ object Config extends DurationReader {
       lazy val connectTimeout = slaveDBConfig.connectTimeout.getOrElse(1)
       lazy val maxWaiters = slaveDBConfig.maxWaiters.getOrElse(Int.MaxValue)
     }
-    
+
 
   }
 

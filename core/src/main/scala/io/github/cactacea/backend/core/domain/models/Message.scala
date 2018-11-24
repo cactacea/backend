@@ -22,10 +22,10 @@ case class Message(
 object Message {
 
   def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships]): Message = {
-    _apply(m, am, i, a, r, None, None)
-  }
 
-  private def _apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], a2: Option[Accounts], r2: Option[Relationships]): Message = {
+    val a2: Option[Accounts] = None
+    val r2: Option[Relationships] = None
+
     m.contentStatus match {
       case ContentStatusType.rejected =>
         val by = Account(a, r)
@@ -64,6 +64,5 @@ object Message {
         )
     }
   }
-
 
 }

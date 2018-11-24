@@ -14,12 +14,12 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- _insertCommentLikes(commentId, sessionId)
-      r <- _updateLikeCount(commentId)
+      _ <- insertCommentLikes(commentId, sessionId)
+      r <- updateLikeCount(commentId)
     } yield (r)
   }
 
-  private def _insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[CommentLikeId] = {
+  private def insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[CommentLikeId] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.currentTimeMillis()
     val q = quote {
@@ -33,7 +33,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  private def _updateLikeCount(commentId: CommentId): Future[Unit] = {
+  private def updateLikeCount(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
@@ -46,12 +46,12 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- _deleteCommentLikes(commentId, sessionId)
-      r <- _updateUnlikeCount(commentId)
+      _ <- deleteCommentLikes(commentId, sessionId)
+      r <- updateUnlikeCount(commentId)
     } yield (r)
   }
 
-  private def _deleteCommentLikes(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+  private def deleteCommentLikes(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[CommentLikes]
@@ -62,7 +62,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _updateUnlikeCount(commentId: CommentId): Future[Unit] = {
+  private def updateUnlikeCount(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
@@ -84,7 +84,11 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(commentId: CommentId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {
+  def findAll(commentId: CommentId,
+              since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)

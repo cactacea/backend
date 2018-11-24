@@ -7,11 +7,12 @@ import com.twitter.finagle.{Service, SimpleFilter, http}
 import com.twitter.io.Buf.ByteArray.Owned.extract
 import org.jboss.netty.handler.codec.http.HttpHeaders.Names._
 import com.twitter.finagle.http.Method
+import com.twitter.util.Future
 
 @Singleton
 class ETagFilter extends SimpleFilter[Request, Response] {
 
-  override def apply(request: Request, service: Service[Request, Response]) = {
+  override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     service(request).map({response =>
       if (request.method == Method.Get && response.statusCode == 200) {
         val tag = extract(response.content).md5.hex

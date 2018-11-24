@@ -14,7 +14,8 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, commentLikesService: CommentLikesService, s: Swagger) extends CactaceaController {
+class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, commentLikesService: CommentLikesService, s: Swagger)
+  extends CactaceaController {
 
   implicit val swagger: Swagger = s
 
