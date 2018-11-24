@@ -50,19 +50,16 @@ class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Mutes)]] = {
 
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Mutes].filter(m => m.by == lift(by) && (m.id < lift(s) || lift(s) == -1L))
+      query[Mutes].filter(m => m.by == lift(by) && lift(since).forall(s => m.id < s))
         .join(query[Accounts]).on((m, a) => a.id == m.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((m, a), r) => (a, r, m)})
         .sortBy(_._3.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 

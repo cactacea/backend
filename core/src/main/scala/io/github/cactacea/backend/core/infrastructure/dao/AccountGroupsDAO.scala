@@ -127,20 +127,17 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
               count: Option[Int],
               hidden: Boolean): Future[List[(AccountGroups, Groups, Option[Messages], Option[AccountMessages])]] = {
 
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
     val q = quote {
       query[AccountGroups]
         .filter(ag => ag.accountId == lift(accountId) && ag.hidden == lift(hidden))
-        .filter(ag => ag.id < lift(s) || lift(s) == -1L)
+        .filter(ag => lift(since).forall(s => ag.id < s))
         .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
         .leftJoin(query[Messages]).on({ case ((_, g), m) => g.messageId.contains(m.id) })
         .leftJoin(query[AccountMessages]).on({ case (((_, g), _), am) => g.messageId.contains(am.messageId) && am.accountId == lift(accountId) })
         .map({ case (((ag, g), m), am) => (ag, g, m, am) })
         .sortBy(_._1.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 

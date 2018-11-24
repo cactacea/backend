@@ -90,14 +90,11 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Option[Int],
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
       query[CommentLikes]
-        .filter(cf => cf.commentId == lift(commentId) && (cf.id < lift(s) || lift(s) == -1L))
+        .filter(cf => cf.commentId == lift(commentId) && lift(since).forall(s => cf.id < s))
         .filter(cf => query[Blocks]
           .filter(_.accountId == lift(by))
           .filter(_.by        == cf.by)
@@ -106,8 +103,8 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (a, r, c)})
         .sortBy(_._3.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 

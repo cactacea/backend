@@ -50,21 +50,19 @@ class BlocksDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   }
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Blocks)]] = {
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
+
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
 
     val q = quote {
       query[Blocks]
-        .filter(b => b.by == lift(by) && (b.id < lift(s) || lift(s) == -1L) )
+        .filter(b => b.by == lift(by) && lift(since).forall(s => b.id < s))
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
         .map({ case ((b, a), r) => (a, r, b)})
         .sortBy(_._3.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
   }

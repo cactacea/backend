@@ -43,23 +43,20 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
                   count: Option[Int],
                   sessionId: SessionId): Future[List[(Messages, AccountMessages, Option[Mediums], Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
       query[AccountMessages]
         .filter(am => am.accountId == lift(by) && am.groupId == lift(groupId))
-        .filter(am => am.messageId > lift(s) || lift(s) == -1L)
+        .filter(am => lift(since).forall(s => am.messageId > s))
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.contains(i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
         .sortBy(_._2.messageId)(Ord.asc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 
@@ -71,23 +68,20 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
                 count: Option[Int],
                 sessionId: SessionId): Future[List[(Messages, AccountMessages, Option[Mediums], Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
       query[AccountMessages]
         .filter(am => am.accountId == lift(by) && am.groupId == lift(groupId) )
-        .filter(am => am.messageId < lift(s) || lift(s) == -1L)
+        .filter(am => lift(since).forall(s => am.messageId < s))
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.contains(i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
         .sortBy(_._2.messageId)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 

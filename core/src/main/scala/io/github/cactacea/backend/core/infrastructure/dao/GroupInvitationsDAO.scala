@@ -69,20 +69,17 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeServic
               offset: Option[Int],
               count: Option[Int], sessionId: SessionId): Future[List[(GroupInvitations, Accounts, Option[Relationships], Groups)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (gi.id < lift(s) || lift(s) == -1L)})
+      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (lift(since).forall(s => gi.id < s))})
         .join(query[Groups]).on((gi, g) => g.id == gi.groupId)
         .join(query[Accounts]).on({ case ((gi, _), a) => a.id == gi.by})
         .leftJoin(query[Relationships]).on({ case (((_, _), a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({case (((gi, g), a), r) => (gi, a, r, g)})
         .sortBy(_._1.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 

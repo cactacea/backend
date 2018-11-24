@@ -239,10 +239,6 @@ class AccountsDAO @Inject()(
 
     val by = sessionId.toAccountId
 
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
-
     val un = displayName.fold("") { _ + "%" }
     val status = AccountStatusType.normally
 
@@ -250,15 +246,15 @@ class AccountsDAO @Inject()(
       query[Accounts]
         .filter({a => a.id !=  lift(by)})
         .filter(a => (a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == ""))
-        .filter(a => a.accountStatus  == lift(status) && (a.id < lift(s) || lift(s) == -1L))
+        .filter(a => a.accountStatus  == lift(status) && lift(since).forall(s => a.id < s))
         .filter(a => query[Blocks]
           .filter(_.accountId == lift(by))
           .filter(_.by        == a.id)
           .isEmpty)
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
       .sortBy({ case (a, _) => a.id})(Ord.desc)
-      .drop(lift(o))
-      .take(lift(c))
+      .drop(lift(offset).getOrElse(0))
+      .take(lift(count).getOrElse(20))
     }
 
     (for {
