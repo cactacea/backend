@@ -41,5 +41,5 @@ docker-compose up -d
 
 ### Related Projects
 
-- [`Fiagger`](https://github.com/cactacea/backend/finagger) - Swagger Finatra Integration
-- [`Filhouette`](https://github.com/cactacea/backend/filhouette) - Authentication library for Finatra
+- [`Fiagger`](https://github.com/cactacea/backend/tree/master/finagger) - Swagger Finatra Integration
+- [`Filhouette`](https://github.com/cactacea/backend/tree/master/filhouette) - Authentication library for Finatra
