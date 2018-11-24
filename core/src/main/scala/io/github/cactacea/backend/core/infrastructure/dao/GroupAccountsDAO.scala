@@ -16,17 +16,13 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
               offset: Option[Int],
               count: Option[Int]): Future[List[(Accounts, Option[Relationships], AccountGroups)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
-
     val q = quote {
-      query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (ag.id < lift(s) || lift(s) == -1L))
+      query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (lift(since).forall(s => ag.id < s)))
         .join(query[Accounts]).on((ag, a) => a.id == ag.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id})
         .sortBy({ case ((ag, _), _) => ag.joinedAt})(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q).map(_.map({ case ((ag, a), r) => (a, r, ag)}))
 

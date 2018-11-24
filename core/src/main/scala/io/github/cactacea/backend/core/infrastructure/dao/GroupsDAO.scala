@@ -118,9 +118,6 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Option[Int],
               sessionId: SessionId): Future[List[Groups]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val n = name.fold("")(_ + "%")
     val by = sessionId.toAccountId
     val q = quote {
@@ -133,10 +130,10 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
           .filter(_.accountId     == lift(by))
           .filter(_.by            == g.by)
           .isEmpty)
-        .filter(_.id < lift(s) || lift(s) == -1L)
+        .filter(f => lift(since).forall(s => f.id < s))
         .sortBy(_.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
   }

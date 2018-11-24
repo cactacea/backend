@@ -103,15 +103,12 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
                    count: Option[Int],
                    sessionId: SessionId): Future[List[(Accounts, Option[Relationships], FeedLikes)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
 
     val q = quote {
       query[FeedLikes]
-        .filter(ff => ff.feedId == lift(feedId) && (ff.id < lift(s) || lift(s) == -1L))
+        .filter(ff => ff.feedId == lift(feedId) && lift(since).forall(s => ff.id < s))
         .filter(ff =>
           query[Blocks]
             .filter(_.accountId == lift(by))
@@ -121,8 +118,8 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((ff, a), r) => (a, r, ff)})
         .sortBy(_._3.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 
@@ -133,13 +130,10 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Option[Int],
               sessionId: SessionId): Future[List[(Feeds, FeedLikes)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedLikes].filter(ff => ff.by == lift(by) && (ff.id < lift(s) || lift(s) == -1L))
+      query[FeedLikes].filter(ff => ff.by == lift(by) && lift(since).forall(s => ff.id < s))
         .filter(f => query[Blocks]
           .filter(_.accountId == lift(by))
           .filter(_.by        == f.by)
@@ -153,8 +147,8 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         || (f.by == lift(by))))
         .map({case (ff, f) => (f, ff)})
         .sortBy({ case (ff, _) => ff.id })(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 
@@ -166,13 +160,10 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Option[Int],
               sessionId: SessionId): Future[List[(Feeds, FeedLikes)]] = {
 
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedLikes].filter(ff => ff.by == lift(accountId) && (ff.id < lift(s) || lift(s) == -1L))
+      query[FeedLikes].filter(ff => ff.by == lift(accountId) && lift(since).forall(s => ff.id < s))
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         (query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty) &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
@@ -183,8 +174,8 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         || (f.by == lift(by))))
         .map({case (ff, f) => (f, ff)})
         .sortBy({ case (ff, _) => ff.id })(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 

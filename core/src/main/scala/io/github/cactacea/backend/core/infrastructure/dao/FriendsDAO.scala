@@ -104,21 +104,18 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Friends)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
       query[Friends]
         .filter(f => f.by == lift(by))
-        .filter(f => f.id < lift(s) || lift(s) == -1L)
+        .filter(f => lift(since).forall(s => f.id < s))
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
         .sortBy(_._3.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 
@@ -130,14 +127,11 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Option[Int],
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Friends)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
       query[Friends]
-        .filter(f => f.by == lift(accountId) && (f.id < lift(s) || lift(s) == -1L) )
+        .filter(f => f.by == lift(accountId) && lift(since).forall(s => f.id < s))
         .filter(f => query[Blocks]
           .filter(_.accountId == f.accountId)
           .filter(_.by        == lift(by))
@@ -146,8 +140,8 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
         .sortBy(_._3.id)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset).getOrElse(0))
+        .take(lift(count).getOrElse(20))
     }
     run(q)
 
