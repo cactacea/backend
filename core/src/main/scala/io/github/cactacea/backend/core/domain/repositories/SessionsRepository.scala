@@ -6,7 +6,6 @@ import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, DeviceTy
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.backend.core.infrastructure.models.Accounts
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
@@ -18,11 +17,33 @@ class SessionsRepository @Inject()(
                                     validationDAO: ValidationDAO
                                   ) {
 
-  def signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
-    for {
+  def signUp(accountName: String,
+             displayName: Option[String],
+             password: String,
+             udid: String,
+             deviceType: DeviceType,
+             web: Option[String],
+             birthday: Option[Long],
+             location: Option[String],
+             bio: Option[String],
+             userAgent: Option[String]): Future[Account] = {
+
+    val account = for {
       _ <- validationDAO.notExistAccountName(accountName)
-      r <- _signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent)
-    } yield (r)
+      accountId <- accountsDAO.create(accountName, displayName, password, web, birthday, location, bio)
+      sessionId = accountId.toSessionId
+      _             <- devicesDAO.create(udid, deviceType, userAgent, sessionId)
+      _             <- notificationSettingsDAO.create(true, true, true, true, true, true, sessionId)
+      account       <- accountsDAO.find(sessionId)
+    } yield (account)
+
+    account.flatMap( _ match {
+      case Some(a) =>
+        Future.value(Account(a))
+      case None =>
+        Future.exception(CactaceaException(AccountNotFound))
+    })
+
   }
 
   def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
@@ -31,7 +52,14 @@ class SessionsRepository @Inject()(
         if (account.isTerminated) {
           Future.exception(CactaceaException(AccountTerminated))
         } else {
-          _signIn(account, udid, deviceType, userAgent)
+          devicesDAO.exist(account.id.toSessionId, udid).flatMap(_ match {
+            case true =>
+              Future.True
+            case false =>
+              devicesDAO.create(udid, deviceType, userAgent, account.id.toSessionId)
+          }).map({ _ =>
+            Account(account)
+          })
         }
       case None =>
         Future.exception(CactaceaException(InvalidAccountNameOrPassword))
@@ -43,33 +71,6 @@ class SessionsRepository @Inject()(
       r <- accountsDAO.signOut(sessionId)
       _ <- devicesDAO.delete(udid, sessionId)
     } yield (r)
-  }
-
-
-  private def _signUp(accountName: String, displayName: Option[String], password: String, udid: String, deviceType: DeviceType, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String]): Future[Account] = {
-    (for {
-      accountId <- accountsDAO.create(accountName, displayName, password, web, birthday, location, bio)
-      sessionId = accountId.toSessionId
-      _             <- devicesDAO.create(udid, deviceType, userAgent, sessionId)
-      _             <- notificationSettingsDAO.create(true, true, true, true, true, true, sessionId)
-      account       <- accountsDAO.find(sessionId)
-    } yield (account)).flatMap( _ match {
-      case Some(a) =>
-        Future.value(Account(a))
-      case None =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-  }
-
-  private def _signIn(account: Accounts, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
-    devicesDAO.exist(account.id.toSessionId, udid).flatMap(_ match {
-      case true =>
-        Future.True
-      case false =>
-        devicesDAO.create(udid, deviceType, userAgent, account.id.toSessionId)
-    }).map({ _ =>
-      Account(account)
-    })
   }
 
 

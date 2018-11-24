@@ -19,12 +19,12 @@ class CommentsDAO @Inject()(
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     for {
-      id <- _insertComments(feedId, message, sessionId)
-      _ <- _updateCommentCount(feedId, 1L)
+      id <- insertComments(feedId, message, sessionId)
+      _ <- updateCommentCount(feedId, 1L)
     } yield (id)
   }
 
-  private def _insertComments(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
+  private def insertComments(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.currentTimeMillis()
     val replyId: Option[CommentId] = None
@@ -45,7 +45,7 @@ class CommentsDAO @Inject()(
     run(q)
   }
 
-  private def _updateCommentCount(feedId: FeedId, count: Long): Future[Unit] = {
+  private def updateCommentCount(feedId: FeedId, count: Long): Future[Unit] = {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
@@ -58,20 +58,20 @@ class CommentsDAO @Inject()(
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
-    _findFeedId(commentId).flatMap(_ match {
+    findFeedId(commentId).flatMap(_ match {
       case Some(feedId) =>
         for {
-          _ <- _updateCommentCount(feedId, -1L)
-          _ <- _deleteCommentReports(commentId)
-          _ <- _deleteCommentLikes(commentId)
-          r <- _deleteComments(commentId, by)
+          _ <- updateCommentCount(feedId, -1L)
+          _ <- deleteCommentReports(commentId)
+          _ <- deleteCommentLikes(commentId)
+          r <- deleteComments(commentId, by)
         } yield (r)
       case None =>
         Future.Unit
     })
   }
 
-  private def _deleteComments(commentId: CommentId, by: AccountId): Future[Unit] = {
+  private def deleteComments(commentId: CommentId, by: AccountId): Future[Unit] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
@@ -81,7 +81,7 @@ class CommentsDAO @Inject()(
     run(q).map(_ => Unit)
   }
 
-  private def _deleteCommentLikes(commentId: CommentId): Future[Unit] = {
+  private def deleteCommentLikes(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[CommentLikes]
         .filter(_.commentId == lift(commentId))
@@ -90,7 +90,7 @@ class CommentsDAO @Inject()(
     run(q).map(_ => Unit)
   }
 
-  private def _deleteCommentReports(commentId: CommentId): Future[Unit] = {
+  private def deleteCommentReports(commentId: CommentId): Future[Unit] = {
     val q = quote {
       query[CommentReports]
         .filter(_.commentId == lift(commentId))
@@ -99,7 +99,7 @@ class CommentsDAO @Inject()(
     run(q).map(_ => Unit)
   }
 
-  private def _findFeedId(commentId: CommentId): Future[Option[FeedId]] = {
+  private def findFeedId(commentId: CommentId): Future[Option[FeedId]] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))

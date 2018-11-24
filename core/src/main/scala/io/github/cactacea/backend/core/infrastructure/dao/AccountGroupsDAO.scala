@@ -36,11 +36,11 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
     for {
-      id <- _insert(accountId, groupId, sessionId)
+      id <- insert(accountId, groupId, sessionId)
     } yield (id)
   }
 
-  private def _insert(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
+  private def insert(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
     val joinedAt = timeService.currentTimeMillis()
     val toAccountId = sessionId.toAccountId
     val q = quote {
@@ -121,7 +121,12 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     run(q).map(_.headOption)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean): Future[List[(AccountGroups, Groups, Option[Messages], Option[AccountMessages])]] = {
+  def findAll(accountId: AccountId,
+              since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              hidden: Boolean): Future[List[(AccountGroups, Groups, Option[Messages], Option[AccountMessages])]] = {
+
     val s = since.getOrElse(-1L)
     val c = count.getOrElse(20)
     val o = offset.getOrElse(0)

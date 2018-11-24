@@ -14,21 +14,21 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- _insertFriend(accountId, sessionId)
-      _ <- _updateAccount(1L, sessionId)
-      r <- _insertRelationship(accountId, sessionId)
+      _ <- insertFriend(accountId, sessionId)
+      _ <- updateAccount(1L, sessionId)
+      r <- insertRelationship(accountId, sessionId)
     } yield (r)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- _deleteFriend(accountId, sessionId)
-      r <- _updateAccount(-1L, sessionId)
-      _ <- _updateRelationship(accountId, friend = false, sessionId)
+      _ <- deleteFriend(accountId, sessionId)
+      r <- updateAccount(-1L, sessionId)
+      _ <- updateRelationship(accountId, friend = false, sessionId)
     } yield (r)
   }
 
-  private def _updateAccount(count: Long, sessionId: SessionId): Future[Unit] = {
+  private def updateAccount(count: Long, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
@@ -40,7 +40,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _insertRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def insertRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -53,7 +53,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _updateRelationship(accountId: AccountId, friend: Boolean, sessionId: SessionId): Future[Unit] = {
+  private def updateRelationship(accountId: AccountId, friend: Boolean, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -66,7 +66,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _insertFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def insertFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val friendedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
@@ -80,7 +80,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _deleteFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def deleteFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Friends]
@@ -124,7 +124,11 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Friends)]] = {
+  def findAll(accountId: AccountId,
+              since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Friends)]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)

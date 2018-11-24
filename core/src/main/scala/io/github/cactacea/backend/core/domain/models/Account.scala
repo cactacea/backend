@@ -88,5 +88,6 @@ object Account {
       ag.map(_.joinedAt),
       next
     )
-  }  
+  }
+
 }

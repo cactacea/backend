@@ -11,6 +11,7 @@ case class GetSessionInvitations(
                                   @ApiModelProperty(value = "The offset of group invitations. By default the value is 0.")
                                   @QueryParam offset: Option[Int],
 
-                                  @ApiModelProperty(value = "Maximum number of invitations returned on one result page. By default the value is 20 entries. The page size can never be larger than 50.")
+                                  @ApiModelProperty(value = "Maximum number of invitations returned on one result page." +
+                                    " By default the value is 20 entries. The page size can never be larger than 50.")
                                   @QueryParam @Max(50) count: Option[Int]
                     )

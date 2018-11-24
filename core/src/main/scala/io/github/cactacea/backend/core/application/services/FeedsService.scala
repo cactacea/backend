@@ -18,7 +18,14 @@ class FeedsService @Inject()(
                               actionService: InjectionService
                             ) {
 
-  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
+  def create(message: String,
+             mediumIds: Option[List[MediumId]],
+             tags: Option[List[String]],
+             privacyType: FeedPrivacyType,
+             contentWarning: Boolean,
+             expiration: Option[Long],
+             sessionId: SessionId): Future[FeedId] = {
+
     db.transaction {
       for {
         id <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
@@ -37,7 +44,15 @@ class FeedsService @Inject()(
     }
   }
 
-  def edit(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
+  def edit(feedId: FeedId,
+           message: String,
+           mediumIds: Option[List[MediumId]],
+           tags: Option[List[String]],
+           privacyType: FeedPrivacyType,
+           contentWarning: Boolean,
+           expiration: Option[Long],
+           sessionId: SessionId): Future[Unit] = {
+
     db.transaction {
       feedsRepository.update(
         feedId,

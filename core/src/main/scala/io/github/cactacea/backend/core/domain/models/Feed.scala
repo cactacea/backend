@@ -21,26 +21,26 @@ case class Feed(
 object Feed {
 
   def apply(f: Feeds): Feed = {
-    _apply(f, None, None, None, None, f.id.value)
+    apply(f, None, None, None, None, f.id.value)
   }
 
   def apply(f: Feeds, fl: FeedLikes): Feed = {
-    _apply(f, None, None, None, None, fl.id.value)
+    apply(f, None, None, None, None, fl.id.value)
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums]): Feed = {
-    _apply(f, Some(ft), Some(m), None, None, f.id.value)
+    apply(f, Some(ft), Some(m), None, None, f.id.value)
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
-    _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
+    apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
   }
 
 //  def apply(af: AccountFeeds, f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
 //    _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
 //  }
 
-  private def _apply(f: Feeds, ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships], next: Long): Feed = {
+  private def apply(f: Feeds, ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships], next: Long): Feed = {
     f.contentStatus match {
       case ContentStatusType.rejected => {
         Feed(

@@ -25,13 +25,13 @@ class FeedReportsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def delete(feedId: FeedId) = {
+  def delete(feedId: FeedId): Future[Unit] = {
     val q = quote {
       query[FeedReports]
         .filter(_.feedId == lift(feedId))
         .delete
     }
-    run(q).map(_ => true)
+    run(q).map(_ => Unit)
   }
 
 

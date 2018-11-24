@@ -20,7 +20,14 @@ class PushNotificationSettingsRepository @Inject()(notificationSettingsDAO: Push
     })
   }
 
-  def update(groupInvitation: Boolean, followerFeed: Boolean, feedComment: Boolean, groupMessage: Boolean, directMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Unit] = {
+  def update(groupInvitation: Boolean,
+             followerFeed: Boolean,
+             feedComment: Boolean,
+             groupMessage: Boolean,
+             directMessage: Boolean,
+             showMessage: Boolean,
+             sessionId: SessionId): Future[Unit] = {
+
     notificationSettingsDAO.update(
       groupInvitation,
       followerFeed,

@@ -63,7 +63,7 @@ object CactaceaSwaggerModule extends SwaggerModule {
 
   }
 
-  def errorResponseScheme(name: String) = {
+  def errorResponseScheme(name: String): ModelImpl = {
     import io.swagger.models.ModelImpl
     import io.swagger.models.properties.{LongProperty, StringProperty}
 

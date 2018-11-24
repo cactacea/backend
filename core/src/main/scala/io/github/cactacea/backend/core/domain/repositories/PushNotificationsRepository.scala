@@ -126,7 +126,7 @@ class PushNotificationsRepository @Inject()(
           }).toList
         })
       }
-      case _ =>
+      case None =>
         Future.value(List[PushNotification]())
     })
   }

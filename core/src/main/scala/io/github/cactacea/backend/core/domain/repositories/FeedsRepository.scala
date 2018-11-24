@@ -16,7 +16,14 @@ class FeedsRepository @Inject()(
                                  validationDAO: ValidationDAO
                                ) {
 
-  def create(message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[FeedId] = {
+  def create(message: String,
+             mediumIds: Option[List[MediumId]],
+             tags: Option[List[String]],
+             privacyType: FeedPrivacyType,
+             contentWarning: Boolean,
+             expiration: Option[Long],
+             sessionId: SessionId): Future[FeedId] = {
+
     val ids = mediumIds.map(_.distinct)
     for {
       _ <- validationDAO.existMediums(ids, sessionId)
@@ -25,7 +32,15 @@ class FeedsRepository @Inject()(
     } yield (id)
   }
 
-  def update(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit] = {
+  def update(feedId: FeedId,
+             message: String,
+             mediumIds: Option[List[MediumId]],
+             tags: Option[List[String]],
+             privacyType: FeedPrivacyType,
+             contentWarning: Boolean,
+             expiration: Option[Long],
+             sessionId: SessionId): Future[Unit] = {
+
     val ids = mediumIds.map(_.distinct)
     for {
       _ <- validationDAO.existMediums(ids, sessionId)

@@ -10,7 +10,8 @@ trait InjectionService {
   def signedIn(authentication: Account): Future[Unit]
   def signedOut(sessionId: SessionId): Future[Unit]
   def accountNameUpdated(accountName: String, sessionId: SessionId): Future[Unit]
-  def profileUpdated(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit]
+  def profileUpdated(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String],
+                     bio: Option[String], sessionId: SessionId): Future[Unit]
   def profileImageUpdated(profileImageUri: Option[String], sessionId: SessionId): Future[Unit]
   def passwordUpdated(sessionId: SessionId): Future[Unit]
   def devicePushTokenUpdated(sessionId: SessionId): Future[Unit]
@@ -28,7 +29,8 @@ trait InjectionService {
   def commentLiked(commentId: CommentId, sessionId: SessionId): Future[Unit]
   def commentUnLiked(commentId: CommentId, sessionId: SessionId): Future[Unit]
   def commentReported(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit]
-  def feedCreated(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit]
+  def feedCreated(feedId: FeedId, message: String, mediumIds: Option[List[MediumId]], tags: Option[List[String]],
+                  privacyType: FeedPrivacyType, contentWarning: Boolean, expiration: Option[Long], sessionId: SessionId): Future[Unit]
   def feedDeleted(feedId: FeedId, sessionId: SessionId): Future[Unit]
   def feedLiked(feedId: FeedId, sessionId: SessionId): Future[Unit]
   def feedUnLiked(feedId: FeedId, sessionId: SessionId): Future[Unit]
@@ -36,8 +38,10 @@ trait InjectionService {
   def friendRequestDeleted(accountId: AccountId, sessionId: SessionId): Future[Unit]
   def friendRequestAccepted(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit]
   def friendRequestRejected(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit]
-  def groupCreated(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit]
-  def groupUpdated(groupId: GroupId, name: Option[String], invitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit]
+  def groupCreated(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean,
+                   privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit]
+  def groupUpdated(groupId: GroupId, name: Option[String], invitationOnly: Boolean,
+                   privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit]
   def groupDeleted(groupId: GroupId, sessionId: SessionId): Future[Unit]
   def groupReported(groupId: GroupId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit]
   def groupInvitationCreated(accountId: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[Unit]

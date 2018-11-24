@@ -17,7 +17,13 @@ class SettingsService @Inject()(
     notificationSettingsRepository.find(sessionId)
   }
 
-  def updatePushNotificationSettings(groupInvitation: Boolean, followerFeed: Boolean, feedComment: Boolean, groupMessage: Boolean, directMessage: Boolean, showMessage: Boolean, sessionId: SessionId): Future[Unit] = {
+  def updatePushNotificationSettings(groupInvitation: Boolean,
+                                     followerFeed: Boolean,
+                                     feedComment: Boolean,
+                                     groupMessage: Boolean,
+                                     directMessage: Boolean,
+                                     showMessage: Boolean,
+                                     sessionId: SessionId): Future[Unit] = {
     db.transaction {
       notificationSettingsRepository.update(
         groupInvitation,

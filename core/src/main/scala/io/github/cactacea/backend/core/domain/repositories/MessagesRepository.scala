@@ -25,7 +25,7 @@ class MessagesRepository @Inject()(
       case (_, Some(m)) =>
         create(groupId, m, sessionId)
       case _ =>
-        Future.exception(CactaceaException(CactaceaErrors.RequiredFieldMissingValidationError("Message or Medium Id required.")))
+        Future.exception(CactaceaException(CactaceaErrors.requiredFieldMissingValidationError("Message or Medium Id required.")))
     }
   }
 
@@ -69,7 +69,12 @@ class MessagesRepository @Inject()(
     accountMessagesDAO.delete(sessionId.toAccountId, groupId).flatMap(_ => Future.Unit)
   }
 
-  def findAll(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {
+  def findAll(groupId: GroupId,
+              since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              ascending: Boolean,
+              sessionId: SessionId): Future[List[Message]] = {
     (for {
       _ <- validationDAO.existGroup(groupId, sessionId)
       _ <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)

@@ -12,7 +12,15 @@ class MediumsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(key: String, uri: String, thumbnailUri: Option[String], mediumType: MediumType, width: Int, height: Int, size: Long, sessionId: SessionId): Future[MediumId] = {
+  def create(key: String,
+             uri: String,
+             thumbnailUri: Option[String],
+             mediumType: MediumType,
+             width: Int,
+             height: Int,
+             size: Long,
+             sessionId: SessionId): Future[MediumId] = {
+
     val by = sessionId.toAccountId
     val q = quote {
       query[Mediums].insert(

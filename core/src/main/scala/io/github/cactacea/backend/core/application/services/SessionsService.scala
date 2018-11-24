@@ -16,7 +16,17 @@ class SessionsService @Inject()(
                                  actionService: InjectionService
                                ) {
 
-  def signUp(accountName: String, displayName: Option[String], password: String, udid: String, web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], userAgent: Option[String], deviceType: DeviceType): Future[Account] = {
+  def signUp(accountName: String,
+             displayName: Option[String],
+             password: String,
+             udid: String,
+             web: Option[String],
+             birthday: Option[Long],
+             location: Option[String],
+             bio: Option[String],
+             userAgent: Option[String],
+             deviceType: DeviceType): Future[Account] = {
+
     db.transaction {
       for {
         a <- sessionsRepository.signUp(accountName, displayName, password, udid, deviceType, web, birthday, location, bio, userAgent)

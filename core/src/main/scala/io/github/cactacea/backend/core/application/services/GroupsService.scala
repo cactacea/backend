@@ -26,7 +26,13 @@ class GroupsService @Inject()(
     }
   }
 
-  def update(groupId: GroupId, name: String, invitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit] = {
+  def update(groupId: GroupId,
+             name: String,
+             invitationOnly: Boolean,
+             privacyType: GroupPrivacyType,
+             authority: GroupAuthorityType,
+             sessionId: SessionId): Future[Unit] = {
+
     db.transaction {
       for {
         r <- groupsRepository.update(groupId, Some(name), invitationOnly, privacyType, authority, sessionId)
@@ -35,7 +41,13 @@ class GroupsService @Inject()(
     }
   }
 
-  def find(name: Option[String], byInvitation: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Group]] = {
+  def find(name: Option[String],
+           byInvitation: Option[Boolean],
+           privacyType: Option[GroupPrivacyType],
+           since: Option[Long],
+           offset: Option[Int],
+           count: Option[Int], sessionId: SessionId): Future[List[Group]] = {
+
     groupsRepository.findAll(name, byInvitation, privacyType, since, offset, count, sessionId)
   }
 

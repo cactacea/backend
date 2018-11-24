@@ -11,7 +11,10 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def findAll(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int]): Future[List[(Accounts, Option[Relationships], AccountGroups)]] = {
+  def findAll(groupId: GroupId,
+              since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int]): Future[List[(Accounts, Option[Relationships], AccountGroups)]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
