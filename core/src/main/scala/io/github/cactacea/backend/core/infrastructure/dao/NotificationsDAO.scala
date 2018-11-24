@@ -15,11 +15,15 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
 
   def create(accountIds: List[AccountId], by: AccountId, notificationType: NotificationType, contentId: Long, url: String): Future[List[NotificationId]] = {
     for {
-      ids <- _insertNotifications(accountIds, by, notificationType, Some(contentId), url)
+      ids <- insertNotifications(accountIds, by, notificationType, Some(contentId), url)
     } yield (ids)
   }
 
-  private def _insertNotifications(ids: List[AccountId], by: AccountId, notificationType: NotificationType, contentId: Option[Long], url: String): Future[List[NotificationId]] = {
+  private def insertNotifications(ids: List[AccountId],
+                                  by: AccountId,
+                                  notificationType: NotificationType,
+                                  contentId: Option[Long], url: String): Future[List[NotificationId]] = {
+
     val notifiedAt = timeService.currentTimeMillis()
     val n = ids.map(id => Notifications(NotificationId(0L), id, by, notificationType, contentId, url, true,notifiedAt))
     val q = quote {
@@ -56,7 +60,11 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     run(q).map(_ => Unit)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Notifications, Accounts, Option[Relationships])]] = {
+  def findAll(since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              sessionId: SessionId): Future[List[(Notifications, Accounts, Option[Relationships])]] = {
+
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)

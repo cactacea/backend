@@ -88,7 +88,4 @@ class OAuthHandler extends DataHandler[OAuthUser] with Logging {
     Future.None
   }
 
-
-
-
 }

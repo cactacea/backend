@@ -3,14 +3,14 @@ package io.github.cactacea.backend
 import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.inject.TwitterModule
-import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.application.components.modules.{DefaultJacksonModule, _}
 import io.github.cactacea.backend.utils.mappers.{CactaceaExceptionMapper, CaseClassExceptionMapper}
 
 trait BaseServer extends HttpServer {
 
-  protected  def databaseModule = DatabaseModule
+  protected  def databaseModule: TwitterModule = DatabaseModule
 
-  override def jacksonModule = DefaultJacksonModule
+  override def jacksonModule: TwitterModule = DefaultJacksonModule
 
   def injectionModule: TwitterModule =  DefaultInjectionModule
   def fanOutModule: TwitterModule = DefaultNotificationModule
@@ -35,7 +35,7 @@ trait BaseServer extends HttpServer {
   addFrameworkModule(databaseModule)
   addFrameworkModule(hashModule)
 
-  override def configureHttp(router: HttpRouter) = {
+  override def configureHttp(router: HttpRouter): Unit = {
     router
       .exceptionMapper[CaseClassExceptionMapper]
       .exceptionMapper[CactaceaExceptionMapper]

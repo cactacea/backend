@@ -14,21 +14,21 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- _insertFollower(accountId, sessionId)
-      r <- _insertRelationship(accountId, sessionId)
-      _ <- _updateAccount(accountId, 1L)
+      _ <- insertFollower(accountId, sessionId)
+      r <- insertRelationship(accountId, sessionId)
+      _ <- updateAccount(accountId, 1L)
     } yield (r)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- _deleteFollower(accountId, sessionId)
-      r <- _updateRelationship(accountId, sessionId)
-      _ <- _updateAccount(accountId, -1L)
+      _ <- deleteFollower(accountId, sessionId)
+      r <- updateRelationship(accountId, sessionId)
+      _ <- updateAccount(accountId, -1L)
     } yield (r)
   }
 
-  private def _insertRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def insertRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -41,7 +41,7 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _updateRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def updateRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Relationships]
@@ -54,7 +54,7 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _updateAccount(accountId: AccountId, followerCount: Long): Future[Unit] = {
+  private def updateAccount(accountId: AccountId, followerCount: Long): Future[Unit] = {
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
@@ -65,7 +65,7 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _insertFollower(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def insertFollower(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val followedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
@@ -79,7 +79,7 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def _deleteFollower(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def deleteFollower(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Followers]
@@ -90,7 +90,10 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Followers)]] = {
+  def findAll(since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Followers)]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
@@ -111,7 +114,11 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Followers)]] = {
+  def findAll(accountId: AccountId,
+              since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Followers)]] = {
 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)

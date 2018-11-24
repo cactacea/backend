@@ -70,7 +70,12 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
     run(q).map(_.headOption)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], received: Boolean, sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
+  def findAll(since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              received: Boolean,
+              sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
+
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)

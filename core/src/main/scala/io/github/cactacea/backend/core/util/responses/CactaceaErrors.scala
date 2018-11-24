@@ -317,19 +317,19 @@ object CactaceaErrors {
 
   // 400 Bad Request
 
-  def InvalidCountryCodesValidationError(message: String)     = { ValidationErrorRequest(40080, message) }
-  def InvalidTimeGranularityValidationError(message: String)  = { ValidationErrorRequest(40081, message) }
-  def InvalidUUIDValidationError(message: String)             = { ValidationErrorRequest(40082, message) }
-  def InvalidValuesValidationError(message: String)           = { ValidationErrorRequest(40083, message) }
-  def JsonProcessingError(message: String)                    = { ValidationErrorRequest(40084, message) }
-  def RequiredFieldMissingValidationError(message: String)    = { ValidationErrorRequest(40085, message) }
-  def SizeOutOfRangeValidation(message: String)               = { ValidationErrorRequest(40086, message) }
-  def TimeNotFutureValidation(message: String)                = { ValidationErrorRequest(40087, message) }
-  def TimeNotPastValidation(message: String)                  = { ValidationErrorRequest(40088, message) }
-  def ValueCannotBeEmptyValidation(message: String)           = { ValidationErrorRequest(40089, message) }
-  def ValueOutOfRangeValidation(message: String)              = { ValidationErrorRequest(40090, message) }
-  def ValueTooLargeValidation(message: String)                = { ValidationErrorRequest(40091, message) }
-  def ValueTooSmallValidation(message: String)                = { ValidationErrorRequest(40092, message) }
-  def Unknown(message: String)                                = { ValidationErrorRequest(40093, message) }
+  def invalidCountryCodesValidationError(message: String): ValidationErrorRequest     = { ValidationErrorRequest(40080, message) }
+  def invalidTimeGranularityValidationError(message: String): ValidationErrorRequest  = { ValidationErrorRequest(40081, message) }
+  def invalidUUIDValidationError(message: String): ValidationErrorRequest             = { ValidationErrorRequest(40082, message) }
+  def invalidValuesValidationError(message: String): ValidationErrorRequest           = { ValidationErrorRequest(40083, message) }
+  def jsonProcessingError(message: String): ValidationErrorRequest                    = { ValidationErrorRequest(40084, message) }
+  def requiredFieldMissingValidationError(message: String): ValidationErrorRequest    = { ValidationErrorRequest(40085, message) }
+  def sizeOutOfRangeValidation(message: String): ValidationErrorRequest               = { ValidationErrorRequest(40086, message) }
+  def timeNotFutureValidation(message: String): ValidationErrorRequest                = { ValidationErrorRequest(40087, message) }
+  def timeNotPastValidation(message: String): ValidationErrorRequest                  = { ValidationErrorRequest(40088, message) }
+  def valueCannotBeEmptyValidation(message: String): ValidationErrorRequest           = { ValidationErrorRequest(40089, message) }
+  def valueOutOfRangeValidation(message: String): ValidationErrorRequest              = { ValidationErrorRequest(40090, message) }
+  def valueTooLargeValidation(message: String): ValidationErrorRequest                = { ValidationErrorRequest(40091, message) }
+  def valueTooSmallValidation(message: String): ValidationErrorRequest                = { ValidationErrorRequest(40092, message) }
+  def unknown(message: String): ValidationErrorRequest                                = { ValidationErrorRequest(40093, message) }
 
 }

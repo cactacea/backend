@@ -11,6 +11,7 @@ case class GetNotifications(
                              @ApiModelProperty(value = "The offset of notifications. By default the value is 0.")
                              @QueryParam offset: Option[Int],
 
-                             @ApiModelProperty(value = "Maximum number of notifications returned on one result page. By default the value is 20 entries. The page size can never be larger than 50.")
+                             @ApiModelProperty(value = "Maximum number of notifications returned on one result page." +
+                               " By default the value is 20 entries. The page size can never be larger than 50.")
                              @QueryParam @Max(50) count: Option[Int]
                            )

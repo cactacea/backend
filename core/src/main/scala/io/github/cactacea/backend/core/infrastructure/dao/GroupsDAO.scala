@@ -33,7 +33,13 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   }
 
 
-  def create(name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, accountCount: Long, sessionId: SessionId): Future[GroupId] = {
+  def create(name: Option[String],
+             byInvitationOnly: Boolean,
+             privacyType: GroupPrivacyType,
+             authority: GroupAuthorityType,
+             accountCount: Long,
+             sessionId: SessionId): Future[GroupId] = {
+
     val organizedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val r = quote {
@@ -60,7 +66,13 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(r).map(_ => Unit)
   }
 
-  def update(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit] = {
+  def update(groupId: GroupId,
+             name: Option[String],
+             byInvitationOnly: Boolean,
+             privacyType: GroupPrivacyType,
+             authority: GroupAuthorityType,
+             sessionId: SessionId): Future[Unit] = {
+
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups]
@@ -98,7 +110,14 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(r).map(_ => Unit)
   }
 
-  def findAll(name: Option[String], invitationOnly: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Groups]] = {
+  def findAll(name: Option[String],
+              invitationOnly: Option[Boolean],
+              privacyType: Option[GroupPrivacyType],
+              since: Option[Long],
+              offset: Option[Int],
+              count: Option[Int],
+              sessionId: SessionId): Future[List[Groups]] = {
+
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
@@ -106,7 +125,6 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val by = sessionId.toAccountId
     val q = quote {
       query[Groups]
-//        .filter(g => g.by != lift(by))
         .filter(g => g.directMessage == false)
         .filter(g => (g.name.exists(_ like lift(n)))  || lift(name).isEmpty)
         .filter(g => g.invitationOnly == lift(invitationOnly.getOrElse(false))    || lift(invitationOnly).isEmpty)

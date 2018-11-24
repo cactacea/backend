@@ -5,7 +5,7 @@ import scala.collection.JavaConverters._
 
 object DatabaseMigration {
 
-  def execute() = {
+  def execute(): Unit = {
     val database = Config.db.master.database
     val user = Config.db.master.user
     val password = Config.db.master.password

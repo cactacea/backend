@@ -54,7 +54,8 @@ class SessionsController @Inject()(
         .operationId("signIn")
         .request[GetSignIn]
         .responseWith[Authentication](Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(InvalidAccountNameOrPassword, AccountTerminated))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason,
+          Some(CactaceaErrors(Seq(InvalidAccountNameOrPassword, AccountTerminated))))
 
     } { request: GetSignIn =>
       sessionService.signIn(

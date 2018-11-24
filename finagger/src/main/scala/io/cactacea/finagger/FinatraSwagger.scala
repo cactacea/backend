@@ -330,7 +330,7 @@ class FinatraSwagger(swagger: Swagger) {
    */
   private def registerDynamicBody(bodyElements: List[BodyRequestParam], name: String): Option[Parameter] = {
     if (bodyElements.isEmpty) {
-      return None
+      None
     }
 
     val className = name + "Body"
@@ -338,7 +338,7 @@ class FinatraSwagger(swagger: Swagger) {
     val emitttedData = emitBodyClassForElements(bodyElements, className)
 
     if (emitttedData.isEmpty) {
-      return None
+      None
     }
 
     val bodyClass = dynamicClassBodies.getOrElse(className, emitttedData.get)
@@ -351,11 +351,11 @@ class FinatraSwagger(swagger: Swagger) {
 
     Some(
       {
-        val bodyparam = new BodyParameter().name("body").schema(model)
+        val bodyParam = new BodyParameter().name("body").schema(model)
 
-        bodyparam.setRequired(true)
+        bodyParam.setRequired(true)
 
-        bodyparam
+        bodyParam
       }
     )
   }

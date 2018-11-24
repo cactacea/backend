@@ -15,23 +15,23 @@ class CaseClassExceptionMapper @Inject()(response: ResponseBuilder)
   override def toResponse(request: Request, e: CaseClassMappingException): Response =
     response.badRequest(errorsResponse(e))
 
-  private def errorsResponse(e: CaseClassMappingException) = {
+  private def errorsResponse(e: CaseClassMappingException): CactaceaErrors = {
     val errors = e.errors.map({ error =>
       (error.reason.code) match {
-        case InvalidCountryCodes(_)         => CactaceaErrors.InvalidCountryCodesValidationError(s"${error.getMessage()}")
-        case InvalidTimeGranularity(_, _)   => CactaceaErrors.InvalidTimeGranularityValidationError(s"${error.getMessage()}")
-        case InvalidUUID(_)                 => CactaceaErrors.InvalidUUIDValidationError(s"${error.getMessage()}")
-        case InvalidValues(_, _)            => CactaceaErrors.InvalidValuesValidationError(s"${error.getMessage()}")
-        case JsonProcessingError(_)         => CactaceaErrors.JsonProcessingError(s"${error.getMessage()}")
-        case RequiredFieldMissing           => CactaceaErrors.RequiredFieldMissingValidationError(s"${error.getMessage()}")
-        case SizeOutOfRange(_, _, _)        => CactaceaErrors.SizeOutOfRangeValidation(s"${error.getMessage()}")
-        case TimeNotFuture(_)               => CactaceaErrors.TimeNotFutureValidation(s"${error.getMessage()}")
-        case TimeNotPast(_)                 => CactaceaErrors.TimeNotPastValidation(s"${error.getMessage()}")
-        case ValueCannotBeEmpty             => CactaceaErrors.ValueCannotBeEmptyValidation(s"${error.getMessage()}")
-        case ValueOutOfRange(_, _, _)       => CactaceaErrors.ValueOutOfRangeValidation(s"${error.getMessage()}")
-        case ValueTooLarge(_, _)            => CactaceaErrors.ValueTooLargeValidation(s"${error.getMessage()}")
-        case ValueTooSmall(_, _)            => CactaceaErrors.ValueTooSmallValidation(s"${error.getMessage()}")
-        case Unknown                        => CactaceaErrors.Unknown(s"${error.getMessage()}")
+        case InvalidCountryCodes(_)         => CactaceaErrors.invalidCountryCodesValidationError(s"${error.getMessage()}")
+        case InvalidTimeGranularity(_, _)   => CactaceaErrors.invalidTimeGranularityValidationError(s"${error.getMessage()}")
+        case InvalidUUID(_)                 => CactaceaErrors.invalidUUIDValidationError(s"${error.getMessage()}")
+        case InvalidValues(_, _)            => CactaceaErrors.invalidValuesValidationError(s"${error.getMessage()}")
+        case JsonProcessingError(_)         => CactaceaErrors.jsonProcessingError(s"${error.getMessage()}")
+        case RequiredFieldMissing           => CactaceaErrors.requiredFieldMissingValidationError(s"${error.getMessage()}")
+        case SizeOutOfRange(_, _, _)        => CactaceaErrors.sizeOutOfRangeValidation(s"${error.getMessage()}")
+        case TimeNotFuture(_)               => CactaceaErrors.timeNotFutureValidation(s"${error.getMessage()}")
+        case TimeNotPast(_)                 => CactaceaErrors.timeNotPastValidation(s"${error.getMessage()}")
+        case ValueCannotBeEmpty             => CactaceaErrors.valueCannotBeEmptyValidation(s"${error.getMessage()}")
+        case ValueOutOfRange(_, _, _)       => CactaceaErrors.valueOutOfRangeValidation(s"${error.getMessage()}")
+        case ValueTooLarge(_, _)            => CactaceaErrors.valueTooLargeValidation(s"${error.getMessage()}")
+        case ValueTooSmall(_, _)            => CactaceaErrors.valueTooSmallValidation(s"${error.getMessage()}")
+        case Unknown                        => CactaceaErrors.unknown(s"${error.getMessage()}")
       }
     })
     CactaceaErrors(errors)

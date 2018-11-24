@@ -36,9 +36,9 @@ case class PostSignUp(
                   ) {
 
   @MethodValidation
-  def accountNameCheck = Validations.validateAccountName(accountName)
+  def accountNameCheck: ValidationResult = Validations.validateAccountName(accountName)
 
   @MethodValidation
-  def passwordCheck = Validations.validatePassword(password)
+  def passwordCheck: ValidationResult = Validations.validatePassword(password)
 
 }

@@ -15,7 +15,14 @@ case class PushNotification(
 
 object PushNotification {
 
-  def apply(displayName: String, pushNotificationType: PushNotificationType, postedAt: Long, tokens: List[(AccountId, String)], sessionId: SessionId, url: String): PushNotification = {
+  def apply(
+             displayName: String,
+             pushNotificationType: PushNotificationType,
+             postedAt: Long,
+             tokens: List[(AccountId, String)],
+             sessionId: SessionId,
+             url: String): PushNotification = {
+
     PushNotification(
       displayName,
       pushNotificationType,

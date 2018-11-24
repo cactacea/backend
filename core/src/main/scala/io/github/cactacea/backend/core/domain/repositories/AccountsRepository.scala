@@ -16,7 +16,7 @@ class AccountsRepository @Inject()(
                                     validationDAO: ValidationDAO
                                   ) {
 
-  def find(sessionId: SessionId) = {
+  def find(sessionId: SessionId): Future[Account] = {
     validationDAO.findAccount(sessionId.toAccountId).map(Account(_))
   }
 
@@ -75,7 +75,13 @@ class AccountsRepository @Inject()(
     accountsDAO.updatePassword(oldPassword, newPassword, sessionId)
   }
 
-  def updateProfile(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String], bio: Option[String], sessionId: SessionId): Future[Unit] = {
+  def updateProfile(displayName: Option[String],
+                    web: Option[String],
+                    birthday: Option[Long],
+                    location: Option[String],
+                    bio: Option[String],
+                    sessionId: SessionId): Future[Unit] = {
+
     accountsDAO.updateProfile(displayName, web, birthday, location, bio, sessionId)
   }
 
