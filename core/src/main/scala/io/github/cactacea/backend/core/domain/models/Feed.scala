@@ -21,26 +21,22 @@ case class Feed(
 object Feed {
 
   def apply(f: Feeds): Feed = {
-    apply(f, None, None, None, None, f.id.value)
+    apply(f, None, None, None, None, None)
   }
 
   def apply(f: Feeds, fl: FeedLikes): Feed = {
-    apply(f, None, None, None, None, fl.id.value)
+    apply(f, Some(fl), None, None, None, None)
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums]): Feed = {
-    apply(f, Some(ft), Some(m), None, None, f.id.value)
+    apply(f, None, Some(ft), Some(m), None, None)
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
-    apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
+    apply(f, None, Some(ft), Some(m), Some(a), r)
   }
 
-//  def apply(af: AccountFeeds, f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
-//    _apply(f, Some(ft), Some(m), Some(a), r, f.id.value)
-//  }
-
-  private def apply(f: Feeds, ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships], next: Long): Feed = {
+  private def apply(f: Feeds, fl: Option[FeedLikes], ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships]): Feed = {
     f.contentStatus match {
       case ContentStatusType.rejected => {
         Feed(
@@ -54,7 +50,7 @@ object Feed {
           contentWarning  = false,
           contentDeleted  = true,
           postedAt        = f.postedAt,
-          next            = next
+          next            = fl.map(_.postedAt).getOrElse(f.postedAt)
         )
       }
       case _ => {
@@ -72,7 +68,7 @@ object Feed {
           contentWarning  = f.contentWarning,
           contentDeleted  = false,
           postedAt        = f.postedAt,
-          next            = next
+          next            = fl.map(_.postedAt).getOrElse(f.postedAt)
         )
       }
     }

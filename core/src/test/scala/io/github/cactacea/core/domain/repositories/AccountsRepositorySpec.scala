@@ -135,7 +135,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
-    val (id, _) = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     execute(accountsRepository.updateProfileImage(Some(id), session.id.toSessionId))
     // TODO : Check
 

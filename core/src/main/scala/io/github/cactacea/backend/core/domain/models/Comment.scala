@@ -30,7 +30,7 @@ object Comment {
           contentWarning  = false,
           contentDeleted  = true,
           postedAt        = c.postedAt,
-          next            = c.id.value
+          next            = c.postedAt
         )
       case _ => {
         Comment(
@@ -42,7 +42,7 @@ object Comment {
           contentWarning  = c.contentWarning,
           contentDeleted  = false,
           postedAt        = c.postedAt,
-          next            = c.id.value
+          next            = c.postedAt
         )
       }
     }

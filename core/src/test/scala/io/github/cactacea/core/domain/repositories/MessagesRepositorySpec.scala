@@ -30,7 +30,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     execute(messagesRepository.delete(groupId, user.id.toSessionId))
     // TODO : Check
 
-    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
+    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
     execute(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
 
     assert(intercept[CactaceaException] {
@@ -53,7 +53,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     execute(messagesRepository.create(groupId, Some("test"), None, user.id.toSessionId))
 //    execute(deliveryMessagesRepository.create(messageId))
 
-    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
+    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, user.id.toSessionId))
     execute(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
 //    execute(deliveryMessagesRepository.create(messageId2))
 

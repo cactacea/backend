@@ -133,8 +133,8 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
           .filter(_.accountId     == lift(by))
           .filter(_.by            == g.by)
           .isEmpty)
-        .filter(_.id < lift(s) || lift(s) == -1L)
-        .sortBy(_.id)(Ord.desc)
+        .filter(_.organizedAt < lift(s) || lift(s) == -1L)
+        .sortBy(_.organizedAt)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

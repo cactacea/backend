@@ -19,10 +19,10 @@ class MediumsRepository @Inject()(
              width: Int,
              height: Int,
              size: Long,
-             sessionId: SessionId): Future[(MediumId, String)] = {
+             sessionId: SessionId): Future[MediumId] = {
 
     for {
-      id <- mediumsDAO.create(key, url, thumbnailUri, mediumType, width, height, size, sessionId).map((_, url))
+      id <- mediumsDAO.create(key, url, thumbnailUri, mediumType, width, height, size, sessionId)
     } yield (id)
   }
 

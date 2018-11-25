@@ -18,9 +18,9 @@ class MediumsService @Inject()(
   def create(width: Int, height: Int, data: Array[Byte], contentType: Option[String], sessionId: SessionId): Future[(MediumId, String)] = {
     for {
       (url, key) <- storageService.put(contentType, data)
-      r <- db.transaction(mediumsRepository.create(key, url, None, MediumType.image, width, height, data.length, sessionId))
-      _ <- injectionService.mediumCreated(r._1, r._2, sessionId)
-    } yield (r)
+      id <- db.transaction(mediumsRepository.create(key, url, None, MediumType.image, width, height, data.length, sessionId))
+      _ <- injectionService.mediumCreated(id, url, sessionId)
+    } yield ((id, url))
   }
 
   def delete(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {

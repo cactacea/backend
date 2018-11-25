@@ -34,7 +34,7 @@ class GroupInvitationsRepository @Inject()(
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[GroupInvitation]] = {
     groupInvitationsDAO.findAll(since, offset, count, sessionId)
-      .map(_.map( t => GroupInvitation(t._1, t._2, t._3, t._4)))
+      .map(_.map({ case (gi, a, r, g) => GroupInvitation(gi, a, r, g)}))
   }
 
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {

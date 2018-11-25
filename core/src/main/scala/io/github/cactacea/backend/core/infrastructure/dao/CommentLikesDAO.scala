@@ -97,7 +97,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[CommentLikes]
-        .filter(cf => cf.commentId == lift(commentId) && (cf.id < lift(s) || lift(s) == -1L))
+        .filter(c => c.commentId == lift(commentId) && (c.postedAt < lift(s) || lift(s) == -1L))
         .filter(cf => query[Blocks]
           .filter(_.accountId == lift(by))
           .filter(_.by        == cf.by)
@@ -105,7 +105,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (a, r, c)})
-        .sortBy(_._3.id)(Ord.desc)
+        .sortBy({ case (_, _, c) => c.postedAt })(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

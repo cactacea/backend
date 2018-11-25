@@ -83,11 +83,11 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
 
     if (received) {
       val q = quote {
-        query[FriendRequests].filter(f => f.accountId == lift(by) && (f.id < lift(s) || lift(s) == -1L))
+        query[FriendRequests].filter(f => f.accountId == lift(by) && (f.requestedAt < lift(s) || lift(s) == -1L))
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})
-          .sortBy(_._1.id)(Ord.desc)
+          .sortBy({ case (f, _, _) => f.requestedAt})(Ord.desc)
           .drop(lift(o))
           .take(lift(c))
       }
@@ -99,7 +99,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})
-          .sortBy(_._1.id)(Ord.desc)
+          .sortBy({ case (f, _, _) => f.requestedAt})(Ord.desc)
           .drop(lift(o))
           .take(lift(c))
       }

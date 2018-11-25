@@ -48,8 +48,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
       for {
         af <- query[AccountFeeds]
           .filter(_.accountId == lift(by))
-          .filter(_.feedId < lift(s)  || lift(s) == -1)
-          .sortBy(_.feedId)(Ord.desc)
+          .filter(_.postedAt < lift(s)  || lift(s) == -1)
+          .sortBy(_.postedAt)(Ord.desc)
           .drop(lift(o))
           .take(lift(c))
         f <- query[Feeds]
@@ -70,13 +70,13 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
 
     (for {
       tags <- feedTagsDAO.findAll(feedIds)
-      medium <- feedMediumDAO.findAll(feedIds)
-    } yield (tags, medium)).map {
-      case (tags, medium) =>
-        feeds.map(t => {
-          val tag = tags.filter(_.feedId == t._2.id)
-          val image = medium.filter(_._1 == t._2.id).map(_._2)
-          (t._1, t._2, tag, image, t._3, t._4)
+      mediums <- feedMediumDAO.findAll(feedIds)
+    } yield (tags, mediums)).map {
+      case (tags, mediums) =>
+        feeds.map({ case (af, f, a, r) =>
+          val tag = tags.filter(_.feedId == f.id)
+          val image = mediums.filter({ case (id, _) => id == f.id }).map(_._2)
+          (af, f, tag, image, a, r)
         })
     }
   }

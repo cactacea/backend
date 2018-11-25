@@ -79,7 +79,7 @@ class FollowersDAOSpec extends DAOSpec {
     assert(account2.id == sessionAccount5.id)
     assert(account3.id == sessionAccount4.id)
 
-    val result2 = execute(followersDAO.findAll(followedUser.id, Some(follower1.id.value), None, Some(3), sessionAccount1.id.toSessionId))
+    val result2 = execute(followersDAO.findAll(followedUser.id, Some(follower1.followedAt), None, Some(3), sessionAccount1.id.toSessionId))
     val account4 = result2(0)._1
     val account5 = result2(1)._1
     val account6 = result2(2)._1

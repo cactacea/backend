@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.AccountReports

@@ -110,11 +110,11 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Follows].filter(f => f.by == lift(by) && (f.id < lift(s) || lift(s) == -1L) )
+      query[Follows].filter(f => f.by == lift(by) && (f.followedAt < lift(s) || lift(s) == -1L) )
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.id)(Ord.desc)
+        .sortBy({ case (_, _, f) => f.followedAt} )(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -134,7 +134,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Follows].filter(f => f.by == lift(accountId) && (f.id < lift(s) || lift(s) == -1L) )
+      query[Follows].filter(f => f.by == lift(accountId) && (f.followedAt < lift(s) || lift(s) == -1L) )
         .filter(r => query[Blocks]
           .filter(_.accountId == lift(by))
           .filter(_.by        == r.accountId)
@@ -142,7 +142,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy(_._3.id)(Ord.desc)
+        .sortBy({ case (_, _, f) => f.followedAt} )(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

@@ -40,7 +40,7 @@ class AccountsRepository @Inject()(
       offset,
       count,
       sessionId
-    ).map(_.map(t => Account(t._1, t._2)))
+    ).map(_.map({ case (a, r) => Account(a, r)}))
   }
 
   def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {

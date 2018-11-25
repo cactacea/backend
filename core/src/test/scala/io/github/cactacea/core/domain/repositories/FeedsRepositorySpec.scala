@@ -20,7 +20,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val tags = Some(List("tag1", "tag2", "tag3"))
     val key = "key"
     val uri = "http://cactacea.io/test.jpeg"
-    val (id, _) = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
     val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feed = execute(feedsRepository.find(feedId, session.id.toSessionId))
@@ -54,12 +54,12 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec3", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id1, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id1 = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id1))
     val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
     val tags2 = Some(List("tag4", "tag5", "tag6"))
-    val (id2, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id2 = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums2 = Some(List(id2))
     execute(feedsRepository.update(feedId, "feed message 2", mediums2, tags2, FeedPrivacyType.followers, true, None, session.id.toSessionId))
     // TODO : Check
@@ -71,7 +71,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec4", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
     execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
@@ -86,7 +86,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec5", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
     val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
@@ -102,7 +102,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val user = signUp("FeedsRepositorySpec6-2", "user password", "user udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
     val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val reportContent = Some("report content")
@@ -127,7 +127,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec8", "session password", "udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
     val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val result = execute(feedsRepository.find(feedId, session.id.toSessionId))

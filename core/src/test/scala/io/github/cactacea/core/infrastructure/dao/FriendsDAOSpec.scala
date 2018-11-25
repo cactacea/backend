@@ -88,7 +88,7 @@ class FriendsDAOSpec extends DAOSpec {
     assert(account3.id == sessionAccount4.id)
 
     // find friends next page
-    val result2 = execute(friendsDAO.findAll(friendUser.id, Some(friend3.id.value), None, Some(3), sessionAccount1.id.toSessionId))
+    val result2 = execute(friendsDAO.findAll(friendUser.id, Some(friend3.friendedAt), None, Some(3), sessionAccount1.id.toSessionId))
     val account4 = result2(0)._1
     val account5 = result2(1)._1
     val account6 = result2(2)._1

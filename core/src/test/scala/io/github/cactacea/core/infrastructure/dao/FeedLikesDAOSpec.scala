@@ -140,6 +140,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     val result2 = execute(feedLikesDAO.findAll(sessionAccount3.id, None, None, Some(3), sessionAccount2.id.toSessionId))
     assert(result2.size == 1)
 
+    // TODO : Next Page
   }
 
   test("findUsers") {
@@ -166,7 +167,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     assert(result1.size == 3)
 
     val feedLike = result1(2)._3
-    val result2 = execute(feedLikesDAO.findAccounts(feedId, Some(feedLike.id.value), None, Some(3), sessionAccount2.id.toSessionId))
+    val result2 = execute(feedLikesDAO.findAccounts(feedId, Some(feedLike.postedAt), None, Some(3), sessionAccount2.id.toSessionId))
     assert(result2.size == 2)
 
   }
