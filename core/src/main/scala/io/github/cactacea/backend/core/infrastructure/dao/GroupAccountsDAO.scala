@@ -21,7 +21,7 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
     val c = count.getOrElse(20)
 
     val q = quote {
-      query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (ag.id < lift(s) || lift(s) == -1L))
+      query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (ag.joinedAt < lift(s) || lift(s) == -1L))
         .join(query[Accounts]).on((ag, a) => a.id == ag.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id})
         .sortBy({ case ((ag, _), _) => ag.joinedAt})(Ord.desc)

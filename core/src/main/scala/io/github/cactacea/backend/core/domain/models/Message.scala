@@ -42,7 +42,7 @@ object Message {
           readAccountCount  = 0L,
           contentWarning    = false,
           contentDeleted   = true,
-          postedAt          = m.id.value
+          postedAt          = m.postedAt
         )
       case _ =>
         val images = i.map(Medium(_))
@@ -60,7 +60,7 @@ object Message {
           readAccountCount  = m.readAccountCount,
           contentWarning    = m.contentWarning,
           contentDeleted   = false,
-          postedAt          = m.id.value
+          postedAt          = m.postedAt
         )
     }
   }

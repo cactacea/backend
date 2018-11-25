@@ -75,12 +75,12 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeServic
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (gi.id < lift(s) || lift(s) == -1L)})
+      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (gi.invitedAt < lift(s) || lift(s) == -1L)})
         .join(query[Groups]).on((gi, g) => g.id == gi.groupId)
         .join(query[Accounts]).on({ case ((gi, _), a) => a.id == gi.by})
         .leftJoin(query[Relationships]).on({ case (((_, _), a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({case (((gi, g), a), r) => (gi, a, r, g)})
-        .sortBy(_._1.id)(Ord.desc)
+        .sortBy({ case (gi, _, _, _) => gi.invitedAt})(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

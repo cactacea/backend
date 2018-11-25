@@ -18,7 +18,7 @@ class FeedMediumDAO @Inject()(db: DatabaseService) {
       val q = quote {
         query[FeedMediums].filter(t => liftQuery(feedIds).contains(t.feedId))
           .join(query[Mediums]).on((f, m) => m.id == f.mediumId)
-          .sortBy(_._1.orderNo)
+          .sortBy({ case (f, _) => f.orderNo})
           .map({ case (f, m) => (f.feedId, m) })
       }
       run(q)

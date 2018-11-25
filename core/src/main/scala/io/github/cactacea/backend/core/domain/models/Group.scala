@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountGroupId, GroupId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
 import io.github.cactacea.backend.core.infrastructure.models.{AccountGroups, Groups, _}
 
 case class Group(
@@ -22,7 +22,7 @@ object Group {
   }
 
   def apply(ag: AccountGroups, g: Groups, m: Option[Messages], am: Option[AccountMessages]): Group = {
-    apply(g, m, am, None, None, None, Some(ag.id))
+    apply(g, m, am, None, None, None, None)
   }
 
   def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], a: Option[Accounts], r: Option[Relationships]): Group = {
@@ -34,9 +34,9 @@ object Group {
             am: Option[AccountMessages],
             a: Option[Accounts],
             r: Option[Relationships],
-            accountGroupId: AccountGroupId): Group = {
+            ag: AccountGroups): Group = {
 
-    apply(g, m, am, None, a, r, Some(accountGroupId))
+    apply(g, m, am, None, a, r, Some(ag))
   }
 
   def apply(g: Groups,
@@ -45,7 +45,7 @@ object Group {
             i: Option[Mediums],
             a: Option[Accounts],
             r: Option[Relationships],
-            accountGroupId: Option[AccountGroupId]): Group = {
+            ag: Option[AccountGroups]): Group = {
 
     val message = (m, am, a) match {
       case (Some(m), Some(um), Some(a)) =>
@@ -63,7 +63,7 @@ object Group {
       authorityType     = g.authorityType,
       accountCount      = g.accountCount,
       organizedAt       = g.organizedAt,
-      next              = accountGroupId.map(_.value).getOrElse(g.id.value)
+      next              = ag.map(_.joinedAt).getOrElse(g.organizedAt)
     )
   }
 

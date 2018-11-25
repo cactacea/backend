@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 class DefaultPushNotificationService extends PushNotificationService {
 
   def send(fanOuts: List[PushNotification]): Future[List[AccountId]] = {
-    Future.value(fanOuts.map(_.tokens.map(_._1)).flatten.distinct)
+    Future.value(fanOuts.map(_.tokens.map({ case (accountId, _) => accountId })).flatten.distinct)
   }
 
 }

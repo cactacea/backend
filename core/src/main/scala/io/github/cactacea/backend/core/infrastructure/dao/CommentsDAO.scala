@@ -144,18 +144,16 @@ class CommentsDAO @Inject()(
             .isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .map({ case ((c, a), r) => (c, a, r) })
     }
 
     (for {
       comments <- run(q)
-      ids = comments.map(_._1._1.id)
+      ids = comments.map({ case (c, _, _) => c.id})
       blocksCount <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
     } yield (comments, blocksCount))
       .map({ case (accounts, blocksCount) =>
-        accounts.map({ t =>
-          val c = t._1._1
-          val a = t._1._2
-          val r = t._2
+        accounts.map({ case (c, a, r) =>
           val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
           (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         }).headOption
@@ -170,7 +168,7 @@ class CommentsDAO @Inject()(
 
     val q = quote {
       query[Comments]
-        .filter(c => c.feedId == lift(feedId) && (c.id < lift(s) || lift(s) == -1L))
+        .filter(c => c.feedId == lift(feedId) && (c.postedAt < lift(s) || lift(s) == -1L))
         .filter(c =>
           query[Blocks]
             .filter(_.accountId == lift(by))
@@ -178,19 +176,20 @@ class CommentsDAO @Inject()(
             .isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .sortBy({ case ((c, _), _) => c.id })(Ord.desc)
+        .map({ case ((c, a), r) => (c, a, r) })
+        .sortBy({ case (c, _, _) => c.postedAt })(Ord.desc)
         .take(lift(c))
     }
 
     (for {
       c <- run(q)
-      ids = c.map(_._1._1.id)
+      ids = c.map({ case (c, _, _) => c.id})
       b <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
     } yield (c, b))
       .map({ case (accounts, blocksCount) =>
-        accounts.map({ case ((comment, account), relationship) =>
-          val b = blocksCount.filter(_.id == comment.id).map(_.count).headOption
-          (comment.copy(likeCount = comment.likeCount - b.getOrElse(0L)), account, relationship)
+        accounts.map({ case (c, a, r) =>
+          val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
+          (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         })
       })
   }

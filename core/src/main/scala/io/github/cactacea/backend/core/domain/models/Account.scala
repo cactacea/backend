@@ -27,35 +27,35 @@ case class Account(id: AccountId,
 object Account {
 
   def apply(a: Accounts, r: Option[Relationships], f: Followers): Account = {
-    apply(a, r, None, f.id.value)
+    apply(a, r, None, f.followedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships], f: Friends): Account = {
-    apply(a, r, None, f.id.value)
+    apply(a, r, None, f.friendedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships], f: Follows): Account = {
-    apply(a, r, None, f.id.value)
+    apply(a, r, None, f.followedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships], b: Blocks): Account = {
-    apply(a, r, None, b.id.value)
+    apply(a, r, None, b.blockedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships], m: Mutes): Account = {
-    apply(a, r, None, m.id.value)
+    apply(a, r, None, m.mutedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships], ag: AccountGroups): Account = {
-    apply(a, r, Some(ag), ag.id.value)
+    apply(a, r, Some(ag), ag.joinedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships], fl: FeedLikes): Account = {
-    apply(a, r, None, fl.id.value)
+    apply(a, r, None, fl.postedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships], c: CommentLikes): Account = {
-    apply(a, r, None, c.id.value)
+    apply(a, r, None, c.postedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships]): Account = {

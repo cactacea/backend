@@ -208,13 +208,11 @@ class AccountsDAO @Inject()(
 
     (for {
       accounts <- run(q)
-      ids = accounts.map(_._1.id)
+      ids = accounts.map({ case (a, r) => a.id})
       blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
     } yield (accounts, blocksCount))
       .map({ case (accounts, blocksCount) =>
-        accounts.map({ t =>
-          val a = t._1
-          val r = t._2
+        accounts.map({ case (a, r) =>
           val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
           val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
           val friendCount = a.friendCount - b.friendCount
@@ -263,13 +261,11 @@ class AccountsDAO @Inject()(
 
     (for {
       accounts <- run(q2)
-      ids = accounts.map(_._1.id)
+      ids = accounts.map({ case (a, r) => a.id})
       blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
     } yield (accounts, blocksCount))
       .map({ case (accounts, blocksCount) =>
-        accounts.map({ t =>
-          val a = t._1
-          val r = t._2
+        accounts.map({ case (a, r) =>
           val b = blocksCount.find(_.id == a.id)
           val friendCount = a.friendCount - b.map(_.friendCount).getOrElse(0L)
           val followCount = a.followCount - b.map(_.followCount).getOrElse(0L)

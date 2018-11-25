@@ -43,7 +43,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(invitation3._1.by == owner3.id)
 
 
-    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation3._1.id.value), None, Some(3), sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation3._1.invitedAt), None, Some(3), sessionAccount.id.toSessionId))
     assert(result2.size == 2)
     val invitation4 = result2(0)
     val invitation5 = result2(1)
@@ -166,7 +166,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(invitation1.id == invitationId5)
     assert(invitation2.id == invitationId3)
 
-    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation2.id.value), None, Some(2), sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation2.invitedAt), None, Some(2), sessionAccount.id.toSessionId))
     assert(result2.size == 1)
     val invitation3 = result2(0)._1
     assert(invitation3.groupId == groupId1)

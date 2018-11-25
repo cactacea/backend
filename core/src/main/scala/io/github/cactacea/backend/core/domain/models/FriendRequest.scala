@@ -21,7 +21,7 @@ object FriendRequest {
       account       = account,
       requestStatus = f.requestStatus,
       requestedAt   = f.requestedAt,
-      next          = f.id.value
+      next          = f.requestedAt
     )
   }
 

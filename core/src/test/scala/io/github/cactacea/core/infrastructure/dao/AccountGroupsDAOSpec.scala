@@ -16,7 +16,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val groupId = execute(groupsDAO.create(Some("new group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account1.id, groupId, sessionAccount.id.toSessionId))
 
-    val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
+    val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
     assert(accountGroups.size == 1)
     val userGroup1 = accountGroups(0)
 
@@ -42,7 +42,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(account3.id, groupId))
     execute(accountGroupsDAO.create(account4.id, groupId))
 
-    val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
+    val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
     assert(accountGroups.size == 4)
     val userGroup1 = accountGroups(0)
     val userGroup2 = accountGroups(1)
@@ -91,19 +91,19 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(account4.id, groupId))
 
     execute(accountGroupsDAO.delete(account1.id, groupId))
-    val result1 = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
+    val result1 = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
     assert(result1.size == 3)
 
     execute(accountGroupsDAO.delete(account2.id, groupId))
-    val result2 = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
+    val result2 = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
     assert(result2.size == 2)
 
     execute(accountGroupsDAO.delete(account3.id, groupId))
-    val result3 = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
+    val result3 = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
     assert(result3.size == 1)
 
     execute(accountGroupsDAO.delete(account4.id, groupId))
-    val result4 = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
+    val result4 = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
     assert(result4.size == 0)
 
   }
@@ -123,7 +123,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(account4.id, groupId))
     execute(accountGroupsDAO.updateUnreadCount(groupId))
 
-    val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
+    val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
     assert(accountGroups.size == 4)
     val group1 = accountGroups(0)
     val group2 = accountGroups(1)
@@ -174,7 +174,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.updateHidden(groupId, true, account1.id.toSessionId))
     execute(accountGroupsDAO.updateHidden(groupId, true, account3.id.toSessionId))
 
-    val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.id)(Ord.asc)))
+    val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
     assert(accountGroups.size == 4)
     val userGroup1 = accountGroups(0)
     val userGroup2 = accountGroups(1)
@@ -236,12 +236,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val result2 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, None, Some(2), false))
     assert(result2.size == 2)
-    assert(result2(0)._1.groupId == groupId2)
-    assert(result2(0)._3.isDefined == true)
-    assert(result2(0)._3.exists(_.id == messageId3) == true)
-
-    val message = result2(0)._3.get
-    assert(message.message == Some("New Message3"))
+    val (ag, _, m, _) = result2(0)
+    assert(ag.groupId == groupId2)
+    assert(m.isDefined)
+    assert(m.map(_.id) == Some(messageId3))
+    assert(m.flatMap(_.message) == Some("New Message3"))
 
   }
 

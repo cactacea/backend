@@ -34,7 +34,7 @@ class ReportsRepositorySpec extends RepositorySpec {
     val user = signUp("ReportsRepositorySpec4", "user password", "user udid")
 
     val tags = Some(List("tag1", "tag2", "tag3"))
-    val (id, _) = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
+    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
     val mediums = Some(List(id))
     val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val reportContent = Some("report content")

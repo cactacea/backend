@@ -171,8 +171,8 @@ class FeedsDAO @Inject()(
     val q = quote {
       query[Feeds]
         .filter(_.by        ==  lift(by))
-        .filter(_.id < lift(s) || lift(s) == -1L)
-        .sortBy(_.id)(Ord.desc)
+        .filter(_.postedAt < lift(s) || lift(s) == -1L)
+        .sortBy(_.postedAt)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
@@ -202,12 +202,12 @@ class FeedsDAO @Inject()(
             && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
         .filter({ f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty })
-        .filter(_.id < lift(s) || lift(s) == -1L)
-        .sortBy(_.id)(Ord.desc)
+        .filter(_.postedAt < lift(s) || lift(s) == -1L)
+        .sortBy(_.postedAt)(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }
-    run(q).flatMap(f => addTagsMedium(f, sessionId)) // .map(_.sortWith(_._1.id.value > _._1.id.value)))
+    run(q).flatMap(f => addTagsMedium(f, sessionId))
   }
 
   private def addTagsMedium(feeds: List[Feeds], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
@@ -221,7 +221,7 @@ class FeedsDAO @Inject()(
       case (tags, medium, likeBlocks, commentBlocks) =>
         feeds.map({ f =>
           val t = tags.filter(_.feedId == f.id)
-          val m = medium.filter(_._1 == f.id).map(_._2)
+          val m = medium.filter({ case (id, _) => f.id == id}).map(_._2)
           val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
           val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
           val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
@@ -248,10 +248,11 @@ class FeedsDAO @Inject()(
           || (f.by == lift(by))))
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .map({ case ((f, a), r) => (f, a, r) })
     }
 
     run(q).flatMap({ t =>
-      val feedIds = t.map(_._1._1.id)
+      val feedIds = t.map({ case (f, _, _) => f.id})
       (for {
         tags <- feedTagsDAO.findAll(feedIds)
         medium <- feedMediumDAO.findAll(feedIds)
@@ -259,9 +260,9 @@ class FeedsDAO @Inject()(
         commentBlocks <- blocksCountDAO.findFeedCommentBlocks(feedIds, sessionId)
       } yield (tags, medium, likeBlocks, commentBlocks)).map({
         case (tags, medium, likeBlocks, commentBlocks) =>
-          t.map({ case ((f, a), r) =>
+          t.map({ case (f, a, r) =>
             val t = tags.filter(_.feedId == f.id)
-            val m = medium.filter(_._1 == f.id).map(_._2)
+            val m = medium.filter({ case (id, _) => id == f.id}).map(_._2)
             val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
             val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
             val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )

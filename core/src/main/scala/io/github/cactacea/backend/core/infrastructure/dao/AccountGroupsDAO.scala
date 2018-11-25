@@ -133,12 +133,12 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     val q = quote {
       query[AccountGroups]
         .filter(ag => ag.accountId == lift(accountId) && ag.hidden == lift(hidden))
-        .filter(ag => ag.id < lift(s) || lift(s) == -1L)
+        .filter(ag => ag.joinedAt < lift(s) || lift(s) == -1L)
         .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
         .leftJoin(query[Messages]).on({ case ((_, g), m) => g.messageId.contains(m.id) })
         .leftJoin(query[AccountMessages]).on({ case (((_, g), _), am) => g.messageId.contains(am.messageId) && am.accountId == lift(accountId) })
         .map({ case (((ag, g), m), am) => (ag, g, m, am) })
-        .sortBy(_._1.id)(Ord.desc)
+        .sortBy({ case (ag, _, _, _) => ag.joinedAt})(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, EnqueueService}
+import io.github.cactacea.backend.core.application.components.interfaces.{EnqueueService, InjectionService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.Comment
