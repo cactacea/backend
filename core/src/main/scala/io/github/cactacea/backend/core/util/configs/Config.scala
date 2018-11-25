@@ -16,7 +16,7 @@ object Config extends DurationReader {
   private val passwordConfig = config.as[PasswordConfig]("password")
 
 
-  object db {
+  object db { // scalastyle:ignore
 
     trait config {
       val user: String
@@ -32,7 +32,7 @@ object Config extends DurationReader {
       val maxWaiters: Int
     }
 
-    object master extends config {
+    object master extends config { // scalastyle:ignore
       lazy val user = masterDBConfig.user.getOrElse("cactacea")
       lazy val password = masterDBConfig.password.getOrElse("cactacea")
       lazy val database = masterDBConfig.database.getOrElse("cactacea")
@@ -48,7 +48,7 @@ object Config extends DurationReader {
 
     lazy val useSlave = slaveDBConfig.dest.isDefined
 
-    object slave extends config {
+    object slave extends config { // scalastyle:ignore
       lazy val user = slaveDBConfig.user.getOrElse("cactacea")
       lazy val password = slaveDBConfig.password.getOrElse("cactacea")
       lazy val database = slaveDBConfig.database.getOrElse("cactacea")
@@ -65,9 +65,9 @@ object Config extends DurationReader {
 
   }
 
-  object auth {
+  object auth { // scalastyle:ignore
 
-    object keys {
+    object keys { // scalastyle:ignore
       lazy val ios = authConfig.iosApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
       lazy val android = authConfig.androidApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
       lazy val web = authConfig.webApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
@@ -77,7 +77,7 @@ object Config extends DurationReader {
         (DeviceType.web, web))
     }
 
-    object token {
+    object token { // scalastyle:ignore
       lazy val signingKey = authConfig.signingKey.getOrElse("/hYFwm7UmiCf5tW3bL9UbxdQYw15mWSLpAsDinEacQauR6pFcBPDkGC7Kd5triYtiIR3QMlzkzRClMgcsZeS1Q\\=\\=")
       lazy val algorithm = authConfig.algorithm.getOrElse("HS256")
       lazy val expire = authConfig.expire.getOrElse(30 days)
@@ -85,65 +85,65 @@ object Config extends DurationReader {
       lazy val subject = authConfig.subject.getOrElse("cactacea")
     }
 
-    object headerNames {
+    object headerNames { // scalastyle:ignore
       lazy val apiKey = authConfig.apiKeyHeaderName.getOrElse("X-API-KEY")
       lazy val authorizationKey = authConfig.authorizationHeaderName.getOrElse("X-AUTHORIZATION")
     }
   }
 
-  object password {
+  object password { // scalastyle:ignore
     lazy val salt = passwordConfig.salt.getOrElse("cactacea")
     lazy val iterations = passwordConfig.iterations.getOrElse(1000)
     lazy val keyLength = passwordConfig.keyLength.getOrElse(128)
   }
 
 
-  println(
+  println( // scalastyle:ignore
 """   ___           _                           ___            _                  _
     / __\__ _  ___| |_ __ _  ___ ___  __ _    / __\ __ _  ___| | _____ _ __   __| |
    / /  / _` |/ __| __/ _` |/ __/ _ \/ _` |  /__\/// _` |/ __| |/ / _ \ '_ \ / _` |
   / /__| (_| | (__| || (_| | (_|  __/ (_| | / \/  \ (_| | (__|   <  __/ | | | (_| |
   \____/\__,_|\___|\__\__,_|\___\___|\__,_| \_____/\__,_|\___|_|\_\___|_| |_|\__,_|
-  """  )
+  """  ) // scalastyle:ignore
 
-  println("")
-  println(s"db.master.user = ${db.master.user}")
-  println(s"db.master.password = ${db.master.password}")
-  println(s"db.master.database = ${db.master.database}")
-  println(s"db.master.dest = ${db.master.dest}")
-  println(s"db.master.lowWatermark = ${db.master.lowWatermark}")
-  println(s"db.master.highWatermark = ${db.master.highWatermark}")
-  println(s"db.master.idleTime = ${db.master.idleTime}")
-  println(s"db.master.bufferSize = ${db.master.bufferSize}")
-  println(s"db.master.maxPrepareStatements = ${db.master.maxPrepareStatements}")
-  println(s"db.master.connectTimeout = ${db.master.connectTimeout}")
-  println(s"db.master.maxWaiters = ${db.master.maxWaiters}")
+  println("") // scalastyle:ignore
+  println(s"db.master.user = ${db.master.user}") // scalastyle:ignore
+  println(s"db.master.password = ${db.master.password}") // scalastyle:ignore
+  println(s"db.master.database = ${db.master.database}") // scalastyle:ignore
+  println(s"db.master.dest = ${db.master.dest}") // scalastyle:ignore
+  println(s"db.master.lowWatermark = ${db.master.lowWatermark}") // scalastyle:ignore
+  println(s"db.master.highWatermark = ${db.master.highWatermark}") // scalastyle:ignore
+  println(s"db.master.idleTime = ${db.master.idleTime}") // scalastyle:ignore
+  println(s"db.master.bufferSize = ${db.master.bufferSize}") // scalastyle:ignore
+  println(s"db.master.maxPrepareStatements = ${db.master.maxPrepareStatements}") // scalastyle:ignore
+  println(s"db.master.connectTimeout = ${db.master.connectTimeout}") // scalastyle:ignore
+  println(s"db.master.maxWaiters = ${db.master.maxWaiters}") // scalastyle:ignore
   if (db.useSlave) {
-    println(s"db.slave.user = ${db.slave.user}")
-    println(s"db.slave.password = ${db.slave.password}")
-    println(s"db.slave.database = ${db.slave.database}")
-    println(s"db.slave.dest = ${db.slave.dest}")
-    println(s"db.slave.lowWatermark = ${db.slave.lowWatermark}")
-    println(s"db.slave.highWatermark = ${db.slave.highWatermark}")
-    println(s"db.slave.idleTime = ${db.slave.idleTime}")
-    println(s"db.slave.bufferSize = ${db.slave.bufferSize}")
-    println(s"db.slave.maxPrepareStatements = ${db.slave.maxPrepareStatements}")
-    println(s"db.slave.connectTimeout = ${db.slave.connectTimeout}")
-    println(s"db.slave.maxWaiters = ${db.slave.maxWaiters}")
+    println(s"db.slave.user = ${db.slave.user}") // scalastyle:ignore
+    println(s"db.slave.password = ${db.slave.password}") // scalastyle:ignore
+    println(s"db.slave.database = ${db.slave.database}") // scalastyle:ignore
+    println(s"db.slave.dest = ${db.slave.dest}") // scalastyle:ignore
+    println(s"db.slave.lowWatermark = ${db.slave.lowWatermark}") // scalastyle:ignore
+    println(s"db.slave.highWatermark = ${db.slave.highWatermark}") // scalastyle:ignore
+    println(s"db.slave.idleTime = ${db.slave.idleTime}") // scalastyle:ignore
+    println(s"db.slave.bufferSize = ${db.slave.bufferSize}") // scalastyle:ignore
+    println(s"db.slave.maxPrepareStatements = ${db.slave.maxPrepareStatements}") // scalastyle:ignore
+    println(s"db.slave.connectTimeout = ${db.slave.connectTimeout}") // scalastyle:ignore
+    println(s"db.slave.maxWaiters = ${db.slave.maxWaiters}") // scalastyle:ignore
   }
-  println(s"auth.apiKeyHeaderName = ${auth.headerNames.apiKey}")
-  println(s"auth.authorizationHeaderName = ${auth.headerNames.authorizationKey}")
-  println(s"auth.iosApiKey = ${auth.keys.ios}")
-  println(s"auth.androidApiKey = ${auth.keys.android}")
-  println(s"auth.webApiKey = ${auth.keys.web}")
-  println(s"auth.signingKey = ${auth.token.signingKey}")
-  println(s"auth.algorithm = ${auth.token.algorithm}")
-  println(s"auth.expire = ${auth.token.expire}")
-  println(s"auth.issuer = ${auth.token.issuer}")
-  println(s"auth.subject = ${auth.token.subject}")
-  println(s"password.salt = ${password.salt}")
-  println(s"password.iterations = ${password.iterations}")
-  println(s"password.keyLength = ${password.keyLength}")
-  println("")
+  println(s"auth.apiKeyHeaderName = ${auth.headerNames.apiKey}") // scalastyle:ignore
+  println(s"auth.authorizationHeaderName = ${auth.headerNames.authorizationKey}") // scalastyle:ignore
+  println(s"auth.iosApiKey = ${auth.keys.ios}") // scalastyle:ignore
+  println(s"auth.androidApiKey = ${auth.keys.android}") // scalastyle:ignore
+  println(s"auth.webApiKey = ${auth.keys.web}") // scalastyle:ignore
+  println(s"auth.signingKey = ${auth.token.signingKey}") // scalastyle:ignore
+  println(s"auth.algorithm = ${auth.token.algorithm}") // scalastyle:ignore
+  println(s"auth.expire = ${auth.token.expire}") // scalastyle:ignore
+  println(s"auth.issuer = ${auth.token.issuer}") // scalastyle:ignore
+  println(s"auth.subject = ${auth.token.subject}") // scalastyle:ignore
+  println(s"password.salt = ${password.salt}") // scalastyle:ignore
+  println(s"password.iterations = ${password.iterations}") // scalastyle:ignore
+  println(s"password.keyLength = ${password.keyLength}") // scalastyle:ignore
+  println("") // scalastyle:ignore
 
 }

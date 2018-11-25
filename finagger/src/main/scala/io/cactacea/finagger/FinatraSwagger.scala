@@ -347,17 +347,12 @@ class FinatraSwagger(swagger: Swagger) {
 
     val schema = registerProperty(bodyClass, bodyClass, Some(name))
 
-    val model = PropertyUtil.toModel(schema)
+    PropertyUtil.toModel(schema).map({ model =>
+      val bodyParam = new BodyParameter().name("body").schema(model)
+      bodyParam.setRequired(true)
+      bodyParam
+    })
 
-    Some(
-      {
-        val bodyParam = new BodyParameter().name("body").schema(model)
-
-        bodyParam.setRequired(true)
-
-        bodyParam
-      }
-    )
   }
 
   /**
@@ -416,7 +411,7 @@ class FinatraSwagger(swagger: Swagger) {
     registerProperty(example) match {
       case null => None
       case p =>
-        Some(PropertyUtil.toModel(p))
+        PropertyUtil.toModel(p)
     }
   }
 
