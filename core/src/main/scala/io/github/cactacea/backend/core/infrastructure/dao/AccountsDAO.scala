@@ -275,7 +275,12 @@ class AccountsDAO @Inject()(
           val followCount = a.followCount - b.map(_.followCount).getOrElse(0L)
           val followerCount = a.followerCount - b.map(_.followerCount).getOrElse(0L)
           val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
-          val na = a.copy(displayName = displayName, friendCount = friendCount, followCount = followCount, followerCount = followerCount, feedsCount = a.feedsCount)
+          val na = a.copy(
+            displayName = displayName,
+            friendCount = friendCount,
+            followCount = followCount,
+            followerCount = followerCount,
+            feedsCount = a.feedsCount)
           (na, r)
         })
       })

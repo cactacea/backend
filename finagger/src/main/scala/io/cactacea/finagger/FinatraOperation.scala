@@ -90,14 +90,13 @@ class FinatraOperation(operation: Operation) {
     (implicit swagger: Swagger): Operation = {
     val schema = swagger.registerProperty[T](example)
 
-    val model = PropertyUtil.toModel(schema)
-
-    val param = new BodyParameter()
-      .name(name)
-      .description(description)
-      .schema(model)
-
-    operation.parameter(param)
+    PropertyUtil.toModel(schema).foreach({ model =>
+      val param = new BodyParameter()
+        .name(name)
+        .description(description)
+        .schema(model)
+      operation.parameter(param)
+    })
 
     operation
   }

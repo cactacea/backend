@@ -113,10 +113,10 @@ class DatabaseService(client: OperationType => mysql.Client with mysql.Transacti
   implicit val activeStatusTypeEncode: MappedEncoding[Byte, ActiveStatus] = MappedEncoding[Byte, ActiveStatus] (long => ActiveStatus.forName(long))
 
   implicit class IdComparison[T <: WrappedValue[Long]](left: T) {
-    def >(right: Long) = quote(infix"$left > $right".as[Boolean])
-    def <(right: Long) = quote(infix"$left < $right".as[Boolean])
-    def >=(right: Long) = quote(infix"$left >= $right".as[Boolean])
-    def <=(right: Long) = quote(infix"$left <= $right".as[Boolean])
+    def >(right: Long) = quote(infix"$left > $right".as[Boolean]) // scalastyle:ignore
+    def <(right: Long) = quote(infix"$left < $right".as[Boolean]) // scalastyle:ignore
+    def >=(right: Long) = quote(infix"$left >= $right".as[Boolean]) // scalastyle:ignore
+    def <=(right: Long) = quote(infix"$left <= $right".as[Boolean]) // scalastyle:ignore
   }
 
 }

@@ -13,17 +13,27 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 class GroupsRepository @Inject()(
                                   groupsDAO: GroupsDAO,
                                   groupInvitationsDAO: GroupInvitationsDAO,
-                                  accountGroupsDAO: AccountGroupsDAO,
+                                  accountGroupsDAO: AccountGroupsDAO
                                 ) {
 
-  def create(name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupId] = {
+  def create(name: Option[String],
+             byInvitationOnly: Boolean,
+             privacyType: GroupPrivacyType,
+             authority: GroupAuthorityType,
+             sessionId: SessionId): Future[GroupId] = {
     for {
       id <- groupsDAO.create(name, byInvitationOnly, privacyType, authority, 1L, sessionId)
       _ <- accountGroupsDAO.create(sessionId.toAccountId, id)
     } yield (id)
   }
 
-  def update(groupId: GroupId, name: Option[String], byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[Unit] = {
+  def update(groupId: GroupId,
+             name: Option[String],
+             byInvitationOnly: Boolean,
+             privacyType: GroupPrivacyType,
+             authority: GroupAuthorityType,
+             sessionId: SessionId): Future[Unit] = {
+
     groupsDAO.find(groupId, sessionId).flatMap(_ match {
       case Some(g) =>
         if (g.directMessage) {

@@ -4,16 +4,16 @@ import io.swagger.models.properties.{ArrayProperty, Property, RefProperty}
 import io.swagger.models.{ArrayModel, Model, RefModel}
 
 object PropertyUtil {
-  def toModel(property: Property): Model = {
+  def toModel(property: Property): Option[Model] = {
     property match {
-      case null => null
-      case p: RefProperty => new RefModel(p.getSimpleRef)
+      case p: RefProperty =>
+        Some(new RefModel(p.getSimpleRef))
       case p: ArrayProperty => {
         val arrayModel = new ArrayModel()
         arrayModel.setItems(p.getItems)
-        arrayModel
+        Some(arrayModel)
       }
-      case _ => null
+      case _ => None
     }
   }
 }

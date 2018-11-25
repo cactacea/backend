@@ -10,7 +10,7 @@ object CactaceaPlugin extends AutoPlugin {
 
   import autoImport._
 
-  override def trigger = allRequirements
+  override def trigger: PluginTrigger = allRequirements
 
   override def projectSettings: Seq[Def.Setting[_]] = super.projectSettings ++ Seq(
     cactaceaFlywayLocation := "classpath:db/migration/cactacea",
