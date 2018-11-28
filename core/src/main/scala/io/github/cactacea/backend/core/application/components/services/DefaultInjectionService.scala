@@ -26,7 +26,7 @@ class DefaultInjectionService extends InjectionService {
     Future.Unit
   }
 
-  override def profileUpdated(displayName: Option[String],
+  override def profileUpdated(displayName: String,
                               web: Option[String],
                               birthday: Option[Long],
                               location: Option[String],

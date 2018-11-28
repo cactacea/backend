@@ -24,7 +24,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     execute(feedLikesDAO.create(feedId, sessionAccount3.id.toSessionId))
     val likeCount1 = execute(feedsDAO.find(feedId, sessionAccount1.id.toSessionId)).head._1.likeCount
     assert(likeCount1 == 2)
-    val result1 = execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.postedAt)))
+    val result1 = execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.likedAt)))
     assert(result1.size == 2)
     val like1 = result1(0)
     val like2 = result1(1)
@@ -37,7 +37,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     execute(feedLikesDAO.delete(feedId, sessionAccount3.id.toSessionId))
     execute(feedLikesDAO.create(feedId, sessionAccount2.id.toSessionId))
     execute(feedLikesDAO.create(feedId, sessionAccount3.id.toSessionId))
-    val result2 = execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.postedAt)))
+    val result2 = execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.likedAt)))
     assert(result2.size == 2)
     val like3 = result2(0)
     val like4 = result2(1)
@@ -69,14 +69,14 @@ class FeedLikesDAOSpec extends DAOSpec {
 
     execute(feedLikesDAO.delete(feedId, sessionAccount2.id.toSessionId))
     execute(feedLikesDAO.delete(feedId, sessionAccount3.id.toSessionId))
-    assert(execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.postedAt))).size == 0)
+    assert(execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.likedAt))).size == 0)
 
     val likeCount2 = execute(feedsDAO.find(feedId, sessionAccount1.id.toSessionId)).head._1.likeCount
     assert(likeCount2 == 0)
 
     execute(feedLikesDAO.delete(feedId, sessionAccount2.id.toSessionId))
     execute(feedLikesDAO.delete(feedId, sessionAccount3.id.toSessionId))
-    assert(execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.postedAt))).size == 0)
+    assert(execute(db.run(query[FeedLikes].filter(_.feedId == lift(feedId)).sortBy(_.likedAt))).size == 0)
 
     val feedId2 = execute(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
     val feedId3 = execute(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
@@ -167,7 +167,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     assert(result1.size == 3)
 
     val feedLike = result1(2)._3
-    val result2 = execute(feedLikesDAO.findAccounts(feedId, Some(feedLike.postedAt), None, Some(3), sessionAccount2.id.toSessionId))
+    val result2 = execute(feedLikesDAO.findAccounts(feedId, Some(feedLike.likedAt), None, Some(3), sessionAccount2.id.toSessionId))
     assert(result2.size == 2)
 
   }

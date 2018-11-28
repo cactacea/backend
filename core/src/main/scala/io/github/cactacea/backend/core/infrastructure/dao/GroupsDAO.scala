@@ -88,14 +88,18 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(r).map(_ => Unit)
   }
 
-  def update(groupId: GroupId, messageId: Option[MessageId], sessionId: SessionId): Future[Unit] = {
+  def update(groupId: GroupId, messageId: MessageId, postedAt: Long, sessionId: SessionId): Future[Unit] = {
+    val messageIdOpt: Option[MessageId] = Some(messageId)
+    val lastPostedAtOpt: Option[Long] = Some(postedAt)
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups]
         .filter(_.id == lift(groupId))
         .filter(_.by == lift(by))
         .update(
-          _.messageId -> lift(messageId)
+          _.messageId     -> lift(messageIdOpt),
+          _.lastPostedAt  -> lift(lastPostedAtOpt)
+
         )
     }
     run(r).map(_ => Unit)
@@ -129,10 +133,8 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(g => (g.name.exists(_ like lift(n)))  || lift(name).isEmpty)
         .filter(g => g.invitationOnly == lift(invitationOnly.getOrElse(false))    || lift(invitationOnly).isEmpty)
         .filter(g => g.privacyType == lift(privacyType.getOrElse(GroupPrivacyType.everyone))         || lift(privacyType).isEmpty)
-        .filter(g => query[Blocks]
-          .filter(_.accountId     == lift(by))
-          .filter(_.by            == g.by)
-          .isEmpty)
+        .filter(g => query[Blocks].filter(b => b.accountId == lift(by) && b.by == g.by).isEmpty)
+        .filter(g => query[Blocks].filter(b => b.accountId == g.by && b.by == lift(by)).isEmpty)
         .filter(_.organizedAt < lift(s) || lift(s) == -1L)
         .sortBy(_.organizedAt)(Ord.desc)
         .drop(lift(o))
@@ -156,10 +158,8 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Groups]
         .filter(_.id == lift(groupId))
-        .filter(g => query[Blocks]
-          .filter(_.accountId   == lift(by))
-          .filter(_.by          == g.by)
-          .isEmpty)
+        .filter(g => query[Blocks].filter(b => b.accountId == lift(by) && b.by == g.by).isEmpty)
+        .filter(g => query[Blocks].filter(b => b.accountId == g.by && b.by == lift(by)).isEmpty)
     }
     run(q).map(_.headOption)
   }
@@ -178,10 +178,8 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Groups]
         .filter(_.id == lift(groupId))
-        .filter(g => query[Blocks]
-          .filter(_.accountId == lift(by))
-          .filter(_.by        == g.by)
-          .isEmpty)
+        .filter(g => query[Blocks].filter(b => b.accountId == lift(by) && b.by == g.by).isEmpty)
+        .filter(g => query[Blocks].filter(b => b.accountId == g.by && b.by == lift(by)).isEmpty)
         .nonEmpty
     }
     run(q)

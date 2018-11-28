@@ -21,13 +21,13 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   private def insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[CommentLikeId] = {
     val by = sessionId.toAccountId
-    val postedAt = timeService.currentTimeMillis()
+    val likedAt = timeService.currentTimeMillis()
     val q = quote {
       query[CommentLikes]
         .insert(
           _.commentId   -> lift(commentId),
           _.by          -> lift(by),
-          _.postedAt    -> lift(postedAt)
+          _.likedAt    -> lift(likedAt)
         ).returning(_.id)
     }
     run(q)
@@ -97,15 +97,13 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[CommentLikes]
-        .filter(c => c.commentId == lift(commentId) && (c.postedAt < lift(s) || lift(s) == -1L))
-        .filter(cf => query[Blocks]
-          .filter(_.accountId == lift(by))
-          .filter(_.by        == cf.by)
-          .isEmpty)
+        .filter(c => c.commentId == lift(commentId) && (c.likedAt < lift(s) || lift(s) == -1L))
+        .filter(cf => query[Blocks].filter(b => b.accountId == lift(by) && b.by == cf.by).isEmpty)
+        .filter(cf => query[Blocks].filter(b => b.accountId == cf.by && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (a, r, c)})
-        .sortBy({ case (_, _, c) => c.postedAt })(Ord.desc)
+        .sortBy({ case (_, _, c) => c.likedAt })(Ord.desc)
         .drop(lift(o))
         .take(lift(c))
     }

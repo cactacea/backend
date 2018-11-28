@@ -75,7 +75,7 @@ class AccountsRepository @Inject()(
     accountsDAO.updatePassword(oldPassword, newPassword, sessionId)
   }
 
-  def updateProfile(displayName: Option[String],
+  def updateProfile(displayName: String,
                     web: Option[String],
                     birthday: Option[Long],
                     location: Option[String],

@@ -17,8 +17,8 @@ class FeedsDAOSpec extends DAOSpec {
     val medium1 = createMedium(sessionAccount1.id)
     val medium2 = createMedium(sessionAccount1.id)
     val medium3 = createMedium(sessionAccount1.id)
-    val medium4 = createMedium(sessionAccount2.id)
-    val medium5 = createMedium(sessionAccount2.id)
+    createMedium(sessionAccount2.id)
+    createMedium(sessionAccount2.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -377,11 +377,11 @@ class FeedsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("FeedsDAOSpec5")
     val sessionAccount2 = createAccount("FeedsDAOSpec6")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
-    val medium3 = this.createMedium(sessionAccount1.id)
-    val medium4 = this.createMedium(sessionAccount2.id)
-    val medium5 = this.createMedium(sessionAccount2.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
+    val medium3 = createMedium(sessionAccount1.id)
+    createMedium(sessionAccount2.id)
+    createMedium(sessionAccount2.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -574,8 +574,8 @@ class FeedsDAOSpec extends DAOSpec {
     val medium1 = createMedium(sessionUser.id)
     val medium2 = createMedium(sessionUser.id)
     val medium3 = createMedium(sessionUser.id)
-    val medium4 = createMedium(sessionUser.id)
-    val medium5 = createMedium(sessionUser.id)
+    createMedium(sessionUser.id)
+    createMedium(sessionUser.id)
 
     val mediums1 = List[MediumId]()
     val mediums2 = List(medium1.id)

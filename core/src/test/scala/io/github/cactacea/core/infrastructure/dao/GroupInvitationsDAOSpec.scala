@@ -332,7 +332,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
   test("updateNotified") {
 
     val sessionAccount = createAccount("GroupInvitationsDAOSpec56")
-    val account1 = createAccount("GroupInvitationsDAOSpec57")
+    createAccount("GroupInvitationsDAOSpec57")
     val owner1 = createAccount("GroupInvitationsDAOSpec58")
     val owner2 = createAccount("GroupInvitationsDAOSpec59")
     val owner3 = createAccount("GroupInvitationsDAOSpec60")

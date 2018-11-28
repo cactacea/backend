@@ -261,8 +261,11 @@ class GroupsDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("GroupsDAOSpec15")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId1, None, sessionAccount.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,
+      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val (messageId, postedAt) = execute(messagesDAO.create(groupId1, Some("test"), 1, None, sessionAccount.id.toSessionId))
+
+    execute(groupsDAO.update(groupId1, messageId, postedAt, sessionAccount.id.toSessionId))
 
   }
 

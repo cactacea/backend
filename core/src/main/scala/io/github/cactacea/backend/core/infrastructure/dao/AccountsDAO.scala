@@ -21,32 +21,23 @@ class AccountsDAO @Inject()(
   import db._
 
   def create(accountName: String,
-             displayName: Option[String],
-             password: String,
-             web: Option[String],
-             birthday: Option[Long],
-             location: Option[String],
-             bio: Option[String]): Future[AccountId] = {
+             password: String): Future[AccountId] = {
 
     val accountStatus = AccountStatusType.normally
     val hashedPassword = hashService.hash(password)
     val q = quote {
       query[Accounts].insert(
         _.accountName           -> lift(accountName),
-        _.displayName           -> lift(displayName),
+        _.displayName           -> lift(accountName),
         _.password              -> lift(hashedPassword),
-        _.accountStatus         -> lift(accountStatus),
-        _.web                   -> lift(web),
-        _.birthday              -> lift(birthday),
-        _.location              -> lift(location),
-        _.bio                   -> lift(bio)
+        _.accountStatus         -> lift(accountStatus)
       ).returning(_.id)
     }
     run(q)
   }
 
 
-  def updateProfile(displayName: Option[String],
+  def updateProfile(displayName: String,
                     web: Option[String],
                     birthday: Option[Long],
                     location: Option[String],
@@ -133,10 +124,8 @@ class AccountsDAO @Inject()(
       query[Accounts]
         .filter(_.id == lift(accountId))
         .filter(_.accountStatus  == lift(status))
-        .filter(u => query[Blocks]
-          .filter(_.accountId    == lift(by))
-          .filter(_.by           == u.id)
-          .isEmpty)
+        .filter(u => query[Blocks].filter(b => b.accountId == lift(by) && b.by == u.id).isEmpty)
+        .filter(u => query[Blocks].filter(b => b.accountId == u.id && b.by == lift(by)).isEmpty)
         .nonEmpty
     }
     run(q)
@@ -150,10 +139,8 @@ class AccountsDAO @Inject()(
       query[Accounts]
         .filter(u => liftQuery(accountIds).contains(u.id))
         .filter(_.accountStatus  == lift(status))
-        .filter(u => query[Blocks]
-          .filter(_.accountId    == lift(by))
-          .filter(_.by           == u.id)
-          .isEmpty)
+        .filter(u => query[Blocks].filter(b => b.accountId == lift(by) && b.by == u.id).isEmpty)
+        .filter(u => query[Blocks].filter(b => b.accountId == u.id && b.by == lift(by)).isEmpty)
         .size
     }
     run(q).map(_ == accountIds.size)
@@ -197,10 +184,8 @@ class AccountsDAO @Inject()(
         a <- query[Accounts]
           .filter(_.id              == lift(accountId))
           .filter(_.accountStatus   == lift(status))
-          .filter(a => query[Blocks]
-            .filter(_.accountId == lift(by))
-            .filter(_.by        == a.id)
-            .isEmpty)
+          .filter(a => query[Blocks].filter(b => b.accountId == lift(by) && b.by == a.id).isEmpty)
+          .filter(a => query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by)).isEmpty)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r)
@@ -208,13 +193,13 @@ class AccountsDAO @Inject()(
 
     (for {
       accounts <- run(q)
-      ids = accounts.map({ case (a, r) => a.id})
+      ids = accounts.map({ case (a, _) => a.id})
       blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
     } yield (accounts, blocksCount))
       .map({ case (accounts, blocksCount) =>
         accounts.map({ case (a, r) =>
           val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
-          val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
+          val displayName = r.flatMap(_.displayName).getOrElse(a.displayName)
           val friendCount = a.friendCount - b.friendCount
           val followCount = a.followCount - b.followCount
           val followerCount = a.followerCount - b.followerCount
@@ -247,12 +232,11 @@ class AccountsDAO @Inject()(
     val q2 = quote {
       query[Accounts]
         .filter({a => a.id !=  lift(by)})
-        .filter(a => (a.accountName like lift(un)) || a.displayName.exists(_ like lift(un)) || (lift(un) == ""))
-        .filter(a => a.accountStatus  == lift(status) && (a.id < lift(s) || lift(s) == -1L))
-        .filter(a => query[Blocks]
-          .filter(_.accountId == lift(by))
-          .filter(_.by        == a.id)
-          .isEmpty)
+        .filter(a => (a.accountName like lift(un)) || (a.displayName like lift(un)) || (lift(un) == ""))
+        .filter(a => a.accountStatus == lift(status))
+        .filter(a => a.id < lift(s) || lift(s) == -1L)
+        .filter(a => query[Blocks].filter(b => b.accountId == lift(by) && b.by == a.id).isEmpty)
+        .filter(a => query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by)).isEmpty)
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
       .sortBy({ case (a, _) => a.id})(Ord.desc)
       .drop(lift(o))
@@ -261,7 +245,7 @@ class AccountsDAO @Inject()(
 
     (for {
       accounts <- run(q2)
-      ids = accounts.map({ case (a, r) => a.id})
+      ids = accounts.map({ case (a, _) => a.id})
       blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
     } yield (accounts, blocksCount))
       .map({ case (accounts, blocksCount) =>
@@ -270,7 +254,7 @@ class AccountsDAO @Inject()(
           val friendCount = a.friendCount - b.map(_.friendCount).getOrElse(0L)
           val followCount = a.followCount - b.map(_.followCount).getOrElse(0L)
           val followerCount = a.followerCount - b.map(_.followerCount).getOrElse(0L)
-          val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
+          val displayName = r.flatMap(_.displayName).getOrElse(a.displayName)
           val na = a.copy(
             displayName = displayName,
             friendCount = friendCount,
@@ -290,8 +274,8 @@ class AccountsDAO @Inject()(
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.editedDisplayName -> lift(displayName)
-        ).onConflictUpdate((t, _) => t.editedDisplayName -> lift(displayName))
+          _.displayName -> lift(displayName)
+        ).onConflictUpdate((t, _) => t.displayName -> lift(displayName))
     }
     run(q).map(_ => Unit)
   }

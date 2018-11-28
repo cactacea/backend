@@ -10,7 +10,7 @@ trait InjectionService {
   def signedIn(authentication: Account): Future[Unit]
   def signedOut(sessionId: SessionId): Future[Unit]
   def accountNameUpdated(accountName: String, sessionId: SessionId): Future[Unit]
-  def profileUpdated(displayName: Option[String], web: Option[String], birthday: Option[Long], location: Option[String],
+  def profileUpdated(displayName: String, web: Option[String], birthday: Option[Long], location: Option[String],
                      bio: Option[String], sessionId: SessionId): Future[Unit]
   def profileImageUpdated(profileImageUri: Option[String], sessionId: SessionId): Future[Unit]
   def passwordUpdated(sessionId: SessionId): Future[Unit]

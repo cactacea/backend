@@ -12,6 +12,7 @@ case class Group(
                   invitationOnly: Boolean,
                   authorityType: GroupAuthorityType,
                   accountCount: Long,
+                  lastPostedAt: Option[Long],
                   organizedAt: Long,
                   next: Long
                  )
@@ -22,7 +23,7 @@ object Group {
   }
 
   def apply(ag: AccountGroups, g: Groups, m: Option[Messages], am: Option[AccountMessages]): Group = {
-    apply(g, m, am, None, None, None, None)
+    apply(g, m, am, None, None, None, Some(ag))
   }
 
   def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], a: Option[Accounts], r: Option[Relationships]): Group = {
@@ -63,6 +64,7 @@ object Group {
       authorityType     = g.authorityType,
       accountCount      = g.accountCount,
       organizedAt       = g.organizedAt,
+      lastPostedAt      = g.lastPostedAt,
       next              = ag.map(_.joinedAt).getOrElse(g.organizedAt)
     )
   }

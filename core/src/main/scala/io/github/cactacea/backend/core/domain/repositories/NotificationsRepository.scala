@@ -77,7 +77,7 @@ class NotificationsRepository @Inject()(
 
   def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], locales: Seq[Locale], sessionId: SessionId): Future[List[Notification]] = {
     notificationsDAO.findAll(since, offset, count, sessionId).map(_.map({ case (n, a, r) =>
-      val displayName = r.map(_.editedDisplayName).getOrElse(a.accountName)
+      val displayName = r.map(_.displayName).getOrElse(a.accountName)
       val message = notificationMessagesService.getNotificationMessage(n.notificationType, locales, displayName)
       Notification(n, message)
     }))

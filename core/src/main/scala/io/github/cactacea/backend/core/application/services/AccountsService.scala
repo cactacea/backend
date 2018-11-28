@@ -51,7 +51,7 @@ class AccountsService @Inject()(
     }
   }
 
-  def update(displayName: Option[String],
+  def update(displayName: String,
              web: Option[String],
              birthday: Option[Long],
              location: Option[String],

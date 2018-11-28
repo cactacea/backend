@@ -21,21 +21,21 @@ class AccountsRepositorySpec extends RepositorySpec {
 
     val session = signUp("AccountsRepositorySpec5", "password", "udid")
     val account1 = signUp("AccountsRepositorySpec6", "password1", "udid")
-    val blockAccount1 = signUp("AccountsRepositorySpec7", "password1", "udid")
+    val blockedAccount1 = signUp("AccountsRepositorySpec7", "password1", "udid")
     val account2 = signUp("AccountsRepositorySpec8", "password2", "udid")
-    val blockAccount2 = signUp("AccountsRepositorySpec9", "password1", "udid")
+    val blockedAccount2 = signUp("AccountsRepositorySpec9", "password1", "udid")
     val account3 = signUp("AccountsRepositorySpec10", "password3", "udid")
-    val blockAccount3 = signUp("AccountsRepositorySpec11", "password1", "udid")
+    val blockedAccount3 = signUp("AccountsRepositorySpec11", "password1", "udid")
     val account4 = signUp("AccountsRepositorySpec12", "password4", "udid")
-    val blockAccount4 = signUp("AccountsRepositorySpec13", "password1", "udid")
+    val blockedAccount4 = signUp("AccountsRepositorySpec13", "password1", "udid")
     val account5 = signUp("AccountsRepositorySpec14", "password5", "udid")
-    val blockAccount5 = signUp("AccountsRepositorySpec15", "password1", "udid")
+    val blockedAccount5 = signUp("AccountsRepositorySpec15", "password1", "udid")
 
-    execute(blocksRepository.create(blockAccount1.id, session.id.toSessionId))
-    execute(blocksRepository.create(blockAccount2.id, session.id.toSessionId))
-    execute(blocksRepository.create(blockAccount3.id, session.id.toSessionId))
-    execute(blocksRepository.create(blockAccount4.id, session.id.toSessionId))
-    execute(blocksRepository.create(blockAccount5.id, session.id.toSessionId))
+    execute(blocksRepository.create(blockedAccount1.id, session.id.toSessionId))
+    execute(blocksRepository.create(blockedAccount2.id, session.id.toSessionId))
+    execute(blocksRepository.create(blockedAccount3.id, session.id.toSessionId))
+    execute(blocksRepository.create(blockedAccount4.id, session.id.toSessionId))
+    execute(blocksRepository.create(blockedAccount5.id, session.id.toSessionId))
 
     // Find All
     val accounts1 = execute(accountsRepository.findAll(None, None, None, Some(3), session.id.toSessionId))
@@ -125,7 +125,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     execute(accountsRepository.updateDisplayName(account.id, Some("new account name"), session.id.toSessionId))
     val result = execute(accountsRepository.find(account.id, session.id.toSessionId))
     assert(result.id == account.id)
-    assert(result.displayName == Some("new account name"))
+    assert(result.displayName == "new account name")
 
   }
 

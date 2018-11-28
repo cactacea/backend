@@ -33,7 +33,7 @@ class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def create(groupId: GroupId, message: Option[String], accountCount: Long, mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
+  def create(groupId: GroupId, message: Option[String], accountCount: Long, mediumId: Option[MediumId], sessionId: SessionId): Future[(MessageId, Long)] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.currentTimeMillis()
     val mt = if (message.isDefined) {
@@ -56,7 +56,7 @@ class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         _.postedAt            -> lift(postedAt)
       ).returning(_.id)
     }
-    run(q)
+    run(q).map(id => (id, postedAt))
   }
 
   def delete(groupId: GroupId): Future[Unit] = {

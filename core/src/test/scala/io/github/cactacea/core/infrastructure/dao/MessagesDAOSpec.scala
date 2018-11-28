@@ -11,8 +11,9 @@ class MessagesDAOSpec extends DAOSpec {
   test("create") {
 
     val sessionAccount = createAccount("MediumsDAOSpec4")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone,
+      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
 
     val result = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
     assert(result.size == 1)
@@ -45,7 +46,7 @@ class MessagesDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("MediumsDAOSpec6")
     val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     // TODO : check
     execute(messagesDAO.updateReadAccountCount(List(messageId)))
 
@@ -59,8 +60,9 @@ class MessagesDAOSpec extends DAOSpec {
   test("updateNotified") {
 
     val sessionAccount = createAccount("MediumsDAOSpec7")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone,
+      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     // TODO : Check
     execute(messagesDAO.updateNotified(messageId))
 

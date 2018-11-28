@@ -127,10 +127,8 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[Followers].filter(f => f.accountId == lift(accountId) && (f.followedAt < lift(s) || lift(s) == -1L) )
-        .filter(r => query[Blocks]
-          .filter(_.accountId == lift(by))
-          .filter(_.by        == r.accountId)
-          .isEmpty)
+        .filter(r => query[Blocks].filter(b => b.accountId == lift(by) && b.by == r.accountId).isEmpty)
+        .filter(r => query[Blocks].filter(b => b.accountId == r.accountId && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
