@@ -51,11 +51,11 @@ object Account {
   }
 
   def apply(a: Accounts, r: Option[Relationships], fl: FeedLikes): Account = {
-    apply(a, r, None, fl.postedAt)
+    apply(a, r, None, fl.likedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships], c: CommentLikes): Account = {
-    apply(a, r, None, c.postedAt)
+    apply(a, r, None, c.likedAt)
   }
 
   def apply(a: Accounts, r: Option[Relationships]): Account = {
