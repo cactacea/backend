@@ -23,7 +23,7 @@ object Group {
   }
 
   def apply(ag: AccountGroups, g: Groups, m: Option[Messages], am: Option[AccountMessages]): Group = {
-    apply(g, m, am, None, None, None, None)
+    apply(g, m, am, None, None, None, Some(ag))
   }
 
   def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], a: Option[Accounts], r: Option[Relationships]): Group = {
