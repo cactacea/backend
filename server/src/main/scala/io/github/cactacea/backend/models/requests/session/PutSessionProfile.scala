@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty
 
 case class PutSessionProfile (
                                @ApiModelProperty(value = "Display name.", required = true)
-                               @Size(min = 1, max = 50) displayName: Option[String],
+                               @Size(min = 1, max = 50) displayName: String,
 
                                @ApiModelProperty(value = "Profile URL.", required = true)
                                @Size(min = 0, max = 2038) web: Option[String],

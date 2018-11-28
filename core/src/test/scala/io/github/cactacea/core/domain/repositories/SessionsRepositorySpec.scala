@@ -19,7 +19,7 @@ class SessionsRepositorySpec extends RepositorySpec {
   test("signUp") {
 
     val accountName = "SessionsRepositorySpec1"
-    val displayName = Some("SessionsRepositorySpec1")
+    val displayName = "SessionsRepositorySpec1"
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
@@ -46,7 +46,7 @@ class SessionsRepositorySpec extends RepositorySpec {
   test("signIn") {
 
     val accountName = "SessionsRepositorySpec2"
-    val displayName = Some("SessionsRepositorySpec2")
+    val displayName = "SessionsRepositorySpec2"
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
@@ -60,7 +60,6 @@ class SessionsRepositorySpec extends RepositorySpec {
   test("invalid password signIn ") {
 
     val accountName = "SessionsRepositorySpec3"
-    val displayName = Some("SessionsRepositorySpec3")
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
@@ -75,7 +74,6 @@ class SessionsRepositorySpec extends RepositorySpec {
 
   test("signOut") {
     val accountName = "SessionsRepositorySpec4"
-    val displayName = Some("SessionsRepositorySpec4")
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
@@ -87,7 +85,6 @@ class SessionsRepositorySpec extends RepositorySpec {
   test("checkAccountStatus") {
 
     val accountName = "SessionsRepositorySpec5"
-    val displayName = Some("SessionsRepositorySpec5")
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")

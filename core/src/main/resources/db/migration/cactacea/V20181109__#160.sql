@@ -5,6 +5,8 @@
 -- Project: Name of the project
 -- Author: TAKESHI SHIMADA
 
+SET SQL_SAFE_UPDATES = 0;
+
 ALTER SCHEMA `cactacea`  DEFAULT COLLATE utf8_general_ci ;
 
 ALTER TABLE `cactacea`.`account_feeds`
@@ -124,3 +126,8 @@ ADD COLUMN `last_posted_at` BIGINT(20) NULL DEFAULT NULL AFTER `message_id`;
 
 ALTER TABLE `cactacea`.`relationships`
 CHANGE COLUMN `edited_display_name` `display_name` VARCHAR(50) NULL DEFAULT NULL ;
+
+UPDATE `cactacea`.`accounts` set display_name = account_name where display_name is null;
+
+ALTER TABLE `cactacea`.`accounts`
+CHANGE COLUMN `display_name` `display_name` VARCHAR(50) NOT NULL DEFAULT ' ' ;

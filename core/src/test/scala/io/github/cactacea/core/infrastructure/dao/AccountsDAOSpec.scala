@@ -114,17 +114,17 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     execute(accountsDAO.updateDisplayName(account2.id, Some("newUserName2"), sessionAccount.id.toSessionId))
 
     val result1 = execute(accountsDAO.find(account1.id, sessionAccount.id.toSessionId))
-    assert(result1.get._1.displayName == Some("newUserName1"))
+    assert(result1.get._1.displayName == "newUserName1")
     val result2 = execute(accountsDAO.find(account2.id, sessionAccount.id.toSessionId))
-    assert(result2.get._1.displayName == Some("newUserName2"))
+    assert(result2.get._1.displayName == "newUserName2")
 
     execute(accountsDAO.updateDisplayName(account1.id, None, sessionAccount.id.toSessionId))
     execute(accountsDAO.updateDisplayName(account2.id, None, sessionAccount.id.toSessionId))
 
     val result3 = execute(accountsDAO.find(account1.id, sessionAccount.id.toSessionId))
-    assert(result3.get._1.displayName == None)
+    assert(result3.get._1.displayName == "AccountsDAOSpec12")
     val result4 = execute(accountsDAO.find(account2.id, sessionAccount.id.toSessionId))
-    assert(result4.get._1.displayName == None)
+    assert(result4.get._1.displayName == "AccountsDAOSpec13")
 
   }
 

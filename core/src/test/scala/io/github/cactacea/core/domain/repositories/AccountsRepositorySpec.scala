@@ -125,7 +125,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     execute(accountsRepository.updateDisplayName(account.id, Some("new account name"), session.id.toSessionId))
     val result = execute(accountsRepository.find(account.id, session.id.toSessionId))
     assert(result.id == account.id)
-    assert(result.displayName == Some("new account name"))
+    assert(result.displayName == "new account name")
 
   }
 

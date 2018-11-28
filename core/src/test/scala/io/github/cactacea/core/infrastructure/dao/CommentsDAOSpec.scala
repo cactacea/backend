@@ -92,7 +92,7 @@ class CommentsDAOSpec extends DAOSpec {
 
     val feedId = execute(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
     val commentId1 = execute(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
-    val commentId2 = execute(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
+    execute(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
 
     val exist1 = execute(commentsDAO.exist(commentId1, sessionAccount1.id.toSessionId))
     val exist2 = execute(commentsDAO.exist(commentId1, sessionAccount1.id.toSessionId))
