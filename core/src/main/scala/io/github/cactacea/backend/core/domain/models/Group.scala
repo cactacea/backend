@@ -12,6 +12,7 @@ case class Group(
                   invitationOnly: Boolean,
                   authorityType: GroupAuthorityType,
                   accountCount: Long,
+                  lastPostedAt: Option[Long],
                   organizedAt: Long,
                   next: Long
                  )
@@ -63,6 +64,7 @@ object Group {
       authorityType     = g.authorityType,
       accountCount      = g.accountCount,
       organizedAt       = g.organizedAt,
+      lastPostedAt      = g.lastPostedAt,
       next              = ag.map(_.joinedAt).getOrElse(g.organizedAt)
     )
   }

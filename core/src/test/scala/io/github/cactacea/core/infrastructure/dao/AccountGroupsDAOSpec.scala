@@ -228,11 +228,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(result1(0)._2.id == groupId2)
     assert(result1(0)._4.isDefined == false)
 
-    val messageId1 = execute(messagesDAO.create(groupId1, Some("New Message1"), 2, None, sessionAccount.id.toSessionId))
+    val (messageId1, postedAt1) = execute(messagesDAO.create(groupId1, Some("New Message1"), 2, None, sessionAccount.id.toSessionId))
     execute(messagesDAO.create(groupId1, Some("New Message2"), 2, None, sessionAccount.id.toSessionId))
-    val messageId3 = execute(messagesDAO.create(groupId2, Some("New Message3"), 2, None, sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId1, Some(messageId1), sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId2, Some(messageId3), sessionAccount.id.toSessionId))
+    val (messageId3, postedAt3) = execute(messagesDAO.create(groupId2, Some("New Message3"), 2, None, sessionAccount.id.toSessionId))
+    execute(groupsDAO.update(groupId1, messageId1, postedAt1, sessionAccount.id.toSessionId))
+    execute(groupsDAO.update(groupId2, messageId3, postedAt3, sessionAccount.id.toSessionId))
 
     val result2 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, None, Some(2), false))
     assert(result2.size == 2)
@@ -280,10 +280,10 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId2))
 
-    val messageId1 = execute(messagesDAO.create(groupId1, Some("New Message1"), 2, None, sessionAccount.id.toSessionId))
-    val messageId3 = execute(messagesDAO.create(groupId2, Some("New Message3"), 2, None, sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId1, Some(messageId1), sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId2, Some(messageId3), sessionAccount.id.toSessionId))
+    val (messageId1, postedAt1) = execute(messagesDAO.create(groupId1, Some("New Message1"), 2, None, sessionAccount.id.toSessionId))
+    val (messageId3, postedAt3) = execute(messagesDAO.create(groupId2, Some("New Message3"), 2, None, sessionAccount.id.toSessionId))
+    execute(groupsDAO.update(groupId1, messageId1, postedAt1, sessionAccount.id.toSessionId))
+    execute(groupsDAO.update(groupId2, messageId3, postedAt3, sessionAccount.id.toSessionId))
 
     val result1 = execute(accountGroupsDAO.findGroupId(messageId1, sessionAccount.id.toSessionId))
     val result2 = execute(accountGroupsDAO.findGroupId(messageId3, sessionAccount.id.toSessionId))
@@ -294,6 +294,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val resultGroupId3 = result2.get
     assert(resultGroupId1 == groupId1)
     assert(resultGroupId3 == groupId2)
+
 
   }
 

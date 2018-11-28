@@ -13,5 +13,6 @@ case class Groups(
                    accountCount: Long,
                    messageId: Option[MessageId],
                    by: AccountId,
+                   lastPostedAt: Option[Long],
                    organizedAt: Long
                   )

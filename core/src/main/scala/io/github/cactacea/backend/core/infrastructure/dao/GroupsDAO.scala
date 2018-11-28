@@ -88,14 +88,18 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(r).map(_ => Unit)
   }
 
-  def update(groupId: GroupId, messageId: Option[MessageId], sessionId: SessionId): Future[Unit] = {
+  def update(groupId: GroupId, messageId: MessageId, postedAt: Long, sessionId: SessionId): Future[Unit] = {
+    val messageIdOpt: Option[MessageId] = Some(messageId)
+    val lastPostedAtOpt: Option[Long] = Some(postedAt)
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups]
         .filter(_.id == lift(groupId))
         .filter(_.by == lift(by))
         .update(
-          _.messageId -> lift(messageId)
+          _.messageId     -> lift(messageIdOpt),
+          _.lastPostedAt  -> lift(lastPostedAtOpt)
+
         )
     }
     run(r).map(_ => Unit)
