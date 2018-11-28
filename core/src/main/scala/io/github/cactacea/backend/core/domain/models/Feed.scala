@@ -15,6 +15,7 @@ case class Feed(
                  contentWarning: Boolean,
                  contentDeleted: Boolean,
                  postedAt: Long,
+                 likedAt: Option[Long],
                  next: Long
                  )
 
@@ -50,7 +51,8 @@ object Feed {
           contentWarning  = false,
           contentDeleted  = true,
           postedAt        = f.postedAt,
-          next            = fl.map(_.postedAt).getOrElse(f.postedAt)
+          likedAt         = fl.map(_.likedAt),
+          next            = fl.map(_.likedAt).getOrElse(f.postedAt)
         )
       }
       case _ => {
@@ -68,7 +70,8 @@ object Feed {
           contentWarning  = f.contentWarning,
           contentDeleted  = false,
           postedAt        = f.postedAt,
-          next            = fl.map(_.postedAt).getOrElse(f.postedAt)
+          likedAt         = fl.map(_.likedAt),
+          next            = fl.map(_.likedAt).getOrElse(f.postedAt)
         )
       }
     }

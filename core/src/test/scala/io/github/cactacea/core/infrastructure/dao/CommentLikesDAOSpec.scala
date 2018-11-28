@@ -35,7 +35,7 @@ class CommentLikesDAOSpec extends DAOSpec {
     val result1 = resultList1.head
     assert(result1.commentId == commentId)
     assert(result1.by == sessionAccount2.id)
-    assert(result1.postedAt > 0)
+    assert(result1.likedAt > 0)
 
     // create
     execute(commentLikesDAO.delete(commentId, sessionAccount2.id.toSessionId))
@@ -53,7 +53,7 @@ class CommentLikesDAOSpec extends DAOSpec {
     val result3 = resultList2.head
     assert(result3.commentId == commentId)
     assert(result3.by == sessionAccount2.id)
-    assert(result3.postedAt > 0)
+    assert(result3.likedAt > 0)
 
   }
 

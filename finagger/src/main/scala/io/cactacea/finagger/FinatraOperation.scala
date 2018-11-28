@@ -16,7 +16,7 @@ class FinatraOperation(operation: Operation) {
   import FinatraSwagger._
 
   def routeParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-    (implicit swagger: Swagger): Operation = {
+                            (implicit swagger: Swagger): Operation = {
     val param = new PathParameter()
       .name(name)
       .description(description)
@@ -35,7 +35,7 @@ class FinatraOperation(operation: Operation) {
   }
 
   def queryParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-    (implicit swagger: Swagger): Operation = {
+                            (implicit swagger: Swagger): Operation = {
     val param = new QueryParameter()
       .name(name)
       .description(description)
@@ -48,7 +48,7 @@ class FinatraOperation(operation: Operation) {
   }
 
   def headerParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-    (implicit swagger: Swagger): Operation = {
+                             (implicit swagger: Swagger): Operation = {
     val param = new HeaderParameter()
       .name(name)
       .description(description)
@@ -61,7 +61,7 @@ class FinatraOperation(operation: Operation) {
   }
 
   def formParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-    (implicit swagger: Swagger): Operation = {
+                           (implicit swagger: Swagger): Operation = {
     val param = new FormParameter()
       .name(name)
       .description(description)
@@ -74,7 +74,7 @@ class FinatraOperation(operation: Operation) {
   }
 
   def cookieParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-    (implicit swagger: Swagger): Operation = {
+                             (implicit swagger: Swagger): Operation = {
     val param = new CookieParameter()
       .name(name)
       .description(description)
@@ -87,22 +87,23 @@ class FinatraOperation(operation: Operation) {
   }
 
   def bodyParam[T: TypeTag](name: String, description: String = "", example: Option[T] = None)
-    (implicit swagger: Swagger): Operation = {
+                           (implicit swagger: Swagger): Operation = {
     val schema = swagger.registerProperty[T](example)
 
-    PropertyUtil.toModel(schema).foreach({ model =>
-      val param = new BodyParameter()
-        .name(name)
-        .description(description)
-        .schema(model)
-      operation.parameter(param)
-    })
+    val model = PropertyUtil.toModel(schema)
+
+    val param = new BodyParameter()
+      .name(name)
+      .description(description)
+      .schema(model)
+
+    operation.parameter(param)
 
     operation
   }
 
   def responseWith[T: TypeTag](status: Int, description: String = "", example: Option[T] = None)
-    (implicit finatraSwagger: Swagger): Operation = {
+                              (implicit finatraSwagger: Swagger): Operation = {
     val param =
       if (!(typeOf[T] =:= TypeTag.Unit.tpe)) {
         val ref = finatraSwagger.registerModel[T](example)

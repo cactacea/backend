@@ -20,7 +20,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId, account1.id.toSessionId))
     execute(pushNotificationSettingDAO.create(false, false, false, false, true, false, account1.id.toSessionId))
     execute(devicesDAO.create(udid, DeviceType.ios, None, account1.id.toSessionId))
@@ -50,7 +50,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId, account1.id.toSessionId))
     execute(pushNotificationSettingDAO.create(false, false, false, true, false, false, account1.id.toSessionId))
     execute(devicesDAO.create(udid, DeviceType.ios, None, account1.id.toSessionId))

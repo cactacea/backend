@@ -7,5 +7,6 @@ case class FeedReports(id: FeedReportId,
                        feedId: FeedId,
                        by: AccountId,
                        reportType: ReportType,
-                       reportContent: Option[String]
+                       reportContent: Option[String],
+                       reportedAt: Long
                           )

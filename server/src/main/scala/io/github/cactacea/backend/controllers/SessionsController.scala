@@ -33,13 +33,8 @@ class SessionsController @Inject()(
     } { request: PostSignUp =>
       sessionService.signUp(
         request.accountName,
-        request.displayName,
         request.password,
         request.udid,
-        request.web,
-        request.birthday,
-        request.location,
-        request.bio,
         request.userAgent,
         SessionContext.deviceType
       ).map({ a =>

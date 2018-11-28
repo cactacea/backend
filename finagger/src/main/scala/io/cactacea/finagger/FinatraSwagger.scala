@@ -30,8 +30,8 @@ object FinatraSwagger {
   private val finatraRouteParamter = ":(\\w+)".r
 
   /**
-   * Cache of dynamically generated class bodies keyed by qualified names
-   */
+    * Cache of dynamically generated class bodies keyed by qualified names
+    */
   private val dynamicClassBodies: mutable.HashMap[String, Class[_]] = new mutable.HashMap[String, Class[_]]()
 
   implicit def convertToFinatraSwagger(swagger: Swagger): FinatraSwagger = new FinatraSwagger(swagger)
@@ -44,11 +44,11 @@ class FinatraSwagger(swagger: Swagger) {
   import FinatraSwagger._
 
   /**
-   * Register a request object that contains body information/route information/etc
-   *
-   * @tparam T
-   * @return
-   */
+    * Register a request object that contains body information/route information/etc
+    *
+    * @tparam T
+    * @return
+    */
   def register[T: TypeTag]: List[Parameter] = {
     val properties = getFinatraProps[T]
 
@@ -95,11 +95,11 @@ class FinatraSwagger(swagger: Swagger) {
   }
 
   /**
-   * Checks if a field is required and unboxes the inner type if its option
-   *
-   * @param field
-   * @return (Isrequired, Option[InnerValueType])
-   */
+    * Checks if a field is required and unboxes the inner type if its option
+    *
+    * @param field
+    * @return (Isrequired, Option[InnerValueType])
+    */
   private def isFieldRequired(field: Field): (Boolean, Option[reflect.Type]) = {
     field.getGenericType match {
       case parameterizedType: ParameterizedType if parameterizedType.getRawType.asInstanceOf[Class[_]] == classOf[Option[_]] =>
@@ -113,11 +113,11 @@ class FinatraSwagger(swagger: Swagger) {
   }
 
   /**
-   * Given the request object format its finatra parameters via reflection
-   *
-   * @tparam T
-   * @return
-   */
+    * Given the request object format its finatra parameters via reflection
+    *
+    * @tparam T
+    * @return
+    */
   private def getFinatraProps[T: TypeTag]: List[FinatraRequestParam] = {
     // get runtime mirror
     val runtimeMirror = universe.runtimeMirror(getClass.getClassLoader)
@@ -322,15 +322,15 @@ class FinatraSwagger(swagger: Swagger) {
   }
 
   /**
-   * Creates a fake object for swagger to reflect upon
-   *
-   * @param bodyElements
-   * @param name
-   * @return
-   */
+    * Creates a fake object for swagger to reflect upon
+    *
+    * @param bodyElements
+    * @param name
+    * @return
+    */
   private def registerDynamicBody(bodyElements: List[BodyRequestParam], name: String): Option[Parameter] = {
     if (bodyElements.isEmpty) {
-      None
+      return None
     }
 
     val className = name + "Body"
@@ -338,7 +338,7 @@ class FinatraSwagger(swagger: Swagger) {
     val emitttedData = emitBodyClassForElements(bodyElements, className)
 
     if (emitttedData.isEmpty) {
-      None
+      return None
     }
 
     val bodyClass = dynamicClassBodies.getOrElse(className, emitttedData.get)
@@ -347,20 +347,25 @@ class FinatraSwagger(swagger: Swagger) {
 
     val schema = registerProperty(bodyClass, bodyClass, Some(name))
 
-    PropertyUtil.toModel(schema).map({ model =>
-      val bodyParam = new BodyParameter().name("body").schema(model)
-      bodyParam.setRequired(true)
-      bodyParam
-    })
+    val model = PropertyUtil.toModel(schema)
 
+    Some(
+      {
+        val bodyparam = new BodyParameter().name("body").schema(model)
+
+        bodyparam.setRequired(true)
+
+        bodyparam
+      }
+    )
   }
 
   /**
-   * Construct a java type from a scala type
-   *
-   * @param paramType
-   * @return
-   */
+    * Construct a java type from a scala type
+    *
+    * @param paramType
+    * @return
+    */
   private def toJavaType(paramType: Type): java.lang.reflect.Type = {
     val typeConstructor = currentMirror.runtimeClass(paramType)
 
@@ -411,7 +416,7 @@ class FinatraSwagger(swagger: Swagger) {
     registerProperty(example) match {
       case null => None
       case p =>
-        PropertyUtil.toModel(p)
+        Some(PropertyUtil.toModel(p))
     }
   }
 
