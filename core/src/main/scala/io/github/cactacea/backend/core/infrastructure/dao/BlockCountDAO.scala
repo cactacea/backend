@@ -43,7 +43,10 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[CommentLikes]
         .filter(c => liftQuery(commentIds).contains(c.commentId))
-        .filter(c => query[Blocks].filter(b => b.by == lift(by) && c.by == b.accountId).nonEmpty)
+        .filter(c =>
+          query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).nonEmpty ||
+          query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).nonEmpty
+        )
         .groupBy(c => c.commentId).map {
         case (commentId, comments) => (commentId, comments.size)
       }.map {
@@ -58,7 +61,10 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[FeedLikes]
         .filter(f => liftQuery(feedIds).contains(f.feedId))
-        .filter(f => query[Blocks].filter(b => b.by == lift(by) && f.by == b.accountId).nonEmpty)
+        .filter(f =>
+          query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.by).nonEmpty ||
+            query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).nonEmpty
+        )
         .groupBy(f => f.feedId).map {
         case (feedId, comments) => (feedId, comments.size)
       }.map {
@@ -73,7 +79,10 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[Comments]
         .filter(c => liftQuery(feedIds).contains(c.feedId))
-        .filter(c => query[Blocks].filter(b => b.by == lift(by) && c.by == b.accountId).nonEmpty)
+        .filter(c =>
+          query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).nonEmpty ||
+            query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).nonEmpty
+        )
         .groupBy(c => c.feedId).map {
         case (feedId, comments) => (feedId, comments.size)
       }.map {

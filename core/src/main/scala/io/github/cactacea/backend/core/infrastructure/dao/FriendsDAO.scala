@@ -138,10 +138,8 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Friends]
         .filter(f => f.by == lift(accountId) && (f.friendedAt < lift(s) || lift(s) == -1L) )
-        .filter(f => query[Blocks]
-          .filter(_.accountId == f.accountId)
-          .filter(_.by        == lift(by))
-          .isEmpty)
+        .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.accountId).isEmpty)
+        .filter(f => query[Blocks].filter(b => b.accountId == f.accountId && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})

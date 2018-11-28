@@ -13,7 +13,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
     val newUser = createAccount("AccountsDAOSpec2")
     val accountId = execute(
-      accountsDAO.create(newUser.accountName, newUser.displayName, newUser.password, newUser.web, newUser.birthday, newUser.location, newUser.bio)
+      accountsDAO.create(newUser.accountName, newUser.password)
     )
 
     val userList = this.selectAccounts(accountId, sessionAccount.id.toSessionId)

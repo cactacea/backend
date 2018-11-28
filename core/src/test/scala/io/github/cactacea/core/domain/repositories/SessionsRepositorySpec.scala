@@ -23,7 +23,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
-    val account = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val account = execute(sessionsRepository.signUp(accountName, password, udid,  DeviceType.ios, userAgent))
 
     // result user
     assert(account.accountName == accountName)
@@ -50,7 +50,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
-    val result = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val result = execute(sessionsRepository.signUp(accountName, password, udid,  DeviceType.ios, userAgent))
     val account = execute(sessionsRepository.signIn(result.accountName, password, udid,  DeviceType.ios, userAgent))
 
     assert(account.displayName == displayName)
@@ -65,7 +65,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
 
-    execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    execute(sessionsRepository.signUp(accountName, password, udid,  DeviceType.ios, userAgent))
 
     assert(intercept[CactaceaException] {
       execute(sessionsRepository.signIn(accountName, "invalid password", udid,  DeviceType.ios, userAgent))
@@ -79,7 +79,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
-    val session = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val session = execute(sessionsRepository.signUp(accountName, password, udid,  DeviceType.ios, userAgent))
     execute(sessionsRepository.signOut(udid, session.id.toSessionId))
 
   }
@@ -91,7 +91,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val password = "password"
     val udid = "0123456789012345678901234567890123456789"
     val userAgent = Some("userAgent")
-    val session = execute(sessionsRepository.signUp(accountName, displayName, password, udid,  DeviceType.ios, Some("test@example.com"), None, Some("location"), Some("bio"), userAgent))
+    val session = execute(sessionsRepository.signUp(accountName, password, udid,  DeviceType.ios, userAgent))
 
     val expired = timeService.currentTimeMillis()
     execute(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired))

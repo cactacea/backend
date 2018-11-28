@@ -140,10 +140,8 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[FeedLikes].filter(f => f.by == lift(by) && (f.likedAt < lift(s) || lift(s) == -1L))
-        .filter(f => query[Blocks]
-          .filter(_.accountId == lift(by))
-          .filter(_.by        == f.by)
-          .isEmpty)
+        .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.by).isEmpty)
+        .filter(f => query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty)
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
         || (f.privacyType == lift(FeedPrivacyType.followers)
@@ -173,8 +171,9 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[FeedLikes].filter(ff => ff.by == lift(accountId) && (ff.likedAt < lift(s) || lift(s) == -1L))
+        .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.by).isEmpty)
+        .filter(f => query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty)
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
-        (query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty) &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
         || (f.privacyType == lift(FeedPrivacyType.followers)
             && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))

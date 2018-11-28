@@ -29,12 +29,7 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
 
   def signUp(accountName: String, password: String, udid: String) = {
 
-    execute(sessionsRepository.signUp(accountName, None, password, udid, DeviceType.ios,
-      Some("test@example.com"),
-      None,
-      Some("location"),
-      Some("bio"),
-      Some("user agent")))
+    execute(sessionsRepository.signUp(accountName, password, udid, DeviceType.ios, Some("user agent")))
     val authentication = execute(sessionsRepository.signIn(accountName, password, udid, DeviceType.ios, Some("user agent")))
     authentication
   }

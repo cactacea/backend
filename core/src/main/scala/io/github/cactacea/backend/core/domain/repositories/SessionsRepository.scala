@@ -18,19 +18,14 @@ class SessionsRepository @Inject()(
                                   ) {
 
   def signUp(accountName: String,
-             displayName: Option[String],
              password: String,
              udid: String,
              deviceType: DeviceType,
-             web: Option[String],
-             birthday: Option[Long],
-             location: Option[String],
-             bio: Option[String],
              userAgent: Option[String]): Future[Account] = {
 
     val account = for {
       _ <- validationDAO.notExistAccountName(accountName)
-      accountId <- accountsDAO.create(accountName, displayName, password, web, birthday, location, bio)
+      accountId <- accountsDAO.create(accountName, password)
       sessionId = accountId.toSessionId
       _             <- devicesDAO.create(udid, deviceType, userAgent, sessionId)
       _             <- notificationSettingsDAO.create(true, true, true, true, true, true, sessionId)

@@ -28,7 +28,7 @@ object FactoryHelper {
       profileImage = None,
       profileImageUrl = None,
       accountName = accountName,
-      displayName = Some("displayname"),
+      displayName = Some(accountName),
       password = "password",
       accountStatus = AccountStatusType.normally,
       followCount = 0L,

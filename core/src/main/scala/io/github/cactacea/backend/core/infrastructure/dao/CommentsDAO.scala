@@ -122,10 +122,8 @@ class CommentsDAO @Inject()(
     val q = quote(
       query[Comments]
         .filter(_.id == lift(commentId))
-        .filter(c => query[Blocks]
-          .filter(_.accountId == lift(by))
-          .filter(_.by        == c.by)
-          .isEmpty)
+        .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
+        .filter(c => query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).isEmpty)
         .nonEmpty
     )
     run(q)
@@ -137,11 +135,8 @@ class CommentsDAO @Inject()(
     val q = quote {
       query[Comments]
         .filter(c => c.id == lift(commentId))
-        .filter(c =>
-          query[Blocks]
-            .filter(_.accountId == lift(by))
-            .filter(_.by        == c.by)
-            .isEmpty)
+        .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
+        .filter(c => query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (c, a, r) })
@@ -169,11 +164,8 @@ class CommentsDAO @Inject()(
     val q = quote {
       query[Comments]
         .filter(c => c.feedId == lift(feedId) && (c.postedAt < lift(s) || lift(s) == -1L))
-        .filter(c =>
-          query[Blocks]
-            .filter(_.accountId == lift(by))
-            .filter(_.by        == c.by)
-            .isEmpty)
+        .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
+        .filter(c => query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (c, a, r) })

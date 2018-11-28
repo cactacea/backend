@@ -68,16 +68,14 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     val s = since.getOrElse(-1L)
     val o = offset.getOrElse(0)
     val c = count.getOrElse(20)
-    val accountId = sessionId.toAccountId
+    val by = sessionId.toAccountId
     val q = quote {
       query[Notifications]
-        .filter(n => n.accountId == lift(accountId) && (n.notifiedAt < lift(s) || lift(s) == -1L))
-        .filter(n => query[Blocks]
-          .filter(_.accountId == n.by)
-          .filter(_.by == lift(accountId))
-          .isEmpty)
+        .filter(n => n.accountId == lift(by) && (n.notifiedAt < lift(s) || lift(s) == -1L))
+        .filter(n => query[Blocks].filter(b => b.accountId == n.by && b.by == lift(by)).isEmpty)
+        .filter(n => query[Blocks].filter(b => b.accountId == lift(by) && b.by == n.by).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(accountId)})
+        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((n, a), r) => (n, a, r)})
         .sortBy({ case (n, _, _) => n.notifiedAt})(Ord.desc)
         .drop(lift(o))

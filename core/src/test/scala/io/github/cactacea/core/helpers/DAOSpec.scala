@@ -103,12 +103,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
       db.transaction(
         accountsDAO.create(
           a.accountName,
-          a.displayName,
-          a.password,
-          None,
-          None,
-          None,
-          None
+          a.password
         )
       )
     )
