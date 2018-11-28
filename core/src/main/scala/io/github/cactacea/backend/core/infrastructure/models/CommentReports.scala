@@ -7,5 +7,6 @@ case class CommentReports(id: CommentReportId,
                           commentId: CommentId,
                           by: AccountId,
                           reportType: ReportType,
-                          reportContent: Option[String]
+                          reportContent: Option[String],
+                          reportedAt: Long
                          )

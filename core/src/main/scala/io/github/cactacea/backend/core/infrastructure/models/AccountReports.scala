@@ -7,5 +7,6 @@ case class AccountReports(id: AccountReportId,
                           accountId: AccountId,
                           by: AccountId,
                           reportType: ReportType,
-                          reportContent: Option[String]
+                          reportContent: Option[String],
+                          reportedAt: Long
                        )

@@ -106,3 +106,23 @@ ALTER TABLE `cactacea`.`relationships`
 COLLATE = utf8_general_ci ;
 
 DROP TABLE IF EXISTS `cactacea`.`tickets` ;
+
+ALTER TABLE `cactacea`.`account_reports`
+ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
+
+ALTER TABLE `cactacea`.`comment_reports`
+ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
+
+ALTER TABLE `cactacea`.`feed_reports`
+ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
+
+ALTER TABLE `cactacea`.`group_reports`
+ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
+
+ALTER TABLE `cactacea`.`flyway_schema_history`
+COLLATE = utf8_unicode_ci ,
+CHANGE COLUMN `version` `version` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ,
+CHANGE COLUMN `description` `description` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL ,
+CHANGE COLUMN `type` `type` VARCHAR(20) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL ,
+CHANGE COLUMN `script` `script` VARCHAR(1000) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL ,
+CHANGE COLUMN `installed_by` `installed_by` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL ;
