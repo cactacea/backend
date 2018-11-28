@@ -214,7 +214,7 @@ class AccountsDAO @Inject()(
       .map({ case (accounts, blocksCount) =>
         accounts.map({ case (a, r) =>
           val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
-          val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
+          val displayName = r.map(_.displayName).getOrElse(a.displayName)
           val friendCount = a.friendCount - b.friendCount
           val followCount = a.followCount - b.followCount
           val followerCount = a.followerCount - b.followerCount
@@ -270,7 +270,7 @@ class AccountsDAO @Inject()(
           val friendCount = a.friendCount - b.map(_.friendCount).getOrElse(0L)
           val followCount = a.followCount - b.map(_.followCount).getOrElse(0L)
           val followerCount = a.followerCount - b.map(_.followerCount).getOrElse(0L)
-          val displayName = r.map(_.editedDisplayName).getOrElse(a.displayName)
+          val displayName = r.map(_.displayName).getOrElse(a.displayName)
           val na = a.copy(
             displayName = displayName,
             friendCount = friendCount,
@@ -290,8 +290,8 @@ class AccountsDAO @Inject()(
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.editedDisplayName -> lift(displayName)
-        ).onConflictUpdate((t, _) => t.editedDisplayName -> lift(displayName))
+          _.displayName -> lift(displayName)
+        ).onConflictUpdate((t, _) => t.displayName -> lift(displayName))
     }
     run(q).map(_ => Unit)
   }

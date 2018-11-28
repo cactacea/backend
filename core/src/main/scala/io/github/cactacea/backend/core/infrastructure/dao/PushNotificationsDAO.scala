@@ -29,7 +29,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
             || (f.by == af.accountId))})
         .join(query[Accounts]).on({ case (((af, _), _), a) =>  a.id == af.by})
         .join(query[Devices]).on({ case ((((af, _), _), _), d) => d.accountId == af.accountId && d.pushToken.isDefined})
-        .map({case ((((af, r), _), a), d) => (a.accountName, a.displayName, r.map(_.editedDisplayName), af.accountId, d.pushToken) })
+        .map({case ((((af, r), _), a), d) => (a.accountName, a.displayName, r.map(_.displayName), af.accountId, d.pushToken) })
         .distinct
     }
     run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
@@ -47,7 +47,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         .leftJoin(query[Relationships]).on((g, r) => r.accountId == g.by && r.by == g.accountId)
         .join(query[Accounts]).on({ case ((g, _), a) => a.id == g.by})
         .join(query[Devices]).on({ case (((g, _), _), d) => d.accountId == g.accountId && d.pushToken.isDefined})
-        .map({ case (((g, r), a), d) => (a.accountName, a.displayName, r.map(_.editedDisplayName), g.accountId, d.pushToken) })
+        .map({ case (((g, r), a), d) => (a.accountName, a.displayName, r.map(_.displayName), g.accountId, d.pushToken) })
         .distinct
     }
     run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
@@ -64,7 +64,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         .leftJoin(query[Relationships]).on((g, r) => r.accountId == g.by && r.by == g.accountId)
         .join(query[Accounts]).on({ case ((g, _), a) => a.id == g.by})
         .join(query[Devices]).on({ case (((g, _), _), d) => d.accountId == g.accountId && d.pushToken.isDefined})
-        .map({ case (((g, r), a), d) => (a.accountName, a.displayName, r.map(_.editedDisplayName), g.accountId, d.pushToken) })
+        .map({ case (((g, r), a), d) => (a.accountName, a.displayName, r.map(_.displayName), g.accountId, d.pushToken) })
         .distinct
     }
     run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
@@ -85,7 +85,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         .leftJoin(query[Relationships]).on({ case (((am, _), _), r) =>  r.accountId == am.by && r.by == am.accountId })
         .join(query[Accounts]).on({ case ((((am, _), _), _), a) =>  a.id == am.by})
         .join(query[Devices]).on({ case (((((am, _), _), _), _), d) => d.accountId == am.accountId && d.pushToken.isDefined})
-        .map({case (((((am, _), p), r), a), d) => (a.accountName, a.displayName, r.map(_.editedDisplayName), p.showMessage, am.accountId, d.pushToken) })
+        .map({case (((((am, _), p), r), a), d) => (a.accountName, a.displayName, r.map(_.displayName), p.showMessage, am.accountId, d.pushToken) })
         .distinct
     }
     run(q).map(_.map({ case (accountName, displayName, editedDisplayName, showMessage, accountId, pushToken) => {
@@ -108,7 +108,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
           .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
           .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
           .join(query[Devices]).on({ case ((((_, f), _), _), d) => d.accountId == f.by && d.pushToken.isDefined})
-          .map({case ((((_, f), r), a), d) => (a.accountName, a.displayName, r.map(_.editedDisplayName), f.by, d.pushToken) })
+          .map({case ((((_, f), r), a), d) => (a.accountName, a.displayName, r.map(_.displayName), f.by, d.pushToken) })
           .distinct
       }
       run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {
@@ -127,7 +127,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
           .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
           .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
           .join(query[Devices]).on({ case ((((_, f), _), _), d) => d.accountId == f.by && d.pushToken.isDefined})
-          .map({case ((((_, f), r), a), d) => (a.accountName, a.displayName, r.map(_.editedDisplayName), f.by, d.pushToken) })
+          .map({case ((((_, f), r), a), d) => (a.accountName, a.displayName, r.map(_.displayName), f.by, d.pushToken) })
           .distinct
       }
       run(q).map(_.map({ case (accountName, displayName, editedDisplayName, accountId, pushToken) => {

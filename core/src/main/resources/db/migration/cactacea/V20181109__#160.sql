@@ -121,3 +121,6 @@ ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
 
 ALTER TABLE `cactacea`.`groups`
 ADD COLUMN `last_posted_at` BIGINT(20) NULL DEFAULT NULL AFTER `message_id`;
+
+ALTER TABLE `cactacea`.`relationships`
+CHANGE COLUMN `edited_display_name` `display_name` VARCHAR(50) NULL DEFAULT NULL ;

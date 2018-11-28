@@ -4,7 +4,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId}
 
 case class Relationships(
                           accountId: AccountId,
-                          editedDisplayName: Option[String],
+                          displayName: Option[String],
                           by: AccountId,
                           follow: Boolean,
                           follower: Boolean,

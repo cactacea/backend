@@ -70,7 +70,7 @@ object Account {
     Account(
       a.id,
       a.accountName,
-      r.map(_.editedDisplayName).getOrElse(a.displayName),
+      r.map(_.displayName).getOrElse(a.displayName),
       a.profileImageUrl,
       r.map(_.friend).getOrElse(false),
       r.map(_.inProgress).getOrElse(false),
