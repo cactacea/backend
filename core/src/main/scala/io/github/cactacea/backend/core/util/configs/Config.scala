@@ -97,7 +97,6 @@ object Config extends DurationReader {
     lazy val keyLength = passwordConfig.keyLength.getOrElse(128)
   }
 
-
   println( // scalastyle:ignore
 """   ___           _                           ___            _                  _
     / __\__ _  ___| |_ __ _  ___ ___  __ _    / __\ __ _  ___| | _____ _ __   __| |

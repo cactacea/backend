@@ -145,7 +145,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val feedId4 = execute(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId5 = execute(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
-    val result1 = execute(feedsRepository.findAll(session.id, None, None, Some(3), user.id.toSessionId))
+    val result1 = execute(feedsRepository.findAll(session.id, None, 0, 3, user.id.toSessionId))
     assert(result1.size == 3)
     val feed1 = result1(0)
     val feed2 = result1(1)
@@ -154,7 +154,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     assert(feed2.id == feedId4)
     assert(feed3.id == feedId3)
 
-    val result2 = execute(feedsRepository.findAll(session.id, Some(feed3.next), None, Some(3), user.id.toSessionId))
+    val result2 = execute(feedsRepository.findAll(session.id, Some(feed3.next), 0, 3, user.id.toSessionId))
     assert(result2.size == 2)
     val feed4 = result2(0)
     val feed5 = result2(1)
@@ -168,7 +168,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val session = signUp("FeedsRepositorySpec10", "session password", "udid")
 
     assert(intercept[CactaceaException] {
-      execute(feedsRepository.findAll(AccountId(0L), None, None, Some(3), session.id.toSessionId))
+      execute(feedsRepository.findAll(AccountId(0L), None, 0, 3, session.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -183,7 +183,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     val feedId4 = execute(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
     val feedId5 = execute(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 
-    val result1 = execute(feedsRepository.findAll(None, None, Some(3), session.id.toSessionId))
+    val result1 = execute(feedsRepository.findAll(None, 0, 3, session.id.toSessionId))
     assert(result1.size == 3)
     val feed1 = result1(0)
     val feed2 = result1(1)
@@ -192,7 +192,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     assert(feed2.id == feedId4)
     assert(feed3.id == feedId3)
 
-    val result2 = execute(feedsRepository.findAll(Some(feed3.next), None, Some(3), session.id.toSessionId))
+    val result2 = execute(feedsRepository.findAll(Some(feed3.next), 0, 3, session.id.toSessionId))
     assert(result2.size == 2)
     val feed4 = result2(0)
     val feed5 = result2(1)

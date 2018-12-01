@@ -155,10 +155,10 @@ class CommentsDAO @Inject()(
       })
   }
 
-  def findAll(feedId: FeedId, since: Option[Long], count: Option[Int], sessionId: SessionId): Future[List[(Comments, Accounts, Option[Relationships])]] = {
+  def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[(Comments, Accounts, Option[Relationships])]] = {
 
     val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
+
     val by = sessionId.toAccountId
 
     val q = quote {
@@ -170,7 +170,7 @@ class CommentsDAO @Inject()(
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (c, a, r) })
         .sortBy({ case (c, _, _) => c.postedAt })(Ord.desc)
-        .take(lift(c))
+        .take(lift(count))
     }
 
     (for {

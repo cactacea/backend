@@ -33,7 +33,7 @@ class CommentLikesService @Inject()(
     }
   }
 
-  def findAccounts(commentId: CommentId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
+  def findAccounts(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     commentLikesRepository.findAccounts(commentId, since, offset, count, sessionId)
   }
 

@@ -91,13 +91,13 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   }
 
   def findAll(since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Followers)]] = {
 
     val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
     val by = sessionId.toAccountId
 
 
@@ -107,8 +107,8 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
         .sortBy({ case (_, _, f) => f.followedAt })(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
 
@@ -116,13 +116,13 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def findAll(accountId: AccountId,
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Followers)]] = {
 
     val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
     val by = sessionId.toAccountId
 
     val q = quote {
@@ -133,8 +133,8 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
         .sortBy({ case (_, _, f) => f.followedAt })(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
   }

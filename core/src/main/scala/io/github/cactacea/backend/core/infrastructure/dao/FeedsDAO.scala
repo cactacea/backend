@@ -161,18 +161,18 @@ class FeedsDAO @Inject()(
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
     val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
         .filter(_.by        ==  lift(by))
         .filter(_.postedAt < lift(s) || lift(s) == -1L)
         .sortBy(_.postedAt)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q).flatMap(f => addTagsMedium(f, sessionId))
   }
@@ -180,14 +180,14 @@ class FeedsDAO @Inject()(
 
   def findAll(accountId: AccountId,
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
 
     val e = timeService.currentTimeMillis()
     val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
@@ -202,8 +202,8 @@ class FeedsDAO @Inject()(
         .filter({ f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty })
         .filter(_.postedAt < lift(s) || lift(s) == -1L)
         .sortBy(_.postedAt)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q).flatMap(f => addTagsMedium(f, sessionId))
   }

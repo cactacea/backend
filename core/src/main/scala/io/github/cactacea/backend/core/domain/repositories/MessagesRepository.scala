@@ -71,8 +71,8 @@ class MessagesRepository @Inject()(
 
   def findAll(groupId: GroupId,
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               ascending: Boolean,
               sessionId: SessionId): Future[List[Message]] = {
     (for {

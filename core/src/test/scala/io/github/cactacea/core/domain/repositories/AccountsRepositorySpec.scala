@@ -38,25 +38,25 @@ class AccountsRepositorySpec extends RepositorySpec {
     execute(blocksRepository.create(blockedAccount5.id, session.id.toSessionId))
 
     // Find All
-    val accounts1 = execute(accountsRepository.findAll(None, None, None, Some(3), session.id.toSessionId))
+    val accounts1 = execute(accountsRepository.findAll(None, None, 0, 3, session.id.toSessionId))
     assert(accounts1.size == 3)
     assert(accounts1(0).displayName == account5.displayName)
     assert(accounts1(1).displayName == account4.displayName)
     assert(accounts1(2).displayName == account3.displayName)
 
-    val accounts2 = execute(accountsRepository.findAll(None, Some(accounts1(2).next), None, Some(3), session.id.toSessionId))
+    val accounts2 = execute(accountsRepository.findAll(None, Some(accounts1(2).next), 0, 3, session.id.toSessionId))
     assert(accounts2.size == 3)
     assert(accounts2(0).displayName == account2.displayName)
     assert(accounts2(1).displayName == account1.displayName)
 
     // Find By account name
-    val accounts3 = execute(accountsRepository.findAll(Some("AccountsRepositorySpec0"), None, None, Some(3), session.id.toSessionId))
+    val accounts3 = execute(accountsRepository.findAll(Some("AccountsRepositorySpec0"), None, 0, 3, session.id.toSessionId))
     assert(accounts3.size == 3)
     assert(accounts3(0).displayName == AccountsRepositorySpec4.displayName)
     assert(accounts3(1).displayName == AccountsRepositorySpec3.displayName)
     assert(accounts3(2).displayName == AccountsRepositorySpec2.displayName)
 
-    val accounts4 = execute(accountsRepository.findAll(Some("AccountsRepositorySpec0"), Some(accounts3(2).next), None, Some(3), session.id.toSessionId))
+    val accounts4 = execute(accountsRepository.findAll(Some("AccountsRepositorySpec0"), Some(accounts3(2).next), 0, 3, session.id.toSessionId))
     assert(accounts4.size == 1)
     assert(accounts4(0).displayName == AccountsRepositorySpec6.displayName)
 

@@ -34,7 +34,7 @@ class GroupInvitationsService @Inject()(
     }
   }
 
-  def find(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[GroupInvitation]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[GroupInvitation]] = {
     groupInvitationsRepository.findAll(since, offset, count, sessionId)
   }
 

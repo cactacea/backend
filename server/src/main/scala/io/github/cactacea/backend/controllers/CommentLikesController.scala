@@ -32,8 +32,8 @@ class CommentLikesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: S
       commentLikesService.findAccounts(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }

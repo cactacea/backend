@@ -35,8 +35,8 @@ class FeedLikesController @Inject()(
       feedLikesService.findAccounts(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }

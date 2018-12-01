@@ -57,17 +57,17 @@ class MessagesRepositorySpec extends RepositorySpec {
     execute(messagesRepository.create(groupId, None, Some(id), user.id.toSessionId))
 //    execute(deliveryMessagesRepository.create(messageId2))
 
-    val messages = execute(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))
+    val messages = execute(messagesRepository.findAll(groupId, None, 0, 29, false, user.id.toSessionId))
     assert(messages.size == 2)
 
     execute(messagesRepository.updateReadStatus(messages, user.id.toSessionId))
     // TODO : Check
 
     assert(intercept[CactaceaException] {
-      execute(messagesRepository.findAll(GroupId(0L), None, None, None, false, user.id.toSessionId))
+      execute(messagesRepository.findAll(GroupId(0L), None, 0, 20, false, user.id.toSessionId))
     }.error == GroupNotFound)
 
-    val messages3 = execute(messagesRepository.findAll(groupId, None, None, None, false, user.id.toSessionId))
+    val messages3 = execute(messagesRepository.findAll(groupId, None, 0, 20, false, user.id.toSessionId))
     assert(messages3.filter(_.unread == false).size == 2)
 
     execute(messagesRepository.updateReadStatus(messages3, user.id.toSessionId))

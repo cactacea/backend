@@ -60,7 +60,7 @@ class GroupAccountsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(member4.id, groupId))
     execute(accountGroupsDAO.create(member5.id, groupId))
 
-    val result1 = execute(groupAccountsDAO.findAll(groupId, None, None, Some(3)))
+    val result1 = execute(groupAccountsDAO.findAll(groupId, None, 0, 3))
     assert(result1.size == 3)
     val joinedAccount1 = result1(0)._3
     val joinedAccount2 = result1(1)._3
@@ -69,7 +69,7 @@ class GroupAccountsDAOSpec extends DAOSpec {
     assert(joinedAccount2.accountId == member4.id)
     assert(joinedAccount3.accountId == member3.id)
 
-    val result2 = execute(groupAccountsDAO.findAll(groupId, Some(result1(2)._3.joinedAt), None, Some(3)))
+    val result2 = execute(groupAccountsDAO.findAll(groupId, Some(result1(2)._3.joinedAt), 0, 3))
     assert(result2.size == 2)
 
   }
@@ -91,7 +91,7 @@ class GroupAccountsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.delete(member3.id, groupId))
     execute(accountGroupsDAO.delete(member5.id, groupId))
 
-    val result1 = execute(groupAccountsDAO.findAll(groupId, None, None, Some(3))) //, sessionAccount.id.toSessionId))
+    val result1 = execute(groupAccountsDAO.findAll(groupId, None, 0, 3)) //, sessionAccount.id.toSessionId))
     assert(result1.size == 2)
 
 

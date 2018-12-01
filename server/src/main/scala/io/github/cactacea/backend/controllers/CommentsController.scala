@@ -32,7 +32,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
       commentsService.findAll(
         request.id,
         request.since,
-        request.count,
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }

@@ -34,8 +34,8 @@ class FollowersController @Inject()(
       followsService.find(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }

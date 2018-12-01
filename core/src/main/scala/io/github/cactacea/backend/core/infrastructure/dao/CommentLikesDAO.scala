@@ -86,13 +86,13 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def findAll(commentId: CommentId,
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {
 
     val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
     val by = sessionId.toAccountId
 
     val q = quote {
@@ -104,8 +104,8 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (a, r, c)})
         .sortBy({ case (_, _, c) => c.likedAt })(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
 

@@ -61,13 +61,13 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   }
 
   def findAll(since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Notifications, Accounts, Option[Relationships])]] = {
 
     val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
     val by = sessionId.toAccountId
     val q = quote {
       query[Notifications]
@@ -78,8 +78,8 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((n, a), r) => (n, a, r)})
         .sortBy({ case (n, _, _) => n.notifiedAt})(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
   }

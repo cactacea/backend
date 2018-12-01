@@ -28,7 +28,7 @@ class FeedLikesRepository @Inject()(
     } yield (Future.value(Unit))
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
@@ -36,12 +36,12 @@ class FeedLikesRepository @Inject()(
     } yield (r)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     feedLikesDAO.findAll(since, offset, count, sessionId)
       .map(_.map({ case (f, fl) => Feed(f, fl)}))
   }
 
-  def findAccounts(feedId: FeedId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
+  def findAccounts(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     for {
       _ <- validationDAO.existFeed(feedId, sessionId)
       r <- feedLikesDAO.findAccounts(feedId, since, offset, count, sessionId)

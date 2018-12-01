@@ -118,13 +118,13 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               invitationOnly: Option[Boolean],
               privacyType: Option[GroupPrivacyType],
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[Groups]] = {
 
     val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
     val n = name.fold("")(_ + "%")
     val by = sessionId.toAccountId
     val q = quote {
@@ -137,8 +137,8 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(g => query[Blocks].filter(b => b.accountId == g.by && b.by == lift(by)).isEmpty)
         .filter(_.organizedAt < lift(s) || lift(s) == -1L)
         .sortBy(_.organizedAt)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
   }

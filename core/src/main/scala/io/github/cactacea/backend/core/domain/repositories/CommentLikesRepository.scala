@@ -28,7 +28,7 @@ class CommentLikesRepository @Inject()(
     } yield (Future.value(Unit))
   }
 
-  def findAccounts(commentId: CommentId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
+  def findAccounts(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     for {
       _ <- validationRepository.existComment(commentId, sessionId)
       r <- commentLikesDAO.findAll(commentId, since, offset, count, sessionId)

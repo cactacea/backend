@@ -223,7 +223,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId2))
 
-    val result1 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, None, Some(2), false))
+    val result1 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, 0, 2, false))
     assert(result1.size == 2)
     assert(result1(0)._2.id == groupId2)
     assert(result1(0)._4.isDefined == false)
@@ -234,7 +234,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(groupsDAO.update(groupId1, messageId1, postedAt1, sessionAccount.id.toSessionId))
     execute(groupsDAO.update(groupId2, messageId3, postedAt3, sessionAccount.id.toSessionId))
 
-    val result2 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, None, Some(2), false))
+    val result2 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, 0, 2, false))
     assert(result2.size == 2)
     val (ag, _, m, _) = result2(0)
     assert(ag.groupId == groupId2)

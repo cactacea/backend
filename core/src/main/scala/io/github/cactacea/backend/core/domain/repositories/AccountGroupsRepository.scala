@@ -24,7 +24,7 @@ class AccountGroupsRepository @Inject()(
     } yield (Future.value(Unit))
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Group]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Group]] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
       r <- accountGroupsDAO.findAll(accountId, since, offset, count, false)
@@ -32,7 +32,7 @@ class AccountGroupsRepository @Inject()(
     } yield (r)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
     val accountId = sessionId.toAccountId
     accountGroupsDAO.findAll(accountId, since, offset, count, hidden)
       .map(_.map({ case (ag, g, m, am) => Group(ag, g, m, am) }))

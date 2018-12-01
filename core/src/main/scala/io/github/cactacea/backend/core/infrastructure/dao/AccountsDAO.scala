@@ -216,15 +216,15 @@ class AccountsDAO @Inject()(
 
   def findAll(displayName: Option[String],
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships])]] = {
 
     val by = sessionId.toAccountId
 
     val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
+
+
 
     val un = displayName.fold("") { _ + "%" }
     val status = AccountStatusType.normally
@@ -239,8 +239,8 @@ class AccountsDAO @Inject()(
         .filter(a => query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by)).isEmpty)
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
       .sortBy({ case (a, _) => a.id})(Ord.desc)
-      .drop(lift(o))
-      .take(lift(c))
+      .drop(lift(offset))
+      .take(lift(count))
     }
 
     (for {

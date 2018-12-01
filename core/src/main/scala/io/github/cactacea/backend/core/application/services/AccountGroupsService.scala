@@ -31,11 +31,11 @@ class AccountGroupsService @Inject()(
     }
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Group]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Group]] = {
     accountGroupsRepository.findAll(accountId, since, offset, count, sessionId)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
     accountGroupsRepository.findAll(since, offset, count, hidden, sessionId)
   }
 

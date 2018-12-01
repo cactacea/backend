@@ -19,7 +19,7 @@ class GroupAccountsRepository @Inject()(
                                          validationDAO: ValidationDAO
                                        ) {
 
-  def findAll(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
+  def findAll(groupId: GroupId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     for {
       g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.hasJoinAuthority(g, sessionId)

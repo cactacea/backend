@@ -29,17 +29,17 @@ class GroupAccountsRepositorySpec extends RepositorySpec {
     execute(groupAccountsRepository.create(groupId, user4.id.toSessionId))
     execute(groupAccountsRepository.create(groupId, user5.id.toSessionId))
     execute(groupAccountsRepository.create(groupId, user6.id.toSessionId))
-    val result1 = execute(groupAccountsRepository.findAll(groupId, None, None, Some(3), sessionUser.id.toSessionId))
+    val result1 = execute(groupAccountsRepository.findAll(groupId, None, 0, 3, sessionUser.id.toSessionId))
     assert(result1.size == 3)
 
     assert(intercept[CactaceaException] {
-      execute(groupAccountsRepository.findAll(GroupId(0L), None, None, Some(3), sessionUser.id.toSessionId))
+      execute(groupAccountsRepository.findAll(GroupId(0L), None, 0, 3, sessionUser.id.toSessionId))
     }.error == GroupNotFound)
 
     val groupId2 = execute(groupsRepository.create(Some("group name"), false, GroupPrivacyType.friends, GroupAuthorityType.member, user1.id.toSessionId))
 
     assert(intercept[CactaceaException] {
-      execute(groupAccountsRepository.findAll(groupId2, None, None, Some(3), sessionUser.id.toSessionId))
+      execute(groupAccountsRepository.findAll(groupId2, None, 0, 3, sessionUser.id.toSessionId))
     }.error == AuthorityNotFound)
 
   }

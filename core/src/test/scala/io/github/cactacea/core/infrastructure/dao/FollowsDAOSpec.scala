@@ -99,7 +99,7 @@ class FollowsDAOSpec extends DAOSpec {
     execute(followsDAO.create(sessionAccount6.id, followUser.id.toSessionId))
 
     // find follower top page
-    val result1 = execute(followsDAO.findAll(followUser.id, None, None, Some(3), sessionAccount1.id.toSessionId))
+    val result1 = execute(followsDAO.findAll(followUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
     val account1 = result1(0)._1
     val account2 = result1(1)._1
     val account3 = result1(2)._1
@@ -109,7 +109,7 @@ class FollowsDAOSpec extends DAOSpec {
     assert(account3.id == sessionAccount4.id)
 
     // find follower next page
-    val result2 = execute(followsDAO.findAll(followUser.id, Some(follower3.followedAt), None, Some(3), sessionAccount1.id.toSessionId))
+    val result2 = execute(followsDAO.findAll(followUser.id, Some(follower3.followedAt), 0, 3, sessionAccount1.id.toSessionId))
     val account4 = result2(0)._1
     val account5 = result2(1)._1
     val account6 = result2(2)._1

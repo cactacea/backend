@@ -30,7 +30,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = execute(groupInvitationsDAO.findAll(None, None, Some(3), sessionAccount.id.toSessionId))
+    val result1 = execute(groupInvitationsDAO.findAll(None, 0, 3, sessionAccount.id.toSessionId))
     assert(result1.size == 3)
     val invitation1 = result1(0)
     val invitation2 = result1(1)
@@ -43,7 +43,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(invitation3._1.by == owner3.id)
 
 
-    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation3._1.invitedAt), None, Some(3), sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation3._1.invitedAt), 0, 3, sessionAccount.id.toSessionId))
     assert(result2.size == 2)
     val invitation4 = result2(0)
     val invitation5 = result2(1)
@@ -156,7 +156,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
     val invitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = execute(groupInvitationsDAO.findAll(None, None, Some(2), sessionAccount.id.toSessionId))
+    val result1 = execute(groupInvitationsDAO.findAll(None, 0, 2, sessionAccount.id.toSessionId))
     assert(result1.size == 2)
     val invitation1 = result1(0)._1
     val invitation2 = result1(1)._1
@@ -166,7 +166,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(invitation1.id == invitationId5)
     assert(invitation2.id == invitationId3)
 
-    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation2.invitedAt), None, Some(2), sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation2.invitedAt), 0, 2, sessionAccount.id.toSessionId))
     assert(result2.size == 1)
     val invitation3 = result2(0)._1
     assert(invitation3.groupId == groupId1)

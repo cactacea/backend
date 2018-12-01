@@ -48,11 +48,11 @@ class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Mutes)]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Mutes)]] = {
 
     val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
+
+
     val by = sessionId.toAccountId
 
     val q = quote {
@@ -61,8 +61,8 @@ class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((m, a), r) => (a, r, m)})
         .sortBy({ case (_, _, m) => m.mutedAt })(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
 

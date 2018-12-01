@@ -71,14 +71,14 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
   }
 
   def findAll(since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               received: Boolean,
               sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
 
     val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
     val by = sessionId.toAccountId
 
     if (received) {
@@ -88,8 +88,8 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})
           .sortBy({ case (f, _, _) => f.requestedAt})(Ord.desc)
-          .drop(lift(o))
-          .take(lift(c))
+          .drop(lift(offset))
+          .take(lift(count))
       }
       run(q)
 
@@ -100,8 +100,8 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})
           .sortBy({ case (f, _, _) => f.requestedAt})(Ord.desc)
-          .drop(lift(o))
-          .take(lift(c))
+          .drop(lift(offset))
+          .take(lift(count))
       }
       run(q)
 

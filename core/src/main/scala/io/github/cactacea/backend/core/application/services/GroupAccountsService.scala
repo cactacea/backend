@@ -15,7 +15,7 @@ class GroupAccountsService @Inject()(
                                       injectionService: InjectionService
                                     ) {
 
-  def find(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Account]] = {
+  def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     groupAccountsRepository.findAll(groupId, since, offset, count, sessionId)
   }
 
