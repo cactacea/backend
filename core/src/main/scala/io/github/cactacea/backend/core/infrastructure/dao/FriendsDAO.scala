@@ -104,15 +104,12 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Friends)]] = {
 
-    val s = since.getOrElse(-1L)
-
-
     val by = sessionId.toAccountId
 
     val q = quote {
       query[Friends]
         .filter(f => f.by == lift(by))
-        .filter(f => f.friendedAt < lift(s) || lift(s) == -1L)
+        .filter(f => lift(since).forall(f.friendedAt < _))
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
@@ -134,7 +131,8 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[Friends]
-        .filter(f => f.by == lift(accountId) && lift(since).forall(_ > f.friendedAt))
+        .filter(f => f.by == lift(accountId))
+        .filter(f => lift(since).forall(f.friendedAt < _ ))
         .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.accountId).isEmpty)
         .filter(f => query[Blocks].filter(b => b.accountId == f.accountId && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)

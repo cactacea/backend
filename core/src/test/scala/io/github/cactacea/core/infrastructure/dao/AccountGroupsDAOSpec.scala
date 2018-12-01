@@ -165,7 +165,15 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val account3 = createAccount("AccountGroupsDAOSpec21")
     val account4 = createAccount("AccountGroupsDAOSpec22")
 
-    val groupId = execute(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(
+      groupsDAO.create(
+        Some("new one to one group name"),
+        true,
+        GroupPrivacyType.everyone,
+        GroupAuthorityType.member,
+        0L,
+        sessionAccount.id.toSessionId))
+
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(account2.id, groupId))
     execute(accountGroupsDAO.create(account3.id, groupId))

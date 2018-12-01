@@ -162,14 +162,12 @@ class FeedsDAO @Inject()(
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
-    val s = since.getOrElse(-1L)
-
 
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
-        .filter(_.by        ==  lift(by))
-        .filter(_.postedAt < lift(s) || lift(s) == -1L)
+        .filter(f => f.by == lift(by))
+        .filter(f => lift(since).forall(f.postedAt  < _))
         .sortBy(_.postedAt)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
@@ -185,13 +183,13 @@ class FeedsDAO @Inject()(
               sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
 
     val e = timeService.currentTimeMillis()
-    val s = since.getOrElse(-1L)
-
 
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
-        .filter(_.by == lift(accountId))
+        .filter(f => f.by == lift(accountId))
+        .filter(f => f.expiration.forall(_ > lift(e)))
+        .filter(f => lift(since).forall(f.postedAt < _))
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
             || (f.privacyType == lift(FeedPrivacyType.followers)
@@ -199,8 +197,6 @@ class FeedsDAO @Inject()(
             || (f.privacyType == lift(FeedPrivacyType.friends)
             && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
-        .filter({ f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty })
-        .filter(_.postedAt < lift(s) || lift(s) == -1L)
         .sortBy(_.postedAt)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))

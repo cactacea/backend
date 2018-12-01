@@ -53,7 +53,14 @@ class GroupsRepository @Inject()(
   }
 
   def findAll(name: Option[String], byInvitation: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Group]] = {
-    groupsDAO.findAll(name, byInvitation, privacyType, since, offset, count, sessionId)
+    groupsDAO.findAll(
+      name,
+      byInvitation,
+      privacyType,
+      since,
+      offset,
+      count,
+      sessionId)
       .map(_.map(t => Group(t)))
   }
 

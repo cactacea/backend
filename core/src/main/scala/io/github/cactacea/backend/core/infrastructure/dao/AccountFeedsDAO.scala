@@ -39,7 +39,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
               privacyType: Option[FeedPrivacyType],
               sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
+
 
 
     val p = privacyType.getOrElse(FeedPrivacyType.everyone)
@@ -47,7 +47,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
     val q = quote {
       for {
         af <- query[AccountFeeds]
-          .filter(f => f.accountId == lift(by) && lift(since).forall(_ > f.postedAt))
+          .filter(f => f.accountId == lift(by))
+          .filter(f => lift(since).forall(_ > f.postedAt))
           .sortBy(_.postedAt)(Ord.desc)
           .drop(lift(offset))
           .take(lift(count))

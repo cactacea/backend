@@ -65,13 +65,14 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
               count: Int,
               sessionId: SessionId): Future[List[(Notifications, Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
+
 
 
     val by = sessionId.toAccountId
     val q = quote {
       query[Notifications]
-        .filter(n => n.accountId == lift(by) && (n.notifiedAt < lift(s) || lift(s) == -1L))
+        .filter(n => n.accountId == lift(by))
+        .filter(n => lift(since).forall(n.notifiedAt < _))
         .filter(n => query[Blocks].filter(b => b.accountId == n.by && b.by == lift(by)).isEmpty)
         .filter(n => query[Blocks].filter(b => b.accountId == lift(by) && b.by == n.by).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)

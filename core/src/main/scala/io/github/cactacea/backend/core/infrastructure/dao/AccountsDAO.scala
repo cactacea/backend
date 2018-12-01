@@ -214,7 +214,7 @@ class AccountsDAO @Inject()(
 
   }
 
-  def findAll(displayName: Option[String],
+  def findAll(accountName: Option[String],
               since: Option[Long],
               offset: Int,
               count: Int,
@@ -222,19 +222,12 @@ class AccountsDAO @Inject()(
 
     val by = sessionId.toAccountId
 
-    val s = since.getOrElse(-1L)
-
-
-
-    val un = displayName.fold("") { _ + "%" }
-    val status = AccountStatusType.normally
-
     val q2 = quote {
       query[Accounts]
         .filter({a => a.id !=  lift(by)})
-        .filter(a => (a.accountName like lift(un)) || (a.displayName like lift(un)) || (lift(un) == ""))
-        .filter(a => a.accountStatus == lift(status))
-        .filter(a => a.id < lift(s) || lift(s) == -1L)
+        .filter(a => a.accountStatus == lift(AccountStatusType.normally))
+        .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
+        .filter(a => lift(since).forall(a.id < _))
         .filter(a => query[Blocks].filter(b => b.accountId == lift(by) && b.by == a.id).isEmpty)
         .filter(a => query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by)).isEmpty)
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})

@@ -20,7 +20,7 @@ class CommentsDAOSpec extends DAOSpec {
     val commentId4 = execute(commentsDAO.create(feedId, "4" * 100, sessionAccount1.id.toSessionId))
     val commentId5 = execute(commentsDAO.create(feedId, "5" * 100, sessionAccount2.id.toSessionId))
 
-    val result1 = execute(commentsDAO.findAll(feedId, Some(-1L), 4, sessionAccount1.id.toSessionId))
+    val result1 = execute(commentsDAO.findAll(feedId, None, 4, sessionAccount1.id.toSessionId))
     assert(result1.size == 4)
     val comment1 = result1(0)._1
     val comment2 = result1(1)._1
@@ -142,9 +142,9 @@ class CommentsDAOSpec extends DAOSpec {
     val commentId2 = execute(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
 
     val comment1 = execute(commentsDAO.find(commentId1, sessionAccount1.id.toSessionId)).get._1
-    val comment2 = execute(commentsDAO.find(commentId1, sessionAccount1.id.toSessionId)).get._1
+    val comment2 = execute(commentsDAO.find(commentId2, sessionAccount1.id.toSessionId)).get._1
     assert(comment1.id == commentId1)
-    assert(comment2.id == commentId1)
+    assert(comment2.id == commentId2)
 
     execute(commentsDAO.delete(commentId2, sessionAccount1.id.toSessionId))
     val comment3 = execute(commentsDAO.find(commentId2, sessionAccount1.id.toSessionId))
@@ -167,7 +167,7 @@ class CommentsDAOSpec extends DAOSpec {
     val commentId7 = execute(commentsDAO.create(feedId, "7" * 100, sessionAccount2.id.toSessionId))
     val commentId8 = execute(commentsDAO.create(feedId, "8" * 100, sessionAccount1.id.toSessionId))
 
-    val result1 = execute(commentsDAO.findAll(feedId, Some(-1L), 3, sessionAccount1.id.toSessionId))
+    val result1 = execute(commentsDAO.findAll(feedId, None, 3, sessionAccount1.id.toSessionId))
     assert(result1.size == 3)
     val comment1 = result1(0)._1
     val comment2 = result1(1)._1

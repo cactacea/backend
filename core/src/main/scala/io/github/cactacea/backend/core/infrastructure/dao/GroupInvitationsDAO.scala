@@ -69,13 +69,15 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeServic
               offset: Int,
               count: Int, sessionId: SessionId): Future[List[(GroupInvitations, Accounts, Option[Relationships], Groups)]] = {
 
-    val s = since.getOrElse(-1L)
+
 
 
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[GroupInvitations].filter({ gi => gi.accountId == lift(by) && (gi.invitedAt < lift(s) || lift(s) == -1L)})
+      query[GroupInvitations]
+        .filter(gi => gi.accountId == lift(by))
+        .filter(gi => lift(since).forall(gi.invitedAt < _))
         .join(query[Groups]).on((gi, g) => g.id == gi.groupId)
         .join(query[Accounts]).on({ case ((gi, _), a) => a.id == gi.by})
         .leftJoin(query[Relationships]).on({ case (((_, _), a), r) => r.accountId == a.id && r.by == lift(by)})

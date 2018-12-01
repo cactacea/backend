@@ -143,7 +143,7 @@ class CommentLikesDAOSpec extends DAOSpec {
     execute(commentLikesDAO.create(commentId, sessionAccount4.id.toSessionId))
     execute(commentLikesDAO.create(commentId, sessionAccount5.id.toSessionId))
 
-    val result = execute(commentLikesDAO.findAll(commentId, Some(-1L), 0, 4, sessionAccount2.id.toSessionId))
+    val result = execute(commentLikesDAO.findAll(commentId, None, 0, 4, sessionAccount2.id.toSessionId))
     assert(result.size == 4)
 
   }

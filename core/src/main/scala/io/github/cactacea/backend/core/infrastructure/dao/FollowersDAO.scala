@@ -95,14 +95,16 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Followers)]] = {
 
-    val s = since.getOrElse(-1L)
+
 
 
     val by = sessionId.toAccountId
 
 
     val q = quote {
-      query[Followers].filter(f => f.accountId == lift(by) && (f.followedAt < lift(s) || lift(s) == -1L) )
+      query[Followers]
+        .filter(f => f.accountId == lift(by))
+        .filter(f => lift(since).forall(f.followedAt < _))
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
@@ -120,13 +122,15 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Followers)]] = {
 
-    val s = since.getOrElse(-1L)
+
 
 
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Followers].filter(f => f.accountId == lift(accountId) && (f.followedAt < lift(s) || lift(s) == -1L) )
+      query[Followers]
+        .filter(f => f.accountId == lift(accountId))
+        .filter(f => lift(since).forall(f.followedAt < _))
         .filter(r => query[Blocks].filter(b => b.accountId == lift(by) && b.by == r.accountId).isEmpty)
         .filter(r => query[Blocks].filter(b => b.accountId == r.accountId && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.by)

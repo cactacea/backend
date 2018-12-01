@@ -16,12 +16,10 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
               offset: Int,
               count: Int): Future[List[(Accounts, Option[Relationships], AccountGroups)]] = {
 
-    val s = since.getOrElse(-1L)
-
-
-
     val q = quote {
-      query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (ag.joinedAt < lift(s) || lift(s) == -1L))
+      query[AccountGroups]
+        .filter(ag => ag.groupId == lift(groupId))
+        .filter(ag => lift(since).forall(ag.joinedAt < _))
         .join(query[Accounts]).on((ag, a) => a.id == ag.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id})
         .sortBy({ case ((ag, _), _) => ag.joinedAt})(Ord.desc)

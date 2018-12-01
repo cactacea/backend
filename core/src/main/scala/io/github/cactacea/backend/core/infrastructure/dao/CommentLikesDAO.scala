@@ -90,14 +90,15 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {
 
-    val s = since.getOrElse(-1L)
+
 
 
     val by = sessionId.toAccountId
 
     val q = quote {
       query[CommentLikes]
-        .filter(c => c.commentId == lift(commentId) && (c.likedAt < lift(s) || lift(s) == -1L))
+        .filter(c => c.commentId == lift(commentId))
+        .filter(c => lift(since).forall(c.likedAt  < _))
         .filter(cf => query[Blocks].filter(b => b.accountId == lift(by) && b.by == cf.by).isEmpty)
         .filter(cf => query[Blocks].filter(b => b.accountId == cf.by && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)

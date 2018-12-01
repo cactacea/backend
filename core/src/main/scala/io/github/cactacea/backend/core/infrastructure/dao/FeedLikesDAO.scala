@@ -103,7 +103,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
                    count: Int,
                    sessionId: SessionId): Future[List[(Accounts, Option[Relationships], FeedLikes)]] = {
 
-    val s = since.getOrElse(-1L)
+
 
 
     val by = sessionId.toAccountId
@@ -111,12 +111,10 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[FeedLikes]
-        .filter(f => f.feedId == lift(feedId) && (f.likedAt < lift(s) || lift(s) == -1L))
-        .filter(ff =>
-          query[Blocks]
-            .filter(_.accountId == lift(by))
-            .filter(_.by        == ff.by)
-            .isEmpty)
+        .filter(f => f.feedId == lift(feedId))
+        .filter(f => lift(since).forall(f.likedAt  < _))
+        .filter(ff => query[Blocks].filter(_.accountId == lift(by)).filter(_.by == ff.by).isEmpty)
+        .filter(ff => query[Blocks].filter(_.accountId == ff.by).filter(_.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
@@ -133,13 +131,12 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Int,
               sessionId: SessionId): Future[List[(Feeds, FeedLikes)]] = {
 
-    val s = since.getOrElse(-1L)
-
-
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedLikes].filter(f => f.by == lift(by) && (f.likedAt < lift(s) || lift(s) == -1L))
+      query[FeedLikes]
+        .filter(f => f.by == lift(by))
+        .filter(f => lift(since).forall(f.likedAt < _))
         .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.by).isEmpty)
         .filter(f => query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty)
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
@@ -164,15 +161,17 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               count: Int,
               sessionId: SessionId): Future[List[(Feeds, FeedLikes)]] = {
 
-    val s = since.getOrElse(-1L)
+
 
 
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedLikes].filter(ff => ff.by == lift(accountId) && (ff.likedAt < lift(s) || lift(s) == -1L))
-        .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.by).isEmpty)
-        .filter(f => query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty)
+      query[FeedLikes]
+        .filter(ff => ff.by == lift(accountId))
+        .filter(ff => lift(since).forall(ff.likedAt  < _))
+        .filter(ff => query[Blocks].filter(b => b.accountId == lift(by) && b.by == ff.by).isEmpty)
+        .filter(ff => query[Blocks].filter(b => b.accountId == ff.by && b.by == lift(by)).isEmpty)
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
         || (f.privacyType == lift(FeedPrivacyType.followers)

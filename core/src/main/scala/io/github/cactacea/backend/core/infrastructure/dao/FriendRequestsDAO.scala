@@ -76,14 +76,13 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
               received: Boolean,
               sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
-
-
     val by = sessionId.toAccountId
 
     if (received) {
       val q = quote {
-        query[FriendRequests].filter(f => f.accountId == lift(by) && (f.requestedAt < lift(s) || lift(s) == -1L))
+        query[FriendRequests]
+          .filter(f => f.accountId == lift(by))
+          .filter(f => lift(since).forall(f.requestedAt < _))
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})
@@ -95,7 +94,9 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
 
     } else {
       val q = quote {
-        query[FriendRequests].filter(f => f.by == lift(by) && f.requestedAt < lift(s))
+        query[FriendRequests]
+          .filter(f => f.by == lift(by))
+          .filter(f => lift(since).forall(f.requestedAt < _))
           .join(query[Accounts]).on((f, a) => a.id == f.by)
           .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
           .map({ case ((f, a), r) => (f, a, r)})

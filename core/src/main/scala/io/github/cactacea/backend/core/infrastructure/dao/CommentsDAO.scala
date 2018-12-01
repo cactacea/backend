@@ -157,13 +157,12 @@ class CommentsDAO @Inject()(
 
   def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[(Comments, Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
-
     val by = sessionId.toAccountId
 
     val q = quote {
       query[Comments]
-        .filter(c => c.feedId == lift(feedId) && (c.postedAt < lift(s) || lift(s) == -1L))
+        .filter(c => c.feedId == lift(feedId))
+        .filter(c => lift(since).forall(c.postedAt  < _))
         .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
         .filter(c => query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
