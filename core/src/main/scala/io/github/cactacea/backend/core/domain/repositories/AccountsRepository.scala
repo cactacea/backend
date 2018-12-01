@@ -33,7 +33,7 @@ class AccountsRepository @Inject()(
     accountsDAO.exist(accountName).map(!_)
   }
 
-  def findAll(displayName: Option[String], since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def findAll(displayName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     accountsDAO.findAll(
       displayName,
       since,

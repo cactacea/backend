@@ -34,26 +34,23 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
   }
 
   def findAll(since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               privacyType: Option[FeedPrivacyType],
               sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
-    val p = privacyType.getOrElse(FeedPrivacyType.everyone)
     val by = sessionId.toAccountId
     val q = quote {
       for {
         af <- query[AccountFeeds]
-          .filter(_.accountId == lift(by))
-          .filter(_.postedAt < lift(s)  || lift(s) == -1)
-          .sortBy(_.postedAt)(Ord.desc)
-          .drop(lift(o))
-          .take(lift(c))
+          .filter(f => f.accountId == lift(by))
+          .filter(f => lift(since).forall(f.feedId < _ ))
+          .sortBy(_.feedId)(Ord.desc)
+          .drop(lift(offset))
+          .take(lift(count))
         f <- query[Feeds]
-          .join(f => f.id == af.feedId && (f.privacyType == lift(p) || lift(p) == lift(FeedPrivacyType.everyone)) )
+          .join(f => f.id == af.feedId)
+          .filter(f => lift(privacyType).forall(_ == f.privacyType))
         a <- query[Accounts]
           .join(a => a.id == f.by)
         r <- query[Relationships]

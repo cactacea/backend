@@ -32,7 +32,7 @@ class GroupInvitationsRepository @Inject()(
     } yield (id)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[GroupInvitation]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[GroupInvitation]] = {
     groupInvitationsDAO.findAll(since, offset, count, sessionId)
       .map(_.map({ case (gi, a, r, g) => GroupInvitation(gi, a, r, g)}))
   }

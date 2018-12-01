@@ -122,8 +122,9 @@ class CommentsDAO @Inject()(
     val q = quote(
       query[Comments]
         .filter(_.id == lift(commentId))
-        .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
-        .filter(c => query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).isEmpty)
+        .filter(c => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+        ).isEmpty)
         .nonEmpty
     )
     run(q)
@@ -135,8 +136,9 @@ class CommentsDAO @Inject()(
     val q = quote {
       query[Comments]
         .filter(c => c.id == lift(commentId))
-        .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
-        .filter(c => query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).isEmpty)
+        .filter(c => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+        ).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (c, a, r) })
@@ -155,22 +157,22 @@ class CommentsDAO @Inject()(
       })
   }
 
-  def findAll(feedId: FeedId, since: Option[Long], count: Option[Int], sessionId: SessionId): Future[List[(Comments, Accounts, Option[Relationships])]] = {
+  def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[(Comments, Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
     val q = quote {
       query[Comments]
-        .filter(c => c.feedId == lift(feedId) && (c.postedAt < lift(s) || lift(s) == -1L))
-        .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
-        .filter(c => query[Blocks].filter(b => b.accountId == c.by && b.by == lift(by)).isEmpty)
+        .filter(c => c.feedId == lift(feedId))
+        .filter(c => lift(since).forall(c.id  < _))
+        .filter(c => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+        ).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (c, a, r) })
-        .sortBy({ case (c, _, _) => c.postedAt })(Ord.desc)
-        .take(lift(c))
+        .sortBy({ case (c, _, _) => c.id })(Ord.desc)
+        .take(lift(count))
     }
 
     (for {

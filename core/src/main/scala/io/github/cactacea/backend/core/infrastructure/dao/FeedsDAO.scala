@@ -147,8 +147,9 @@ class FeedsDAO @Inject()(
       query[Feeds]
         .filter(_.id == lift(feedId))
         .filter(f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty)
-        .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.by).isEmpty)
-        .filter(f => query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty)
+        .filter(f => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+        ).isEmpty)
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
             || (f.privacyType == lift(FeedPrivacyType.followers)
@@ -161,18 +162,16 @@ class FeedsDAO @Inject()(
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
+
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
-        .filter(_.by        ==  lift(by))
-        .filter(_.postedAt < lift(s) || lift(s) == -1L)
-        .sortBy(_.postedAt)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .filter(f => f.by == lift(by))
+        .filter(f => lift(since).forall(f.id  < _))
+        .sortBy(_.id)(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q).flatMap(f => addTagsMedium(f, sessionId))
   }
@@ -180,18 +179,18 @@ class FeedsDAO @Inject()(
 
   def findAll(accountId: AccountId,
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
 
     val e = timeService.currentTimeMillis()
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
-        .filter(_.by == lift(accountId))
+        .filter(f => f.by == lift(accountId))
+        .filter(f => f.expiration.forall(_ > lift(e)))
+        .filter(f => lift(since).forall(f.id < _))
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
             || (f.privacyType == lift(FeedPrivacyType.followers)
@@ -199,11 +198,9 @@ class FeedsDAO @Inject()(
             || (f.privacyType == lift(FeedPrivacyType.friends)
             && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
-        .filter({ f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty })
-        .filter(_.postedAt < lift(s) || lift(s) == -1L)
-        .sortBy(_.postedAt)(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .sortBy(_.id)(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q).flatMap(f => addTagsMedium(f, sessionId))
   }
@@ -234,8 +231,9 @@ class FeedsDAO @Inject()(
     val e = timeService.currentTimeMillis()
     val q = quote {
       query[Feeds].filter(f => f.id == lift(feedId) && (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty))
-        .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.by).isEmpty)
-        .filter(f => query[Blocks].filter(b => b.accountId == f.by && b.by == lift(by)).isEmpty)
+        .filter(f => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+        ).isEmpty)
         .filter(f => ((f.privacyType == lift(FeedPrivacyType.everyone))
           || (f.privacyType == lift(FeedPrivacyType.followers)
           && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))

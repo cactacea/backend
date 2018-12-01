@@ -61,25 +61,27 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   }
 
   def findAll(since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Notifications, Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
+
     val by = sessionId.toAccountId
     val q = quote {
       query[Notifications]
-        .filter(n => n.accountId == lift(by) && (n.notifiedAt < lift(s) || lift(s) == -1L))
-        .filter(n => query[Blocks].filter(b => b.accountId == n.by && b.by == lift(by)).isEmpty)
-        .filter(n => query[Blocks].filter(b => b.accountId == lift(by) && b.by == n.by).isEmpty)
+        .filter(n => n.accountId == lift(by))
+        .filter(n => lift(since).forall(n.id < _))
+        .filter(n => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == n.by) || (b.accountId == n.by && b.by == lift(by))
+        ).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((n, a), r) => (n, a, r)})
-        .sortBy({ case (n, _, _) => n.notifiedAt})(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .sortBy({ case (n, _, _) => n.id})(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
   }

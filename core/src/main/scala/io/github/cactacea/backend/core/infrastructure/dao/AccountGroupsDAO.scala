@@ -123,24 +123,25 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
 
   def findAll(accountId: AccountId,
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               hidden: Boolean): Future[List[(AccountGroups, Groups, Option[Messages], Option[AccountMessages])]] = {
 
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
+
+
+
     val q = quote {
       query[AccountGroups]
-        .filter(ag => ag.accountId == lift(accountId) && ag.hidden == lift(hidden))
-        .filter(ag => ag.joinedAt < lift(s) || lift(s) == -1L)
+        .filter(ag => ag.accountId == lift(accountId))
+        .filter(ag => ag.hidden == lift(hidden))
+        .filter(ag => lift(since).forall(ag.id < _))
         .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
         .leftJoin(query[Messages]).on({ case ((_, g), m) => g.messageId.contains(m.id) })
         .leftJoin(query[AccountMessages]).on({ case (((_, g), _), am) => g.messageId.contains(am.messageId) && am.accountId == lift(accountId) })
         .map({ case (((ag, g), m), am) => (ag, g, m, am) })
-        .sortBy({ case (ag, _, _, _) => ag.joinedAt})(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .sortBy({ case (ag, _, _, _) => ag.id})(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
 

@@ -14,7 +14,7 @@ class CommentsRepository @Inject()(
                                     validationDAO: ValidationDAO
                                   ) {
 
-  def findAll(feedId: FeedId, since: Option[Long], count: Option[Int], sessionId: SessionId): Future[List[Comment]] = {
+  def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[Comment]] = {
     for {
       _ <- validationDAO.existFeed(feedId, sessionId)
       r <- commentsDAO.findAll(feedId, since, count, sessionId).map(_.map({ case (c, a, r) => Comment(c, a, r)}))

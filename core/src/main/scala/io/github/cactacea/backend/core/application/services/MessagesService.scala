@@ -34,7 +34,7 @@ class MessagesService @Inject()(
     }
   }
 
-  def find(groupId: GroupId, since: Option[Long], offset: Option[Int], count: Option[Int], ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {
+  def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {
     db.transaction {
       for {
         m <- messagesRepository.findAll(groupId, since, offset, count, ascending, sessionId)

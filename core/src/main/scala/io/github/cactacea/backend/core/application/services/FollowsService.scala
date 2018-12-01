@@ -33,11 +33,11 @@ class FollowsService @Inject()(
     }
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     followerRepository.findAll(accountId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     followerRepository.findAll(since, offset, count, sessionId)
   }
 

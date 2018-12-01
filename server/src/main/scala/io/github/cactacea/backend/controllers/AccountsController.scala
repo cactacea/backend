@@ -44,8 +44,8 @@ class AccountsController @Inject()(
       accountsService.find(
         request.displayName,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -118,8 +118,8 @@ class AccountsController @Inject()(
       feedsService.find(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -135,8 +135,8 @@ class AccountsController @Inject()(
       feedLikesService.find(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -152,8 +152,8 @@ class AccountsController @Inject()(
       followersService.find(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -169,8 +169,8 @@ class AccountsController @Inject()(
       friendsService.find(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -234,8 +234,8 @@ class AccountsController @Inject()(
       accountGroupsService.findAll(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }

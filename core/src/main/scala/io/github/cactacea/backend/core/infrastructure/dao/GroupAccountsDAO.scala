@@ -13,20 +13,18 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
 
   def findAll(groupId: GroupId,
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int]): Future[List[(Accounts, Option[Relationships], AccountGroups)]] = {
-
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+              offset: Int,
+              count: Int): Future[List[(Accounts, Option[Relationships], AccountGroups)]] = {
 
     val q = quote {
-      query[AccountGroups].filter(ag => ag.groupId == lift(groupId) && (ag.joinedAt < lift(s) || lift(s) == -1L))
+      query[AccountGroups]
+        .filter(ag => ag.groupId == lift(groupId))
+        .filter(ag => lift(since).forall(ag.id < _))
         .join(query[Accounts]).on((ag, a) => a.id == ag.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id})
-        .sortBy({ case ((ag, _), _) => ag.joinedAt})(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .sortBy({ case ((ag, _), _) => ag.id})(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q).map(_.map({ case ((ag, a), r) => (a, r, ag)}))
 

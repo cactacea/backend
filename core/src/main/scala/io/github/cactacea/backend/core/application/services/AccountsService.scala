@@ -31,8 +31,8 @@ class AccountsService @Inject()(
 
   def find(displayName: Option[String],
            since: Option[Long],
-           offset: Option[Int],
-           count: Option[Int],
+           offset: Int,
+           count: Int,
            sessionId: SessionId) : Future[List[Account]]= {
 
     accountsRepository.findAll(displayName, since, offset, count, sessionId)

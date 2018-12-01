@@ -10,7 +10,8 @@ case class Notification (
                            contentId: Option[Long],
                            message: String,
                            url: String,
-                           notifiedAt: Long
+                           notifiedAt: Long,
+                           next: Option[Long]
                          )
 
 object Notification {
@@ -22,7 +23,8 @@ object Notification {
       n.contentId,
       message,
       n.url,
-      n.notifiedAt
+      n.notifiedAt,
+      Some(n.id.value)
     )
   }
 

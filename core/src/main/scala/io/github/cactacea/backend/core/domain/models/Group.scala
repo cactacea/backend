@@ -14,31 +14,31 @@ case class Group(
                   accountCount: Long,
                   lastPostedAt: Option[Long],
                   organizedAt: Long,
-                  next: Long
+                  next: Option[Long]
                  )
 
 object Group {
   def apply(g: Groups): Group = {
-    apply(g, None, None, None, None, None, None)
+    apply(g, None, None, None, None, None, Some(g.id.value))
   }
 
   def apply(ag: AccountGroups, g: Groups, m: Option[Messages], am: Option[AccountMessages]): Group = {
-    apply(g, m, am, None, None, None, Some(ag))
+    apply(g, m, am, None, None, None, Some(ag.id.value))
   }
 
-  def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], a: Option[Accounts], r: Option[Relationships]): Group = {
-    apply(g, m, am, None, a, r, None)
-  }
+//  def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], a: Option[Accounts], r: Option[Relationships]): Group = {
+//    apply(g, m, am, None, a, r, None)
+//  }
 
-  def apply(g: Groups,
-            m: Option[Messages],
-            am: Option[AccountMessages],
-            a: Option[Accounts],
-            r: Option[Relationships],
-            ag: AccountGroups): Group = {
-
-    apply(g, m, am, None, a, r, Some(ag))
-  }
+//  def apply(g: Groups,
+//            m: Option[Messages],
+//            am: Option[AccountMessages],
+//            a: Option[Accounts],
+//            r: Option[Relationships],
+//            ag: AccountGroups): Group = {
+//
+//    apply(g, m, am, None, a, r, Some(ag))
+//  }
 
   def apply(g: Groups,
             m: Option[Messages],
@@ -46,7 +46,7 @@ object Group {
             i: Option[Mediums],
             a: Option[Accounts],
             r: Option[Relationships],
-            ag: Option[AccountGroups]): Group = {
+            n: Option[Long]): Group = {
 
     val message = (m, am, a) match {
       case (Some(m), Some(um), Some(a)) =>
@@ -65,7 +65,7 @@ object Group {
       accountCount      = g.accountCount,
       organizedAt       = g.organizedAt,
       lastPostedAt      = g.lastPostedAt,
-      next              = ag.map(_.joinedAt).getOrElse(g.organizedAt)
+      next              = n
     )
   }
 

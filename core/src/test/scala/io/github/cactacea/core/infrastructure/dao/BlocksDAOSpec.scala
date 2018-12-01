@@ -134,7 +134,7 @@ class BlocksDAOSpec extends DAOSpec {
     execute(blocksDAO.create(account9.id, account1.id.toSessionId))
 
     // find
-    val result1 = execute(blocksDAO.findAll(None, None, Some(3), account1.id.toSessionId))
+    val result1 = execute(blocksDAO.findAll(None, 0, 3, account1.id.toSessionId))
     assert(result1.size == 3)
     val blockedAccount1 = result1(0)._1
     val blockedAccount2 = result1(1)._1
@@ -144,7 +144,7 @@ class BlocksDAOSpec extends DAOSpec {
     assert(blockedAccount2.id == account8.id)
     assert(blockedAccount3.id == account7.id)
 
-    val result2 = execute(blocksDAO.findAll(Some(blocked3.blockedAt), None, Some(3), account1.id.toSessionId))
+    val result2 = execute(blocksDAO.findAll(Some(blocked3.id.value), 0, 3, account1.id.toSessionId))
     assert(result2.size == 3)
     val blockedAccount4 = result2(0)._1
     val blockedAccount5 = result2(1)._1
@@ -154,7 +154,7 @@ class BlocksDAOSpec extends DAOSpec {
     assert(blockedAccount6.id == account4.id)
     val blocked6 = result2(2)._3
 
-    val result3 = execute(blocksDAO.findAll(Some(blocked6.blockedAt), None, Some(3), account1.id.toSessionId))
+    val result3 = execute(blocksDAO.findAll(Some(blocked6.id.value), 0, 3, account1.id.toSessionId))
     assert(result3.size == 2)
     val blockedAccount7 = result3(0)._1
     val blockedAccount8 = result3(1)._1

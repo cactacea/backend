@@ -9,11 +9,11 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{SessionId, Ac
 @Singleton
 class FollowersService @Inject()(followersRepository: FollowersRepository) {
 
-  def find(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     followersRepository.findAll(accountId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     followersRepository.findAll(since, offset, count, sessionId)
   }
 }

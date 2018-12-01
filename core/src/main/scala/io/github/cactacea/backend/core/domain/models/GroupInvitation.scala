@@ -9,20 +9,22 @@ case class GroupInvitation(
                             group: Group,
                             by: Account,
                             invitationStatus: GroupInvitationStatusType,
-                            invitedAt: Long
+                            invitedAt: Long,
+                            next: Option[Long]
                    )
 
 object GroupInvitation {
 
   def apply(gi: GroupInvitations, a: Accounts, r: Option[Relationships], g: Groups): GroupInvitation = {
     val by = Account(a, r)
-    val group = Group(g, None, None, None, None)
+    val group = Group(g)
     GroupInvitation(
       id                = gi.id,
       group             = group,
       by                = by,
       invitationStatus  = gi.invitationStatus,
-      invitedAt         = gi.invitedAt
+      invitedAt         = gi.invitedAt,
+      next              = Some(gi.id.value)
     )
   }
 

@@ -102,10 +102,10 @@ class CommentLikesRepositorySpec extends RepositorySpec {
     execute(commentLikesRepository.create(commentId, user3.id.toSessionId))
     execute(commentLikesRepository.create(commentId, user4.id.toSessionId))
     execute(commentLikesRepository.create(commentId, user5.id.toSessionId))
-    val result1 = execute(commentLikesRepository.findAccounts(commentId, None, None, Some(3), session.id.toSessionId))
+    val result1 = execute(commentLikesRepository.findAccounts(commentId, None, 0, 3, session.id.toSessionId))
     val commentLike3 = result1(2)
     assert(result1.size == 3)
-    val result2 = execute(commentLikesRepository.findAccounts(commentId, Some(commentLike3.next), None, Some(3), session.id.toSessionId))
+    val result2 = execute(commentLikesRepository.findAccounts(commentId, commentLike3.next, 0, 3, session.id.toSessionId))
     assert(result2.size == 2)
 
   }
@@ -114,7 +114,7 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
     val session = signUp("CommentLikesRepositorySpec16", "session password", "udid")
     assert(intercept[CactaceaException] {
-      execute(commentLikesRepository.findAccounts(CommentId(0L), None, None, Some(3), session.id.toSessionId))
+      execute(commentLikesRepository.findAccounts(CommentId(0L), None, 0, 3, session.id.toSessionId))
     }.error == CommentNotFound)
 
   }

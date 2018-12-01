@@ -102,21 +102,23 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Follows)]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Follows)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
+
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Follows].filter(f => f.by == lift(by) && (f.followedAt < lift(s) || lift(s) == -1L) )
+      query[Follows]
+        .filter(f => f.by == lift(by))
+        .filter(f => lift(since).forall(f.id < _))
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.followedAt} )(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .sortBy({ case (_, _, f) => f.id} )(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
 
@@ -124,25 +126,28 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def findAll(accountId: AccountId,
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Follows)]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
+
+
+
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Follows].filter(f => f.by == lift(accountId) && (f.followedAt < lift(s) || lift(s) == -1L) )
-        .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.accountId).isEmpty)
-        .filter(f => query[Blocks].filter(b => b.accountId == f.accountId && b.by == lift(by)).isEmpty)
+      query[Follows]
+        .filter(f => f.by == lift(accountId))
+        .filter(f => lift(since).forall(f.id < _))
+        .filter(f => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+        ).isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.followedAt} )(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .sortBy({ case (_, _, f) => f.id} )(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
 

@@ -30,8 +30,8 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
     } { request: GetSessionBlocks =>
       blocksService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
