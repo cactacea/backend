@@ -73,8 +73,9 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
       query[Notifications]
         .filter(n => n.accountId == lift(by))
         .filter(n => lift(since).forall(n.notifiedAt < _))
-        .filter(n => query[Blocks].filter(b => b.accountId == n.by && b.by == lift(by)).isEmpty)
-        .filter(n => query[Blocks].filter(b => b.accountId == lift(by) && b.by == n.by).isEmpty)
+        .filter(n => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == n.by) || (b.accountId == n.by && b.by == lift(by))
+        ).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((n, a), r) => (n, a, r)})

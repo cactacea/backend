@@ -99,8 +99,9 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
       query[CommentLikes]
         .filter(c => c.commentId == lift(commentId))
         .filter(c => lift(since).forall(c.likedAt  < _))
-        .filter(cf => query[Blocks].filter(b => b.accountId == lift(by) && b.by == cf.by).isEmpty)
-        .filter(cf => query[Blocks].filter(b => b.accountId == cf.by && b.by == lift(by)).isEmpty)
+        .filter(cf => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == cf.by) || (b.accountId == cf.by && b.by == lift(by))
+        ).isEmpty)
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (a, r, c)})

@@ -133,8 +133,9 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
       query[Friends]
         .filter(f => f.by == lift(accountId))
         .filter(f => lift(since).forall(f.friendedAt < _ ))
-        .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.accountId).isEmpty)
-        .filter(f => query[Blocks].filter(b => b.accountId == f.accountId && b.by == lift(by)).isEmpty)
+        .filter(f => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+        ).isEmpty)
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})

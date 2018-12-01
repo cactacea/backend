@@ -39,10 +39,6 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
               privacyType: Option[FeedPrivacyType],
               sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
 
-
-
-
-    val p = privacyType.getOrElse(FeedPrivacyType.everyone)
     val by = sessionId.toAccountId
     val q = quote {
       for {
@@ -53,7 +49,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
           .drop(lift(offset))
           .take(lift(count))
         f <- query[Feeds]
-          .join(f => f.id == af.feedId && (f.privacyType == lift(p) || lift(p) == lift(FeedPrivacyType.everyone)) )
+          .join(f => f.id == af.feedId)
+          .filter(f => lift(privacyType).forall(_ == f.privacyType))
         a <- query[Accounts]
           .join(a => a.id == f.by)
         r <- query[Relationships]
