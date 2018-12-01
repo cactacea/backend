@@ -40,7 +40,7 @@ class BlocksRepositorySpec extends RepositorySpec {
     execute(followerRepository.create(sessionUser.id, user.id.toSessionId))
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -57,7 +57,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -74,7 +74,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -91,7 +91,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -108,7 +108,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -126,7 +126,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, None, Some(2), sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -185,13 +185,13 @@ class BlocksRepositorySpec extends RepositorySpec {
     execute(blocksRepository.create(user4.id, sessionUser.id.toSessionId))
     execute(blocksRepository.create(user5.id, sessionUser.id.toSessionId))
 
-    val results1 = execute(blocksRepository.findAll(None, None, Some(3), sessionUser.id.toSessionId))
+    val results1 = execute(blocksRepository.findAll(None, 0, 3, sessionUser.id.toSessionId))
     assert(results1.size == 3)
     assert(results1(0).id == user5.id)
     assert(results1(1).id == user4.id)
     assert(results1(2).id == user3.id)
 
-    val results2 = execute(blocksRepository.findAll(Some(results1(2).next), None, Some(3), sessionUser.id.toSessionId))
+    val results2 = execute(blocksRepository.findAll(results1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(results2.size == 2)
     assert(results2(0).id == user2.id)
     assert(results2(1).id == user1.id)

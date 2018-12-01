@@ -28,8 +28,8 @@ class NotificationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: 
     } { request: GetNotifications =>
       notificationsService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.locales,
         SessionContext.id
       )

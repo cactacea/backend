@@ -144,8 +144,8 @@ class SessionController @Inject()(
     } { request: GetSessionFeeds =>
       feedsService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -159,8 +159,8 @@ class SessionController @Inject()(
     } { request: GetSessionLikedFeeds =>
       feedLikesService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -174,8 +174,8 @@ class SessionController @Inject()(
     } { request: GetSessionFollows =>
       followsService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -189,8 +189,8 @@ class SessionController @Inject()(
     } { request: GetSessionFollowers =>
       followersService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -204,8 +204,8 @@ class SessionController @Inject()(
     }  { request: GetSessionFriends =>
       friendsService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -219,8 +219,8 @@ class SessionController @Inject()(
     } { request: GetSessionGroups =>
       accountGroupsService.findAll(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         true,
         SessionContext.id
       )
@@ -236,8 +236,8 @@ class SessionController @Inject()(
     } { request: GetSessionGroups =>
       accountGroupsService.findAll(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         false,
         SessionContext.id
       )
@@ -252,8 +252,8 @@ class SessionController @Inject()(
     } { request: GetSessionInvitations =>
       invitationService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -267,8 +267,8 @@ class SessionController @Inject()(
     } { request: GetSessionMutes =>
       mutesService.find(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -282,8 +282,8 @@ class SessionController @Inject()(
     } { request: GetSessionFriendRequests =>
       friendRequestsService.findAll(
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         request.received,
         SessionContext.id
       )

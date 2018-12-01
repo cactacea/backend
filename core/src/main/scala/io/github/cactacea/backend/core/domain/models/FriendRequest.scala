@@ -9,7 +9,7 @@ case class FriendRequest (
                            account: Account,
                            requestStatus: FriendRequestStatusType,
                            requestedAt: Long,
-                           next: Long
+                           next: Option[Long]
                          )
 
 object FriendRequest {
@@ -21,7 +21,7 @@ object FriendRequest {
       account       = account,
       requestStatus = f.requestStatus,
       requestedAt   = f.requestedAt,
-      next          = f.requestedAt
+      next          = Some(f.id.value)
     )
   }
 

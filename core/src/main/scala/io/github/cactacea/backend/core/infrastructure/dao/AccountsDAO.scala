@@ -124,8 +124,9 @@ class AccountsDAO @Inject()(
       query[Accounts]
         .filter(_.id == lift(accountId))
         .filter(_.accountStatus  == lift(status))
-        .filter(u => query[Blocks].filter(b => b.accountId == lift(by) && b.by == u.id).isEmpty)
-        .filter(u => query[Blocks].filter(b => b.accountId == u.id && b.by == lift(by)).isEmpty)
+        .filter(u => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == u.id) || (b.accountId == u.id && b.by == lift(by))
+        ).isEmpty)
         .nonEmpty
     }
     run(q)
@@ -139,8 +140,9 @@ class AccountsDAO @Inject()(
       query[Accounts]
         .filter(u => liftQuery(accountIds).contains(u.id))
         .filter(_.accountStatus  == lift(status))
-        .filter(u => query[Blocks].filter(b => b.accountId == lift(by) && b.by == u.id).isEmpty)
-        .filter(u => query[Blocks].filter(b => b.accountId == u.id && b.by == lift(by)).isEmpty)
+        .filter(u => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == u.id) || b.accountId == u.id && b.by == lift(by)
+        ).isEmpty)
         .size
     }
     run(q).map(_ == accountIds.size)
@@ -184,8 +186,9 @@ class AccountsDAO @Inject()(
         a <- query[Accounts]
           .filter(_.id              == lift(accountId))
           .filter(_.accountStatus   == lift(status))
-          .filter(a => query[Blocks].filter(b => b.accountId == lift(by) && b.by == a.id).isEmpty)
-          .filter(a => query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by)).isEmpty)
+          .filter(a => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
+          ).isEmpty)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r)
@@ -214,33 +217,27 @@ class AccountsDAO @Inject()(
 
   }
 
-  def findAll(displayName: Option[String],
+  def findAll(accountName: Option[String],
               since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               sessionId: SessionId): Future[List[(Accounts, Option[Relationships])]] = {
 
     val by = sessionId.toAccountId
 
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
-
-    val un = displayName.fold("") { _ + "%" }
-    val status = AccountStatusType.normally
-
     val q2 = quote {
       query[Accounts]
         .filter({a => a.id !=  lift(by)})
-        .filter(a => (a.accountName like lift(un)) || (a.displayName like lift(un)) || (lift(un) == ""))
-        .filter(a => a.accountStatus == lift(status))
-        .filter(a => a.id < lift(s) || lift(s) == -1L)
-        .filter(a => query[Blocks].filter(b => b.accountId == lift(by) && b.by == a.id).isEmpty)
-        .filter(a => query[Blocks].filter(b => b.accountId == a.id && b.by == lift(by)).isEmpty)
+        .filter(a => a.accountStatus == lift(AccountStatusType.normally))
+        .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
+        .filter(a => lift(since).forall(a.id < _))
+        .filter(a => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
+        ).isEmpty)
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
       .sortBy({ case (a, _) => a.id})(Ord.desc)
-      .drop(lift(o))
-      .take(lift(c))
+      .drop(lift(offset))
+      .take(lift(count))
     }
 
     (for {

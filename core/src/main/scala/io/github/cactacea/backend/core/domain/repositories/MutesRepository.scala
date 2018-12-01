@@ -32,7 +32,7 @@ class MutesRepository @Inject()(
     } yield (Future.value(Unit))
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     mutesDAO.findAll(since, offset, count, sessionId)
       .map(_.map({ case (a, r, n) => Account(a, r, n)}))
   }

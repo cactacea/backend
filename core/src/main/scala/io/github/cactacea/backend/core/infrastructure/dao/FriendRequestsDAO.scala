@@ -71,41 +71,31 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
   }
 
   def findAll(since: Option[Long],
-              offset: Option[Int],
-              count: Option[Int],
+              offset: Int,
+              count: Int,
               received: Boolean,
               sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
 
-    val s = since.getOrElse(-1L)
-    val o = offset.getOrElse(0)
-    val c = count.getOrElse(20)
     val by = sessionId.toAccountId
 
-    if (received) {
-      val q = quote {
-        query[FriendRequests].filter(f => f.accountId == lift(by) && (f.requestedAt < lift(s) || lift(s) == -1L))
-          .join(query[Accounts]).on((f, a) => a.id == f.by)
-          .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-          .map({ case ((f, a), r) => (f, a, r)})
-          .sortBy({ case (f, _, _) => f.requestedAt})(Ord.desc)
-          .drop(lift(o))
-          .take(lift(c))
-      }
-      run(q)
-
-    } else {
-      val q = quote {
-        query[FriendRequests].filter(f => f.by == lift(by) && f.requestedAt < lift(s))
-          .join(query[Accounts]).on((f, a) => a.id == f.by)
-          .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-          .map({ case ((f, a), r) => (f, a, r)})
-          .sortBy({ case (f, _, _) => f.requestedAt})(Ord.desc)
-          .drop(lift(o))
-          .take(lift(c))
-      }
-      run(q)
-
+    val q = quote {
+      query[FriendRequests]
+        .filter(f =>
+          if (lift(received)) {
+            f.accountId == lift(by)
+          } else {
+            lift(since).forall(f.id < _)
+          }
+        )
+        .filter(f => lift(since).forall(f.id < _))
+        .join(query[Accounts]).on((f, a) => a.id == f.by)
+        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .map({ case ((f, a), r) => (f, a, r)})
+        .sortBy({ case (f, _, _) => f.id})(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
+    run(q)
 
   }
 

@@ -67,15 +67,15 @@ class FeedsService @Inject()(
     }
   }
 
-  def find(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
     feedsRepository.findAll(since, offset, count, privacyType, sessionId)
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
+  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     feedsRepository.findAll(accountId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     feedsRepository.findAll(since, offset, count, sessionId)
   }
 

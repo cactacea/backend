@@ -15,14 +15,14 @@ class FollowsRepository @Inject()(
                                    validationDAO: ValidationDAO
                                 ) {
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     (for {
       _ <- validationDAO.existAccount(accountId)
       r <- followsDAO.findAll(accountId, since, offset, count, sessionId)
     } yield (r)).map(_.map({ case (a, r, f) => Account(a, r, f)}))
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId) : Future[List[Account]]= {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     followsDAO.findAll(since, offset, count, sessionId)
       .map(_.map({ case (a, r, f) => Account(a, r, f)}))
   }

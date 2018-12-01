@@ -56,7 +56,7 @@ class FeedsRepository @Inject()(
     } yield (r)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
+  def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
@@ -65,14 +65,14 @@ class FeedsRepository @Inject()(
     } yield (r)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
     for {
       r <- accountFeedsDAO.findAll(since, offset, count, privacyType, sessionId)
         .map(_.map(t => Feed(t._2, t._3, t._4, t._5, t._6)))
     } yield (r)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[Feed]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     feedsDAO.findAll(since, offset, count, sessionId)
       .map(_.map({ case (f, ft, m) => Feed(f, ft, m)}))
   }

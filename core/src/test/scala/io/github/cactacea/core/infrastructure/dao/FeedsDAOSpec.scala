@@ -707,13 +707,13 @@ class FeedsDAOSpec extends DAOSpec {
     )
 
     // find by follower
-    assert(execute(feedsDAO.findAll(sessionAccount.id, None, None, Some(10), followerUser.id.toSessionId)).size == 4)
+    assert(execute(feedsDAO.findAll(sessionAccount.id, None, 0, 10, followerUser.id.toSessionId)).size == 4)
 
     // find by friend
-    assert(execute(feedsDAO.findAll(sessionAccount.id, None, None, Some(10), friendUser.id.toSessionId)).size == 6)
+    assert(execute(feedsDAO.findAll(sessionAccount.id, None, 0, 10, friendUser.id.toSessionId)).size == 6)
 
     // find by no relationship user
-    assert(execute(feedsDAO.findAll(sessionAccount.id, None, None, Some(10), noRelationshipUser.id.toSessionId)).size == 2)
+    assert(execute(feedsDAO.findAll(sessionAccount.id, None, 0, 10, noRelationshipUser.id.toSessionId)).size == 2)
 
   }
 
@@ -975,7 +975,7 @@ class FeedsDAOSpec extends DAOSpec {
 
     // find top page
     val count1 = 2
-    val sessionFeeds1 = execute(feedsDAO.findAll(None, None, Some(count1), sessionAccount1.id.toSessionId))
+    val sessionFeeds1 = execute(feedsDAO.findAll(None, 0, count1, sessionAccount1.id.toSessionId))
     assert(sessionFeeds1.size == count1)
     val sessionFeed1 = sessionFeeds1(0)._1
     val sessionFeed2 = sessionFeeds1(1)._1
@@ -1003,7 +1003,7 @@ class FeedsDAOSpec extends DAOSpec {
     assert(sessionMediums2.map(_.id) == mediums3)
 
     // find 2 page
-    val sessionFeeds2 = execute(feedsDAO.findAll(Some(sessionFeed2.postedAt), None, Some(count1), sessionAccount1.id.toSessionId))
+    val sessionFeeds2 = execute(feedsDAO.findAll(Some(sessionFeed2.id.value), 0, count1, sessionAccount1.id.toSessionId))
     assert(sessionFeeds2.size == count1)
     val sessionFeed3 = sessionFeeds2(0)._1
     val sessionFeed4 = sessionFeeds2(1)._1

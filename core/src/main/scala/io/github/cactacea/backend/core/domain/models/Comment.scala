@@ -13,7 +13,7 @@ case class Comment(
                     contentWarning: Boolean,
                     contentDeleted: Boolean,
                     postedAt: Long,
-                    next: Long)
+                    next: Option[Long])
 
 object Comment {
 
@@ -30,7 +30,7 @@ object Comment {
           contentWarning  = false,
           contentDeleted  = true,
           postedAt        = c.postedAt,
-          next            = c.postedAt
+          next            = None
         )
       case _ => {
         Comment(
@@ -42,7 +42,7 @@ object Comment {
           contentWarning  = c.contentWarning,
           contentDeleted  = false,
           postedAt        = c.postedAt,
-          next            = c.postedAt
+          next            = Some(c.id.value)
         )
       }
     }

@@ -34,7 +34,7 @@ class FriendRequestsService @Inject()(
     }
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
     friendRequestsRepository.findAll(since, offset, count, received, sessionId)
   }
 

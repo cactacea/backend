@@ -16,7 +16,8 @@ case class Message(
                     readAccountCount: Long,
                     contentWarning: Boolean,
                     contentDeleted: Boolean,
-                    postedAt: Long
+                    postedAt: Long,
+                    next: Option[Long]
                   )
 
 object Message {
@@ -41,8 +42,9 @@ object Message {
           accountCount      = 0L,
           readAccountCount  = 0L,
           contentWarning    = false,
-          contentDeleted   = true,
-          postedAt          = m.postedAt
+          contentDeleted    = true,
+          postedAt          = m.postedAt,
+          next              = None
         )
       case _ =>
         val images = i.map(Medium(_))
@@ -59,8 +61,9 @@ object Message {
           accountCount      = m.accountCount,
           readAccountCount  = m.readAccountCount,
           contentWarning    = m.contentWarning,
-          contentDeleted   = false,
-          postedAt          = m.postedAt
+          contentDeleted    = false,
+          postedAt          = m.postedAt,
+          next              = Some(m.id.value)
         )
     }
   }

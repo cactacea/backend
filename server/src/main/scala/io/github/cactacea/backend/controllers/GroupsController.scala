@@ -38,8 +38,8 @@ class GroupsController @Inject()(
         request.invitationOnly,
         request.groupPrivacyType,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }
@@ -134,8 +134,8 @@ class GroupsController @Inject()(
       groupAccountsService.find(
         request.id,
         request.since,
-        request.offset,
-        request.count,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
         SessionContext.id
       )
     }

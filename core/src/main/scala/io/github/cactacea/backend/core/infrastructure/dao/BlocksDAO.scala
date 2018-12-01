@@ -49,22 +49,23 @@ class BlocksDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Option[Int], count: Option[Int], sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Blocks)]] = {
-    val s = since.getOrElse(-1L)
-    val c = count.getOrElse(20)
-    val o = offset.getOrElse(0)
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Blocks)]] = {
+
+
+
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
 
     val q = quote {
       query[Blocks]
-        .filter(b => b.by == lift(by) && (b.blockedAt < lift(s) || lift(s) == -1L) )
+        .filter(b => b.by == lift(by))
+        .filter(b => (lift(since).forall(b.id < _)) )
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
         .map({ case ((b, a), r) => (a, r, b)})
-        .sortBy({ case (_, _, b) => b.blockedAt })(Ord.desc)
-        .drop(lift(o))
-        .take(lift(c))
+        .sortBy({ case (_, _, b) => b.id })(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
     run(q)
   }
