@@ -112,14 +112,14 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[FeedLikes]
         .filter(f => f.feedId == lift(feedId))
-        .filter(f => lift(since).forall(f.likedAt  < _))
+        .filter(f => lift(since).forall(f.id  < _))
         .filter(ff => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
         ).isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.likedAt })(Ord.desc)
+        .sortBy({ case (_, _, f) => f.id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -136,10 +136,10 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[FeedLikes]
-        .filter(f => f.by == lift(by))
-        .filter(f => lift(since).forall(f.likedAt < _))
-        .filter(f => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+        .filter(ff => ff.by == lift(by))
+        .filter(ff => lift(since).forall(ff.id < _))
+        .filter(ff => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
         ).isEmpty)
         .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
         ((f.privacyType == lift(FeedPrivacyType.everyone))
@@ -149,7 +149,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
           && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
         .map({case (ff, f) => (f, ff)})
-        .sortBy({ case (ff, _) => ff.postedAt})(Ord.desc)
+        .sortBy({ case (ff, _) => ff.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -171,7 +171,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[FeedLikes]
         .filter(ff => ff.by == lift(accountId))
-        .filter(ff => lift(since).forall(ff.likedAt  < _))
+        .filter(ff => lift(since).forall(ff.id  < _))
         .filter(ff => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
         ).isEmpty)
@@ -183,7 +183,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
             && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
         || (f.by == lift(by))))
         .map({case (ff, f) => (f, ff)})
-        .sortBy({ case (ff, _) => ff.postedAt})(Ord.desc)
+        .sortBy({ case (ff, _) => ff.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

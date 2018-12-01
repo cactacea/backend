@@ -72,14 +72,14 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     val q = quote {
       query[Notifications]
         .filter(n => n.accountId == lift(by))
-        .filter(n => lift(since).forall(n.notifiedAt < _))
+        .filter(n => lift(since).forall(n.id < _))
         .filter(n => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == n.by) || (b.accountId == n.by && b.by == lift(by))
         ).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((n, a), r) => (n, a, r)})
-        .sortBy({ case (n, _, _) => n.notifiedAt})(Ord.desc)
+        .sortBy({ case (n, _, _) => n.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

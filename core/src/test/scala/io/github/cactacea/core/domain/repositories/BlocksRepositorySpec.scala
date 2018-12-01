@@ -191,7 +191,7 @@ class BlocksRepositorySpec extends RepositorySpec {
     assert(results1(1).id == user4.id)
     assert(results1(2).id == user3.id)
 
-    val results2 = execute(blocksRepository.findAll(Some(results1(2).next), 0, 3, sessionUser.id.toSessionId))
+    val results2 = execute(blocksRepository.findAll(results1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(results2.size == 2)
     assert(results2(0).id == user2.id)
     assert(results2(1).id == user1.id)

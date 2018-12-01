@@ -16,28 +16,28 @@ case class Feed(
                  contentDeleted: Boolean,
                  postedAt: Long,
                  likedAt: Option[Long],
-                 next: Long
+                 next: Option[Long]
                  )
 
 object Feed {
 
-  def apply(f: Feeds): Feed = {
-    apply(f, None, None, None, None, None)
-  }
+//  def apply(f: Feeds): Feed = {
+//    apply(f, None, None, None, None, None, None)
+//  }
 
   def apply(f: Feeds, fl: FeedLikes): Feed = {
-    apply(f, Some(fl), None, None, None, None)
+    apply(f, Some(fl), None, None, None, None, Some(fl.id.value))
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums]): Feed = {
-    apply(f, None, Some(ft), Some(m), None, None)
+    apply(f, None, Some(ft), Some(m), None, None, Some(f.id.value))
   }
 
   def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
-    apply(f, None, Some(ft), Some(m), Some(a), r)
+    apply(f, None, Some(ft), Some(m), Some(a), r, Some(f.id.value))
   }
 
-  private def apply(f: Feeds, fl: Option[FeedLikes], ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships]): Feed = {
+  private def apply(f: Feeds, fl: Option[FeedLikes], ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships], next: Option[Long]): Feed = {
     f.contentStatus match {
       case ContentStatusType.rejected => {
         Feed(
@@ -52,7 +52,7 @@ object Feed {
           contentDeleted  = true,
           postedAt        = f.postedAt,
           likedAt         = fl.map(_.likedAt),
-          next            = fl.map(_.likedAt).getOrElse(f.postedAt)
+          next            = next
         )
       }
       case _ => {
@@ -71,7 +71,7 @@ object Feed {
           contentDeleted  = false,
           postedAt        = f.postedAt,
           likedAt         = fl.map(_.likedAt),
-          next            = fl.map(_.likedAt).getOrElse(f.postedAt)
+          next            = next
         )
       }
     }

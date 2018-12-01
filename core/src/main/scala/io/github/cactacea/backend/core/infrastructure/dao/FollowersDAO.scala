@@ -104,11 +104,11 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Followers]
         .filter(f => f.accountId == lift(by))
-        .filter(f => lift(since).forall(f.followedAt < _))
+        .filter(f => lift(since).forall(f.id < _))
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.followedAt })(Ord.desc)
+        .sortBy({ case (_, _, f) => f.id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -130,14 +130,14 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Followers]
         .filter(f => f.accountId == lift(accountId))
-        .filter(f => lift(since).forall(f.followedAt < _))
+        .filter(f => lift(since).forall(f.id < _))
         .filter(f => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
         ).isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.followedAt })(Ord.desc)
+        .sortBy({ case (_, _, f) => f.id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

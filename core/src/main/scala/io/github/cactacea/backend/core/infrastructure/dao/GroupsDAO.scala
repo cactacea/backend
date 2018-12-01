@@ -126,14 +126,14 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Groups]
         .filter(g => g.directMessage == false)
-        .filter(g => lift(since).forall(g.organizedAt < _))
+        .filter(g => lift(since).forall(g.id < _))
         .filter(g => lift(name.map(_ + "%")).forall(n => g.name.exists(_ like n)))
         .filter(g => lift(invitationOnly).forall(g.invitationOnly ==  _))
         .filter(g => lift(privacyType).forall(g.privacyType == _))
         .filter(g => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == g.by) || (b.accountId == g.by && b.by == lift(by))
         ).isEmpty)
-        .sortBy(_.organizedAt)(Ord.desc)
+        .sortBy(_.id)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

@@ -21,52 +21,52 @@ case class Account(id: AccountId,
                    location: Option[String],
                    bio: Option[String],
                    joinedAt: Option[Long],
-                   next: Long
+                   next: Option[Long]
                  )
 
 object Account {
 
   def apply(a: Accounts, r: Option[Relationships], f: Followers): Account = {
-    apply(a, r, None, f.followedAt)
+    apply(a, r, None, Some(f.id.value))
   }
 
   def apply(a: Accounts, r: Option[Relationships], f: Friends): Account = {
-    apply(a, r, None, f.friendedAt)
+    apply(a, r, None, Some(f.id.value))
   }
 
   def apply(a: Accounts, r: Option[Relationships], f: Follows): Account = {
-    apply(a, r, None, f.followedAt)
+    apply(a, r, None, Some(f.id.value))
   }
 
   def apply(a: Accounts, r: Option[Relationships], b: Blocks): Account = {
-    apply(a, r, None, b.blockedAt)
+    apply(a, r, None, Some(b.id.value))
   }
 
   def apply(a: Accounts, r: Option[Relationships], m: Mutes): Account = {
-    apply(a, r, None, m.mutedAt)
+    apply(a, r, None, Some(m.id.value))
   }
 
   def apply(a: Accounts, r: Option[Relationships], ag: AccountGroups): Account = {
-    apply(a, r, Some(ag), ag.joinedAt)
+    apply(a, r, None, Some(ag.id.value))
   }
 
   def apply(a: Accounts, r: Option[Relationships], fl: FeedLikes): Account = {
-    apply(a, r, None, fl.likedAt)
+    apply(a, r, None, Some(fl.id.value))
   }
 
   def apply(a: Accounts, r: Option[Relationships], c: CommentLikes): Account = {
-    apply(a, r, None, c.likedAt)
+    apply(a, r, None, Some(c.id.value))
   }
 
   def apply(a: Accounts, r: Option[Relationships]): Account = {
-    apply(a, r, None, a.id.value)
+    apply(a, r, None, Some(a.id.value))
   }
 
   def apply(a: Accounts): Account = {
-    apply(a, None, None, a.id.value)
+    apply(a, None, None, None)
   }
 
-  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Long): Account = {
+  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Option[Long]): Account = {
     Account(
       a.id,
       a.accountName,

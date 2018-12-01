@@ -51,13 +51,13 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
     val q = quote {
       query[AccountMessages]
         .filter(am => am.accountId == lift(by) && am.groupId == lift(groupId))
-        .filter(am => lift(since).forall(am.postedAt > _))
+        .filter(am => lift(since).forall(am.messageId > _))
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.contains(i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
-        .sortBy({ case (_, am, _, _, _) => am.postedAt })(Ord.asc)
+        .sortBy({ case (_, am, _, _, _) => am.messageId })(Ord.asc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -80,13 +80,13 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
       query[AccountMessages]
         .filter(am => am.accountId == lift(by))
         .filter(am => am.groupId == lift(groupId) )
-        .filter(am => lift(since).forall(am.postedAt < _))
+        .filter(am => lift(since).forall(am.messageId < _))
         .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
         .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
         .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.contains(i.id) })
         .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
-        .sortBy({ case (_, am, _, _, _) => am.postedAt})(Ord.desc)
+        .sortBy({ case (_, am, _, _, _) => am.messageId})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

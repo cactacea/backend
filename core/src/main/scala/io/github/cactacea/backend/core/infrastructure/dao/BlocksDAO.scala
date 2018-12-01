@@ -59,11 +59,11 @@ class BlocksDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Blocks]
         .filter(b => b.by == lift(by))
-        .filter(b => (lift(since).forall(b.blockedAt < _)) )
+        .filter(b => (lift(since).forall(b.id < _)) )
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
         .map({ case ((b, a), r) => (a, r, b)})
-        .sortBy({ case (_, _, b) => b.blockedAt })(Ord.desc)
+        .sortBy({ case (_, _, b) => b.id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

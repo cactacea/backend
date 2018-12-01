@@ -19,10 +19,10 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[AccountGroups]
         .filter(ag => ag.groupId == lift(groupId))
-        .filter(ag => lift(since).forall(ag.joinedAt < _))
+        .filter(ag => lift(since).forall(ag.id < _))
         .join(query[Accounts]).on((ag, a) => a.id == ag.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id})
-        .sortBy({ case ((ag, _), _) => ag.joinedAt})(Ord.desc)
+        .sortBy({ case ((ag, _), _) => ag.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

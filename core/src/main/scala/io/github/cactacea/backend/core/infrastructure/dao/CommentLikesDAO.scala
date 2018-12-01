@@ -98,14 +98,14 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[CommentLikes]
         .filter(c => c.commentId == lift(commentId))
-        .filter(c => lift(since).forall(c.likedAt  < _))
+        .filter(c => lift(since).forall(c.id  < _))
         .filter(cf => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == cf.by) || (b.accountId == cf.by && b.by == lift(by))
         ).isEmpty)
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (a, r, c)})
-        .sortBy({ case (_, _, c) => c.likedAt })(Ord.desc)
+        .sortBy({ case (_, _, c) => c.id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

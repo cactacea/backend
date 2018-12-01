@@ -109,11 +109,11 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Friends]
         .filter(f => f.by == lift(by))
-        .filter(f => lift(since).forall(f.friendedAt < _))
+        .filter(f => lift(since).forall(f.id < _))
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.friendedAt})(Ord.desc)
+        .sortBy({ case (_, _, f) => f.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -132,14 +132,14 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Friends]
         .filter(f => f.by == lift(accountId))
-        .filter(f => lift(since).forall(f.friendedAt < _ ))
+        .filter(f => lift(since).forall(f.id < _ ))
         .filter(f => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
         ).isEmpty)
         .join(query[Accounts]).on((r, a) => a.id == r.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.friendedAt})(Ord.desc)
+        .sortBy({ case (_, _, f) => f.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

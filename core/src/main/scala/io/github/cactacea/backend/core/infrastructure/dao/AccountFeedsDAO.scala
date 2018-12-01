@@ -44,8 +44,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
       for {
         af <- query[AccountFeeds]
           .filter(f => f.accountId == lift(by))
-          .filter(f => lift(since).forall(_ > f.postedAt))
-          .sortBy(_.postedAt)(Ord.desc)
+          .filter(f => lift(since).forall(f.feedId < _ ))
+          .sortBy(_.feedId)(Ord.desc)
           .drop(lift(offset))
           .take(lift(count))
         f <- query[Feeds]

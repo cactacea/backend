@@ -189,7 +189,7 @@ class FriendsRepositorySpec extends RepositorySpec {
     assert(friends1(1).id == friendUser4.id)
     assert(friends1(2).id == friendUser3.id)
 
-    val friends2 = execute(friendsRepository.findAll(user.id, Some(friends1(2).next), 0, 3, sessionUser.id.toSessionId))
+    val friends2 = execute(friendsRepository.findAll(user.id, friends1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(friends2.size == 2)
     assert(friends2(0).id == friendUser2.id)
     assert(friends2(1).id == friendUser1.id)
@@ -217,7 +217,7 @@ class FriendsRepositorySpec extends RepositorySpec {
     assert(friends(1).id == friendUser4.id)
     assert(friends(2).id == friendUser3.id)
 
-    val friends2 = execute(friendsRepository.findAll(Some(friends(2).next), 0, 3, sessionUser.id.toSessionId))
+    val friends2 = execute(friendsRepository.findAll(friends(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(friends2.size == 2)
     assert(friends2(0).id == friendUser2.id)
     assert(friends2(1).id == friendUser1.id)

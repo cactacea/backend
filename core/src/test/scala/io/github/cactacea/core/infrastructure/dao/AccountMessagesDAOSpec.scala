@@ -85,7 +85,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
     assert(message2.messageId == messageId8)
     assert(message3.messageId == messageId7)
 
-    val result2 = execute(accountMessagesDAO.findOlder(groupId, Some(message3.postedAt), 0, 3, sessionAccount.id.toSessionId))
+    val result2 = execute(accountMessagesDAO.findOlder(groupId, Some(message3.messageId.value), 0, 3, sessionAccount.id.toSessionId))
     assert(result2.size == 3)
     val message4 = result2(0)._2
     val message5 = result2(1)._2
@@ -94,7 +94,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
     assert(message5.messageId == messageId5)
     assert(message6.messageId == messageId4)
 
-    val result3 = execute(accountMessagesDAO.findOlder(groupId, Some(message6.postedAt), 0, 3, sessionAccount.id.toSessionId))
+    val result3 = execute(accountMessagesDAO.findOlder(groupId, Some(message6.messageId.value), 0, 3, sessionAccount.id.toSessionId))
     assert(result3.size == 2)
     val message7 = result3(0)._2
     val message8 = result3(1)._2
@@ -140,7 +140,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
     assert(message2.messageId == messageId2)
     assert(message3.messageId == messageId3)
 
-    val result2 = execute(accountMessagesDAO.findEarlier(groupId, Some(message3.postedAt), 0, 3, sessionAccount.id.toSessionId))
+    val result2 = execute(accountMessagesDAO.findEarlier(groupId, Some(message3.messageId.value), 0, 3, sessionAccount.id.toSessionId))
     assert(result2.size == 3)
     val message4 = result2(0)._2
     val message5 = result2(1)._2
@@ -149,7 +149,7 @@ class AccountMessagesDAOSpec extends DAOSpec {
     assert(message5.messageId == messageId5)
     assert(message6.messageId == messageId6)
 
-    val result3 = execute(accountMessagesDAO.findEarlier(groupId, Some(message6.postedAt), 0, 3, sessionAccount.id.toSessionId))
+    val result3 = execute(accountMessagesDAO.findEarlier(groupId, Some(message6.messageId.value), 0, 3, sessionAccount.id.toSessionId))
     assert(result3.size == 2)
     val message7 = result3(0)._2
     val message8 = result3(1)._2

@@ -58,11 +58,11 @@ class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val q = quote {
       query[Mutes]
         .filter(m => m.by == lift(by))
-        .filter(m => lift(since).forall(m.mutedAt < _))
+        .filter(m => lift(since).forall(m.id < _))
         .join(query[Accounts]).on((m, a) => a.id == m.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((m, a), r) => (a, r, m)})
-        .sortBy({ case (_, _, m) => m.mutedAt })(Ord.desc)
+        .sortBy({ case (_, _, m) => m.id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

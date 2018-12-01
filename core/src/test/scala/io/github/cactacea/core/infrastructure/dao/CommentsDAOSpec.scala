@@ -46,7 +46,7 @@ class CommentsDAOSpec extends DAOSpec {
     assert(comment3.message == "3" * 100)
     assert(comment4.message == "2" * 100)
 
-    val result2 = execute(commentsDAO.findAll(feedId, Some(comment4.postedAt), 4, sessionAccount1.id.toSessionId))
+    val result2 = execute(commentsDAO.findAll(feedId, Some(comment4.id.value), 4, sessionAccount1.id.toSessionId))
     assert(result2.size == 1)
     val comment5 = result2(0)._1
 
@@ -176,7 +176,7 @@ class CommentsDAOSpec extends DAOSpec {
     assert(comment2.id == commentId7)
     assert(comment3.id == commentId6)
 
-    val result2 = execute(commentsDAO.findAll(feedId, Some(comment3.postedAt), 3, sessionAccount1.id.toSessionId))
+    val result2 = execute(commentsDAO.findAll(feedId, Some(comment3.id.value), 3, sessionAccount1.id.toSessionId))
     assert(result2.size == 3)
     val comment4 = result2(0)._1
     val comment5 = result2(1)._1
@@ -185,7 +185,7 @@ class CommentsDAOSpec extends DAOSpec {
     assert(comment5.id == commentId4)
     assert(comment6.id == commentId3)
 
-    val result3 = execute(commentsDAO.findAll(feedId, Some(comment6.postedAt), 3, sessionAccount1.id.toSessionId))
+    val result3 = execute(commentsDAO.findAll(feedId, Some(comment6.id.value), 3, sessionAccount1.id.toSessionId))
     assert(result3.size == 2)
     val comment7 = result3(0)._1
     val comment8 = result3(1)._1

@@ -164,14 +164,14 @@ class CommentsDAO @Inject()(
     val q = quote {
       query[Comments]
         .filter(c => c.feedId == lift(feedId))
-        .filter(c => lift(since).forall(c.postedAt  < _))
+        .filter(c => lift(since).forall(c.id  < _))
         .filter(c => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
         ).isEmpty)
         .join(query[Accounts]).on((c, a) => a.id == c.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (c, a, r) })
-        .sortBy({ case (c, _, _) => c.postedAt })(Ord.desc)
+        .sortBy({ case (c, _, _) => c.id })(Ord.desc)
         .take(lift(count))
     }
 

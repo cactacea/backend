@@ -200,7 +200,7 @@ class GroupsDAOSpec extends DAOSpec {
     assert(group3.authorityType == GroupAuthorityType.owner)
     assert(group4.authorityType == GroupAuthorityType.member)
 
-    val result2 = execute(groupsDAO.findAll(None, None, None, Some(group4.organizedAt), 0, 3, sessionAccount.id.toSessionId))
+    val result2 = execute(groupsDAO.findAll(None, None, None, Some(group4.id.value), 0, 3, sessionAccount.id.toSessionId))
     assert(result2.size == 3)
     val group5 = result2(0)
     val group6 = result2(1)

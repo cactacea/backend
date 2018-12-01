@@ -44,7 +44,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     assert(accounts1(1).displayName == account4.displayName)
     assert(accounts1(2).displayName == account3.displayName)
 
-    val accounts2 = execute(accountsRepository.findAll(None, Some(accounts1(2).next), 0, 3, session.id.toSessionId))
+    val accounts2 = execute(accountsRepository.findAll(None, accounts1(2).next, 0, 3, session.id.toSessionId))
     assert(accounts2.size == 3)
     assert(accounts2(0).displayName == account2.displayName)
     assert(accounts2(1).displayName == account1.displayName)
@@ -56,7 +56,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     assert(accounts3(1).displayName == AccountsRepositorySpec3.displayName)
     assert(accounts3(2).displayName == AccountsRepositorySpec2.displayName)
 
-    val accounts4 = execute(accountsRepository.findAll(Some("AccountsRepositorySpec0"), Some(accounts3(2).next), 0, 3, session.id.toSessionId))
+    val accounts4 = execute(accountsRepository.findAll(Some("AccountsRepositorySpec0"), accounts3(2).next, 0, 3, session.id.toSessionId))
     assert(accounts4.size == 1)
     assert(accounts4(0).displayName == AccountsRepositorySpec6.displayName)
 

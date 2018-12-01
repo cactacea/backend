@@ -167,7 +167,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     assert(result1.size == 3)
 
     val feedLike = result1(2)._3
-    val result2 = execute(feedLikesDAO.findAccounts(feedId, Some(feedLike.likedAt), 0, 3, sessionAccount2.id.toSessionId))
+    val result2 = execute(feedLikesDAO.findAccounts(feedId, Some(feedLike.id.value), 0, 3, sessionAccount2.id.toSessionId))
     assert(result2.size == 2)
 
   }

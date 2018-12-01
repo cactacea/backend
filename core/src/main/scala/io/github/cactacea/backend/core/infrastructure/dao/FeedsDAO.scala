@@ -168,8 +168,8 @@ class FeedsDAO @Inject()(
     val q = quote {
       query[Feeds]
         .filter(f => f.by == lift(by))
-        .filter(f => lift(since).forall(f.postedAt  < _))
-        .sortBy(_.postedAt)(Ord.desc)
+        .filter(f => lift(since).forall(f.id  < _))
+        .sortBy(_.id)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -190,7 +190,7 @@ class FeedsDAO @Inject()(
       query[Feeds]
         .filter(f => f.by == lift(accountId))
         .filter(f => f.expiration.forall(_ > lift(e)))
-        .filter(f => lift(since).forall(f.postedAt < _))
+        .filter(f => lift(since).forall(f.id < _))
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
             || (f.privacyType == lift(FeedPrivacyType.followers)
@@ -198,7 +198,7 @@ class FeedsDAO @Inject()(
             || (f.privacyType == lift(FeedPrivacyType.friends)
             && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
             || (f.by == lift(by)))
-        .sortBy(_.postedAt)(Ord.desc)
+        .sortBy(_.id)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

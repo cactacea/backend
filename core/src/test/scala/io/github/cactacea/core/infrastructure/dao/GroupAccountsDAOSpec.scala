@@ -69,7 +69,7 @@ class GroupAccountsDAOSpec extends DAOSpec {
     assert(joinedAccount2.accountId == member4.id)
     assert(joinedAccount3.accountId == member3.id)
 
-    val result2 = execute(groupAccountsDAO.findAll(groupId, Some(result1(2)._3.joinedAt), 0, 3))
+    val result2 = execute(groupAccountsDAO.findAll(groupId, Some(result1(2)._3.id.value), 0, 3))
     assert(result2.size == 2)
 
   }

@@ -124,7 +124,7 @@ class GroupsRepositorySpec extends RepositorySpec {
     assert(result1(1).id == groupId4)
     assert(result1(2).id == groupId3)
 
-    val result2 = execute(groupsRepository.findAll(None , None, None, Some(result1(2).next), 0, 2, user1.id.toSessionId))
+    val result2 = execute(groupsRepository.findAll(None , None, None, result1(2).next, 0, 2, user1.id.toSessionId))
     assert(result2.size == 2)
     assert(result2(0).id == groupId2)
     assert(result2(1).id == groupId1)
@@ -135,7 +135,7 @@ class GroupsRepositorySpec extends RepositorySpec {
     assert(result3(1).id == groupId14)
     assert(result3(2).id == groupId13)
 
-    val result4 = execute(groupsRepository.findAll(Some("group name 1") , None, None, Some(result3(2).next), 0, 3, user1.id.toSessionId))
+    val result4 = execute(groupsRepository.findAll(Some("group name 1") , None, None, result3(2).next, 0, 3, user1.id.toSessionId))
     assert(result4.size == 3)
     assert(result4(0).id == groupId12)
     assert(result4(1).id == groupId11)
