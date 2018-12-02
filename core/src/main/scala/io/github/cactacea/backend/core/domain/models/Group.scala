@@ -20,23 +20,20 @@ case class Group(
 object Group {
 
   def apply(g: Groups): Group = {
-    apply(g, None, None, None, None, None, None)
+    apply(g, None, None, None)
   }
 
   def apply(g: Groups, n: Long): Group = {
-    apply(g, None, None, None, None, None, Some(n))
+    apply(g, None, None, Some(n))
   }
 
   def apply(g: Groups, m: Option[Messages], n: Long): Group = {
-    apply(g, m, None, None, None, None, Some(n))
+    apply(g, m, None, Some(n))
   }
 
   def apply(g: Groups,
             m: Option[Messages],
             am: Option[AccountMessages],
-            i: Option[Mediums],
-            a: Option[Accounts],
-            r: Option[Relationships],
             n: Option[Long]): Group = {
 
     Group(

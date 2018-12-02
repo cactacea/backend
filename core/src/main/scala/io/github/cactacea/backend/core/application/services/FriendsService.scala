@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.InjectionService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.domain.repositories.FriendsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -19,8 +20,8 @@ class FriendsService @Inject()(
     friendsRepository.findAll(accountId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    friendsRepository.findAll(since, offset, count, sessionId)
+  def find(since: Option[Long], offset: Int, count: Int, sortType: FriendsSortType, sessionId: SessionId) : Future[List[Account]]= {
+    friendsRepository.findAll(since, offset, count, sortType, sessionId)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

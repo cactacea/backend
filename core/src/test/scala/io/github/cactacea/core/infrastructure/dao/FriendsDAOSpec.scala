@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
+import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.Relationships
 
@@ -60,7 +61,7 @@ class FriendsDAOSpec extends DAOSpec {
 
   }
 
-  test("findAll") {
+  test("find a account's friends") {
 
     val sessionAccount1 = createAccount("FriendsDAOSpec11")
     val sessionAccount2 = createAccount("FriendsDAOSpec12")
@@ -68,7 +69,7 @@ class FriendsDAOSpec extends DAOSpec {
     val sessionAccount4 = createAccount("FriendsDAOSpec14")
     val sessionAccount5 = createAccount("FriendsDAOSpec15")
     val sessionAccount6 = createAccount("FriendsDAOSpec16")
-    val friendUser = createAccount("FriendsDAOSpec16")
+    val friendUser = createAccount("FriendsDAOSpec17")
 
     execute(friendsDAO.create(sessionAccount1.id, friendUser.id.toSessionId))
     execute(friendsDAO.create(sessionAccount2.id, friendUser.id.toSessionId))
@@ -79,21 +80,76 @@ class FriendsDAOSpec extends DAOSpec {
 
     // find friends top page
     val result1 = execute(friendsDAO.findAll(friendUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
-    val account1 = result1(0)
-    val account2 = result1(1)
-    val account3 = result1(2)
-    assert(account1.id == sessionAccount6.id)
-    assert(account2.id == sessionAccount5.id)
-    assert(account3.id == sessionAccount4.id)
+    assert(result1(0).id == sessionAccount6.id)
+    assert(result1(1).id == sessionAccount5.id)
+    assert(result1(2).id == sessionAccount4.id)
 
     // find friends next page
-    val result2 = execute(friendsDAO.findAll(friendUser.id, account3.next, 0, 3, sessionAccount1.id.toSessionId))
-    val account4 = result2(0)
-    val account5 = result2(1)
-    val account6 = result2(2)
-    assert(account4.id == sessionAccount3.id)
-    assert(account5.id == sessionAccount2.id)
-    assert(account6.id == sessionAccount1.id)
+    val result2 = execute(friendsDAO.findAll(friendUser.id, result1(2).next, 0, 3, sessionAccount1.id.toSessionId))
+    assert(result2(0).id == sessionAccount3.id)
+    assert(result2(1).id == sessionAccount2.id)
+    assert(result2(2).id == sessionAccount1.id)
   }
+
+  test("find session friends sort by friendsAt") {
+
+    val sessionAccount1 = createAccount("FriendsDAOSpec21")
+    val sessionAccount2 = createAccount("FriendsDAOSpec22")
+    val sessionAccount3 = createAccount("FriendsDAOSpec23")
+    val sessionAccount4 = createAccount("FriendsDAOSpec24")
+    val sessionAccount5 = createAccount("FriendsDAOSpec25")
+    val sessionAccount6 = createAccount("FriendsDAOSpec26")
+    val friendUser = createAccount("FriendsDAOSpec27")
+
+    execute(friendsDAO.create(sessionAccount1.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount2.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount3.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount4.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount5.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount6.id, friendUser.id.toSessionId))
+
+    // find friends top page
+    val result1 = execute(friendsDAO.findAll(None, 0, 3, FriendsSortType.friendsAt, friendUser.id.toSessionId))
+    assert(result1(0).id == sessionAccount6.id)
+    assert(result1(1).id == sessionAccount5.id)
+    assert(result1(2).id == sessionAccount4.id)
+
+    // find friends next page
+    val result2 = execute(friendsDAO.findAll(result1(2).next, 0, 3, FriendsSortType.friendsAt, friendUser.id.toSessionId))
+    assert(result2(0).id == sessionAccount3.id)
+    assert(result2(1).id == sessionAccount2.id)
+    assert(result2(2).id == sessionAccount1.id)
+  }
+
+  test("find session friends sort by accountName") {
+
+    val sessionAccount1 = createAccount("FriendsDAOSpec31")
+    val sessionAccount2 = createAccount("FriendsDAOSpec32")
+    val sessionAccount3 = createAccount("FriendsDAOSpec33")
+    val sessionAccount4 = createAccount("FriendsDAOSpec34")
+    val sessionAccount5 = createAccount("FriendsDAOSpec35")
+    val sessionAccount6 = createAccount("FriendsDAOSpec36")
+    val friendUser = createAccount("FriendsDAOSpec37")
+
+    execute(friendsDAO.create(sessionAccount1.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount2.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount3.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount4.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount5.id, friendUser.id.toSessionId))
+    execute(friendsDAO.create(sessionAccount6.id, friendUser.id.toSessionId))
+
+    // find friends top page
+    val result1 = execute(friendsDAO.findAll(None, 0, 3, FriendsSortType.accountName, friendUser.id.toSessionId))
+    assert(result1(0).id == sessionAccount1.id)
+    assert(result1(1).id == sessionAccount2.id)
+    assert(result1(2).id == sessionAccount3.id)
+
+    // find friends next page
+    val result2 = execute(friendsDAO.findAll(result1(2).next, 0, 3, FriendsSortType.accountName, friendUser.id.toSessionId))
+    assert(result2(0).id == sessionAccount4.id)
+    assert(result2(1).id == sessionAccount5.id)
+    assert(result2(2).id == sessionAccount6.id)
+  }
+
 
 }

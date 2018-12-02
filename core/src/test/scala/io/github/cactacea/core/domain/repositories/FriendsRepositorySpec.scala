@@ -1,6 +1,7 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
+import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.helpers.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyFriend, AccountNotFound, AccountNotFriend, CanNotSpecifyMyself}
@@ -19,7 +20,7 @@ class FriendsRepositorySpec extends RepositorySpec {
     val friendUser = signUp("FriendsRepositorySpec2", "friend user password", "friend user udid")
     execute(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
-    val result = execute(friendsRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val result = execute(friendsRepository.findAll(None, 0, 2, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
     assert(result.size == 1)
     val resultFollowedUser = result(0)
     assert(friendUser.id == resultFollowedUser.id)
@@ -211,13 +212,13 @@ class FriendsRepositorySpec extends RepositorySpec {
     execute(friendsRepository.create(friendUser4.id, sessionUser.id.toSessionId))
     execute(friendsRepository.create(friendUser5.id, sessionUser.id.toSessionId))
 
-    val friends = execute(friendsRepository.findAll(None, 0, 3, sessionUser.id.toSessionId))
+    val friends = execute(friendsRepository.findAll(None, 0, 3, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
     assert(friends.size == 3)
     assert(friends(0).id == friendUser5.id)
     assert(friends(1).id == friendUser4.id)
     assert(friends(2).id == friendUser3.id)
 
-    val friends2 = execute(friendsRepository.findAll(friends(2).next, 0, 3, sessionUser.id.toSessionId))
+    val friends2 = execute(friendsRepository.findAll(friends(2).next, 0, 3, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
     assert(friends2.size == 2)
     assert(friends2(0).id == friendUser2.id)
     assert(friends2(1).id == friendUser1.id)

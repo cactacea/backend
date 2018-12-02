@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.GroupPrivacyType
+import io.github.cactacea.backend.core.domain.enums.{FriendsSortType, GroupPrivacyType}
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -44,8 +44,8 @@ class FriendsRepository @Inject()(
     } yield (r)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    friendsDAO.findAll(since, offset, count, sessionId)
+  def findAll(since: Option[Long], offset: Int, count: Int, sortType: FriendsSortType, sessionId: SessionId) : Future[List[Account]]= {
+    friendsDAO.findAll(since, offset, count, sortType, sessionId)
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
