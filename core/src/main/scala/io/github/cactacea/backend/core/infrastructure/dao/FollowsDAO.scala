@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
+import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Follows, Relationships}
 
@@ -102,25 +103,21 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Follows)]] = {
-
-
-
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
-
     val q = quote {
       query[Follows]
         .filter(f => f.by == lift(by))
         .filter(f => lift(since).forall(f.id < _))
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.id} )(Ord.desc)
+        .map({ case ((f, a), r) => (a, r, f.id)})
+        .sortBy({ case (_, _, id) => id} )(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
   }
 
@@ -128,10 +125,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               since: Option[Long],
               offset: Int,
               count: Int,
-              sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Follows)]] = {
-
-
-
+              sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -144,12 +138,12 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         ).isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.id} )(Ord.desc)
+        .map({ case ((f, a), r) => (a, r, f.id)})
+        .sortBy({ case (_, _, id) => id} )(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
   }
 

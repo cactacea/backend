@@ -5,6 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
+import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -74,7 +75,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
               offset: Int,
               count: Int,
               received: Boolean,
-              sessionId: SessionId): Future[List[(FriendRequests, Accounts, Option[Relationships])]] = {
+              sessionId: SessionId): Future[List[FriendRequest]] = {
 
     val by = sessionId.toAccountId
 
@@ -95,7 +96,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (f, a, r) => FriendRequest(f, a, r, f.id.value)}))
 
   }
 

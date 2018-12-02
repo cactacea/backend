@@ -5,6 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType, FeedPrivacyType}
+import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -162,18 +163,66 @@ class FeedsDAO @Inject()(
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
 
+    val status = AccountStatusType.normally
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
         .filter(f => f.by == lift(by))
         .filter(f => lift(since).forall(f.id  < _))
-        .sortBy(_.id)(Ord.desc)
+        .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
+        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .map({ case ((f, a), r) => (f, a, r) })
+        .sortBy({ case (f, _, _) => f.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q).flatMap(f => addTagsMedium(f, sessionId))
+    run(q).flatMap(f => addTagsMedium2(f, sessionId))
+  }
+
+  def find(feedId: FeedId, sessionId: SessionId): Future[Option[Feed]] = {
+    val by = sessionId.toAccountId
+    val status = AccountStatusType.normally
+    val e = timeService.currentTimeMillis()
+    val q = quote {
+      query[Feeds].filter(f => f.id == lift(feedId))
+        .filter(f => f.expiration.forall(_ > lift(e)))
+        .filter(f => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+        ).isEmpty)
+        .filter(f => ((f.privacyType == lift(FeedPrivacyType.everyone))
+          || (f.privacyType == lift(FeedPrivacyType.followers)
+          && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
+          || (f.privacyType == lift(FeedPrivacyType.friends)
+          && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
+          || (f.by == lift(by))))
+        .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
+        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
+        .map({ case ((f, a), r) => (f, a, r) })
+    }
+
+    run(q).flatMap({ t => addTagsMedium2(t, sessionId).map(_.headOption) })
+  }
+
+  private def addTagsMedium2(t: List[(Feeds, Accounts, Option[Relationships])], sessionId: SessionId): Future[List[Feed]] = {
+    val feedIds = t.map({ case (f, _, _) => f.id})
+    (for {
+      tags <- feedTagsDAO.findAll(feedIds)
+      medium <- feedMediumDAO.findAll(feedIds)
+      likeBlocks <- blocksCountDAO.findFeedLikeBlocks(feedIds, sessionId)
+      commentBlocks <- blocksCountDAO.findFeedCommentBlocks(feedIds, sessionId)
+    } yield (tags, medium, likeBlocks, commentBlocks)).map({
+      case (tags, medium, likeBlocks, commentBlocks) =>
+        t.map({ case (f, a, r) =>
+          val t = tags.filter(_.feedId == f.id)
+          val m = medium.filter({ case (id, _) => id == f.id}).map(_._2)
+          val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
+          val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
+          val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
+          Feed(nf, t, m, a, r, f.id.value)
+        })
+    })
   }
 
 
@@ -181,7 +230,7 @@ class FeedsDAO @Inject()(
               since: Option[Long],
               offset: Int,
               count: Int,
-              sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
+              sessionId: SessionId): Future[List[Feed]] = {
 
     val e = timeService.currentTimeMillis()
 
@@ -205,7 +254,7 @@ class FeedsDAO @Inject()(
     run(q).flatMap(f => addTagsMedium(f, sessionId))
   }
 
-  private def addTagsMedium(feeds: List[Feeds], sessionId: SessionId): Future[List[(Feeds, List[FeedTags], List[Mediums])]] = {
+  private def addTagsMedium(feeds: List[Feeds], sessionId: SessionId): Future[List[Feed]] = {
     val feedIds = feeds.map(_.id)
     (for {
       tags <- feedTagsDAO.findAll(feedIds)
@@ -219,52 +268,12 @@ class FeedsDAO @Inject()(
           val m = medium.filter({ case (id, _) => f.id == id}).map(_._2)
           val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
           val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
-          val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
-          (nf, t, m)
+          val cf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
+          Feed(cf, t, m, cf.id.value)
         })
     })
   }
 
-  def find(feedId: FeedId, sessionId: SessionId): Future[Option[(Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
-    val by = sessionId.toAccountId
-    val status = AccountStatusType.normally
-    val e = timeService.currentTimeMillis()
-    val q = quote {
-      query[Feeds].filter(f => f.id == lift(feedId) && (f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty))
-        .filter(f => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
-        ).isEmpty)
-        .filter(f => ((f.privacyType == lift(FeedPrivacyType.everyone))
-          || (f.privacyType == lift(FeedPrivacyType.followers)
-          && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
-          || (f.privacyType == lift(FeedPrivacyType.friends)
-          && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
-          || (f.by == lift(by))))
-        .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (f, a, r) })
-    }
-
-    run(q).flatMap({ t =>
-      val feedIds = t.map({ case (f, _, _) => f.id})
-      (for {
-        tags <- feedTagsDAO.findAll(feedIds)
-        medium <- feedMediumDAO.findAll(feedIds)
-        likeBlocks <- blocksCountDAO.findFeedLikeBlocks(feedIds, sessionId)
-        commentBlocks <- blocksCountDAO.findFeedCommentBlocks(feedIds, sessionId)
-      } yield (tags, medium, likeBlocks, commentBlocks)).map({
-        case (tags, medium, likeBlocks, commentBlocks) =>
-          t.map({ case (f, a, r) =>
-            val t = tags.filter(_.feedId == f.id)
-            val m = medium.filter({ case (id, _) => id == f.id}).map(_._2)
-            val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
-            val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
-            val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
-            (nf, t, m, a, r)
-          }).headOption
-      })
-    })
-  }
 
   def find(feedId: FeedId): Future[Option[Feeds]] = {
     val q = quote {

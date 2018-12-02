@@ -26,36 +26,8 @@ case class Account(id: AccountId,
 
 object Account {
 
-  def apply(a: Accounts, r: Option[Relationships], f: Followers): Account = {
-    apply(a, r, None, Some(f.id.value))
-  }
-
-  def apply(a: Accounts, r: Option[Relationships], f: Friends): Account = {
-    apply(a, r, None, Some(f.id.value))
-  }
-
-  def apply(a: Accounts, r: Option[Relationships], f: Follows): Account = {
-    apply(a, r, None, Some(f.id.value))
-  }
-
-  def apply(a: Accounts, r: Option[Relationships], b: Blocks): Account = {
-    apply(a, r, None, Some(b.id.value))
-  }
-
-  def apply(a: Accounts, r: Option[Relationships], m: Mutes): Account = {
-    apply(a, r, None, Some(m.id.value))
-  }
-
-  def apply(a: Accounts, r: Option[Relationships], ag: AccountGroups): Account = {
-    apply(a, r, None, Some(ag.id.value))
-  }
-
-  def apply(a: Accounts, r: Option[Relationships], fl: FeedLikes): Account = {
-    apply(a, r, None, Some(fl.id.value))
-  }
-
-  def apply(a: Accounts, r: Option[Relationships], c: CommentLikes): Account = {
-    apply(a, r, None, Some(c.id.value))
+  def apply(a: Accounts, r: Option[Relationships], n: Long): Account = {
+    apply(a, r, None, Some(n))
   }
 
   def apply(a: Accounts, r: Option[Relationships]): Account = {

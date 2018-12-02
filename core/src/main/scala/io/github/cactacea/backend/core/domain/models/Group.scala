@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
-import io.github.cactacea.backend.core.infrastructure.models.{AccountGroups, Groups, _}
+import io.github.cactacea.backend.core.infrastructure.models.{Groups, _}
 
 case class Group(
                   id: GroupId,
@@ -18,27 +18,18 @@ case class Group(
                  )
 
 object Group {
+
   def apply(g: Groups): Group = {
-    apply(g, None, None, None, None, None, Some(g.id.value))
+    apply(g, None, None, None, None, None, None)
   }
 
-  def apply(ag: AccountGroups, g: Groups, m: Option[Messages], am: Option[AccountMessages]): Group = {
-    apply(g, m, am, None, None, None, Some(ag.id.value))
+  def apply(g: Groups, n: Long): Group = {
+    apply(g, None, None, None, None, None, Some(n))
   }
 
-//  def apply(g: Groups, m: Option[Messages], am: Option[AccountMessages], a: Option[Accounts], r: Option[Relationships]): Group = {
-//    apply(g, m, am, None, a, r, None)
-//  }
-
-//  def apply(g: Groups,
-//            m: Option[Messages],
-//            am: Option[AccountMessages],
-//            a: Option[Accounts],
-//            r: Option[Relationships],
-//            ag: AccountGroups): Group = {
-//
-//    apply(g, m, am, None, a, r, Some(ag))
-//  }
+  def apply(g: Groups, m: Option[Messages], n: Long): Group = {
+    apply(g, m, None, None, None, None, Some(n))
+  }
 
   def apply(g: Groups,
             m: Option[Messages],
@@ -48,17 +39,10 @@ object Group {
             r: Option[Relationships],
             n: Option[Long]): Group = {
 
-    val message = (m, am, a) match {
-      case (Some(m), Some(um), Some(a)) =>
-        Some(Message(m, um, i, a, r))
-      case _ =>
-        None
-    }
-
     Group(
       id                = g.id,
       name              = g.name,
-      message           = message,
+      message           = m.map(Message(_, am)),
       groupPrivacyType  = g.privacyType,
       invitationOnly    = g.invitationOnly,
       authorityType     = g.authorityType,

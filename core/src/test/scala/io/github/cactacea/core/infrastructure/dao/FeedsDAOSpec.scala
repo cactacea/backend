@@ -656,11 +656,11 @@ class FeedsDAOSpec extends DAOSpec {
     val friendUser = createAccount("FeedsDAOSpec13")
     val noRelationshipUser = createAccount("FeedsDAOSpec14")
 
-    val medium1 = this.createMedium(sessionAccount.id)
-    val medium2 = this.createMedium(sessionAccount.id)
-    val medium3 = this.createMedium(sessionAccount.id)
-    val medium4 = this.createMedium(sessionAccount.id)
-    val medium5 = this.createMedium(sessionAccount.id)
+    val medium1 = createMedium(sessionAccount.id)
+    val medium2 = createMedium(sessionAccount.id)
+    val medium3 = createMedium(sessionAccount.id)
+    createMedium(sessionAccount.id)
+    createMedium(sessionAccount.id)
 
     val mediums1 = List[MediumId]()
     val mediums2 = List(medium1.id)
@@ -977,40 +977,40 @@ class FeedsDAOSpec extends DAOSpec {
     val count1 = 2
     val sessionFeeds1 = execute(feedsDAO.findAll(None, 0, count1, sessionAccount1.id.toSessionId))
     assert(sessionFeeds1.size == count1)
-    val sessionFeed1 = sessionFeeds1(0)._1
-    val sessionFeed2 = sessionFeeds1(1)._1
-    val sessionFeedTags1 = sessionFeeds1(0)._2
-    val sessionFeedTags2 = sessionFeeds1(1)._2
-    val sessionMediums1 = sessionFeeds1(0)._3
-    val sessionMediums2 = sessionFeeds1(1)._3
+    val sessionFeed1 = sessionFeeds1(0)
+    val sessionFeed2 = sessionFeeds1(1)
+    val sessionFeedTags1 = sessionFeeds1(0).tags
+    val sessionFeedTags2 = sessionFeeds1(1).tags
+    val sessionMediums1 = sessionFeeds1(0).mediums
+    val sessionMediums2 = sessionFeeds1(1).mediums
     assert(sessionFeed1.id == feedId4)
     assert(sessionFeed2.id == feedId3)
     assert(sessionFeed1.message == message4)
     assert(sessionFeed2.message == message3)
-    assert(sessionFeed1.privacyType == privacyType4)
-    assert(sessionFeed2.privacyType == privacyType3)
+//    assert(sessionFeed1.privacyType == privacyType4)
+//    assert(sessionFeed2.privacyType == privacyType3)
     assert(sessionFeed1.contentWarning == contentWarning4)
     assert(sessionFeed2.contentWarning == contentWarning3)
-    assert(sessionFeed1.by == sessionAccount1.id)
-    assert(sessionFeed1.by == sessionAccount1.id)
-    assert(sessionFeedTags1.size == tags4.size)
-    assert(sessionFeedTags2.size == tags3.size)
-    assert(sessionFeedTags1.map(_.name) == tags4)
-    assert(sessionFeedTags2.map(_.name) == tags3)
-    assert(sessionMediums1.size == mediums4.size)
-    assert(sessionMediums2.size == mediums3.size)
-    assert(sessionMediums1.map(_.id) == mediums4)
-    assert(sessionMediums2.map(_.id) == mediums3)
+
+    assert(sessionFeed1.account.map(_.id) == Some(sessionAccount1.id))
+    assert(sessionFeed2.account.map(_.id) == Some(sessionAccount1.id))
+
+    assert(sessionFeedTags1 == Some(tags4))
+    assert(sessionFeedTags2 == Some(tags3))
+    assert(sessionMediums1.map(_.size) == Some(mediums4.size))
+    assert(sessionMediums2.map(_.size) == Some(mediums3.size))
+    assert(sessionMediums1.map(_.map(_.id)) == Some(mediums4))
+    assert(sessionMediums2.map(_.map(_.id)) == Some(mediums3))
 
     // find 2 page
     val sessionFeeds2 = execute(feedsDAO.findAll(Some(sessionFeed2.id.value), 0, count1, sessionAccount1.id.toSessionId))
     assert(sessionFeeds2.size == count1)
-    val sessionFeed3 = sessionFeeds2(0)._1
-    val sessionFeed4 = sessionFeeds2(1)._1
-    val sessionFeedTags3 = sessionFeeds2(0)._2
-    val sessionFeedTags4 = sessionFeeds2(1)._2
-    val sessionMediums3 = sessionFeeds2(0)._3
-    val sessionMediums4 = sessionFeeds2(1)._3
+    val sessionFeed3 = sessionFeeds2(0)
+    val sessionFeed4 = sessionFeeds2(1)
+    val sessionFeedTags3 = sessionFeeds2(0).tags
+    val sessionFeedTags4 = sessionFeeds2(1).tags
+    val sessionMediums3 = sessionFeeds2(0).mediums
+    val sessionMediums4 = sessionFeeds2(1).mediums
 
     assert(sessionFeed3.id == feedId2)
     assert(sessionFeed4.id == feedId1)
@@ -1018,24 +1018,22 @@ class FeedsDAOSpec extends DAOSpec {
     assert(sessionFeed3.message == message2)
     assert(sessionFeed4.message == message1)
 
-    assert(sessionFeed3.privacyType == privacyType2)
-    assert(sessionFeed4.privacyType == privacyType1)
+//    assert(sessionFeed3.privacyType == privacyType2)
+//    assert(sessionFeed4.privacyType == privacyType1)
 
     assert(sessionFeed3.contentWarning == contentWarning2)
     assert(sessionFeed4.contentWarning == contentWarning1)
 
-    assert(sessionFeed3.by == sessionAccount1.id)
-    assert(sessionFeed4.by == sessionAccount1.id)
+    assert(sessionFeed3.account.map(_.id) == Some(sessionAccount1.id))
+    assert(sessionFeed4.account.map(_.id) == Some(sessionAccount1.id))
 
-    assert(sessionFeedTags3.size  == tags2.size)
-    assert(sessionFeedTags4.size  == tags1.size)
-    assert(sessionMediums3.size  == mediums2.size)
-    assert(sessionMediums4.size  == mediums1.size)
+    assert(sessionMediums3.map(_.size)  == Some(mediums2.size))
+    assert(sessionMediums4.map(_.size)  == Some(mediums1.size))
 
-    assert(sessionFeedTags3.map(_.name) == tags2)
-    assert(sessionFeedTags4.map(_.name) == tags1)
-    assert(sessionMediums3.map(_.id) == mediums2)
-    assert(sessionMediums4.map(_.id) == mediums1)
+    assert(sessionFeedTags3 == Some(tags2))
+    assert(sessionFeedTags4 == Some(tags1))
+    assert(sessionMediums3.map(_.map(_.id)) == Some(mediums2))
+    assert(sessionMediums4.map(_.map(_.id)) == Some(mediums1))
 
   }
 
@@ -1045,9 +1043,9 @@ class FeedsDAOSpec extends DAOSpec {
     val sessionAccount1 = createAccount("FeedsDAOSpec21")
     val sessionAccount2 = createAccount("FeedsDAOSpec22")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
-    val medium3 = this.createMedium(sessionAccount1.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
+    val medium3 = createMedium(sessionAccount1.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -1127,7 +1125,7 @@ class FeedsDAOSpec extends DAOSpec {
 
     val medium1 = createMedium(sessionAccount.id)
     val medium2 = createMedium(sessionAccount.id)
-    val medium3 = createMedium(sessionAccount.id)
+    createMedium(sessionAccount.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -1144,21 +1142,12 @@ class FeedsDAOSpec extends DAOSpec {
     val tags1 = List[String]()
     val tags2 = List("tag1")
     val tags3 = List("tag1", "tag2")
-//    val tags4 = List("tag1", "tag2", "tag3")
-//    val tags5 = List("tag1")
-//    val tags6 = List("tag1", "tag2", "tag3")
     val privacyType1 = FeedPrivacyType.self
     val privacyType2 = FeedPrivacyType.friends
     val privacyType3 = FeedPrivacyType.self
-//    val privacyType4 = FeedPrivacyType.followers
-//    val privacyType5 = FeedPrivacyType.friends
-//    val privacyType6 = FeedPrivacyType.self
     val contentWarning1 = false
     val contentWarning2 = true
     val contentWarning3 = false
-//    val contentWarning4 = true
-//    val contentWarning5 = false
-//    val contentWarning6 = true
 
     // create feeds
     val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
@@ -1195,9 +1184,9 @@ class FeedsDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("FeedsDAOSpec24")
 
-    val medium1 = this.createMedium(sessionAccount.id)
-    val medium2 = this.createMedium(sessionAccount.id)
-    val medium3 = this.createMedium(sessionAccount.id)
+    val medium1 = createMedium(sessionAccount.id)
+    val medium2 = createMedium(sessionAccount.id)
+    val medium3 = createMedium(sessionAccount.id)
 
     val message1 = "message1"
     val message2 = "message2"
@@ -1234,9 +1223,9 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
     val feedId2 = execute(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId))
     val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
-    val feedId4 = execute(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount.id.toSessionId))
-    val feedId5 = execute(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount.id.toSessionId))
-    val feedId6 = execute(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount.id.toSessionId))
+    execute(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount.id.toSessionId))
+    execute(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount.id.toSessionId))
+    execute(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount.id.toSessionId))
 
     val result1 = execute(feedsDAO.find(feedId1))
     val result2 = execute(feedsDAO.find(feedId2))

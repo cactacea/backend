@@ -16,14 +16,14 @@ class AccountsDAOSpec extends DAOSpec with Logging {
       accountsDAO.create(newUser.accountName, newUser.password)
     )
 
-    val userList = this.selectAccounts(accountId, sessionAccount.id.toSessionId)
-    val createdUser = userList.head._1
+    val userList = selectAccounts(accountId, sessionAccount.id.toSessionId)
+    val createdUser = userList.head
 
     assert(userList.size == 1)
     assert(createdUser.id == accountId)
     assert(createdUser.accountName == newUser.accountName)
     assert(createdUser.displayName == newUser.displayName)
-    assert(createdUser.accountStatus == newUser.accountStatus)
+//    assert(createdUser.accountStatus == newUser.accountStatus)
 
   }
 
@@ -88,14 +88,14 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     val sessionAccount = createAccount("AccountsDAOSpec9")
 
     val newUser = createAccount("AccountsDAOSpec10")
-    val accountId = this.insertAccounts(newUser)
+    val accountId = insertAccounts(newUser)
 
     execute(
       accountsDAO.updateAccountName("accountName2", accountId.toSessionId)
     )
 
-    val editedUserList = this.selectAccounts(accountId, sessionAccount.id.toSessionId)
-    val editedUser = editedUserList.head._1
+    val editedUserList = selectAccounts(accountId, sessionAccount.id.toSessionId)
+    val editedUser = editedUserList.head
 
     assert(editedUserList.size == 1)
     assert(editedUser.id == accountId)
@@ -114,17 +114,17 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     execute(accountsDAO.updateDisplayName(account2.id, Some("newUserName2"), sessionAccount.id.toSessionId))
 
     val result1 = execute(accountsDAO.find(account1.id, sessionAccount.id.toSessionId))
-    assert(result1.get._1.displayName == "newUserName1")
+    assert(result1.get.displayName == "newUserName1")
     val result2 = execute(accountsDAO.find(account2.id, sessionAccount.id.toSessionId))
-    assert(result2.get._1.displayName == "newUserName2")
+    assert(result2.get.displayName == "newUserName2")
 
     execute(accountsDAO.updateDisplayName(account1.id, None, sessionAccount.id.toSessionId))
     execute(accountsDAO.updateDisplayName(account2.id, None, sessionAccount.id.toSessionId))
 
     val result3 = execute(accountsDAO.find(account1.id, sessionAccount.id.toSessionId))
-    assert(result3.get._1.displayName == "AccountsDAOSpec12")
+    assert(result3.get.displayName == "AccountsDAOSpec12")
     val result4 = execute(accountsDAO.find(account2.id, sessionAccount.id.toSessionId))
-    assert(result4.get._1.displayName == "AccountsDAOSpec13")
+    assert(result4.get.displayName == "AccountsDAOSpec13")
 
   }
 
@@ -187,19 +187,19 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     assert(account1Result.isDefined == true)
 
     // follows count, follower count, friend count
-    assert(account1Result.get._1.accountName == account1.accountName)
-    assert(account1Result.get._1.displayName == account1.displayName)
-    assert(account1Result.get._1.id == account1.id)
-    assert(account1Result.get._1.followCount == 1)
-    assert(account1Result.get._1.followerCount == 3)
-    assert(account1Result.get._1.friendCount == 2)
-    assert(account1Result.get._1.feedsCount == 0) // TODO : Test me
+    assert(account1Result.get.accountName == account1.accountName)
+    assert(account1Result.get.displayName == account1.displayName)
+    assert(account1Result.get.id == account1.id)
+    assert(account1Result.get.followCount == Some(1))
+    assert(account1Result.get.followerCount == Some(3))
+    assert(account1Result.get.friendCount == Some(2))
+    assert(account1Result.get.feedsCount == Some(0)) // TODO : Test me
 
-    val user = account1Result.get._1
+    val user = account1Result.get
     assert(user.id == account1.id)
     assert(user.accountName == account1.accountName)
     assert(user.displayName == account1.displayName)
-    assert(user.accountStatus == account1.accountStatus)
+//    assert(user.accountStatus == account1.accountStatus)
 
     // find blocked user
     execute(blocksDAO.create(account1.id, blockingUser.id.toSessionId))
@@ -249,19 +249,14 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     // find all users topPage
     val result15 = execute(accountsDAO.findAll(None, None, 0, 3, sessionAccount.id.toSessionId))
     assert(result15.size == 3)
-    val resultAccount1 = result15(0)._1
-    val resultAccount2 = result15(1)._1
-    val resultAccount3 = result15(2)._1
-    assert(resultAccount1.id == account5.id)
-    assert(resultAccount2.id == account4.id)
-    assert(resultAccount3.id == account3.id)
+    assert(result15(0).id == account5.id)
+    assert(result15(1).id == account4.id)
+    assert(result15(2).id == account3.id)
 
-    val result16 = execute(accountsDAO.findAll(None, Some(resultAccount3.id.value), 0, 2, sessionAccount.id.toSessionId))
+    val result16 = execute(accountsDAO.findAll(None, result15(2).next, 0, 2, sessionAccount.id.toSessionId))
     assert(result16.size == 2)
-    val resultAccount4 = result16(0)._1
-    val resultAccount5 = result16(1)._1
-    assert(resultAccount4.id == account2.id)
-    assert(resultAccount5.id == account1.id)
+    assert(result16(0).id == account2.id)
+    assert(result16(1).id == account1.id)
 
   }
 

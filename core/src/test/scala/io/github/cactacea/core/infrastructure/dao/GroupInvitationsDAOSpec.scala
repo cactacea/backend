@@ -18,11 +18,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec5")
     val owner5 = createAccount("GroupInvitationsDAOSpec6")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))
@@ -35,23 +35,23 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val invitation1 = result1(0)
     val invitation2 = result1(1)
     val invitation3 = result1(2)
-    assert(invitation1._1.accountId == sessionAccount.id)
-    assert(invitation2._1.accountId == sessionAccount.id)
-    assert(invitation3._1.accountId == sessionAccount.id)
-    assert(invitation1._1.by == owner5.id)
-    assert(invitation2._1.by == owner4.id)
-    assert(invitation3._1.by == owner3.id)
+//    assert(invitation1.account.id == sessionAccount.id)
+//    assert(invitation2.account.id == sessionAccount.id)
+//    assert(invitation3.account.id == sessionAccount.id)
+    assert(invitation1.account.id == owner5.id)
+    assert(invitation2.account.id == owner4.id)
+    assert(invitation3.account.id == owner3.id)
 
 
-    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation3._1.id.value), 0, 3, sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.findAll(invitation3.next, 0, 3, sessionAccount.id.toSessionId))
     assert(result2.size == 2)
     val invitation4 = result2(0)
     val invitation5 = result2(1)
 
-    assert(invitation4._1.accountId == sessionAccount.id)
-    assert(invitation5._1.accountId == sessionAccount.id)
-    assert(invitation4._1.by == owner2.id)
-    assert(invitation5._1.by == owner1.id)
+//    assert(invitation4.account.id == sessionAccount.id)
+//    assert(invitation5.account.id == sessionAccount.id)
+    assert(invitation4.account.id == owner2.id)
+    assert(invitation5.account.id == owner1.id)
 
   }
 
@@ -59,7 +59,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("GroupInvitationsDAOSpec7")
     val owner = createAccount("GroupInvitationsDAOSpec8")
-    val groupId = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner.id.toSessionId))
     val groupInvitationId = execute(groupInvitationsDAO.create(sessionAccount.id, groupId, owner.id.toSessionId))
     execute(groupInvitationsDAO.delete(groupInvitationId))
 
@@ -74,11 +74,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec13")
     val owner5 = createAccount("GroupInvitationsDAOSpec14")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
@@ -108,11 +108,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec20")
     val owner5 = createAccount("GroupInvitationsDAOSpec21")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     val invitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     val invitationId2 = execute(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
@@ -144,11 +144,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec27")
     val owner5 = createAccount("GroupInvitationsDAOSpec28")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     val invitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     execute(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
@@ -158,18 +158,18 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
     val result1 = execute(groupInvitationsDAO.findAll(None, 0, 2, sessionAccount.id.toSessionId))
     assert(result1.size == 2)
-    val invitation1 = result1(0)._1
-    val invitation2 = result1(1)._1
-    assert(invitation1.groupId == groupId5)
-    assert(invitation2.groupId == groupId3)
+    val invitation1 = result1(0)
+    val invitation2 = result1(1)
+    assert(invitation1.group.id == groupId5)
+    assert(invitation2.group.id == groupId3)
 
     assert(invitation1.id == invitationId5)
     assert(invitation2.id == invitationId3)
 
     val result2 = execute(groupInvitationsDAO.findAll(Some(invitation2.id.value), 0, 2, sessionAccount.id.toSessionId))
     assert(result2.size == 1)
-    val invitation3 = result2(0)._1
-    assert(invitation3.groupId == groupId1)
+    val invitation3 = result2(0)
+    assert(invitation3.group.id == groupId1)
     assert(invitation3.id == invitationId1)
 
   }
@@ -184,11 +184,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec34")
     val owner5 = createAccount("GroupInvitationsDAOSpec35")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     execute(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
@@ -226,11 +226,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec41")
     val owner5 = createAccount("GroupInvitationsDAOSpec42")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     execute(groupInvitationsDAO.create(account1.id, groupId2, owner2.id.toSessionId))
@@ -255,11 +255,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec47")
     val owner5 = createAccount("GroupInvitationsDAOSpec48")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     val groupInvitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     val groupInvitationId2 = execute(groupInvitationsDAO.create(account1.id,       groupId2, owner2.id.toSessionId))
@@ -297,11 +297,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec54")
     val owner5 = createAccount("GroupInvitationsDAOSpec55")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     val groupInvitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     val groupInvitationId2 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))
@@ -339,11 +339,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val owner4 = createAccount("GroupInvitationsDAOSpec61")
     val owner5 = createAccount("GroupInvitationsDAOSpec62")
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner1.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner2.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner3.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner4.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, 0L, owner5.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner1.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner2.id.toSessionId))
+    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner3.id.toSessionId))
+    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner4.id.toSessionId))
+    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner5.id.toSessionId))
 
     val groupInvitationId1 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId1, owner1.id.toSessionId))
     val groupInvitationId2 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId2, owner2.id.toSessionId))

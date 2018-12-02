@@ -27,8 +27,8 @@ class FriendsRepository @Inject()(
       _ <- followersDAO.create(accountId, sessionId)
       _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- followsDAO.create(sessionId.toAccountId, accountId.toSessionId)
-      _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
-    } yield (Future.value(Unit))
+      r <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
+    } yield (r)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -40,13 +40,12 @@ class FriendsRepository @Inject()(
       _ <- friendsDAO.delete(accountId, sessionId)
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.friends, sessionId)
-      _ <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.friends, accountId.toSessionId)
-    } yield (Future.value(Unit))
+      r <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.friends, accountId.toSessionId)
+    } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     friendsDAO.findAll(since, offset, count, sessionId)
-      .map(_.map({ case (a, r, f) => Account(a, r, f)}))
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
@@ -56,7 +55,6 @@ class FriendsRepository @Inject()(
       offset,
       count,
       sessionId)
-      .map(_.map({ case (a, r, f) => Account(a, r, f)}))
   }
 
 

@@ -5,7 +5,8 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, FeedPrivacyType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, FeedLikeId, SessionId}
+import io.github.cactacea.backend.core.domain.models.{Account, Feed}
+import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models.{FeedLikes, _}
 
 @Singleton
@@ -101,10 +102,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
                    since: Option[Long],
                    offset: Int,
                    count: Int,
-                   sessionId: SessionId): Future[List[(Accounts, Option[Relationships], FeedLikes)]] = {
-
-
-
+                   sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
@@ -118,19 +116,20 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         ).isEmpty)
         .join(query[Accounts]).on((f, a) => a.id == f.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f)})
-        .sortBy({ case (_, _, f) => f.id })(Ord.desc)
+        .map({ case ((f, a), r) => (a, r, f.id)})
+        .sortBy({ case (_, _, id) => id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
+
 
   }
 
   def findAll(since: Option[Long],
               offset: Int,
               count: Int,
-              sessionId: SessionId): Future[List[(Feeds, FeedLikes)]] = {
+              sessionId: SessionId): Future[List[Feed]] = {
 
     val by = sessionId.toAccountId
 
@@ -153,7 +152,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (f, ff) => Feed(f, ff, ff.id.value)}))
 
   }
 
@@ -161,10 +160,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               since: Option[Long],
               offset: Int,
               count: Int,
-              sessionId: SessionId): Future[List[(Feeds, FeedLikes)]] = {
-
-
-
+              sessionId: SessionId): Future[List[Feed]] = {
 
     val by = sessionId.toAccountId
 
@@ -187,7 +183,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (f, ff) => Feed(f, ff, ff.id.value)}))
 
   }
 

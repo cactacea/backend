@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
+import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -24,8 +25,21 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   }
 
   def create(accountId: AccountId, groupId: GroupId): Future[AccountGroupId] = {
-    create(accountId, groupId, accountId.toSessionId)
+    for {
+      id <- create(accountId, groupId, accountId.toSessionId)
+      _ <- updateAccountCount(groupId, 1L)
+    } yield (id)
   }
+
+  private def updateAccountCount(groupId: GroupId, count: Long): Future[Unit] = {
+    val r = quote {
+      query[Groups]
+        .filter(_.id == lift(groupId))
+        .update(g => g.accountCount -> (g.accountCount + lift(count)))
+    }
+    run(r).map(_ => Unit)
+  }
+
 
   def create(accountIds: List[AccountId], groupId: GroupId): Future[List[AccountGroupId]] = {
     val r = Future.traverseSequentially(accountIds) { id =>
@@ -59,6 +73,13 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   }
 
   def delete(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+    for {
+      _ <- updateAccountCount(groupId, -1L)
+      r <- delete2(accountId, groupId)
+    } yield (r)
+  }
+
+  private def delete2(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     val q = quote {
       query[AccountGroups]
         .filter(_.groupId == lift(groupId))
@@ -67,6 +88,8 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     }
     run(q).map(_ => Unit)
   }
+
+
 
   def updateUnreadCount(groupId: GroupId): Future[Unit] = {
     val q = quote {
@@ -125,10 +148,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
               since: Option[Long],
               offset: Int,
               count: Int,
-              hidden: Boolean): Future[List[(AccountGroups, Groups, Option[Messages], Option[AccountMessages])]] = {
-
-
-
+              hidden: Boolean): Future[List[Group]] = {
 
     val q = quote {
       query[AccountGroups]
@@ -137,13 +157,13 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
         .filter(ag => lift(since).forall(ag.id < _))
         .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
         .leftJoin(query[Messages]).on({ case ((_, g), m) => g.messageId.contains(m.id) })
-        .leftJoin(query[AccountMessages]).on({ case (((_, g), _), am) => g.messageId.contains(am.messageId) && am.accountId == lift(accountId) })
-        .map({ case (((ag, g), m), am) => (ag, g, m, am) })
-        .sortBy({ case (ag, _, _, _) => ag.id})(Ord.desc)
+        .map({ case ((ag, g), m) => (g, m, ag.id) })
+        .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
+
     }
-    run(q)
+    run(q).map(_.map({case (g, m, id) => Group(g, m, id.value)}))
 
   }
 

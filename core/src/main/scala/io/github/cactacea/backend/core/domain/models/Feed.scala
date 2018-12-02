@@ -21,20 +21,16 @@ case class Feed(
 
 object Feed {
 
-//  def apply(f: Feeds): Feed = {
-//    apply(f, None, None, None, None, None, None)
-//  }
-
-  def apply(f: Feeds, fl: FeedLikes): Feed = {
-    apply(f, Some(fl), None, None, None, None, Some(fl.id.value))
+  def apply(f: Feeds, fl: FeedLikes, n: Long): Feed = {
+    apply(f, Some(fl), None, None, None, None, Some(n))
   }
 
-  def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums]): Feed = {
-    apply(f, None, Some(ft), Some(m), None, None, Some(f.id.value))
+  def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums], n: Long): Feed = {
+    apply(f, None, Some(ft), Some(m), None, None, Some(n))
   }
 
-  def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships]): Feed = {
-    apply(f, None, Some(ft), Some(m), Some(a), r, Some(f.id.value))
+  def apply(f: Feeds, ft: List[FeedTags], m: List[Mediums], a: Accounts, r: Option[Relationships], n: Long): Feed = {
+    apply(f, None, Some(ft), Some(m), Some(a), r, Some(n))
   }
 
   private def apply(f: Feeds, fl: Option[FeedLikes], ft: Option[List[FeedTags]], m: Option[List[Mediums]], a: Option[Accounts], r: Option[Relationships], next: Option[Long]): Feed = {

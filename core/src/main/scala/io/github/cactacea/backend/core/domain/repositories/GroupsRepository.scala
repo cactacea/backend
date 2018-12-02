@@ -22,7 +22,7 @@ class GroupsRepository @Inject()(
              authority: GroupAuthorityType,
              sessionId: SessionId): Future[GroupId] = {
     for {
-      id <- groupsDAO.create(name, byInvitationOnly, privacyType, authority, 1L, sessionId)
+      id <- groupsDAO.create(name, byInvitationOnly, privacyType, authority, sessionId)
       _ <- accountGroupsDAO.create(sessionId.toAccountId, id)
     } yield (id)
   }
@@ -61,7 +61,6 @@ class GroupsRepository @Inject()(
       offset,
       count,
       sessionId)
-      .map(_.map(t => Group(t)))
   }
 
   def find(groupId: GroupId, sessionId: SessionId): Future[Group] = {

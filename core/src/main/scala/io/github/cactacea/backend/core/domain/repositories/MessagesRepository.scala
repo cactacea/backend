@@ -10,8 +10,6 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 
 @Singleton
 class MessagesRepository @Inject()(
-                                    groupsDAO: GroupsDAO,
-                                    groupAccountsDAO: GroupAccountsDAO,
                                     messagesDAO:  MessagesDAO,
                                     accountMessagesDAO: AccountMessagesDAO,
                                     accountGroupsDAO: AccountGroupsDAO,
@@ -32,9 +30,7 @@ class MessagesRepository @Inject()(
   private def create(groupId: GroupId, message: String, sessionId: SessionId): Future[MessageId] = {
     for {
       _  <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
-      a  <- groupAccountsDAO.findCount(groupId)
-      (id, postedAt)  <- messagesDAO.create(groupId, Some(message), a, None, sessionId)
-      _  <- groupsDAO.update(groupId, id, postedAt, sessionId)
+      id  <- messagesDAO.create(groupId, Some(message), None, sessionId)
       _  <- accountMessagesDAO.create(groupId, id, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)
     } yield (id)
@@ -44,9 +40,7 @@ class MessagesRepository @Inject()(
     for {
       _  <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
       _  <- validationDAO.existMediums(mediumId, sessionId)
-      a  <- groupAccountsDAO.findCount(groupId)
-      (id, postedAt)  <- messagesDAO.create(groupId, None, a, Some(mediumId), sessionId)
-      _  <- groupsDAO.update(groupId, id, postedAt, sessionId)
+      id <- messagesDAO.create(groupId, None, Some(mediumId), sessionId)
       _  <- accountMessagesDAO.create(groupId, id, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)
     } yield (id)
@@ -75,18 +69,12 @@ class MessagesRepository @Inject()(
               count: Int,
               ascending: Boolean,
               sessionId: SessionId): Future[List[Message]] = {
-    (for {
+    for {
       _ <- validationDAO.existGroup(groupId, sessionId)
       _ <- validationDAO.existGroupAccount(sessionId.toAccountId, groupId)
-    } yield (Unit)).flatMap(_ =>
-      if (ascending) {
-        accountMessagesDAO.findOlder(groupId, since, offset, count, sessionId)
-          .map(l => l.map({ case (m, am, i, a, r) => Message(m, am, i, a, r)}))
-      } else {
-        accountMessagesDAO.findEarlier(groupId, since, offset, count, sessionId)
-          .map(l => l.map({ case (m, am, i, a, r) => Message(m, am, i, a, r)}))
-      }
-    )
+      r <- accountMessagesDAO.findAll(groupId, since, offset, count, ascending, sessionId)
+    } yield (r)
+
   }
 
 }

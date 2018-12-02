@@ -6,6 +6,7 @@ import io.github.cactacea.backend.core.application.components.interfaces.HashSer
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
+import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.infrastructure.results.RelationshipBlocksCount
@@ -177,7 +178,7 @@ class AccountsDAO @Inject()(
     run(q).map(_.headOption)
   }
 
-  def find(accountId: AccountId, sessionId: SessionId): Future[Option[(Accounts, Option[Relationships])]] = {
+  def find(accountId: AccountId, sessionId: SessionId): Future[Option[Account]] = {
 
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
@@ -211,7 +212,7 @@ class AccountsDAO @Inject()(
                           followCount = followCount,
                           followerCount = followerCount,
                           feedsCount = a.feedsCount)
-          (na, r)
+          Account(na, r)
         }).headOption
     })
 
@@ -221,7 +222,7 @@ class AccountsDAO @Inject()(
               since: Option[Long],
               offset: Int,
               count: Int,
-              sessionId: SessionId): Future[List[(Accounts, Option[Relationships])]] = {
+              sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -258,7 +259,7 @@ class AccountsDAO @Inject()(
             followCount = followCount,
             followerCount = followerCount,
             feedsCount = a.feedsCount)
-          (na, r)
+          Account(na, r)
         })
       })
 

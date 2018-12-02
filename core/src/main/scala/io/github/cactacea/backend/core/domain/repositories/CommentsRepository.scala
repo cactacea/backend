@@ -17,14 +17,14 @@ class CommentsRepository @Inject()(
   def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[Comment]] = {
     for {
       _ <- validationDAO.existFeed(feedId, sessionId)
-      r <- commentsDAO.findAll(feedId, since, count, sessionId).map(_.map({ case (c, a, r) => Comment(c, a, r)}))
+      r <- commentsDAO.findAll(feedId, since, count, sessionId)
     } yield (r)
   }
 
   def find(commentId: CommentId, sessionId: SessionId): Future[Comment] = {
     commentsDAO.find(commentId, sessionId).flatMap(_ match {
-      case Some((c, a, r)) =>
-        Future.value(Comment(c, a, r))
+      case Some(c) =>
+        Future.value(c)
       case None =>
         Future.exception(CactaceaException(CommentNotFound))
     })

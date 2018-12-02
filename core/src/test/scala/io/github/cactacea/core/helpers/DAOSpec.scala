@@ -22,7 +22,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
       )
     ).create
 
-  def execute[T](f: => Future[T]) = {
+  def execute[T](f: => Future[T]): T = {
     Await.result(db.transaction(f))
   }
 

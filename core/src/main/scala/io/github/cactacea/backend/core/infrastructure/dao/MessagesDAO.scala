@@ -33,7 +33,40 @@ class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def create(groupId: GroupId, message: Option[String], accountCount: Long, mediumId: Option[MediumId], sessionId: SessionId): Future[(MessageId, Long)] = {
+  def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
+    for {
+      c <- findAccountCount(groupId)
+      (id, postedAt) <- insert(groupId, message, c, mediumId, sessionId)
+      _ <- updateLatestMessage(groupId, id, postedAt)
+    } yield (id)
+  }
+
+  private def findAccountCount(groupId: GroupId): Future[Long] = {
+    val q = quote {
+      query[AccountGroups]
+        .filter(_.groupId == lift(groupId))
+        .size
+    }
+    run(q)
+  }
+
+  private def updateLatestMessage(groupId: GroupId, messageId: MessageId, postedAt: Long): Future[Unit] = {
+    val messageIdOpt: Option[MessageId] = Some(messageId)
+    val lastPostedAtOpt: Option[Long] = Some(postedAt)
+    val r = quote {
+      query[Groups]
+        .filter(_.id == lift(groupId))
+        .update(
+          _.messageId     -> lift(messageIdOpt),
+          _.lastPostedAt  -> lift(lastPostedAtOpt)
+
+        )
+    }
+    run(r).map(_ => Unit)
+  }
+
+
+  private def insert(groupId: GroupId, message: Option[String], accountCount: Long, mediumId: Option[MediumId], sessionId: SessionId): Future[(MessageId, Long)] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.currentTimeMillis()
     val mt = if (message.isDefined) {

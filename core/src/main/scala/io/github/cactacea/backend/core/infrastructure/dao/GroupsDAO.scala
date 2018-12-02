@@ -5,6 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
+import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -37,7 +38,6 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
              byInvitationOnly: Boolean,
              privacyType: GroupPrivacyType,
              authority: GroupAuthorityType,
-             accountCount: Long,
              sessionId: SessionId): Future[GroupId] = {
 
     val organizedAt = timeService.currentTimeMillis()
@@ -49,7 +49,7 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         _.authorityType       -> lift(authority),
         _.privacyType         -> lift(privacyType),
         _.directMessage       -> false,
-        _.accountCount        -> lift(accountCount),
+        _.accountCount        -> 0L,
         _.by                  -> lift(by),
         _.organizedAt         -> lift(organizedAt)
       ).returning(_.id)
@@ -88,39 +88,13 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(r).map(_ => Unit)
   }
 
-  def update(groupId: GroupId, messageId: MessageId, postedAt: Long, sessionId: SessionId): Future[Unit] = {
-    val messageIdOpt: Option[MessageId] = Some(messageId)
-    val lastPostedAtOpt: Option[Long] = Some(postedAt)
-    val by = sessionId.toAccountId
-    val r = quote {
-      query[Groups]
-        .filter(_.id == lift(groupId))
-        .filter(_.by == lift(by))
-        .update(
-          _.messageId     -> lift(messageIdOpt),
-          _.lastPostedAt  -> lift(lastPostedAtOpt)
-
-        )
-    }
-    run(r).map(_ => Unit)
-  }
-
-  def updateAccountCount(groupId: GroupId, count: Long): Future[Unit] = {
-    val r = quote {
-      query[Groups]
-        .filter(_.id == lift(groupId))
-        .update(g => g.accountCount -> (g.accountCount + lift(count)))
-    }
-    run(r).map(_ => Unit)
-  }
-
   def findAll(name: Option[String],
               invitationOnly: Option[Boolean],
               privacyType: Option[GroupPrivacyType],
               since: Option[Long],
               offset: Int,
               count: Int,
-              sessionId: SessionId): Future[List[Groups]] = {
+              sessionId: SessionId): Future[List[Group]] = {
 
     val by = sessionId.toAccountId
     val q = quote {
@@ -137,7 +111,7 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map(g => Group(g, g.id.value)))
   }
 
   def find(groupId: GroupId): Future[Option[Groups]] = {

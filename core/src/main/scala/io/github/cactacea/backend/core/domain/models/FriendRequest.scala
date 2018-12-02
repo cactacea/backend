@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
-import io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FriendRequestId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, FriendRequests, Relationships}
 
 case class FriendRequest (
@@ -14,14 +14,14 @@ case class FriendRequest (
 
 object FriendRequest {
 
-  def apply(f: FriendRequests, a: Accounts, r: Option[Relationships]): FriendRequest = {
+  def apply(f: FriendRequests, a: Accounts, r: Option[Relationships], n: Long): FriendRequest = {
     val account = Account(a, r)
     FriendRequest(
       id            = f.id,
       account       = account,
       requestStatus = f.requestStatus,
       requestedAt   = f.requestedAt,
-      next          = Some(f.id.value)
+      next          = Some(n)
     )
   }
 
