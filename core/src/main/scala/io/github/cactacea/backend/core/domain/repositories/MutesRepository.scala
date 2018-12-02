@@ -18,8 +18,8 @@ class MutesRepository @Inject()(
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistMute(accountId, sessionId)
-      _ <- mutesDAO.create(accountId, sessionId)
-    } yield (Future.value(Unit))
+      r <- mutesDAO.create(accountId, sessionId)
+    } yield (r)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -28,13 +28,12 @@ class MutesRepository @Inject()(
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.existMute(accountId, sessionId)
-      _ <- mutesDAO.delete(accountId, sessionId)
-    } yield (Future.value(Unit))
+      r <- mutesDAO.delete(accountId, sessionId)
+    } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     mutesDAO.findAll(since, offset, count, sessionId)
-      .map(_.map({ case (a, r, n) => Account(a, r, n)}))
   }
 
 }

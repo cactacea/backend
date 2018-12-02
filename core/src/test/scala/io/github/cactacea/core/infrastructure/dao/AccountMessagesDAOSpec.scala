@@ -13,10 +13,10 @@ class AccountMessagesDAOSpec extends DAOSpec {
     val sessionAccount = createAccount("AccountMessagesDAOSpec1")
     val account1 = createAccount("AccountMessagesDAOSpec2")
     val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone,
-      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+      GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
-    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
 
   }
@@ -26,12 +26,12 @@ class AccountMessagesDAOSpec extends DAOSpec {
     val sessionAccount = createAccount("AccountMessagesDAOSpec3")
     val account1 = createAccount("AccountMessagesDAOSpec4")
     val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone,
-      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val (messageId1, _) = execute(messagesDAO.create(groupId, Some("new message1"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId2, _) = execute(messagesDAO.create(groupId, Some("new message2"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId3, _) = execute(messagesDAO.create(groupId, Some("new message3"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId4, _) = execute(messagesDAO.create(groupId, Some("new message4"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId5, _) = execute(messagesDAO.create(groupId, Some("new message5"), 1, None, sessionAccount.id.toSessionId))
+      GroupAuthorityType.member, sessionAccount.id.toSessionId))
+    val messageId1 = execute(messagesDAO.create(groupId, Some("new message1"), None, sessionAccount.id.toSessionId))
+    val messageId2 = execute(messagesDAO.create(groupId, Some("new message2"), None, sessionAccount.id.toSessionId))
+    val messageId3 = execute(messagesDAO.create(groupId, Some("new message3"), None, sessionAccount.id.toSessionId))
+    val messageId4 = execute(messagesDAO.create(groupId, Some("new message4"), None, sessionAccount.id.toSessionId))
+    val messageId5 = execute(messagesDAO.create(groupId, Some("new message5"), None, sessionAccount.id.toSessionId))
 
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
@@ -52,20 +52,20 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("AccountMessagesDAOSpec5")
     val account1 = createAccount("AccountMessagesDAOSpec6")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
 
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
-    execute(messagesDAO.create(groupId, Some("new message1"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId2, _) = execute(messagesDAO.create(groupId, Some("new message2"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId3, _) = execute(messagesDAO.create(groupId, Some("new message3"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId4, _) = execute(messagesDAO.create(groupId, Some("new message4"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId5, _) = execute(messagesDAO.create(groupId, Some("new message5"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId6, _) = execute(messagesDAO.create(groupId, Some("new message6"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId7, _) = execute(messagesDAO.create(groupId, Some("new message7"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId8, _) = execute(messagesDAO.create(groupId, Some("new message8"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId9, _) = execute(messagesDAO.create(groupId, Some("new message9"), 1, None, sessionAccount.id.toSessionId))
+    execute(messagesDAO.create(groupId, Some("new message1"), None, sessionAccount.id.toSessionId))
+    val messageId2 = execute(messagesDAO.create(groupId, Some("new message2"), None, sessionAccount.id.toSessionId))
+    val messageId3 = execute(messagesDAO.create(groupId, Some("new message3"), None, sessionAccount.id.toSessionId))
+    val messageId4 = execute(messagesDAO.create(groupId, Some("new message4"), None, sessionAccount.id.toSessionId))
+    val messageId5 = execute(messagesDAO.create(groupId, Some("new message5"), None, sessionAccount.id.toSessionId))
+    val messageId6 = execute(messagesDAO.create(groupId, Some("new message6"), None, sessionAccount.id.toSessionId))
+    val messageId7 = execute(messagesDAO.create(groupId, Some("new message7"), None, sessionAccount.id.toSessionId))
+    val messageId8 = execute(messagesDAO.create(groupId, Some("new message8"), None, sessionAccount.id.toSessionId))
+    val messageId9 = execute(messagesDAO.create(groupId, Some("new message9"), None, sessionAccount.id.toSessionId))
 
     execute(accountMessagesDAO.create(groupId, messageId2, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId3, sessionAccount.id.toSessionId))
@@ -76,30 +76,22 @@ class AccountMessagesDAOSpec extends DAOSpec {
     execute(accountMessagesDAO.create(groupId, messageId8, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId9, sessionAccount.id.toSessionId))
 
-    val result1 = execute(accountMessagesDAO.findOlder(groupId, None, 0, 3, sessionAccount.id.toSessionId))
+    val result1 = execute(accountMessagesDAO.findAll(groupId, None, 0, 3, false, sessionAccount.id.toSessionId))
     assert(result1.size == 3)
-    val message1 = result1(0)._2
-    val message2 = result1(1)._2
-    val message3 = result1(2)._2
-    assert(message1.messageId == messageId9)
-    assert(message2.messageId == messageId8)
-    assert(message3.messageId == messageId7)
+    assert(result1(0).id == messageId9)
+    assert(result1(1).id == messageId8)
+    assert(result1(2).id == messageId7)
 
-    val result2 = execute(accountMessagesDAO.findOlder(groupId, Some(message3.messageId.value), 0, 3, sessionAccount.id.toSessionId))
+    val result2 = execute(accountMessagesDAO.findAll(groupId, result1(2).next, 0, 3, false, sessionAccount.id.toSessionId))
     assert(result2.size == 3)
-    val message4 = result2(0)._2
-    val message5 = result2(1)._2
-    val message6 = result2(2)._2
-    assert(message4.messageId == messageId6)
-    assert(message5.messageId == messageId5)
-    assert(message6.messageId == messageId4)
+    assert(result2(0).id == messageId6)
+    assert(result2(1).id == messageId5)
+    assert(result2(2).id == messageId4)
 
-    val result3 = execute(accountMessagesDAO.findOlder(groupId, Some(message6.messageId.value), 0, 3, sessionAccount.id.toSessionId))
+    val result3 = execute(accountMessagesDAO.findAll(groupId, result2(2).next, 0, 3, false, sessionAccount.id.toSessionId))
     assert(result3.size == 2)
-    val message7 = result3(0)._2
-    val message8 = result3(1)._2
-    assert(message7.messageId == messageId3)
-    assert(message8.messageId == messageId2)
+    assert(result3(0).id == messageId3)
+    assert(result3(1).id == messageId2)
 
   }
 
@@ -107,20 +99,20 @@ class AccountMessagesDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("AccountMessagesDAOSpec7")
     val account1 = createAccount("AccountMessagesDAOSpec8")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
 
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
-    val (messageId1, _) = execute(messagesDAO.create(groupId, Some("new message1"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId2, _) = execute(messagesDAO.create(groupId, Some("new message2"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId3, _) = execute(messagesDAO.create(groupId, Some("new message3"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId4, _) = execute(messagesDAO.create(groupId, Some("new message4"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId5, _) = execute(messagesDAO.create(groupId, Some("new message5"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId6, _) = execute(messagesDAO.create(groupId, Some("new message6"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId7, _) = execute(messagesDAO.create(groupId, Some("new message7"), 1, None, sessionAccount.id.toSessionId))
-    val (messageId8, _) = execute(messagesDAO.create(groupId, Some("new message8"), 1, None, sessionAccount.id.toSessionId))
-    execute(messagesDAO.create(groupId, Some("new message9"), 1, None, sessionAccount.id.toSessionId))
+    val messageId1 = execute(messagesDAO.create(groupId, Some("new message1"), None, sessionAccount.id.toSessionId))
+    val messageId2 = execute(messagesDAO.create(groupId, Some("new message2"), None, sessionAccount.id.toSessionId))
+    val messageId3 = execute(messagesDAO.create(groupId, Some("new message3"), None, sessionAccount.id.toSessionId))
+    val messageId4 = execute(messagesDAO.create(groupId, Some("new message4"), None, sessionAccount.id.toSessionId))
+    val messageId5 = execute(messagesDAO.create(groupId, Some("new message5"), None, sessionAccount.id.toSessionId))
+    val messageId6 = execute(messagesDAO.create(groupId, Some("new message6"), None, sessionAccount.id.toSessionId))
+    val messageId7 = execute(messagesDAO.create(groupId, Some("new message7"), None, sessionAccount.id.toSessionId))
+    val messageId8 = execute(messagesDAO.create(groupId, Some("new message8"), None, sessionAccount.id.toSessionId))
+    execute(messagesDAO.create(groupId, Some("new message9"), None, sessionAccount.id.toSessionId))
 
     execute(accountMessagesDAO.create(groupId, messageId1, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId2, sessionAccount.id.toSessionId))
@@ -131,30 +123,22 @@ class AccountMessagesDAOSpec extends DAOSpec {
     execute(accountMessagesDAO.create(groupId, messageId7, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId8, sessionAccount.id.toSessionId))
 
-    val result1 = execute(accountMessagesDAO.findEarlier(groupId, None, 0, 3, sessionAccount.id.toSessionId))
+    val result1 = execute(accountMessagesDAO.findAll(groupId, None, 0, 3, true, sessionAccount.id.toSessionId))
     assert(result1.size == 3)
-    val message1 = result1(0)._2
-    val message2 = result1(1)._2
-    val message3 = result1(2)._2
-    assert(message1.messageId == messageId1)
-    assert(message2.messageId == messageId2)
-    assert(message3.messageId == messageId3)
+    assert(result1(0).id == messageId1)
+    assert(result1(1).id == messageId2)
+    assert(result1(2).id == messageId3)
 
-    val result2 = execute(accountMessagesDAO.findEarlier(groupId, Some(message3.messageId.value), 0, 3, sessionAccount.id.toSessionId))
+    val result2 = execute(accountMessagesDAO.findAll(groupId, result1(2).next, 0, 3,  true, sessionAccount.id.toSessionId))
     assert(result2.size == 3)
-    val message4 = result2(0)._2
-    val message5 = result2(1)._2
-    val message6 = result2(2)._2
-    assert(message4.messageId == messageId4)
-    assert(message5.messageId == messageId5)
-    assert(message6.messageId == messageId6)
+    assert(result2(0).id == messageId4)
+    assert(result2(1).id == messageId5)
+    assert(result2(2).id == messageId6)
 
-    val result3 = execute(accountMessagesDAO.findEarlier(groupId, Some(message6.messageId.value), 0, 3, sessionAccount.id.toSessionId))
+    val result3 = execute(accountMessagesDAO.findAll(groupId, result2(2).next, 0, 3,  true, sessionAccount.id.toSessionId))
     assert(result3.size == 2)
-    val message7 = result3(0)._2
-    val message8 = result3(1)._2
-    assert(message7.messageId == messageId7)
-    assert(message8.messageId == messageId8)
+    assert(result3(0).id == messageId7)
+    assert(result3(1).id == messageId8)
 
   }
 
@@ -164,12 +148,12 @@ class AccountMessagesDAOSpec extends DAOSpec {
     val sessionAccount = createAccount("AccountMessagesDAOSpec9")
     val account1 = createAccount("AccountMessagesDAOSpec10")
 
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
 
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
-    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.updateUnread(List(messageId), sessionAccount.id.toSessionId))
 
@@ -187,14 +171,14 @@ class AccountMessagesDAOSpec extends DAOSpec {
     val account2 = createAccount("AccountMessagesDAOSpec13")
     val account3 = createAccount("AccountMessagesDAOSpec14")
 
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
 
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(account2.id, groupId))
     execute(accountGroupsDAO.create(account3.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
-    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
 
     val ids = List(

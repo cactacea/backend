@@ -16,15 +16,14 @@ class FollowsRepository @Inject()(
                                 ) {
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    (for {
+    for {
       _ <- validationDAO.existAccount(accountId)
       r <- followsDAO.findAll(accountId, since, offset, count, sessionId)
-    } yield (r)).map(_.map({ case (a, r, f) => Account(a, r, f)}))
+    } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     followsDAO.findAll(since, offset, count, sessionId)
-      .map(_.map({ case (a, r, f) => Account(a, r, f)}))
   }
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -34,8 +33,8 @@ class FollowsRepository @Inject()(
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistFollow(accountId, sessionId)
       _ <- followsDAO.create(accountId, sessionId)
-      _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
-    } yield (Future.value(Unit))
+      r <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
+    } yield (r)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -47,8 +46,8 @@ class FollowsRepository @Inject()(
       _ <- followsDAO.delete(accountId, sessionId)
       _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.follows, sessionId)
-      _ <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.followers, accountId.toSessionId)
-    } yield (Future.value(Unit))
+      r <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.followers, accountId.toSessionId)
+    } yield (r)
   }
 
 }

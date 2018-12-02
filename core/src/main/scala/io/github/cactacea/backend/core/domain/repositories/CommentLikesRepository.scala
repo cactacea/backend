@@ -32,7 +32,6 @@ class CommentLikesRepository @Inject()(
     for {
       _ <- validationRepository.existComment(commentId, sessionId)
       r <- commentLikesDAO.findAll(commentId, since, offset, count, sessionId)
-        .map(_.map({ case (a, r, c) => Account(a, r, c)}))
     } yield (r)
   }
 

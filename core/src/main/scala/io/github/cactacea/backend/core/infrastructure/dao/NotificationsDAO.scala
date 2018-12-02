@@ -1,15 +1,21 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
+import java.util.Locale
+
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.application.components.interfaces.NotificationMessagesService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class NotificationsDAO @Inject()(db: DatabaseService,
+                                 notificationMessagesService: NotificationMessagesService,
+                                 timeService: TimeService) {
 
   import db._
 
@@ -63,10 +69,8 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   def findAll(since: Option[Long],
               offset: Int,
               count: Int,
-              sessionId: SessionId): Future[List[(Notifications, Accounts, Option[Relationships])]] = {
-
-
-
+              locales: Seq[Locale],
+              sessionId: SessionId): Future[List[Notification]] = {
 
     val by = sessionId.toAccountId
     val q = quote {
@@ -83,7 +87,13 @@ class NotificationsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({ case (n, a, r) =>
+        val displayName = r.map(_.displayName).getOrElse(a.accountName)
+        val message = notificationMessagesService.getNotificationMessage(n.notificationType, locales, displayName)
+        Notification(n, message, n.id.value)
+      }))
+
+
   }
 
 }

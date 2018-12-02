@@ -16,12 +16,12 @@ class FollowersRepository @Inject()(
     (for {
       _ <- validationDAO.existAccount(accountId)
       r <- followersDAO.findAll(accountId, since, offset, count, sessionId)
-    } yield (r)).map(_.map({ case (a, r, f) => Account(a, r, f)}))
+    } yield (r))
+
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     followersDAO.findAll(since, offset, count, sessionId)
-      .map(_.map({ case (a, r, f) => Account(a, r, f)}))
   }
 
 }

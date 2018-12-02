@@ -181,17 +181,17 @@ class FriendRequestsDAOSpec extends DAOSpec {
 
     // findAll top page
     val result1 = execute(friendRequestsDAO.findAll(None, 0, 3, true, sessionAccount.id.toSessionId))
-    val friendRequested1 = result1(0)._1
-    val friendRequested2 = result1(1)._1
-    val friendRequested3 = result1(2)._1
+    val friendRequested1 = result1(0)
+    val friendRequested2 = result1(1)
+    val friendRequested3 = result1(2)
     assert(result1.size == 3)
-    assert(friendRequested1.accountId == sessionAccount.id)
-    assert(friendRequested2.accountId == sessionAccount.id)
-    assert(friendRequested3.accountId == sessionAccount.id)
+//    assert(friendRequested1.account.id == sessionAccount.id)
+//    assert(friendRequested2.account.id == sessionAccount.id)
+//    assert(friendRequested3.account.id == sessionAccount.id)
 
-    assert(friendRequested1.by == requestedAccount5.id)
-    assert(friendRequested2.by == requestedAccount4.id)
-    assert(friendRequested3.by == requestedAccount3.id)
+    assert(friendRequested1.account.id == requestedAccount5.id)
+    assert(friendRequested2.account.id == requestedAccount4.id)
+    assert(friendRequested3.account.id == requestedAccount3.id)
 
     assert(friendRequested1.requestStatus == FriendRequestStatusType.noResponded)
     assert(friendRequested2.requestStatus == FriendRequestStatusType.noResponded)
@@ -200,13 +200,13 @@ class FriendRequestsDAOSpec extends DAOSpec {
     // findALl next page
     val result2 = execute(friendRequestsDAO.findAll(Some(friendRequested3.id.value), 0, 3, true, sessionAccount.id.toSessionId))
     assert(result2.size == 2)
-    val friendRequested4 = result2(0)._1
-    val friendRequested5 = result2(1)._1
-    assert(friendRequested4.accountId == sessionAccount.id)
-    assert(friendRequested5.accountId == sessionAccount.id)
+    val friendRequested4 = result2(0)
+    val friendRequested5 = result2(1)
+//    assert(friendRequested4.accountId == sessionAccount.id)
+//    assert(friendRequested5.accountId == sessionAccount.id)
 
-    assert(friendRequested4.by == requestedAccount2.id)
-    assert(friendRequested5.by == requestedAccount1.id)
+    assert(friendRequested4.account.id == requestedAccount2.id)
+    assert(friendRequested5.account.id == requestedAccount1.id)
 
     assert(friendRequested4.requestStatus == FriendRequestStatusType.noResponded)
     assert(friendRequested5.requestStatus == FriendRequestStatusType.noResponded)

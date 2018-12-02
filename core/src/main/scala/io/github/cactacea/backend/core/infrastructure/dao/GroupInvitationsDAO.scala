@@ -5,6 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{GroupInvitationStatusType, GroupPrivacyType}
+import io.github.cactacea.backend.core.domain.models.GroupInvitation
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -67,10 +68,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeServic
 
   def findAll(since: Option[Long],
               offset: Int,
-              count: Int, sessionId: SessionId): Future[List[(GroupInvitations, Accounts, Option[Relationships], Groups)]] = {
-
-
-
+              count: Int, sessionId: SessionId): Future[List[GroupInvitation]] = {
 
     val by = sessionId.toAccountId
 
@@ -86,7 +84,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeServic
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (gi, a, r, g) => GroupInvitation(gi, a, r, g, gi.id.value)}))
 
   }
 

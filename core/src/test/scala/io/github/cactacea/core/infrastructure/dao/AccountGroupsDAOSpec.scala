@@ -13,7 +13,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val sessionAccount = createAccount("AccountGroupsDAOSpec1")
     val account1 = createAccount("AccountGroupsDAOSpec2")
 
-    val groupId = execute(groupsDAO.create(Some("new group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account1.id, groupId, sessionAccount.id.toSessionId))
 
     val accountGroups = execute(db.run(query[AccountGroups].filter(_.groupId == lift(groupId)).sortBy(_.joinedAt)(Ord.asc)))
@@ -36,7 +36,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val account3 = createAccount("AccountGroupsDAOSpec6")
     val account4 = createAccount("AccountGroupsDAOSpec7")
 
-    val groupId = execute(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(account2.id, groupId))
     execute(accountGroupsDAO.create(account3.id, groupId))
@@ -84,7 +84,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val account3 = createAccount("AccountGroupsDAOSpec11")
     val account4 = createAccount("AccountGroupsDAOSpec12")
 
-    val groupId = execute(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(account2.id, groupId))
     execute(accountGroupsDAO.create(account3.id, groupId))
@@ -116,7 +116,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val account3 = createAccount("AccountGroupsDAOSpec16")
     val account4 = createAccount("AccountGroupsDAOSpec17")
 
-    val groupId = execute(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("new one to one group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(account2.id, groupId))
     execute(accountGroupsDAO.create(account3.id, groupId))
@@ -171,7 +171,6 @@ class AccountGroupsDAOSpec extends DAOSpec {
         true,
         GroupPrivacyType.everyone,
         GroupAuthorityType.member,
-        0L,
         sessionAccount.id.toSessionId))
 
     execute(accountGroupsDAO.create(account1.id, groupId))
@@ -224,8 +223,8 @@ class AccountGroupsDAOSpec extends DAOSpec {
     createAccount("AccountGroupsDAOSpec26")
     createAccount("AccountGroupsDAOSpec27")
 
-    val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
@@ -233,22 +232,20 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val result1 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, 0, 2, false))
     assert(result1.size == 2)
-    assert(result1(0)._2.id == groupId2)
-    assert(result1(0)._4.isDefined == false)
+    assert(result1(0).id == groupId2)
+    assert(result1(0).message.isDefined == false)
 
-    val (messageId1, postedAt1) = execute(messagesDAO.create(groupId1, Some("New Message1"), 2, None, sessionAccount.id.toSessionId))
-    execute(messagesDAO.create(groupId1, Some("New Message2"), 2, None, sessionAccount.id.toSessionId))
-    val (messageId3, postedAt3) = execute(messagesDAO.create(groupId2, Some("New Message3"), 2, None, sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId1, messageId1, postedAt1, sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId2, messageId3, postedAt3, sessionAccount.id.toSessionId))
+    execute(messagesDAO.create(groupId1, Some("New Message1"), None, sessionAccount.id.toSessionId))
+    execute(messagesDAO.create(groupId1, Some("New Message2"), None, sessionAccount.id.toSessionId))
+    val messageId3 = execute(messagesDAO.create(groupId2, Some("New Message3"), None, sessionAccount.id.toSessionId))
+
 
     val result2 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, 0, 2, false))
     assert(result2.size == 2)
-    val (ag, _, m, _) = result2(0)
-    assert(ag.groupId == groupId2)
-    assert(m.isDefined)
-    assert(m.map(_.id) == Some(messageId3))
-    assert(m.flatMap(_.message) == Some("New Message3"))
+    assert(result2(0).id == groupId2)
+    assert(result2(0).message.isDefined)
+    assert(result2(0).message.map(_.id) == Some(messageId3))
+    assert(result2(0).message.flatMap(_.message) == Some("New Message3"))
 
   }
 
@@ -259,8 +256,8 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val account1 = createAccount("AccountGroupsDAOSpec29")
     val account2 = createAccount("AccountGroupsDAOSpec30")
 
-    val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account1.id, groupId1, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account2.id, groupId2, sessionAccount.id.toSessionId))
 
@@ -281,17 +278,15 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val sessionAccount = createAccount("AccountGroupsDAOSpec31")
 
-    val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId2))
 
-    val (messageId1, postedAt1) = execute(messagesDAO.create(groupId1, Some("New Message1"), 2, None, sessionAccount.id.toSessionId))
-    val (messageId3, postedAt3) = execute(messagesDAO.create(groupId2, Some("New Message3"), 2, None, sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId1, messageId1, postedAt1, sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId2, messageId3, postedAt3, sessionAccount.id.toSessionId))
+    val messageId1 = execute(messagesDAO.create(groupId1, Some("New Message1"), None, sessionAccount.id.toSessionId))
+    val messageId3 = execute(messagesDAO.create(groupId2, Some("New Message3"), None, sessionAccount.id.toSessionId))
 
     val result1 = execute(accountGroupsDAO.findGroupId(messageId1, sessionAccount.id.toSessionId))
     val result2 = execute(accountGroupsDAO.findGroupId(messageId3, sessionAccount.id.toSessionId))
@@ -312,8 +307,8 @@ class AccountGroupsDAOSpec extends DAOSpec {
     val account1 = createAccount("AccountGroupsDAOSpec33")
     val account2 = createAccount("AccountGroupsDAOSpec34")
 
-    val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account1.id, groupId1, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account2.id, groupId2, sessionAccount.id.toSessionId))
 

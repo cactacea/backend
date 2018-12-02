@@ -5,6 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.ContentStatusType
+import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -130,7 +131,7 @@ class CommentsDAO @Inject()(
     run(q)
   }
 
-  def find(commentId: CommentId, sessionId: SessionId): Future[Option[(Comments, Accounts, Option[Relationships])]] = {
+  def find(commentId: CommentId, sessionId: SessionId): Future[Option[Comment]] = {
     val by = sessionId.toAccountId
 
     val q = quote {
@@ -152,12 +153,12 @@ class CommentsDAO @Inject()(
       .map({ case (accounts, blocksCount) =>
         accounts.map({ case (c, a, r) =>
           val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
+          Comment(c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         }).headOption
       })
   }
 
-  def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[(Comments, Accounts, Option[Relationships])]] = {
+  def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[Comment]] = {
 
     val by = sessionId.toAccountId
 
@@ -183,7 +184,7 @@ class CommentsDAO @Inject()(
       .map({ case (accounts, blocksCount) =>
         accounts.map({ case (c, a, r) =>
           val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          (c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
+          Comment(c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
         })
       })
   }

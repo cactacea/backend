@@ -11,7 +11,6 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class GroupInvitationsRepository @Inject()(
-                                            groupsDAO: GroupsDAO,
                                             groupAccountsDAO: GroupAccountsDAO,
                                             groupInvitationsDAO: GroupInvitationsDAO,
                                             accountGroupsDAO: AccountGroupsDAO,
@@ -34,7 +33,6 @@ class GroupInvitationsRepository @Inject()(
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[GroupInvitation]] = {
     groupInvitationsDAO.findAll(since, offset, count, sessionId)
-      .map(_.map({ case (gi, a, r, g) => GroupInvitation(gi, a, r, g)}))
   }
 
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
@@ -50,7 +48,6 @@ class GroupInvitationsRepository @Inject()(
         for {
           _ <- accountGroupsDAO.create(i.accountId, i.groupId)
           _ <- groupInvitationsDAO.update(i.accountId, i.groupId, GroupInvitationStatusType.accepted)
-          _ <- groupsDAO.updateAccountCount(i.groupId, 1L)
           _ <- messagesDAO.create(i.groupId, g.accountCount, MessageType.invitation, i.accountId.toSessionId)
         } yield (Future.value(Unit))
     })

@@ -22,8 +22,8 @@ class AccountsRepository @Inject()(
 
   def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
     accountsDAO.find(accountId, sessionId).flatMap( _ match {
-      case Some((u, r)) =>
-        Future.value(Account(u, r))
+      case Some(a) =>
+        Future.value(a)
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })
@@ -40,7 +40,7 @@ class AccountsRepository @Inject()(
       offset,
       count,
       sessionId
-    ).map(_.map({ case (a, r) => Account(a, r)}))
+    )
   }
 
   def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
