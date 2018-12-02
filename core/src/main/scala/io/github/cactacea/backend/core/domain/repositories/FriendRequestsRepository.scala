@@ -33,31 +33,29 @@ class FriendRequestsRepository @Inject()(
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.existFriendRequest(accountId, sessionId)
       _ <- friendRequestsStatusDAO.delete(accountId, sessionId)
-      _ <- friendRequestsDAO.delete(accountId, sessionId)
-    } yield (Future.value(Unit))
+      r <- friendRequestsDAO.delete(accountId, sessionId)
+    } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
-    friendRequestsDAO.findAll(since, offset, count, received, sessionId).map(_.map({ case (f, a, r) =>
-      FriendRequest(f, a, r)
-    }))
+    friendRequestsDAO.findAll(since, offset, count, received, sessionId)
   }
 
   def accept(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     for {
-      r <- validationDAO.findFriendRequest(friendRequestId, sessionId)
-      _ <- friendsRepository.create(sessionId.toAccountId, r.by.toSessionId)
-      _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, r.by.toSessionId)
-      _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.accepted, sessionId)
-    } yield (Future.value(Unit))
+      f <- validationDAO.findFriendRequest(friendRequestId, sessionId)
+      _ <- friendsRepository.create(sessionId.toAccountId, f.by.toSessionId)
+      _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.by.toSessionId)
+      r <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.accepted, sessionId)
+    } yield (r)
   }
 
   def reject(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     for {
-      r <- validationDAO.findFriendRequest(friendRequestId, sessionId)
-      _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, r.by.toSessionId)
-      _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.rejected, sessionId).map(_ => true)
-    } yield (Future.value(Unit))
+      f <- validationDAO.findFriendRequest(friendRequestId, sessionId)
+      _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.by.toSessionId)
+      r <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.rejected, sessionId).map(_ => true)
+    } yield (r)
   }
 
 }

@@ -5,6 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
+import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Relationships}
 
@@ -49,9 +50,7 @@ class BlocksDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Blocks)]] = {
-
-
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
@@ -62,12 +61,13 @@ class BlocksDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(b => (lift(since).forall(b.id < _)) )
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
-        .map({ case ((b, a), r) => (a, r, b)})
-        .sortBy({ case (_, _, b) => b.id })(Ord.desc)
+        .map({ case ((b, a), r) => (a, r, b.id)})
+        .sortBy({ case (_, _, id) => id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
+
   }
 
 }

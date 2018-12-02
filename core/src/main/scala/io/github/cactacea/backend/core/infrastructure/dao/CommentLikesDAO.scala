@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
+import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, CommentLikeId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -88,10 +89,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
               since: Option[Long],
               offset: Int,
               count: Int,
-              sessionId: SessionId): Future[List[(Accounts, Option[Relationships], CommentLikes)]] = {
-
-
-
+              sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -104,12 +102,12 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         ).isEmpty)
         .join(query[Accounts]).on((cf, a) => a.id == cf.by)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((c, a), r) => (a, r, c)})
-        .sortBy({ case (_, _, c) => c.id })(Ord.desc)
+        .map({ case ((c, a), r) => (a, r, c.id)})
+        .sortBy({ case (_, _, id) => id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
   }
 

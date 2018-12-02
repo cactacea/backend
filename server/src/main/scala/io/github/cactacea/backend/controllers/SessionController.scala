@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
+import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
@@ -206,6 +207,7 @@ class SessionController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
+        request.sortType.getOrElse(FriendsSortType.friendsAt),
         SessionContext.id
       )
     }

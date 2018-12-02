@@ -23,7 +23,7 @@ class GroupAccountsRepository @Inject()(
     for {
       g <- validationDAO.findGroup(groupId)
       _ <- validationDAO.hasJoinAuthority(g, sessionId)
-      r <- groupAccountsDAO.findAll(groupId, since, offset, count).map(_.map({ case (a, r, ag) => Account(a, r, ag)}))
+      r <- groupAccountsDAO.findAll(groupId, since, offset, count)
     } yield (r)
   }
 
@@ -35,7 +35,6 @@ class GroupAccountsRepository @Inject()(
       _ <- validationDAO.hasJoinAuthority(g, sessionId)
       _ <- validationDAO.checkGroupAccountsCount(groupId)
       _ <- accountGroupsDAO.create(accountId, groupId)
-      _ <- groupsDAO.updateAccountCount(groupId, 1L)
       _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
       _ <- messagesDAO.create(groupId, g.accountCount, MessageType.joined, sessionId)
     } yield (Future.value(Unit))
@@ -50,7 +49,6 @@ class GroupAccountsRepository @Inject()(
       _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
       _ <- validationDAO.checkGroupAccountsCount(groupId)
       _ <- accountGroupsDAO.create(accountId, groupId)
-      _ <- groupsDAO.updateAccountCount(groupId, 1L)
       _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
       _ <- messagesDAO.create(groupId, g.accountCount, MessageType.joined, accountId.toSessionId)
     } yield (Future.value(Unit))
@@ -73,7 +71,6 @@ class GroupAccountsRepository @Inject()(
         } yield (Future.value(Unit)))
       } else {
         (for {
-          _ <- groupsDAO.updateAccountCount(groupId, -1L)
           _ <- messagesDAO.create(groupId, g.accountCount, MessageType.left, accountId.toSessionId).map(_ => true)
         } yield (Future.value(Unit)))
       }
@@ -99,7 +96,6 @@ class GroupAccountsRepository @Inject()(
         } yield (Future.value(Unit)))
       } else {
         (for {
-          _ <- groupsDAO.updateAccountCount(groupId, -1L)
           _ <- messagesDAO.create(groupId, g.accountCount, MessageType.left, accountId.toSessionId).map(_ => true)
         } yield (Future.value(Unit)))
       }

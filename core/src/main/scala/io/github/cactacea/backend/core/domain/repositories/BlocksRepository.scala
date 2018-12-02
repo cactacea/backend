@@ -18,7 +18,12 @@ class BlocksRepository @Inject()(
                                 ) {
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    blocksDAO.findAll(since, offset, count, sessionId).map(_.map({ case (a, r, b) => Account(a, r, b)}))
+    blocksDAO.findAll(
+      since,
+      offset,
+      count,
+      sessionId
+    )
   }
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

@@ -61,26 +61,23 @@ class FeedsRepository @Inject()(
       _ <- validationDAO.existAccount(accountId, sessionId)
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       r <- feedsDAO.findAll(accountId, since, offset, count, sessionId)
-        .map(_.map({ case (f, ft, m) => Feed(f, ft, m)}))
     } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
     for {
       r <- accountFeedsDAO.findAll(since, offset, count, privacyType, sessionId)
-        .map(_.map(t => Feed(t._2, t._3, t._4, t._5, t._6)))
     } yield (r)
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     feedsDAO.findAll(since, offset, count, sessionId)
-      .map(_.map({ case (f, ft, m) => Feed(f, ft, m)}))
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {
     feedsDAO.find(feedId, sessionId).flatMap(_ match {
-      case Some((f, ft, m, a, r)) =>
-        Future.value(Feed(f, ft, m, a, r))
+      case Some(f) =>
+        Future.value(f)
       case None =>
         Future.exception(CactaceaException(FeedNotFound))
     })

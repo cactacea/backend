@@ -18,14 +18,13 @@ case class Comment(
 object Comment {
 
   def apply(c: Comments, a: Accounts, r: Option[Relationships]): Comment = {
-    val account = Account(a, r)
     c.contentStatus match {
       case ContentStatusType.rejected =>
         Comment(
           id              = c.id,
           replyId         = c.replyId,
           message         = "",
-          account         = account,
+          account         = Account(a, r),
           likeCount       = 0L,
           contentWarning  = false,
           contentDeleted  = true,
@@ -37,7 +36,7 @@ object Comment {
           id              = c.id,
           replyId         = c.replyId,
           message         = c.message,
-          account         = account,
+          account         = Account(a, r),
           likeCount       = c.likeCount,
           contentWarning  = c.contentWarning,
           contentDeleted  = false,

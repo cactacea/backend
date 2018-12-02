@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -37,7 +38,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
               offset: Int,
               count: Int,
               privacyType: Option[FeedPrivacyType],
-              sessionId: SessionId): Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
+              sessionId: SessionId): Future[List[Feed]] = {
 
     val by = sessionId.toAccountId
     val q = quote {
@@ -51,18 +52,18 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
         f <- query[Feeds]
           .join(f => f.id == af.feedId)
           .filter(f => lift(privacyType).forall(_ == f.privacyType))
-        a <- query[Accounts]
+        _ <- query[Accounts]
           .join(a => a.id == f.by)
-        r <- query[Relationships]
+        _ <- query[Relationships]
           .leftJoin(r => r.accountId == f.by && r.by == lift(by))
-      } yield (af, f, a, r)
+      } yield (af, f)
     }
     run(q).flatMap(findTagsAndImages(_))
 
   }
 
-  private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds, Accounts, Option[Relationships])])
-                : Future[List[(AccountFeeds, Feeds, List[FeedTags], List[Mediums], Accounts, Option[Relationships])]] = {
+  private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds)])
+                : Future[List[Feed]] = {
     val feedIds = feeds.map(_._2.id)
 
     (for {
@@ -70,10 +71,10 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
       mediums <- feedMediumDAO.findAll(feedIds)
     } yield (tags, mediums)).map {
       case (tags, mediums) =>
-        feeds.map({ case (af, f, a, r) =>
+        feeds.map({ case (af, f) =>
           val tag = tags.filter(_.feedId == f.id)
           val image = mediums.filter({ case (id, _) => id == f.id }).map(_._2)
-          (af, f, tag, image, a, r)
+          Feed(f, tag, image, af.feedId.value)
         })
     }
   }

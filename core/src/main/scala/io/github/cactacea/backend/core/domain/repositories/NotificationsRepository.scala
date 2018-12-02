@@ -4,7 +4,7 @@ import java.util.Locale
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{DeepLinkService, NotificationMessagesService}
+import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.domain.enums.NotificationType
 import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.infrastructure.dao._
@@ -17,8 +17,7 @@ class NotificationsRepository @Inject()(
                                          groupInvitationsDAO: GroupInvitationsDAO,
                                          feedsDAO: FeedsDAO,
                                          commentsDAO: CommentsDAO,
-                                         deepLinkService: DeepLinkService,
-                                         notificationMessagesService: NotificationMessagesService
+                                         deepLinkService: DeepLinkService
                                        ) {
 
   def createFeed(id: FeedId, accountIds: List[AccountId]): Future[Unit] = {
@@ -76,11 +75,7 @@ class NotificationsRepository @Inject()(
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, locales: Seq[Locale], sessionId: SessionId): Future[List[Notification]] = {
-    notificationsDAO.findAll(since, offset, count, sessionId).map(_.map({ case (n, a, r) =>
-      val displayName = r.map(_.displayName).getOrElse(a.accountName)
-      val message = notificationMessagesService.getNotificationMessage(n.notificationType, locales, displayName)
-      Notification(n, message)
-    }))
+    notificationsDAO.findAll(since, offset, count, locales, sessionId)
   }
 
   def updateReadStatus(notifications: List[Notification], sessionId: SessionId): Future[Unit] = {

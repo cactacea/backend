@@ -17,8 +17,8 @@ class CommentLikesDAOSpec extends DAOSpec {
     val sessionAccount4 = createAccount("CommentLikesDAOSpec3")
     val sessionAccount5 = createAccount("CommentLikesDAOSpec4")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
     val mediums1 = List(medium1.id, medium2.id)
     val tags = List("tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10")
     val feedId = execute(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
@@ -66,8 +66,8 @@ class CommentLikesDAOSpec extends DAOSpec {
     val sessionAccount4 = createAccount("CommentLikesDAOSpec8")
     val sessionAccount5 = createAccount("CommentLikesDAOSpec9")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
     val mediums1 = List(medium1.id, medium2.id)
     val tags = List("tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10")
     val feedId = execute(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
@@ -95,8 +95,8 @@ class CommentLikesDAOSpec extends DAOSpec {
     val sessionAccount4 = createAccount("CommentLikesDAOSpec13")
     val sessionAccount5 = createAccount("CommentLikesDAOSpec14")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
     val mediums1 = List(medium1.id, medium2.id)
     val tags = List("tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10")
     val feedId = execute(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))
@@ -130,8 +130,8 @@ class CommentLikesDAOSpec extends DAOSpec {
     val sessionAccount4 = createAccount("CommentLikesDAOSpec18")
     val sessionAccount5 = createAccount("CommentLikesDAOSpec19")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
     val mediums1 = List(medium1.id, medium2.id)
     val tags = List("tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10")
     val feedId = execute(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))

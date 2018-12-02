@@ -20,7 +20,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
-    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId, account1.id.toSessionId))
     execute(pushNotificationSettingDAO.create(false, false, false, false, true, false, account1.id.toSessionId))
     execute(devicesDAO.create(udid, DeviceType.ios, None, account1.id.toSessionId))
@@ -45,12 +45,12 @@ class PushNotificationsDAOSPec extends DAOSpec {
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 
-    val groupId = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, 0L, sessionAccount.id.toSessionId))
+    val groupId = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, sessionAccount.id.toSessionId))
 
     execute(accountGroupsDAO.create(account1.id, groupId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId))
 
-    val (messageId, _) = execute(messagesDAO.create(groupId, Some("new message"), 1, None, sessionAccount.id.toSessionId))
+    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
     execute(accountMessagesDAO.create(groupId, messageId, account1.id.toSessionId))
     execute(pushNotificationSettingDAO.create(false, false, false, true, false, false, account1.id.toSessionId))
     execute(devicesDAO.create(udid, DeviceType.ios, None, account1.id.toSessionId))
@@ -73,9 +73,9 @@ class PushNotificationsDAOSPec extends DAOSpec {
     val sessionAccount4 = createAccount("PushNotificationsDAOSPec8")
     val sessionAccount5 = createAccount("PushNotificationsDAOSPec9")
     val sessionAccount6 = createAccount("PushNotificationsDAOSPec10")
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
-    val medium3 = this.createMedium(sessionAccount1.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
+    val medium3 = createMedium(sessionAccount1.id)
     val message = "message"
     val mediums = List(medium1.id, medium2.id, medium3.id)
     val tags = List("tag1", "tag2", "tag3")

@@ -2,6 +2,7 @@ package io.github.cactacea.backend.models.requests.session
 
 import com.twitter.finatra.request.QueryParam
 import com.twitter.finatra.validation.Max
+import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.swagger.annotations.ApiModelProperty
 
 case class GetSessionFriends(
@@ -13,5 +14,9 @@ case class GetSessionFriends(
 
                             @ApiModelProperty(value = "Maximum number of friends returned on one result page." +
                               " By default the value is 20 entries. The page size can never be larger than 50.")
-                            @QueryParam @Max(50) count: Option[Int]
+                            @QueryParam @Max(50) count: Option[Int],
+
+                            @ApiModelProperty(value = "Friends which sorted by accountName or friendsAt. Default is friendsAt.")
+                            sortType: Option[FriendsSortType]
+
                           )

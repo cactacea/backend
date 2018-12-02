@@ -15,8 +15,8 @@ class FeedReportsDAOSpec extends DAOSpec {
     val sessionAccount2 = createAccount("FeedReportsDAOSpec2")
     val sessionAccount3 = createAccount("FeedReportsDAOSpec3")
 
-    val medium1 = this.createMedium(sessionAccount1.id)
-    val medium2 = this.createMedium(sessionAccount1.id)
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
     val mediums1 = List(medium1.id, medium2.id)
     val tags = List("tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10")
     val feedId = execute(feedsDAO.create("01234567890" * 10, Some(mediums1), Some(tags), FeedPrivacyType.self, true, None, sessionAccount1.id.toSessionId))

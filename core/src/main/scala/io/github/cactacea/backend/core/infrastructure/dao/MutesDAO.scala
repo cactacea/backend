@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
+import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Mutes, Relationships}
 
@@ -48,10 +49,7 @@ class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[(Accounts, Option[Relationships], Mutes)]] = {
-
-
-
+  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -61,12 +59,12 @@ class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(m => lift(since).forall(m.id < _))
         .join(query[Accounts]).on((m, a) => a.id == m.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((m, a), r) => (a, r, m)})
-        .sortBy({ case (_, _, m) => m.id })(Ord.desc)
+        .map({ case ((m, a), r) => (a, r, m.id)})
+        .sortBy({ case (_, _, id) => id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q)
+    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
   }
 

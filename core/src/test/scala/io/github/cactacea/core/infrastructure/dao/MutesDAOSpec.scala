@@ -85,14 +85,14 @@ class MutesDAOSpec extends DAOSpec {
     execute(mutesDAO.create(sessionAccount6.id, muteUser.id.toSessionId))
 
     val result1 = execute(mutesDAO.findAll(None, 0, 3, muteUser.id.toSessionId))
-    assert(result1(0)._1.id == sessionAccount6.id)
-    assert(result1(1)._1.id == sessionAccount5.id)
-    assert(result1(2)._1.id == sessionAccount4.id)
+    assert(result1(0).id == sessionAccount6.id)
+    assert(result1(1).id == sessionAccount5.id)
+    assert(result1(2).id == sessionAccount4.id)
 
-    val result2 = execute(mutesDAO.findAll(Some(result1(2)._3.id.value), 0, 3, muteUser.id.toSessionId))
-    assert(result2(0)._1.id == sessionAccount3.id)
-    assert(result2(1)._1.id == sessionAccount2.id)
-    assert(result2(2)._1.id == sessionAccount1.id)
+    val result2 = execute(mutesDAO.findAll(result1(2).next, 0, 3, muteUser.id.toSessionId))
+    assert(result2(0).id == sessionAccount3.id)
+    assert(result2(1).id == sessionAccount2.id)
+    assert(result2(2).id == sessionAccount1.id)
   }
 
 }

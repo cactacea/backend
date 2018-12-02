@@ -4,13 +4,15 @@ import java.util.{Date, TimeZone}
 
 import com.twitter.finagle.mysql
 import com.twitter.inject.domain.WrappedValue
+import io.getquill.context.sql.SqlContext
 import io.getquill.{PluralizedTableNames, _}
 import io.github.cactacea.backend.core.domain.enums._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import org.joda.time.DateTime
 
+
 class DatabaseService(client: OperationType => mysql.Client with mysql.Transactions, timeZone: TimeZone)
-  extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), client, timeZone, timeZone) {
+  extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), client, timeZone, timeZone) with Encoders with Operators {
 
   def this(master: mysql.Client with mysql.Transactions, slave: mysql.Client with mysql.Transactions, timeZone: TimeZone) = {
     this(_ match {
@@ -22,6 +24,31 @@ class DatabaseService(client: OperationType => mysql.Client with mysql.Transacti
   def this(client: mysql.Client with mysql.Transactions,timeZone: TimeZone) = {
     this(_ => client, timeZone)
   }
+
+}
+
+trait Operators {
+  this: SqlContext[_, _] =>
+
+  implicit class StringOperators(left: String) {
+    def lt(right: String) = quote(infix"STRCMP($left, $right) < 0".as[Boolean]) // scalastyle:ignore
+    def lte(right: String) = quote(infix"STRCMP($left, $right) <= 0".as[Boolean]) // scalastyle:ignore
+    def gt(right: String) = quote(infix"STRCMP($left, $right) > 0".as[Boolean]) // scalastyle:ignore
+    def gte(right: String) = quote(infix"STRCMP($left, $right) >= 0".as[Boolean]) // scalastyle:ignore
+  }
+
+  implicit class IdOperators[T <: WrappedValue[Long]](left: T) {
+    def >(right: Long) = quote(infix"$left > $right".as[Boolean]) // scalastyle:ignore
+    def <(right: Long) = quote(infix"$left < $right".as[Boolean]) // scalastyle:ignore
+    def >=(right: Long) = quote(infix"$left >= $right".as[Boolean]) // scalastyle:ignore
+    def <=(right: Long) = quote(infix"$left <= $right".as[Boolean]) // scalastyle:ignore
+  }
+
+
+}
+
+trait Encoders {
+  this: SqlContext[_, _] =>
 
   implicit val datetimeDecode: MappedEncoding[Date, DateTime] = MappedEncoding[Date, DateTime] (date => new DateTime(date.getTime()))
   implicit val datetimeEncode: MappedEncoding[DateTime, Date] = MappedEncoding[DateTime, Date] (dateTime => dateTime.toDate)
@@ -80,16 +107,16 @@ class DatabaseService(client: OperationType => mysql.Client with mysql.Transacti
   implicit val feedPrivacyTypeDecode: MappedEncoding[FeedPrivacyType, Byte] = MappedEncoding[FeedPrivacyType, Byte] (enumValue => enumValue.toValue)
   implicit val feedPrivacyTypeEncode: MappedEncoding[Byte, FeedPrivacyType] = MappedEncoding[Byte, FeedPrivacyType] (long => FeedPrivacyType.forName(long))
   implicit val friendRequestStatusTypeDecode: MappedEncoding[FriendRequestStatusType, Byte]
-                  = MappedEncoding[FriendRequestStatusType, Byte] (enumValue => enumValue.toValue)
+  = MappedEncoding[FriendRequestStatusType, Byte] (enumValue => enumValue.toValue)
   implicit val friendRequestStatusTypeEncode: MappedEncoding[Byte, FriendRequestStatusType]
-                  = MappedEncoding[Byte, FriendRequestStatusType] (long => FriendRequestStatusType.forName(long))
+  = MappedEncoding[Byte, FriendRequestStatusType] (long => FriendRequestStatusType.forName(long))
   implicit val groupAuthorityTypeDecode: MappedEncoding[GroupAuthorityType, Byte] = MappedEncoding[GroupAuthorityType, Byte] (enumValue => enumValue.toValue)
   implicit val groupAuthorityTypeEncode: MappedEncoding[Byte, GroupAuthorityType]
-                  = MappedEncoding[Byte, GroupAuthorityType] (long => GroupAuthorityType.forName(long))
+  = MappedEncoding[Byte, GroupAuthorityType] (long => GroupAuthorityType.forName(long))
   implicit val groupInvitationStatusTypeDecode: MappedEncoding[GroupInvitationStatusType, Byte]
-                  = MappedEncoding[GroupInvitationStatusType, Byte] (enumValue => enumValue.toValue)
+  = MappedEncoding[GroupInvitationStatusType, Byte] (enumValue => enumValue.toValue)
   implicit val groupInvitationStatusTypeEncode: MappedEncoding[Byte, GroupInvitationStatusType]
-                  = MappedEncoding[Byte, GroupInvitationStatusType] (long => GroupInvitationStatusType.forName(long))
+  = MappedEncoding[Byte, GroupInvitationStatusType] (long => GroupInvitationStatusType.forName(long))
   implicit val groupPrivacyTypeDecode: MappedEncoding[GroupPrivacyType, Byte] = MappedEncoding[GroupPrivacyType, Byte] (enumValue => enumValue.toValue)
   implicit val groupPrivacyTypeEncode: MappedEncoding[Byte, GroupPrivacyType] = MappedEncoding[Byte, GroupPrivacyType] (long => GroupPrivacyType.forName(long))
   implicit val mediumTypeDecode: MappedEncoding[MediumType, Byte] = MappedEncoding[MediumType, Byte] (enumValue => enumValue.toValue)
@@ -99,24 +126,18 @@ class DatabaseService(client: OperationType => mysql.Client with mysql.Transacti
   implicit val notificationTypeDecode: MappedEncoding[NotificationType, Byte] = MappedEncoding[NotificationType, Byte] (enumValue => enumValue.toValue)
   implicit val notificationTypeEncode: MappedEncoding[Byte, NotificationType] = MappedEncoding[Byte, NotificationType] (long => NotificationType.forName(long))
   implicit val pushNotificationTypeDecode: MappedEncoding[PushNotificationType, Byte]
-                  = MappedEncoding[PushNotificationType, Byte] (enumValue => enumValue.toValue)
+  = MappedEncoding[PushNotificationType, Byte] (enumValue => enumValue.toValue)
   implicit val pushNotificationTypeEncode: MappedEncoding[Byte, PushNotificationType]
-                  = MappedEncoding[Byte, PushNotificationType] (long => PushNotificationType.forName(long))
+  = MappedEncoding[Byte, PushNotificationType] (long => PushNotificationType.forName(long))
   implicit val reportTypeDecode: MappedEncoding[ReportType, Byte] = MappedEncoding[ReportType, Byte] (enumValue => enumValue.toValue)
   implicit val reportTypeEncode: MappedEncoding[Byte, ReportType] = MappedEncoding[Byte, ReportType] (long => ReportType.forName(long))
   implicit val contentStatusTypeDecode: MappedEncoding[ContentStatusType, Byte] = MappedEncoding[ContentStatusType, Byte] (enumValue => enumValue.toValue)
   implicit val contentStatusTypeEncode: MappedEncoding[Byte, ContentStatusType]
-                  = MappedEncoding[Byte, ContentStatusType] (long => ContentStatusType.forName(long))
+  = MappedEncoding[Byte, ContentStatusType] (long => ContentStatusType.forName(long))
   implicit val deviceTypeDecode: MappedEncoding[DeviceType, Byte] = MappedEncoding[DeviceType, Byte] (enumValue => enumValue.toValue)
   implicit val deviceTypeEncode: MappedEncoding[Byte, DeviceType] = MappedEncoding[Byte, DeviceType] (long => DeviceType.forName(long))
   implicit val activeStatusTypeDecode: MappedEncoding[ActiveStatus, Byte] = MappedEncoding[ActiveStatus, Byte] (enumValue => enumValue.toValue)
   implicit val activeStatusTypeEncode: MappedEncoding[Byte, ActiveStatus] = MappedEncoding[Byte, ActiveStatus] (long => ActiveStatus.forName(long))
 
-  implicit class IdComparison[T <: WrappedValue[Long]](left: T) {
-    def >(right: Long) = quote(infix"$left > $right".as[Boolean]) // scalastyle:ignore
-    def <(right: Long) = quote(infix"$left < $right".as[Boolean]) // scalastyle:ignore
-    def >=(right: Long) = quote(infix"$left >= $right".as[Boolean]) // scalastyle:ignore
-    def <=(right: Long) = quote(infix"$left <= $right".as[Boolean]) // scalastyle:ignore
-  }
-
 }
+
