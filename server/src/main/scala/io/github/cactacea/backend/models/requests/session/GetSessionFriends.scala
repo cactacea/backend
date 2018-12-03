@@ -17,6 +17,6 @@ case class GetSessionFriends(
                             @QueryParam @Max(50) count: Option[Int],
 
                             @ApiModelProperty(value = "Friends which sorted by accountName or friendsAt. Default is friendsAt.")
-                            sortType: Option[FriendsSortType]
+                            @QueryParam sortType: Option[FriendsSortType]
 
                           )
