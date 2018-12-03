@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.components.interfaces.StorageService
 import io.github.cactacea.backend.core.application.components.services.DefaultStorageService
 
-// Do not use this service with default settings.
+// Do not use for production service.
 
 object DefaultStorageModule extends TwitterModule {
 
