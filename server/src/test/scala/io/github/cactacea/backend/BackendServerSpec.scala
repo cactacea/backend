@@ -94,7 +94,7 @@ class BackendServerSpec extends ServerSpec {
 
         // Get Accounts
         val a = GetAccounts(Some("BackendServerSpec"), None, None, None)
-        val b = get(s"/accounts${a.displayName.map(name => "?displayName=" + name).getOrElse("")}", signInAuth.accessToken)
+        val b = get(s"/accounts${a.accountName.map(name => "?accountName=" + name).getOrElse("")}", signInAuth.accessToken)
         val accounts = mapper.parse[List[Account]](b.getContentString())
         assert(accounts.size == (accountsCount - 1))
 
