@@ -42,7 +42,7 @@ class AccountsController @Inject()(
 
     } { request: GetAccounts =>
       accountsService.find(
-        request.displayName,
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
