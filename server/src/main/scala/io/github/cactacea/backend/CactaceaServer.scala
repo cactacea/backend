@@ -30,7 +30,7 @@ class CactaceaServer extends BaseServer {
       .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, CommentLikesController]
       .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, FeedsController]
       .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, FriendsController]
-      .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, FollowersController]
+      .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, FollowsController]
       .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, GroupsController]
       .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, InvitationsController]
       .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, MediumsController]

@@ -14,7 +14,7 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class FollowersController @Inject()(
+class FollowsController @Inject()(
                                      @Flag("cactacea.api.prefix") apiPrefix: String,
                                      followsService: FollowsService,
                                      s: Swagger) extends CactaceaController {
