@@ -21,6 +21,8 @@ object CactaceaErrors {
   final val c40012 = "40012"
   final val c40013 = "40013"
   final val c40014 = "40014"
+  final val c40015 = "40015"
+  final val c40016 = "40016"
 
   final val c40020 = "40020"
   final val c40021 = "40021"
@@ -66,8 +68,10 @@ object CactaceaErrors {
   final val m40010 = "Can not specify myself."
   final val m40011 = "Password not matched."
   final val m40012 = "Invalid Account name or password."
-  final val m40013 = "Maximum number of group accounts reached."
-  final val m40014 = "Not acceptable mime type found."
+  final val m40013 = "File size limit exceeded error."
+  final val m40014 = "File count limit exceeded error."
+  final val m40015 = "Upload media not found."
+  final val m40016 = "Not acceptable mime type found."
 
   final val m40020 = "Account already followed."
   final val m40021 = "Account not followed."
@@ -166,14 +170,24 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40012)  override val message: String = m40012
   }
 
-  final object GroupAccountsCountLimitError extends BadRequest {
+  final object FileSizeLimitExceededError extends BadRequest {
     @ApiModelProperty(example = c40013)  override val code: Int =       c40013.toInt
     @ApiModelProperty(example = m40013)  override val message: String = m40013
   }
 
-  final object NotAcceptableMimeTypeFound extends BadRequest {
+  final object FileCountLimitExceededError extends BadRequest {
     @ApiModelProperty(example = c40014)  override val code: Int =       c40014.toInt
     @ApiModelProperty(example = m40014)  override val message: String = m40014
+  }
+
+  final object UploadFileNotFound extends BadRequest {
+    @ApiModelProperty(example = c40015)  override val code: Int =       c40015.toInt
+    @ApiModelProperty(example = m40015)  override val message: String = m40015
+  }
+
+  final object NotAcceptableMimeTypeFound extends BadRequest {
+    @ApiModelProperty(example = c40016)  override val code: Int =       c40016.toInt
+    @ApiModelProperty(example = m40016)  override val message: String = m40016
   }
 
   final object AccountAlreadyFollowed extends BadRequest {

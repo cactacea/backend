@@ -17,7 +17,7 @@ class DemoServerSpec extends FeatureTest
   with SessionsHelper {
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new DemoServer
+    twitterServer = new CactaceaServer
   )
 
   override val injector =

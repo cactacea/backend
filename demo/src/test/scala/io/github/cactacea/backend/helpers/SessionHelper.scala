@@ -12,7 +12,7 @@ trait SessionHelper extends CommonHelper {
   def signOut(accessToken: String): Response = {
     server.httpDelete(
       path = "/session",
-      headers = headers()
+      headers = headers(accessToken)
     )
   }
 
