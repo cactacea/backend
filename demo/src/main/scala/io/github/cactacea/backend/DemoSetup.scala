@@ -26,33 +26,4 @@ object DemoSetup {
 
   }
 
-//  def setupImages(localPath: String): Unit = {
-//
-//    val uri = getClass.getResource(localPath).toURI
-//    var myPath: Path = null
-//
-//    if (uri.getScheme == "jar") {
-//      val fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap[String, Object]())
-//      myPath = fileSystem.getPath("/regression/");
-//    } else {
-//      myPath = Paths.get(uri);
-//    }
-//
-//    val walk = Files.walk(myPath, 1)
-//    val it = walk.sorted().iterator()
-//    it.next()//最初の一つ目はregressionフォルダ自体なので飛ばす
-//    while (it.hasNext) {
-//      val path = it.next()
-//      println(path.toAbsolutePath.toString)
-//    }
-//
-//  }
-//
-//  private def copyFile(file: Path, localPath: String): Unit = {
-//    val origin = Paths.get(file.toUri) // Paths.get(this.getClass.getClassLoader.getResource(s"demo/images/$resourceName").toURI)
-//    val tmp = Paths.get(s"$localPath/${file.getFileName}")
-//    Files.deleteIfExists(tmp)
-//    Files.copy(origin, tmp)
-//  }
-
 }

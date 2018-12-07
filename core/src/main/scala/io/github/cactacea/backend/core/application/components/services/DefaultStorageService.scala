@@ -39,7 +39,7 @@ class DefaultStorageService(val localPath: String) extends StorageService {
       Future.exception(CactaceaException(UploadFileNotFound))
     } else {
       val mediums = multiParams.toList.flatMap({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) })
-      if (mediums.filter(_.data.size.megabyte > 1.megabytes).size > 0) {
+      if (mediums.filter(_.data.size.bytes > 1.megabytes).size > 0) {
         Future.exception(CactaceaException(FileSizeLimitExceededError))
       } else {
         Future.traverseSequentially(mediums) { medium =>
@@ -53,7 +53,10 @@ class DefaultStorageService(val localPath: String) extends StorageService {
             } {
               out.write(medium.data)
             }
-            StorageFile(localPath, url, medium.width, medium.height, medium.data.length, medium.mediumType)
+            println("*********************")
+            println(filePath)
+            println("*********************")
+            StorageFile(filePath, url, medium.width, medium.height, medium.data.length, medium.mediumType)
           }
         }
       }

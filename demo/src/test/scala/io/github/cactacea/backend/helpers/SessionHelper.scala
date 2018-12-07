@@ -1,10 +1,9 @@
 package io.github.cactacea.backend.helpers
 
-import java.nio.file.{Files, Paths}
-
-import com.twitter.finagle.http.{FileElement, Response}
-import com.twitter.io.Buf
+import com.twitter.finagle.http.Response
 import io.github.cactacea.backend.DemoServerSpec
+import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
+import io.github.cactacea.backend.models.requests.session.PutSessionProfileImage
 
 trait SessionHelper extends CommonHelper {
   self: DemoServerSpec =>
@@ -16,16 +15,13 @@ trait SessionHelper extends CommonHelper {
     )
   }
 
-  def updateProfileImage(resourceName: String, accessToken: String): Response = {
-    val bytes = Files.readAllBytes(Paths.get(this.getClass.getClassLoader.getResource(resourceName).toURI))
-    server.httpMultipartFormPost("/session/profile_image",
-      params = Seq(
-        FileElement("file",
-          Buf.ByteArray.Owned(bytes),
-          Some("image/jpeg"),
-          Some(resourceName))
-      ),
-      headers = headers(accessToken)
+  def updateProfileImage(id: MediumId, accessToken: String): Response = {
+    val request = PutSessionProfileImage(id)
+    val body = mapper.writePrettyString(request)
+    server.httpPost(
+      path = s"/session/profile_image",
+      headers = headers(accessToken),
+      postBody = body
     )
   }
 
