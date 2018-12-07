@@ -40,7 +40,7 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .formParam[File](name = "file", description = "Upload a medium file", true)
         .responseWith[Array[MediumCreated]](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason,
-            Some(CactaceaErrors(Seq(NotAcceptableMimeTypeFound, UploadFileNotFound, FileCountLimitExceededError, FileSizeLimitExceededError))))
+            Some(CactaceaErrors(Seq(NotAcceptableMimeTypeFound, UploadFileNotFound, FileSizeLimitExceededError))))
 
     } { request: Request =>
       mediumsService.create(

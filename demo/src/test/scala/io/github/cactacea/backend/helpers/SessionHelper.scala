@@ -18,10 +18,10 @@ trait SessionHelper extends CommonHelper {
   def updateProfileImage(id: MediumId, accessToken: String): Response = {
     val request = PutSessionProfileImage(id)
     val body = mapper.writePrettyString(request)
-    server.httpPost(
+    server.httpPut(
       path = s"/session/profile_image",
       headers = headers(accessToken),
-      postBody = body
+      putBody = body
     )
   }
 

@@ -1,7 +1,6 @@
 package io.github.cactacea.backend
 
 
-import java.nio.file.{Files, Paths}
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.inject.annotations.Flag
@@ -17,6 +16,7 @@ class DemoSetupHandler  @Inject()(@Flag("storage.localPath") localPath: String) 
   }
 
   def setupImages(): Unit = {
+    import java.nio.file.{Files, Paths}
 
     val uri = getClass.getResource("/demo/images").toURI
     val resourcePath = Paths.get(uri)
