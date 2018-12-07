@@ -9,9 +9,6 @@ class DemoSetupHandler  @Inject()(@Flag("storage.localPath") localPath: String) 
 
   override def handle(): Unit = {
     DemoSetup.migrate()
-    DemoSetup.setupData(localPath)
   }
-
-
 
 }

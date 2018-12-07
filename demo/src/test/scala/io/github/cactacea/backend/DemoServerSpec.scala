@@ -6,6 +6,7 @@ import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.application.components.services.DefaultStorageService
 import io.github.cactacea.backend.helpers._
 
 @Singleton
@@ -17,7 +18,7 @@ class DemoServerSpec extends FeatureTest
   with SessionsHelper {
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new CactaceaServer
+    twitterServer = new DemoServer
   )
 
   override val injector =
@@ -38,9 +39,12 @@ class DemoServerSpec extends FeatureTest
     ).create
 
   val mapper = injector.instance[FinatraObjectMapper]
+  val storageService = injector.instance[DefaultStorageService]
 
 
   test("create demo data") {
+
+    cleanUp()
 
     signUp("ito_hirobumi1", "Password_2018")
     signUp("kuroda_kiyotaka", "Password_2018")
@@ -62,5 +66,17 @@ class DemoServerSpec extends FeatureTest
     signUp("tanaka_giichi", "Password_2018")
 
   }
+
+    def cleanUp(): Unit = {
+      val localPath = "src/main/resources/demo/images/"
+      import java.nio.file.{Files, Paths}
+      val path = Paths.get(localPath)
+      println(path.toAbsolutePath)
+      val files = Files.list(path)
+      files.forEach(f => Files.deleteIfExists(f))
+      if (!Files.exists(path)) {
+        Files.createDirectory(path)
+      }
+    }
 
 }
