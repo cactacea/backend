@@ -28,9 +28,9 @@ class FriendRequestsService @Inject()(
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- friendRequestsRepository.delete(accountId, sessionId)
+        _ <- friendRequestsRepository.delete(accountId, sessionId)
         _ <- actionService.friendRequestDeleted(accountId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
@@ -41,18 +41,18 @@ class FriendRequestsService @Inject()(
   def accept(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- friendRequestsRepository.accept(friendRequestId, sessionId)
+        _ <- friendRequestsRepository.accept(friendRequestId, sessionId)
         _ <- actionService.friendRequestAccepted(friendRequestId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def reject(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- friendRequestsRepository.reject(friendRequestId, sessionId)
+        _ <- friendRequestsRepository.reject(friendRequestId, sessionId)
         _ <- actionService.friendRequestRejected(friendRequestId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

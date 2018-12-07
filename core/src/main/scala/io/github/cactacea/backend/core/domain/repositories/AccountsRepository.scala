@@ -59,8 +59,8 @@ class AccountsRepository @Inject()(
   def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notExistAccountName(accountName)
-      r <- accountsDAO.updateAccountName(accountName, sessionId)
-    } yield (r)
+      _ <- accountsDAO.updateAccountName(accountName, sessionId)
+    } yield (Unit)
   }
 
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {

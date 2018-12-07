@@ -45,15 +45,15 @@ class FeedsRepository @Inject()(
     for {
       _ <- validationDAO.existMediums(ids, sessionId)
       _ <- validationDAO.existFeed(feedId, sessionId)
-      r <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
-    } yield (r)
+      _ <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
+    } yield (Unit)
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.existFeed(feedId, sessionId)
-      r <- feedsDAO.delete(feedId, sessionId)
-    } yield (r)
+      _ <- feedsDAO.delete(feedId, sessionId)
+    } yield (Unit)
   }
 
   def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {

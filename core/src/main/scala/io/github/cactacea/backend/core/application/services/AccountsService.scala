@@ -45,9 +45,9 @@ class AccountsService @Inject()(
   def update(accountName: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- accountsRepository.updateAccountName(accountName, sessionId)
+        _ <- accountsRepository.updateAccountName(accountName, sessionId)
         _ <- actionService.accountNameUpdated(accountName, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
@@ -60,9 +60,9 @@ class AccountsService @Inject()(
 
     db.transaction {
       for {
-        r <- accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId)
+        _ <- accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId)
         _ <- actionService.profileUpdated(displayName, web, birthday, location, bio, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
@@ -70,8 +70,8 @@ class AccountsService @Inject()(
     db.transaction {
       for {
         uri <- accountsRepository.updateProfileImage(Some(profileImage), sessionId)
-        r <- actionService.profileImageUpdated(uri, sessionId)
-      } yield (r)
+        _ <- actionService.profileImageUpdated(uri, sessionId)
+      } yield (Unit)
     }
   }
 
@@ -79,17 +79,17 @@ class AccountsService @Inject()(
     db.transaction {
       for {
         _ <- accountsRepository.updateProfileImage(None, sessionId)
-        r <- actionService.profileImageUpdated(None, sessionId)
-      } yield (r)
+        _ <- actionService.profileImageUpdated(None, sessionId)
+      } yield (Unit)
     }
   }
 
   def update(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- accountsRepository.updatePassword(oldPassword, newPassword, sessionId)
+        _ <- accountsRepository.updatePassword(oldPassword, newPassword, sessionId)
         _ <- actionService.passwordUpdated(sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
@@ -100,9 +100,9 @@ class AccountsService @Inject()(
   def report(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId)
+        _ <- reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId)
         _ <- actionService.accountReported(accountId, reportType, reportContent, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

@@ -33,8 +33,8 @@ class FollowsRepository @Inject()(
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistFollow(accountId, sessionId)
       _ <- followsDAO.create(accountId, sessionId)
-      r <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
-    } yield (r)
+      _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
+    } yield (Unit)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -46,8 +46,8 @@ class FollowsRepository @Inject()(
       _ <- followsDAO.delete(accountId, sessionId)
       _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.follows, sessionId)
-      r <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.followers, accountId.toSessionId)
-    } yield (r)
+      _ <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.followers, accountId.toSessionId)
+    } yield (Unit)
   }
 
 }

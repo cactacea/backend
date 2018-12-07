@@ -75,8 +75,8 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   def delete(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     for {
       _ <- updateAccountCount(groupId, -1L)
-      r <- delete2(accountId, groupId)
-    } yield (r)
+      _ <- delete2(accountId, groupId)
+    } yield (Unit)
   }
 
   private def delete2(accountId: AccountId, groupId: GroupId): Future[Unit] = {

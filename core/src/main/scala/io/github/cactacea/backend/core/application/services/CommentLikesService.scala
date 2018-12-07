@@ -18,18 +18,18 @@ class CommentLikesService @Inject()(
   def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- commentLikesRepository.create(commentId, sessionId)
+        _ <- commentLikesRepository.create(commentId, sessionId)
         _ <- actionService.commentLiked(commentId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- commentLikesRepository.delete(commentId, sessionId)
+        _ <- commentLikesRepository.delete(commentId, sessionId)
         _ <- actionService.commentUnLiked(commentId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

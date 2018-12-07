@@ -65,8 +65,8 @@ class CommentsDAO @Inject()(
           _ <- updateCommentCount(feedId, -1L)
           _ <- deleteCommentReports(commentId)
           _ <- deleteCommentLikes(commentId)
-          r <- deleteComments(commentId, by)
-        } yield (r)
+          _ <- deleteComments(commentId, by)
+        } yield (Unit)
       case None =>
         Future.Unit
     })

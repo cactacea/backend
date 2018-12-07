@@ -22,36 +22,36 @@ class GroupAccountsService @Inject()(
   def create(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- groupAccountsRepository.create(groupId, sessionId)
+        _ <- groupAccountsRepository.create(groupId, sessionId)
         _ <- injectionService.accountGroupJoined(groupId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- groupAccountsRepository.create(accountId, groupId, sessionId)
+        _ <- groupAccountsRepository.create(accountId, groupId, sessionId)
         _ <- injectionService.accountGroupJoined(accountId, groupId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- groupAccountsRepository.delete(groupId, sessionId)
+        _ <- groupAccountsRepository.delete(groupId, sessionId)
         _ <- injectionService.accountGroupLeft(groupId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def delete(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- groupAccountsRepository.delete(accountId, groupId, sessionId)
+        _ <- groupAccountsRepository.delete(accountId, groupId, sessionId)
         _ <- injectionService.accountGroupLeft(accountId, groupId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

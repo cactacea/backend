@@ -18,18 +18,18 @@ class FollowsService @Inject()(
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- followerRepository.create(accountId, sessionId)
+        _ <- followerRepository.create(accountId, sessionId)
         _ <- actionService.accountFollowed(accountId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- followerRepository.delete(accountId, sessionId)
+        _ <- followerRepository.delete(accountId, sessionId)
         _ <- actionService.accountUnFollowed(accountId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

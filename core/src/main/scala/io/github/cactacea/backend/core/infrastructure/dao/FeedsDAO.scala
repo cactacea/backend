@@ -76,12 +76,12 @@ class FeedsDAO @Inject()(
 
     val by = sessionId.toAccountId
     for {
-      r <- updateFeeds(feedId, message, privacyType, contentWarning, expiration, by)
+      _ <- updateFeeds(feedId, message, privacyType, contentWarning, expiration, by)
       _ <- feedTagsDAO.delete(feedId)
       _ <- feedMediumDAO.delete(feedId)
       _ <- feedTagsDAO.create(feedId, tags)
       _ <- feedMediumDAO.create(feedId, mediumIds)
-    } yield (r)
+    } yield (Unit)
   }
 
   private def updateFeeds(feedId: FeedId,

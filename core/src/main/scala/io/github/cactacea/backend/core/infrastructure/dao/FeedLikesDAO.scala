@@ -17,8 +17,8 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- insertFeedLikes(feedId, sessionId)
-      r <- updateLikeCount(feedId, 1L)
-    } yield (r)
+      _ <- updateLikeCount(feedId, 1L)
+    } yield (Unit)
   }
 
   private def insertFeedLikes(feedId: FeedId, sessionId: SessionId): Future[FeedLikeId] = {
@@ -58,8 +58,8 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- deleteFeedLikes(feedId, sessionId)
-      r <- updateLikeCount(feedId, -1L)
-    } yield (r)
+      _ <- updateLikeCount(feedId, -1L)
+    } yield (Unit)
   }
 
   private def deleteFeedLikes(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
