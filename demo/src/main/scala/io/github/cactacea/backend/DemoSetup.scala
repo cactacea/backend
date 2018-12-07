@@ -18,7 +18,7 @@ object DemoSetup {
     val flyway = Flyway.configure()
       .dataSource(url, user, password)
       .locations("classpath:db/migration/cactacea")
-      .placeholders(Map("schema" -> database).asJava)
+      .placeholders(Map("schema" -> database, "hostName" -> Config.storage.hostName).asJava)
       .load()
 
     flyway.clean()

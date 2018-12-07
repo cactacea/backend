@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.application.components.services.DefaultSt
 
 object DefaultStorageModule extends TwitterModule {
 
-  flag(name = "storage.localPath", default = "/tmp/io.github.cactacea.backend.demo", "local volume path to store uploaded user's media.")
+  flag(name = "storage.localPath", default = "/tmp/io.github.cactacea.backend.demo/", "local volume path to store uploaded user's media.")
 
   override def configure() {
     bindSingleton[StorageService].to(classOf[DefaultStorageService])
