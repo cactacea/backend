@@ -54,9 +54,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
         .filter(f => f.accountId == lift(by))
         .filter(f => lift(since).forall(f.feedId < _ ))
         .join(query[Feeds])
-        .on({ case (af, f) => af.feedId == f.id })
-        .filter({ case (_, f) => lift(privacyType).forall(_ == f.privacyType) })
-        .filter({ case (_, f) =>
+        .on({ case (af, f) => af.feedId == f.id && lift(privacyType).forall(_ == f.privacyType) &&
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
               (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
@@ -71,7 +69,9 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
         .take(lift(count))
 
     }
-    run(q).flatMap(findTagsAndImages(_))
+    run(q).flatMap(
+      findTagsAndImages(_)
+    )
   }
 
   private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds, Accounts, Option[Relationships])])

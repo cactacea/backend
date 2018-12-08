@@ -140,8 +140,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(ff => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
         ).isEmpty)
-        .join(query[Feeds]).on((ff, f) => f.id == ff.feedId)
-        .filter({ case (_, f) =>
+        .join(query[Feeds]).on({(ff, f) => f.id == ff.feedId &&
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
               (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
@@ -172,8 +171,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(ff => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
         ).isEmpty)
-        .join(query[Feeds]).on((ff, f) => f.id == ff.feedId)
-        .filter({ case (_, f) =>
+        .join(query[Feeds]).on({(ff, f) => f.id == ff.feedId &&
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
               (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
