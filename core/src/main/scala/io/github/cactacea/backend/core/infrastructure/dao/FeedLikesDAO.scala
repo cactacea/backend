@@ -140,13 +140,14 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(ff => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
         ).isEmpty)
-        .join(query[Feeds]).on((ff, f) => f.id == ff.feedId &&
-        ((f.privacyType == lift(FeedPrivacyType.everyone))
-        || (f.privacyType == lift(FeedPrivacyType.followers)
-          && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
-        || (f.privacyType == lift(FeedPrivacyType.friends)
-          && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
-        || (f.by == lift(by))))
+        .join(query[Feeds]).on((ff, f) => f.id == ff.feedId)
+        .filter({ case (_, f) =>
+          (f.privacyType == lift(FeedPrivacyType.everyone)) ||
+            (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
+              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+            ).nonEmpty) ||
+            (f.by == lift(by))})
         .map({case (ff, f) => (f, ff)})
         .sortBy({ case (ff, _) => ff.id})(Ord.desc)
         .drop(lift(offset))

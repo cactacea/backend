@@ -17,9 +17,16 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
     val by = sessionId.toAccountId
     val q = quote {
       infix"""
-           insert into account_feeds (account_id, feed_id, `by`, notified, posted_at)
-           select `by`, ${lift(feedId)}, account_id, false as notified, CURRENT_TIMESTAMP from relationships where account_id = ${lift(by)} and follower = true
-          """.as[Action[Long]]
+        insert into account_feeds (account_id, feed_id, `by`, notified, posted_at)
+        select r.`by`, ${lift(feedId)}, r.account_id, false as notified, CURRENT_TIMESTAMP
+        from relationships r, feeds f
+        where f.id = ${lift(feedId)}
+        and r.account_id = ${lift(by)}
+        and (
+           (r.follower = true and f.privacy_type = 1)
+        or (r.friend = true and f.privacy_type = 2)
+            )
+        """.as[Action[Long]]
     }
     run(q).map(_ => Unit)
   }
@@ -51,11 +58,11 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
         .filter({ case (_, f) => lift(privacyType).forall(_ == f.privacyType) })
         .filter({ case (_, f) =>
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
-          (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-            (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-            (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
-          ).nonEmpty) ||
-          (f.by == lift(by))})
+            (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
+              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+            ).nonEmpty) ||
+            (f.by == lift(by))})
         .join(query[Accounts]).on({ case ((_, f), a) => a.id == f.by })
         .leftJoin(query[Relationships]).on({ case (((_, f), _), r) => r.accountId == f.by && r.by == lift(by) })
         .map({ case (((af, f), a), r) => (af, f, a, r) })

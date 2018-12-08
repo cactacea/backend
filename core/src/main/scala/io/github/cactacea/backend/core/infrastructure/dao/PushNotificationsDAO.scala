@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.infrastructure.results.PushNotifications
@@ -19,14 +18,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         .filter(af => query[Relationships].filter(r => r.accountId == af.by && r.by == af.accountId && r.mute == true).isEmpty)
         .filter(af => query[PushNotificationSettings].filter(p => p.accountId == af.accountId && p.followerFeed == true).nonEmpty)
         .leftJoin(query[Relationships]).on((af, r) => r.accountId == af.by && r.by == af.accountId)
-        .join(query[Feeds]).on({ case ((af, _), f) =>
-        f.id == af.feedId &&
-          ((f.privacyType == lift(FeedPrivacyType.everyone))
-            || (f.privacyType == lift(FeedPrivacyType.followers)
-                && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.follow == true)).nonEmpty))
-            || (f.privacyType == lift(FeedPrivacyType.friends)
-                && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == af.accountId).filter(_.friend == true)).nonEmpty))
-            || (f.by == af.accountId))})
+        .join(query[Feeds]).on({ case ((af, _), f) => f.id == af.feedId}) // &&
         .join(query[Accounts]).on({ case (((af, _), _), a) =>  a.id == af.by})
         .join(query[Devices]).on({ case ((((af, _), _), _), d) => d.accountId == af.accountId && d.pushToken.isDefined})
         .map({case ((((af, r), _), a), d) => (a.displayName, r.flatMap(_.displayName), af.accountId, d.pushToken) })
