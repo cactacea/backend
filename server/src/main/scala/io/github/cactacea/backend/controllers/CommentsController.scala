@@ -47,7 +47,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     } { request: PostComment =>
       commentsService.create(
         request.id,
-        request.commentMessage,
+        request.message,
         SessionContext.id
       ).map(CommentCreated(_)).map(response.created(_))
     }
