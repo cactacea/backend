@@ -9,6 +9,7 @@ import com.twitter.inject.TwitterModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.helpers._
 
 @Singleton
@@ -186,6 +187,68 @@ class DemoServerSpec extends FeatureTest with Helpers {
     createFollow(shinzo_abe, yoshiro_mori)
     createFollow(shinzo_abe, yukio_hatoyama)
     createFollow(shinzo_abe, zenko_suzuki)
+
+    createFollow(aritomo_yamagata, yasuhiro_nakasone)
+    createFollow(aritomo_yamagata, yasuo_fukuda)
+    createFollow(aritomo_yamagata, yoshihiko_noda)
+    createFollow(aritomo_yamagata, yoshiro_mori)
+    createFollow(aritomo_yamagata, yukio_hatoyama)
+    createFollow(aritomo_yamagata, zenko_suzuki)
+    createFollow(aritomo_yamagata, shinzo_abe)
+
+    createFeed("Uesugi Kenshin (上杉 謙信, February 18, 1530 – April 19, 1578[1]) was a daimyō who was" +
+      " born as Nagao Kagetora,[2] and after the adoption into the Uesugi clan, ruled Echigo Province in the" +
+      " Sengoku period of Japan.[3] He was one of the most powerful daimyōs of the Sengoku period. While chiefly" +
+      " remembered for his prowess on the battlefield, Kenshin is also regarded as an extremely skillful" +
+      " administrator who fostered the growth of local industries and trade; his rule saw a marked rise in" +
+      " the standard of living of Echigo.",
+      Some("hideyosi_toyotomi"),
+      Some(Array("daimyo", "sengoku")),
+      FeedPrivacyType.everyone,
+      false, shinzo_abe)
+
+    createFeed("Oda Nobunaga (help·info), June 23, 1534 – June 21, 1582) was a powerful daimyō (feudal lord) of " +
+      "Japan in the late 16th century who attempted to unify Japan during the late Sengoku period, and successfully" +
+      " gained control over most of Honshu. Nobunaga is regarded as one of three unifiers of Japan along with his" +
+      " retainers Toyotomi Hideyoshi and Tokugawa Ieyasu. During his later life, Nobunaga was widely known for most" +
+      " brutal suppression of determined opponents, eliminating those who by principle refused to cooperate or yield" +
+      " to his demands. His reign was noted for innovative military tactics, fostering free trade, and encouraging" +
+      " the start of the Momoyama historical art period. He was killed when his retainer Akechi Mitsuhide rebelled" +
+      " against him at Honnō-ji.",
+      Some("nobunaga_oda"),
+      Some(Array("daimyo", "sengoku")),
+      FeedPrivacyType.everyone,
+      false, aritomo_yamagata)
+
+    createFeed("Tokugawa Ieyasu (徳川家康, January 30, 1543 – June 1, 1616) was the founder and first shōgun" +
+      " of the Tokugawa shogunate of Japan, which effectively ruled Japan from the Battle of Sekigahara in 1600" +
+      " until the Meiji Restoration in 1868. Ieyasu seized power in 1600, received appointment as shōgun in 1603," +
+      " and abdicated from office in 1605, but remained in power until his death in 1616. His given name is" +
+      " sometimes spelled Iyeyasu,[1][2] according to the historical pronunciation of the kana character he." +
+      " Ieyasu was posthumously enshrined at Nikkō Tōshō-gū with the name Tōshō Daigongen (東照大権現). " +
+      "He was one of the three unifiers of Japan, along with his former lord Nobunaga and Toyotomi Hideyoshi.",
+      Some("ieyasu_tokugawa"),
+      Some(Array("daimyo", "sengoku")),
+      FeedPrivacyType.everyone,
+      false, aritomo_yamagata)
+
+    createFeed("Toyotomi Hideyoshi (豊臣 秀吉, March 17, 1537 – September 18, 1598) was a preeminent" +
+      " daimyō, warrior, general, samurai, and politician of the Sengoku period[1] who is regarded as Japan's" +
+      " second \"great unifier\".[2] He succeeded his former liege lord, Oda Nobunaga, and brought an end to the" +
+      " Warring Lords period. The period of his rule is often called the Momoyama period, named after Hideyoshi's" +
+      " castle. After his death, his young son Hideyori was displaced by Tokugawa Ieyasu.",
+      Some("hideyosi_toyotomi"),
+      Some(Array("daimyo", "sengoku")),
+      FeedPrivacyType.everyone,
+      false, aritomo_yamagata)
+
+    createFeed("Yasuke (variously rendered as 弥助 or 弥介, 彌助 or 彌介 in different sources.[1])" +
+      " (b. c. 1555–1590) was a Samurai of African origin who served under the Japanese hegemon and warlord" +
+      " Oda Nobunaga in 1581 and 1582.",
+      Some("yasuke"),
+      Some(Array("samurai", "sengoku")),
+      FeedPrivacyType.friends,
+      false, aritomo_yamagata)
 
 
   }

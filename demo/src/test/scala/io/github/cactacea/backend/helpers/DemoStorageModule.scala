@@ -1,4 +1,4 @@
-package io.github.cactacea.backend
+package io.github.cactacea.backend.helpers
 
 import java.nio.file.{Files, Paths}
 

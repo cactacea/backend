@@ -10,8 +10,9 @@ import io.github.cactacea.backend.models.responses.MediumCreated
 trait MediumsHelper extends CommonHelper {
   self: DemoServerSpec =>
 
-  def uploadMedium(resourceName: String, accessToken: String): Seq[MediumCreated] = {
-    val bytes = Files.readAllBytes(Paths.get(this.getClass.getClassLoader.getResource(resourceName).toURI))
+  def uploadMedium(path: String, resourceName: String, accessToken: String): Array[MediumCreated] = {
+    println(path + resourceName)
+    val bytes = Files.readAllBytes(Paths.get(this.getClass.getClassLoader.getResource(path + resourceName).toURI))
     val response = server.httpMultipartFormPost("/mediums",
       params = Seq(
         FileElement("file",
@@ -21,7 +22,7 @@ trait MediumsHelper extends CommonHelper {
       ),
       headers = headers(accessToken)
     )
-    mapper.parse[Seq[MediumCreated]](response.contentString)
+    mapper.parse[Array[MediumCreated]](response.contentString)
 
   }
 
