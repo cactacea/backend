@@ -4,9 +4,11 @@ import com.twitter.finagle.http.Response
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.DemoServerSpec
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.backend.models.responses.{Authentication, FeedCreated}
+import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
+import io.github.cactacea.backend.models.responses.{Authentication, CommentCreated, FeedCreated}
 
 trait Helpers extends FeatureTest
+  with CommentsHelper
   with FeedsHelper
   with CommonHelper
   with MediumsHelper
@@ -31,6 +33,11 @@ trait Helpers extends FeatureTest
     val mediumIds = resourceName.map(resourceName => uploadMedium("feed/", resourceName + ".jpg", by.accessToken).map(_.id))
     postFeed(message, mediumIds, tags, privacyType, contentWarning, by.accessToken)
   }
+
+  def createComment(id: FeedId, message: String, by: Authentication): CommentCreated = {
+    postComment(id, message, by.accessToken)
+  }
+
 
   def createFollow(target: Authentication, by: Authentication): Response = {
     follow(target.account.id, by.accessToken)

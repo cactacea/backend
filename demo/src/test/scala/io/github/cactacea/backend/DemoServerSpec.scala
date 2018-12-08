@@ -194,7 +194,10 @@ class DemoServerSpec extends FeatureTest with Helpers {
     createFollow(aritomo_yamagata, yoshiro_mori)
     createFollow(aritomo_yamagata, yukio_hatoyama)
     createFollow(aritomo_yamagata, zenko_suzuki)
+
+
     createFollow(aritomo_yamagata, shinzo_abe)
+    createFollow(taro_aso, shinzo_abe)
 
     createFeed("Uesugi Kenshin (上杉 謙信, February 18, 1530 – April 19, 1578[1]) was a daimyō who was" +
       " born as Nagao Kagetora,[2] and after the adoption into the Uesugi clan, ruled Echigo Province in the" +
@@ -220,7 +223,7 @@ class DemoServerSpec extends FeatureTest with Helpers {
       FeedPrivacyType.everyone,
       false, aritomo_yamagata)
 
-    createFeed("Tokugawa Ieyasu (徳川家康, January 30, 1543 – June 1, 1616) was the founder and first shōgun" +
+    val ieyasu_tokugawa_feed = createFeed("Tokugawa Ieyasu (徳川家康, January 30, 1543 – June 1, 1616) was the founder and first shōgun" +
       " of the Tokugawa shogunate of Japan, which effectively ruled Japan from the Battle of Sekigahara in 1600" +
       " until the Meiji Restoration in 1868. Ieyasu seized power in 1600, received appointment as shōgun in 1603," +
       " and abdicated from office in 1605, but remained in power until his death in 1616. His given name is" +
@@ -230,7 +233,7 @@ class DemoServerSpec extends FeatureTest with Helpers {
       Some("ieyasu_tokugawa"),
       Some(Array("daimyo", "sengoku")),
       FeedPrivacyType.everyone,
-      false, aritomo_yamagata)
+      false, taro_aso)
 
     createFeed("Toyotomi Hideyoshi (豊臣 秀吉, March 17, 1537 – September 18, 1598) was a preeminent" +
       " daimyō, warrior, general, samurai, and politician of the Sengoku period[1] who is regarded as Japan's" +
@@ -250,6 +253,24 @@ class DemoServerSpec extends FeatureTest with Helpers {
       FeedPrivacyType.friends,
       false, aritomo_yamagata)
 
+    createComment(ieyasu_tokugawa_feed.id, "When he was four Ieyasu was sent as a hostage to secure an " +
+      "alliance between his clan and the neighbouring Imagawa clan. He was raised at their court and given the " +
+      "education suitable for a nobleman.", yasuhiro_nakasone)
+
+    createComment(ieyasu_tokugawa_feed.id, "In 1567 Ieyasu, whose father's death had left him as leader of" +
+      " the Matsudaira, allied with Oda Nobunaga, a powerful neighbour.", yasuo_fukuda)
+
+    createComment(ieyasu_tokugawa_feed.id, "It was at this time that he changed his name from Matsudaira to" +
+      " Tokugawa, which was the name of the area from which his family originated.", yoshihiko_noda)
+
+    createComment(ieyasu_tokugawa_feed.id, "He also changed his personal name to Ieyasu," +
+      " so he was now known as Tokugawa Ieyasu.", yoshiro_mori)
+
+    createComment(ieyasu_tokugawa_feed.id, "When he was four Ieyasu was sent as a hostage to secure" +
+      " an alliance between his clan and the neighbouring Imagawa clan.", yukio_hatoyama)
+
+    createComment(ieyasu_tokugawa_feed.id, "He was raised at their court and given the education" +
+      " suitable for a nobleman.", zenko_suzuki)
 
   }
 
