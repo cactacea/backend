@@ -33,8 +33,8 @@ class FriendRequestsRepository @Inject()(
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.existFriendRequest(accountId, sessionId)
       _ <- friendRequestsStatusDAO.delete(accountId, sessionId)
-      r <- friendRequestsDAO.delete(accountId, sessionId)
-    } yield (r)
+      _ <- friendRequestsDAO.delete(accountId, sessionId)
+    } yield (Unit)
   }
 
   def findAll(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
@@ -46,16 +46,16 @@ class FriendRequestsRepository @Inject()(
       f <- validationDAO.findFriendRequest(friendRequestId, sessionId)
       _ <- friendsRepository.create(sessionId.toAccountId, f.by.toSessionId)
       _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.by.toSessionId)
-      r <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.accepted, sessionId)
-    } yield (r)
+      _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.accepted, sessionId)
+    } yield (Unit)
   }
 
   def reject(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     for {
       f <- validationDAO.findFriendRequest(friendRequestId, sessionId)
       _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.by.toSessionId)
-      r <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.rejected, sessionId).map(_ => true)
-    } yield (r)
+      _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.rejected, sessionId).map(_ => true)
+    } yield (Unit)
   }
 
 }

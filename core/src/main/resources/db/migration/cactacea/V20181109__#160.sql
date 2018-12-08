@@ -7,127 +7,127 @@
 
 SET SQL_SAFE_UPDATES = 0;
 
-ALTER SCHEMA `cactacea`  DEFAULT COLLATE utf8_general_ci ;
+ALTER SCHEMA `${schema}`  DEFAULT COLLATE utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`account_feeds`
+ALTER TABLE `${schema}`.`account_feeds`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`account_groups`
+ALTER TABLE `${schema}`.`account_groups`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`account_messages`
+ALTER TABLE `${schema}`.`account_messages`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`account_reports`
+ALTER TABLE `${schema}`.`account_reports`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`accounts`
+ALTER TABLE `${schema}`.`accounts`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`advertisement_settings`
+ALTER TABLE `${schema}`.`advertisement_settings`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`blocks`
+ALTER TABLE `${schema}`.`blocks`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`client_grant_types`
+ALTER TABLE `${schema}`.`client_grant_types`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`clients`
+ALTER TABLE `${schema}`.`clients`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`comment_likes`
+ALTER TABLE `${schema}`.`comment_likes`
 COLLATE = utf8_general_ci ,
 CHANGE COLUMN `posted_at` `liked_at` BIGINT(20) NOT NULL ;
 
-ALTER TABLE `cactacea`.`comment_reports`
+ALTER TABLE `${schema}`.`comment_reports`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`comments`
+ALTER TABLE `${schema}`.`comments`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`devices`
+ALTER TABLE `${schema}`.`devices`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`feed_likes`
+ALTER TABLE `${schema}`.`feed_likes`
 COLLATE = utf8_general_ci ,
 CHANGE COLUMN `posted_at` `liked_at` BIGINT(20) NOT NULL ;
 
-ALTER TABLE `cactacea`.`feed_mediums`
+ALTER TABLE `${schema}`.`feed_mediums`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`feed_reports`
+ALTER TABLE `${schema}`.`feed_reports`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`feed_tags`
+ALTER TABLE `${schema}`.`feed_tags`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`feeds`
+ALTER TABLE `${schema}`.`feeds`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`followers`
+ALTER TABLE `${schema}`.`followers`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`follows`
+ALTER TABLE `${schema}`.`follows`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`friend_requests`
+ALTER TABLE `${schema}`.`friend_requests`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`friends`
+ALTER TABLE `${schema}`.`friends`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`grant_types`
+ALTER TABLE `${schema}`.`grant_types`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`group_invitations`
+ALTER TABLE `${schema}`.`group_invitations`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`group_reports`
+ALTER TABLE `${schema}`.`group_reports`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`groups`
+ALTER TABLE `${schema}`.`groups`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`mediums`
+ALTER TABLE `${schema}`.`mediums`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`messages`
+ALTER TABLE `${schema}`.`messages`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`mutes`
+ALTER TABLE `${schema}`.`mutes`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`notifications`
+ALTER TABLE `${schema}`.`notifications`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`push_notification_settings`
+ALTER TABLE `${schema}`.`push_notification_settings`
 COLLATE = utf8_general_ci ;
 
-ALTER TABLE `cactacea`.`relationships`
+ALTER TABLE `${schema}`.`relationships`
 COLLATE = utf8_general_ci ;
 
-DROP TABLE IF EXISTS `cactacea`.`tickets` ;
+DROP TABLE IF EXISTS `${schema}`.`tickets` ;
 
-ALTER TABLE `cactacea`.`account_reports`
+ALTER TABLE `${schema}`.`account_reports`
 ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
 
-ALTER TABLE `cactacea`.`comment_reports`
+ALTER TABLE `${schema}`.`comment_reports`
 ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
 
-ALTER TABLE `cactacea`.`feed_reports`
+ALTER TABLE `${schema}`.`feed_reports`
 ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
 
-ALTER TABLE `cactacea`.`group_reports`
+ALTER TABLE `${schema}`.`group_reports`
 ADD COLUMN `reported_at` BIGINT(20) NOT NULL DEFAULT 0 AFTER `report_content`;
 
-ALTER TABLE `cactacea`.`groups`
+ALTER TABLE `${schema}`.`groups`
 ADD COLUMN `last_posted_at` BIGINT(20) NULL DEFAULT NULL AFTER `message_id`;
 
-ALTER TABLE `cactacea`.`relationships`
+ALTER TABLE `${schema}`.`relationships`
 CHANGE COLUMN `edited_display_name` `display_name` VARCHAR(50) NULL DEFAULT NULL ;
 
-UPDATE `cactacea`.`accounts` set display_name = account_name where display_name is null;
+UPDATE `${schema}`.`accounts` set display_name = account_name where display_name is null;
 
-ALTER TABLE `cactacea`.`accounts`
+ALTER TABLE `${schema}`.`accounts`
 CHANGE COLUMN `display_name` `display_name` VARCHAR(50) NOT NULL DEFAULT ' ' ;

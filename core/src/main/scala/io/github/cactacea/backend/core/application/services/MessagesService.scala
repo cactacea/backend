@@ -28,9 +28,9 @@ class MessagesService @Inject()(
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- injectionService.messagesDeleted(groupId, sessionId)
+        _ <- injectionService.messagesDeleted(groupId, sessionId)
         _ <- messagesRepository.delete(groupId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

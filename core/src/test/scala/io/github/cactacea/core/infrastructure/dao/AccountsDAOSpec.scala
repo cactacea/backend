@@ -242,21 +242,17 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     // blocked user
     execute(blocksDAO.create(sessionAccount.id, blockingUser.id.toSessionId))
 
-    // find by userName
-    val result1 = execute(accountsDAO.findAll(Some("userName1"), None, 0, 5, sessionAccount.id.toSessionId))
-    assert(result1.size == 1)
-
     // find all users topPage
-    val result15 = execute(accountsDAO.findAll(None, None, 0, 3, sessionAccount.id.toSessionId))
+    val result15 = execute(accountsDAO.findAll(Some("userName"), None, 0, 3, sessionAccount.id.toSessionId))
     assert(result15.size == 3)
-    assert(result15(0).id == account5.id)
-    assert(result15(1).id == account4.id)
+    assert(result15(0).id == account1.id)
+    assert(result15(1).id == account2.id)
     assert(result15(2).id == account3.id)
 
-    val result16 = execute(accountsDAO.findAll(None, result15(2).next, 0, 2, sessionAccount.id.toSessionId))
+    val result16 = execute(accountsDAO.findAll(Some("userName"), result15(2).next, 0, 2, sessionAccount.id.toSessionId))
     assert(result16.size == 2)
-    assert(result16(0).id == account2.id)
-    assert(result16(1).id == account1.id)
+    assert(result16(0).id == account4.id)
+    assert(result16(1).id == account5.id)
 
   }
 

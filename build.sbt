@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(Migration.settings)
-  .aggregate(server, core, plugin, finagger, filhouette)
+  .aggregate(demo, server, core, plugin, finagger, filhouette)
   .enablePlugins(FlywayPlugin)
 
 
@@ -54,6 +54,7 @@ lazy val filhouette = (project in file("filhouette"))
 
 lazy val swaggerUIVersion = SettingKey[String]("swaggerUIVersion")
 
+
 lazy val finagger = (project in file("finagger"))
   .settings(
     swaggerUIVersion := "3.19.0",
@@ -66,12 +67,19 @@ lazy val finagger = (project in file("finagger"))
   .settings(libraryDependencies ++= Dependencies.finagger)
   .enablePlugins(BuildInfoPlugin)
 
+
 lazy val plugin = (project in file("plugin"))
   .settings(
+    organization := "io.github.cactacea",
+    name := "plugin",
     sbtPlugin     := true,
+    testOptions in Test += Tests.Argument("-oI"),
+    concurrentRestrictions += Tags.limit(Tags.Test, 1),
+    parallelExecution := false,
     scalacOptions ++= Seq("-feature", "-deprecation")
   )
   .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
   .dependsOn(core % "compile->compile;test->test")
 
 lazy val demo = (project in file("demo"))
@@ -87,6 +95,7 @@ lazy val demo = (project in file("demo"))
   )
   .settings(commonSettings)
   .settings(commonResolverSetting)
+  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
   .settings(noPublishSettings)
   .dependsOn(server % "compile->compile;test->test")
   .enablePlugins(JavaAppPackaging)
@@ -95,13 +104,13 @@ lazy val demo = (project in file("demo"))
 lazy val commonSettings = Seq(
   organization := "io.github.cactacea",
   scalaVersion  := "2.12.7",
-//  crossScalaVersions := Seq("2.11.12", "2.12.7"),
   scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
   testOptions in Test += Tests.Argument("-oI"),
   concurrentRestrictions += Tags.limit(Tags.Test, 1),
   parallelExecution := false,
   fork := true
 )
+
 
 lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
@@ -175,7 +184,6 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 releaseVersionFile := baseDirectory.value / "version.sbt"
 
-//releaseCrossBuild := true
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,

@@ -5,8 +5,8 @@ import com.twitter.finatra.validation._
 import io.swagger.annotations.ApiModelProperty
 
 case class GetAccounts(
-                        @ApiModelProperty(value = "Filters accounts whose display name start of.")
-                        @QueryParam @Size(min = 0, max = 1000) displayName: Option[String],
+                        @ApiModelProperty(value = "Filters accounts whose account name start of.")
+                        @QueryParam @Size(min = 0, max = 1000) accountName: Option[String],
 
                         @ApiModelProperty(value = "Filters accounts which started on since or later.")
                         @QueryParam since: Option[Long],

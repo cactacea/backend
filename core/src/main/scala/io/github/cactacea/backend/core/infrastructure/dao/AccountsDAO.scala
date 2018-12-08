@@ -183,16 +183,13 @@ class AccountsDAO @Inject()(
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
     val q = quote {
-      for {
-        a <- query[Accounts]
-          .filter(_.id              == lift(accountId))
-          .filter(_.accountStatus   == lift(status))
-          .filter(a => query[Blocks].filter(b =>
-            (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
-          ).isEmpty)
-        r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
-      } yield (a, r)
+      query[Accounts]
+        .filter(_.id              == lift(accountId))
+        .filter(_.accountStatus   == lift(status))
+        .filter(a => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
+        ).isEmpty)
+        .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by) })
     }
 
     (for {
@@ -218,11 +215,33 @@ class AccountsDAO @Inject()(
 
   }
 
-  def findAll(accountName: Option[String],
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Account]] = {
+  def findAll(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+    for {
+      n <- findAccountName(since)
+      r <- findAllSortByAccountName(accountName, n, offset, count, sessionId)
+    } yield (r)
+  }
+
+  private def findAccountName(since: Option[Long]): Future[Option[String]] = {
+    since match {
+      case Some(id) =>
+        val accountId = AccountId(id)
+        val q = quote {
+          query[Accounts]
+            .filter(_.id == lift(accountId))
+            .map(_.accountName)
+        }
+        run(q).map(_.headOption)
+      case None =>
+        Future.None
+    }
+  }
+
+  def findAllSortByAccountName(accountName: Option[String],
+                               sinceAccountName: Option[String],
+                               offset: Int,
+                               count: Int,
+                               sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -231,12 +250,12 @@ class AccountsDAO @Inject()(
         .filter({a => a.id !=  lift(by)})
         .filter(a => a.accountStatus == lift(AccountStatusType.normally))
         .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
-        .filter(a => lift(since).forall(a.id < _))
+        .filter(a => lift(sinceAccountName).forall(a.accountName gt _))
         .filter(a => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
         ).isEmpty)
       .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
-      .sortBy({ case (a, _) => a.id})(Ord.desc)
+      .sortBy({ case (a, _) => a.accountName})(Ord.asc)
       .drop(lift(offset))
       .take(lift(count))
     }

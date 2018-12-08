@@ -18,18 +18,18 @@ class MutesService @Inject()(
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- mutesRepository.create(accountId, sessionId)
+        _ <- mutesRepository.create(accountId, sessionId)
         _ <- injectionService.accountMuted(accountId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- mutesRepository.delete(accountId, sessionId)
+        _ <- mutesRepository.delete(accountId, sessionId)
         _ <- injectionService.accountUnMuted(accountId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

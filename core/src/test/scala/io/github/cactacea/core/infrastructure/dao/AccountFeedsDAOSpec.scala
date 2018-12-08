@@ -24,7 +24,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     val message = "message"
     val mediums = List(medium1.id, medium2.id, medium3.id)
     val tags = List("tag1", "tag2", "tag3")
-    val privacyType = FeedPrivacyType.self
+    val privacyType = FeedPrivacyType.followers
     val contentWarning = true
 
     // create feed
@@ -64,7 +64,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     val message = "message"
     val mediums = List(medium1.id, medium2.id, medium3.id)
     val tags = List("tag1", "tag2", "tag3")
-    val privacyType = FeedPrivacyType.self
+    val privacyType = FeedPrivacyType.followers
     val contentWarning = true
 
     // create feed

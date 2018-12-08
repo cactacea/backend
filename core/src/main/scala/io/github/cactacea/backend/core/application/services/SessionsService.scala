@@ -42,9 +42,9 @@ class SessionsService @Inject()(
   def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- sessionsRepository.signOut(udid, sessionId)
+        _ <- sessionsRepository.signOut(udid, sessionId)
         _ <- actionService.signedOut(sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

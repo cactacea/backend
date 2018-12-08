@@ -18,18 +18,18 @@ class BlocksService @Inject()(
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- blocksRepository.create(accountId, sessionId)
+        _ <- blocksRepository.create(accountId, sessionId)
         _ <- actionService.accountBlocked(accountId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- blocksRepository.delete(accountId, sessionId)
+        _ <- blocksRepository.delete(accountId, sessionId)
         _ <- actionService.accountUnBlocked(accountId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Fixme
-openapi-generator generate \
+swagger-codegen generate \
     -i docs/swagger.json \
-    -g swift4 \
+    -l swift4 \
     --type-mappings number=Int64 \
     --language-specific-primitives Int16,Int32,Int64,NSDate \
     --additional-properties projectName="Cactacea" \
@@ -15,13 +15,12 @@ openapi-generator generate \
     --additional-properties podLicense="" \
     --additional-properties podHomepage=https://github.com/cactacea/ios \
     --additional-properties responseAs=RxSwift \
-    --skip-validate-spec \
     -o ../ios
 
-openapi-generator generate \
+swagger-codegen generate \
     -i docs/swagger.json  \
-    -g kotlin \
+    -l kotlin \
     --model-package io.github.cactacea.backend \
     --model-name-suffix Json \
-    --skip-validate-spec \
     -o ../android
+

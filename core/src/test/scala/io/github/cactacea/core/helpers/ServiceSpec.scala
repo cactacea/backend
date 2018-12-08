@@ -19,10 +19,10 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultInjectionModule,
         DefaultNotificationModule,
         DefaultNotificationMessagesModule,
-        DefaultPublishModule,
+        DefaultEnqueueModule,
         DefaultPushNotificationModule,
         DefaultStorageModule,
-        DefaultSubScribeModule,
+        DefaultDequeueModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,
         DefaultHashModule

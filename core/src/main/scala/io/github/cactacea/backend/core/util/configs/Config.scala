@@ -6,6 +6,7 @@ import com.typesafe.config.ConfigFactory
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+import com.twitter.conversions.storage._
 
 object Config extends DurationReader {
 
@@ -14,7 +15,7 @@ object Config extends DurationReader {
   private val slaveDBConfig = config.as[DatabaseConfig]("db.slave")
   private val authConfig = config.as[AuthConfig]("auth")
   private val passwordConfig = config.as[PasswordConfig]("password")
-
+  private val storageConfig = config.as[StorageConfig]("storage")
 
   object db { // scalastyle:ignore
 
@@ -63,6 +64,11 @@ object Config extends DurationReader {
     }
 
 
+  }
+
+  object storage {
+    lazy val hostName = storageConfig.hostName.getOrElse("localhost")
+    lazy val maxFileSize = storageConfig.maxFileSize.getOrElse(1.megabytes)
   }
 
   object auth { // scalastyle:ignore

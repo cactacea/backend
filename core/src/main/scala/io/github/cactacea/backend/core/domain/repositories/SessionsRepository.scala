@@ -63,9 +63,9 @@ class SessionsRepository @Inject()(
 
   def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
     for {
-      r <- accountsDAO.signOut(sessionId)
+      _ <- accountsDAO.signOut(sessionId)
       _ <- devicesDAO.delete(udid, sessionId)
-    } yield (r)
+    } yield (Unit)
   }
 
 
