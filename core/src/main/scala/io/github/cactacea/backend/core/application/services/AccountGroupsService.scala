@@ -17,9 +17,9 @@ class AccountGroupsService @Inject()(
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
-      r <- db.transaction(accountGroupsRepository.delete(groupId,sessionId))
+      _ <- db.transaction(accountGroupsRepository.delete(groupId,sessionId))
       _ <- actionService.groupDeleted(groupId, sessionId)
-    } yield (r)
+    } yield (Unit)
   }
 
   def find(accountId: AccountId, sessionId: SessionId): Future[Group] = {

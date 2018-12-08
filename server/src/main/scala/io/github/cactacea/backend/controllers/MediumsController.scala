@@ -6,7 +6,8 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.MediumsService
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{MediumNotFound, NotAcceptableMimeTypeFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
 import io.github.cactacea.backend.swagger.CactaceaController
@@ -25,6 +26,7 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
 
       o.summary("Get a medium")
         .tag(mediumsTag)
+        .operationId("findMedium")
 
     }  { request: Request =>
       mediumsService.find(request)
@@ -37,14 +39,15 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
         .operationId("uploadMedium")
         .consumes("multipart/form-data")
         .formParam[File](name = "file", description = "Upload a medium file", true)
-        .responseWith[MediumCreated](Status.Created.code, successfulMessage)
-        .responseWith(Status.BadRequest.code, NotAcceptableMimeTypeFound.message)
+        .responseWith[Array[MediumCreated]](Status.Created.code, successfulMessage)
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason,
+            Some(CactaceaErrors(Seq(NotAcceptableMimeTypeFound, UploadFileNotFound, FileSizeLimitExceededError))))
 
     } { request: Request =>
       mediumsService.create(
         request,
         SessionContext.id
-      ).map({ case (id, uri) => MediumCreated(id, uri) })
+      ).map(_.map({ case (id, uri) => MediumCreated(id, uri) }))
     }
 
     deleteWithPermission("/mediums/:id")(Permissions.media) { o =>

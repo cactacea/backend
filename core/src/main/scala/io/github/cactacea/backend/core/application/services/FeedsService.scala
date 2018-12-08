@@ -38,9 +38,9 @@ class FeedsService @Inject()(
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- feedsRepository.delete(feedId, sessionId)
+        _ <- feedsRepository.delete(feedId, sessionId)
         _ <- actionService.feedDeleted(feedId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

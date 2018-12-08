@@ -18,18 +18,18 @@ class FeedLikesService @Inject()(
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- feedLikesRepository.create(feedId, sessionId)
+        _ <- feedLikesRepository.create(feedId, sessionId)
         _ <- actionService.feedLiked(feedId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- feedLikesRepository.delete(feedId, sessionId)
+        _ <- feedLikesRepository.delete(feedId, sessionId)
         _ <- actionService.feedUnLiked(feedId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

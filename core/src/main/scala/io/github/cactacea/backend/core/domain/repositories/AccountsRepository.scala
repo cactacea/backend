@@ -33,9 +33,9 @@ class AccountsRepository @Inject()(
     accountsDAO.exist(accountName).map(!_)
   }
 
-  def findAll(displayName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+  def findAll(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     accountsDAO.findAll(
-      displayName,
+      accountName,
       since,
       offset,
       count,
@@ -59,8 +59,8 @@ class AccountsRepository @Inject()(
   def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- validationDAO.notExistAccountName(accountName)
-      r <- accountsDAO.updateAccountName(accountName, sessionId)
-    } yield (r)
+      _ <- accountsDAO.updateAccountName(accountName, sessionId)
+    } yield (Unit)
   }
 
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {

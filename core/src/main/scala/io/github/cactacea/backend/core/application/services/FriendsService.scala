@@ -27,9 +27,9 @@ class FriendsService @Inject()(
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- friendsRepository.delete(accountId, sessionId)
+        _ <- friendsRepository.delete(accountId, sessionId)
         _ <- actionService.accountUnFriended(accountId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

@@ -18,16 +18,16 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     for {
       _ <- insertFriend(accountId, sessionId)
       _ <- updateAccount(1L, sessionId)
-      r <- insertRelationship(accountId, sessionId)
-    } yield (r)
+      _ <- insertRelationship(accountId, sessionId)
+    } yield (Unit)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- deleteFriend(accountId, sessionId)
-      r <- updateAccount(-1L, sessionId)
+      _ <- updateAccount(-1L, sessionId)
       _ <- updateRelationship(accountId, friend = false, sessionId)
-    } yield (r)
+    } yield (Unit)
   }
 
   private def updateAccount(count: Long, sessionId: SessionId): Future[Unit] = {
@@ -108,7 +108,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     if (sortType == FriendsSortType.accountName) {
       for {
         n <- findAccountName(since)
-        r <- findAllSortByAccountName(n, since, offset, count, sessionId)
+        r <- findAllSortByAccountName(n, offset, count, sessionId)
       } yield (r)
     } else {
       findAllSortById(since, offset, count, sessionId)
@@ -130,7 +130,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     }
   }
 
-  private def findAllSortByAccountName(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  private def findAllSortByAccountName(accountName: Option[String], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -139,7 +139,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(f => f.by == lift(by))
         .join(query[Accounts]).on((f, a) => a.id == f.accountId && lift(accountName).forall(a.accountName gt _))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, a.id)})
+        .map({ case ((_, a), r) => (a, r, a.id)})
         .sortBy({ case (a, _, _) => a.accountName})(Ord.asc)
         .drop(lift(offset))
         .take(lift(count))

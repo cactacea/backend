@@ -9,5 +9,5 @@ case class PostComment(
                         id: FeedId,
 
                         @ApiModelProperty(value = "A message will be posted.", required = true)
-                        @Size(min = 1, max = 1000) commentMessage: String
+                        @Size(min = 1, max = 1000) message: String
                       )

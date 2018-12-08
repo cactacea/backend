@@ -41,18 +41,18 @@ class GroupInvitationsService @Inject()(
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- groupInvitationsRepository.accept(invitationId, sessionId)
+        _ <- groupInvitationsRepository.accept(invitationId, sessionId)
         _ <- injectionService.groupInvitationAccepted(invitationId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
   def reject(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- groupInvitationsRepository.reject(invitationId, sessionId)
+        _ <- groupInvitationsRepository.reject(invitationId, sessionId)
         _ <- injectionService.groupInvitationRejected(invitationId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 

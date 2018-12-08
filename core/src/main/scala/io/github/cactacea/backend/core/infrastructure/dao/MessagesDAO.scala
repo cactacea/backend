@@ -103,10 +103,8 @@ class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def find(messageId: MessageId): Future[Option[Messages]] = {
     val q = quote {
-      for {
-        m <- query[Messages]
-          .filter(_.id == lift(messageId))
-      } yield (m)
+      query[Messages]
+        .filter(_.id == lift(messageId))
     }
     run(q).map(_.headOption)
   }

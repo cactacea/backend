@@ -116,10 +116,8 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def find(groupId: GroupId): Future[Option[Groups]] = {
     val q = quote {
-      for {
-        g <- query[Groups]
+      query[Groups]
           .filter(_.id == lift(groupId))
-      } yield (g)
     }
     run(q).map(_.headOption)
   }

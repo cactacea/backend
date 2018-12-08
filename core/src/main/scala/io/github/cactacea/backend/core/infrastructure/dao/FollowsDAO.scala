@@ -16,17 +16,17 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- insertFollow(accountId, sessionId)
-      r <- insertRelationship(accountId, sessionId)
+      _ <- insertRelationship(accountId, sessionId)
       _ <- updateAccount(1L, sessionId)
-    } yield (r)
+    } yield (Unit)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- deleteFollow(accountId, sessionId)
       _ <- updateRelationship(accountId, sessionId)
-      r <- updateAccount(-1L, sessionId)
-    } yield (r)
+      _ <- updateAccount(-1L, sessionId)
+    } yield (Unit)
   }
 
   private def updateAccount(count: Long, sessionId: SessionId): Future[Unit] = {

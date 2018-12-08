@@ -19,12 +19,16 @@ class MediumsService @Inject()(
     storageService.get(request)
   }
 
-  def create(request: Request, sessionId: SessionId): Future[(MediumId, String)] = {
+  def create(request: Request, sessionId: SessionId): Future[Seq[(MediumId, String)]] = {
     for {
-      f <- storageService.put(request)
-      id <- db.transaction(mediumsRepository.create(f.key, f.url, None, f.mediumType, f.width, f.height, f.length, sessionId))
-      _ <- injectionService.mediumCreated(id, f.url, sessionId)
-    } yield ((id, f.url))
+      s <- storageService.put(request)
+      r <- Future.traverseSequentially(s) { f =>
+        for {
+          id <- mediumsRepository.create(f.key, f.url, f.thumbnailUrl, f.mediumType, f.width, f.height, f.length, sessionId)
+          _ <- injectionService.mediumCreated(id, f.url, sessionId)
+        } yield ((id, f.url))
+      }
+    } yield (r)
   }
 
   def delete(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {

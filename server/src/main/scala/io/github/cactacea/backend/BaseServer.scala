@@ -15,10 +15,10 @@ trait BaseServer extends HttpServer {
   def injectionModule: TwitterModule =  DefaultInjectionModule
   def fanOutModule: TwitterModule = DefaultNotificationModule
   def notificationMessagesModule: TwitterModule = DefaultNotificationMessagesModule
-  def publishModule: TwitterModule =  DefaultPublishModule
+  def publishModule: TwitterModule =  DefaultEnqueueModule
   def pushNotificationModule: TwitterModule = DefaultPushNotificationModule
   def storageModule: TwitterModule = DefaultStorageModule
-  def subScribeModule: TwitterModule = DefaultSubScribeModule
+  def subScribeModule: TwitterModule = DefaultDequeueModule
   def deepLinkModule: TwitterModule = DefaultDeepLinkModule
   def transcodeModule: TwitterModule = DefaultTranscodeModule
   def hashModule: TwitterModule = DefaultHashModule

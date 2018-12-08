@@ -31,14 +31,14 @@ class CommentsService @Inject()(
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        r <- commentsRepository.delete(commentId, sessionId)
+        _ <- commentsRepository.delete(commentId, sessionId)
         _ <- actionService.commentDeleted(commentId, sessionId)
-      } yield (r)
+      } yield (Unit)
     }
   }
 
-  def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[Comment]] = {
-    commentsRepository.findAll(feedId, since, count, sessionId)
+  def findAll(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
+    commentsRepository.findAll(feedId, since, offset, count, sessionId)
   }
 
   def find(commentId: CommentId, sessionId: SessionId): Future[Comment] = {
@@ -50,9 +50,9 @@ class CommentsService @Inject()(
 
   def report(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      r <- db.transaction(reportsRepository.createCommentReport(commentId, reportType, reportContent, sessionId))
+      _ <- db.transaction(reportsRepository.createCommentReport(commentId, reportType, reportContent, sessionId))
       _ <- actionService.commentReported(commentId, reportType, reportContent, sessionId)
-    } yield (r)
+    } yield (Unit)
   }
 
 }
