@@ -158,7 +158,7 @@ class CommentsDAO @Inject()(
       })
   }
 
-  def findAll(feedId: FeedId, since: Option[Long], count: Int, sessionId: SessionId): Future[List[Comment]] = {
+  def findAll(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
 
     val by = sessionId.toAccountId
 
@@ -173,18 +173,20 @@ class CommentsDAO @Inject()(
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((c, a), r) => (c, a, r) })
         .sortBy({ case (c, _, _) => c.id })(Ord.desc)
+        .drop(lift(offset))
         .take(lift(count))
     }
 
     (for {
       c <- run(q)
-      ids = c.map({ case (c, _, _) => c.id})
+      ids = c.map({ case (c, _, _) =>  c.id})
       b <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
     } yield (c, b))
       .map({ case (accounts, blocksCount) =>
         accounts.map({ case (c, a, r) =>
           val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          Comment(c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
+          val c2 = c.copy(likeCount = c.likeCount - b.getOrElse(0L))
+          Comment(c2, a, r)
         })
       })
   }
