@@ -171,6 +171,13 @@ class FeedsDAO @Inject()(
       query[Feeds]
         .filter(f => f.by == lift(by))
         .filter(f => lift(since).forall(f.id  < _))
+        .filter(f =>
+          (f.privacyType == lift(FeedPrivacyType.everyone)) ||
+            (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
+              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+            ).nonEmpty) ||
+            (f.by == lift(by)))
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (f, a, r) })
