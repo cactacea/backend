@@ -13,29 +13,23 @@ class AuthDAO @Inject()(db: DatabaseService) {
   def findClient(clientId: String): Future[Option[Clients]] = {
     val grantType = "authorization_code"
     val q = quote {
-      for {
-        oc <- query[Clients]
-          .filter(_.id == lift(clientId))
-        ocg <- query[ClientGrantTypes]
-          .filter(_.clientId == oc.id)
-        _ <- query[GrantTypes]
-          .filter(_.id == ocg.grantTypeId).filter(_.grantType == lift(grantType))
-      } yield (oc)
+      query[Clients]
+        .filter(_.id == lift(clientId))
+        .join(query[ClientGrantTypes]).on({ case (c, ocg) => ocg.clientId == c.id})
+        .join(query[GrantTypes]).on({ case ((_, ocg), gt) => gt.id == ocg.grantTypeId && gt.grantType == lift(grantType)})
+        .map({ case ((c, _), _) => c})
     }
     run(q).map(_.headOption)
   }
 
   def validateClient(id: String, secret: String, grantType: String): Future[Boolean] = {
     val q = quote {
-      (for {
-        oc <- query[Clients]
-          .filter(_.id == lift(id))
-          .filter(_.secret.exists(_ == lift(secret) || lift(secret) == ""))
-        ocg <- query[ClientGrantTypes]
-          .filter(_.clientId == oc.id)
-        og <- query[GrantTypes]
-          .filter(_.id == ocg.grantTypeId).filter(_.grantType == lift(grantType))
-      } yield (oc, ocg, og)).size
+      query[Clients]
+        .filter(_.id == lift(id))
+        .filter(_.secret.exists(_ == lift(secret) || lift(secret) == ""))
+        .join(query[ClientGrantTypes]).on({ case (c, cgt) => cgt.clientId == c.id })
+        .join(query[GrantTypes]).on({ case ((c, cgt), gt) => gt.id == cgt.grantTypeId && gt.grantType == lift(grantType) })
+        .size
     }
     run(q).map(_ > 0)
   }

@@ -183,16 +183,13 @@ class AccountsDAO @Inject()(
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
     val q = quote {
-      for {
-        a <- query[Accounts]
-          .filter(_.id              == lift(accountId))
-          .filter(_.accountStatus   == lift(status))
-          .filter(a => query[Blocks].filter(b =>
-            (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
-          ).isEmpty)
-        r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
-      } yield (a, r)
+      query[Accounts]
+        .filter(_.id              == lift(accountId))
+        .filter(_.accountStatus   == lift(status))
+        .filter(a => query[Blocks].filter(b =>
+          (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
+        ).isEmpty)
+        .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by) })
     }
 
     (for {

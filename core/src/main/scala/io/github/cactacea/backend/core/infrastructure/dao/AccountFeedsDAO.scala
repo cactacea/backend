@@ -41,40 +41,36 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
               sessionId: SessionId): Future[List[Feed]] = {
 
     val by = sessionId.toAccountId
+
     val q = quote {
-      for {
-        af <- query[AccountFeeds]
-          .filter(f => f.accountId == lift(by))
-          .filter(f => lift(since).forall(f.feedId < _ ))
-          .sortBy(_.feedId)(Ord.desc)
-          .drop(lift(offset))
-          .take(lift(count))
-        f <- query[Feeds]
-          .join(f => f.id == af.feedId)
-          .filter(f => lift(privacyType).forall(_ == f.privacyType))
-        _ <- query[Accounts]
-          .join(a => a.id == f.by)
-        _ <- query[Relationships]
-          .leftJoin(r => r.accountId == f.by && r.by == lift(by))
-      } yield (af, f)
+      query[AccountFeeds]
+        .filter(f => f.accountId == lift(by))
+        .filter(f => lift(since).forall(f.feedId < _ ))
+        .join(query[Feeds]).on({ case (af, f) => af.feedId == f.id && lift(privacyType).forall(_ == f.privacyType)})
+        .join(query[Accounts]).on({ case ((_, f), a) => a.id == f.by })
+        .leftJoin(query[Relationships]).on({ case (((_, f), _), r) => r.accountId == f.by && r.by == lift(by) })
+        .map({ case (((af, f), a), r) => (af, f, a, r) })
+        .sortBy({ case (af, _, _, _) => af.feedId })(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
+
     }
     run(q).flatMap(findTagsAndImages(_))
-
   }
 
-  private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds)])
+  private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds, Accounts, Option[Relationships])])
                 : Future[List[Feed]] = {
     val feedIds = feeds.map(_._2.id)
 
     (for {
-      tags <- feedTagsDAO.findAll(feedIds)
-      mediums <- feedMediumDAO.findAll(feedIds)
-    } yield (tags, mediums)).map {
-      case (tags, mediums) =>
-        feeds.map({ case (af, f) =>
-          val tag = tags.filter(_.feedId == f.id)
-          val image = mediums.filter({ case (id, _) => id == f.id }).map(_._2)
-          Feed(f, tag, image, af.feedId.value)
+      t <- feedTagsDAO.findAll(feedIds)
+      m <- feedMediumDAO.findAll(feedIds)
+    } yield (t, m)).map {
+      case (t, m) =>
+        feeds.map({ case (af, f, a, r) =>
+          val tags = t.filter(_.feedId == f.id)
+          val images = m.filter({ case (id, _) => id == f.id }).map(_._2)
+          Feed(f, tags, images, a, r, af.feedId.value)
         })
     }
   }

@@ -119,13 +119,10 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   def findByGroupId(groupId: GroupId, sessionId: SessionId): Future[Option[(AccountGroups, Groups)]] = {
     val by = sessionId.toAccountId
     val q = quote {
-      for {
-        ag <- query[AccountGroups]
-          .filter(_.groupId         == lift(groupId))
-          .filter(_.toAccountId == lift(by))
-        g <- query[Groups]
-          .filter(_.id == ag.groupId)
-      } yield ((ag, g))
+      query[AccountGroups]
+        .filter(_.groupId         == lift(groupId))
+        .filter(_.toAccountId == lift(by))
+        .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId })
     }
     run(q).map(_.headOption)
   }
@@ -133,13 +130,10 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   def findByAccountId(accountId: AccountId, sessionId: SessionId): Future[Option[(AccountGroups, Groups)]] = {
     val by = sessionId.toAccountId
     val q = quote {
-      for {
-        ag <- query[AccountGroups]
+      query[AccountGroups]
           .filter(_.accountId         == lift(accountId))
           .filter(_.toAccountId == lift(by))
-        g <- query[Groups]
-          .filter(_.id == ag.groupId)
-      } yield ((ag, g))
+          .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
     }
     run(q).map(_.headOption)
   }
@@ -170,13 +164,10 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   def findGroupId(messageId: MessageId, sessionId: SessionId): Future[Option[GroupId]] = {
     val by = sessionId.toAccountId
     val q = quote {
-      for {
-        groupId <- query[Messages]
-          .filter(_.id == lift(messageId))
-          .map(_.groupId)
-        _ <- query[AccountGroups]
-          .filter(_.accountId == lift(by))
-      } yield (groupId)
+      query[Messages]
+        .filter(_.id == lift(messageId))
+        .join(query[AccountGroups]).on({ case (_, ag) => ag.accountId == lift(by)})
+        .map({ case (m, _) => m.groupId })
     }
     run(q).map(_.headOption)
   }
