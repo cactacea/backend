@@ -24,7 +24,7 @@ class MediumsService @Inject()(
       s <- storageService.put(request)
       r <- Future.traverseSequentially(s) { f =>
         for {
-          id <- mediumsRepository.create(f.key, f.url, None, f.mediumType, f.width, f.height, f.length, sessionId)
+          id <- mediumsRepository.create(f.key, f.url, f.thumbnailUrl, f.mediumType, f.width, f.height, f.length, sessionId)
           _ <- injectionService.mediumCreated(id, f.url, sessionId)
         } yield ((id, f.url))
       }

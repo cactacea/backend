@@ -52,7 +52,7 @@ class DemoStorageService(val localPath: String) extends StorageService {
             } {
               out.write(medium.data)
             }
-            StorageFile(filename, url, medium.width, medium.height, medium.data.length, medium.mediumType)
+            StorageFile(filename, url, Some(url), medium.width, medium.height, medium.data.length, medium.mediumType)
           }
         }
       }
