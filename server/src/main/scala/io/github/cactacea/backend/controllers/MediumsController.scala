@@ -26,6 +26,7 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
 
       o.summary("Get a medium")
         .tag(mediumsTag)
+        .operationId("findMedium")
 
     }  { request: Request =>
       mediumsService.find(request)
