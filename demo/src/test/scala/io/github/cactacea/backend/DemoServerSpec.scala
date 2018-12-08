@@ -1,5 +1,7 @@
 package io.github.cactacea.backend
 
+import java.io.PrintWriter
+
 import com.google.inject.Singleton
 import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.FinatraObjectMapper
@@ -40,18 +42,18 @@ class DemoServerSpec extends FeatureTest with Helpers {
   val mapper = injector.instance[FinatraObjectMapper]
   val storageService = injector.instance[DemoStorageService]
 
-//  test("create swagger.json") {
-//
-//    val swagger = server.httpGet(s"/docs/model")
-//    assert(swagger.contentString.isEmpty == false)
-//
-//    val path = CactaceaBuildInfo.baseDirectory.getParent + "/docs/swagger.json"
-//    val file = new PrintWriter(path)
-//    file.write(swagger.contentString)
-//    file.close()
-//
-//  }
-//
+  test("create swagger.json") {
+
+    val swagger = server.httpGet(s"/docs/model")
+    assert(swagger.contentString.isEmpty == false)
+
+    val path = CactaceaBuildInfo.baseDirectory.getParent + "/docs/swagger.json"
+    val file = new PrintWriter(path)
+    file.write(swagger.contentString)
+    file.close()
+
+  }
+
 //  test("create demo data") {
 //
 //    cleanUp()
