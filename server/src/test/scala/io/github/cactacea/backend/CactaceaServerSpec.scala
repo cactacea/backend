@@ -38,10 +38,10 @@ class CactaceaServerSpec extends FeatureTest
         DefaultInjectionModule,
         DefaultNotificationModule,
         DefaultNotificationMessagesModule,
-        DefaultPublishModule,
+        DefaultEnqueueModule,
         DefaultPushNotificationModule,
         DefaultStorageModule,
-        DefaultSubScribeModule,
+        DefaultDequeueModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,
         DefaultJacksonModule

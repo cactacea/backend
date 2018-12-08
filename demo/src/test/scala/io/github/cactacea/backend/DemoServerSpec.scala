@@ -30,10 +30,10 @@ class DemoServerSpec extends FeatureTest with Helpers {
         DefaultInjectionModule,
         DefaultNotificationModule,
         DefaultNotificationMessagesModule,
-        DefaultPublishModule,
+        DefaultEnqueueModule,
         DefaultPushNotificationModule,
         DemoStorageModule,
-        DefaultSubScribeModule,
+        DefaultDequeueModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,
         DefaultJacksonModule

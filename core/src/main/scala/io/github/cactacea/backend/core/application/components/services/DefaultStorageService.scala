@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.application.components.services
 import java.io.{BufferedOutputStream, FileInputStream}
 import java.nio.file.{Files, Paths}
 import java.util.UUID
-
 import com.twitter.conversions.storage._
 import com.twitter.finagle.http.{Request, Response, Status, Version}
 import com.twitter.finatra.http.request.RequestUtils
