@@ -55,12 +55,12 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
         .filter(f => lift(since).forall(f.feedId < _ ))
         .join(query[Feeds])
         .on({ case (af, f) => af.feedId == f.id && lift(privacyType).forall(_ == f.privacyType) &&
-          (f.privacyType == lift(FeedPrivacyType.everyone)) ||
+          ((f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
               (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
                 (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty) ||
-            (f.by == lift(by))})
+            (f.by == lift(by)))})
         .join(query[Accounts]).on({ case ((_, f), a) => a.id == f.by })
         .leftJoin(query[Relationships]).on({ case (((_, f), _), r) => r.accountId == f.by && r.by == lift(by) })
         .map({ case (((af, f), a), r) => (af, f, a, r) })
