@@ -112,7 +112,7 @@ class AccountsController @Inject()(
         .tag(feedsTag)
         .operationId("findAccountFeeds")
         .request[GetAccountFeeds]
-        .responseWith[Feed](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: GetAccountFeeds =>
       feedsService.find(
