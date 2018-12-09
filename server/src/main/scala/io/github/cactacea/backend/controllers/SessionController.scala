@@ -155,7 +155,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findLikes")
         .request[GetSessionLikedFeeds]
-        .responseWith[Feed](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetSessionLikedFeeds =>
       feedLikesService.find(
         request.since,
