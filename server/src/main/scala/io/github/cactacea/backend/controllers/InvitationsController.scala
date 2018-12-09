@@ -4,8 +4,8 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.GroupInvitationsService
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount, PostInvitationAccounts}
 import io.github.cactacea.backend.models.requests.group.{PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
@@ -21,6 +21,36 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
+
+    postWithPermission("/groups/:id/invitations")(Permissions.groupInvitations) { o =>
+      o.summary("Post a invitation to some accounts")
+        .tag(invitationsTag)
+        .operationId("create")
+        .request[PostInvitationAccounts]
+        .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
+    } { request: PostInvitationAccounts =>
+      invitationService.create(
+        request.accountIds.toList,
+        request.id,
+        SessionContext.id
+      ).map(_.map(InvitationCreated(_))).map(response.created(_))
+    }
+
+    postWithPermission("/accounts/:accountId/groups/:groupId/invitations")(Permissions.groupInvitations) { o =>
+      o.summary("Create a invitation to a account")
+        .tag(invitationsTag)
+        .operationId("create")
+        .request[PostInvitationAccount]
+        .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
+    }  { request: PostInvitationAccount =>
+      invitationService.create(
+        request.accountId,
+        request.groupId,
+        SessionContext.id
+      ).map(InvitationCreated(_)).map(response.created(_))
+    }
 
     postWithPermission("/invitations/:id/accept")(Permissions.groupInvitations) { o =>
       o.summary("Accept a invitation")
@@ -49,36 +79,6 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
         request.id,
         SessionContext.id
       ).map(_ => response.ok)
-    }
-
-    postWithPermission("/groups/:id/invitations")(Permissions.groupInvitations) { o =>
-      o.summary("Post a invitation to some accounts")
-        .tag(invitationsTag)
-        .operationId("createGroupInvitationToAccounts")
-        .request[PostInvitationAccounts]
-        .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
-    } { request: PostInvitationAccounts =>
-      invitationService.create(
-        request.accountIds.toList,
-        request.id,
-        SessionContext.id
-      ).map(_.map(InvitationCreated(_))).map(response.created(_))
-    }
-
-    postWithPermission("/accounts/:accountId/groups/:groupId/invitations")(Permissions.groupInvitations) { o =>
-      o.summary("Create a invitation to a account")
-        .tag(invitationsTag)
-        .operationId("createGroupInvitationToAccount")
-        .request[PostInvitationAccount]
-        .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
-    }  { request: PostInvitationAccount =>
-      invitationService.create(
-        request.accountId,
-        request.groupId,
-        SessionContext.id
-      ).map(InvitationCreated(_)).map(response.created(_))
     }
 
   }
