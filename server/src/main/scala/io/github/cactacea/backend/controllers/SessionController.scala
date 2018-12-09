@@ -6,9 +6,8 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models._
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
-import io.github.cactacea.backend.models.requests.account.{PostAcceptFriendRequest, PostRejectFriendRequest}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
 import io.github.cactacea.backend.models.requests.group.{GetSessionGroups, GetSessionInvitations}
 import io.github.cactacea.backend.models.requests.session._
@@ -42,7 +41,7 @@ class SessionController @Inject()(
     getWithPermission("/session")(Permissions.basic) { o =>
       o.summary("Get basic information about session account")
         .tag(sessionTag)
-        .operationId("findSession")
+        .operationId("find")
         .responseWith[Account](Status.Ok.code, successfulMessage)
     } { _: Request =>
       accountsService.find(
@@ -67,7 +66,7 @@ class SessionController @Inject()(
     putWithPermission("/session/account_name")(Permissions.basic) { o =>
       o.summary("Update the account name")
         .tag(sessionTag)
-        .operationId("updateSessionAccountName")
+        .operationId("updateAccountName")
         .request[PutSessionAccountName]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNameAlreadyUsed))))
@@ -82,7 +81,7 @@ class SessionController @Inject()(
     putWithPermission("/session/password")(Permissions.basic) { o =>
       o.summary("Update the password")
         .tag(sessionTag)
-        .operationId("updateSessionPassword")
+        .operationId("updatePassword")
         .request[PutSessionPassword]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutSessionPassword =>
@@ -97,7 +96,7 @@ class SessionController @Inject()(
     putWithPermission("/session/profile")(Permissions.basic) { o =>
       o.summary("Update the profile")
         .tag(sessionTag)
-        .operationId("updateSessionProfile")
+        .operationId("updateProfile")
         .request[PutSessionProfile]
         .responseWith(Status.Ok.code, successfulMessage)
     }  { request: PutSessionProfile =>
@@ -114,7 +113,7 @@ class SessionController @Inject()(
     putWithPermission("/session/profile_image")(Permissions.basic) { o =>
       o.summary("Update the profile image")
         .tag(sessionTag)
-        .operationId("updateSessionProfileImage")
+        .operationId("updateProfileImage")
         .request[PutSessionProfileImage]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(MediumNotFound))))
@@ -128,7 +127,7 @@ class SessionController @Inject()(
     deleteWithPermission("/session/profile_image")(Permissions.basic) { o =>
       o.summary("Remove the profile image")
         .tag(sessionTag)
-        .operationId("deleteSessionProfileImage")
+        .operationId("deleteProfileImage")
         .responseWith(Status.Ok.code, successfulMessage)
     }  { _: Request =>
       accountsService.deleteProfileImage(
@@ -139,9 +138,9 @@ class SessionController @Inject()(
     getWithPermission("/session/feeds")(Permissions.basic) { o =>
       o.summary("Get feeds list session account posted")
         .tag(sessionTag)
-        .operationId("findSessionFeeds")
+        .operationId("findFeeds")
         .request[GetSessionFeeds]
-        .responseWith[Feed](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFeeds =>
       feedsService.find(
         request.since,
@@ -154,9 +153,9 @@ class SessionController @Inject()(
     getWithPermission("/session/likes")(Permissions.basic) { o =>
       o.summary("Get feeds list session account set a like")
         .tag(sessionTag)
-        .operationId("findSessionLikes")
+        .operationId("findLikes")
         .request[GetSessionLikedFeeds]
-        .responseWith[Feed](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetSessionLikedFeeds =>
       feedLikesService.find(
         request.since,
@@ -169,7 +168,7 @@ class SessionController @Inject()(
     getWithPermission("/session/follows")(Permissions.followerList) { o =>
       o.summary("Get accounts list session account followed")
         .tag(sessionTag)
-        .operationId("findSessionFollows")
+        .operationId("findFollows")
         .request[GetSessionFollows]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollows =>
@@ -184,7 +183,7 @@ class SessionController @Inject()(
     getWithPermission("/session/followers")(Permissions.followerList) { o =>
       o.summary("Get accounts list session account is followed by")
         .tag(sessionTag)
-        .operationId("findSessionFollowers")
+        .operationId("findFollowers")
         .request[GetSessionFollowers]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollowers =>
@@ -199,7 +198,7 @@ class SessionController @Inject()(
     getWithPermission("/session/friends")(Permissions.followerList) { o =>
       o.summary("Get friends list")
         .tag(sessionTag)
-        .operationId("findSessionFriends")
+        .operationId("findFriends")
         .request[GetSessionFriends]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     }  { request: GetSessionFriends =>
@@ -214,8 +213,8 @@ class SessionController @Inject()(
 
     getWithPermission("/session/groups")(Permissions.basic) { o =>
       o.summary("Get groups list session account joined")
-        .tag(groupsTag)
-        .operationId("findSessionGroups")
+        .tag(sessionTag)
+        .operationId("findGroups")
         .request[GetSessionGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
     } { request: GetSessionGroups =>
@@ -230,8 +229,8 @@ class SessionController @Inject()(
 
     getWithPermission("/session/hides")(Permissions.basic) { o =>
       o.summary("Get hidden groups list session account joined")
-        .tag(groupsTag)
-        .operationId("findSessionHides")
+        .tag(sessionTag)
+        .operationId("findHides")
         .request[GetSessionGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
 
@@ -247,8 +246,8 @@ class SessionController @Inject()(
 
     getWithPermission("/session/invitations")(Permissions.basic) { o =>
       o.summary("Get invitations list session account received")
-        .tag(invitationsTag)
-        .operationId("findSessionGroupInvitations")
+        .tag(sessionTag)
+        .operationId("findGroupInvitations")
         .request[GetSessionInvitations]
         .responseWith[Array[GroupInvitation]](Status.Ok.code, successfulMessage)
     } { request: GetSessionInvitations =>
@@ -262,8 +261,8 @@ class SessionController @Inject()(
 
     getWithPermission("/session/mutes")(Permissions.basic) { o =>
       o.summary("Get accounts list session account muted")
-        .tag(mutesTag)
-        .operationId("findSessionMutes")
+        .tag(sessionTag)
+        .operationId("findMutes")
         .request[GetSessionMutes]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionMutes =>
@@ -277,8 +276,8 @@ class SessionController @Inject()(
 
     getWithPermission("/session/requests")(Permissions.basic) { o =>
       o.summary("Get friend requests list session account created or received")
-        .tag(RequestsTag)
-        .operationId("findSessionFriendRequests")
+        .tag(sessionTag)
+        .operationId("findFriendRequests")
         .request[GetSessionFriendRequests]
         .responseWith[Array[FriendRequest]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFriendRequests =>
@@ -289,34 +288,6 @@ class SessionController @Inject()(
         request.received,
         SessionContext.id
       )
-    }
-
-    postWithPermission("/session/requests/:id/accept")(Permissions.friendRequests) { o =>
-      o.summary("Accept a friend request")
-        .tag(RequestsTag)
-        .operationId("accept")
-        .request[PostAcceptFriendRequest]
-        .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FriendRequestNotFound))))
-    } { request: PostAcceptFriendRequest =>
-      friendRequestsService.accept(
-        request.id,
-        SessionContext.id
-      ).map(_ => response.ok)
-    }
-
-    postWithPermission("/session/requests/:id/reject")(Permissions.friendRequests) { o =>
-      o.summary("Reject a friend request")
-        .tag(RequestsTag)
-        .operationId("reject")
-        .request[PostRejectFriendRequest]
-        .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FriendRequestNotFound))))
-    } { request: PostRejectFriendRequest =>
-      friendRequestsService.reject(
-        request.id,
-        SessionContext.id
-      ).map(_ => response.ok)
     }
 
   }

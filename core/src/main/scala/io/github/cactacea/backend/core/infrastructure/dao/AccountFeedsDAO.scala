@@ -23,8 +23,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
         where f.id = ${lift(feedId)}
         and r.account_id = ${lift(by)}
         and (
-           (r.follower = true and f.privacy_type = 1)
-        or (r.friend = true and f.privacy_type = 2)
+           (r.follower = true and (f.privacy_type in (0, 1)))
+        or (r.friend = true and (f.privacy_type in (0, 1, 2)))
             )
         """.as[Action[Long]]
     }
