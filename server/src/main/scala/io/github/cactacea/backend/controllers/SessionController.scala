@@ -140,7 +140,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findFeeds")
         .request[GetSessionFeeds]
-        .responseWith[Feed](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFeeds =>
       feedsService.find(
         request.since,
