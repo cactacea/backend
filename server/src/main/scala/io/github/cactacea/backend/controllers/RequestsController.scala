@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.FriendRequestsService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.models.requests.account.{DeleteFriendRequest, PostFriendRequest}
+import io.github.cactacea.backend.models.requests.account.{DeleteFriendRequest, PostAcceptFriendRequest, PostFriendRequest, PostRejectFriendRequest}
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
@@ -26,8 +26,8 @@ class RequestsController @Inject()(
 
     postWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
       o.summary("Create a friend request to a account")
-        .tag(RequestsTag)
-        .operationId("createFriendRequest")
+        .tag(requestsTag)
+        .operationId("create")
         .request[PostFriendRequest]
         .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyRequested))))
@@ -42,8 +42,8 @@ class RequestsController @Inject()(
 
     deleteWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
       o.summary("Remove a friend request to a account")
-        .tag(RequestsTag)
-        .operationId("deleteRequest")
+        .tag(requestsTag)
+        .operationId("delete")
         .request[DeleteFriendRequest]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, FriendRequestNotFound))))
@@ -55,6 +55,34 @@ class RequestsController @Inject()(
       ).map(_ => response.ok)
     }
 
+  }
+
+  postWithPermission("/requests/:id/accept")(Permissions.friendRequests) { o =>
+    o.summary("Accept a friend request")
+      .tag(requestsTag)
+      .operationId("accept")
+      .request[PostAcceptFriendRequest]
+      .responseWith(Status.Ok.code, successfulMessage)
+      .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FriendRequestNotFound))))
+  } { request: PostAcceptFriendRequest =>
+    friendRequestsService.accept(
+      request.id,
+      SessionContext.id
+    ).map(_ => response.ok)
+  }
+
+  postWithPermission("/requests/:id/reject")(Permissions.friendRequests) { o =>
+    o.summary("Reject a friend request")
+      .tag(requestsTag)
+      .operationId("reject")
+      .request[PostRejectFriendRequest]
+      .responseWith(Status.Ok.code, successfulMessage)
+      .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FriendRequestNotFound))))
+  } { request: PostRejectFriendRequest =>
+    friendRequestsService.reject(
+      request.id,
+      SessionContext.id
+    ).map(_ => response.ok)
   }
 
 }
