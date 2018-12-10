@@ -16,23 +16,7 @@ class DemoSetupHandler  @Inject()(@Flag("storage.localPath") localPath: String) 
   }
 
   def setupImages(): Unit = {
-    import java.nio.file.{Files, Paths}
-
-    val uri = getClass.getResource("/demo/images").toURI
-    val resourcePath = Paths.get(uri)
-    val to = Paths.get(localPath)
-    if (!Files.exists(to)) {
-      Files.createDirectories(to)
-    }
-    val walk = Files.walk(resourcePath, 1)
-    val it = walk.sorted().iterator()
-    it.next()
-    while (it.hasNext) {
-      val path = it.next()
-      val toFile = to.resolve(path.getFileName)
-      Files.deleteIfExists(toFile)
-      Files.copy(path, toFile)
-    }
+    new FileAccessUtil().copyAll("demo/images", localPath);
 
   }
 
