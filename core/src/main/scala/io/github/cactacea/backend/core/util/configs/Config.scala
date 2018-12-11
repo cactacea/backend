@@ -68,6 +68,7 @@ object Config extends DurationReader {
 
   object storage {
     lazy val hostName = storageConfig.hostName.getOrElse("localhost")
+    lazy val port = storageConfig.port.getOrElse("")
     lazy val maxFileSize = storageConfig.maxFileSize.getOrElse(1.megabytes)
   }
 
