@@ -1,8 +1,11 @@
 package io.github.cactacea.backend;
 
+import javax.print.URIException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,7 +49,8 @@ public class FileAccessUtil {
                         System.out.println(ex);
                     }
                 } else {
-                    Path resourcePath = Paths.get(dst);
+                    URI uri = url.toURI();
+                    Path resourcePath = Paths.get(uri);
                     Stream<Path> walk = Files.walk(resourcePath, 1);
                     Iterator<Path> it = walk.sorted().iterator();
                     it.next();
@@ -58,6 +62,8 @@ public class FileAccessUtil {
                     }
                 }
 
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -43,7 +43,7 @@ class DefaultStorageService(val localPath: String) extends StorageService {
         FuturePool.unboundedPool {
           val filename = UUID.randomUUID.toString
           val host = Config.storage.hostName
-          val url = s"http://${host}:${9000}/mediums/" + filename
+          val url = s"http://${host}${Config.storage.port}/mediums/" + filename
           val filePath = localPath + filename
           for {
             out <- managed(new BufferedOutputStream(new java.io.FileOutputStream(filePath)))
