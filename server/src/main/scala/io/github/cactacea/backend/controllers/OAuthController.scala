@@ -2,11 +2,10 @@ package io.github.cactacea.backend.controllers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.OAuth2
-import com.twitter.finagle.http.{Request, Status}
+import com.twitter.finagle.http.{Request, Response, Status, Version}
 import com.twitter.finagle.oauth2._
 import com.twitter.finatra.http.Controller
 import com.twitter.inject.annotations.Flag
-import com.twitter.util.Future
 import io.github.cactacea.backend.models.requests.oauth.GetAuthorize
 import io.github.cactacea.backend.utils.oauth.{OAuthCodeGenerator, OAuthHandler, OAuthService, OAuthTokenGenerator}
 import io.github.cactacea.backend.views.{ErrorView, SignInView}
@@ -18,7 +17,7 @@ class OAuthController @Inject()(
                                  tokenGenerator: OAuthTokenGenerator,
                                  codeGenerator: OAuthCodeGenerator,
                                  dataHandler: OAuthHandler
-                               ) extends Controller with OAuth2 with OAuthTokenInJson with OAuthErrorInJson {
+                               ) extends Controller with OAuth2 { // with OAuthTokenInJson with OAuthErrorInJson {
 
   protected val tagName = "OAuth"
 
@@ -37,13 +36,13 @@ class OAuthController @Inject()(
                   val location = s"/oauth2/authentication?response_type=${req.responseType}&client_id=${req.clientId}${scope}"
                   response.status(Status.SeeOther).location(location)
                 case Left(e) =>
-                  handleError(e)
+                  e.toResponse
               }
             case Left(e) =>
-              handleError(e)
+              e.toResponse
           })
         case Left(e) =>
-          handleError(e)
+          e.toResponse
       }
     }
 
@@ -85,10 +84,12 @@ class OAuthController @Inject()(
   }
 
   post("/oauth2/token") { req: Request =>
-    issueAccessToken(req, dataHandler) flatMap { token =>
-      Future(convertToken(token))
+    issueAccessToken(req, dataHandler) map { token =>
+      val rep = Response(Version.Http11, Status.Ok)
+      rep.setContentString(token.accessToken)
+      rep
     } handle {
-      case e: OAuthError => handleError(e)
+      case e: OAuthError => e.toResponse
     }
   }
 
