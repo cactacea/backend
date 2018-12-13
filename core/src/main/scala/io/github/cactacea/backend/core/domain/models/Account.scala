@@ -45,7 +45,7 @@ object Account {
       r.flatMap(_.displayName).getOrElse(a.displayName),
       a.profileImageUrl,
       r.map(_.friend).getOrElse(false),
-      r.map(_.inProgress).getOrElse(false),
+      r.map(_.friendRequestInProgress).getOrElse(false),
       r.map(_.follow).getOrElse(false),
       r.map(_.follower).getOrElse(false),
       Some(a.followCount),

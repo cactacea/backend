@@ -20,8 +20,8 @@ class OutstandingFriendRequestsDAOSpec extends DAOSpec {
     execute(outstandingFriendRequestsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
     val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.inProgress == true)
-    assert(result2.inProgress == true)
+    assert(result1.friendRequestInProgress == true)
+    assert(result2.friendRequestInProgress == true)
 
     // delete friendRequestInProgresss
     execute(outstandingFriendRequestsDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
@@ -32,8 +32,8 @@ class OutstandingFriendRequestsDAOSpec extends DAOSpec {
     execute(outstandingFriendRequestsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
     val result3 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result4 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result3.inProgress == true)
-    assert(result4.inProgress == true)
+    assert(result3.friendRequestInProgress == true)
+    assert(result4.friendRequestInProgress == true)
 
   }
 
@@ -50,8 +50,8 @@ class OutstandingFriendRequestsDAOSpec extends DAOSpec {
     execute(outstandingFriendRequestsDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
     val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.inProgress == false)
-    assert(result2.inProgress == false)
+    assert(result1.friendRequestInProgress == false)
+    assert(result2.friendRequestInProgress == false)
 
   }
 

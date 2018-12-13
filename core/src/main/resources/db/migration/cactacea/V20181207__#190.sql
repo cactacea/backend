@@ -13,6 +13,8 @@ ALTER TABLE `${schema}`.`mediums`
 DROP COLUMN `thumbnail_uri`,
 ADD COLUMN `thumbnail_url` VARCHAR(2048) NULL DEFAULT NULL AFTER `size`;
 
+ALTER TABLE `cactacea`.`relationships`
+CHANGE COLUMN `in_progress` `friend_request_in_progress` TINYINT(4) NOT NULL DEFAULT '0' ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
