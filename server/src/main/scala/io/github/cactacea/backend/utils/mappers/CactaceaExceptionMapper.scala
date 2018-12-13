@@ -13,14 +13,15 @@ class CactaceaExceptionMapper @Inject()(response: ResponseBuilder) extends Excep
   override def toResponse(request: Request, exception: CactaceaException): Response = {
     val error = exception.error
     val errors = CactaceaErrors(Seq(error))
-    if (error.status == Status.NotFound) {
-      response.notFound(errors)
-    } else if (error.status == Status.BadRequest) {
-      response.badRequest(errors)
-    } else if (error.status == Status.Unauthorized) {
-      response.unauthorized(errors)
-    } else {
-      response.internalServerError(errors)
+    error.status match {
+      case Status.NotFound =>
+        response.notFound(errors)
+      case Status.BadRequest =>
+        response.badRequest(errors)
+      case Status.Unauthorized =>
+        response.unauthorized(errors)
+      case _ =>
+        response.internalServerError(errors)
     }
   }
 

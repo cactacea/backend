@@ -53,17 +53,13 @@ class AuthTokenGenerator {
           val expiration = body.getExpiration.getTime
           val audience = body.getAudience().toLong
 
-          if (header.getAlgorithm().equals(signatureAlgorithm.getValue) == false) {
-            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
-
-          } else if (body.getSubject.equals(Config.auth.token.subject) == false) {
-            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
-
-          } else if (body.getIssuer.equals(Config.auth.token.issuer) == false) {
-            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
-
-          } else {
+          if (header.getAlgorithm().equals(signatureAlgorithm.getValue)
+              && body.getSubject.equals(Config.auth.token.subject)
+              && body.getIssuer.equals(Config.auth.token.issuer)) {
             Future.value(SessionUser(SessionId(audience), udid, expiration))
+          } else {
+            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
+
           }
 
         } catch {

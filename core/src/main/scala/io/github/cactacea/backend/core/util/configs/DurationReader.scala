@@ -13,7 +13,7 @@ trait DurationReader {
     * format as defined by the <a href="https://github.com/typesafehub/config/blob/master/HOCON.md">HOCON spec</a>.
     * For example, it can read "15 minutes" or "1 day".
     */
-  implicit def twitterDurationReader: ValueReader[Duration] = new ValueReader[Duration] {
+  implicit def reader: ValueReader[Duration] = new ValueReader[Duration] {
     def read(config: TypeSafeConfig, path: String): Duration = {
       val nanos = config.getDuration(path, NANOSECONDS)
       Duration.fromNanoseconds(nanos)
