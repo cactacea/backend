@@ -10,7 +10,7 @@ case class Mediums(
                     width: Int,
                     height: Int,
                     size: Long,
-                    thumbnailUri: Option[String],
+                    thumbnailUrl: Option[String],
                     mediumType: MediumType,
                     by: AccountId,
                     contentWarning: Boolean,

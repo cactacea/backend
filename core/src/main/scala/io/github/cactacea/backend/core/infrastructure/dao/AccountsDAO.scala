@@ -60,7 +60,7 @@ class AccountsDAO @Inject()(
     run(q).map(_ => Unit)
   }
 
-  def updateProfileImageUri(profileImageUrl: Option[String], profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
+  def updateProfileImageUrl(profileImageUrl: Option[String], profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]

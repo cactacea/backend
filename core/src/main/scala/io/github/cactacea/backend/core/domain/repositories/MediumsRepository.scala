@@ -14,7 +14,7 @@ class MediumsRepository @Inject()(
 
   def create(key: String,
              url: String,
-             thumbnailUri: Option[String],
+             thumbnailUrl: Option[String],
              mediumType: MediumType,
              width: Int,
              height: Int,
@@ -22,7 +22,7 @@ class MediumsRepository @Inject()(
              sessionId: SessionId): Future[MediumId] = {
 
     for {
-      id <- mediumsDAO.create(key, url, thumbnailUri, mediumType, width, height, size, sessionId)
+      id <- mediumsDAO.create(key, url, thumbnailUrl, mediumType, width, height, size, sessionId)
     } yield (id)
   }
 

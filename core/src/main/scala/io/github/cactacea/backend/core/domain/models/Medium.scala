@@ -39,7 +39,7 @@ object Medium {
           width           = i.width,
           height          = i.height,
           size            = i.size,
-          thumbnailUrl    = i.thumbnailUri,
+          thumbnailUrl    = i.thumbnailUrl,
           mediumType      = i.mediumType,
           contentWarning  = i.contentWarning,
           contentDeleted = false
