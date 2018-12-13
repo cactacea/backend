@@ -245,7 +245,7 @@ class AccountsDAO @Inject()(
 
     val by = sessionId.toAccountId
 
-    val q2 = quote {
+    val q = quote {
       query[Accounts]
         .filter({a => a.id !=  lift(by)})
         .filter(a => a.accountStatus == lift(AccountStatusType.normally))
@@ -259,29 +259,7 @@ class AccountsDAO @Inject()(
       .drop(lift(offset))
       .take(lift(count))
     }
-
-    (for {
-      accounts <- run(q2)
-      ids = accounts.map({ case (a, _) => a.id})
-      blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
-    } yield (accounts, blocksCount))
-      .map({ case (accounts, blocksCount) =>
-        accounts.map({ case (a, r) =>
-          val b = blocksCount.find(_.id == a.id)
-          val friendCount = a.friendCount - b.map(_.friendCount).getOrElse(0L)
-          val followCount = a.followCount - b.map(_.followCount).getOrElse(0L)
-          val followerCount = a.followerCount - b.map(_.followerCount).getOrElse(0L)
-          val displayName = r.flatMap(_.displayName).getOrElse(a.displayName)
-          val na = a.copy(
-            displayName = displayName,
-            friendCount = friendCount,
-            followCount = followCount,
-            followerCount = followerCount,
-            feedsCount = a.feedsCount)
-          Account(na, r)
-        })
-      })
-
+    run(q).map(_.map({ case (a, r) => Account(a, r).copy(followCount = None, followerCount = None, friendCount = None) }))
   }
 
   def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
