@@ -44,18 +44,7 @@ lazy val core = (project in file("core"))
   .dependsOn(finagger % "compile->compile;test->test")
 
 
-lazy val filhouette = (project in file("filhouette"))
-  .settings(commonSettings)
-  .settings(commonResolverSetting)
-  .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.filhouette)
-
-
-lazy val swaggerUIVersion = SettingKey[String]("swaggerUIVersion")
-
-
-lazy val finagger = (project in file("finagger"))
+lazy val finagger = (project in file("libs/finagger"))
   .settings(
     swaggerUIVersion := "3.19.0",
     buildInfoPackage := "io.github.cactacea.finagger",
@@ -66,6 +55,17 @@ lazy val finagger = (project in file("finagger"))
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.finagger)
   .enablePlugins(BuildInfoPlugin)
+
+
+lazy val filhouette = (project in file("libs/filhouette"))
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.filhouette)
+
+
+lazy val swaggerUIVersion = SettingKey[String]("swaggerUIVersion")
 
 
 lazy val plugin = (project in file("plugin"))
@@ -81,6 +81,7 @@ lazy val plugin = (project in file("plugin"))
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
   .dependsOn(core % "compile->compile;test->test")
+
 
 lazy val demo = (project in file("demo"))
   .settings(
