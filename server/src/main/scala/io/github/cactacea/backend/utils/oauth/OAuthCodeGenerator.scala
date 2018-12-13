@@ -4,7 +4,7 @@ import java.util.Date
 
 import com.google.inject.Singleton
 import io.github.cactacea.backend.core.util.configs.Config
-import io.jsonwebtoken.{Jwts, SignatureAlgorithm}
+import io.jsonwebtoken.{JwtException, Jwts, SignatureAlgorithm}
 import org.joda.time.DateTime
 
 @Singleton
@@ -41,21 +41,16 @@ class OAuthCodeGenerator {
       val expiration = body.getExpiration.getTime
       val audience = body.getAudience().toLong
 
-      if (header.getAlgorithm().equals(signatureAlgorithm.getValue) == false) {
-        None
-
-      } else if (body.getSubject.equals("code") == false) {
-        None
-
-      } else if (body.getIssuer.equals(Config.auth.token.issuer) == false) {
-        None
-
-      } else {
+      if (header.getAlgorithm().equals(signatureAlgorithm.getValue)
+            && body.getSubject.equals("code")
+            && body.getIssuer.equals(Config.auth.token.issuer)) {
         Some(OAuthParsedToken(audience, issuedAt, expiration, clientId, Some(scope)))
+      } else {
+        None
       }
 
     } catch {
-      case _: Exception =>
+      case _: JwtException =>
         None
 
     }

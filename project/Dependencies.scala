@@ -14,8 +14,8 @@ object Dependencies {
     val mysql = "8.0.13"
     val config = "1.3.2"
     val ficus = "1.4.3"
-    val jjwt = "0.9.0"
-    val flyway = "5.2.0"
+    val jjwt = "0.9.1"
+    val flyway = "5.2.4"
     val quill = "2.6.0"
     val arm = "2.0"
     val hasher = "1.2.0"
@@ -42,7 +42,7 @@ object Dependencies {
   }
 
   object oauth2 {
-    val oauth2 = "com.github.finagle" %% "finagle-oauth2" % "18.8.0"
+    val oauth2 = "com.github.finagle" %% "finagle-oauth2" % versions.twitter
   }
 
   object mysql {

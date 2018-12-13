@@ -76,7 +76,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
 
   private def findTagsAndImages(feeds: List[(AccountFeeds, Feeds, Accounts, Option[Relationships])])
                 : Future[List[Feed]] = {
-    val feedIds = feeds.map(_._2.id)
+    val feedIds = feeds.map({ case (_, f, _, _) => f.id})
 
     (for {
       t <- feedTagsDAO.findAll(feedIds)
@@ -85,7 +85,7 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
       case (t, m) =>
         feeds.map({ case (af, f, a, r) =>
           val tags = t.filter(_.feedId == f.id)
-          val images = m.filter({ case (id, _) => id == f.id }).map(_._2)
+          val images = m.filter({ case (id, _) => id == f.id }).map({ case (_, m) => m })
           Feed(f, tags, images, a, r, af.feedId.value)
         })
     }

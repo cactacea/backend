@@ -10,5 +10,5 @@ case class Relationships(
                           follower: Boolean,
                           mute: Boolean,
                           friend: Boolean,
-                          inProgress: Boolean
+                          friendRequestInProgress: Boolean
                       )

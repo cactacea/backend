@@ -2,19 +2,20 @@ package io.github.cactacea.backend.utils.oauth
 
 import java.util.Date
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.oauth2.{AccessToken, AuthInfo, DataHandler}
 import com.twitter.inject.Logging
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, AuthDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 
-class OAuthHandler extends DataHandler[OAuthUser] with Logging {
-
-  @Inject var accountsDAO: AccountsDAO = _
-  @Inject var authDAO: AuthDAO = _
-  @Inject var codeGenerator: OAuthCodeGenerator = _
-  @Inject var tokenGenerator: OAuthTokenGenerator = _
+@Singleton
+class OAuthHandler @Inject()(
+                              accountsDAO: AccountsDAO,
+                              authDAO: AuthDAO,
+                              codeGenerator: OAuthCodeGenerator,
+                              tokenGenerator: OAuthTokenGenerator
+                            ) extends DataHandler[OAuthUser] with Logging {
 
   def validateClient(clientId: String, clientSecret: String, grantType: String): Future[Boolean] = {
     authDAO.validateClient(clientId, clientSecret, grantType)

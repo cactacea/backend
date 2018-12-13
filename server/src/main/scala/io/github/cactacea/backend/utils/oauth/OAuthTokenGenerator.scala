@@ -59,21 +59,16 @@ class OAuthTokenGenerator {
       val expired = header.getOrDefault("expired", "0").asInstanceOf[String].toLong
       val audience = body.getAudience().toLong
 
-      if (header.getAlgorithm().equals(signatureAlgorithm.getValue) == false) {
-        None
-
-      } else if (body.getSubject.equals(subject) == false) {
-        None
-
-      } else if (body.getIssuer.equals(Config.auth.token.issuer) == false) {
-        None
-
-      } else {
+      if (header.getAlgorithm().equals(signatureAlgorithm.getValue)
+            && body.getSubject.equals(subject)
+            && body.getIssuer.equals(Config.auth.token.issuer)) {
         Some(OAuthParsedToken(audience, issuedAt, expired, clientId, Some(scope)))
+      } else {
+        None
       }
 
     } catch {
-      case _: Exception =>
+      case _: JwtException =>
         None
 
     }

@@ -14,7 +14,7 @@ import io.github.cactacea.backend.utils.oauth.Permissions
 import io.swagger.models.Swagger
 
 @Singleton
-class RequestsController @Inject()(
+class FriendRequestsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     friendRequestsService: FriendRequestsService,
@@ -26,7 +26,7 @@ class RequestsController @Inject()(
 
     postWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
       o.summary("Create a friend request to a account")
-        .tag(requestsTag)
+        .tag(friendRequestsTag)
         .operationId("create")
         .request[PostFriendRequest]
         .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
@@ -42,7 +42,7 @@ class RequestsController @Inject()(
 
     deleteWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
       o.summary("Remove a friend request to a account")
-        .tag(requestsTag)
+        .tag(friendRequestsTag)
         .operationId("delete")
         .request[DeleteFriendRequest]
         .responseWith(Status.Ok.code, successfulMessage)
@@ -59,7 +59,7 @@ class RequestsController @Inject()(
 
   postWithPermission("/requests/:id/accept")(Permissions.friendRequests) { o =>
     o.summary("Accept a friend request")
-      .tag(requestsTag)
+      .tag(friendRequestsTag)
       .operationId("accept")
       .request[PostAcceptFriendRequest]
       .responseWith(Status.Ok.code, successfulMessage)
@@ -73,7 +73,7 @@ class RequestsController @Inject()(
 
   postWithPermission("/requests/:id/reject")(Permissions.friendRequests) { o =>
     o.summary("Reject a friend request")
-      .tag(requestsTag)
+      .tag(friendRequestsTag)
       .operationId("reject")
       .request[PostRejectFriendRequest]
       .responseWith(Status.Ok.code, successfulMessage)

@@ -4,7 +4,7 @@ import com.google.inject.Singleton
 import com.twitter.inject.server.FeatureTest
 
 @Singleton
-trait RequestsControllerSpec extends FeatureTest {
+trait FriendRequestsControllerSpec extends FeatureTest {
   self: CactaceaServerSpec =>
 
   test("POST /accounts/:id/requests") (pending)

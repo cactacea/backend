@@ -10,6 +10,7 @@ import io.swagger.models._
 import io.swagger.models.auth.{ApiKeyAuthDefinition, OAuth2Definition}
 
 import scala.collection.JavaConverters._
+import io.swagger.models.auth.In
 
 object CactaceaSwaggerModule extends SwaggerModule {
 
@@ -47,7 +48,6 @@ object CactaceaSwaggerModule extends SwaggerModule {
     swaggerDefine.addTag(new Tag().name("System").description("Health checking and etc"))
 
 
-    import io.swagger.models.auth.In
     val apiKeyAuthDefinition = new ApiKeyAuthDefinition(Config.auth.headerNames.apiKey, In.HEADER)
     swaggerDefine.securityDefinition("api_key", apiKeyAuthDefinition)
 

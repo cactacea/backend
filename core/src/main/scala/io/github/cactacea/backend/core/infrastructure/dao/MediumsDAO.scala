@@ -14,7 +14,7 @@ class MediumsDAO @Inject()(db: DatabaseService) {
 
   def create(key: String,
              uri: String,
-             thumbnailUri: Option[String],
+             thumbnailUrl: Option[String],
              mediumType: MediumType,
              width: Int,
              height: Int,
@@ -30,7 +30,7 @@ class MediumsDAO @Inject()(db: DatabaseService) {
         _.height          -> lift(height),
         _.size            -> lift(size),
         _.by              -> lift(by),
-        _.thumbnailUri    -> lift(thumbnailUri),
+        _.thumbnailUrl    -> lift(thumbnailUrl),
         _.mediumType      -> lift(mediumType),
         _.contentWarning  -> false,
         _.contentStatus   -> lift(ContentStatusType.unchecked)

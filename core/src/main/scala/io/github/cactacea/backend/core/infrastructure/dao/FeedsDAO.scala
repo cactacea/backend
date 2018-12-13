@@ -224,7 +224,7 @@ class FeedsDAO @Inject()(
       case (tags, medium, likeBlocks, commentBlocks) =>
         t.map({ case (f, a, r) =>
           val t = tags.filter(_.feedId == f.id)
-          val m = medium.filter({ case (id, _) => id == f.id}).map(_._2)
+          val m = medium.filter({ case (id, _) => id == f.id}).map({ case (_, m) => m })
           val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
           val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
           val nf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
@@ -273,7 +273,7 @@ class FeedsDAO @Inject()(
       case (tags, medium, likeBlocks, commentBlocks) =>
         feeds.map({ f =>
           val t = tags.filter(_.feedId == f.id)
-          val m = medium.filter({ case (id, _) => f.id == id}).map(_._2)
+          val m = medium.filter({ case (id, _) => f.id == id}).map({ case (_, m) => m })
           val fb = likeBlocks.filter(_.id == f.id).map(_.count).headOption
           val cb = commentBlocks.filter(_.id == f.id).map(_.count).headOption
           val cf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )

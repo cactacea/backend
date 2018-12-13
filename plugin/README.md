@@ -1,5 +1,13 @@
-# Cactacea plugin
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/plugin_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/plugin_2.12)
+# Plugin
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/plugin)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Cactacea plugin for flyway
+**cactacea-plugin** is sbt plugin in order to get resource path for flyway.
+
+### Getting Started
+
+Update to your project/plugin.sbt file to include:
+
+```
+addSbtPlugin("io.github.cactacea" % "plugin" % "18.12.7")
+```

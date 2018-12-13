@@ -90,10 +90,10 @@ class AccountsRepository @Inject()(
       case Some(id) =>
         for {
           uri <- validationDAO.findMedium(id, sessionId).map(m => Some(m.uri))
-          _ <- accountsDAO.updateProfileImageUri(uri, profileImage, sessionId)
+          _ <- accountsDAO.updateProfileImageUrl(uri, profileImage, sessionId)
         } yield (uri)
       case None =>
-        accountsDAO.updateProfileImageUri(None, None, sessionId).flatMap(_ => Future.None)
+        accountsDAO.updateProfileImageUrl(None, None, sessionId).flatMap(_ => Future.None)
     }
   }
 

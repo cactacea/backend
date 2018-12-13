@@ -54,9 +54,9 @@ class MediumsDAOSpec extends DAOSpec {
     assert(medium2.uri == "http://example.com/test2.mov")
     assert(medium3.uri == "http://example.com/test3.jpeg")
 
-    assert(medium1.thumbnailUri == Some("http://example.com/test1.jpeg"))
-    assert(medium2.thumbnailUri == Some("http://example.com/test2.mov"))
-    assert(medium3.thumbnailUri == Some("http://example.com/test3.jpeg"))
+    assert(medium1.thumbnailUrl == Some("http://example.com/test1.jpeg"))
+    assert(medium2.thumbnailUrl == Some("http://example.com/test2.mov"))
+    assert(medium3.thumbnailUrl == Some("http://example.com/test3.jpeg"))
 
 
   }

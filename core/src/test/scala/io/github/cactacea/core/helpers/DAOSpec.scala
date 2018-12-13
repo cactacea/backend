@@ -87,7 +87,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
         mediumsDAO.create(
           m.key,
           m.uri,
-          m.thumbnailUri,
+          m.thumbnailUrl,
           m.mediumType,
           m.width,
           m.height,

@@ -2,7 +2,7 @@ package io.github.cactacea.backend.utils.filters
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
-import com.twitter.finagle.oauth2.{OAuthError, OAuthErrorInJson}
+import com.twitter.finagle.oauth2.{OAuthError}
 import com.twitter.finagle.{OAuth2, Service, SimpleFilter}
 import com.twitter.inject.Logging
 import com.twitter.util.Future
@@ -14,7 +14,7 @@ import io.github.cactacea.backend.utils.oauth.OAuthHandler
 class OAuthFilter @Inject()(
                              dataHandler: OAuthHandler,
                              sessionsRepository: SessionsRepository
-                           ) extends SimpleFilter[Request, Response] with OAuth2 with OAuthErrorInJson with Logging {
+                           ) extends SimpleFilter[Request, Response] with OAuth2 with Logging {
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     SessionContext.authenticated match {
@@ -30,7 +30,7 @@ class OAuthFilter @Inject()(
             service(request)
           })
         } handle {
-          case e: OAuthError => handleError(e)
+          case e: OAuthError => e.toResponse
         }
     }
   }

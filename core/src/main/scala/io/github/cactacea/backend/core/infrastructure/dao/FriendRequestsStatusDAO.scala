@@ -18,8 +18,8 @@ class FriendRequestsStatusDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId    -> lift(accountId),
           _.by           -> lift(by),
-          _.inProgress   -> true
-        ).onConflictUpdate((t, _) => t.inProgress -> true)
+          _.friendRequestInProgress   -> true
+        ).onConflictUpdate((t, _) => t.friendRequestInProgress -> true)
     }
     run(q).map(_ => Unit)
   }
@@ -31,7 +31,7 @@ class FriendRequestsStatusDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId     == lift(accountId))
         .filter(_.by            == lift(by))
         .update(
-          _.inProgress          -> false
+          _.friendRequestInProgress          -> false
         )
     }
     run(q).map(_ => Unit)
@@ -43,7 +43,7 @@ class FriendRequestsStatusDAO @Inject()(db: DatabaseService) {
       query[Relationships]
         .filter(_.accountId    == lift(accountId))
         .filter(_.by           == lift(by))
-        .filter(_.inProgress   == true)
+        .filter(_.friendRequestInProgress   == true)
         .nonEmpty
     }
     run(q)

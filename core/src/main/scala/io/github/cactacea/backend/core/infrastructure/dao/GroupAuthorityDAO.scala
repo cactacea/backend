@@ -53,8 +53,8 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
   private def hasManagingAuthority(accountId: AccountId, g: Groups): Future[Boolean] = {
     if (accountId == g.by) {
       Future.True
-    } else if (g.authorityType == GroupAuthorityType.owner && g.by != accountId) {
-      Future.value(false)
+    } else if (g.authorityType == GroupAuthorityType.owner) {
+      Future.False
     } else {
       exist(g.id, accountId)
     }

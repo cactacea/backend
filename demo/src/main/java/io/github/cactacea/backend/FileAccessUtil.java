@@ -1,6 +1,5 @@
 package io.github.cactacea.backend;
 
-import javax.print.URIException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
