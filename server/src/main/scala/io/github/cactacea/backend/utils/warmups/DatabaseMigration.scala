@@ -11,7 +11,8 @@ object DatabaseMigration {
     val user = Config.db.master.user
     val password = Config.db.master.password
     val dest = Config.db.master.dest
-    val url = s"jdbc:mysql://$dest/$database"
+    val ssl = Config.db.master.ssl
+    val url = s"jdbc:mysql://$dest/$database?useSSL=${ssl}"
 
 
     val flyway = Flyway.configure()
