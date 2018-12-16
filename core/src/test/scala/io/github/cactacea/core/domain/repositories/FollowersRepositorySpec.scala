@@ -18,11 +18,11 @@ class FollowersRepositorySpec extends RepositorySpec {
     val followedUser4 = signUp("FollowersRepositorySpec6", "followed4 user password", "followed4 user udid")
     val followedUser5 = signUp("FollowersRepositorySpec7", "followed5 user password", "followed5 user udid")
 
-    execute(followsRepository.create(followedUser1.id, user.id.toSessionId))
-    execute(followsRepository.create(followedUser2.id, user.id.toSessionId))
-    execute(followsRepository.create(followedUser3.id, user.id.toSessionId))
-    execute(followsRepository.create(followedUser4.id, user.id.toSessionId))
-    execute(followsRepository.create(followedUser5.id, user.id.toSessionId))
+    execute(followsRepository.create(user.id, followedUser1.id.toSessionId))
+    execute(followsRepository.create(user.id, followedUser2.id.toSessionId))
+    execute(followsRepository.create(user.id, followedUser3.id.toSessionId))
+    execute(followsRepository.create(user.id, followedUser4.id.toSessionId))
+    execute(followsRepository.create(user.id, followedUser5.id.toSessionId))
 
     val follower1 = execute(followersRepository.findAll(user.id, None, 0, 3, sessionUser.id.toSessionId))
     assert(follower1.size == 3)
@@ -46,11 +46,11 @@ class FollowersRepositorySpec extends RepositorySpec {
     val followedUser4 = signUp("FollowersRepositorySpec12", "followed4 user password", "followed4 user udid")
     val followedUser5 = signUp("FollowersRepositorySpec13", "followed5 user password", "followed5 user udid")
 
-    execute(followsRepository.create(followedUser1.id, sessionUser.id.toSessionId))
-    execute(followsRepository.create(followedUser2.id, sessionUser.id.toSessionId))
-    execute(followsRepository.create(followedUser3.id, sessionUser.id.toSessionId))
-    execute(followsRepository.create(followedUser4.id, sessionUser.id.toSessionId))
-    execute(followsRepository.create(followedUser5.id, sessionUser.id.toSessionId))
+    execute(followsRepository.create(sessionUser.id, followedUser1.id.toSessionId))
+    execute(followsRepository.create(sessionUser.id, followedUser2.id.toSessionId))
+    execute(followsRepository.create(sessionUser.id, followedUser3.id.toSessionId))
+    execute(followsRepository.create(sessionUser.id, followedUser4.id.toSessionId))
+    execute(followsRepository.create(sessionUser.id, followedUser5.id.toSessionId))
 
     val follower1 = execute(followersRepository.findAll(None, 0, 3, sessionUser.id.toSessionId))
     assert(follower1.size == 3)

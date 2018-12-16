@@ -44,7 +44,7 @@ class FeedsController @Inject()(
     postWithPermission("/feeds")(Permissions.feeds) { o =>
       o.summary("Post a feed")
         .tag(feedsTag)
-        .operationId("postFeed")
+        .operationId("post")
         .request[PostFeed]
         .responseWith[FeedCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(MediumNotFound))))
@@ -77,7 +77,7 @@ class FeedsController @Inject()(
     putWithPermission("/feeds/:id")(Permissions.feeds) { o =>
       o.summary("Update a feed")
         .tag(feedsTag)
-        .operationId("updateFeed")
+        .operationId("update")
         .request[PutFeed]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound, MediumNotFound))))
@@ -97,7 +97,7 @@ class FeedsController @Inject()(
     deleteWithPermission("/feeds/:id")(Permissions.feeds) { o =>
       o.summary("Delete a feed")
         .tag(feedsTag)
-        .operationId("deleteFeed")
+        .operationId("delete")
         .request[DeleteFeed]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
@@ -111,7 +111,7 @@ class FeedsController @Inject()(
     postWithPermission("/feeds/:id/reports")(Permissions.reports) { o =>
       o.summary("Report a feed")
         .tag(feedsTag)
-        .operationId("reportFeed")
+        .operationId("report")
         .request[PostFeedReport]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))

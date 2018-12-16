@@ -61,12 +61,12 @@ class BlocksDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(b => (lift(since).forall(b.id < _)) )
         .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
-        .map({ case ((b, a), r) => (a, r, b.id)})
-        .sortBy({ case (_, _, id) => id })(Ord.desc)
+        .map({ case ((b, a), r) => (a, r, b)})
+        .sortBy({ case (_, _, b) => b.id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
+    run(q).map(_.map({case (a, r, b) => Account(a, r, b, b.id.value)}))
 
   }
 

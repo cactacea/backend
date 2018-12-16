@@ -154,8 +154,8 @@ class FeedsDAO @Inject()(
         .filter({ f =>
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty) ||
             (f.by == lift(by))})
         .nonEmpty
@@ -174,8 +174,8 @@ class FeedsDAO @Inject()(
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty) ||
             (f.by == lift(by)))
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
@@ -201,8 +201,8 @@ class FeedsDAO @Inject()(
         .filter({ f =>
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty) ||
             (f.by == lift(by))})
         .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
@@ -251,9 +251,9 @@ class FeedsDAO @Inject()(
         .filter(f =>
           (f.privacyType == lift(FeedPrivacyType.everyone))
             || (f.privacyType == lift(FeedPrivacyType.followers)
-            && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.follow == true)).nonEmpty))
+            && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.following == true)).nonEmpty))
             || (f.privacyType == lift(FeedPrivacyType.friends)
-            && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.friend == true)).nonEmpty))
+            && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.isFriend == true)).nonEmpty))
             || (f.by == lift(by)))
         .sortBy(_.id)(Ord.desc)
         .drop(lift(offset))

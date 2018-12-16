@@ -19,8 +19,8 @@ class FriendsDAOSpec extends DAOSpec {
     execute(friendsDAO.create(sessionAccount.id, friendAccount2.id.toSessionId))
     val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(friendAccount1.id))))).head
     val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(friendAccount2.id))))).head
-    assert(result1.friend == true)
-    assert(result2.friend == true)
+    assert(result1.isFriend == true)
+    assert(result2.isFriend == true)
 
   }
 
@@ -37,8 +37,8 @@ class FriendsDAOSpec extends DAOSpec {
     execute(friendsDAO.delete(sessionAccount.id, friendAccount2.id.toSessionId))
     val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(friendAccount1.id))))).head
     val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(friendAccount2.id))))).head
-    assert(result1.friend == false)
-    assert(result2.friend == false)
+    assert(result1.isFriend == false)
+    assert(result2.isFriend == false)
 
   }
 

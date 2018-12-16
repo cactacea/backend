@@ -4,11 +4,9 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.BlocksService
-import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
-import io.github.cactacea.backend.models.requests.session.GetSessionBlocks
 import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
@@ -21,24 +19,9 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
 
   prefix(apiPrefix) {
 
-    getWithPermission("/session/blocks")(Permissions.basic) { o =>
-      o.summary("Get blocking accounts list")
-        .tag(blocksTag)
-        .operationId("findBlockingAccounts")
-        .request[GetSessionBlocks]
-        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-    } { request: GetSessionBlocks =>
-      blocksService.find(
-        request.since,
-        request.offset.getOrElse(0),
-        request.count.getOrElse(20),
-        SessionContext.id
-      )
-    }
-
     postWithPermission("/accounts/:id/blocks")(Permissions.relationships) { o =>
       o.summary("Block a account")
-        .tag(blocksTag)
+        .tag(accountsTag)
         .operationId("block")
         .request[PostBlock]
         .responseWith(Status.Ok.code, successfulMessage)
@@ -53,7 +36,7 @@ class BlocksController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
 
     deleteWithPermission("/accounts/:id/blocks")(Permissions.relationships) { o =>
       o.summary("Unblock a account")
-        .tag(blocksTag)
+        .tag(accountsTag)
         .operationId("unblock")
         .request[DeleteBlock]
         .responseWith(Status.Ok.code, successfulMessage)

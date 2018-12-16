@@ -25,8 +25,8 @@ class MutesController @Inject()(
 
     postWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
       o.summary("Mute a account")
-        .tag(mutesTag)
-        .operationId("muteAccount")
+        .tag(accountsTag)
+        .operationId("mute")
         .request[PostMute]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -39,9 +39,9 @@ class MutesController @Inject()(
     }
 
     deleteWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
-      o.summary("UnMute a account")
-        .tag(mutesTag)
-        .operationId("unmuteAccount")
+      o.summary("Unmute a account")
+        .tag(accountsTag)
+        .operationId("unmute")
         .request[DeleteMute]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))

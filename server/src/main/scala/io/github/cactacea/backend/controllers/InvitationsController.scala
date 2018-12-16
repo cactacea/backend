@@ -39,8 +39,8 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
 
     postWithPermission("/accounts/:accountId/groups/:groupId/invitations")(Permissions.groupInvitations) { o =>
       o.summary("Create a invitation to a account")
-        .tag(invitationsTag)
-        .operationId("create")
+        .tag(accountsTag)
+        .operationId("invite")
         .request[PostInvitationAccount]
         .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
@@ -55,7 +55,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
     postWithPermission("/invitations/:id/accept")(Permissions.groupInvitations) { o =>
       o.summary("Accept a invitation")
         .tag(invitationsTag)
-        .operationId("acceptGroupInvitation")
+        .operationId("accept")
         .request[PostAcceptInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -70,7 +70,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
     postWithPermission("/invitations/:id/reject")(Permissions.groupInvitations) { o =>
       o.summary("Reject a invitation")
         .tag(invitationsTag)
-        .operationId("rejectGroupInvitation")
+        .operationId("reject")
         .request[PostRejectInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupInvitationNotFound))))

@@ -61,7 +61,7 @@ class GroupsController @Inject()(
     postWithPermission("/groups")(Permissions.groups) { o =>
       o.summary("Create a group")
         .tag(groupsTag)
-        .operationId("createGroup")
+        .operationId("create")
         .request[PostGroup]
         .responseWith[GroupCreated](Status.Created.code, successfulMessage)
     } { request: PostGroup =>
@@ -77,7 +77,7 @@ class GroupsController @Inject()(
     putWithPermission("/groups/:id")(Permissions.groups) { o =>
       o.summary("Update a group")
         .tag(groupsTag)
-        .operationId("updateGroup")
+        .operationId("update")
         .request[PutGroup]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -96,7 +96,7 @@ class GroupsController @Inject()(
     postWithPermission("/groups/:id/join")(Permissions.groups) { o =>
       o.summary("Join to a group,")
         .tag(groupsTag)
-        .operationId("joinToGroup")
+        .operationId("join")
         .request[PostJoinGroup]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -111,7 +111,7 @@ class GroupsController @Inject()(
     postWithPermission("/groups/:id/leave")(Permissions.groups) { o =>
       o.summary("Leave from a group")
         .tag(groupsTag)
-        .operationId("leaveFromGroup")
+        .operationId("leave")
         .request[PostLeaveGroup]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -126,7 +126,7 @@ class GroupsController @Inject()(
     getWithPermission("/groups/:id/accounts")(Permissions.basic) { o =>
       o.summary("Get accounts list of a group")
         .tag(groupsTag)
-        .operationId("findGroupAccounts")
+        .operationId("findAccounts")
         .request[GetGroupAccounts]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -143,7 +143,7 @@ class GroupsController @Inject()(
     deleteWithPermission("/groups/:id")(Permissions.groups) { o =>
       o.summary("Hide a group and delete all messages")
         .tag(groupsTag)
-        .operationId("deleteGroup")
+        .operationId("delete")
         .request[DeleteGroup]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -157,7 +157,7 @@ class GroupsController @Inject()(
     postWithPermission("/groups/:id/hides")(Permissions.groups) { o =>
       o.summary("Hide a group")
         .tag(groupsTag)
-        .operationId("hideGroup")
+        .operationId("hide")
         .request[PostHideGroup]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -171,7 +171,7 @@ class GroupsController @Inject()(
     deleteWithPermission("/groups/:id/hides")(Permissions.groups) { o =>
       o.summary("Show a group")
         .tag(groupsTag)
-        .operationId("showGroup")
+        .operationId("show")
         .request[DeleteHideGroup]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -185,7 +185,7 @@ class GroupsController @Inject()(
     postWithPermission("/groups/:id/reports")(Permissions.reports) { o =>
       o.summary("Report a group")
         .tag(groupsTag)
-        .operationId("reportGroup")
+        .operationId("report")
         .request[PostGroupReport]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))

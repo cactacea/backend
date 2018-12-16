@@ -26,7 +26,7 @@ class FollowsRepositorySpec extends RepositorySpec {
     assert(followedUser.id == resultFollowedUser.id)
 
     val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account1.followCount == Some(1L))
+    assert(account1.followingCount == Some(1L))
 
     val account2 = execute(accountsRepository.find(followedUser.id.toSessionId))
     assert(account2.followerCount == Some(0L))
@@ -77,12 +77,12 @@ class FollowsRepositorySpec extends RepositorySpec {
     execute(followerRepository.create(user.id, sessionUser.id.toSessionId))
 
     val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account1.followCount == Some(1L))
+    assert(account1.followingCount == Some(1L))
 
     execute(followerRepository.delete(user.id, sessionUser.id.toSessionId))
 
     val account2 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account2.followCount == Some(0L))
+    assert(account2.followingCount == Some(0L))
 
   }
 

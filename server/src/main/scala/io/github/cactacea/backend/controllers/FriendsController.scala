@@ -21,8 +21,8 @@ class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
 
     deleteWithPermission("/accounts/:id/friends")(Permissions.relationships) { o =>
       o.summary("Remove friendship to a account")
-        .tag(friendsTag)
-        .operationId("deleteFriend")
+        .tag(accountsTag)
+        .operationId("unfriend")
         .request[DeleteFriend]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotFriend))))

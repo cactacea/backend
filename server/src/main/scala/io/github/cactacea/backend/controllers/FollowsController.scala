@@ -23,10 +23,10 @@ class FollowsController @Inject()(
 
   prefix(apiPrefix) {
 
-    getWithPermission("/accounts/:id/follows")(Permissions.followerList) { o =>
-      o.summary("Get accounts list a account followed")
-        .tag(followsTag)
-        .operationId("findFollows")
+    getWithPermission("/accounts/:id/following")(Permissions.followerList) { o =>
+      o.summary("Get accounts list a account following")
+        .tag(accountsTag)
+        .operationId("findFollowing")
         .request[GetFollows]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -40,9 +40,9 @@ class FollowsController @Inject()(
       )
     }
 
-    postWithPermission("/accounts/:id/follows")(Permissions.relationships) { o =>
+    postWithPermission("/accounts/:id/follow")(Permissions.relationships) { o =>
       o.summary("Follow a account")
-        .tag(followsTag)
+        .tag(accountsTag)
         .operationId("follow")
         .request[PostFollow]
         .responseWith(Status.Ok.code, successfulMessage)
@@ -55,9 +55,9 @@ class FollowsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/accounts/:id/follows")(Permissions.relationships) { o =>
+    deleteWithPermission("/accounts/:id/follow")(Permissions.relationships) { o =>
       o.summary("UnFollow a account")
-        .tag(followsTag)
+        .tag(accountsTag)
         .operationId("unfollow")
         .request[DeleteFollow]
         .responseWith(Status.Ok.code, successfulMessage)

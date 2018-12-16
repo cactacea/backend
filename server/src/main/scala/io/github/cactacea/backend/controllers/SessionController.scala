@@ -8,9 +8,11 @@ import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import io.github.cactacea.backend.models.requests.account.{GetAccountName, GetAccounts}
 import io.github.cactacea.backend.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
 import io.github.cactacea.backend.models.requests.group.{GetSessionGroups, GetSessionInvitations}
 import io.github.cactacea.backend.models.requests.session._
+import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.CactaceaController
 import io.github.cactacea.backend.utils.auth.SessionContext
 import io.github.cactacea.backend.utils.oauth.Permissions
@@ -31,7 +33,8 @@ class SessionController @Inject()(
                                    invitationService: GroupInvitationsService,
                                    mutesService: MutesService,
                                    sessionService: SessionsService,
-                                   friendRequestsService: FriendRequestsService
+                                   friendRequestsService: FriendRequestsService,
+                                   blocksService: BlocksService
                                  ) extends CactaceaController {
 
   implicit val swagger: Swagger = s
@@ -62,6 +65,17 @@ class SessionController @Inject()(
       ).map(_ => response.ok)
     }
 
+    getWithPermission("/session/account_name/:accountName")(Permissions.basic) { o =>
+      o.summary("Confirm account name exist")
+        .tag(sessionTag)
+        .operationId("existAccountName")
+        .request[GetAccountName]
+        .responseWith[AccountNameNotExists](Status.Ok.code, successfulMessage)
+    } { request: GetAccountName =>
+      accountsService.notExist(
+        request.accountName
+      ).map(r => response.ok(AccountNameNotExists(request.accountName, r)))
+    }
 
     putWithPermission("/session/account_name")(Permissions.basic) { o =>
       o.summary("Update the account name")
@@ -135,6 +149,38 @@ class SessionController @Inject()(
       ).map(_ => response.ok)
     }
 
+    getWithPermission("/session/accounts")(Permissions.basic) { o =>
+      o.summary("Search accounts")
+        .tag(sessionTag)
+        .operationId("findAccounts")
+        .request[GetAccounts]
+        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+
+    } { request: GetAccounts =>
+      accountsService.find(
+        request.accountName,
+        request.since,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
+        SessionContext.id
+      )
+    }
+
+    getWithPermission("/session/blocks")(Permissions.basic) { o =>
+      o.summary("Get blocking accounts list")
+        .tag(blocksTag)
+        .operationId("findBlockingAccounts")
+        .request[GetSessionBlocks]
+        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+    } { request: GetSessionBlocks =>
+      blocksService.find(
+        request.since,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
+        SessionContext.id
+      )
+    }
+
     getWithPermission("/session/feeds")(Permissions.basic) { o =>
       o.summary("Get feeds list session account posted")
         .tag(sessionTag)
@@ -165,10 +211,10 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/follows")(Permissions.followerList) { o =>
+    getWithPermission("/session/following")(Permissions.followerList) { o =>
       o.summary("Get accounts list session account followed")
         .tag(sessionTag)
-        .operationId("findFollows")
+        .operationId("findFollowing")
         .request[GetSessionFollows]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollows =>
@@ -230,7 +276,7 @@ class SessionController @Inject()(
     getWithPermission("/session/hides")(Permissions.basic) { o =>
       o.summary("Get hidden groups list session account joined")
         .tag(sessionTag)
-        .operationId("findHides")
+        .operationId("findHiddenGroups")
         .request[GetSessionGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
 
@@ -262,7 +308,7 @@ class SessionController @Inject()(
     getWithPermission("/session/mutes")(Permissions.basic) { o =>
       o.summary("Get accounts list session account muted")
         .tag(sessionTag)
-        .operationId("findMutes")
+        .operationId("findMutingAccounts")
         .request[GetSessionMutes]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionMutes =>

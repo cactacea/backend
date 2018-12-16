@@ -36,8 +36,8 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.follower          -> true
-        ).onConflictUpdate((t, _) => t.follower -> true)
+          _.isFollower          -> true
+        ).onConflictUpdate((t, _) => t.isFollower -> true)
     }
     run(q).map(_ => Unit)
   }
@@ -49,7 +49,7 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.follower        -> false
+          _.isFollower        -> false
         )
     }
     run(q).map(_ => Unit)
@@ -100,9 +100,9 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[Followers]
-        .filter(f => f.accountId == lift(by))
+        .filter(f => f.by == lift(by))
         .filter(f => lift(since).forall(f.id < _))
-        .join(query[Accounts]).on((f, a) => a.id == f.by)
+        .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f.id)})
         .sortBy({ case (_, _, id) => id })(Ord.desc)
@@ -123,12 +123,12 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val q = quote {
       query[Followers]
-        .filter(f => f.accountId == lift(accountId))
+        .filter(f => f.by == lift(accountId))
         .filter(f => lift(since).forall(f.id < _))
         .filter(f => query[Blocks].filter(b =>
           (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
         ).isEmpty)
-        .join(query[Accounts]).on((f, a) => a.id == f.by)
+        .join(query[Accounts]).on((f, a) => a.id == f.accountId)
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (a, r, f.id)})
         .sortBy({ case (_, _, id) => id })(Ord.desc)

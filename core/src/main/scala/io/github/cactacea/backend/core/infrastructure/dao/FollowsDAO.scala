@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Follows, Relationships}
+import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Followings, Relationships}
 
 @Singleton
 class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
@@ -15,7 +15,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- insertFollow(accountId, sessionId)
+      _ <- insertFollowing(accountId, sessionId)
       _ <- insertRelationship(accountId, sessionId)
       _ <- updateAccount(1L, sessionId)
     } yield (Unit)
@@ -23,7 +23,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- deleteFollow(accountId, sessionId)
+      _ <- deleteFollowing(accountId, sessionId)
       _ <- updateRelationship(accountId, sessionId)
       _ <- updateAccount(-1L, sessionId)
     } yield (Unit)
@@ -48,8 +48,8 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .insert(
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
-          _.follow          -> true
-        ).onConflictUpdate((t, _) => t.follow -> true)
+          _.following          -> true
+        ).onConflictUpdate((t, _) => t.following -> true)
     }
     run(q).map(_ => Unit)
   }
@@ -61,17 +61,17 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(_.accountId     == lift(accountId))
         .filter(_.by            == lift(by))
         .update(
-          _.follow          -> false
+          _.following          -> false
         )
     }
     run(q).map(_ => Unit)
   }
 
-  private def insertFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def insertFollowing(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val followedAt = timeService.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
-      query[Follows]
+      query[Followings]
         .insert(
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
@@ -81,10 +81,10 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  private def deleteFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def deleteFollowing(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
-      query[Follows]
+      query[Followings]
         .filter(_.accountId     == lift(accountId))
         .filter(_.by            == lift(by))
         .delete
@@ -95,7 +95,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
-      query[Follows]
+      query[Followings]
         .filter(_.accountId    == lift(accountId))
         .filter(_.by           == lift(by))
         .nonEmpty
@@ -107,7 +107,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
     val by = sessionId.toAccountId
     val q = quote {
-      query[Follows]
+      query[Followings]
         .filter(f => f.by == lift(by))
         .filter(f => lift(since).forall(f.id < _))
         .join(query[Accounts]).on((f, a) => a.id == f.accountId)
@@ -130,7 +130,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Follows]
+      query[Followings]
         .filter(f => f.by == lift(accountId))
         .filter(f => lift(since).forall(f.id < _))
         .filter(f => query[Blocks].filter(b =>

@@ -7,6 +7,7 @@ case class DatabaseConfig(
                            user: Option[String],
                            password: Option[String],
                            dest: Option[String],
+                           ssl: Option[Boolean],
                            lowWatermark: Option[Int],
                            highWatermark: Option[Int],
                            idleTime: Option[Duration],

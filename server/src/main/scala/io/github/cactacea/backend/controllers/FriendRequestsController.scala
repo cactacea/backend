@@ -26,8 +26,8 @@ class FriendRequestsController @Inject()(
 
     postWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
       o.summary("Create a friend request to a account")
-        .tag(friendRequestsTag)
-        .operationId("create")
+        .tag(accountsTag)
+        .operationId("request")
         .request[PostFriendRequest]
         .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyRequested))))
@@ -42,8 +42,8 @@ class FriendRequestsController @Inject()(
 
     deleteWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
       o.summary("Remove a friend request to a account")
-        .tag(friendRequestsTag)
-        .operationId("delete")
+        .tag(accountsTag)
+        .operationId("unrequest")
         .request[DeleteFriendRequest]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, FriendRequestNotFound))))
