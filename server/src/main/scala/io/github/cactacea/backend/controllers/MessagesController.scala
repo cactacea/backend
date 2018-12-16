@@ -26,7 +26,7 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     getWithPermission("/messages")(Permissions.basic) { o =>
       o.summary("Search messages")
         .tag(messagesTag)
-        .operationId("findMessages")
+        .operationId("find")
         .request[GetMessages]
         .responseWith[Message](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -44,7 +44,7 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     postWithPermission("/messages")(Permissions.messages) { o =>
       o.summary("Post a message to a group")
         .tag(messagesTag)
-        .operationId("postMessage")
+        .operationId("post")
         .request[PostMessage]
         .responseWith[MessageCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(MediumNotFound))))
@@ -61,7 +61,7 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     deleteWithPermission("/messages")(Permissions.messages) { o =>
       o.summary("Delete messages form a group")
         .tag(messagesTag)
-        .operationId("deleteMessage")
+        .operationId("delete")
         .request[DeleteMessages]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: DeleteMessages =>

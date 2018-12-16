@@ -41,7 +41,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     postWithPermission("/comments")(Permissions.comments) { o =>
       o.summary("Create a comment on a feed")
         .tag(commentsTag)
-        .operationId("postComment")
+        .operationId("post")
         .request[PostComment]
         .responseWith[CommentCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
@@ -70,7 +70,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     deleteWithPermission("/comments/:id")(Permissions.comments) { o =>
       o.summary("Remove a comment")
         .tag(commentsTag)
-        .operationId("deleteComment")
+        .operationId("delete")
         .request[DeleteComment]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(CommentNotFound))))
@@ -84,7 +84,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     postWithPermission("/comments/:id/reports")(Permissions.reports) { o =>
       o.summary("Report a comment")
         .tag(commentsTag)
-        .operationId("reportComment")
+        .operationId("report")
         .request[PostCommentReport]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(CommentNotFound))))
