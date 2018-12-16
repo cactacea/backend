@@ -11,14 +11,14 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 @Singleton
 class FollowsService @Inject()(
                                 db: DatabaseService,
-                                followerRepository: FollowsRepository,
+                                followsRepository: FollowsRepository,
                                 actionService: InjectionService
                               ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        _ <- followerRepository.create(accountId, sessionId)
+        _ <- followsRepository.create(accountId, sessionId)
         _ <- actionService.accountFollowed(accountId, sessionId)
       } yield (Unit)
     }
@@ -27,18 +27,18 @@ class FollowsService @Inject()(
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
-        _ <- followerRepository.delete(accountId, sessionId)
+        _ <- followsRepository.delete(accountId, sessionId)
         _ <- actionService.accountUnFollowed(accountId, sessionId)
       } yield (Unit)
     }
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    followerRepository.findAll(accountId, since, offset, count, sessionId)
+    followsRepository.findAll(accountId, since, offset, count, sessionId)
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    followerRepository.findAll(since, offset, count, sessionId)
+    followsRepository.findAll(since, offset, count, sessionId)
   }
 
 

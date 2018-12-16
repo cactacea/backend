@@ -37,7 +37,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   val messagesDAO = injector.instance[MessagesDAO]
   val accountMessagesDAO = injector.instance[AccountMessagesDAO]
   val userReportsDAO = injector.instance[AccountReportsDAO]
-  val followsDAO = injector.instance[FollowingsDAO]
+  val followsDAO = injector.instance[FollowsDAO]
   val friendsDAO = injector.instance[FriendsDAO]
   val hashService = injector.instance[HashService]
   val commentLikesDAO = injector.instance[CommentLikesDAO]

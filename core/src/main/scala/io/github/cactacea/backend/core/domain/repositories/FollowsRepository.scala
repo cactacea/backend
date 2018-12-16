@@ -4,12 +4,12 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.GroupPrivacyType
 import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.infrastructure.dao.{FollowersDAO, FollowingsDAO, GroupInvitationsDAO, ValidationDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{FollowersDAO, FollowsDAO, GroupInvitationsDAO, ValidationDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 
 @Singleton
 class FollowsRepository @Inject()(
-                                   followsDAO: FollowingsDAO,
+                                   followsDAO: FollowsDAO,
                                    followersDAO: FollowersDAO,
                                    groupInvitationsDAO: GroupInvitationsDAO,
                                    validationDAO: ValidationDAO
