@@ -14,7 +14,7 @@ class ValidationDAO @Inject()(
                                blocksDAO: BlocksDAO,
                                commentsDAO: CommentsDAO,
                                commentLikesDAO: CommentLikesDAO,
-                               followsDAO: FollowsDAO,
+                               followingsDAO: FollowingsDAO,
                                friendsDAO: FriendsDAO,
                                friendRequestsDAO: FriendRequestsDAO,
                                feedsDAO: FeedsDAO,
@@ -118,7 +118,7 @@ class ValidationDAO @Inject()(
   }
 
   def existFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    followsDAO.exist(accountId, sessionId).flatMap(_ match {
+    followingsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -127,7 +127,7 @@ class ValidationDAO @Inject()(
   }
 
   def notExistFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    followsDAO.exist(accountId, sessionId).flatMap(_ match {
+    followingsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyFollowed))
       case false =>

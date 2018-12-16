@@ -9,7 +9,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Followings, Relationships}
 
 @Singleton
-class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class FollowingsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
 

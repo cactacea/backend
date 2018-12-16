@@ -85,7 +85,7 @@ class PushNotificationsDAOSPec extends DAOSpec {
     // create feed
     val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
-    // create follows
+    // create following
     execute(followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId))
     execute(followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId))
     execute(followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId))

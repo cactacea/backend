@@ -367,7 +367,7 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`follows`
+-- Table `${schema}`.`followers`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`followers` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,

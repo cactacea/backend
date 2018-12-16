@@ -66,7 +66,7 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
     val friend = r.fold(false)(_.isFriend)
     if (g.by.toSessionId == sessionId) {
       Future.True
-    } else if (g.privacyType == GroupPrivacyType.follows && follow) {
+    } else if (g.privacyType == GroupPrivacyType.following && follow) {
       Future.True
     } else if (g.privacyType == GroupPrivacyType.followers && follower) {
       Future.True

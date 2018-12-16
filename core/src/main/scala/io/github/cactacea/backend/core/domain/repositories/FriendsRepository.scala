@@ -11,7 +11,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 class FriendsRepository @Inject()(
                                    friendsDAO: FriendsDAO,
                                    groupInvitationsDAO: GroupInvitationsDAO,
-                                   followsDAO: FollowsDAO,
+                                   followingsDAO: FollowingsDAO,
                                    followersDAO: FollowersDAO,
                                    validationDAO: ValidationDAO
                                  ) {
@@ -23,10 +23,10 @@ class FriendsRepository @Inject()(
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistFriend(accountId, sessionId)
       _ <- friendsDAO.create(accountId, sessionId)
-      _ <- followsDAO.create(accountId, sessionId)
+      _ <- followingsDAO.create(accountId, sessionId)
       _ <- followersDAO.create(accountId, sessionId)
       _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
-      _ <- followsDAO.create(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followingsDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
     } yield (Unit)
   }

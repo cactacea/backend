@@ -6,13 +6,13 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyFollowed, AccountNotFollowed, AccountNotFound, CanNotSpecifyMyself}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 
-class FollowsRepositorySpec extends RepositorySpec {
+class FollowingsRepositorySpec extends RepositorySpec {
 
-  val followerRepository = injector.instance[FollowsRepository]
+  val followerRepository = injector.instance[FollowingsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
   val accountsRepository = injector.instance[AccountsRepository]
 
-  test("follows a user") {
+  test("following a user") {
 
     val sessionUser = signUp("FollowRepositorySpec1", "session user password", "session user udid")
     val followedUser = signUp("FollowRepositorySpec2", "followed user password", "followed user udid")
@@ -33,7 +33,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("follows a blocked user") {
+  test("following a blocked user") {
 
     val sessionUser = signUp("FollowRepositorySpec3", "session user password", "session user udid")
     val blockingUser = signUp("FollowRepositorySpec4", "blocked user password", "blocked user udid")
@@ -46,7 +46,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("follows a followed user") {
+  test("following a followed user") {
 
     val sessionUser = signUp("FollowRepositorySpec5", "session user password", "session user udid")
     val user = signUp("FollowRepositorySpec6", "user password", "user udid")
@@ -59,7 +59,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("follows a session user") {
+  test("following a session user") {
 
     val sessionUser = signUp("FollowRepositorySpec7", "session user password", "session user udid")
 
@@ -69,7 +69,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("delete follows") {
+  test("delete following") {
 
     val sessionUser = signUp("FollowRepositorySpec8", "session user password", "session user udid")
     val user = signUp("FollowRepositorySpec9", "user password", "user udid")
@@ -86,7 +86,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("delete follows no followed user") {
+  test("delete following no followed user") {
 
     val sessionUser = signUp("FollowRepositorySpec10", "session user password", "session user udid")
     val user = signUp("FollowRepositorySpec11", "user password", "user udid")
@@ -97,7 +97,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("delete no exist account follows") {
+  test("delete no exist account following") {
 
     val sessionUser = signUp("FollowRepositorySpec12", "session user password", "session user udid")
 
@@ -107,7 +107,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("delete follows session user") {
+  test("delete following session user") {
 
     val sessionUser = signUp("FollowRepositorySpec13", "session user password", "session user udid")
 

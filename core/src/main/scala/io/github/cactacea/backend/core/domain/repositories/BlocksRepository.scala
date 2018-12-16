@@ -9,7 +9,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 @Singleton
 class BlocksRepository @Inject()(
                                   blocksDAO: BlocksDAO,
-                                  followsDAO: FollowsDAO,
+                                  followingsDAO: FollowingsDAO,
                                   followersDAO: FollowersDAO,
                                   friendsDAO: FriendsDAO,
                                   mutesDAO: MutesDAO,
@@ -32,8 +32,8 @@ class BlocksRepository @Inject()(
       _ <- validationDAO.existAccount(accountId)
       _ <- validationDAO.notExistBlock(accountId, sessionId)
       _ <- blocksDAO.create(accountId, sessionId)
-      _ <- followsDAO.delete(accountId, sessionId)
-      _ <- followsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followingsDAO.delete(accountId, sessionId)
+      _ <- followingsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.delete(accountId, sessionId)
       _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendsDAO.delete(accountId, sessionId)
