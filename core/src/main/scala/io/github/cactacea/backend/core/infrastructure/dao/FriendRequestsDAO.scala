@@ -85,11 +85,17 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
           if (lift(received)) {
             f.accountId == lift(by)
           } else {
-            lift(since).forall(f.id < _)
+            f.by == lift(by)
           }
         )
         .filter(f => lift(since).forall(f.id < _))
-        .join(query[Accounts]).on((f, a) => a.id == f.by)
+        .join(query[Accounts]).on((f, a) =>
+          if (lift(received)) {
+            a.id == f.by
+          } else {
+            a.id == f.accountId
+          }
+        )
         .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
         .map({ case ((f, a), r) => (f, a, r)})
         .sortBy({ case (f, _, _) => f.id})(Ord.desc)
