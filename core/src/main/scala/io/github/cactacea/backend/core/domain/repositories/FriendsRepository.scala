@@ -24,10 +24,10 @@ class FriendsRepository @Inject()(
       _ <- validationDAO.notExistFriend(accountId, sessionId)
       _ <- friendsDAO.create(accountId, sessionId)
       _ <- followingsDAO.create(accountId, sessionId)
-      _ <- followersDAO.create(accountId, sessionId)
-      _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- followingsDAO.create(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followersDAO.create(accountId, sessionId)
       _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
+      _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
     } yield (Unit)
   }
 

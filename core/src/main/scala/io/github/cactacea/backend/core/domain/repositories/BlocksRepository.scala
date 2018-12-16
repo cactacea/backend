@@ -36,6 +36,8 @@ class BlocksRepository @Inject()(
       _ <- followingsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.delete(accountId, sessionId)
       _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followersDAO.delete(accountId, sessionId)
+      _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendsDAO.delete(accountId, sessionId)
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- mutesDAO.delete(accountId, sessionId)

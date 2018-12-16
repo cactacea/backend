@@ -63,12 +63,12 @@ class FollowersDAOSpec extends DAOSpec {
     val sessionAccount6 = createAccount("FollowersDAOSpec12")
     val followedUser = createAccount("FollowersDAOSpec13")
 
-    execute(followersDAO.create(sessionAccount1.id, followedUser.id.toSessionId))
-    execute(followersDAO.create(sessionAccount2.id, followedUser.id.toSessionId))
-    execute(followersDAO.create(sessionAccount3.id, followedUser.id.toSessionId))
-    execute(followersDAO.create(sessionAccount4.id, followedUser.id.toSessionId))
-    execute(followersDAO.create(sessionAccount5.id, followedUser.id.toSessionId))
-    execute(followersDAO.create(sessionAccount6.id, followedUser.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount1.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount2.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount3.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount4.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount5.id.toSessionId))
+    execute(followersDAO.create(followedUser.id, sessionAccount6.id.toSessionId))
 
     val result1 = execute(followersDAO.findAll(followedUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
     val account1 = result1(0)

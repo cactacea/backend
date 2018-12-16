@@ -33,7 +33,7 @@ class FollowingsRepository @Inject()(
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.notExistFollow(accountId, sessionId)
       _ <- followingsDAO.create(accountId, sessionId)
-      _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followersDAO.create(accountId, sessionId)
     } yield (Unit)
   }
 
@@ -44,7 +44,7 @@ class FollowingsRepository @Inject()(
       _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
       _ <- validationDAO.existFollow(accountId, sessionId)
       _ <- followingsDAO.delete(accountId, sessionId)
-      _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followersDAO.delete(accountId, sessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.following, sessionId)
       _ <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.followers, accountId.toSessionId)
     } yield (Unit)
