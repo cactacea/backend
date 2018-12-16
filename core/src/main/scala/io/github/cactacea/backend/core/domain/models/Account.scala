@@ -7,15 +7,16 @@ case class Account(id: AccountId,
                    accountName: String,
                    displayName: String,
                    profileImageUrl: Option[String],
-                   friend: Boolean,
+                   isFriend: Boolean,
                    friendRequestInProgress: Boolean,
-                   follow: Boolean,
-                   follower: Boolean,
-                   followCount: Option[Long],
+                   following: Boolean,
+                   isFollower: Boolean,
+                   followingCount: Option[Long],
                    followerCount: Option[Long],
                    friendCount: Option[Long],
                    feedsCount: Option[Long],
-                   mute: Boolean,
+                   muting: Boolean,
+                   blocking: Boolean,
                    web: Option[String],
                    birthday: Option[Long],
                    location: Option[String],
@@ -26,33 +27,38 @@ case class Account(id: AccountId,
 
 object Account {
 
+  def apply(a: Accounts, r: Option[Relationships], b: Blocks, n: Long): Account = {
+    apply(a, r, None, Some(n), Some(b))
+  }
+
   def apply(a: Accounts, r: Option[Relationships], n: Long): Account = {
-    apply(a, r, None, Some(n))
+    apply(a, r, None, Some(n), None)
   }
 
   def apply(a: Accounts, r: Option[Relationships]): Account = {
-    apply(a, r, None, Some(a.id.value))
+    apply(a, r, None, Some(a.id.value), None)
   }
 
   def apply(a: Accounts): Account = {
-    apply(a, None, None, None)
+    apply(a, None, None, None, None)
   }
 
-  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Option[Long]): Account = {
+  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Option[Long], b: Option[Blocks]): Account = {
     Account(
       a.id,
       a.accountName,
       r.flatMap(_.displayName).getOrElse(a.displayName),
       a.profileImageUrl,
-      r.map(_.friend).getOrElse(false),
+      r.map(_.isFriend).getOrElse(false),
       r.map(_.friendRequestInProgress).getOrElse(false),
-      r.map(_.follow).getOrElse(false),
-      r.map(_.follower).getOrElse(false),
+      r.map(_.following).getOrElse(false),
+      r.map(_.isFollower).getOrElse(false),
       Some(a.followCount),
       Some(a.followerCount),
       Some(a.friendCount),
       Some(a.feedsCount),
-      r.map(_.mute).getOrElse(false),
+      r.map(_.muting).getOrElse(false),
+      b.map(_ => true).getOrElse(false),
       a.web,
       a.birthday,
       a.location,

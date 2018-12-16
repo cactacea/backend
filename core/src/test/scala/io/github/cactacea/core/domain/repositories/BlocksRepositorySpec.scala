@@ -16,7 +16,7 @@ class BlocksRepositorySpec extends RepositorySpec {
   val friendsRepository = injector.instance[FriendsRepository]
   val mutesRepository = injector.instance[MutesRepository]
   val blocksDAO = injector.instance[BlocksDAO]
-  val followsDAO = injector.instance[FollowsDAO]
+  val followsDAO = injector.instance[FollowingsDAO]
   val followersDAO = injector.instance[FollowersDAO]
   val friendsDAO = injector.instance[FriendsDAO]
   val mutesDAO = injector.instance[MutesDAO]

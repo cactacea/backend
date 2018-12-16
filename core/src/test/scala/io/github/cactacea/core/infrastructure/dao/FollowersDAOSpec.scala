@@ -15,8 +15,8 @@ class FollowersDAOSpec extends DAOSpec {
     execute(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     execute(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
-    val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount1.id))))).headOption
-    val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount2.id))))).headOption
+    val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.isFollower == true).filter(_.by == lift(followAccount1.id))))).headOption
+    val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.isFollower == true).filter(_.by == lift(followAccount2.id))))).headOption
     assert(result1.isDefined == true)
     assert(result2.isDefined == true)
 
@@ -30,8 +30,8 @@ class FollowersDAOSpec extends DAOSpec {
     execute(followersDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     execute(followersDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
-    val result3 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount1.id))))).headOption
-    val result4 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.follower == true).filter(_.by == lift(followAccount2.id))))).headOption
+    val result3 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.isFollower == true).filter(_.by == lift(followAccount1.id))))).headOption
+    val result4 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.isFollower == true).filter(_.by == lift(followAccount2.id))))).headOption
     assert(result3.isDefined == true)
     assert(result4.isDefined == true)
 

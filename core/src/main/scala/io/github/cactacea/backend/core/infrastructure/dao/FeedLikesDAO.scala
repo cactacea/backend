@@ -143,8 +143,8 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .join(query[Feeds]).on({(ff, f) => f.id == ff.feedId &&
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty) ||
             (f.by == lift(by))})
         .map({case (ff, f) => (f, ff)})
@@ -174,8 +174,8 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .join(query[Feeds]).on({(ff, f) => f.id == ff.feedId &&
         ((f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty) ||
             (f.by == lift(by)))})
         .map({case (ff, f) => (f, ff)})

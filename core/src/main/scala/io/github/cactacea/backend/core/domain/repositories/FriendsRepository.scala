@@ -11,7 +11,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 class FriendsRepository @Inject()(
                                    friendsDAO: FriendsDAO,
                                    groupInvitationsDAO: GroupInvitationsDAO,
-                                   followsDAO: FollowsDAO,
+                                   followsDAO: FollowingsDAO,
                                    followersDAO: FollowersDAO,
                                    validationDAO: ValidationDAO
                                  ) {

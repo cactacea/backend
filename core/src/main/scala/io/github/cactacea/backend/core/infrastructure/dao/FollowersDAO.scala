@@ -36,8 +36,8 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.follower          -> true
-        ).onConflictUpdate((t, _) => t.follower -> true)
+          _.isFollower          -> true
+        ).onConflictUpdate((t, _) => t.isFollower -> true)
     }
     run(q).map(_ => Unit)
   }
@@ -49,7 +49,7 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.follower        -> false
+          _.isFollower        -> false
         )
     }
     run(q).map(_ => Unit)

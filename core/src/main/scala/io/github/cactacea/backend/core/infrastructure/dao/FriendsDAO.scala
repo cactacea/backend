@@ -49,8 +49,8 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.friend            -> true
-        ).onConflictUpdate((t, _) => t.friend -> true)
+          _.isFriend            -> true
+        ).onConflictUpdate((t, _) => t.isFriend -> true)
     }
     run(q).map(_ => Unit)
   }
@@ -62,7 +62,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .filter(_.accountId   == lift(accountId))
         .filter(_.by          == lift(by))
         .update(
-          _.friend          -> lift(friend)
+          _.isFriend          -> lift(friend)
         )
     }
     run(q).map(_ => Unit)

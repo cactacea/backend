@@ -23,8 +23,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
         where f.id = ${lift(feedId)}
         and r.account_id = ${lift(by)}
         and (
-           (r.follower = true and (f.privacy_type in (0, 1)))
-        or (r.friend = true and (f.privacy_type in (0, 1, 2)))
+           (r.is_follower = true and (f.privacy_type in (0, 1)))
+        or (r.is_friend = true and (f.privacy_type in (0, 1, 2)))
             )
         """.as[Action[Long]]
     }
@@ -57,8 +57,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
         .on({ case (af, f) => af.feedId == f.id && lift(privacyType).forall(_ == f.privacyType) &&
           ((f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.friend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty) ||
             (f.by == lift(by)))})
         .join(query[Accounts]).on({ case ((_, f), a) => a.id == f.by })
