@@ -190,7 +190,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     assert(account1Result.get.accountName == account1.accountName)
     assert(account1Result.get.displayName == account1.displayName)
     assert(account1Result.get.id == account1.id)
-    assert(account1Result.get.followCount == Some(1))
+    assert(account1Result.get.followingCount == Some(1))
     assert(account1Result.get.followerCount == Some(3))
     assert(account1Result.get.friendCount == Some(2))
     assert(account1Result.get.feedsCount == Some(0)) // TODO : Test me

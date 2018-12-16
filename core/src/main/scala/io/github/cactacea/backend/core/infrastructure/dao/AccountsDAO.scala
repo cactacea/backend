@@ -259,7 +259,7 @@ class AccountsDAO @Inject()(
       .drop(lift(offset))
       .take(lift(count))
     }
-    run(q).map(_.map({ case (a, r) => Account(a, r).copy(followCount = None, followerCount = None, friendCount = None) }))
+    run(q).map(_.map({ case (a, r) => Account(a, r).copy(followingCount = None, followerCount = None, friendCount = None) }))
   }
 
   def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {

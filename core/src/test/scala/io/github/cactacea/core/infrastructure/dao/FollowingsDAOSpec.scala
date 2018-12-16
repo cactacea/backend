@@ -3,23 +3,23 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.Relationships
 
-class FollowsDAOSpec extends DAOSpec {
+class FollowingsDAOSpec extends DAOSpec {
 
   import db._
 
   test("create") {
 
-    val sessionAccount = createAccount("FollowDAOSpec1")
-    val followAccount1 = createAccount("FollowDAOSpec2")
-    val followAccount2 = createAccount("FollowDAOSpec3")
+    val sessionAccount = createAccount("FollowingsDAOSpec1")
+    val followAccount1 = createAccount("FollowingsDAOSpec2")
+    val followAccount2 = createAccount("FollowingsDAOSpec3")
 
     // create follower
     execute(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     execute(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
     val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.follow == true)
-    assert(result2.follow == true)
+    assert(result1.following == true)
+    assert(result2.following == true)
 
     assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 1)
     assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 1)
@@ -36,8 +36,8 @@ class FollowsDAOSpec extends DAOSpec {
     execute(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
     val result3 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result4 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result3.follow == true)
-    assert(result4.follow == true)
+    assert(result3.following == true)
+    assert(result4.following == true)
 
     assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 1)
     assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 1)
@@ -46,9 +46,9 @@ class FollowsDAOSpec extends DAOSpec {
 
   test("delete") {
 
-    val sessionAccount = createAccount("FollowDAOSpec4")
-    val followAccount1 = createAccount("FollowDAOSpec5")
-    val followAccount2 = createAccount("FollowDAOSpec6")
+    val sessionAccount = createAccount("FollowingsDAOSpec4")
+    val followAccount1 = createAccount("FollowingsDAOSpec5")
+    val followAccount2 = createAccount("FollowingsDAOSpec6")
     execute(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     execute(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
@@ -57,17 +57,17 @@ class FollowsDAOSpec extends DAOSpec {
     execute(followsDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
     val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
     val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.follow == false)
-    assert(result2.follow == false)
+    assert(result1.following == false)
+    assert(result2.following == false)
 
   }
 
   test("exist") {
 
-    val sessionAccount = createAccount("FollowDAOSpec7")
-    val followAccount1 = createAccount("FollowDAOSpec8")
-    val followAccount2 = createAccount("FollowDAOSpec9")
-    val followAccount3 = createAccount("FollowDAOSpec10")
+    val sessionAccount = createAccount("FollowingsDAOSpec7")
+    val followAccount1 = createAccount("FollowingsDAOSpec8")
+    val followAccount2 = createAccount("FollowingsDAOSpec9")
+    val followAccount3 = createAccount("FollowingsDAOSpec10")
     execute(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
     execute(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
 
@@ -83,13 +83,13 @@ class FollowsDAOSpec extends DAOSpec {
 
   test("findAll") {
 
-    val sessionAccount1 = createAccount("FollowDAOSpec11")
-    val sessionAccount2 = createAccount("FollowDAOSpec12")
-    val sessionAccount3 = createAccount("FollowDAOSpec13")
-    val sessionAccount4 = createAccount("FollowDAOSpec14")
-    val sessionAccount5 = createAccount("FollowDAOSpec15")
-    val sessionAccount6 = createAccount("FollowDAOSpec16")
-    val followUser = createAccount("FollowDAOSpec17")
+    val sessionAccount1 = createAccount("FollowingsDAOSpec11")
+    val sessionAccount2 = createAccount("FollowingsDAOSpec12")
+    val sessionAccount3 = createAccount("FollowingsDAOSpec13")
+    val sessionAccount4 = createAccount("FollowingsDAOSpec14")
+    val sessionAccount5 = createAccount("FollowingsDAOSpec15")
+    val sessionAccount6 = createAccount("FollowingsDAOSpec16")
+    val followUser = createAccount("FollowingsDAOSpec17")
 
     execute(followsDAO.create(sessionAccount1.id, followUser.id.toSessionId))
     execute(followsDAO.create(sessionAccount2.id, followUser.id.toSessionId))

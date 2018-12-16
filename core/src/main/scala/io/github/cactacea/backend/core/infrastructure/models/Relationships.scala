@@ -6,9 +6,9 @@ case class Relationships(
                           accountId: AccountId,
                           displayName: Option[String],
                           by: AccountId,
-                          follow: Boolean,
-                          follower: Boolean,
-                          mute: Boolean,
-                          friend: Boolean,
+                          following: Boolean,
+                          isFollower: Boolean,
+                          muting: Boolean,
+                          isFriend: Boolean,
                           friendRequestInProgress: Boolean
                       )

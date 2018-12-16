@@ -14,7 +14,7 @@ class ValidationDAO @Inject()(
                                blocksDAO: BlocksDAO,
                                commentsDAO: CommentsDAO,
                                commentLikesDAO: CommentLikesDAO,
-                               followsDAO: FollowsDAO,
+                               followsDAO: FollowingsDAO,
                                friendsDAO: FriendsDAO,
                                friendRequestsDAO: FriendRequestsDAO,
                                feedsDAO: FeedsDAO,

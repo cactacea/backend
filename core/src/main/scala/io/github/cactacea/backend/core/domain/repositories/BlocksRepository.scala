@@ -9,7 +9,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 @Singleton
 class BlocksRepository @Inject()(
                                   blocksDAO: BlocksDAO,
-                                  followsDAO: FollowsDAO,
+                                  followsDAO: FollowingsDAO,
                                   followersDAO: FollowersDAO,
                                   friendsDAO: FriendsDAO,
                                   mutesDAO: MutesDAO,
