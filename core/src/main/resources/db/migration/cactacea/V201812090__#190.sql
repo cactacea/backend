@@ -10,19 +10,19 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 SET SQL_SAFE_UPDATES = 0;
 
-ALTER TABLE `${schema}`.`followings`
-ADD COLUMN `by_bak2` BIGINT(20) NULL DEFAULT NULL AFTER `followed_at`;
+ALTER TABLE `${schema}`.`followers`
+ADD COLUMN `by_bak2` BIGINT(20) NULL DEFAULT NULL;
 
-UPDATE `${schema}`.`followings`
+UPDATE `${schema}`.`followers`
 SET by_bak2 = `by`;
 
-UPDATE `${schema}`.`followings`
+UPDATE `${schema}`.`followers`
 SET `by` = account_id;
 
-UPDATE `${schema}`.`followings`
+UPDATE `${schema}`.`followers`
 SET account_id = by_bak2;
 
-ALTER TABLE `${schema}`.`followings`
+ALTER TABLE `${schema}`.`followers`
 DROP COLUMN `by_bak2`;
 
 SET SQL_MODE=@OLD_SQL_MODE;
