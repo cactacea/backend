@@ -28,7 +28,7 @@ class SessionsRepository @Inject()(
       accountId <- accountsDAO.create(accountName, password)
       sessionId = accountId.toSessionId
       _             <- devicesDAO.create(udid, deviceType, userAgent, sessionId)
-      _             <- notificationSettingsDAO.create(true, true, true, true, true, true, sessionId)
+      _             <- notificationSettingsDAO.create(true, true, true, true, true, true, true, sessionId)
       account       <- accountsDAO.find(sessionId)
     } yield (account)
 

@@ -74,7 +74,7 @@ class CommentsDAOSpec extends DAOSpec {
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 
-    execute(pushNotificationSettingDAO.create(false, false, true, false, false, false, sessionAccount1.id.toSessionId))
+    execute(pushNotificationSettingDAO.create(false, true, false, false, false, false, false, sessionAccount1.id.toSessionId))
     execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount1.id.toSessionId))
     execute(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
     execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))

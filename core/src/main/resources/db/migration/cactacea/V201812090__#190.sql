@@ -25,6 +25,12 @@ SET account_id = by_bak2;
 ALTER TABLE `${schema}`.`followers`
 DROP COLUMN `by_bak2`;
 
+ALTER TABLE `${schema}`.`push_notification_settings`
+ADD COLUMN `friend_request` TINYINT(4) NOT NULL AFTER `show_message`,
+CHANGE COLUMN `follower_feed` `feed` TINYINT(4) NOT NULL ,
+CHANGE COLUMN `feed_comment` `comment` TINYINT(4) NOT NULL ,
+CHANGE COLUMN `direct_message` `message` TINYINT(4) NOT NULL ;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

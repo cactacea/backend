@@ -43,11 +43,12 @@ class SettingsController @Inject()(
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutNotificationSetting =>
       settingsService.updatePushNotificationSettings(
-        request.groupInvitation,
-        request.followerFeed,
-        request.feedComment,
+        request.feed,
+        request.comment,
+        request.friendRequest,
+        request.message,
         request.groupMessage,
-        request.directMessage,
+        request.groupInvitation,
         request.showMessage,
         SessionContext.id
       ).map(_ => response.ok)

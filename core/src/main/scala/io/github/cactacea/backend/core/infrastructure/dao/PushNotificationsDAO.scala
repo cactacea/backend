@@ -16,7 +16,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[AccountFeeds].filter(af => af.feedId == lift(id) && af.notified == false)
         .filter(af => query[Relationships].filter(r => r.accountId == af.by && r.by == af.accountId && r.muting == true).isEmpty)
-        .filter(af => query[PushNotificationSettings].filter(p => p.accountId == af.accountId && p.followerFeed == true).nonEmpty)
+        .filter(af => query[PushNotificationSettings].filter(p => p.accountId == af.accountId && p.feed == true).nonEmpty)
         .leftJoin(query[Relationships]).on((af, r) => r.accountId == af.by && r.by == af.accountId)
         .join(query[Feeds]).on({ case ((af, _), f) => f.id == af.feedId})
         .join(query[Accounts]).on({ case (((af, _), _), a) =>  a.id == af.by})
@@ -52,7 +52,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
   def findByFriendRequestId(id: FriendRequestId): Future[List[PushNotifications]] = {
     val q = quote {
       query[FriendRequests].filter(g => g.id == lift(id) && g.notified == false
-        && query[PushNotificationSettings].filter(p => p.accountId == g.accountId && p.groupInvitation == true).nonEmpty)
+        && query[PushNotificationSettings].filter(p => p.accountId == g.accountId && p.friendRequest == true).nonEmpty)
         .leftJoin(query[Relationships]).on((g, r) => r.accountId == g.by && r.by == g.accountId)
         .join(query[Accounts]).on({ case ((g, _), a) => a.id == g.by})
         .join(query[Devices]).on({ case (((g, _), _), d) => d.accountId == g.accountId && d.pushToken.isDefined})
@@ -73,7 +73,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         .filter(am => query[Relationships].filter(r => r.accountId == am.by && r.by == am.accountId && r.muting == true).isEmpty)
         .join(query[Groups]).on((am, g) => g.id == am.groupId)
         .join(query[PushNotificationSettings]).on({ case ((am, g), p) => p.accountId == am.accountId &&
-        ((p.directMessage == true && g.directMessage == true) || (p.groupMessage == true && g.directMessage == false))})
+        ((p.message == true && g.directMessage == true) || (p.groupMessage == true && g.directMessage == false))})
         .leftJoin(query[Relationships]).on({ case (((am, _), _), r) =>  r.accountId == am.by && r.by == am.accountId })
         .join(query[Accounts]).on({ case ((((am, _), _), _), a) =>  a.id == am.by})
         .join(query[Devices]).on({ case (((((am, _), _), _), _), d) => d.accountId == am.accountId && d.pushToken.isDefined})
@@ -96,7 +96,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         query[Comments].filter(c => c.id == lift(id) && c.notified == false)
           .join(query[Comments]).on((c, f) => f.replyId.exists(_ == c.id)
           && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.muting == true).isEmpty
-          && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.feedComment == true).nonEmpty)
+          && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.comment == true).nonEmpty)
           .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
           .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
           .join(query[Devices]).on({ case ((((_, f), _), _), d) => d.accountId == f.by && d.pushToken.isDefined})
@@ -115,7 +115,7 @@ class PushNotificationsDAO @Inject()(db: DatabaseService) {
         query[Comments].filter(c => c.id == lift(id) && c.notified == false)
           .join(query[Feeds]).on((c, f) => c.feedId == f.id
           && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.muting == true).isEmpty
-          && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.feedComment == true).nonEmpty)
+          && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.comment == true).nonEmpty)
           .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
           .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
           .join(query[Devices]).on({ case ((((_, f), _), _), d) => d.accountId == f.by && d.pushToken.isDefined})
