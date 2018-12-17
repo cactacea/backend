@@ -36,7 +36,7 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
 
       o.summary("Upload a medium")
         .tag(mediumsTag)
-        .operationId("uploadMedium")
+        .operationId("upload")
         .consumes("multipart/form-data")
         .formParam[File](name = "file", description = "Upload a medium file", true)
         .responseWith[Array[MediumCreated]](Status.Created.code, successfulMessage)
@@ -53,7 +53,7 @@ class MediumsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String
     deleteWithPermission("/mediums/:id")(Permissions.media) { o =>
       o.summary("Delete a medium")
         .tag(mediumsTag)
-        .operationId("deleteMedium")
+        .operationId("delete")
         .request[DeleteMedium]
         .responseWith(Status.Ok.code, MediumNotFound.message)
 

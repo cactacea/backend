@@ -35,7 +35,7 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id")(Permissions.basic) { o =>
       o.summary("Get information about a account")
         .tag(accountsTag)
-        .operationId("find")
+        .operationId("findAccount")
         .request[GetAccount]
         .responseWith[Account](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))

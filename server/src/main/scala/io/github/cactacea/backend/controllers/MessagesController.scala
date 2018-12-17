@@ -26,7 +26,7 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     getWithPermission("/messages")(Permissions.basic) { o =>
       o.summary("Search messages")
         .tag(messagesTag)
-        .operationId("find")
+        .operationId("findMessages")
         .request[GetMessages]
         .responseWith[Message](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
