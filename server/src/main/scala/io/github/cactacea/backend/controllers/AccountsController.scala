@@ -132,7 +132,7 @@ class AccountsController @Inject()(
         .tag(accountsTag)
         .operationId("findFriends")
         .request[GetFriends]
-        .responseWith[Account](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: GetFriends =>
       friendsService.find(

@@ -45,7 +45,7 @@ class SessionController @Inject()(
       o.summary("Get basic information about session account")
         .tag(sessionTag)
         .operationId("findSession")
-        .responseWith[Account](Status.Ok.code, successfulMessage)
+        .responseWith[AccountDetail](Status.Ok.code, successfulMessage)
     } { _: Request =>
       accountsService.find(
         SessionContext.id
