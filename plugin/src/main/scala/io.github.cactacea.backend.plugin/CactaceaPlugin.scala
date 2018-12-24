@@ -1,14 +1,13 @@
 package io.github.cactacea.backend.plugin
 
 import sbt._
+import autoImport._
+
+object autoImport {
+  val cactaceaFlywayLocation = settingKey[String]("Cactacea classpath for flyway locations property")
+}
 
 object CactaceaPlugin extends AutoPlugin {
-
-  object autoImport {
-    val cactaceaFlywayLocation = settingKey[String]("Cactacea classpath for flyway locations property")
-  }
-
-  import autoImport._
 
   override def trigger: PluginTrigger = allRequirements
 

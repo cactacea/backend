@@ -69,18 +69,15 @@ class AuthTokenGenerator {
           case _: JwtException =>
             Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
-          case _: Exception =>
-            Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
-
         }
     }
   }
 
   def check(requestApiKey: Option[String]): Future[DeviceType] = {
-    requestApiKey.flatMap(key => Config.auth.keys.all.filter(_._2 == key).headOption.map(_._1)) match {
+    requestApiKey.flatMap(key => Config.auth.keys.all.filter({ case (_, k) => k == key}).headOption.map({ case (d, _) => d})) match {
       case Some(t) =>
         Future.value(t)
-      case _ =>
+      case None =>
         Future.exception(CactaceaException(APIKeyIsInValid))
     }
   }

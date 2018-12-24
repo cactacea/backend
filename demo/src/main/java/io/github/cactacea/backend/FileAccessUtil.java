@@ -36,7 +36,7 @@ public class FileAccessUtil {
                         while (entries.hasMoreElements()) {
                             JarEntry entry = entries.nextElement();
                             String name = entry.getName();
-                            if (name.startsWith(src) && entry.isDirectory() == false) {
+                            if (name.startsWith(src) && !entry.isDirectory()) {
                                 InputStream in = jarFile.getInputStream(entry);
                                 String fileName = name.substring(src.length() + 1);
                                 Path toFile = Paths.get(dst + fileName);
