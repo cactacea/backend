@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.models.{Groups, _}
 case class Group(
                   id: GroupId,
                   name: Option[String],
-                  message: Option[Message],
+                  message: Option[GroupMessage],
                   invitationOnly: Boolean,
                   privacyType: GroupPrivacyType,
                   authorityType: GroupAuthorityType,
@@ -20,26 +20,27 @@ case class Group(
 object Group {
 
   def apply(g: Groups): Group = {
-    apply(g, None, None, None)
+    apply(g, None, None)
   }
 
   def apply(g: Groups, n: Long): Group = {
-    apply(g, None, None, Some(n))
+    apply(g, None, Some(n))
   }
 
   def apply(g: Groups, m: Option[Messages], n: Long): Group = {
-    apply(g, m, None, Some(n))
+    apply(g, m, Some(n))
   }
 
   def apply(g: Groups,
             m: Option[Messages],
-            am: Option[AccountMessages],
             n: Option[Long]): Group = {
+
+    val message = m.map(GroupMessage(_))
 
     Group(
       id                = g.id,
       name              = g.name,
-      message           = m.map(Message(_, am)),
+      message           = message,
       invitationOnly    = g.invitationOnly,
       privacyType       = g.privacyType,
       authorityType     = g.authorityType,

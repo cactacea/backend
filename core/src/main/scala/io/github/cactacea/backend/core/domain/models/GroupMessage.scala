@@ -1,60 +1,48 @@
 package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MessageType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{MessageId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.MessageId
 import io.github.cactacea.backend.core.infrastructure.models._
 
-case class Message(
+case class GroupMessage(
                     id: MessageId,
                     messageType: MessageType,
                     message: Option[String],
-                    medium: Option[Medium],
-                    account: Account,
-                    unread: Boolean,
                     accountCount: Long,
                     readAccountCount: Long,
                     contentWarning: Boolean,
                     contentDeleted: Boolean,
-                    postedAt: Long,
-                    next: Option[Long]
+                    postedAt: Long
                   )
 
-object Message {
 
-  def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], next: Long): Message = {
+object GroupMessage {
+
+  def apply(m: Messages): GroupMessage = {
 
     m.contentStatus match {
       case ContentStatusType.rejected =>
-        Message(
+        GroupMessage(
           id                = m.id,
           messageType       = m.messageType,
           message           = None,
-          medium            = None,
-          account           = Account(a, r),
-          unread            = false,
           accountCount      = 0L,
           readAccountCount  = 0L,
           contentWarning    = false,
           contentDeleted    = true,
-          postedAt          = m.postedAt,
-          next              = None
+          postedAt          = m.postedAt
         )
       case _ =>
-        val images = i.map(Medium(_))
 
-        Message(
+        GroupMessage(
           id                = m.id,
           messageType       = m.messageType,
           message           = m.message,
-          medium            = images,
-          account           = Account(a, r),
-          unread            = am.unread,
           accountCount      = m.accountCount,
           readAccountCount  = m.readAccountCount,
           contentWarning    = m.contentWarning,
           contentDeleted    = false,
-          postedAt          = m.postedAt,
-          next              = Some(next)
+          postedAt          = m.postedAt
         )
     }
   }

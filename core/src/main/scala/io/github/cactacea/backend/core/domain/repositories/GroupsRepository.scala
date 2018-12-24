@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPr
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, SessionId}
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class GroupsRepository @Inject()(
@@ -59,10 +57,9 @@ class GroupsRepository @Inject()(
   }
 
   def find(groupId: GroupId, sessionId: SessionId): Future[Group] = {
-    groupsDAO.find(groupId, sessionId).flatMap(_ match {
-      case Some(t) => Future.value(t)
-      case None => Future.exception(CactaceaException(GroupNotFound))
-    })
+    for {
+      r <- groupsDAO.validateFind(groupId, sessionId)
+    } yield (r)
   }
 
 }

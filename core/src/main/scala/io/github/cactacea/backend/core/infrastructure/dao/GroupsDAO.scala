@@ -159,8 +159,6 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   }
 
 
-  // Validators
-
   def validateExist(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     exist(groupId, sessionId).flatMap(_ match {
       case true =>
@@ -170,6 +168,12 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     })
   }
 
+  def validateFind(groupId: GroupId, sessionId: SessionId): Future[Group] = {
+    find(groupId, sessionId).flatMap(_ match {
+      case Some(t) => Future.value(t)
+      case None => Future.exception(CactaceaException(GroupNotFound))
+    })
+  }
 
 }
 
