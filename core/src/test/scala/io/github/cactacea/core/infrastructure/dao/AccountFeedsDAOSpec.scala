@@ -8,7 +8,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
 
   import db._
 
-  test("findALl") (pending)
+  test("find all") (pending)
 
   test("create") {
 

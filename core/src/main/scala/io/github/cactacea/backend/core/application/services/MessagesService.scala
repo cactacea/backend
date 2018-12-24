@@ -37,7 +37,7 @@ class MessagesService @Inject()(
   def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {
     db.transaction {
       for {
-        m <- messagesRepository.findAll(groupId, since, offset, count, ascending, sessionId)
+        m <- messagesRepository.find(groupId, since, offset, count, ascending, sessionId)
         _ <- messagesRepository.updateReadStatus(m, sessionId)
       } yield (m)
     }

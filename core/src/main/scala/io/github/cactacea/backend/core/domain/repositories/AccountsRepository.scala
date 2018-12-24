@@ -2,9 +2,8 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.ActiveStatus
-import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO, ValidationDAO}
+import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail, AccountStatus}
+import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO, MediumsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
@@ -13,14 +12,14 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 class AccountsRepository @Inject()(
                                     accountsDAO: AccountsDAO,
                                     devicesDAO: DevicesDAO,
-                                    validationDAO: ValidationDAO
+                                    mediumsDAO: MediumsDAO
                                   ) {
 
-  def find(sessionId: SessionId): Future[Account] = {
-    validationDAO.findAccount(sessionId.toAccountId).map(Account(_))
+  def find(sessionId: SessionId): Future[AccountDetail] = {
+    accountsDAO.validateFind(sessionId)
   }
 
-  def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
+  def findDetail(accountId: AccountId, sessionId: SessionId): Future[AccountDetail] = {
     accountsDAO.find(accountId, sessionId).flatMap( _ match {
       case Some(a) =>
         Future.value(a)
@@ -33,8 +32,8 @@ class AccountsRepository @Inject()(
     accountsDAO.exist(accountName).map(!_)
   }
 
-  def findAll(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    accountsDAO.findAll(
+  def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+    accountsDAO.find(
       accountName,
       since,
       offset,
@@ -43,32 +42,28 @@ class AccountsRepository @Inject()(
     )
   }
 
-  def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
-    (for {
-      _ <- validationDAO.existAccount(accountId, sessionId)
-      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
+  def findActiveStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
+    for {
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
       r <- devicesDAO.findActiveStatus(accountId)
-    } yield (r)).map(_ match {
-      case Some(s) =>
-        AccountStatus(accountId, s)
-      case None =>
-        AccountStatus(accountId, ActiveStatus.inactive)
-    })
+    } yield (r)
   }
 
   def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.notExistAccountName(accountName)
+      _ <- accountsDAO.validateNotExist(accountName)
       _ <- accountsDAO.updateAccountName(accountName, sessionId)
     } yield (Unit)
   }
 
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existAccount(accountId, sessionId)
-      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
+      _ <- accountsDAO.validateSessionId(accountId, sessionId)
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
       _ <- accountsDAO.updateDisplayName(accountId, userName, sessionId)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
   def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
@@ -89,7 +84,7 @@ class AccountsRepository @Inject()(
     profileImage match {
       case Some(id) =>
         for {
-          uri <- validationDAO.findMedium(id, sessionId).map(m => Some(m.uri))
+          uri <- mediumsDAO.validateFind(id, sessionId).map(m => Some(m.uri))
           _ <- accountsDAO.updateProfileImageUrl(uri, profileImage, sessionId)
         } yield (uri)
       case None =>

@@ -123,13 +123,13 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     val request4 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser4.id.toSessionId))
     val request5 = execute(friendRequestsRepository.create(sessionUser.id, requestingUser5.id.toSessionId))
 
-    val requests1 = execute(friendRequestsRepository.findAll(None, 0, 3, true, sessionUser.id.toSessionId))
+    val requests1 = execute(friendRequestsRepository.find(None, 0, 3, true, sessionUser.id.toSessionId))
     assert(requests1.size == 3)
     assert(requests1(0).id == request5)
     assert(requests1(1).id == request4)
     assert(requests1(2).id == request3)
 
-    val requests2 = execute(friendRequestsRepository.findAll(requests1(2).next, 0, 3, true, sessionUser.id.toSessionId))
+    val requests2 = execute(friendRequestsRepository.find(requests1(2).next, 0, 3, true, sessionUser.id.toSessionId))
     assert(requests2.size == 2)
     assert(requests2(0).id == request2)
     assert(requests2(1).id == request1)

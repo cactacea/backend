@@ -61,7 +61,7 @@ object CactaceaErrors {
   final val m40004 = "File upload error occurred."
   final val m40005 = "Authority not found."
   final val m40006 = "Group is invitation only."
-  final val m40007 = "Direct message group can not updated."
+  final val m40007 = "Direct message group can not be updated."
   final val m40008 = "API Key is invalid."
   final val m40009 = "Account name already used."
   final val m40010 = "Can not specify myself."
@@ -81,8 +81,8 @@ object CactaceaErrors {
   final val m40027 = "Account not friend."
   final val m40028 = "Account already invited."
   final val m40029 = "Account already requested."
-  final val m40030 = "Account already joined."
-  final val m40031 = "Account not joined."
+  final val m40030 = "Account already groupJoined."
+  final val m40031 = "Account not groupJoined."
   final val m40032 = "Comment already liked."
   final val m40033 = "Comment not liked."
   final val m40034 = "Feed already liked."
@@ -133,7 +133,7 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40005)  override val message: String = m40005
   }
 
-  final object GroupIsInvitationOnly extends BadRequest {
+  final object InnvitationOnlyGroup extends BadRequest {
     @ApiModelProperty(example = c40006)  override val code: Int =       c40006.toInt
     @ApiModelProperty(example = m40006)  override val message: String = m40006
   }

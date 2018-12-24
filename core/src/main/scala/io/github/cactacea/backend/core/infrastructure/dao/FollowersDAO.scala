@@ -91,10 +91,10 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_ => Unit)
   }
 
-  def findAll(since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Account]] = {
+  def find(since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -113,11 +113,11 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   }
 
-  def findAll(accountId: AccountId,
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Account]] = {
+  def find(accountId: AccountId,
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 

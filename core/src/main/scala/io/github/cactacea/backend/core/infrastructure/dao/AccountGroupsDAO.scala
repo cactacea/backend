@@ -7,18 +7,19 @@ import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyJoined, AccountNotJoined, GroupNotFound}
 
 @Singleton
 class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
 
-  def exist(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+  def exist(groupId: GroupId, accountId: AccountId): Future[Boolean] = {
     val q = quote {
       query[AccountGroups]
         .filter(_.groupId     == lift(groupId))
-        .filter(_.accountId   == lift(by))
+        .filter(_.accountId   == lift(accountId))
         .nonEmpty
     }
     run(q)
@@ -26,7 +27,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
 
   def create(accountId: AccountId, groupId: GroupId): Future[AccountGroupId] = {
     for {
-      id <- create(accountId, groupId, accountId.toSessionId)
+      id <- insert(accountId, groupId, accountId.toSessionId)
       _ <- updateAccountCount(groupId, 1L)
     } yield (id)
   }
@@ -56,7 +57,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
 
   private def insert(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
     val joinedAt = timeService.currentTimeMillis()
-    val toAccountId = sessionId.toAccountId
+    val by = sessionId.toAccountId
     val q = quote {
       query[AccountGroups]
         .insert(
@@ -64,7 +65,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
           _.groupId             -> lift(groupId),
           _.unreadCount         -> 0L,
           _.joinedAt            -> lift(joinedAt),
-          _.toAccountId         -> lift(toAccountId),
+          _.by                  -> lift(by),
           _.hidden              -> false,
           _.mute                -> false
         ).returning(_.id)
@@ -116,33 +117,35 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
     run(q).map(_ => Unit)
   }
 
-  def findByGroupId(groupId: GroupId, sessionId: SessionId): Future[Option[(AccountGroups, Groups)]] = {
+  def findByGroupId(groupId: GroupId, sessionId: SessionId): Future[Option[Group]] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[AccountGroups]
         .filter(_.groupId         == lift(groupId))
-        .filter(_.toAccountId == lift(by))
+        .filter(_.by              == lift(by))
         .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId })
+        .map({ case (_, g) => g})
     }
-    run(q).map(_.headOption)
+    run(q).map(_.headOption.map(Group(_)))
   }
 
-  def findByAccountId(accountId: AccountId, sessionId: SessionId): Future[Option[(AccountGroups, Groups)]] = {
+  def findByAccountId(accountId: AccountId, sessionId: SessionId): Future[Option[Group]] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[AccountGroups]
-          .filter(_.accountId         == lift(accountId))
-          .filter(_.toAccountId == lift(by))
-          .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
+        .filter(_.accountId         == lift(accountId))
+        .filter(_.by                == lift(by))
+        .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
+        .map({ case (_, g) => g})
     }
-    run(q).map(_.headOption)
+    run(q).map(_.headOption.map(Group(_)))
   }
 
-  def findAll(accountId: AccountId,
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              hidden: Boolean): Future[List[Group]] = {
+  def find(accountId: AccountId,
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           hidden: Boolean): Future[List[Group]] = {
 
     val q = quote {
       query[AccountGroups]
@@ -170,6 +173,59 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
         .map({ case (m, _) => m.groupId })
     }
     run(q).map(_.headOption)
+  }
+
+  def findAccountCount(groupId: GroupId): Future[Long] = {
+    val q = quote {
+      query[Groups]
+        .filter(_.id == lift(groupId))
+        .map(_.accountCount)
+    }
+    run(q).flatMap(_.headOption match {
+      case Some(c) =>
+        Future.value(c)
+      case None =>
+        Future.exception(CactaceaException(GroupNotFound))
+    })
+  }
+
+  def findHidden(groupId: GroupId, sessionId: SessionId): Future[Option[Boolean]] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[AccountGroups]
+        .filter(_.groupId == lift(groupId))
+        .filter(_.by == lift(by))
+        .map(_.hidden)
+    }
+    run(q).map(_.headOption)
+  }
+
+
+  def validateFindByGroupId(groupId: GroupId, sessionId: SessionId): Future[Group] = {
+    findByGroupId(groupId, sessionId).flatMap(_ match {
+      case Some(t) =>
+        Future.value(t)
+      case _ =>
+        Future.exception(CactaceaException(AccountNotJoined))
+    })
+  }
+
+  def validateExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+    exist(groupId, accountId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(AccountNotJoined))
+    })
+  }
+
+  def validateNotExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+    exist(groupId, accountId).flatMap(_ match {
+      case true =>
+        Future.exception(CactaceaException(AccountAlreadyJoined))
+      case false =>
+        Future.Unit
+    })
   }
 
 }

@@ -31,6 +31,21 @@ CHANGE COLUMN `follower_feed` `feed` TINYINT(4) NOT NULL ,
 CHANGE COLUMN `feed_comment` `comment` TINYINT(4) NOT NULL ,
 CHANGE COLUMN `direct_message` `message` TINYINT(4) NOT NULL ;
 
+ALTER TABLE `${schema}`.`accounts`
+CHANGE COLUMN `follow_count` `following_count` BIGINT(20) NOT NULL DEFAULT '0' ;
+
+
+ALTER TABLE `${schema}`.`account_groups` 
+DROP FOREIGN KEY `fk_account_groups_accounts2`;
+
+ALTER TABLE `${schema}`.`account_groups` 
+CHANGE COLUMN `to_account_id` `by` BIGINT(20) NOT NULL ;
+
+ALTER TABLE `${schema}`.`account_groups` 
+ADD CONSTRAINT `fk_account_groups_accounts2`
+  FOREIGN KEY (`by`)
+  REFERENCES `${schema}`.`accounts` (`id`);
+  
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

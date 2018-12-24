@@ -66,11 +66,11 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     run(q).map(_ => Unit)
   }
 
-  def findAll(since: Option[Long],
-              offset: Int,
-              count: Int,
-              locales: Seq[Locale],
-              sessionId: SessionId): Future[List[Notification]] = {
+  def find(since: Option[Long],
+           offset: Int,
+           count: Int,
+           locales: Seq[Locale],
+           sessionId: SessionId): Future[List[Notification]] = {
 
     val by = sessionId.toAccountId
     val q = quote {

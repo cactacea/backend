@@ -19,17 +19,17 @@ class FollowingsRepositorySpec extends RepositorySpec {
 
     execute(followingRepository.create(followedUser.id, sessionUser.id.toSessionId))
 
-    val result = execute(followingRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val result = execute(followingRepository.find(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
 
     val resultFollowedUser = result(0)
     assert(followedUser.id == resultFollowedUser.id)
 
     val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account1.followingCount == Some(1L))
+    assert(account1.followingCount == 1L)
 
     val account2 = execute(accountsRepository.find(followedUser.id.toSessionId))
-    assert(account2.followerCount == Some(1L))
+    assert(account2.followerCount == 1L)
 
   }
 
@@ -77,12 +77,12 @@ class FollowingsRepositorySpec extends RepositorySpec {
     execute(followingRepository.create(user.id, sessionUser.id.toSessionId))
 
     val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account1.followingCount == Some(1L))
+    assert(account1.followingCount == 1L)
 
     execute(followingRepository.delete(user.id, sessionUser.id.toSessionId))
 
     val account2 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account2.followingCount == Some(0L))
+    assert(account2.followingCount == 0L)
 
   }
 
@@ -132,13 +132,13 @@ class FollowingsRepositorySpec extends RepositorySpec {
     execute(followingRepository.create(followedUser4.id, sessionUser.id.toSessionId))
     execute(followingRepository.create(followedUser5.id, sessionUser.id.toSessionId))
 
-    val follower1 = execute(followingRepository.findAll(None, 0, 3, sessionUser.id.toSessionId))
+    val follower1 = execute(followingRepository.find(None, 0, 3, sessionUser.id.toSessionId))
     assert(follower1.size == 3)
     assert(follower1(0).id == followedUser5.id)
     assert(follower1(1).id == followedUser4.id)
     assert(follower1(2).id == followedUser3.id)
 
-    val follower2 = execute(followingRepository.findAll(follower1(2).next, 0, 3, sessionUser.id.toSessionId))
+    val follower2 = execute(followingRepository.find(follower1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(follower2.size == 2)
     assert(follower2(0).id == followedUser2.id)
     assert(follower2(1).id == followedUser1.id)
@@ -161,13 +161,13 @@ class FollowingsRepositorySpec extends RepositorySpec {
     execute(followingRepository.create(followedUser4.id, user.id.toSessionId))
     execute(followingRepository.create(followedUser5.id, user.id.toSessionId))
 
-    val follower1 = execute(followingRepository.findAll(user.id, None, 0, 3, sessionUser.id.toSessionId))
+    val follower1 = execute(followingRepository.find(user.id, None, 0, 3, sessionUser.id.toSessionId))
     assert(follower1.size == 3)
     assert(follower1(0).id == followedUser5.id)
     assert(follower1(1).id == followedUser4.id)
     assert(follower1(2).id == followedUser3.id)
 
-    val follower2 = execute(followingRepository.findAll(user.id, follower1(2).next, 0, 3, sessionUser.id.toSessionId))
+    val follower2 = execute(followingRepository.find(user.id, follower1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(follower2.size == 2)
     assert(follower2(0).id == followedUser2.id)
     assert(follower2(1).id == followedUser1.id)

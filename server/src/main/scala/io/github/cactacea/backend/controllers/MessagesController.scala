@@ -28,7 +28,7 @@ class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(messagesTag)
         .operationId("findMessages")
         .request[GetMessages]
-        .responseWith[Message](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Message]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
     } { request: GetMessages =>
       messagesService.find(

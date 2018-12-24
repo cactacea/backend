@@ -11,9 +11,9 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class GroupsRepository @Inject()(
+                                  accountGroupsDAO: AccountGroupsDAO,
                                   groupsDAO: GroupsDAO,
-                                  groupInvitationsDAO: GroupInvitationsDAO,
-                                  accountGroupsDAO: AccountGroupsDAO
+                                  groupAuthorityDAO: GroupAuthorityDAO
                                 ) {
 
   def create(name: Option[String],
@@ -34,26 +34,21 @@ class GroupsRepository @Inject()(
              authority: GroupAuthorityType,
              sessionId: SessionId): Future[Unit] = {
 
-    groupsDAO.find(groupId, sessionId).flatMap(_ match {
-      case Some(g) =>
-        if (g.directMessage) {
-          Future.exception(CactaceaException(DirectMessageGroupCanNotUpdated))
-        } else {
-          groupsDAO.update(groupId, name, byInvitationOnly, privacyType, authority, sessionId).flatMap(_ =>
-            if (g.privacyType != privacyType) {
-              groupInvitationsDAO.deleteByGroupId(groupId).flatMap(_ => Future.Unit)
-            } else {
-              Future.Unit
-            }
-          )
-        }
-      case None =>
-        Future.exception(CactaceaException(GroupNotFound))
-    })
+    for {
+      _ <- groupAuthorityDAO.validateUpdateAuthority(groupId, sessionId)
+      _ <- groupsDAO.update(groupId, name, byInvitationOnly, privacyType, authority, sessionId)
+    } yield (Unit)
   }
 
-  def findAll(name: Option[String], byInvitation: Option[Boolean], privacyType: Option[GroupPrivacyType], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Group]] = {
-    groupsDAO.findAll(
+  def find(name: Option[String],
+           byInvitation: Option[Boolean],
+           privacyType: Option[GroupPrivacyType],
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Group]] = {
+
+    groupsDAO.find(
       name,
       byInvitation,
       privacyType,
@@ -65,7 +60,7 @@ class GroupsRepository @Inject()(
 
   def find(groupId: GroupId, sessionId: SessionId): Future[Group] = {
     groupsDAO.find(groupId, sessionId).flatMap(_ match {
-      case Some(t) => Future.value(Group(t))
+      case Some(t) => Future.value(t)
       case None => Future.exception(CactaceaException(GroupNotFound))
     })
   }

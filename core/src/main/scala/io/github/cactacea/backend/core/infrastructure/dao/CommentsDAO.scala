@@ -8,6 +8,8 @@ import io.github.cactacea.backend.core.domain.enums.ContentStatusType
 import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.CommentNotFound
 
 @Singleton
 class CommentsDAO @Inject()(
@@ -158,7 +160,7 @@ class CommentsDAO @Inject()(
       })
   }
 
-  def findAll(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
+  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
 
     val by = sessionId.toAccountId
 
@@ -217,6 +219,19 @@ class CommentsDAO @Inject()(
     }
     run(q).map(_ => Unit)
   }
+
+
+
+  def validateExist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+    exist(commentId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(CommentNotFound))
+    })
+  }
+
+
 
 }
 

@@ -8,17 +8,17 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 
 @Singleton
 class BlocksRepository @Inject()(
+                                  accountsDAO: AccountsDAO,
                                   blocksDAO: BlocksDAO,
                                   followingsDAO: FollowingsDAO,
                                   followersDAO: FollowersDAO,
                                   friendsDAO: FriendsDAO,
-                                  mutesDAO: MutesDAO,
                                   friendRequestsDAO: FriendRequestsDAO,
-                                  validationDAO: ValidationDAO
+                                  mutesDAO: MutesDAO
                                 ) {
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    blocksDAO.findAll(
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+    blocksDAO.find(
       since,
       offset,
       count,
@@ -28,9 +28,9 @@ class BlocksRepository @Inject()(
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccount(accountId)
-      _ <- validationDAO.notExistBlock(accountId, sessionId)
+      _ <- accountsDAO.validateSessionId(accountId, sessionId)
+      _ <- accountsDAO.validateExist(accountId)
+      _ <- blocksDAO.validateNotExist(accountId, sessionId)
       _ <- blocksDAO.create(accountId, sessionId)
       _ <- followingsDAO.delete(accountId, sessionId)
       _ <- followingsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
@@ -44,16 +44,16 @@ class BlocksRepository @Inject()(
       _ <- mutesDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendRequestsDAO.delete(accountId, sessionId)
       _ <- friendRequestsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccount(accountId)
-      _ <- validationDAO.existBlock(accountId, sessionId)
+      _ <- accountsDAO.validateSessionId(accountId, sessionId)
+      _ <- accountsDAO.validateExist(accountId)
+      _ <- blocksDAO.validateExist(accountId, sessionId)
       _ <- blocksDAO.delete(accountId, sessionId)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
 }

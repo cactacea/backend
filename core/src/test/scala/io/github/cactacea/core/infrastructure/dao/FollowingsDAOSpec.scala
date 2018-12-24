@@ -21,15 +21,15 @@ class FollowingsDAOSpec extends DAOSpec {
     assert(result1.following == true)
     assert(result2.following == true)
 
-    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 1)
-    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 1)
+    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followingCount == 1)
+    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followingCount == 1)
 
     // delete follower
     execute(followingsDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
     execute(followingsDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
 
-    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 0)
-    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 0)
+    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followingCount == 0)
+    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followingCount == 0)
 
     // create follower
     execute(followingsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
@@ -39,8 +39,8 @@ class FollowingsDAOSpec extends DAOSpec {
     assert(result3.following == true)
     assert(result4.following == true)
 
-    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 1)
-    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 1)
+    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followingCount == 1)
+    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followingCount == 1)
 
   }
 
@@ -81,7 +81,7 @@ class FollowingsDAOSpec extends DAOSpec {
 
   }
 
-  test("findAll") {
+  test("find all") {
 
     val sessionAccount1 = createAccount("FollowingsDAOSpec11")
     val sessionAccount2 = createAccount("FollowingsDAOSpec12")
@@ -99,7 +99,7 @@ class FollowingsDAOSpec extends DAOSpec {
     execute(followingsDAO.create(sessionAccount6.id, followUser.id.toSessionId))
 
     // find follower top page
-    val result1 = execute(followingsDAO.findAll(followUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
+    val result1 = execute(followingsDAO.find(followUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
     val account1 = result1(0)
     val account2 = result1(1)
     val account3 = result1(2)
@@ -108,7 +108,7 @@ class FollowingsDAOSpec extends DAOSpec {
     assert(account3.id == sessionAccount4.id)
 
     // find follower next page
-    val result2 = execute(followingsDAO.findAll(followUser.id, account3.next, 0, 3, sessionAccount1.id.toSessionId))
+    val result2 = execute(followingsDAO.find(followUser.id, account3.next, 0, 3, sessionAccount1.id.toSessionId))
     val account4 = result2(0)
     val account5 = result2(1)
     val account6 = result2(2)

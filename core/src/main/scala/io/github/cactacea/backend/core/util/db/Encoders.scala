@@ -96,7 +96,7 @@ trait Encoders {
   = MappedEncoding[Byte, ContentStatusType] (long => ContentStatusType.forName(long))
   implicit val deviceTypeDecode: MappedEncoding[DeviceType, Byte] = MappedEncoding[DeviceType, Byte] (enumValue => enumValue.toValue)
   implicit val deviceTypeEncode: MappedEncoding[Byte, DeviceType] = MappedEncoding[Byte, DeviceType] (long => DeviceType.forName(long))
-  implicit val activeStatusTypeDecode: MappedEncoding[ActiveStatus, Byte] = MappedEncoding[ActiveStatus, Byte] (enumValue => enumValue.toValue)
-  implicit val activeStatusTypeEncode: MappedEncoding[Byte, ActiveStatus] = MappedEncoding[Byte, ActiveStatus] (long => ActiveStatus.forName(long))
+  implicit val activeStatusTypeDecode: MappedEncoding[ActiveStatusType, Byte] = MappedEncoding[ActiveStatusType, Byte] (enumValue => enumValue.toValue)
+  implicit val activeStatusTypeEncode: MappedEncoding[Byte, ActiveStatusType] = MappedEncoding[Byte, ActiveStatusType] (long => ActiveStatusType.forName(long))
 
 }

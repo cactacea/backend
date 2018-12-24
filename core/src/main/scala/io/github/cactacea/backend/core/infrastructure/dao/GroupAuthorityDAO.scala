@@ -6,87 +6,25 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{AccountGroups, Groups, Relationships}
-import io.github.cactacea.backend.core.util.responses.CactaceaError
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class GroupAuthorityDAO @Inject()(db: DatabaseService) {
+class GroupAuthorityDAO @Inject()(
+                                   db: DatabaseService,
+                                   accountGroupsDAO: AccountGroupsDAO) {
 
   import db._
 
-  def hasJoinAndManagingAuthority(g: Groups, accountId: AccountId, sessionId: SessionId): Future[Either[CactaceaError, Boolean]] = {
-    hasManagingAuthority(sessionId.toAccountId, g).flatMap(_ match {
-      case true =>
-        findRelationship(accountId, g.by.toSessionId).flatMap(r =>
-          hasJoinAuthority(g, r, accountId.toSessionId).flatMap(_ match {
-            case false =>
-              Future.value(Left(OperationNotAllowed))
-            case true =>
-              Future.value(Right(true))
-          })
-        )
-      case false =>
-        Future.value(Left(AuthorityNotFound))
-    })
-  }
-
-  def hasManagingAuthority(g: Groups, sessionId: SessionId): Future[Either[CactaceaError, Boolean]] = {
-    hasManagingAuthority(sessionId.toAccountId, g).flatMap(_ match {
-      case true =>
-        Future.value(Right(true))
-      case false =>
-        Future.value(Left(AuthorityNotFound))
-    })
-  }
-
-  def hasJoinAuthority(g: Groups, sessionId: SessionId): Future[Either[CactaceaError, Boolean]] = {
-    findRelationship(sessionId.toAccountId, g.by.toSessionId).flatMap(r =>
-      hasJoinAuthority(g, r, sessionId).flatMap(_ match {
-        case false =>
-          Future.value(Left(AuthorityNotFound))
-        case true =>
-          Future.value(Right(true))
-      })
-    )
-  }
-
-  private def hasManagingAuthority(accountId: AccountId, g: Groups): Future[Boolean] = {
-    if (accountId == g.by) {
-      Future.True
-    } else if (g.authorityType == GroupAuthorityType.owner) {
-      Future.False
-    } else {
-      exist(g.id, accountId)
-    }
-  }
-
-  private def hasJoinAuthority(g: Groups, r: Option[Relationships], sessionId: SessionId): Future[Boolean] = {
-    val follow = r.fold(false)(_.following)
-    val follower = r.fold(false)(_.isFollower)
-    val friend = r.fold(false)(_.isFriend)
-    if (g.by.toSessionId == sessionId) {
-      Future.True
-    } else if (g.privacyType == GroupPrivacyType.following && follow) {
-      Future.True
-    } else if (g.privacyType == GroupPrivacyType.followers && follower) {
-      Future.True
-    } else if (g.privacyType == GroupPrivacyType.friends && friend) {
-      Future.True
-    } else if (g.privacyType == GroupPrivacyType.everyone) {
-      Future.True
-    } else {
-      Future.False
-    }
-  }
-
-  private def exist(groupId: GroupId, accountId: AccountId): Future[Boolean] = {
+  private def findGroup(groupId: GroupId): Future[Groups] = {
     val q = quote {
-      query[AccountGroups]
-        .filter(_.accountId   == lift(accountId))
-        .filter(_.groupId     == lift(groupId))
-        .nonEmpty
+      query[Groups]
+        .filter(_.id == lift(groupId))
     }
-    run(q)
+    run(q).flatMap(_.headOption match {
+      case Some(g) => Future.value(g)
+      case None => Future.exception(CactaceaException(GroupNotFound))
+    })
   }
 
   private def findRelationship(accountId: AccountId, sessionId: SessionId): Future[Option[Relationships]] = {
@@ -100,5 +38,124 @@ class GroupAuthorityDAO @Inject()(db: DatabaseService) {
     }
     run(select).map(_.headOption)
   }
+
+  private def canJoin(g: Groups, r: Option[Relationships], sessionId: SessionId): Future[Unit] = {
+    val follow = r.fold(false)(_.following)
+    val follower = r.fold(false)(_.isFollower)
+    val friend = r.fold(false)(_.isFriend)
+    if (g.by.toSessionId == sessionId) {
+      Future.Unit
+    } else if (g.privacyType == GroupPrivacyType.following && follow) {
+      Future.Unit
+    } else if (g.privacyType == GroupPrivacyType.followers && follower) {
+      Future.Unit
+    } else if (g.privacyType == GroupPrivacyType.friends && friend) {
+      Future.Unit
+    } else if (g.privacyType == GroupPrivacyType.everyone) {
+      Future.Unit
+    } else {
+      Future.exception(CactaceaException(AuthorityNotFound))
+    }
+  }
+
+  private def canManage(g: Groups, sessionId: SessionId): Future[Unit] = {
+    if (sessionId.toAccountId == g.by) {
+      Future.Unit
+    } else if (g.authorityType == GroupAuthorityType.owner) {
+      Future.exception(CactaceaException(AuthorityNotFound))
+    } else {
+      findAccountGroupExist(g.id, sessionId.toAccountId).flatMap(_ match {
+        case true =>
+          Future.Unit
+        case false =>
+          Future.exception(CactaceaException(AuthorityNotFound))
+      })
+    }
+  }
+
+  private def findAccountGroupExist(groupId: GroupId, accountId: AccountId): Future[Boolean] = {
+    val q = quote {
+      query[AccountGroups]
+        .filter(_.groupId     == lift(groupId))
+        .filter(_.accountId   == lift(accountId))
+        .nonEmpty
+    }
+    run(q)
+  }
+
+
+  private def notInvitationOnlyGroup(g: Groups): Future[Unit] = {
+    g.invitationOnly match {
+      case true =>
+        Future.exception(CactaceaException(InnvitationOnlyGroup))
+      case false =>
+        Future.Unit
+    }
+  }
+
+  private def notDirectMessageGroup(g: Groups): Future[Unit] = {
+    g.directMessage match {
+      case true =>
+        Future.exception(CactaceaException(DirectMessageGroupCanNotUpdated))
+      case false =>
+        Future.Unit
+    }
+  }
+
+
+
+  def validateSearchMembersAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
+      _ <- canJoin(g, r, sessionId)
+    } yield (())
+  }
+
+  def validateAddMembersAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      r <- findRelationship(accountId, g.by.toSessionId)
+      _ <- canJoin(g, r, accountId.toSessionId)
+      _ <- canManage(g, sessionId)
+    } yield (())
+  }
+
+  def validateRemoveMembersAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      _ <- canManage(g, sessionId)
+    } yield (())
+
+  }
+
+  def validateUpdateAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      _ <- notDirectMessageGroup(g)
+      _ <- canManage(g, sessionId)
+    } yield (())
+  }
+
+  def validateJoinAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
+      _ <- notInvitationOnlyGroup(g)
+      _ <- canJoin(g, r, sessionId)
+    } yield (())
+  }
+
+  def validateInviteMembersAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      r <- findRelationship(accountId, g.by.toSessionId)
+      _ <- canJoin(g, r, accountId.toSessionId)
+      _ <- canManage(g, sessionId)
+    } yield (())
+  }
+
+
+
 
 }

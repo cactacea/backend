@@ -31,6 +31,8 @@ object Message {
 
   def apply(m: Messages, am: Option[AccountMessages], i: Option[Mediums], a: Option[Accounts], r: Option[Relationships], next: Option[Long]): Message = {
 
+    val account: Option[Account] = a.map(Account(_, r))
+
     m.contentStatus match {
       case ContentStatusType.rejected =>
         Message(
@@ -38,7 +40,7 @@ object Message {
           messageType       = m.messageType,
           message           = None,
           medium            = None,
-          account           = None,
+          account           = account,
           unread            = false,
           accountCount      = 0L,
           readAccountCount  = 0L,
@@ -49,7 +51,6 @@ object Message {
         )
       case _ =>
         val images = i.map(Medium(_))
-        val account: Option[Account] = a.map(Account(_, r))
 
         Message(
           id                = m.id,

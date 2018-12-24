@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
 
-import io.github.cactacea.backend.core.domain.enums.{ActiveStatus, DeviceType}
+import io.github.cactacea.backend.core.domain.enums.{ActiveStatusType, DeviceType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.Devices
 
@@ -20,7 +20,7 @@ class DevicesDAOSpec extends DAOSpec {
     assert(devices.size == 1)
     assert(device.id == deviceId)
     assert(device.userAgent == None)
-    assert(device.activeStatus == ActiveStatus.inactive)
+    assert(device.activeStatus == ActiveStatusType.inactive)
 
   }
 

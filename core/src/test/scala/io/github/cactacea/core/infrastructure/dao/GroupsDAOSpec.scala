@@ -151,7 +151,7 @@ class GroupsDAOSpec extends DAOSpec {
 
   }
 
-  test("findAll") {
+  test("find all") {
 
     val sessionAccount = createAccount("GroupsDAOSpec11")
     val groupOwner = createAccount("GroupsDAOSpec12")
@@ -168,7 +168,7 @@ class GroupsDAOSpec extends DAOSpec {
     val groupId7 = execute(groupsDAO.create(Some("New Group Name7"), false, GroupPrivacyType.following,   GroupAuthorityType.owner, groupOwner.id.toSessionId))
     val groupId8 = execute(groupsDAO.create(Some("New Group Name8"), false, GroupPrivacyType.friends,   GroupAuthorityType.owner, groupOwner.id.toSessionId))
 
-    val result1 = execute(groupsDAO.findAll(None, None, None, None, 0, 4, sessionAccount.id.toSessionId))
+    val result1 = execute(groupsDAO.find(None, None, None, None, 0, 4, sessionAccount.id.toSessionId))
     assert(result1.size == 4)
     val group1 = result1(0)
     val group2 = result1(1)
@@ -201,7 +201,7 @@ class GroupsDAOSpec extends DAOSpec {
     assert(group3.authorityType == GroupAuthorityType.owner)
     assert(group4.authorityType == GroupAuthorityType.member)
 
-    val result2 = execute(groupsDAO.findAll(None, None, None, Some(group4.id.value), 0, 3, sessionAccount.id.toSessionId))
+    val result2 = execute(groupsDAO.find(None, None, None, Some(group4.id.value), 0, 3, sessionAccount.id.toSessionId))
     assert(result2.size == 3)
     val group5 = result2(0)
     val group6 = result2(1)

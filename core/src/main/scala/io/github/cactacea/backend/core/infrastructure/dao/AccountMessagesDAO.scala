@@ -38,12 +38,12 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
     run(q).map(_ => Unit)
   }
 
-  def findAll(groupId: GroupId,
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              ascending: Boolean,
-              sessionId: SessionId): Future[List[Message]] = {
+  def find(groupId: GroupId,
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           ascending: Boolean,
+           sessionId: SessionId): Future[List[Message]] = {
 
     if (ascending) {
       findOlder(groupId, since, offset, count, sessionId)

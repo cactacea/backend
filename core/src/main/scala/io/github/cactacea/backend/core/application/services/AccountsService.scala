@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.InjectionService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
-import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
+import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail, AccountStatus}
 import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, ReportsRepository}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 
@@ -17,12 +17,12 @@ class AccountsService @Inject()(
                                  actionService: InjectionService
                                ) {
 
-  def find(sessionId: SessionId): Future[Account] = {
+  def find(sessionId: SessionId): Future[AccountDetail] = {
     accountsRepository.find(sessionId)
   }
 
-  def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
-    accountsRepository.find(accountId, sessionId)
+  def findDetail(accountId: AccountId, sessionId: SessionId): Future[AccountDetail] = {
+    accountsRepository.findDetail(accountId, sessionId)
   }
 
   def notExist(accountName: String): Future[Boolean] = {
@@ -35,7 +35,7 @@ class AccountsService @Inject()(
            count: Int,
            sessionId: SessionId) : Future[List[Account]]= {
 
-    accountsRepository.findAll(displayName, since, offset, count, sessionId)
+    accountsRepository.find(displayName, since, offset, count, sessionId)
   }
 
   def update(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
@@ -94,7 +94,7 @@ class AccountsService @Inject()(
   }
 
   def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
-    accountsRepository.findAccountStatus(accountId, sessionId)
+    accountsRepository.findActiveStatus(accountId, sessionId)
   }
 
   def report(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {

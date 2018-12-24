@@ -34,7 +34,7 @@ class BlocksService @Inject()(
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    blocksRepository.findAll(since, offset, count, sessionId)
+    blocksRepository.find(since, offset, count, sessionId)
   }
 
 

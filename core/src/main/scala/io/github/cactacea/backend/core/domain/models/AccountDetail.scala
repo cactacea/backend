@@ -1,9 +1,9 @@
 package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
-import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.infrastructure.models.{AccountGroups, Accounts, Blocks, Relationships}
 
-case class Account(id: AccountId,
+case class AccountDetail(id: AccountId,
                    accountName: String,
                    displayName: String,
                    profileImageUrl: Option[String],
@@ -11,6 +11,10 @@ case class Account(id: AccountId,
                    friendRequestInProgress: Boolean,
                    following: Boolean,
                    isFollower: Boolean,
+                   followingCount: Long,
+                   followerCount: Long,
+                   friendCount: Long,
+                   feedsCount: Long,
                    muting: Boolean,
                    blocking: Boolean,
                    web: Option[String],
@@ -21,26 +25,27 @@ case class Account(id: AccountId,
                    next: Option[Long]
                  )
 
-object Account {
 
-  def apply(a: Accounts, r: Option[Relationships], b: Blocks, n: Long): Account = {
+object AccountDetail {
+
+  def apply(a: Accounts, r: Option[Relationships], b: Blocks, n: Long): AccountDetail = {
     apply(a, r, None, Some(n), Some(b))
   }
 
-  def apply(a: Accounts, r: Option[Relationships], n: Long): Account = {
+  def apply(a: Accounts, r: Option[Relationships], n: Long): AccountDetail = {
     apply(a, r, None, Some(n), None)
   }
 
-  def apply(a: Accounts, r: Option[Relationships]): Account = {
+  def apply(a: Accounts, r: Option[Relationships]): AccountDetail = {
     apply(a, r, None, Some(a.id.value), None)
   }
 
-  def apply(a: Accounts): Account = {
+  def apply(a: Accounts): AccountDetail = {
     apply(a, None, None, None, None)
   }
 
-  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Option[Long], b: Option[Blocks]): Account = {
-    Account(
+  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Option[Long], b: Option[Blocks]): AccountDetail = {
+    AccountDetail(
       a.id,
       a.accountName,
       r.flatMap(_.displayName).getOrElse(a.displayName),
@@ -49,6 +54,10 @@ object Account {
       r.map(_.friendRequestInProgress).getOrElse(false),
       r.map(_.following).getOrElse(false),
       r.map(_.isFollower).getOrElse(false),
+      a.followingCount,
+      a.followerCount,
+      a.friendCount,
+      a.feedsCount,
       r.map(_.muting).getOrElse(false),
       b.map(_ => true).getOrElse(false),
       a.web,

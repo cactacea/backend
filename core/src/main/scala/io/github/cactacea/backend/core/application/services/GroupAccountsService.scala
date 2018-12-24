@@ -16,7 +16,7 @@ class GroupAccountsService @Inject()(
                                     ) {
 
   def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
-    groupAccountsRepository.findAll(groupId, since, offset, count, sessionId)
+    groupAccountsRepository.find(groupId, since, offset, count, sessionId)
   }
 
   def create(groupId: GroupId, sessionId: SessionId): Future[Unit] = {

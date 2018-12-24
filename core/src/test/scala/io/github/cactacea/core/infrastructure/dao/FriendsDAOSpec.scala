@@ -79,13 +79,13 @@ class FriendsDAOSpec extends DAOSpec {
     execute(friendsDAO.create(sessionAccount6.id, friendUser.id.toSessionId))
 
     // find friends top page
-    val result1 = execute(friendsDAO.findAll(friendUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
+    val result1 = execute(friendsDAO.find(friendUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
     assert(result1(0).id == sessionAccount6.id)
     assert(result1(1).id == sessionAccount5.id)
     assert(result1(2).id == sessionAccount4.id)
 
     // find friends next page
-    val result2 = execute(friendsDAO.findAll(friendUser.id, result1(2).next, 0, 3, sessionAccount1.id.toSessionId))
+    val result2 = execute(friendsDAO.find(friendUser.id, result1(2).next, 0, 3, sessionAccount1.id.toSessionId))
     assert(result2(0).id == sessionAccount3.id)
     assert(result2(1).id == sessionAccount2.id)
     assert(result2(2).id == sessionAccount1.id)
@@ -109,13 +109,13 @@ class FriendsDAOSpec extends DAOSpec {
     execute(friendsDAO.create(sessionAccount6.id, friendUser.id.toSessionId))
 
     // find friends top page
-    val result1 = execute(friendsDAO.findAll(None, 0, 3, FriendsSortType.friendsAt, friendUser.id.toSessionId))
+    val result1 = execute(friendsDAO.find(None, 0, 3, FriendsSortType.friendsAt, friendUser.id.toSessionId))
     assert(result1(0).id == sessionAccount6.id)
     assert(result1(1).id == sessionAccount5.id)
     assert(result1(2).id == sessionAccount4.id)
 
     // find friends next page
-    val result2 = execute(friendsDAO.findAll(result1(2).next, 0, 3, FriendsSortType.friendsAt, friendUser.id.toSessionId))
+    val result2 = execute(friendsDAO.find(result1(2).next, 0, 3, FriendsSortType.friendsAt, friendUser.id.toSessionId))
     assert(result2(0).id == sessionAccount3.id)
     assert(result2(1).id == sessionAccount2.id)
     assert(result2(2).id == sessionAccount1.id)
@@ -139,13 +139,13 @@ class FriendsDAOSpec extends DAOSpec {
     execute(friendsDAO.create(sessionAccount6.id, friendUser.id.toSessionId))
 
     // find friends top page
-    val result1 = execute(friendsDAO.findAll(None, 0, 3, FriendsSortType.accountName, friendUser.id.toSessionId))
+    val result1 = execute(friendsDAO.find(None, 0, 3, FriendsSortType.accountName, friendUser.id.toSessionId))
     assert(result1(0).id == sessionAccount1.id)
     assert(result1(1).id == sessionAccount2.id)
     assert(result1(2).id == sessionAccount3.id)
 
     // find friends next page
-    val result2 = execute(friendsDAO.findAll(result1(2).next, 0, 3, FriendsSortType.accountName, friendUser.id.toSessionId))
+    val result2 = execute(friendsDAO.find(result1(2).next, 0, 3, FriendsSortType.accountName, friendUser.id.toSessionId))
     assert(result2(0).id == sessionAccount4.id)
     assert(result2(1).id == sessionAccount5.id)
     assert(result2(2).id == sessionAccount6.id)

@@ -18,7 +18,7 @@ case class PutNotificationSetting(
                                    @ApiModelProperty(value = "Notice new group message arrived.", required = true)
                                    groupMessage: Boolean,
 
-                                   @ApiModelProperty(value = "Notice new group invitation arrived.", required = true)
+                                   @ApiModelProperty(value = "Notice new group groupInvitation arrived.", required = true)
                                    groupInvitation: Boolean,
 
                                    @ApiModelProperty(value = "Show messages text on notification.", required = true)

@@ -13,7 +13,14 @@ class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
 
-  def create(groupId: GroupId, accountCount: Long, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
+  def create(groupId: GroupId, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
+    for {
+      c <- findAccountCount(groupId)
+      id <- insert(groupId, c, messageType, sessionId)
+    } yield (id)
+  }
+
+  private def insert(groupId: GroupId, accountCount: Long, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
     val by = sessionId.toAccountId
     val postedAt = timeService.currentTimeMillis()
     val mt = messageType
@@ -66,7 +73,12 @@ class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   }
 
 
-  private def insert(groupId: GroupId, message: Option[String], accountCount: Long, mediumId: Option[MediumId], sessionId: SessionId): Future[(MessageId, Long)] = {
+  private def insert(groupId: GroupId,
+                     message: Option[String],
+                     accountCount: Long,
+                     mediumId: Option[MediumId],
+                     sessionId: SessionId): Future[(MessageId, Long)] = {
+
     val by = sessionId.toAccountId
     val postedAt = timeService.currentTimeMillis()
     val mt = if (message.isDefined) {

@@ -5,6 +5,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
 import io.swagger.annotations.ApiModelProperty
 
 case class PostLeaveGroup(
-                           @ApiModelProperty(value = "Group invitation identifier.", required = true)
+                           @ApiModelProperty(value = "Group groupInvitation identifier.", required = true)
                            @RouteParam id: GroupId
                         )

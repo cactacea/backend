@@ -16,7 +16,7 @@ class MutesRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("MutesRepositorySpec1", "session user password", "session user udid")
     val user = signUp("MutesRepositorySpec2", "muted user password", "muted user udid")
     execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
-    val results = execute(mutesRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val results = execute(mutesRepository.find(None, 0, 2, sessionUser.id.toSessionId))
     assert(results.size == 1)
     val result = results(0)
     assert(user.id == result.id)

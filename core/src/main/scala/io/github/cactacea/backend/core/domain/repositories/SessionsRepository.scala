@@ -11,20 +11,19 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class SessionsRepository @Inject()(
-                                    devicesDAO: DevicesDAO,
-                                    notificationSettingsDAO: PushNotificationSettingsDAO,
                                     accountsDAO: AccountsDAO,
-                                    validationDAO: ValidationDAO
+                                    devicesDAO: DevicesDAO,
+                                    notificationSettingsDAO: PushNotificationSettingsDAO
                                   ) {
 
   def signUp(accountName: String,
              password: String,
              udid: String,
              deviceType: DeviceType,
-             userAgent: Option[String]): Future[Account] = {
+             userAgent: Option[String]): Future[AccountDetail] = {
 
     val account = for {
-      _ <- validationDAO.notExistAccountName(accountName)
+      _ <- accountsDAO.validateNotExist(accountName)
       accountId <- accountsDAO.create(accountName, password)
       sessionId = accountId.toSessionId
       _             <- devicesDAO.create(udid, deviceType, userAgent, sessionId)
@@ -34,30 +33,22 @@ class SessionsRepository @Inject()(
 
     account.flatMap( _ match {
       case Some(a) =>
-        Future.value(Account(a))
+        Future.value(a)
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })
 
   }
 
-  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
-    accountsDAO.find(accountName, password).flatMap(_ match {
-      case Some(account) =>
-        if (account.isTerminated) {
-          Future.exception(CactaceaException(AccountTerminated))
-        } else {
-          devicesDAO.exist(account.id.toSessionId, udid).flatMap(_ match {
-            case true =>
-              Future.True
-            case false =>
-              devicesDAO.create(udid, deviceType, userAgent, account.id.toSessionId)
-          }).map({ _ =>
-            Account(account)
-          })
-        }
-      case None =>
-        Future.exception(CactaceaException(InvalidAccountNameOrPassword))
+  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[AccountDetail] = {
+    (for {
+      a <- accountsDAO.validateFind(accountName, password)
+      d <- devicesDAO.exist(a.id.toSessionId, udid)
+    } yield ((d, a))).flatMap(_ match {
+      case (false, a) =>
+        devicesDAO.create(udid, deviceType, userAgent, a.id.toSessionId).map(_ => a)
+      case (true, a) =>
+        Future.value(a)
     })
   }
 

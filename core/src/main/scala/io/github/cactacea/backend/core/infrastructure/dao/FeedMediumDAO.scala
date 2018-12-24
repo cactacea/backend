@@ -11,7 +11,7 @@ class FeedMediumDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def findAll(feedIds: List[FeedId]): Future[List[(FeedId, Mediums)]] = {
+  def find(feedIds: List[FeedId]): Future[List[(FeedId, Mediums)]] = {
     if (feedIds.isEmpty) {
       Future.value(List[(FeedId, Mediums)]())
     } else {
