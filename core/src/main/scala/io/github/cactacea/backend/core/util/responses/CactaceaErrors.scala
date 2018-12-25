@@ -97,6 +97,7 @@ object CactaceaErrors {
   final val m40404 = "Request not found."
   final val m40405 = "Group not found."
   final val m40406 = "Group invitation not found."
+  final val m40407 = "Message not found."
 
   final val m40600 = "Session not authorized."
   final val m40601 = "Access token expired."
@@ -308,6 +309,11 @@ object CactaceaErrors {
   final object GroupInvitationNotFound extends NotFound {
     @ApiModelProperty(example = c40406)  override val code: Int =       c40406.toInt
     @ApiModelProperty(example = m40406)  override val message: String = m40406
+  }
+
+  final object MessageNotFound extends NotFound {
+    @ApiModelProperty(example = c40407)  override val code: Int =       c40407.toInt
+    @ApiModelProperty(example = m40407)  override val message: String = m40407
   }
 
   // 406 Unauthorized

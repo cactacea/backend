@@ -15,13 +15,23 @@ class MessagesService @Inject()(
                                  injectionService: InjectionService
                                ) {
 
-  def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
+  def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
     db.transaction {
       for {
-        id <- messagesRepository.create(groupId, message, mediumId, sessionId)
-        _ <- publishService.enqueueMessage(id)
-        _ <- injectionService.messageCreated(id, groupId, message, mediumId, sessionId)
-      } yield (id)
+        m <- messagesRepository.createText(groupId, message, sessionId)
+        _ <- publishService.enqueueMessage(m.id)
+        _ <- injectionService.messageCreated(m.id, groupId, Some(message), None, sessionId)
+      } yield (m)
+    }
+  }
+
+  def createMedium(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
+    db.transaction {
+      for {
+        m <- messagesRepository.createMedium(groupId, mediumId, sessionId)
+        _ <- publishService.enqueueMessage(m.id)
+        _ <- injectionService.messageCreated(m.id, groupId, None, Some(mediumId), sessionId)
+      } yield (m)
     }
   }
 

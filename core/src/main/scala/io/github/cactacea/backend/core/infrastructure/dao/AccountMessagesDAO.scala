@@ -7,6 +7,8 @@ import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.MessageNotFound
 
 @Singleton
 class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
@@ -104,6 +106,8 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
 
   }
 
+
+
   def updateUnread(messageIds: List[MessageId], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
@@ -123,6 +127,30 @@ class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService
         .update(_.notified -> true)
     }
     run(q).map(_ => Unit)
+  }
+
+
+
+  def validateFind(id: MessageId, sessionId: SessionId): Future[Message] = {
+
+    val by = sessionId.toAccountId
+
+    val q = quote {
+      query[AccountMessages]
+        .filter(am => am.accountId == lift(by))
+        .filter(am => am.messageId == lift(id) )
+        .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
+        .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
+        .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.contains(i.id) })
+        .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
+        .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
+        .sortBy({ case (_, am, _, _, _) => am.messageId})(Ord.asc)
+    }
+    run(q).flatMap(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value)}).headOption match {
+      case Some(m) => Future.value(m)
+      case None => Future.exception(CactaceaException(MessageNotFound))
+    })
+
   }
 
 }

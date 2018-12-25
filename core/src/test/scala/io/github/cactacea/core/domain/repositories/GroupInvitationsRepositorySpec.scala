@@ -124,10 +124,8 @@ class GroupInvitationsRepositorySpec extends RepositorySpec {
     assert(intercept[CactaceaException] {
       execute(groupInvitationsRepository.create(user1.id, groupId2, sessionUser.id.toSessionId))
     }.error == AccountAlreadyJoined)
-    println("5")
 
     execute(groupInvitationsRepository.accept(groupInvitationId2, user1.id.toSessionId))
-    println("6")
     // TODO : Check
 
   }

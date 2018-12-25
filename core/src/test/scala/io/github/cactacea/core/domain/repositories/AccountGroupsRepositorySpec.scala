@@ -15,7 +15,7 @@ class AccountGroupsRepositorySpec extends RepositorySpec {
   test("delete") {
     val sessionUser = signUp("AccountGroupsRepositorySpec1", "session user password", "session user udid")
     val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    execute(messagesRepository.create(groupId, Some("message"), None, sessionUser.id.toSessionId))
+    execute(messagesRepository.createText(groupId, "message", sessionUser.id.toSessionId))
     execute(accountGroupsRepository.delete(groupId, sessionUser.id.toSessionId))
     val result1 = execute(accountGroupsRepository.find(None, 0, 20, false, sessionUser.id.toSessionId))
     assert(result1.size == 0)
