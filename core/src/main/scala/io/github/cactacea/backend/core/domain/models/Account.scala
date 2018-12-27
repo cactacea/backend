@@ -35,10 +35,6 @@ object Account {
     apply(a, r, None, Some(a.id.value), None)
   }
 
-  def apply(a: Accounts): Account = {
-    apply(a, None, None, None, None)
-  }
-
   private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Option[Long], b: Option[Blocks]): Account = {
     Account(
       a.id,

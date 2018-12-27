@@ -22,6 +22,10 @@ case class Message(
 object Message {
 
   def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], next: Long): Message = {
+    apply(m, am, i, a, r, Some(next))
+  }
+
+  def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], next: Option[Long]): Message = {
 
     m.contentStatus match {
       case ContentStatusType.rejected =>
@@ -54,7 +58,7 @@ object Message {
           contentWarning    = m.contentWarning,
           contentDeleted    = false,
           postedAt          = m.postedAt,
-          next              = Some(next)
+          next              = next
         )
     }
   }

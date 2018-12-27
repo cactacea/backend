@@ -28,13 +28,13 @@ class AccountGroupsRepository @Inject()(
     for {
       _ <- accountsDAO.validateSessionId(accountId, sessionId)
       _ <- accountsDAO.validateExist(accountId, sessionId)
-      r <- accountGroupsDAO.find(accountId, since, offset, count, false)
+      r <- accountGroupsDAO.find(accountId, since, offset, count, false, sessionId)
     } yield (r)
   }
 
   def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
     val accountId = sessionId.toAccountId
-    accountGroupsDAO.find(accountId, since, offset, count, hidden)
+    accountGroupsDAO.find(accountId, since, offset, count, hidden, sessionId)
   }
 
   def findOrCreate(accountId: AccountId, sessionId: SessionId): Future[Group] = {

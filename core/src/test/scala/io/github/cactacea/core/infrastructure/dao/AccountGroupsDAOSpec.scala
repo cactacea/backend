@@ -225,27 +225,28 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
+    val groupId3 = execute(groupsDAO.create(Some("new group name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId2))
+    execute(accountGroupsDAO.create(sessionAccount.id, groupId3))
 
-    val result1 = execute(accountGroupsDAO.find(sessionAccount.id, None, 0, 2, false))
+    val result1 = execute(accountGroupsDAO.find(sessionAccount.id, None, 0, 2, false, sessionAccount.id.toSessionId))
     assert(result1.size == 2)
-    assert(result1(0).id == groupId2)
+    assert(result1(0).id == groupId3)
     assert(result1(0).message.isDefined == false)
 
     execute(messagesDAO.create(groupId1, Some("New Message1"), None, sessionAccount.id.toSessionId))
     execute(messagesDAO.create(groupId1, Some("New Message2"), None, sessionAccount.id.toSessionId))
-    val messageId3 = execute(messagesDAO.create(groupId2, Some("New Message3"), None, sessionAccount.id.toSessionId))
+    val messageId3 = execute(messagesDAO.create(groupId1, Some("New Message3"), None, sessionAccount.id.toSessionId))
+    execute(accountMessagesDAO.create(groupId1, messageId3, sessionAccount.id.toSessionId))
 
 
-    val result2 = execute(accountGroupsDAO.find(sessionAccount.id, None, 0, 2, false))
-    assert(result2.size == 2)
-    assert(result2(0).id == groupId2)
-    assert(result2(0).message.isDefined)
-    assert(result2(0).message.map(_.id) == Some(messageId3))
-    assert(result2(0).message.flatMap(_.message) == Some("New Message3"))
+    val result2 = execute(accountGroupsDAO.find(sessionAccount.id, None, 0, 3, false, sessionAccount.id.toSessionId))
+    assert(result2.size == 3)
+    assert(result2(2).id == groupId1)
+    assert(result2(2).message.isDefined)
+    assert(result2(2).message.map(_.id) == Some(messageId3))
+    assert(result2(2).message.flatMap(_.message) == Some("New Message3"))
 
   }
 
