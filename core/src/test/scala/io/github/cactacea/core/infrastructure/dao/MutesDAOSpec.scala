@@ -67,7 +67,7 @@ class MutesDAOSpec extends DAOSpec {
 
   }
 
-  test("findAll") {
+  test("find all") {
 
     val sessionAccount1 = createAccount("MutesDAOSpec11")
     val sessionAccount2 = createAccount("MutesDAOSpec12")
@@ -84,12 +84,12 @@ class MutesDAOSpec extends DAOSpec {
     execute(mutesDAO.create(sessionAccount5.id, muteUser.id.toSessionId))
     execute(mutesDAO.create(sessionAccount6.id, muteUser.id.toSessionId))
 
-    val result1 = execute(mutesDAO.findAll(None, 0, 3, muteUser.id.toSessionId))
+    val result1 = execute(mutesDAO.find(None, 0, 3, muteUser.id.toSessionId))
     assert(result1(0).id == sessionAccount6.id)
     assert(result1(1).id == sessionAccount5.id)
     assert(result1(2).id == sessionAccount4.id)
 
-    val result2 = execute(mutesDAO.findAll(result1(2).next, 0, 3, muteUser.id.toSessionId))
+    val result2 = execute(mutesDAO.find(result1(2).next, 0, 3, muteUser.id.toSessionId))
     assert(result2(0).id == sessionAccount3.id)
     assert(result2(1).id == sessionAccount2.id)
     assert(result2(2).id == sessionAccount1.id)

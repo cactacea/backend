@@ -28,10 +28,11 @@ class AuthDAO @Inject()(db: DatabaseService) {
         .filter(_.id == lift(id))
         .filter(_.secret.exists(_ == lift(secret) || lift(secret) == ""))
         .join(query[ClientGrantTypes]).on({ case (c, cgt) => cgt.clientId == c.id })
-        .join(query[GrantTypes]).on({ case ((c, cgt), gt) => gt.id == cgt.grantTypeId && gt.grantType == lift(grantType) })
+        .join(query[GrantTypes]).on({ case ((_, cgt), gt) => gt.id == cgt.grantTypeId && gt.grantType == lift(grantType) })
         .size
     }
     run(q).map(_ > 0)
   }
+
 
 }

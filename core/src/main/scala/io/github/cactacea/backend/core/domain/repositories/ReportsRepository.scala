@@ -8,40 +8,43 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 @Singleton
 class ReportsRepository @Inject()(
+                                   accountsDAO: AccountsDAO,
                                    accountReportsDAO: AccountReportsDAO,
-                                   feedReportsDAO: FeedReportsDAO,
+                                   commentsDAO: CommentsDAO,
                                    commentReportsDAO: CommentReportsDAO,
-                                   groupReportsDAO: GroupReportsDAO,
-                                   validationDAO: ValidationDAO
+                                   feedsDAO: FeedsDAO,
+                                   feedReportsDAO: FeedReportsDAO,
+                                   groupsDAO: GroupsDAO,
+                                   groupReportsDAO: GroupReportsDAO
                                  ) {
 
   def createAccountReport(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existAccount(accountId, sessionId)
-      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
       _ <- accountReportsDAO.create(accountId, reportType, reportContent, sessionId)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
   def createFeedReport(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existFeed(feedId, sessionId)
+      _ <- feedsDAO.validateExist(feedId, sessionId)
       _ <- feedReportsDAO.create(feedId, reportType, reportContent, sessionId)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
   def createCommentReport(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existComment(commentId, sessionId)
+      _ <- commentsDAO.validateExist(commentId, sessionId)
       _ <- commentReportsDAO.create(commentId, reportType, reportContent, sessionId)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
   def createGroupReport(groupId: GroupId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existGroup(groupId, sessionId)
+      _ <- groupsDAO.validateExist(groupId, sessionId)
       _ <- groupReportsDAO.create(groupId, reportType, reportContent, sessionId)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
 }

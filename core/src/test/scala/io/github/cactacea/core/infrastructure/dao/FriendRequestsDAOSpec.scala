@@ -20,11 +20,11 @@ class FriendRequestsDAOSpec extends DAOSpec {
     val friendRequestId4 = execute(friendRequestsDAO.create(requestedAccount4.id, sessionAccount.id.toSessionId))
     val friendRequestId5 = execute(friendRequestsDAO.create(requestedAccount5.id, sessionAccount.id.toSessionId))
 
-    assert(execute(friendRequestsDAO.find(friendRequestId1, requestedAccount1.id.toSessionId)).isDefined == true)
-    assert(execute(friendRequestsDAO.find(friendRequestId2, requestedAccount2.id.toSessionId)).isDefined == true)
-    assert(execute(friendRequestsDAO.find(friendRequestId3, requestedAccount3.id.toSessionId)).isDefined == true)
-    assert(execute(friendRequestsDAO.find(friendRequestId4, requestedAccount4.id.toSessionId)).isDefined == true)
-    assert(execute(friendRequestsDAO.find(friendRequestId5, requestedAccount5.id.toSessionId)).isDefined == true)
+    assert(execute(helperDAO.selectFriendRequest(friendRequestId1, requestedAccount1.id.toSessionId)).isDefined == true)
+    assert(execute(helperDAO.selectFriendRequest(friendRequestId2, requestedAccount2.id.toSessionId)).isDefined == true)
+    assert(execute(helperDAO.selectFriendRequest(friendRequestId3, requestedAccount3.id.toSessionId)).isDefined == true)
+    assert(execute(helperDAO.selectFriendRequest(friendRequestId4, requestedAccount4.id.toSessionId)).isDefined == true)
+    assert(execute(helperDAO.selectFriendRequest(friendRequestId5, requestedAccount5.id.toSessionId)).isDefined == true)
 
     execute(friendRequestsDAO.delete(requestedAccount1.id, sessionAccount.id.toSessionId))
     execute(friendRequestsDAO.delete(requestedAccount2.id, sessionAccount.id.toSessionId))
@@ -128,11 +128,11 @@ class FriendRequestsDAOSpec extends DAOSpec {
     val friendRequestId5 = execute(friendRequestsDAO.create(requestedAccount5.id, sessionAccount.id.toSessionId))
 
     // find requests
-    val friendRequested1 = execute(friendRequestsDAO.find(friendRequestId1, requestedAccount1.id.toSessionId)).get
-    val friendRequested2 = execute(friendRequestsDAO.find(friendRequestId2, requestedAccount2.id.toSessionId)).get
-    val friendRequested3 = execute(friendRequestsDAO.find(friendRequestId3, requestedAccount3.id.toSessionId)).get
-    val friendRequested4 = execute(friendRequestsDAO.find(friendRequestId4, requestedAccount4.id.toSessionId)).get
-    val friendRequested5 = execute(friendRequestsDAO.find(friendRequestId5, requestedAccount5.id.toSessionId)).get
+    val friendRequested1 = execute(helperDAO.selectFriendRequest(friendRequestId1, requestedAccount1.id.toSessionId)).get
+    val friendRequested2 = execute(helperDAO.selectFriendRequest(friendRequestId2, requestedAccount2.id.toSessionId)).get
+    val friendRequested3 = execute(helperDAO.selectFriendRequest(friendRequestId3, requestedAccount3.id.toSessionId)).get
+    val friendRequested4 = execute(helperDAO.selectFriendRequest(friendRequestId4, requestedAccount4.id.toSessionId)).get
+    val friendRequested5 = execute(helperDAO.selectFriendRequest(friendRequestId5, requestedAccount5.id.toSessionId)).get
     assert(friendRequested1.accountId == requestedAccount1.id)
     assert(friendRequested2.accountId == requestedAccount2.id)
     assert(friendRequested3.accountId == requestedAccount3.id)
@@ -152,11 +152,11 @@ class FriendRequestsDAOSpec extends DAOSpec {
     assert(friendRequested5.requestStatus == FriendRequestStatusType.noResponded)
 
     // requests not found
-    val friendRequested1NotFound = execute(friendRequestsDAO.find(friendRequestId1, sessionAccount2.id.toSessionId))
-    val friendRequested2NotFound = execute(friendRequestsDAO.find(friendRequestId2, sessionAccount2.id.toSessionId))
-    val friendRequested3NotFound = execute(friendRequestsDAO.find(friendRequestId3, sessionAccount2.id.toSessionId))
-    val friendRequested4NotFound = execute(friendRequestsDAO.find(friendRequestId4, sessionAccount2.id.toSessionId))
-    val friendRequested5NotFound = execute(friendRequestsDAO.find(friendRequestId5, sessionAccount2.id.toSessionId))
+    val friendRequested1NotFound = execute(helperDAO.selectFriendRequest(friendRequestId1, sessionAccount2.id.toSessionId))
+    val friendRequested2NotFound = execute(helperDAO.selectFriendRequest(friendRequestId2, sessionAccount2.id.toSessionId))
+    val friendRequested3NotFound = execute(helperDAO.selectFriendRequest(friendRequestId3, sessionAccount2.id.toSessionId))
+    val friendRequested4NotFound = execute(helperDAO.selectFriendRequest(friendRequestId4, sessionAccount2.id.toSessionId))
+    val friendRequested5NotFound = execute(helperDAO.selectFriendRequest(friendRequestId5, sessionAccount2.id.toSessionId))
     assert(friendRequested1NotFound.isEmpty)
     assert(friendRequested2NotFound.isEmpty)
     assert(friendRequested3NotFound.isEmpty)
@@ -164,7 +164,7 @@ class FriendRequestsDAOSpec extends DAOSpec {
     assert(friendRequested5NotFound.isEmpty)
   }
 
-  test("findAll") {
+  test("find all") {
 
     val sessionAccount = createAccount("FriendRequestsDAOSpec26")
     val requestedAccount1 = createAccount("FriendRequestsDAOSpec27")
@@ -179,8 +179,8 @@ class FriendRequestsDAOSpec extends DAOSpec {
     execute(friendRequestsDAO.create(sessionAccount.id, requestedAccount4.id.toSessionId))
     execute(friendRequestsDAO.create(sessionAccount.id, requestedAccount5.id.toSessionId))
 
-    // findAll top page
-    val result1 = execute(friendRequestsDAO.findAll(None, 0, 3, true, sessionAccount.id.toSessionId))
+    // find top page
+    val result1 = execute(friendRequestsDAO.find(None, 0, 3, true, sessionAccount.id.toSessionId))
     val friendRequested1 = result1(0)
     val friendRequested2 = result1(1)
     val friendRequested3 = result1(2)
@@ -197,8 +197,7 @@ class FriendRequestsDAOSpec extends DAOSpec {
     assert(friendRequested2.requestStatus == FriendRequestStatusType.noResponded)
     assert(friendRequested3.requestStatus == FriendRequestStatusType.noResponded)
 
-    // findALl next page
-    val result2 = execute(friendRequestsDAO.findAll(Some(friendRequested3.id.value), 0, 3, true, sessionAccount.id.toSessionId))
+    val result2 = execute(friendRequestsDAO.find(Some(friendRequested3.id.value), 0, 3, true, sessionAccount.id.toSessionId))
     assert(result2.size == 2)
     val friendRequested4 = result2(0)
     val friendRequested5 = result2(1)
@@ -236,11 +235,11 @@ class FriendRequestsDAOSpec extends DAOSpec {
     execute(friendRequestsDAO.update(friendRequestId5, FriendRequestStatusType.rejected, sessionAccount.id.toSessionId))
 
     // find requests
-    val friendRequested1 = execute(friendRequestsDAO.find(friendRequestId1, sessionAccount.id.toSessionId)).get
-    val friendRequested2 = execute(friendRequestsDAO.find(friendRequestId2, sessionAccount.id.toSessionId)).get
-    val friendRequested3 = execute(friendRequestsDAO.find(friendRequestId3, sessionAccount.id.toSessionId)).get
-    val friendRequested4 = execute(friendRequestsDAO.find(friendRequestId4, sessionAccount.id.toSessionId)).get
-    val friendRequested5 = execute(friendRequestsDAO.find(friendRequestId5, sessionAccount.id.toSessionId)).get
+    val friendRequested1 = execute(helperDAO.selectFriendRequest(friendRequestId1, sessionAccount.id.toSessionId)).get
+    val friendRequested2 = execute(helperDAO.selectFriendRequest(friendRequestId2, sessionAccount.id.toSessionId)).get
+    val friendRequested3 = execute(helperDAO.selectFriendRequest(friendRequestId3, sessionAccount.id.toSessionId)).get
+    val friendRequested4 = execute(helperDAO.selectFriendRequest(friendRequestId4, sessionAccount.id.toSessionId)).get
+    val friendRequested5 = execute(helperDAO.selectFriendRequest(friendRequestId5, sessionAccount.id.toSessionId)).get
 
     assert(friendRequested1.accountId == sessionAccount.id)
     assert(friendRequested2.accountId == sessionAccount.id)

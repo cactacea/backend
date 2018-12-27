@@ -9,7 +9,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 
 @Singleton
-class PushNotificationSettingsRepository @Inject()(notificationSettingsDAO: PushNotificationSettingsDAO) {
+class PushNotificationSettingsRepository @Inject()(
+                                                    notificationSettingsDAO: PushNotificationSettingsDAO) {
 
   def find(sessionId: SessionId): Future[PushNotificationSetting] = {
     notificationSettingsDAO.find(sessionId).flatMap(_ match {
@@ -20,23 +21,24 @@ class PushNotificationSettingsRepository @Inject()(notificationSettingsDAO: Push
     })
   }
 
-  def update(groupInvitation: Boolean,
-             followerFeed: Boolean,
-             feedComment: Boolean,
+  def update(feed: Boolean,
+             comment: Boolean,
+             friendRequest: Boolean,
+             message: Boolean,
              groupMessage: Boolean,
-             directMessage: Boolean,
+             groupInvitation: Boolean,
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
 
     notificationSettingsDAO.update(
-      groupInvitation,
-      followerFeed,
-      feedComment,
+      feed,
+      comment,
+      friendRequest,
+      message,
       groupMessage,
-      directMessage,
+      groupInvitation,
       showMessage,
-      sessionId
-    )
+      sessionId)
   }
 
 

@@ -11,12 +11,12 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   val friendRequestsRepository = injector.instance[FriendRequestsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
-  val followerRepository = injector.instance[FollowsRepository]
+  val followerRepository = injector.instance[FollowingsRepository]
   val followersRepository = injector.instance[FollowersRepository]
   val friendsRepository = injector.instance[FriendsRepository]
   val mutesRepository = injector.instance[MutesRepository]
   val blocksDAO = injector.instance[BlocksDAO]
-  val followsDAO = injector.instance[FollowsDAO]
+  val followingDAO = injector.instance[FollowingsDAO]
   val followersDAO = injector.instance[FollowersDAO]
   val friendsDAO = injector.instance[FriendsDAO]
   val mutesDAO = injector.instance[MutesDAO]
@@ -40,15 +40,15 @@ class BlocksRepositorySpec extends RepositorySpec {
     execute(followerRepository.create(sessionUser.id, user.id.toSessionId))
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.find(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
-    assert(execute(followsDAO.exist(sessionUser.id, user.id.toSessionId)) == false)
+    assert(execute(followingDAO.exist(sessionUser.id, user.id.toSessionId)) == false)
 
   }
 
-  test("block a follows") {
+  test("block a following") {
 
     val sessionUser = signUp("BlocksRepositorySpec5", "session user password", "session udid")
     val user = signUp("BlocksRepositorySpec6", "user password", "user udid")
@@ -57,11 +57,11 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.find(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
-    assert(execute(followsDAO.exist(user.id, sessionUser.id.toSessionId)) == false)
+    assert(execute(followingDAO.exist(user.id, sessionUser.id.toSessionId)) == false)
 
   }
 
@@ -74,7 +74,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.find(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -91,7 +91,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.find(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -108,7 +108,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.find(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -126,7 +126,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(user.id, sessionUser.id.toSessionId))
 
-    val result = execute(blocksRepository.findAll(None, 0, 2, sessionUser.id.toSessionId))
+    val result = execute(blocksRepository.find(None, 0, 2, sessionUser.id.toSessionId))
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
@@ -185,13 +185,13 @@ class BlocksRepositorySpec extends RepositorySpec {
     execute(blocksRepository.create(user4.id, sessionUser.id.toSessionId))
     execute(blocksRepository.create(user5.id, sessionUser.id.toSessionId))
 
-    val results1 = execute(blocksRepository.findAll(None, 0, 3, sessionUser.id.toSessionId))
+    val results1 = execute(blocksRepository.find(None, 0, 3, sessionUser.id.toSessionId))
     assert(results1.size == 3)
     assert(results1(0).id == user5.id)
     assert(results1(1).id == user4.id)
     assert(results1(2).id == user3.id)
 
-    val results2 = execute(blocksRepository.findAll(results1(2).next, 0, 3, sessionUser.id.toSessionId))
+    val results2 = execute(blocksRepository.find(results1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(results2.size == 2)
     assert(results2(0).id == user2.id)
     assert(results2(1).id == user1.id)

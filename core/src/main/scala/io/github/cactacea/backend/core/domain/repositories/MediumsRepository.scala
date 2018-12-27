@@ -3,13 +3,12 @@ package io.github.cactacea.backend.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.MediumType
-import io.github.cactacea.backend.core.infrastructure.dao.{MediumsDAO, ValidationDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.MediumsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 
 @Singleton
 class MediumsRepository @Inject()(
-                                   mediumsDAO: MediumsDAO,
-                                   validationDAO: ValidationDAO
+                                   mediumsDAO: MediumsDAO
                                  ) {
 
   def create(key: String,
@@ -28,7 +27,7 @@ class MediumsRepository @Inject()(
 
   def delete(mediumId: MediumId, sessionId: SessionId): Future[String] = {
     for {
-      m <- validationDAO.findMedium(mediumId, sessionId)
+      m <- mediumsDAO.validateFind(mediumId, sessionId)
       _ <- mediumsDAO.delete(mediumId)
     } yield (m.key)
   }

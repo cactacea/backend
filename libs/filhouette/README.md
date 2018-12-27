@@ -9,14 +9,14 @@ An authentication library for Finatra Framework applications forked from [`Silho
 To get started, add a dependency on filhouette depending if you are building a Finatra server.
 
 ```
-"io.github.cactacea" %% "filhouette" % "18.12.8"
+"io.github.cactacea" %% "filhouette" % "18.12.9"
 ```
 Or similarily with Maven:
 ```
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>filhouette_2.12</artifactId>
-  <version>18.12.8</version>
+  <version>18.12.9</version>
 </dependency>
 ```
 

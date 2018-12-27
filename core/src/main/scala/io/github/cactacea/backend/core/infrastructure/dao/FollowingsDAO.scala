@@ -7,9 +7,11 @@ import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Followings, Relationships}
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyFollowed, AccountNotFollowed}
 
 @Singleton
-class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class FollowingsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   import db._
 
@@ -35,7 +37,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
       query[Accounts]
         .filter(_.id == lift(accountId))
         .update(
-          a => a.followCount -> (a.followCount + lift(count))
+          a => a.followingCount -> (a.followingCount + lift(count))
         )
     }
     run(q).map(_ => Unit)
@@ -103,7 +105,7 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
     val q = quote {
@@ -121,11 +123,11 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   }
 
-  def findAll(accountId: AccountId,
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Account]] = {
+  def find(accountId: AccountId,
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -145,6 +147,25 @@ class FollowsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     }
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
+  }
+
+
+  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(AccountNotFollowed))
+    })
+  }
+
+  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case true =>
+        Future.exception(CactaceaException(AccountAlreadyFollowed))
+      case false =>
+        Future.Unit
+    })
   }
 
 }

@@ -2,14 +2,14 @@ package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
-import io.github.cactacea.backend.core.infrastructure.models.{Groups, _}
+import io.github.cactacea.backend.core.infrastructure.models._
 
 case class Group(
                   id: GroupId,
                   name: Option[String],
                   message: Option[Message],
-                  groupPrivacyType: GroupPrivacyType,
                   invitationOnly: Boolean,
+                  privacyType: GroupPrivacyType,
                   authorityType: GroupAuthorityType,
                   accountCount: Long,
                   lastPostedAt: Option[Long],
@@ -20,33 +20,48 @@ case class Group(
 object Group {
 
   def apply(g: Groups): Group = {
-    apply(g, None, None, None)
-  }
-
-  def apply(g: Groups, n: Long): Group = {
-    apply(g, None, None, Some(n))
-  }
-
-  def apply(g: Groups, m: Option[Messages], n: Long): Group = {
-    apply(g, m, None, Some(n))
-  }
-
-  def apply(g: Groups,
-            m: Option[Messages],
-            am: Option[AccountMessages],
-            n: Option[Long]): Group = {
-
     Group(
       id                = g.id,
       name              = g.name,
-      message           = m.map(Message(_, am)),
-      groupPrivacyType  = g.privacyType,
+      message           = None,
       invitationOnly    = g.invitationOnly,
+      privacyType       = g.privacyType,
       authorityType     = g.authorityType,
       accountCount      = g.accountCount,
       organizedAt       = g.organizedAt,
       lastPostedAt      = g.lastPostedAt,
-      next              = n
+      next              = None
+    )
+  }
+
+  def apply(g: Groups, n: Long): Group = {
+    Group(
+      id                = g.id,
+      name              = g.name,
+      message           = None,
+      invitationOnly    = g.invitationOnly,
+      privacyType       = g.privacyType,
+      authorityType     = g.authorityType,
+      accountCount      = g.accountCount,
+      organizedAt       = g.organizedAt,
+      lastPostedAt      = g.lastPostedAt,
+      next              = Some(n)
+    )
+  }
+
+  def apply(g: Groups, am: AccountMessages, m: Messages, i: Option[Mediums], a: Accounts, r: Option[Relationships], n: Long): Group = {
+    val message = Message(m, am, i, a, r, None)
+    Group(
+      id                = g.id,
+      name              = g.name,
+      message           = Some(message),
+      invitationOnly    = g.invitationOnly,
+      privacyType       = g.privacyType,
+      authorityType     = g.authorityType,
+      accountCount      = g.accountCount,
+      organizedAt       = g.organizedAt,
+      lastPostedAt      = g.lastPostedAt,
+      next              = Some(n)
     )
   }
 

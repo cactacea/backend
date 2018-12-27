@@ -6,6 +6,8 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MediumType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.Mediums
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.MediumNotFound
 
 @Singleton
 class MediumsDAO @Inject()(db: DatabaseService) {
@@ -79,4 +81,38 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_ == mediumIds.size)
   }
+
+
+  def validateFind(mediumId: MediumId, sessionId: SessionId): Future[Mediums] = {
+    find(mediumId, sessionId).flatMap(_ match {
+      case Some(t) =>
+        Future.value(t)
+      case None =>
+        Future.exception(CactaceaException(MediumNotFound))
+    })
+  }
+
+  def validateExist(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
+    mediumIdsOpt match {
+      case Some(mediumIds) =>
+        exist(mediumIds, sessionId).flatMap(_ match {
+          case true =>
+            Future.Unit
+          case false =>
+            Future.exception(CactaceaException(MediumNotFound))
+        })
+      case None =>
+        Future.Unit
+    }
+  }
+
+  def validateExist(mediumId: MediumId, sessionId: SessionId): Future[Unit] = {
+    exist(mediumId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(MediumNotFound))
+    })
+  }
+
 }

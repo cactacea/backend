@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.helpers.RepositorySpec
 class FollowersRepositorySpec extends RepositorySpec {
 
   val followersRepository = injector.instance[FollowersRepository]
-  val followsRepository = injector.instance[FollowsRepository]
+  val followingsRepository = injector.instance[FollowingsRepository]
 
   test("find a user's followers") {
 
@@ -18,19 +18,19 @@ class FollowersRepositorySpec extends RepositorySpec {
     val followedUser4 = signUp("FollowersRepositorySpec6", "followed4 user password", "followed4 user udid")
     val followedUser5 = signUp("FollowersRepositorySpec7", "followed5 user password", "followed5 user udid")
 
-    execute(followsRepository.create(user.id, followedUser1.id.toSessionId))
-    execute(followsRepository.create(user.id, followedUser2.id.toSessionId))
-    execute(followsRepository.create(user.id, followedUser3.id.toSessionId))
-    execute(followsRepository.create(user.id, followedUser4.id.toSessionId))
-    execute(followsRepository.create(user.id, followedUser5.id.toSessionId))
+    execute(followingsRepository.create(user.id, followedUser1.id.toSessionId))
+    execute(followingsRepository.create(user.id, followedUser2.id.toSessionId))
+    execute(followingsRepository.create(user.id, followedUser3.id.toSessionId))
+    execute(followingsRepository.create(user.id, followedUser4.id.toSessionId))
+    execute(followingsRepository.create(user.id, followedUser5.id.toSessionId))
 
-    val follower1 = execute(followersRepository.findAll(user.id, None, 0, 3, sessionUser.id.toSessionId))
+    val follower1 = execute(followersRepository.find(user.id, None, 0, 3, sessionUser.id.toSessionId))
     assert(follower1.size == 3)
     assert(follower1(0).id == followedUser5.id)
     assert(follower1(1).id == followedUser4.id)
     assert(follower1(2).id == followedUser3.id)
 
-    val follower2 = execute(followersRepository.findAll(user.id, follower1(2).next, 0, 3, sessionUser.id.toSessionId))
+    val follower2 = execute(followersRepository.find(user.id, follower1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(follower2.size == 2)
     assert(follower2(0).id == followedUser2.id)
     assert(follower2(1).id == followedUser1.id)
@@ -46,19 +46,19 @@ class FollowersRepositorySpec extends RepositorySpec {
     val followedUser4 = signUp("FollowersRepositorySpec12", "followed4 user password", "followed4 user udid")
     val followedUser5 = signUp("FollowersRepositorySpec13", "followed5 user password", "followed5 user udid")
 
-    execute(followsRepository.create(sessionUser.id, followedUser1.id.toSessionId))
-    execute(followsRepository.create(sessionUser.id, followedUser2.id.toSessionId))
-    execute(followsRepository.create(sessionUser.id, followedUser3.id.toSessionId))
-    execute(followsRepository.create(sessionUser.id, followedUser4.id.toSessionId))
-    execute(followsRepository.create(sessionUser.id, followedUser5.id.toSessionId))
+    execute(followingsRepository.create(sessionUser.id, followedUser1.id.toSessionId))
+    execute(followingsRepository.create(sessionUser.id, followedUser2.id.toSessionId))
+    execute(followingsRepository.create(sessionUser.id, followedUser3.id.toSessionId))
+    execute(followingsRepository.create(sessionUser.id, followedUser4.id.toSessionId))
+    execute(followingsRepository.create(sessionUser.id, followedUser5.id.toSessionId))
 
-    val follower1 = execute(followersRepository.findAll(None, 0, 3, sessionUser.id.toSessionId))
+    val follower1 = execute(followersRepository.find(None, 0, 3, sessionUser.id.toSessionId))
     assert(follower1.size == 3)
     assert(follower1(0).id == followedUser5.id)
     assert(follower1(1).id == followedUser4.id)
     assert(follower1(2).id == followedUser3.id)
 
-    val follower2 = execute(followersRepository.findAll(follower1(2).next, 0, 3, sessionUser.id.toSessionId))
+    val follower2 = execute(followersRepository.find(follower1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(follower2.size == 2)
     assert(follower2(0).id == followedUser2.id)
     assert(follower2(1).id == followedUser1.id)

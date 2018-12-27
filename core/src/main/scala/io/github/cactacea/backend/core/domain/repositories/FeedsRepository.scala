@@ -11,9 +11,10 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class FeedsRepository @Inject()(
-                                 feedsDAO: FeedsDAO,
+                                 accountsDAO: AccountsDAO,
                                  accountFeedsDAO: AccountFeedsDAO,
-                                 validationDAO: ValidationDAO
+                                 feedsDAO: FeedsDAO,
+                                 mediumsDAO: MediumsDAO
                                ) {
 
   def create(message: String,
@@ -26,7 +27,7 @@ class FeedsRepository @Inject()(
 
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- validationDAO.existMediums(ids, sessionId)
+      _ <- mediumsDAO.validateExist(ids, sessionId)
       id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- accountFeedsDAO.create(id, sessionId)
     } yield (id)
@@ -43,35 +44,35 @@ class FeedsRepository @Inject()(
 
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- validationDAO.existMediums(ids, sessionId)
-      _ <- validationDAO.existFeed(feedId, sessionId)
+      _ <- mediumsDAO.validateExist(ids, sessionId)
+      _ <- feedsDAO.validateExist(feedId, sessionId)
       _ <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
     } yield (Unit)
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existFeed(feedId, sessionId)
+      _ <- feedsDAO.validateExist(feedId, sessionId)
       _ <- feedsDAO.delete(feedId, sessionId)
     } yield (Unit)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
-      _ <- validationDAO.existAccount(accountId, sessionId)
-      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
-      r <- feedsDAO.findAll(accountId, since, offset, count, sessionId)
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
+      r <- feedsDAO.find(accountId, since, offset, count, sessionId)
     } yield (r)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
     for {
-      r <- accountFeedsDAO.findAll(since, offset, count, privacyType, sessionId)
+      r <- accountFeedsDAO.find(since, offset, count, privacyType, sessionId)
     } yield (r)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedsDAO.findAll(since, offset, count, sessionId)
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+    feedsDAO.find(since, offset, count, sessionId)
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {

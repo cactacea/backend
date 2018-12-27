@@ -9,6 +9,6 @@ case class AccountGroups(
                           unreadCount: Long,
                           hidden: Boolean,
                           mute: Boolean,
-                          toAccountId: AccountId,
+                          by: AccountId,
                           joinedAt: Long
                         )

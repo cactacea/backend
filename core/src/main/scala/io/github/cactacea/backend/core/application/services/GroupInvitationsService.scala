@@ -35,7 +35,7 @@ class GroupInvitationsService @Inject()(
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[GroupInvitation]] = {
-    groupInvitationsRepository.findAll(since, offset, count, sessionId)
+    groupInvitationsRepository.find(since, offset, count, sessionId)
   }
 
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {

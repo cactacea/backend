@@ -9,34 +9,34 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 
 @Singleton
 class FriendsRepository @Inject()(
-                                   friendsDAO: FriendsDAO,
-                                   groupInvitationsDAO: GroupInvitationsDAO,
-                                   followsDAO: FollowsDAO,
+                                   accountsDAO: AccountsDAO,
+                                   followingsDAO: FollowingsDAO,
                                    followersDAO: FollowersDAO,
-                                   validationDAO: ValidationDAO
+                                   friendsDAO: FriendsDAO,
+                                   groupInvitationsDAO: GroupInvitationsDAO
                                  ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccount(accountId, sessionId)
-      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
-      _ <- validationDAO.notExistFriend(accountId, sessionId)
+      _ <- accountsDAO.validateSessionId(accountId, sessionId)
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- friendsDAO.validateNotExist(accountId, sessionId)
       _ <- friendsDAO.create(accountId, sessionId)
-      _ <- followsDAO.create(accountId, sessionId)
+      _ <- followingsDAO.create(accountId, sessionId)
+      _ <- followingsDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.create(accountId, sessionId)
-      _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
-      _ <- followsDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
+      _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
     } yield (Unit)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.notSessionId(accountId, sessionId)
-      _ <- validationDAO.existAccount(accountId, sessionId)
-      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
-      _ <- validationDAO.existFriend(accountId, sessionId)
+      _ <- accountsDAO.validateSessionId(accountId, sessionId)
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- friendsDAO.validateExist(accountId, sessionId)
       _ <- friendsDAO.delete(accountId, sessionId)
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.friends, sessionId)
@@ -44,12 +44,12 @@ class FriendsRepository @Inject()(
     } yield (Unit)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sortType: FriendsSortType, sessionId: SessionId) : Future[List[Account]]= {
-    friendsDAO.findAll(since, offset, count, sortType, sessionId)
+  def find(since: Option[Long], offset: Int, count: Int, sortType: FriendsSortType, sessionId: SessionId) : Future[List[Account]]= {
+    friendsDAO.find(since, offset, count, sortType, sessionId)
   }
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    friendsDAO.findAll(
+  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+    friendsDAO.find(
       accountId,
       since,
       offset,

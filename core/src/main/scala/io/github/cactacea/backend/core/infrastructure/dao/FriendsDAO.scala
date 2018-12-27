@@ -8,6 +8,8 @@ import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyFriend, AccountNotFriend}
 
 @Singleton
 class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
@@ -104,14 +106,14 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sortType: FriendsSortType, sessionId: SessionId): Future[List[Account]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sortType: FriendsSortType, sessionId: SessionId): Future[List[Account]] = {
     if (sortType == FriendsSortType.accountName) {
       for {
         n <- findAccountName(since)
-        r <- findAllSortByAccountName(n, offset, count, sessionId)
+        r <- findSortByAccountName(n, offset, count, sessionId)
       } yield (r)
     } else {
-      findAllSortById(since, offset, count, sessionId)
+      findSortById(since, offset, count, sessionId)
     }
   }
 
@@ -130,7 +132,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     }
   }
 
-  private def findAllSortByAccountName(accountName: Option[String], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  private def findSortByAccountName(accountName: Option[String], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -148,7 +150,7 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   }
 
-  private def findAllSortById(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  private def findSortById(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -167,11 +169,11 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   }
 
-  def findAll(accountId: AccountId,
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Account]] = {
+  def find(accountId: AccountId,
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -191,6 +193,27 @@ class FriendsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     }
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
+  }
+
+
+  // Validators
+
+  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case true =>
+        Future.exception(CactaceaException(AccountAlreadyFriend))
+      case false =>
+        Future.Unit
+    })
+  }
+
+  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case false =>
+        Future.exception(CactaceaException(AccountNotFriend))
+      case true =>
+        Future.Unit
+    })
   }
 
 }

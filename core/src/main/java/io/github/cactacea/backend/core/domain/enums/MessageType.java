@@ -4,9 +4,9 @@ public enum MessageType {
     text((byte)0),
     medium((byte)1),
     stamp((byte)2),
-    invitation((byte)3),
-    joined((byte)4),
-    left((byte)5);
+    groupInvitation((byte)3),
+    groupJoined((byte)4),
+    groupLeft((byte)5);
 
     private byte value;
 

@@ -37,8 +37,8 @@ class CommentsService @Inject()(
     }
   }
 
-  def findAll(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
-    commentsRepository.findAll(feedId, since, offset, count, sessionId)
+  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
+    commentsRepository.find(feedId, since, offset, count, sessionId)
   }
 
   def find(commentId: CommentId, sessionId: SessionId): Future[Comment] = {

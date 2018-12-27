@@ -17,11 +17,11 @@ class FriendsService @Inject()(
                               ) {
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    friendsRepository.findAll(accountId, since, offset, count, sessionId)
+    friendsRepository.find(accountId, since, offset, count, sessionId)
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sortType: FriendsSortType, sessionId: SessionId) : Future[List[Account]]= {
-    friendsRepository.findAll(since, offset, count, sortType, sessionId)
+    friendsRepository.find(since, offset, count, sortType, sessionId)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

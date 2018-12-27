@@ -8,8 +8,8 @@ import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Clients}
 
 @Singleton
 class OAuthService @Inject()(
-                              authDAO: AuthDAO,
-                              accountsDAO: AccountsDAO
+                              accountsDAO: AccountsDAO,
+                              authDAO: AuthDAO
                             ) {
 
   def validateClient(clientId: String): Future[Either[OAuthError, (Clients, List[Permission])]] = {

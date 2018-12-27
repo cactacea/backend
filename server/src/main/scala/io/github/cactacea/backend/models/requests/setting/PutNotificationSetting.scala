@@ -3,21 +3,24 @@ package io.github.cactacea.backend.models.requests.setting
 import io.swagger.annotations.ApiModelProperty
 
 case class PutNotificationSetting(
-                                   @ApiModelProperty(value = "Notice follower feeds.", required = true)
-                                   followerFeed: Boolean,
+                                   @ApiModelProperty(value = "Notice new follower feed arrived.", required = true)
+                                   feed: Boolean,
 
-                                   @ApiModelProperty(value = "Notice feed comments or reply comments.", required = true)
-                                   feedComment: Boolean,
+                                   @ApiModelProperty(value = "Notice new comment arrived.", required = true)
+                                   comment: Boolean,
 
-                                   @ApiModelProperty(value = "Notice group messages.", required = true)
+                                   @ApiModelProperty(value = "Notice new friend request arrived.", required = true)
+                                   friendRequest: Boolean,
+
+                                   @ApiModelProperty(value = "Notice new message arrived.", required = true)
+                                   message: Boolean,
+
+                                   @ApiModelProperty(value = "Notice new group message arrived.", required = true)
                                    groupMessage: Boolean,
 
-                                   @ApiModelProperty(value = "Notice direct messages.", required = true)
-                                   directMessage: Boolean,
-
-                                   @ApiModelProperty(value = "Notice group invitations.", required = true)
+                                   @ApiModelProperty(value = "Notice new group groupInvitation arrived.", required = true)
                                    groupInvitation: Boolean,
 
-                                   @ApiModelProperty(value = "Show messages on the push notification.", required = true)
+                                   @ApiModelProperty(value = "Show messages text on notification.", required = true)
                                    showMessage: Boolean
                                  )

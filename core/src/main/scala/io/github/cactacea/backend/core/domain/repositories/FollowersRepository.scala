@@ -3,25 +3,25 @@ package io.github.cactacea.backend.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.infrastructure.dao.{FollowersDAO, ValidationDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, FollowersDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 
 @Singleton
 class FollowersRepository @Inject()(
-                                     followersDAO: FollowersDAO,
-                                     validationDAO: ValidationDAO
+                                     accountsDAO: AccountsDAO,
+                                     followersDAO: FollowersDAO
                                    ) {
 
-  def findAll(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     (for {
-      _ <- validationDAO.existAccount(accountId)
-      r <- followersDAO.findAll(accountId, since, offset, count, sessionId)
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      r <- followersDAO.find(accountId, since, offset, count, sessionId)
     } yield (r))
 
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    followersDAO.findAll(since, offset, count, sessionId)
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+    followersDAO.find(since, offset, count, sessionId)
   }
 
 }

@@ -18,7 +18,7 @@ class NotificationsService @Inject()(
   def find(since: Option[Long], offset: Int, count: Int, locales: Seq[Locale], sessionId: SessionId): Future[List[Notification]] = {
     db.transaction {
       for {
-        n <- notificationsRepository.findAll(since, offset, count, locales, sessionId)
+        n <- notificationsRepository.find(since, offset, count, locales, sessionId)
         _ <- notificationsRepository.updateReadStatus(n, sessionId)
       } yield (n)
     }

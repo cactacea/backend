@@ -20,7 +20,7 @@ class CommentsDAOSpec extends DAOSpec {
     val commentId4 = execute(commentsDAO.create(feedId, "4" * 100, sessionAccount1.id.toSessionId))
     val commentId5 = execute(commentsDAO.create(feedId, "5" * 100, sessionAccount2.id.toSessionId))
 
-    val result1 = execute(commentsDAO.findAll(feedId, None, 0, 4, sessionAccount1.id.toSessionId))
+    val result1 = execute(commentsDAO.find(feedId, None, 0, 4, sessionAccount1.id.toSessionId))
     assert(result1.size == 4)
     val comment1 = result1(0)
     val comment2 = result1(1)
@@ -47,7 +47,7 @@ class CommentsDAOSpec extends DAOSpec {
     assert(comment3.message == "3" * 100)
     assert(comment4.message == "2" * 100)
 
-    val result2 = execute(commentsDAO.findAll(feedId, Some(comment4.id.value), 0, 4, sessionAccount1.id.toSessionId))
+    val result2 = execute(commentsDAO.find(feedId, Some(comment4.id.value), 0, 4, sessionAccount1.id.toSessionId))
     assert(result2.size == 1)
     val comment5 = result2(0)
 
@@ -74,7 +74,7 @@ class CommentsDAOSpec extends DAOSpec {
     val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
     val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 
-    execute(pushNotificationSettingDAO.create(false, false, true, false, false, false, sessionAccount1.id.toSessionId))
+    execute(pushNotificationSettingDAO.create(false, true, false, false, false, false, false, sessionAccount1.id.toSessionId))
     execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount1.id.toSessionId))
     execute(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
     execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
@@ -153,7 +153,7 @@ class CommentsDAOSpec extends DAOSpec {
 
   }
 
-  test("findAll") {
+  test("find all") {
 
     val sessionAccount1 = createAccount("CommentsDAOSpec11")
     val sessionAccount2 = createAccount("CommentsDAOSpec12")
@@ -168,7 +168,7 @@ class CommentsDAOSpec extends DAOSpec {
     val commentId7 = execute(commentsDAO.create(feedId, "7" * 100, sessionAccount2.id.toSessionId))
     val commentId8 = execute(commentsDAO.create(feedId, "8" * 100, sessionAccount1.id.toSessionId))
 
-    val result1 = execute(commentsDAO.findAll(feedId, None, 0, 3, sessionAccount1.id.toSessionId))
+    val result1 = execute(commentsDAO.find(feedId, None, 0, 3, sessionAccount1.id.toSessionId))
     assert(result1.size == 3)
     val comment1 = result1(0)
     val comment2 = result1(1)
@@ -177,7 +177,7 @@ class CommentsDAOSpec extends DAOSpec {
     assert(comment2.id == commentId7)
     assert(comment3.id == commentId6)
 
-    val result2 = execute(commentsDAO.findAll(feedId, comment3.next, 0, 3, sessionAccount1.id.toSessionId))
+    val result2 = execute(commentsDAO.find(feedId, comment3.next, 0, 3, sessionAccount1.id.toSessionId))
     assert(result2.size == 3)
     val comment4 = result2(0)
     val comment5 = result2(1)
@@ -186,14 +186,14 @@ class CommentsDAOSpec extends DAOSpec {
     assert(comment5.id == commentId4)
     assert(comment6.id == commentId3)
 
-    val result3 = execute(commentsDAO.findAll(feedId, comment6.next, 0, 3, sessionAccount1.id.toSessionId))
+    val result3 = execute(commentsDAO.find(feedId, comment6.next, 0, 3, sessionAccount1.id.toSessionId))
     assert(result3.size == 2)
     val comment7 = result3(0)
     val comment8 = result3(1)
     assert(comment7.id == commentId2)
     assert(comment8.id == commentId1)
 
-    val result4 = execute(commentsDAO.findAll(FeedId(0L), Some(-1L), 0, 3, sessionAccount1.id.toSessionId))
+    val result4 = execute(commentsDAO.find(FeedId(0L), Some(-1L), 0, 3, sessionAccount1.id.toSessionId))
     assert(result4.size == 0)
   }
 

@@ -3,6 +3,7 @@ package com.twitter.finatra.http
 import com.twitter.finagle.http.RouteIndex
 import io.github.cactacea.backend.utils.oauth.Permission
 import io.swagger.models.{Operation, Swagger}
+import scala.collection.JavaConverters._
 
 /**
   * To work around the accessibility of RouteDSL, this class is in "com.twitter.finatra.http" package
@@ -95,7 +96,6 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
   }
 
   protected def createSecuredOperation(scopes: Seq[Permission])(doc: Operation => Unit) = {
-    import scala.collection.JavaConverters._
     val SecuredOperation: Operation => Unit = { o =>
       doc(o)
       if (scopes.size > 0) {

@@ -6,10 +6,12 @@ import io.github.cactacea.backend.core.application.components.interfaces.HashSer
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
-import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.infrastructure.results.RelationshipBlocksCount
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class AccountsDAO @Inject()(
@@ -36,7 +38,6 @@ class AccountsDAO @Inject()(
     }
     run(q)
   }
-
 
   def updateProfile(displayName: String,
                     web: Option[String],
@@ -100,6 +101,31 @@ class AccountsDAO @Inject()(
     run(q).map(_ => Unit)
   }
 
+
+  def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[Relationships]
+        .insert(
+          _.accountId         -> lift(accountId),
+          _.by                -> lift(by),
+          _.displayName -> lift(displayName)
+        ).onConflictUpdate((t, _) => t.displayName -> lift(displayName))
+    }
+    run(q).map(_ => Unit)
+  }
+
+
+  def find(accountName: String, password: String): Future[Option[Accounts]] = {
+    val hashedPassword = hashService.hash(password)
+    val q = quote {
+      query[Accounts]
+        .filter(_.accountName == lift(accountName))
+        .filter(_.password    == lift(hashedPassword))
+    }
+    run(q).map(_.headOption)
+  }
+
   def exist(accountName: String): Future[Boolean] = {
     val q = quote {
       query[Accounts]
@@ -159,26 +185,17 @@ class AccountsDAO @Inject()(
     run(q).map(_.headOption)
   }
 
-  def find(sessionId: SessionId): Future[Option[Accounts]] = {
+  def find(sessionId: SessionId): Future[Option[(AccountDetail)]] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
     }
-    run(q).map(_.headOption)
+    run(q).map(_.headOption.map(AccountDetail(_)))
   }
 
-  def find(accountName: String, password: String): Future[Option[Accounts]] = {
-    val hashedPassword = hashService.hash(password)
-    val q = quote {
-      query[Accounts]
-        .filter(_.accountName == lift(accountName))
-        .filter(_.password    == lift(hashedPassword))
-    }
-    run(q).map(_.headOption)
-  }
 
-  def find(accountId: AccountId, sessionId: SessionId): Future[Option[Account]] = {
+  def find(accountId: AccountId, sessionId: SessionId): Future[Option[AccountDetail]] = {
 
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
@@ -202,23 +219,23 @@ class AccountsDAO @Inject()(
           val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
           val displayName = r.flatMap(_.displayName).getOrElse(a.displayName)
           val friendCount = a.friendCount - b.friendCount
-          val followCount = a.followCount - b.followCount
+          val followingCount = a.followingCount - b.followingCount
           val followerCount = a.followerCount - b.followerCount
           val na = a.copy(displayName = displayName,
                           friendCount = friendCount,
-                          followCount = followCount,
+                          followingCount = followingCount,
                           followerCount = followerCount,
                           feedsCount = a.feedsCount)
-          Account(na, r)
+          AccountDetail(na, r)
         }).headOption
     })
 
   }
 
-  def findAll(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     for {
       n <- findAccountName(since)
-      r <- findAllSortByAccountName(accountName, n, offset, count, sessionId)
+      r <- findSortByAccountName(accountName, n, offset, count, sessionId)
     } yield (r)
   }
 
@@ -237,11 +254,11 @@ class AccountsDAO @Inject()(
     }
   }
 
-  def findAllSortByAccountName(accountName: Option[String],
-                               sinceAccountName: Option[String],
-                               offset: Int,
-                               count: Int,
-                               sessionId: SessionId): Future[List[Account]] = {
+  private def findSortByAccountName(accountName: Option[String],
+                                    sinceAccountName: Option[String],
+                                    offset: Int,
+                                    count: Int,
+                                    sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -259,21 +276,9 @@ class AccountsDAO @Inject()(
       .drop(lift(offset))
       .take(lift(count))
     }
-    run(q).map(_.map({ case (a, r) => Account(a, r).copy(followingCount = None, followerCount = None, friendCount = None) }))
+    run(q).map(_.map({ case (a, r) => Account(a, r) }))
   }
 
-  def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[Relationships]
-        .insert(
-          _.accountId         -> lift(accountId),
-          _.by                -> lift(by),
-          _.displayName -> lift(displayName)
-        ).onConflictUpdate((t, _) => t.displayName -> lift(displayName))
-    }
-    run(q).map(_ => Unit)
-  }
 
 
   def signOut(sessionId: SessionId): Future[Unit] = {
@@ -288,6 +293,79 @@ class AccountsDAO @Inject()(
     }
     run(q).map(_ => Unit)
   }
+
+
+  def validateNotExist(accountName: String): Future[Unit] = {
+    exist(accountName).flatMap(_ match {
+      case false =>
+        Future.Unit
+      case true =>
+        Future.exception(CactaceaException(AccountNameAlreadyUsed))
+    })
+  }
+
+  def validateExist(accountId: AccountId): Future[Unit] = {
+    exist(accountId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(AccountNotFound))
+    })
+  }
+
+  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(AccountNotFound))
+    })
+  }
+
+  def validateSessionId(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    val by = sessionId.toAccountId
+    if (accountId == by) {
+      Future.exception(CactaceaException(CanNotSpecifyMyself))
+    } else {
+      Future.Unit
+    }
+  }
+
+  def validateFind(sessionId: SessionId): Future[AccountDetail] = {
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[Accounts]
+        .filter(_.id == lift(accountId))
+    }
+    run(q).map(_.headOption).flatMap( _ match {
+      case Some(a) =>
+        if (a.isTerminated) {
+          Future.exception(CactaceaException(AccountTerminated))
+        } else {
+          Future.value(AccountDetail(a))
+        }
+      case None =>
+        Future.exception(CactaceaException(AccountNotFound))
+    })
+  }
+
+
+  def validateFind(accountName: String, password: String): Future[AccountDetail] = {
+    find(accountName, password).flatMap(_ match {
+      case Some(a) =>
+        if (a.isTerminated) {
+          Future.exception(CactaceaException(AccountTerminated))
+        } else {
+          Future.value(AccountDetail(a))
+        }
+      case None =>
+        Future.exception(CactaceaException(InvalidAccountNameOrPassword))
+    })
+
+  }
+
+
+
 
 }
 

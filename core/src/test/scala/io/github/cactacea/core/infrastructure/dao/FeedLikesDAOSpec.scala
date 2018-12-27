@@ -114,7 +114,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     assert(execute(feedLikesDAO.exist(feedId, sessionAccount3.id.toSessionId)) == false)
   }
 
-  test("findAll") {
+  test("find all") {
 
     val sessionAccount1 = createAccount("FeedLikesDAOSpec10")
     val sessionAccount2 = createAccount("FeedLikesDAOSpec11")
@@ -134,10 +134,10 @@ class FeedLikesDAOSpec extends DAOSpec {
     execute(feedLikesDAO.create(feedId, sessionAccount5.id.toSessionId))
     execute(feedLikesDAO.create(feedId, sessionAccount6.id.toSessionId))
 
-    val result1 = execute(feedLikesDAO.findAll(None, 0, 3, sessionAccount2.id.toSessionId))
+    val result1 = execute(feedLikesDAO.find(None, 0, 3, sessionAccount2.id.toSessionId))
     assert(result1.size == 1)
 
-    val result2 = execute(feedLikesDAO.findAll(sessionAccount3.id, None, 0, 3, sessionAccount2.id.toSessionId))
+    val result2 = execute(feedLikesDAO.find(sessionAccount3.id, None, 0, 3, sessionAccount2.id.toSessionId))
     assert(result2.size == 1)
 
     // TODO : Next Page

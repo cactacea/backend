@@ -14,10 +14,10 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
     val sessionUser = signUp("PushNotificationSettingsRepositorySpec1", "session user password", "session udid")
     val result = execute(notificationSettingsRepository.find(sessionUser.id.toSessionId))
     assert(result.groupMessage == true)
-    assert(result.directMessage == true)
-    assert(result.feedComment == true)
+    assert(result.message == true)
+    assert(result.comment == true)
     assert(result.groupInvitation == true)
-    assert(result.followerFeed == true)
+    assert(result.feed == true)
 
   }
 
@@ -33,13 +33,14 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
 
     val sessionUser = signUp("PushNotificationSettingsRepositorySpec2", "session user password", "session udid")
 
-    execute(notificationSettingsRepository.update(false, false, false, false, false, false, sessionUser.id.toSessionId))
+    execute(notificationSettingsRepository.update(false, false, false, false, false, false, false, sessionUser.id.toSessionId))
     val result = execute(notificationSettingsRepository.find(sessionUser.id.toSessionId))
-    assert(result.groupMessage == false)
-    assert(result.directMessage == false)
-    assert(result.feedComment == false)
-    assert(result.groupInvitation == false)
-    assert(result.followerFeed == false)
+    assert(!result.groupMessage)
+    assert(!result.message)
+    assert(!result.comment)
+    assert(!result.groupInvitation)
+    assert(!result.friendRequest)
+    assert(!result.feed)
 
   }
 

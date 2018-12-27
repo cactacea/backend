@@ -7,6 +7,8 @@ import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Mutes, Relationships}
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyMuted, AccountNotMuted}
 
 @Singleton
 class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
@@ -49,7 +51,7 @@ class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -66,6 +68,25 @@ class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     }
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
+  }
+
+
+  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case true =>
+        Future.exception(CactaceaException(AccountAlreadyMuted))
+      case false =>
+        Future.Unit
+    })
+  }
+
+  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(AccountNotMuted))
+    })
   }
 
 }

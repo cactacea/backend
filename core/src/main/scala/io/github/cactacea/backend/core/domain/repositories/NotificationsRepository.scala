@@ -12,12 +12,12 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 @Singleton
 class NotificationsRepository @Inject()(
-                                         notificationsDAO: NotificationsDAO,
+                                         commentsDAO: CommentsDAO,
+                                         deepLinkService: DeepLinkService,
+                                         feedsDAO: FeedsDAO,
                                          friendRequestsDAO: FriendRequestsDAO,
                                          groupInvitationsDAO: GroupInvitationsDAO,
-                                         feedsDAO: FeedsDAO,
-                                         commentsDAO: CommentsDAO,
-                                         deepLinkService: DeepLinkService
+                                         notificationsDAO: NotificationsDAO
                                        ) {
 
   def createFeed(id: FeedId, accountIds: List[AccountId]): Future[Unit] = {
@@ -74,8 +74,8 @@ class NotificationsRepository @Inject()(
     })
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, locales: Seq[Locale], sessionId: SessionId): Future[List[Notification]] = {
-    notificationsDAO.findAll(since, offset, count, locales, sessionId)
+  def find(since: Option[Long], offset: Int, count: Int, locales: Seq[Locale], sessionId: SessionId): Future[List[Notification]] = {
+    notificationsDAO.find(since, offset, count, locales, sessionId)
   }
 
   def updateReadStatus(notifications: List[Notification], sessionId: SessionId): Future[Unit] = {

@@ -600,10 +600,10 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId7 = execute(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionUser.id.toSessionId))
     val feedId8 = execute(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionUser.id.toSessionId))
 
-    // follows user
+    // following user
     execute(
       for {
-        _ <- followsDAO.create(sessionUser.id, followUser.id.toSessionId)
+        _ <- followingsDAO.create(sessionUser.id, followUser.id.toSessionId)
         _ <- followersDAO.create(followUser.id, sessionUser.id.toSessionId)
       } yield (Unit)
     )
@@ -611,7 +611,7 @@ class FeedsDAOSpec extends DAOSpec {
     // friend user
     execute(
       for {
-        _ <- followsDAO.create(sessionUser.id, friendUser.id.toSessionId)
+        _ <- followingsDAO.create(sessionUser.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionUser.id.toSessionId)
         _ <- friendsDAO.create(sessionUser.id, friendUser.id.toSessionId)
       } yield (Unit)
@@ -689,10 +689,10 @@ class FeedsDAOSpec extends DAOSpec {
       } yield (Unit)
     )
 
-    // follows user
+    // following user
     execute(
       for {
-        _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+        _ <- followingsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
         _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
       } yield (Unit)
     )
@@ -700,20 +700,20 @@ class FeedsDAOSpec extends DAOSpec {
     // friend user
     execute(
       for {
-        _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- followingsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
       } yield (Unit)
     )
 
     // find by follower
-    assert(execute(feedsDAO.findAll(sessionAccount.id, None, 0, 10, followerUser.id.toSessionId)).size == 4)
+    assert(execute(feedsDAO.find(sessionAccount.id, None, 0, 10, followerUser.id.toSessionId)).size == 4)
 
     // find by friend
-    assert(execute(feedsDAO.findAll(sessionAccount.id, None, 0, 10, friendUser.id.toSessionId)).size == 6)
+    assert(execute(feedsDAO.find(sessionAccount.id, None, 0, 10, friendUser.id.toSessionId)).size == 6)
 
     // find by no relationship user
-    assert(execute(feedsDAO.findAll(sessionAccount.id, None, 0, 10, noRelationshipUser.id.toSessionId)).size == 2)
+    assert(execute(feedsDAO.find(sessionAccount.id, None, 0, 10, noRelationshipUser.id.toSessionId)).size == 2)
 
   }
 
@@ -753,10 +753,10 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId7 = execute(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
     val feedId8 = execute(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
 
-    // follows user
+    // following user
     execute(
       for {
-        _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+        _ <- followingsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
         _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
       } yield (Unit)
     )
@@ -764,7 +764,7 @@ class FeedsDAOSpec extends DAOSpec {
     // friend user
     execute(
       for {
-        _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- followingsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
       } yield (Unit)
@@ -975,7 +975,7 @@ class FeedsDAOSpec extends DAOSpec {
 
     // find top page
     val count1 = 2
-    val sessionFeeds1 = execute(feedsDAO.findAll(None, 0, count1, sessionAccount1.id.toSessionId))
+    val sessionFeeds1 = execute(feedsDAO.find(None, 0, count1, sessionAccount1.id.toSessionId))
     assert(sessionFeeds1.size == count1)
     val sessionFeed1 = sessionFeeds1(0)
     val sessionFeed2 = sessionFeeds1(1)
@@ -1003,7 +1003,7 @@ class FeedsDAOSpec extends DAOSpec {
     assert(sessionMediums2.map(_.map(_.id)) == Some(mediums3))
 
     // find 2 page
-    val sessionFeeds2 = execute(feedsDAO.findAll(Some(sessionFeed2.id.value), 0, count1, sessionAccount1.id.toSessionId))
+    val sessionFeeds2 = execute(feedsDAO.find(Some(sessionFeed2.id.value), 0, count1, sessionAccount1.id.toSessionId))
     assert(sessionFeeds2.size == count1)
     val sessionFeed3 = sessionFeeds2(0)
     val sessionFeed4 = sessionFeeds2(1)

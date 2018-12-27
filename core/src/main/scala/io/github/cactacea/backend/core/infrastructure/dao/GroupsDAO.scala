@@ -8,6 +8,8 @@ import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPr
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.GroupNotFound
 
 @Singleton
 class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
@@ -88,13 +90,13 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(r).map(_ => Unit)
   }
 
-  def findAll(name: Option[String],
-              invitationOnly: Option[Boolean],
-              privacyType: Option[GroupPrivacyType],
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Group]] = {
+  def find(name: Option[String],
+           invitationOnly: Option[Boolean],
+           privacyType: Option[GroupPrivacyType],
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Group]] = {
 
     val by = sessionId.toAccountId
     val q = quote {
@@ -114,15 +116,15 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     run(q).map(_.map(g => Group(g, g.id.value)))
   }
 
-  def find(groupId: GroupId): Future[Option[Groups]] = {
+  def find(groupId: GroupId): Future[Option[Group]] = {
     val q = quote {
       query[Groups]
           .filter(_.id == lift(groupId))
     }
-    run(q).map(_.headOption)
+    run(q).map(_.headOption.map(Group(_)))
   }
 
-  def find(groupId: GroupId, sessionId: SessionId): Future[Option[Groups]] = {
+  def find(groupId: GroupId, sessionId: SessionId): Future[Option[Group]] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Groups]
@@ -131,7 +133,7 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
           (b.accountId == lift(by) && b.by == g.by) || (b.accountId == g.by && b.by == lift(by))
         ).isEmpty)
     }
-    run(q).map(_.headOption)
+    run(q).map(_.headOption.map(Group(_)))
   }
 
   def exist(groupId: GroupId): Future[Boolean] = {
@@ -154,6 +156,23 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
         .nonEmpty
     }
     run(q)
+  }
+
+
+  def validateExist(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    exist(groupId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(GroupNotFound))
+    })
+  }
+
+  def validateFind(groupId: GroupId, sessionId: SessionId): Future[Group] = {
+    find(groupId, sessionId).flatMap(_ match {
+      case Some(t) => Future.value(t)
+      case None => Future.exception(CactaceaException(GroupNotFound))
+    })
   }
 
 }

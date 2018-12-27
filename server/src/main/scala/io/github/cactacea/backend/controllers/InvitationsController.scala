@@ -23,7 +23,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
   prefix(apiPrefix) {
 
     postWithPermission("/groups/:id/invitations")(Permissions.groupInvitations) { o =>
-      o.summary("Post a invitation to some accounts")
+      o.summary("Post a groupInvitation to some accounts")
         .tag(invitationsTag)
         .operationId("create")
         .request[PostInvitationAccounts]
@@ -38,7 +38,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
     }
 
     postWithPermission("/accounts/:accountId/groups/:groupId/invitations")(Permissions.groupInvitations) { o =>
-      o.summary("Create a invitation to a account")
+      o.summary("Create a groupInvitation to a account")
         .tag(accountsTag)
         .operationId("invite")
         .request[PostInvitationAccount]
@@ -53,7 +53,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
     }
 
     postWithPermission("/invitations/:id/accept")(Permissions.groupInvitations) { o =>
-      o.summary("Accept a invitation")
+      o.summary("Accept a groupInvitation")
         .tag(invitationsTag)
         .operationId("accept")
         .request[PostAcceptInvitation]
@@ -68,7 +68,7 @@ class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: St
     }
 
     postWithPermission("/invitations/:id/reject")(Permissions.groupInvitations) { o =>
-      o.summary("Reject a invitation")
+      o.summary("Reject a groupInvitation")
         .tag(invitationsTag)
         .operationId("reject")
         .request[PostRejectInvitation]

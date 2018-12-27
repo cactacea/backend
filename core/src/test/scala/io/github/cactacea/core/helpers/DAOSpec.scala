@@ -10,6 +10,7 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Mediums}
+import io.github.cactacea.core.helpers.HelperDAO
 import org.scalatest.BeforeAndAfter
 
 class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
@@ -37,7 +38,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   val messagesDAO = injector.instance[MessagesDAO]
   val accountMessagesDAO = injector.instance[AccountMessagesDAO]
   val userReportsDAO = injector.instance[AccountReportsDAO]
-  val followsDAO = injector.instance[FollowsDAO]
+  val followingsDAO = injector.instance[FollowingsDAO]
   val friendsDAO = injector.instance[FriendsDAO]
   val hashService = injector.instance[HashService]
   val commentLikesDAO = injector.instance[CommentLikesDAO]
@@ -59,6 +60,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   val mutesDAO = injector.instance[MutesDAO]
   val outstandingFriendRequestsDAO = injector.instance[FriendRequestsStatusDAO]
   val pushNotificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
+  val helperDAO = injector.instance[HelperDAO]
 
   def createAccount(accountName: String): Accounts = {
     val u: Accounts = FactoryHelper.createAccounts(accountName)
@@ -108,6 +110,5 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
       )
     )
   }
-
 
 }

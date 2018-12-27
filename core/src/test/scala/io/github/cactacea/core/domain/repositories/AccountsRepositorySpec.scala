@@ -34,13 +34,13 @@ class AccountsRepositorySpec extends RepositorySpec {
     execute(blocksRepository.create(blockedAccount5.id, session.id.toSessionId))
 
     // Find All
-    val accounts1 = execute(accountsRepository.findAll(None, None, 0, 3, session.id.toSessionId))
+    val accounts1 = execute(accountsRepository.find(None, None, 0, 3, session.id.toSessionId))
     assert(accounts1.size == 3)
     assert(accounts1(0).accountName ==account1.accountName)
     assert(accounts1(1).accountName ==account2.accountName)
     assert(accounts1(2).accountName ==account3.accountName)
 
-    val accounts2 = execute(accountsRepository.findAll(None, accounts1(2).next, 0, 3, session.id.toSessionId))
+    val accounts2 = execute(accountsRepository.find(None, accounts1(2).next, 0, 3, session.id.toSessionId))
     assert(accounts2.size == 3)
     assert(accounts2(0).accountName ==account4.accountName)
     assert(accounts2(1).accountName ==account5.accountName)
@@ -51,13 +51,13 @@ class AccountsRepositorySpec extends RepositorySpec {
     val AccountsRepositorySpec4 = signUp("bbb_test_account_04", "password1", "udid")
 
     // Find By account name
-    val accounts3 = execute(accountsRepository.findAll(Some("bbb_test_account_0"), None, 0, 3, session.id.toSessionId))
+    val accounts3 = execute(accountsRepository.find(Some("bbb_test_account_0"), None, 0, 3, session.id.toSessionId))
     assert(accounts3.size == 3)
     assert(accounts3(0).accountName ==AccountsRepositorySpec1.accountName)
     assert(accounts3(1).accountName ==AccountsRepositorySpec2.accountName)
     assert(accounts3(2).accountName ==AccountsRepositorySpec3.accountName)
 
-    val accounts4 = execute(accountsRepository.findAll(Some("bbb_test_account_0"), accounts3(2).next, 0, 3, session.id.toSessionId))
+    val accounts4 = execute(accountsRepository.find(Some("bbb_test_account_0"), accounts3(2).next, 0, 3, session.id.toSessionId))
     assert(accounts4.size == 1)
     assert(accounts4(0).accountName ==AccountsRepositorySpec4.accountName)
 
@@ -71,11 +71,11 @@ class AccountsRepositorySpec extends RepositorySpec {
 
     execute(blocksRepository.create(session.id, blockingUser.id.toSessionId))
 
-    val result1 = execute(accountsRepository.find(account.id, session.id.toSessionId))
+    val result1 = execute(accountsRepository.findDetail(account.id, session.id.toSessionId))
     assert(result1.id == account.id)
 
     assert(intercept[CactaceaException] {
-      execute(accountsRepository.find(blockingUser.id, session.id.toSessionId))
+      execute(accountsRepository.findDetail(blockingUser.id, session.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -85,7 +85,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     val session = signUp("aaa_test_account_19", "password", "udid")
 
     assert(intercept[CactaceaException] {
-      execute(accountsRepository.find(AccountId(0L), session.id.toSessionId))
+      execute(accountsRepository.findDetail(AccountId(0L), session.id.toSessionId))
     }.error == AccountNotFound)
 
   }
@@ -124,7 +124,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     val account = signUp("account", "password", "udid")
 
     execute(accountsRepository.updateDisplayName(account.id, Some("new account name"), session.id.toSessionId))
-    val result = execute(accountsRepository.find(account.id, session.id.toSessionId))
+    val result = execute(accountsRepository.findDetail(account.id, session.id.toSessionId))
     assert(result.id == account.id)
     assert(result.displayName =="new account name")
 

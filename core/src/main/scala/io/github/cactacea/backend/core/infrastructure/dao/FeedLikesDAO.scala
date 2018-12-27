@@ -8,6 +8,8 @@ import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, FeedPriv
 import io.github.cactacea.backend.core.domain.models.{Account, Feed}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models.{FeedLikes, _}
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{FeedAlreadyLiked, FeedNotLiked}
 
 @Singleton
 class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
@@ -126,10 +128,10 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   }
 
-  def findAll(since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Feed]] = {
 
     val by = sessionId.toAccountId
 
@@ -156,11 +158,11 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   }
 
-  def findAll(accountId: AccountId,
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Feed]] = {
+  def find(accountId: AccountId,
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Feed]] = {
 
     val by = sessionId.toAccountId
 
@@ -185,6 +187,25 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
     }
     run(q).map(_.map({case (f, ff) => Feed(f, ff, ff.id.value)}))
 
+  }
+
+  def validateNotExist(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+    exist(feedId, sessionId).flatMap(_ match {
+      case false =>
+        Future.Unit
+      case true =>
+        Future.exception(CactaceaException(FeedAlreadyLiked))
+    })
+  }
+
+
+  def validateExist(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+    exist(feedId, sessionId).flatMap(_ match {
+      case false =>
+        Future.exception(CactaceaException(FeedNotLiked))
+      case true =>
+        Future.Unit
+    })
   }
 
 }

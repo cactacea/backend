@@ -48,7 +48,7 @@ class GroupsService @Inject()(
            offset: Int,
            count: Int, sessionId: SessionId): Future[List[Group]] = {
 
-    groupsRepository.findAll(name, byInvitation, privacyType, since, offset, count, sessionId)
+    groupsRepository.find(name, byInvitation, privacyType, since, offset, count, sessionId)
   }
 
   def find(groupId: GroupId, sessionId: SessionId): Future[Group] = {

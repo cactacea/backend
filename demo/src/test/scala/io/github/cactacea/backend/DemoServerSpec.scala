@@ -1,5 +1,7 @@
 package io.github.cactacea.backend
 
+import java.io.PrintWriter
+
 import com.google.inject.Singleton
 import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.FinatraObjectMapper
@@ -45,10 +47,10 @@ class DemoServerSpec extends FeatureTest with Helpers {
     val swagger = server.httpGet(s"/docs/model")
     assert(swagger.contentString.isEmpty == false)
 
-//    val path = CactaceaBuildInfo.baseDirectory.getParent + "/docs/swagger.json"
-//    val file = new PrintWriter(path)
-//    file.write(swagger.contentString)
-//    file.close()
+    val path = CactaceaBuildInfo.baseDirectory.getParent + "/docs/swagger.json"
+    val file = new PrintWriter(path)
+    file.write(swagger.contentString)
+    file.close()
 
   }
 
@@ -254,7 +256,7 @@ class DemoServerSpec extends FeatureTest with Helpers {
 //      "alliance between his clan and the neighbouring Imagawa clan. He was raised at their court and given the " +
 //      "education suitable for a nobleman.", yasuhiro_nakasone)
 //
-//    createComment(ieyasu_tokugawa_feed.id, "In 1567 Ieyasu, whose father's death had left him as leader of" +
+//    createComment(ieyasu_tokugawa_feed.id, "In 1567 Ieyasu, whose father's death had groupLeft him as leader of" +
 //      " the Matsudaira, allied with Oda Nobunaga, a powerful neighbour.", yasuo_fukuda)
 //
 //    createComment(ieyasu_tokugawa_feed.id, "It was at this time that he changed his name from Matsudaira to" +
