@@ -4,10 +4,11 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 
 case class PushNotificationSettings(
                                      accountId: AccountId,
-                                     groupInvitation: Boolean,
-                                     followerFeed: Boolean,
-                                     feedComment: Boolean,
+                                     feed: Boolean,
+                                     comment: Boolean,
+                                     friendRequest: Boolean,
+                                     message: Boolean,
                                      groupMessage: Boolean,
-                                     directMessage: Boolean,
+                                     groupInvitation: Boolean,
                                      showMessage: Boolean
                                )

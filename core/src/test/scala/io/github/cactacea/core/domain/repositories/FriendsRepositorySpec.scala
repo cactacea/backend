@@ -20,22 +20,22 @@ class FriendsRepositorySpec extends RepositorySpec {
     val friendUser = signUp("FriendsRepositorySpec2", "friend user password", "friend user udid")
     execute(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
-    val result = execute(friendsRepository.findAll(None, 0, 2, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
+    val result = execute(friendsRepository.find(None, 0, 2, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
     assert(result.size == 1)
     val resultFollowedUser = result(0)
     assert(friendUser.id == resultFollowedUser.id)
 
     val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
     assert(account1.id == sessionUser.id)
-    assert(account1.followerCount == Some(1L))
-    assert(account1.followingCount == Some(1L))
-    assert(account1.friendCount == Some(1L))
+    assert(account1.followerCount == 1L)
+    assert(account1.followingCount == 1L)
+    assert(account1.friendCount == 1L)
 
     val account2 = execute(accountsRepository.find(friendUser.id.toSessionId))
     assert(account2.id == friendUser.id)
-    assert(account2.followerCount == Some(1L))
-    assert(account2.followerCount == Some(1L))
-    assert(account2.friendCount == Some(1L))
+    assert(account2.followerCount == 1L)
+    assert(account2.followerCount == 1L)
+    assert(account2.friendCount == 1L)
 
   }
 
@@ -104,15 +104,15 @@ class FriendsRepositorySpec extends RepositorySpec {
     execute(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
 
     val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account1.friendCount == Some(1L))
-    assert(account1.followerCount == Some(1L))
-    assert(account1.followingCount == Some(1L))
+    assert(account1.friendCount == 1L)
+    assert(account1.followerCount == 1L)
+    assert(account1.followingCount == 1L)
 
     execute(friendsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
     val account2 = execute(accountsRepository.find(friendUser.id.toSessionId))
-    assert(account2.followerCount == Some(1L))
-    assert(account2.followerCount == Some(1L))
-    assert(account2.friendCount == Some(0L))
+    assert(account2.followerCount == 1L)
+    assert(account2.followerCount == 1L)
+    assert(account2.friendCount == 0L)
 
   }
 
@@ -184,13 +184,13 @@ class FriendsRepositorySpec extends RepositorySpec {
     execute(friendsRepository.create(friendUser4.id, user.id.toSessionId))
     execute(friendsRepository.create(friendUser5.id, user.id.toSessionId))
 
-    val friends1 = execute(friendsRepository.findAll(user.id, None, 0, 3, sessionUser.id.toSessionId))
+    val friends1 = execute(friendsRepository.find(user.id, None, 0, 3, sessionUser.id.toSessionId))
     assert(friends1.size == 3)
     assert(friends1(0).id == friendUser5.id)
     assert(friends1(1).id == friendUser4.id)
     assert(friends1(2).id == friendUser3.id)
 
-    val friends2 = execute(friendsRepository.findAll(user.id, friends1(2).next, 0, 3, sessionUser.id.toSessionId))
+    val friends2 = execute(friendsRepository.find(user.id, friends1(2).next, 0, 3, sessionUser.id.toSessionId))
     assert(friends2.size == 2)
     assert(friends2(0).id == friendUser2.id)
     assert(friends2(1).id == friendUser1.id)
@@ -212,13 +212,13 @@ class FriendsRepositorySpec extends RepositorySpec {
     execute(friendsRepository.create(friendUser4.id, sessionUser.id.toSessionId))
     execute(friendsRepository.create(friendUser5.id, sessionUser.id.toSessionId))
 
-    val friends = execute(friendsRepository.findAll(None, 0, 3, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
+    val friends = execute(friendsRepository.find(None, 0, 3, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
     assert(friends.size == 3)
     assert(friends(0).id == friendUser5.id)
     assert(friends(1).id == friendUser4.id)
     assert(friends(2).id == friendUser3.id)
 
-    val friends2 = execute(friendsRepository.findAll(friends(2).next, 0, 3, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
+    val friends2 = execute(friendsRepository.find(friends(2).next, 0, 3, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
     assert(friends2.size == 2)
     assert(friends2(0).id == friendUser2.id)
     assert(friends2(1).id == friendUser1.id)

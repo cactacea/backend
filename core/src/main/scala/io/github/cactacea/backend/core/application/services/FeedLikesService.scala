@@ -34,11 +34,11 @@ class FeedLikesService @Inject()(
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedLikesRepository.findAll(accountId, since, offset, count, sessionId)
+    feedLikesRepository.find(accountId, since, offset, count, sessionId)
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedLikesRepository.findAll(since, offset, count, sessionId)
+    feedLikesRepository.find(since, offset, count, sessionId)
   }
 
   def findAccounts(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {

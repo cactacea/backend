@@ -27,7 +27,7 @@ class SessionController @Inject()(
                                    accountGroupsService: AccountGroupsService,
                                    feedsService: FeedsService,
                                    feedLikesService: FeedLikesService,
-                                   followsService: FollowsService,
+                                   followingsService: FollowingsService,
                                    followersService: FollowersService,
                                    friendsService: FriendsService,
                                    invitationService: GroupInvitationsService,
@@ -44,8 +44,8 @@ class SessionController @Inject()(
     getWithPermission("/session")(Permissions.basic) { o =>
       o.summary("Get basic information about session account")
         .tag(sessionTag)
-        .operationId("find")
-        .responseWith[Account](Status.Ok.code, successfulMessage)
+        .operationId("findSession")
+        .responseWith[AccountDetail](Status.Ok.code, successfulMessage)
     } { _: Request =>
       accountsService.find(
         SessionContext.id
@@ -215,10 +215,10 @@ class SessionController @Inject()(
       o.summary("Get accounts list session account followed")
         .tag(sessionTag)
         .operationId("findFollowing")
-        .request[GetSessionFollows]
+        .request[GetSessionFollowings]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-    } { request: GetSessionFollows =>
-      followsService.find(
+    } { request: GetSessionFollowings =>
+      followingsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -258,13 +258,13 @@ class SessionController @Inject()(
     }
 
     getWithPermission("/session/groups")(Permissions.basic) { o =>
-      o.summary("Get groups list session account joined")
+      o.summary("Get groups list session account groupJoined")
         .tag(sessionTag)
         .operationId("findGroups")
         .request[GetSessionGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
     } { request: GetSessionGroups =>
-      accountGroupsService.findAll(
+      accountGroupsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -274,14 +274,14 @@ class SessionController @Inject()(
     }
 
     getWithPermission("/session/hides")(Permissions.basic) { o =>
-      o.summary("Get hidden groups list session account joined")
+      o.summary("Get hidden groups list session account groupJoined")
         .tag(sessionTag)
         .operationId("findHiddenGroups")
         .request[GetSessionGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
 
     } { request: GetSessionGroups =>
-      accountGroupsService.findAll(
+      accountGroupsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -327,7 +327,7 @@ class SessionController @Inject()(
         .request[GetSessionFriendRequests]
         .responseWith[Array[FriendRequest]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFriendRequests =>
-      friendRequestsService.findAll(
+      friendRequestsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),

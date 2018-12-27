@@ -23,7 +23,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(userGroup1.accountId == account1.id)
     assert(userGroup1.groupId == groupId)
     assert(userGroup1.hidden == false)
-    assert(userGroup1.toAccountId == sessionAccount.id)
+    assert(userGroup1.by == sessionAccount.id)
     assert(userGroup1.unreadCount == 0L)
 
   }
@@ -64,10 +64,10 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(userGroup3.hidden == false)
     assert(userGroup4.hidden == false)
 
-    assert(userGroup1.toAccountId == userGroup1.accountId)
-    assert(userGroup2.toAccountId == userGroup2.accountId)
-    assert(userGroup3.toAccountId == userGroup3.accountId)
-    assert(userGroup4.toAccountId == userGroup4.accountId)
+    assert(userGroup1.by == userGroup1.accountId)
+    assert(userGroup2.by == userGroup2.accountId)
+    assert(userGroup3.by == userGroup3.accountId)
+    assert(userGroup4.by == userGroup4.accountId)
 
     assert(userGroup1.unreadCount ==  0)
     assert(userGroup2.unreadCount ==  0)
@@ -145,10 +145,10 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(group3.hidden == false)
     assert(group4.hidden == false)
 
-    assert(group1.toAccountId == group1.accountId)
-    assert(group2.toAccountId == group2.accountId)
-    assert(group3.toAccountId == group3.accountId)
-    assert(group4.toAccountId == group4.accountId)
+    assert(group1.by == group1.accountId)
+    assert(group2.by == group2.accountId)
+    assert(group3.by == group3.accountId)
+    assert(group4.by == group4.accountId)
 
     assert(group1.unreadCount == 1)
     assert(group2.unreadCount == 1)
@@ -203,10 +203,10 @@ class AccountGroupsDAOSpec extends DAOSpec {
     assert(userGroup3.hidden == true)
     assert(userGroup4.hidden == false)
 
-    assert(userGroup1.toAccountId == account1.id, 0)
-    assert(userGroup2.toAccountId == account2.id, 0)
-    assert(userGroup3.toAccountId == account3.id, 0)
-    assert(userGroup4.toAccountId == account4.id, 0)
+    assert(userGroup1.by == account1.id, 0)
+    assert(userGroup2.by == account2.id, 0)
+    assert(userGroup3.by == account3.id, 0)
+    assert(userGroup4.by == account4.id, 0)
 
     assert(userGroup1.unreadCount == 0)
     assert(userGroup2.unreadCount == 0)
@@ -215,7 +215,7 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
   }
 
-  test("findAll") {
+  test("find all") {
 
     val sessionAccount = createAccount("AccountGroupsDAOSpec23")
     createAccount("AccountGroupsDAOSpec24")
@@ -225,27 +225,28 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
+    val groupId3 = execute(groupsDAO.create(Some("new group name3"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId1))
     execute(accountGroupsDAO.create(sessionAccount.id, groupId2))
+    execute(accountGroupsDAO.create(sessionAccount.id, groupId3))
 
-    val result1 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, 0, 2, false))
+    val result1 = execute(accountGroupsDAO.find(sessionAccount.id, None, 0, 2, false, sessionAccount.id.toSessionId))
     assert(result1.size == 2)
-    assert(result1(0).id == groupId2)
+    assert(result1(0).id == groupId3)
     assert(result1(0).message.isDefined == false)
 
     execute(messagesDAO.create(groupId1, Some("New Message1"), None, sessionAccount.id.toSessionId))
     execute(messagesDAO.create(groupId1, Some("New Message2"), None, sessionAccount.id.toSessionId))
-    val messageId3 = execute(messagesDAO.create(groupId2, Some("New Message3"), None, sessionAccount.id.toSessionId))
+    val messageId3 = execute(messagesDAO.create(groupId1, Some("New Message3"), None, sessionAccount.id.toSessionId))
+    execute(accountMessagesDAO.create(groupId1, messageId3, sessionAccount.id.toSessionId))
 
 
-    val result2 = execute(accountGroupsDAO.findAll(sessionAccount.id, None, 0, 2, false))
-    assert(result2.size == 2)
-    assert(result2(0).id == groupId2)
-    assert(result2(0).message.isDefined)
-    assert(result2(0).message.map(_.id) == Some(messageId3))
-    assert(result2(0).message.flatMap(_.message) == Some("New Message3"))
+    val result2 = execute(accountGroupsDAO.find(sessionAccount.id, None, 0, 3, false, sessionAccount.id.toSessionId))
+    assert(result2.size == 3)
+    assert(result2(2).id == groupId1)
+    assert(result2(2).message.isDefined)
+    assert(result2(2).message.map(_.id) == Some(messageId3))
+    assert(result2(2).message.flatMap(_.message) == Some("New Message3"))
 
   }
 
@@ -263,11 +264,11 @@ class AccountGroupsDAOSpec extends DAOSpec {
 
     val result = execute(accountGroupsDAO.findByAccountId(account1.id, sessionAccount.id.toSessionId))
     assert(result.isDefined == true)
-    val group = result.get._2
+    val group = result.get
 
     assert(group.id == groupId1)
     assert(group.name == Some("new group name1"))
-    assert(group.by == sessionAccount.id)
+//    assert(group.by == sessionAccount.id)
     assert(group.invitationOnly == true)
     assert(group.privacyType == GroupPrivacyType.everyone)
     assert(group.accountCount == 0)
@@ -312,11 +313,99 @@ class AccountGroupsDAOSpec extends DAOSpec {
     execute(accountGroupsDAO.create(account1.id, groupId1, sessionAccount.id.toSessionId))
     execute(accountGroupsDAO.create(account2.id, groupId2, sessionAccount.id.toSessionId))
 
-    val result1 = execute(accountGroupsDAO.exist(groupId1, account1.id.toSessionId))
-    val result2 = execute(accountGroupsDAO.exist(groupId2, account2.id.toSessionId))
+    val result1 = execute(accountGroupsDAO.exist(groupId1, account1.id))
+    val result2 = execute(accountGroupsDAO.exist(groupId2, account2.id))
     assert(result1 == true)
     assert(result2 == true)
 
   }
+
+
+  //  test("create user") {
+  //
+  //    val sessionAccount = createAccount("account0")
+  //    val member1 = createAccount("account1")
+  //    val member2 = createAccount("account2")
+  //    val member3 = createAccount("account3")
+  //    val member4 = createAccount("account4")
+  //    val member5 = createAccount("account5")
+  //
+  //    val groupId = execute(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+  //    accountGroupsDAO.create(member1.id, groupId)
+  //    accountGroupsDAO.create(member2.id, groupId)
+  //    accountGroupsDAO.create(member3.id, groupId)
+  //    accountGroupsDAO.create(member4.id, groupId)
+  //    accountGroupsDAO.create(member5.id, groupId)
+  //
+  //    // TODO
+  //
+  //  }
+
+
+  //  test("create users") {
+  //
+  //    val sessionAccount = createAccount("account0")
+  //    val member1 = createAccount("account1")
+  //    val member2 = createAccount("account2")
+  //    val member3 = createAccount("account3")
+  //    val member4 = createAccount("account4")
+  //    val member5 = createAccount("account5")
+  //
+  //    val accountIds = List(member1.id, member2.id, member3.id, member4.id, member5.id)
+  //    val groupId = execute(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+  //    execute(accountGroupsDAO.create(accountIds, groupId))
+  //
+  //    // TODO
+  //
+  //  }
+//  test("exist") {
+//
+//    val sessionAccount = createAccount("GroupAccountsDAOSpec13")
+//    val member1 = createAccount("GroupAccountsDAOSpec14")
+//    val member2 = createAccount("GroupAccountsDAOSpec15")
+//    val member3 = createAccount("GroupAccountsDAOSpec16")
+//    val member4 = createAccount("GroupAccountsDAOSpec17")
+//    val member5 = createAccount("GroupAccountsDAOSpec18")
+//
+//    val accountIds = List(member1.id, member2.id, member3.id, member4.id, member5.id)
+//    val groupId = execute(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+//    execute(accountGroupsDAO.create(accountIds, groupId))
+//
+//    execute(accountGroupsDAO.delete(member1.id, groupId))
+//    execute(accountGroupsDAO.delete(member3.id, groupId))
+//    execute(accountGroupsDAO.delete(member5.id, groupId))
+//
+//    val result1 = execute(accountGroupsDAO.findExist(groupId, member1.id))
+//    val result2 = execute(accountGroupsDAO.findExist(groupId, member2.id))
+//    val result3 = execute(accountGroupsDAO.findExist(groupId, member3.id))
+//    val result4 = execute(accountGroupsDAO.findExist(groupId, member4.id))
+//    val result5 = execute(accountGroupsDAO.findExist(groupId, member5.id))
+//
+//    assert(result1 == false)
+//    assert(result2 == true)
+//    assert(result3 == false)
+//    assert(result4 == true)
+//    assert(result5 == false)
+//
+//  }
+
+
+  //  test("findCount") {
+  //
+  //    val sessionAccount = createAccount("GroupAccountsDAOSpec19")
+  //    val member1 = createAccount("GroupAccountsDAOSpec20")
+  //    val member2 = createAccount("GroupAccountsDAOSpec21")
+  //    val member3 = createAccount("GroupAccountsDAOSpec22")
+  //    val member4 = createAccount("GroupAccountsDAOSpec23")
+  //    val member5 = createAccount("GroupAccountsDAOSpec24")
+  //
+  //    val accountIds = List(member1.id, member2.id, member3.id, member4.id, member5.id)
+  //    val groupId = execute(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+  //    execute(accountGroupsDAO.create(accountIds, groupId))
+  //
+  //    val result = execute(groupAccountsDAO.findCount(groupId))
+  //    assert(result == 5)
+  //
+  //  }
 
 }

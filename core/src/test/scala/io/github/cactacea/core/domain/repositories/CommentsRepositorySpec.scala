@@ -86,14 +86,14 @@ class CommentsRepositorySpec extends RepositorySpec {
     val commentId3 = execute(commentsRepository.create(feedId, "comment 3", session.id.toSessionId))
     val commentId4 = execute(commentsRepository.create(feedId, "comment 4", session.id.toSessionId))
     val commentId5 = execute(commentsRepository.create(feedId, "comment 5", session.id.toSessionId))
-    val comments1 = execute(commentsRepository.findAll(feedId, None, 0, 3, session.id.toSessionId))
+    val comments1 = execute(commentsRepository.find(feedId, None, 0, 3, session.id.toSessionId))
     val comment1 = comments1(0)
     val comment2 = comments1(1)
     val comment3 = comments1(2)
     assert(commentId5 == comment1.id)
     assert(commentId4 == comment2.id)
     assert(commentId3 == comment3.id)
-    val comments2 = execute(commentsRepository.findAll(feedId, comment3.next, 0, 3, session.id.toSessionId))
+    val comments2 = execute(commentsRepository.find(feedId, comment3.next, 0, 3, session.id.toSessionId))
     val comment4 = comments2(0)
     val comment5 = comments2(1)
     assert(commentId2 == comment4.id)
@@ -105,7 +105,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
     val session = signUp("CommentsRepositorySpec8", "session password", "udid")
     assert(intercept[CactaceaException] {
-      execute(commentsRepository.findAll(FeedId(0L), None, 0, 3, session.id.toSessionId))
+      execute(commentsRepository.find(FeedId(0L), None, 0, 3, session.id.toSessionId))
     }.error == FeedNotFound)
 
   }

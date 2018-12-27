@@ -34,7 +34,7 @@ class MutesService @Inject()(
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    mutesRepository.findAll(since, offset, count, sessionId)
+    mutesRepository.find(since, offset, count, sessionId)
   }
 
 }

@@ -89,10 +89,10 @@ class FeedLikesRepositorySpec extends RepositorySpec {
     execute(feedLikesRepository.create(feedId3, user1.id.toSessionId))
     execute(feedLikesRepository.create(feedId4, user1.id.toSessionId))
     execute(feedLikesRepository.create(feedId5, user1.id.toSessionId))
-    val feeds1 = execute(feedLikesRepository.findAll(None, 0, 3, user1.id.toSessionId))
+    val feeds1 = execute(feedLikesRepository.find(None, 0, 3, user1.id.toSessionId))
     assert(feeds1.size == 3)
     val feed3 = feeds1(2)
-    val feeds2 = execute(feedLikesRepository.findAll(feed3.next, 0, 3, user1.id.toSessionId))
+    val feeds2 = execute(feedLikesRepository.find(feed3.next, 0, 3, user1.id.toSessionId))
     assert(feeds2.size == 2)
 
   }
@@ -111,10 +111,10 @@ class FeedLikesRepositorySpec extends RepositorySpec {
     execute(feedLikesRepository.create(feedId3, session.id.toSessionId))
     execute(feedLikesRepository.create(feedId4, session.id.toSessionId))
     execute(feedLikesRepository.create(feedId5, session.id.toSessionId))
-    val feeds1 = execute(feedLikesRepository.findAll(None, 0, 3, session.id.toSessionId))
+    val feeds1 = execute(feedLikesRepository.find(None, 0, 3, session.id.toSessionId))
     assert(feeds1.size == 3)
     val feed3 = feeds1(2)
-    val feeds2 = execute(feedLikesRepository.findAll(feed3.next, 0, 3, session.id.toSessionId))
+    val feeds2 = execute(feedLikesRepository.find(feed3.next, 0, 3, session.id.toSessionId))
     assert(feeds2.size == 2)
 
   }
@@ -133,20 +133,20 @@ class FeedLikesRepositorySpec extends RepositorySpec {
     execute(feedLikesRepository.create(feedId3, user1.id.toSessionId))
     execute(feedLikesRepository.create(feedId4, user1.id.toSessionId))
     execute(feedLikesRepository.create(feedId5, user1.id.toSessionId))
-    val feeds1 = execute(feedLikesRepository.findAll(user1.id, None, 0, 3, session.id.toSessionId))
+    val feeds1 = execute(feedLikesRepository.find(user1.id, None, 0, 3, session.id.toSessionId))
     assert(feeds1.size == 3)
     assert(feeds1(0).id == feedId5)
     assert(feeds1(1).id == feedId4)
     assert(feeds1(2).id == feedId3)
 
     val feed3 = feeds1(2)
-    val feeds2 = execute(feedLikesRepository.findAll(user1.id, feed3.next, 0, 3, session.id.toSessionId))
+    val feeds2 = execute(feedLikesRepository.find(user1.id, feed3.next, 0, 3, session.id.toSessionId))
     assert(feeds2.size == 2)
     assert(feeds2(0).id == feedId2)
     assert(feeds2(1).id == feedId1)
 
     assert(intercept[CactaceaException] {
-      execute(feedLikesRepository.findAll(AccountId(0L), None, 0, 3, session.id.toSessionId))
+      execute(feedLikesRepository.find(AccountId(0L), None, 0, 3, session.id.toSessionId))
     }.error == AccountNotFound)
 
   }

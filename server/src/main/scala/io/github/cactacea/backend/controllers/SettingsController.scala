@@ -28,7 +28,7 @@ class SettingsController @Inject()(
     getWithPermission("/session/push_notification") (Permissions.basic) { o =>
       o.summary("Get push notification settings")
         .tag(tagName)
-        .operationId("findSessionPushNotificationSettings")
+        .operationId("findPushNotificationSettings")
         .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
     } { _: Request =>
       settingsService.findPushNotificationSettings(
@@ -39,15 +39,17 @@ class SettingsController @Inject()(
     putWithPermission("/session/push_notification") (Permissions.basic) { o =>
       o.summary("Update ths push notification settings")
         .tag(tagName)
-        .operationId("updateSessionPushNotificationSettings")
+        .operationId("updatePushNotificationSettings")
+        .request[PutNotificationSetting]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutNotificationSetting =>
       settingsService.updatePushNotificationSettings(
-        request.groupInvitation,
-        request.followerFeed,
-        request.feedComment,
+        request.feed,
+        request.comment,
+        request.friendRequest,
+        request.message,
         request.groupMessage,
-        request.directMessage,
+        request.groupInvitation,
         request.showMessage,
         SessionContext.id
       ).map(_ => response.ok)
@@ -56,7 +58,7 @@ class SettingsController @Inject()(
     postWithPermission("/session/push_token") (Permissions.basic) { o =>
       o.summary("Update device push token")
         .tag(tagName)
-        .operationId("updateSessionPushToken")
+        .operationId("updatePushToken")
         .request[PostDevicePushToken]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PostDevicePushToken =>
@@ -70,7 +72,7 @@ class SettingsController @Inject()(
     postWithPermission("/session/status") (Permissions.basic) { o =>
       o.summary("Update device status")
         .tag(tagName)
-        .operationId("updateSessionDeviceStatus")
+        .operationId("updateDeviceStatus")
         .request[PostActiveStatus]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PostActiveStatus =>

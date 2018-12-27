@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus, Feed, Group}
+import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, GroupNotFound}
 import io.github.cactacea.backend.models.requests.account._
@@ -35,12 +35,12 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id")(Permissions.basic) { o =>
       o.summary("Get information about a account")
         .tag(accountsTag)
-        .operationId("find")
-        .request[GetAccount]
-        .responseWith[Account](Status.Ok.code, successfulMessage)
+        .operationId("findDetail")
+        .request[GetAccountDetail]
+        .responseWith[AccountDetail](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
-    } { request: GetAccount =>
-      accountsService.find(
+    } { request: GetAccountDetail =>
+      accountsService.findDetail(
         request.id,
         SessionContext.id
       )
@@ -132,7 +132,7 @@ class AccountsController @Inject()(
         .tag(accountsTag)
         .operationId("findFriends")
         .request[GetFriends]
-        .responseWith[Account](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: GetFriends =>
       friendsService.find(
@@ -192,7 +192,7 @@ class AccountsController @Inject()(
     }
 
     getWithPermission("/accounts/:id/groups")(Permissions.basic) { o =>
-      o.summary("Get groups list a account joined")
+      o.summary("Get groups list a account groupJoined")
         .tag(accountsTag)
         .operationId("findGroups")
         .request[GetAccountGroups]
@@ -200,7 +200,7 @@ class AccountsController @Inject()(
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
 
     } { request: GetAccountGroups =>
-      accountGroupsService.findAll(
+      accountGroupsService.find(
         request.id,
         request.since,
         request.offset.getOrElse(0),

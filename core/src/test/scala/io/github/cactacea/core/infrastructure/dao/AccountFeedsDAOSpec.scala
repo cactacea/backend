@@ -8,7 +8,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
 
   import db._
 
-  test("findALl") (pending)
+  test("find all") (pending)
 
   test("create") {
 
@@ -30,7 +30,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     // create feed
     val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
-    // create follows
+    // create following
     execute(
       for {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)
@@ -70,7 +70,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     // create feed
     val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
-    // create follows
+    // create following
     execute(
       for {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)

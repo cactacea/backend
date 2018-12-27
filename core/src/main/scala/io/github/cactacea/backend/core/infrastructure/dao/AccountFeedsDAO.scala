@@ -41,11 +41,11 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
     run(q).map(_ => Unit)
   }
 
-  def findAll(since: Option[Long],
-              offset: Int,
-              count: Int,
-              privacyType: Option[FeedPrivacyType],
-              sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long],
+           offset: Int,
+           count: Int,
+           privacyType: Option[FeedPrivacyType],
+           sessionId: SessionId): Future[List[Feed]] = {
 
     val by = sessionId.toAccountId
 
@@ -79,8 +79,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
     val feedIds = feeds.map({ case (_, f, _, _) => f.id})
 
     (for {
-      t <- feedTagsDAO.findAll(feedIds)
-      m <- feedMediumDAO.findAll(feedIds)
+      t <- feedTagsDAO.find(feedIds)
+      m <- feedMediumDAO.find(feedIds)
     } yield (t, m)).map {
       case (t, m) =>
         feeds.map({ case (af, f, a, r) =>

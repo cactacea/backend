@@ -9,95 +9,93 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Gr
 
 @Singleton
 class GroupAccountsRepository @Inject()(
-                                         groupsDAO: GroupsDAO,
-                                         accountMessagesDAO: AccountMessagesDAO,
+                                         accountsDAO: AccountsDAO,
                                          accountGroupsDAO: AccountGroupsDAO,
+                                         accountMessagesDAO: AccountMessagesDAO,
+                                         groupsDAO: GroupsDAO,
                                          groupAccountsDAO: GroupAccountsDAO,
-                                         groupInvitationsDAO: GroupInvitationsDAO,
-                                         messagesDAO: MessagesDAO,
+                                         groupAuthorityDAO: GroupAuthorityDAO,
                                          groupReportsDAO: GroupReportsDAO,
-                                         validationDAO: ValidationDAO
+                                         groupInvitationsDAO: GroupInvitationsDAO,
+                                         messagesDAO: MessagesDAO
                                        ) {
 
-  def findAll(groupId: GroupId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     for {
-      g <- validationDAO.findGroup(groupId)
-      _ <- validationDAO.hasJoinAuthority(g, sessionId)
-      r <- groupAccountsDAO.findAll(groupId, since, offset, count)
+      _ <- groupAuthorityDAO.validateSearchMembersAuthority(groupId, sessionId)
+      r <- groupAccountsDAO.find(groupId, since, offset, count)
     } yield (r)
   }
 
   def create(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     for {
-      _ <- validationDAO.notExistGroupAccount(accountId, groupId)
-      g <- validationDAO.findNotInvitationOnlyGroup(groupId)
-      _ <- validationDAO.hasJoinAuthority(g, sessionId)
-      _ <- validationDAO.checkGroupAccountsCount(groupId)
+      _ <- accountGroupsDAO.validateNotExist(accountId, groupId)
+      _ <- groupAuthorityDAO.validateJoinAuthority(groupId, sessionId)
       _ <- accountGroupsDAO.create(accountId, groupId)
-      _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
-      _ <- messagesDAO.create(groupId, g.accountCount, MessageType.joined, sessionId)
-    } yield (Future.value(Unit))
+      _ <- groupInvitationsDAO.update(groupId, accountId, GroupInvitationStatusType.accepted)
+      _ <- messagesDAO.create(groupId, MessageType.groupJoined, sessionId)
+    } yield (Unit)
   }
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- validationDAO.existAccount(accountId, sessionId)
-      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
-      _ <- validationDAO.notExistGroupAccount(accountId, groupId)
-      g <- validationDAO.findNotInvitationOnlyGroup(groupId)
-      _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
-      _ <- validationDAO.checkGroupAccountsCount(groupId)
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- accountGroupsDAO.validateNotExist(accountId, groupId)
+      _ <- groupAuthorityDAO.validateAddMembersAuthority(accountId, groupId, sessionId)
       _ <- accountGroupsDAO.create(accountId, groupId)
-      _ <- groupInvitationsDAO.update(accountId, groupId, GroupInvitationStatusType.accepted)
-      _ <- messagesDAO.create(groupId, g.accountCount, MessageType.joined, accountId.toSessionId)
-    } yield (Future.value(Unit))
+      _ <- groupInvitationsDAO.update(groupId, accountId, GroupInvitationStatusType.accepted)
+      _ <- messagesDAO.create(groupId, MessageType.groupJoined, accountId.toSessionId)
+    } yield (Unit)
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     (for {
-      g <- validationDAO.findGroup(groupId)
-      _ <- validationDAO.existGroupAccount(accountId, groupId)
+      _ <- groupsDAO.validateExist(groupId, sessionId)
+      _ <- accountGroupsDAO.validateExist(accountId, groupId)
+      c <- accountGroupsDAO.findAccountCount(groupId)
       _ <- accountMessagesDAO.delete(accountId, groupId)
       _ <- accountGroupsDAO.delete(accountId, groupId)
-    } yield (g)).flatMap(g =>
-      if (g.accountCount == 1) {
+    } yield (c)).flatMap(c =>
+      if (c == 0) {
         (for {
           _ <- messagesDAO.delete(groupId)
           _ <- groupReportsDAO.delete(groupId)
           _ <- groupInvitationsDAO.deleteByGroupId(groupId)
           _ <- groupsDAO.delete(groupId)
-        } yield (Future.value(Unit)))
+        } yield (Unit))
       } else {
         (for {
-          _ <- messagesDAO.create(groupId, g.accountCount, MessageType.left, accountId.toSessionId).map(_ => true)
-        } yield (Future.value(Unit)))
+          _ <- messagesDAO.create(groupId, MessageType.groupLeft, accountId.toSessionId).map(_ => true)
+        } yield (Unit))
       }
     )
   }
 
   def delete(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     (for {
-      g <- validationDAO.findGroup(groupId)
-      _ <- validationDAO.existAccount(accountId, sessionId)
-      _ <- validationDAO.existAccount(sessionId.toAccountId, accountId.toSessionId)
-      _ <- validationDAO.existGroupAccount(accountId, groupId)
-      _ <- validationDAO.hasJoinAndManagingAuthority(g, accountId, sessionId)
+      _ <- groupsDAO.validateExist(groupId, sessionId)
+      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- accountGroupsDAO.validateExist(accountId, groupId)
+      c <- accountGroupsDAO.findAccountCount(groupId)
+      _ <- groupAuthorityDAO.validateRemoveMembersAuthority(groupId, sessionId)
       _ <- accountMessagesDAO.delete(accountId, groupId)
       _ <- accountGroupsDAO.delete(accountId, groupId)
-    } yield (g)).flatMap(g =>
-      if (g.accountCount == 1) {
+    } yield (c)).flatMap(c =>
+      if (c == 0) {
         (for {
           _ <- messagesDAO.delete(groupId)
           _ <- groupReportsDAO.delete(groupId)
           _ <- groupInvitationsDAO.deleteByGroupId(groupId)
           _ <- groupsDAO.delete(groupId)
-        } yield (Future.value(Unit)))
+        } yield (Unit))
       } else {
         (for {
-          _ <- messagesDAO.create(groupId, g.accountCount, MessageType.left, accountId.toSessionId).map(_ => true)
-        } yield (Future.value(Unit)))
+          _ <- messagesDAO.create(groupId, MessageType.groupLeft, accountId.toSessionId).map(_ => true)
+        } yield (Unit))
       }
     )
   }

@@ -30,7 +30,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = execute(groupInvitationsDAO.findAll(None, 0, 3, sessionAccount.id.toSessionId))
+    val result1 = execute(groupInvitationsDAO.find(None, 0, 3, sessionAccount.id.toSessionId))
     assert(result1.size == 3)
     val invitation1 = result1(0)
     val invitation2 = result1(1)
@@ -43,7 +43,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(invitation3.account.id == owner3.id)
 
 
-    val result2 = execute(groupInvitationsDAO.findAll(invitation3.next, 0, 3, sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.find(invitation3.next, 0, 3, sessionAccount.id.toSessionId))
     assert(result2.size == 2)
     val invitation4 = result2(0)
     val invitation5 = result2(1)
@@ -84,11 +84,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId3, owner3.id.toSessionId))
     execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId1))
-    val result2 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId2))
-    val result3 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId3))
-    val result4 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId4))
-    val result5 = execute(groupInvitationsDAO.exist(sessionAccount.id, groupId5))
+    val result1 = execute(groupInvitationsDAO.findExist(sessionAccount.id, groupId1))
+    val result2 = execute(groupInvitationsDAO.findExist(sessionAccount.id, groupId2))
+    val result3 = execute(groupInvitationsDAO.findExist(sessionAccount.id, groupId3))
+    val result4 = execute(groupInvitationsDAO.findExist(sessionAccount.id, groupId4))
+    val result5 = execute(groupInvitationsDAO.findExist(sessionAccount.id, groupId5))
 
     assert(result1 == true)
     assert(result2 == false)
@@ -98,7 +98,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
 
   }
 
-  test("find invitation") {
+  test("find groupInvitation") {
 
     val sessionAccount = createAccount("GroupInvitationsDAOSpec15")
     val account1 = createAccount("GroupInvitationsDAOSpec16")
@@ -120,11 +120,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val invitationId4 = execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
     val invitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = execute(groupInvitationsDAO.find(invitationId1, sessionAccount.id.toSessionId))
-    val result2 = execute(groupInvitationsDAO.find(invitationId2, sessionAccount.id.toSessionId))
-    val result3 = execute(groupInvitationsDAO.find(invitationId3, sessionAccount.id.toSessionId))
-    val result4 = execute(groupInvitationsDAO.find(invitationId4, sessionAccount.id.toSessionId))
-    val result5 = execute(groupInvitationsDAO.find(invitationId5, sessionAccount.id.toSessionId))
+    val result1 = execute(helperDAO.selectGroupInvitation(invitationId1, sessionAccount.id.toSessionId))
+    val result2 = execute(helperDAO.selectGroupInvitation(invitationId2, sessionAccount.id.toSessionId))
+    val result3 = execute(helperDAO.selectGroupInvitation(invitationId3, sessionAccount.id.toSessionId))
+    val result4 = execute(helperDAO.selectGroupInvitation(invitationId4, sessionAccount.id.toSessionId))
+    val result5 = execute(helperDAO.selectGroupInvitation(invitationId5, sessionAccount.id.toSessionId))
 
     assert(result1.isDefined == true)
     assert(result2.isDefined == false)
@@ -156,7 +156,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     execute(groupInvitationsDAO.create(account1.id, groupId4, owner4.id.toSessionId))
     val invitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    val result1 = execute(groupInvitationsDAO.findAll(None, 0, 2, sessionAccount.id.toSessionId))
+    val result1 = execute(groupInvitationsDAO.find(None, 0, 2, sessionAccount.id.toSessionId))
     assert(result1.size == 2)
     val invitation1 = result1(0)
     val invitation2 = result1(1)
@@ -166,7 +166,7 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(invitation1.id == invitationId5)
     assert(invitation2.id == invitationId3)
 
-    val result2 = execute(groupInvitationsDAO.findAll(Some(invitation2.id.value), 0, 2, sessionAccount.id.toSessionId))
+    val result2 = execute(groupInvitationsDAO.find(Some(invitation2.id.value), 0, 2, sessionAccount.id.toSessionId))
     assert(result2.size == 1)
     val invitation3 = result2(0)
     assert(invitation3.group.id == groupId1)
@@ -273,11 +273,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     execute(groupInvitationsDAO.update(groupInvitationId4, GroupInvitationStatusType.rejected,     account1.id.toSessionId))
     execute(groupInvitationsDAO.update(groupInvitationId5, GroupInvitationStatusType.accepted,     sessionAccount.id.toSessionId))
 
-    val invitation1 = execute(groupInvitationsDAO.find(groupInvitationId1, sessionAccount.id.toSessionId)).get
-    val invitation2 = execute(groupInvitationsDAO.find(groupInvitationId2, account1.id.toSessionId)).get
-    val invitation3 = execute(groupInvitationsDAO.find(groupInvitationId3, sessionAccount.id.toSessionId)).get
-    val invitation4 = execute(groupInvitationsDAO.find(groupInvitationId4, account1.id.toSessionId)).get
-    val invitation5 = execute(groupInvitationsDAO.find(groupInvitationId5, sessionAccount.id.toSessionId)).get
+    val invitation1 = execute(helperDAO.selectGroupInvitation(groupInvitationId1, sessionAccount.id.toSessionId)).get
+    val invitation2 = execute(helperDAO.selectGroupInvitation(groupInvitationId2, account1.id.toSessionId)).get
+    val invitation3 = execute(helperDAO.selectGroupInvitation(groupInvitationId3, sessionAccount.id.toSessionId)).get
+    val invitation4 = execute(helperDAO.selectGroupInvitation(groupInvitationId4, account1.id.toSessionId)).get
+    val invitation5 = execute(helperDAO.selectGroupInvitation(groupInvitationId5, sessionAccount.id.toSessionId)).get
 
     assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected)
     assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted)
@@ -309,17 +309,17 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val groupInvitationId4 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
     val groupInvitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    execute(groupInvitationsDAO.update(sessionAccount.id, groupId1, GroupInvitationStatusType.rejected))
-    execute(groupInvitationsDAO.update(sessionAccount.id, groupId2, GroupInvitationStatusType.accepted))
-    execute(groupInvitationsDAO.update(sessionAccount.id, groupId3, GroupInvitationStatusType.noResponded))
-    execute(groupInvitationsDAO.update(sessionAccount.id, groupId4, GroupInvitationStatusType.rejected))
-    execute(groupInvitationsDAO.update(sessionAccount.id, groupId5, GroupInvitationStatusType.accepted))
+    execute(groupInvitationsDAO.update(groupId1, sessionAccount.id, GroupInvitationStatusType.rejected))
+    execute(groupInvitationsDAO.update(groupId2, sessionAccount.id, GroupInvitationStatusType.accepted))
+    execute(groupInvitationsDAO.update(groupId3, sessionAccount.id, GroupInvitationStatusType.noResponded))
+    execute(groupInvitationsDAO.update(groupId4, sessionAccount.id, GroupInvitationStatusType.rejected))
+    execute(groupInvitationsDAO.update(groupId5, sessionAccount.id, GroupInvitationStatusType.accepted))
 
-    val invitation1 = execute(groupInvitationsDAO.find(groupInvitationId1, sessionAccount.id.toSessionId)).get
-    val invitation2 = execute(groupInvitationsDAO.find(groupInvitationId2, sessionAccount.id.toSessionId)).get
-    val invitation3 = execute(groupInvitationsDAO.find(groupInvitationId3, sessionAccount.id.toSessionId)).get
-    val invitation4 = execute(groupInvitationsDAO.find(groupInvitationId4, sessionAccount.id.toSessionId)).get
-    val invitation5 = execute(groupInvitationsDAO.find(groupInvitationId5, sessionAccount.id.toSessionId)).get
+    val invitation1 = execute(helperDAO.selectGroupInvitation(groupInvitationId1, sessionAccount.id.toSessionId)).get
+    val invitation2 = execute(helperDAO.selectGroupInvitation(groupInvitationId2, sessionAccount.id.toSessionId)).get
+    val invitation3 = execute(helperDAO.selectGroupInvitation(groupInvitationId3, sessionAccount.id.toSessionId)).get
+    val invitation4 = execute(helperDAO.selectGroupInvitation(groupInvitationId4, sessionAccount.id.toSessionId)).get
+    val invitation5 = execute(helperDAO.selectGroupInvitation(groupInvitationId5, sessionAccount.id.toSessionId)).get
 
     assert(invitation1.invitationStatus == GroupInvitationStatusType.rejected)
     assert(invitation2.invitationStatus == GroupInvitationStatusType.accepted)
@@ -373,8 +373,6 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     assert(result6.get.notified == false)
 
   }
-
-
 
 
 }

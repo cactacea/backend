@@ -35,7 +35,7 @@ object CactaceaSwaggerModule extends SwaggerModule {
     swaggerDefine.addTag(new Tag().name("Comments").description("Manage comments"))
     swaggerDefine.addTag(new Tag().name("Feeds").description("Manage feeds"))
     swaggerDefine.addTag(new Tag().name("Friends").description("Manage friends"))
-    swaggerDefine.addTag(new Tag().name("Follows").description("Manage follows"))
+    swaggerDefine.addTag(new Tag().name("Following").description("Manage following"))
     swaggerDefine.addTag(new Tag().name("Groups").description("Manage groups"))
     swaggerDefine.addTag(new Tag().name("Invitations").description("Manage group invitations"))
     swaggerDefine.addTag(new Tag().name("Mediums").description("Manage media"))

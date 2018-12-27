@@ -8,6 +8,8 @@ import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyRequested, FriendRequestNotFound}
 
 @Singleton
 class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
@@ -61,21 +63,27 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
     run(q).map(_.headOption)
   }
 
-  def find(id: FriendRequestId, sessionId: SessionId): Future[Option[FriendRequests]] = {
+  def findOwner(id: FriendRequestId, sessionId: SessionId): Future[AccountId] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
         .filter(_.id          == lift(id))
         .filter(_.accountId   == lift(accountId))
+        .map(_.by)
     }
-    run(q).map(_.headOption)
+    run(q).map(_.headOption).flatMap(_ match {
+      case Some(r) =>
+        Future.value(r)
+      case None =>
+        Future.exception(CactaceaException(FriendRequestNotFound))
+    })
   }
 
-  def findAll(since: Option[Long],
-              offset: Int,
-              count: Int,
-              received: Boolean,
-              sessionId: SessionId): Future[List[FriendRequest]] = {
+  def find(since: Option[Long],
+           offset: Int,
+           count: Int,
+           received: Boolean,
+           sessionId: SessionId): Future[List[FriendRequest]] = {
 
     val by = sessionId.toAccountId
 
@@ -125,6 +133,25 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService)
         .update(_.notified -> lift(notified))
     }
     run(q).map(_ => Unit)
+  }
+
+
+  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case false =>
+        Future.exception(CactaceaException(FriendRequestNotFound))
+      case true =>
+        Future.Unit
+    })
+  }
+
+  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    exist(accountId, sessionId).flatMap(_ match {
+      case true =>
+        Future.exception(CactaceaException(AccountAlreadyRequested))
+      case false =>
+        Future.Unit
+    })
   }
 
 }

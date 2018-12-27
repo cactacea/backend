@@ -1,17 +1,17 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-public enum ActiveStatus {
+public enum ActiveStatusType {
     active((byte)0),
     inactive((byte)1);
 
     private byte value;
 
-    private ActiveStatus(byte value) {
+    private ActiveStatusType(byte value) {
         this.value = value;
     }
 
-    static public ActiveStatus forName(byte value) {
-        for (ActiveStatus e : values()) {
+    static public ActiveStatusType forName(byte value) {
+        for (ActiveStatusType e : values()) {
             if (e.value == value) {
                 return e;
             }

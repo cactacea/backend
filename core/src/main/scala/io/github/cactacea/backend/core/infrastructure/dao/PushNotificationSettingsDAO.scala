@@ -11,11 +11,12 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(groupInvitation: Boolean,
-             followerFeed: Boolean,
-             feedComment:Boolean,
+  def create(feed: Boolean,
+             comment:Boolean,
+             friendRequest: Boolean,
+             message: Boolean,
              groupMessage: Boolean,
-             directMessage: Boolean,
+             groupInvitation: Boolean,
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
 
@@ -23,22 +24,24 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[PushNotificationSettings].insert(
         _.accountId           -> lift(accountId),
-        _.groupInvitation         -> lift(groupInvitation),
-        _.followerFeed        -> lift(followerFeed),
-        _.feedComment         -> lift(feedComment),
+        _.feed                -> lift(feed),
+        _.comment             -> lift(comment),
+        _.friendRequest       -> lift(friendRequest),
+        _.message             -> lift(message),
         _.groupMessage        -> lift(groupMessage),
-        _.directMessage       -> lift(directMessage),
+        _.groupInvitation     -> lift(groupInvitation),
         _.showMessage         -> lift(showMessage)
       )
     }
     run(q).map(_ => Unit)
   }
 
-  def update(groupInvitation: Boolean,
-             followerFeed: Boolean,
-             feedComment:Boolean,
+  def update(feed: Boolean,
+             comment:Boolean,
+             friendRequest: Boolean,
+             message: Boolean,
              groupMessage: Boolean,
-             directMessage: Boolean,
+             groupInvitation: Boolean,
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
 
@@ -47,12 +50,13 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
       query[PushNotificationSettings]
         .filter(_.accountId == lift(accountId))
         .update(
-          _.groupInvitation         -> lift(groupInvitation),
-          _.followerFeed        -> lift(followerFeed),
-          _.feedComment         -> lift(feedComment),
-          _.groupMessage        -> lift(groupMessage),
-          _.directMessage       -> lift(directMessage),
-          _.showMessage         -> lift(showMessage)
+          _.feed            -> lift(feed),
+          _.comment         -> lift(comment),
+          _.friendRequest   -> lift(friendRequest),
+          _.message         -> lift(message),
+          _.groupMessage    -> lift(groupMessage),
+          _.groupInvitation -> lift(groupInvitation),
+          _.showMessage     -> lift(showMessage)
         )
     }
     run(q).map(_ => Unit)

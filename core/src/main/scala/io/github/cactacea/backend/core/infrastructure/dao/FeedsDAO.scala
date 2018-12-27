@@ -8,6 +8,8 @@ import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentS
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.FeedNotFound
 
 @Singleton
 class FeedsDAO @Inject()(
@@ -163,7 +165,7 @@ class FeedsDAO @Inject()(
     run(q)
   }
 
-  def findAll(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
 
     val status = AccountStatusType.normally
     val by = sessionId.toAccountId
@@ -216,8 +218,8 @@ class FeedsDAO @Inject()(
   private def addTagsMedium2(t: List[(Feeds, Accounts, Option[Relationships])], sessionId: SessionId): Future[List[Feed]] = {
     val feedIds = t.map({ case (f, _, _) => f.id})
     (for {
-      tags <- feedTagsDAO.findAll(feedIds)
-      medium <- feedMediumDAO.findAll(feedIds)
+      tags <- feedTagsDAO.find(feedIds)
+      medium <- feedMediumDAO.find(feedIds)
       likeBlocks <- blocksCountDAO.findFeedLikeBlocks(feedIds, sessionId)
       commentBlocks <- blocksCountDAO.findFeedCommentBlocks(feedIds, sessionId)
     } yield (tags, medium, likeBlocks, commentBlocks)).map({
@@ -234,11 +236,11 @@ class FeedsDAO @Inject()(
   }
 
 
-  def findAll(accountId: AccountId,
-              since: Option[Long],
-              offset: Int,
-              count: Int,
-              sessionId: SessionId): Future[List[Feed]] = {
+  def find(accountId: AccountId,
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Feed]] = {
 
     val e = timeService.currentTimeMillis()
 
@@ -265,8 +267,8 @@ class FeedsDAO @Inject()(
   private def addTagsMedium(feeds: List[Feeds], sessionId: SessionId): Future[List[Feed]] = {
     val feedIds = feeds.map(_.id)
     (for {
-      tags <- feedTagsDAO.findAll(feedIds)
-      medium <- feedMediumDAO.findAll(feedIds)
+      tags <- feedTagsDAO.find(feedIds)
+      medium <- feedMediumDAO.find(feedIds)
       likeBlocks <- blocksCountDAO.findFeedLikeBlocks(feedIds, sessionId)
       commentBlocks <- blocksCountDAO.findFeedCommentBlocks(feedIds, sessionId)
     } yield (tags, medium, likeBlocks, commentBlocks)).map({
@@ -298,6 +300,16 @@ class FeedsDAO @Inject()(
         .update(_.notified -> lift(notified))
     }
     run(q).map(_ => Unit)
+  }
+
+
+  def validateExist(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+    exist(feedId, sessionId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(FeedNotFound))
+    })
   }
 
 }

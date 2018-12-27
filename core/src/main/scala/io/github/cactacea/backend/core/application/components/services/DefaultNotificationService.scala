@@ -20,7 +20,7 @@ class DefaultNotificationService @Inject()(
         a <- pushNotificationService.send(p)
         _ <- pushNotificationsRepository.updateFeedNotified(id, a)
         _ <- notificationsRepository.createFeed(id, a)
-      } yield (Future.value(Unit))
+      } yield (Unit)
     }
   }
 
@@ -31,7 +31,7 @@ class DefaultNotificationService @Inject()(
         _ <- pushNotificationService.send(p)
         _ <- pushNotificationsRepository.updateCommentNotified(id)
         _ <- notificationsRepository.createComment(id)
-      } yield (Future.value(Unit))
+      } yield (Unit)
     }
   }
 
@@ -41,7 +41,7 @@ class DefaultNotificationService @Inject()(
         p <- pushNotificationsRepository.findByMessageId(id)
         a <- pushNotificationService.send(p)
         _ <- pushNotificationsRepository.updateMessageNotified(id, a)
-      } yield (Future.value(Unit))
+      } yield (Unit)
     }
   }
 
@@ -51,7 +51,7 @@ class DefaultNotificationService @Inject()(
       _ <- pushNotificationService.send(p)
       _ <- pushNotificationsRepository.updateInvitationNotified(id)
       _ <- notificationsRepository.createInvitation(id)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
   def fanOutFriendRequest(id: FriendRequestId): Future[Unit] = {
@@ -60,7 +60,7 @@ class DefaultNotificationService @Inject()(
       _ <- pushNotificationService.send(p)
       _ <- pushNotificationsRepository.updateFriendRequestNotified(id)
       _ <- notificationsRepository.createRequest(id)
-    } yield (Future.value(Unit))
+    } yield (Unit)
   }
 
 }

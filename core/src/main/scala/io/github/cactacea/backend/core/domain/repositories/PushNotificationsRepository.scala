@@ -12,15 +12,15 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 @Singleton
 class PushNotificationsRepository @Inject()(
-                                             pushNotificationsDAO: PushNotificationsDAO,
-                                             feedsDAO: FeedsDAO,
                                              accountFeedsDAO: AccountFeedsDAO,
-                                             groupInvitationsDAO: GroupInvitationsDAO,
-                                             messagesDAO: MessagesDAO,
                                              accountMessagesDAO: AccountMessagesDAO,
                                              commentsDAO: CommentsDAO,
+                                             deepLinkService: DeepLinkService,
+                                             feedsDAO: FeedsDAO,
                                              friendRequestsDAO: FriendRequestsDAO,
-                                             deepLinkService: DeepLinkService
+                                             groupInvitationsDAO: GroupInvitationsDAO,
+                                             messagesDAO: MessagesDAO,
+                                             pushNotificationsDAO: PushNotificationsDAO
                                            ) {
 
   def findByFeedId(id: FeedId) : Future[List[PushNotification]] = {

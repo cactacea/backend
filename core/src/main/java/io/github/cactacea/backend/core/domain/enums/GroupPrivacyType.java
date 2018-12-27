@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.enums;
 
 public enum GroupPrivacyType {
     everyone((byte)0),
-    follows((byte)1),
+    following((byte)1),
     followers((byte)2),
     friends((byte)3);
 
