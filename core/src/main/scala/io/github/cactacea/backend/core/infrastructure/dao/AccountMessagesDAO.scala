@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
@@ -11,12 +10,12 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.MessageNotFound
 
 @Singleton
-class AccountMessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class AccountMessagesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
   def create(groupId: GroupId, messageId: MessageId, sessionId: SessionId): Future[Unit] = {
-    val postedAt = timeService.currentTimeMillis()
+    val postedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       infix"""

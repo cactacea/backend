@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
 import io.github.cactacea.backend.core.helpers.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.dao._
@@ -13,7 +12,6 @@ class SessionsRepositorySpec extends RepositorySpec {
   val devicesDAO = injector.instance[DevicesDAO]
   var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
   val accountsDAO = injector.instance[AccountsDAO]
-  val timeService = injector.instance[TimeService]
   import db._
 
   test("signUp") {
@@ -90,7 +88,7 @@ class SessionsRepositorySpec extends RepositorySpec {
     val userAgent = Some("userAgent")
     val session = execute(sessionsRepository.signUp(accountName, password, udid,  DeviceType.ios, userAgent))
 
-    val expired = timeService.currentTimeMillis()
+    val expired = System.currentTimeMillis()
     execute(sessionsRepository.checkAccountStatus(session.id.toSessionId, expired))
 
     // Session Timeout

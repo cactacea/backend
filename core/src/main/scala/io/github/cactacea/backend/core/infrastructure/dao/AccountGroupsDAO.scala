@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
@@ -11,7 +10,7 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyJoined, AccountNotJoined, GroupNotFound}
 
 @Singleton
-class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class AccountGroupsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -56,7 +55,7 @@ class AccountGroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) 
   }
 
   private def insert(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[AccountGroupId] = {
-    val joinedAt = timeService.currentTimeMillis()
+    val joinedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[AccountGroups]

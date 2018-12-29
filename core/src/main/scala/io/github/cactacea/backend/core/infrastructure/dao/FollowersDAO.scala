@@ -3,13 +3,12 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class FollowersDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -67,7 +66,7 @@ class FollowersDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   }
 
   private def insertFollower(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val followedAt = timeService.currentTimeMillis()
+    val followedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Followers]

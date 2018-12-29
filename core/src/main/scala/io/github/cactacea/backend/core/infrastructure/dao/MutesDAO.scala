@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Mutes, Relationships}
@@ -11,12 +10,12 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyMuted, AccountNotMuted}
 
 @Singleton
-class MutesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class MutesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val mutedAt = timeService.currentTimeMillis()
+    val mutedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Mutes]

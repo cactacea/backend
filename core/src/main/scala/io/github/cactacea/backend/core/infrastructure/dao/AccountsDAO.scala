@@ -4,7 +4,6 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums._
 import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
@@ -17,7 +16,6 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 class AccountsDAO @Inject()(
                              db: DatabaseService,
                              hashService: HashService,
-                             timeService: TimeService,
                              blocksCountDAO: BlockCountDAO
                            ) {
 
@@ -283,7 +281,7 @@ class AccountsDAO @Inject()(
 
   def signOut(sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
-    val signedOutAt: Option[Long] = Some(timeService.currentTimeMillis())
+    val signedOutAt: Option[Long] = Some(System.currentTimeMillis())
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))

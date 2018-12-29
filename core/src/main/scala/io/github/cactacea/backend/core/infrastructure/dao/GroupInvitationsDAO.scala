@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{GroupInvitationStatusType, GroupPrivacyType}
 import io.github.cactacea.backend.core.domain.models.GroupInvitation
 import io.github.cactacea.backend.core.infrastructure.identifiers._
@@ -12,7 +11,7 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyInvited, GroupInvitationNotFound}
 
 @Singleton
-class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class GroupInvitationsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -23,7 +22,7 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService, timeService: TimeServic
   }
 
   private def insert(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
-    val invitedAt = timeService.currentTimeMillis()
+    val invitedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[GroupInvitations]

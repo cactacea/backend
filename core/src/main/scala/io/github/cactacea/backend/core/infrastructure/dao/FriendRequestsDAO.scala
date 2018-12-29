@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.infrastructure.identifiers._
@@ -12,12 +11,12 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyRequested, FriendRequestNotFound}
 
 @Singleton
-class FriendRequestsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class FriendRequestsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
-    val requestedAt = timeService.currentTimeMillis()
+    val requestedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]

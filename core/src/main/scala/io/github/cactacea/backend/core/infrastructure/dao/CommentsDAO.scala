@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.ContentStatusType
 import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.infrastructure.identifiers._
@@ -14,8 +13,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.CommentNotF
 @Singleton
 class CommentsDAO @Inject()(
                              db: DatabaseService,
-                             blocksCountDAO: BlockCountDAO,
-                             timeService: TimeService
+                             blocksCountDAO: BlockCountDAO
                            ) {
 
   import db._
@@ -29,7 +27,7 @@ class CommentsDAO @Inject()(
 
   private def insertComments(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     val by = sessionId.toAccountId
-    val postedAt = timeService.currentTimeMillis()
+    val postedAt = System.currentTimeMillis()
     val replyId: Option[CommentId] = None
     val q = quote {
       query[Comments]
