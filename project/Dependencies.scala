@@ -175,7 +175,7 @@ object Dependencies {
   )
 
   lazy val finagger = Seq(
-    "com.twitter" %% "finatra-http" % "18.11.0",
+    "com.twitter" %% "finatra-http" % versions.twitter,
     "org.joda" % "joda-convert" % "2.1.1",
     "org.reflections" % "reflections" % "0.9.10",
     "org.projectlombok" % "lombok" % "1.16.22" % "provided",
@@ -188,5 +188,13 @@ object Dependencies {
     "net.bytebuddy" % "byte-buddy" % "1.8.17",
     "javax.xml.bind" % "jaxb-api" % "2.1"
   )
+
+  lazy val finasocket = Seq(
+    "com.twitter" %% "finagle-core" % versions.twitter,
+    "com.twitter" %% "finagle-netty4" % versions.twitter,
+    "org.scalatest" %% "scalatest" % "3.0.4" % Test,
+    "junit" % "junit" % "4.12" % Test
+  )
+
 }
 

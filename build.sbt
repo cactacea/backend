@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(Migration.settings)
-  .aggregate(demo, server, core, plugin, finagger, filhouette)
+  .aggregate(demo, server, core, plugin, finagger, filhouette, finasocket)
   .enablePlugins(FlywayPlugin)
 
 
@@ -64,6 +64,12 @@ lazy val filhouette = (project in file("libs/filhouette"))
   .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.filhouette)
 
+
+lazy val finasocket = (project in file("libs/finasocket"))
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finasocket)
 
 lazy val swaggerUIVersion = SettingKey[String]("swaggerUIVersion")
 
