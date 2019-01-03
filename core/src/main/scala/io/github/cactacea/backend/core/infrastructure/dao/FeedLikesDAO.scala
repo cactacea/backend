@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{FeedAlreadyLiked, FeedNotLiked}
 
 @Singleton
-class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class FeedLikesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -24,7 +24,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
   }
 
   private def insertFeedLikes(feedId: FeedId, sessionId: SessionId): Future[FeedLikeId] = {
-    val likedAt = timeService.currentTimeMillis()
+    val likedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[FeedLikes]

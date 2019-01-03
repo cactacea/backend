@@ -15,7 +15,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 @Singleton
 class NotificationsDAO @Inject()(db: DatabaseService,
                                  notificationMessagesService: NotificationMessagesService,
-                                 timeService: TimeService) {
+                                 ) {
 
   import db._
 
@@ -30,7 +30,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
                                   notificationType: NotificationType,
                                   contentId: Option[Long], url: String): Future[List[NotificationId]] = {
 
-    val notifiedAt = timeService.currentTimeMillis()
+    val notifiedAt = System.currentTimeMillis()
     val n = ids.map(id => Notifications(NotificationId(0L), id, by, notificationType, contentId, url, true,notifiedAt))
     val q = quote {
       liftQuery(n).foreach(e => query[Notifications].insert(e).returning(_.id))
@@ -39,7 +39,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
   }
 
   def create(accountId: AccountId, by: AccountId, notificationType: NotificationType, contentId: Long, url: String): Future[NotificationId] = {
-    val notifiedAt = timeService.currentTimeMillis()
+    val notifiedAt = System.currentTimeMillis()
     val contentIdOpt: Option[Long] = Some(contentId)
     val q = quote {
       query[Notifications].insert(

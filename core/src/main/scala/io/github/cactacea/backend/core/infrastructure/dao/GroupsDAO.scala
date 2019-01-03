@@ -12,12 +12,12 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.GroupNotFound
 
 @Singleton
-class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class GroupsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
   def create(sessionId: SessionId): Future[GroupId] = {
-    val organizedAt = timeService.currentTimeMillis()
+    val organizedAt = System.currentTimeMillis()
     val name: Option[String] = None
     val by = sessionId.toAccountId
     val r = quote {
@@ -42,7 +42,7 @@ class GroupsDAO @Inject()(db: DatabaseService, timeService: TimeService) {
              authority: GroupAuthorityType,
              sessionId: SessionId): Future[GroupId] = {
 
-    val organizedAt = timeService.currentTimeMillis()
+    val organizedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val r = quote {
       query[Groups].insert(

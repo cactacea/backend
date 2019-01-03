@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, CommentLikeId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
@@ -11,7 +10,7 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{CommentAlreadyLiked, CommentNotLiked}
 
 @Singleton
-class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class CommentLikesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -24,7 +23,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   private def insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[CommentLikeId] = {
     val by = sessionId.toAccountId
-    val likedAt = timeService.currentTimeMillis()
+    val likedAt = System.currentTimeMillis()
     val q = quote {
       query[CommentLikes]
         .insert(

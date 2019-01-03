@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -12,13 +11,13 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyBlocked, AccountNotBlocked}
 
 @Singleton
-class BlocksDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class BlocksDAO @Inject()(db: DatabaseService) {
 
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
-    val blockedAt = timeService.currentTimeMillis()
+    val blockedAt = System.currentTimeMillis()
     val q = quote {
       query[Blocks]
         .insert(

@@ -6,7 +6,7 @@ import com.twitter.util.logging.Logging
 import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.{FeedsService, SessionsService, TimeService}
+import io.github.cactacea.backend.core.application.services.{FeedsService, SessionsService}
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import org.scalatest.BeforeAndAfter
 
@@ -36,7 +36,6 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
   private val db = injector.instance[DatabaseService]
   private val sessionService = injector.instance[SessionsService]
   val feedsService = injector.instance[FeedsService]
-  val timeService = injector.instance[TimeService]
 
   def signUp(accountName: String, password: String, udid: String) = {
     execute(sessionService.signUp(accountName, password, udid, Some("user-agent"), DeviceType.ios))

@@ -3,13 +3,12 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MessageType}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
+class MessagesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -22,7 +21,7 @@ class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
 
   private def insert(groupId: GroupId, accountCount: Long, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
     val by = sessionId.toAccountId
-    val postedAt = timeService.currentTimeMillis()
+    val postedAt = System.currentTimeMillis()
     val mt = messageType
     val q = quote {
       query[Messages].insert(
@@ -80,7 +79,7 @@ class MessagesDAO @Inject()(db: DatabaseService, timeService: TimeService) {
                      sessionId: SessionId): Future[(MessageId, Long)] = {
 
     val by = sessionId.toAccountId
-    val postedAt = timeService.currentTimeMillis()
+    val postedAt = System.currentTimeMillis()
     val mt = if (message.isDefined) {
       MessageType.text
     } else {

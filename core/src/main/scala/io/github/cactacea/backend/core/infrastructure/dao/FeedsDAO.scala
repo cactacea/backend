@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType, FeedPrivacyType}
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.identifiers._
@@ -19,8 +18,7 @@ class FeedsDAO @Inject()(
                           feedLikesDAO: FeedLikesDAO,
                           feedReportsDAO: FeedReportsDAO,
                           commentsDAO: CommentsDAO,
-                          blocksCountDAO: BlockCountDAO,
-                          timeService: TimeService
+                          blocksCountDAO: BlockCountDAO
                         ) {
 
   import db._
@@ -49,7 +47,7 @@ class FeedsDAO @Inject()(
                          by: AccountId): Future[FeedId] = {
 
     val privacy = privacyType
-    val postedAt = timeService.currentTimeMillis()
+    val postedAt = System.currentTimeMillis()
     val q = quote {
       query[Feeds].insert(
         _.by                  -> lift(by),
@@ -144,7 +142,7 @@ class FeedsDAO @Inject()(
   }
 
   def exist(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
-    val e = timeService.currentTimeMillis()
+    val e = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
@@ -193,7 +191,7 @@ class FeedsDAO @Inject()(
   def find(feedId: FeedId, sessionId: SessionId): Future[Option[Feed]] = {
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
-    val e = timeService.currentTimeMillis()
+    val e = System.currentTimeMillis()
     val q = quote {
       query[Feeds].filter(f => f.id == lift(feedId))
         .filter(f => f.expiration.forall(_ > lift(e)))
@@ -242,7 +240,7 @@ class FeedsDAO @Inject()(
            count: Int,
            sessionId: SessionId): Future[List[Feed]] = {
 
-    val e = timeService.currentTimeMillis()
+    val e = System.currentTimeMillis()
 
     val by = sessionId.toAccountId
     val q = quote {

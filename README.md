@@ -11,12 +11,12 @@
 - [core](https://github.com/cactacea/backend/tree/master/core)
 - [plugin](https://github.com/cactacea/backend/tree/master/plugin)
 
+### Dependencies
+- [filhouette](https://github.com/cactacea/backend/tree/master/libs/filhouette)
+- [finagger](https://github.com/cactacea/backend/tree/master/libs/finagger)
+- [finasocket](https://github.com/cactacea/backend/tree/master/libs/finasocket)
+
 ### Documentation
 
 - [`API Reference`](https://cactacea.github.io/backend/)
 - [`Japanese Documents(TODO)`](https://cactacea.github.io/docs/)
-
-### Related Projects
-
-- [`Fiagger`](https://github.com/cactacea/backend/tree/master/libs/finagger) - Swagger Finatra Integration
-- [`Filhouette`](https://github.com/cactacea/backend/tree/master/libs/filhouette) - Authentication library for Finatra
