@@ -1,8 +1,8 @@
 package io.github.cactacea.finasocket
 
 import io.netty.channel.{ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter}
-import io.netty.handler.codec.http.{HttpHeaderNames, HttpRequest}
 import io.netty.handler.codec.http.websocketx._
+import io.netty.handler.codec.http.{HttpHeaderNames, HttpRequest}
 
 class WebSocketServerHandler extends ChannelInboundHandlerAdapter {
   private[this] var handshaker: Option[WebSocketServerHandshaker] = None
@@ -28,7 +28,8 @@ class WebSocketServerHandler extends ChannelInboundHandlerAdapter {
         WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel())
       case Some(ref) =>
         ref.handshake(ctx.channel(), request)
-        ctx.fireChannelRead(request)
+        val addr = ctx.channel().remoteAddress()
+        ctx.fireChannelRead((request, addr))
     }
   }
 

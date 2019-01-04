@@ -1,5 +1,7 @@
 package io.github.cactacea.finasocket
 
+import java.net.SocketAddress
+
 import com.twitter.concurrent.AsyncQueue
 import com.twitter.conversions.time._
 import com.twitter.finagle.stats.DefaultStatsReceiver
@@ -24,7 +26,7 @@ class ServerDispatcherTest extends FunSuite {
 
   test("invalid message") {
     val (in, out) = mkPair[Any, Any]
-    new ServerDispatcher(out, echo, DefaultStatsReceiver)
+    val disp = new ServerDispatcher(out, echo, DefaultStatsReceiver)
     in.write("invalid")
     Await.ready(out.onClose, 1.second)
     assert(out.status == Status.Closed)
@@ -32,11 +34,12 @@ class ServerDispatcherTest extends FunSuite {
 
   test("valid message then invalid") {
     val (in, out) = mkPair[Any, Any]
-    new ServerDispatcher(out, echo, DefaultStatsReceiver)
+    val disp = new ServerDispatcher(out, echo, DefaultStatsReceiver)
     val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/")
-    in.write(req)
+    val addr = new SocketAddress{}
+    in.write((req, addr))
     in.write(new TextWebSocketFrame("hello"))
-    val frame = Await.result(in.read(), 30.second)
+    val frame = Await.result(in.read(), 1.second)
     assert(frame.asInstanceOf[TextWebSocketFrame].text() == "hello")
     in.write("invalid")
     assert(out.status == Status.Closed)

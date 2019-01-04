@@ -1,12 +1,13 @@
 package io.github.cactacea.finasocket
 
+import java.net.{InetSocketAddress, SocketAddress, URI}
+
 import com.twitter.concurrent.AsyncStream
 import com.twitter.conversions.time._
 import com.twitter.finagle.Service
 import com.twitter.finagle.param.Stats
 import com.twitter.finagle.stats.{NullStatsReceiver, StatsReceiver}
 import com.twitter.util._
-import java.net.{InetSocketAddress, SocketAddress, URI}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
@@ -35,14 +36,14 @@ private object EndToEndTest {
     service: Service[Request, Response],
     stats: StatsReceiver = NullStatsReceiver
   )(run: Service[Request, Response] => Future[Unit]): Unit = {
-    val server = Server()
+    val server = Websocket.server
       .withLabel("server")
       .configured(Stats(stats))
       .serve("localhost:*", service)
 
     val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
 
-    val client = Client()
+    val client = Websocket.client
       .configured(Stats(stats))
       .newService(s"${addr.getHostName}:${addr.getPort}", "client")
 

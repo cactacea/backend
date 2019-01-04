@@ -6,7 +6,7 @@ import com.twitter.concurrent._
 import com.twitter.finagle.Service
 import com.twitter.util.{Await, Future}
 
-object Example extends App with ServerEventListener {
+object Example extends App {
   def handler(messages: AsyncStream[Frame]): AsyncStream[Frame] = {
     messages.map {
       case Frame.Text("1") => Frame.Text("one")
@@ -19,26 +19,16 @@ object Example extends App with ServerEventListener {
     }
   }
 
-  val server = Server(eventListener = Some(this))
-  val service = server.serve(":14000", new Service[Request, Response] {
-    def apply(req: Request): Future[Response] = {
+  val service = Websocket.serve(":14000", new Service[Request, Response] {
+    def apply(req: Request): Future[Response] =
       Future.value(Response(handler(req.messages)))
-    }
   })
-
-  override def onOpen(clientSocket: ClientSocket): Unit = {
-    println("opened")
-  }
-
-  override def onClose(clientSocket: ClientSocket): Unit = {
-    println("closed")
-  }
 
   Await.ready(service)
 }
 
 object ExampleClient extends App {
-  val client = Client()
+  val client = Websocket.client
     .newService(s"localhost:14000", "client")
   val path = "ws://localhost:14000/"
   val frames = AsyncStream.fromSeq(Seq(Frame.Text("1")))

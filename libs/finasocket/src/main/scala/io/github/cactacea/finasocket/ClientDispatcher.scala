@@ -6,15 +6,12 @@ import com.twitter.finagle.dispatch.GenSerialClientDispatcher
 import com.twitter.finagle.stats.{NullStatsReceiver, StatsReceiver}
 import com.twitter.finagle.transport.Transport
 import com.twitter.util.{Future, Promise}
-import io.github.cactacea.finasocket.FrameConversion.toNetty
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame
 
 class ClientDispatcher(trans: Transport[Any, Any], statsReceiver: StatsReceiver)
   extends GenSerialClientDispatcher[Request, Response, Any, Any](trans, statsReceiver) {
 
-  import FrameConversion.fromNetty
-
-  var handler: WebSocketClientHandler = _
+  import com.twitter.finagle.websocket.Netty4._
 
   def this(trans: Transport[Any, Any]) = {
     this(trans, NullStatsReceiver)
