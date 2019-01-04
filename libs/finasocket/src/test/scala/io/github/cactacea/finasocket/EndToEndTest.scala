@@ -16,16 +16,16 @@ import org.scalatest.junit.JUnitRunner
 class EndToEndTest extends FunSuite {
   import EndToEndTest._
   test("echo") {
-    val echo = new Service[Request, Response] {
-      def apply(req: Request): Future[Response] =
-        Future.value(Response(req.messages))
+    val echo = new Service[Client, Response] {
+      def apply(client: Client): Future[Response] =
+        Future.value(Response(client.onRead))
     }
 
     connect(echo) { client =>
       val frames = texts("hello", "world")
       for {
         response <- client(mkRequest("/", frames))
-        messages <- response.messages.toSeq()
+        messages <- response.onReceived.toSeq()
       } yield assert(messages == frames)
     }
   }
@@ -33,17 +33,17 @@ class EndToEndTest extends FunSuite {
 
 private object EndToEndTest {
   def connect(
-    service: Service[Request, Response],
-    stats: StatsReceiver = NullStatsReceiver
+               service: Service[Client, Response],
+               stats: StatsReceiver = NullStatsReceiver
   )(run: Service[Request, Response] => Future[Unit]): Unit = {
-    val server = Websocket.server
+    val server = WebSocket.server
       .withLabel("server")
       .configured(Stats(stats))
       .serve("localhost:*", service)
 
     val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
 
-    val client = Websocket.client
+    val client = WebSocket.client
       .configured(Stats(stats))
       .newService(s"${addr.getHostName}:${addr.getPort}", "client")
 

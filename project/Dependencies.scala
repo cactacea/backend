@@ -193,7 +193,8 @@ object Dependencies {
     "com.twitter" %% "finagle-core" % versions.twitter,
     "com.twitter" %% "finagle-netty4" % versions.twitter,
     "org.scalatest" %% "scalatest" % "3.0.4" % Test,
-    "junit" % "junit" % "4.12" % Test
+    "junit" % "junit" % "4.12" % Test,
+    "org.mockito" % "mockito-core" % "2.23.4" % Test
   )
 
 }

@@ -26,8 +26,7 @@ class WebSocketServerHandler extends ChannelInboundHandlerAdapter {
         WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel())
       case Some(ref) =>
         ref.handshake(ctx.channel(), request)
-        val addr = ctx.channel().remoteAddress()
-        ctx.fireChannelRead((request, addr))
+        ctx.fireChannelRead((request, ctx.channel()))
     }
   }
 
