@@ -10,10 +10,8 @@ class WebSocketServerHandler extends ChannelInboundHandlerAdapter {
   override def channelRead(ctx: ChannelHandlerContext, msg: AnyRef): Unit = {
     msg match {
       case http: HttpRequest =>
-        println("Got HTTP Request")
         handleHttpRequest(ctx, http)
       case frame: WebSocketFrame =>
-        println("Got Websocket Frame")
         handleWebsocketFrame(ctx, frame)
     }
   }

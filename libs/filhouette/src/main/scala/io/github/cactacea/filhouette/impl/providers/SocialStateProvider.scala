@@ -268,8 +268,6 @@ class DefaultSocialStateHandler(val handlers: Set[SocialStateItemHandler], signe
     if (handlers.isEmpty) {
       Future.value(SocialState(Set()))
     } else {
-      println("test1: " + state)
-      println("test2: " + signer.extract(state))
       Future.const(signer.extract(state)).flatMap { state =>
         state.split('.').toList match {
           case Nil | List("") =>
@@ -281,7 +279,6 @@ class DefaultSocialStateHandler(val handlers: Set[SocialStateItemHandler], signe
                   handlers.find(_.canHandle(item)) match {
                   case Some(handler) => handler.unserialize(item)
                   case None          =>
-                    println("test3: " + MissingItemHandlerError.format(item))
                     Future.exception(new ProviderException(MissingItemHandlerError.format(item)))
                 }
                 case item => Future.exception(new ProviderException(ItemExtractionError.format(item)))
