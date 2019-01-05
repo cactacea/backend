@@ -13,7 +13,7 @@ object Example extends App {
 
       println("connected")
 
-      val onWrite = client.onRead.map({ f =>
+      val response = client.onRead.map({ f =>
         val text = f match {
           case Frame.Text("1") => Frame.Text("one")
           case Frame.Text("2") => Frame.Text("two")
@@ -31,7 +31,7 @@ object Example extends App {
         println("disconnected")
       }
 
-      Future.value(client.copy(onWrite = onWrite))
+      Future.value(client.copy(onWrite = response))
     }
   })
 
