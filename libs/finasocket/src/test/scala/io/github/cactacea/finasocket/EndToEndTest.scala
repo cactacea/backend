@@ -18,8 +18,7 @@ class EndToEndTest extends FunSuite {
   test("echo") {
     val echo = new Service[Client, Client] {
       def apply(client: Client): Future[Client] =
-        Future.value(client.copy(onWrite =  client.onRead))
-//        Future.value(Response(client.onRead))
+        Future.value(client)
     }
 
     connect(echo) { client =>

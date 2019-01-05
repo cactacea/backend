@@ -41,7 +41,9 @@ class ServerDispatcher(
         trans.close()
         closer.setValue()
       }
-      val request = Client(uri, channel, headers, messages(closer), AsyncStream.empty, closer, close)
+      val onRead = messages(closer)
+      // Echo client
+      val request = Client(uri, channel, headers, onRead, onRead, closer, close)
       service(request).flatMap { response =>
         response.onWrite
           .map(toNetty)

@@ -19,8 +19,8 @@ class ServerDispatcherTest extends FunSuite {
   import ServerDispatcherTest._
 
   val echo = new Service[Client, Client] {
-    def apply(req: Client): Future[Client] = {
-      Future.value(req.copy(onWrite = req.onRead))
+    def apply(client: Client): Future[Client] = {
+      Future.value(client)
     }
   }
 
