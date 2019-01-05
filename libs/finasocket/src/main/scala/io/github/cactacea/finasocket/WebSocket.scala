@@ -16,7 +16,7 @@ import io.netty.handler.codec.http.{DefaultHttpHeaders, HttpClientCodec, HttpObj
 import io.netty.handler.codec.http.websocketx.{WebSocketClientHandshakerFactory, WebSocketVersion}
 import io.github.cactacea.finasocket.{Client => WebSocketClient}
 
-object WebSocket extends Server[WebSocketClient, Response] {
+object WebSocket extends Server[WebSocketClient, WebSocketClient] {
 
   case class Client(stack: Stack[ServiceFactory[Request, Response]] = StackClient.newStack,
                     params: Stack.Params = StackClient.defaultParams + ProtocolLibrary("ws"))
@@ -74,9 +74,9 @@ object WebSocket extends Server[WebSocketClient, Response] {
   val client: Client = Client()
 
   case class Server(
-                     stack: Stack[ServiceFactory[WebSocketClient, Response]] = StackServer.newStack,
+                     stack: Stack[ServiceFactory[WebSocketClient, WebSocketClient]] = StackServer.newStack,
                      params: Stack.Params = StackServer.defaultParams + ProtocolLibrary("ws"))
-    extends StdStackServer[WebSocketClient, Response, Server] {
+    extends StdStackServer[WebSocketClient, WebSocketClient, Server] {
 
     protected type In = Any
     protected type Out = Any
@@ -92,12 +92,12 @@ object WebSocket extends Server[WebSocketClient, Response] {
 
     protected def newDispatcher(
       transport: Transport[In, Out] { type Context <: Server.this.Context },
-      service: Service[WebSocketClient, Response]
+      service: Service[WebSocketClient, WebSocketClient]
     ): Closable =
         new ServerDispatcher(transport, service, statsReceiver)
 
     protected def copy1(
-                         stack: Stack[ServiceFactory[WebSocketClient, Response]] = this.stack,
+                         stack: Stack[ServiceFactory[WebSocketClient, WebSocketClient]] = this.stack,
                          params: Stack.Params = this.params
     ): Server = copy(stack, params)
   }
@@ -106,6 +106,6 @@ object WebSocket extends Server[WebSocketClient, Response] {
 
   def serve(
     addr: SocketAddress,
-    factory: ServiceFactory[WebSocketClient, Response]
+    factory: ServiceFactory[WebSocketClient, WebSocketClient]
   ): ListeningServer = server.serve(addr, factory)
 }

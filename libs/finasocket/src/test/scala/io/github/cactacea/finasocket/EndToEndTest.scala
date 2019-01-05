@@ -16,9 +16,10 @@ import org.scalatest.junit.JUnitRunner
 class EndToEndTest extends FunSuite {
   import EndToEndTest._
   test("echo") {
-    val echo = new Service[Client, Response] {
-      def apply(client: Client): Future[Response] =
-        Future.value(Response(client.onRead))
+    val echo = new Service[Client, Client] {
+      def apply(client: Client): Future[Client] =
+        Future.value(client.copy(onWrite =  client.onRead))
+//        Future.value(Response(client.onRead))
     }
 
     connect(echo) { client =>
@@ -33,7 +34,7 @@ class EndToEndTest extends FunSuite {
 
 private object EndToEndTest {
   def connect(
-               service: Service[Client, Response],
+               service: Service[Client, Client],
                stats: StatsReceiver = NullStatsReceiver
   )(run: Service[Request, Response] => Future[Unit]): Unit = {
     val server = WebSocket.server

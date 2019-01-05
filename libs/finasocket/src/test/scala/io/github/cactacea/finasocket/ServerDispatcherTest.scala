@@ -18,9 +18,9 @@ import org.scalatest.junit.JUnitRunner
 class ServerDispatcherTest extends FunSuite {
   import ServerDispatcherTest._
 
-  val echo = new Service[Client, Response] {
-    def apply(req: Client): Future[Response] = {
-      Future.value(Response(req.onRead))
+  val echo = new Service[Client, Client] {
+    def apply(req: Client): Future[Client] = {
+      Future.value(req.copy(onWrite = req.onRead))
     }
   }
 

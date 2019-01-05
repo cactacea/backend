@@ -15,7 +15,7 @@ import scala.collection.JavaConverters._
 
 class ServerDispatcher(
                         trans: Transport[Any, Any],
-                        service: Service[Client, Response],
+                        service: Service[Client, Client],
                         stats: StatsReceiver)
   extends Closable {
 
@@ -41,9 +41,9 @@ class ServerDispatcher(
         trans.close()
         closer.setValue()
       }
-      val request = Client(uri, headers, messages(closer), channel, closer, close)
+      val request = Client(uri, channel, headers, messages(closer), AsyncStream.empty, closer, close)
       service(request).flatMap { response =>
-        response.onReceived
+        response.onWrite
           .map(toNetty)
           .foreachF(trans.write)
           .ensure(trans.close())

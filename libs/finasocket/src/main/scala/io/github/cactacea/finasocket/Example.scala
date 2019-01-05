@@ -8,12 +8,12 @@ import com.twitter.util.{Await, Future}
 
 object Example extends App {
 
-  val service = WebSocket.serve(":14000", new Service[Client, Response] {
-    def apply(client: Client): Future[Response] = {
+  val service = WebSocket.serve(":14000", new Service[Client, Client] {
+    def apply(client: Client): Future[Client] = {
 
       println("connected")
 
-      val messages = client.onRead.map({ f =>
+      val onWrite = client.onRead.map({ f =>
         val text = f match {
           case Frame.Text("1") => Frame.Text("one")
           case Frame.Text("2") => Frame.Text("two")
@@ -31,7 +31,7 @@ object Example extends App {
         println("disconnected")
       }
 
-      Future.value(Response(messages))
+      Future.value(client.copy(onWrite = onWrite))
     }
   })
 
