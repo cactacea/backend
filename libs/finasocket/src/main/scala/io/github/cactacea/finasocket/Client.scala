@@ -18,12 +18,6 @@ case class Client(
                    onClose: Future[Unit] = new Promise[Unit],
                    close: () => Unit = { () => () }) {
 
-  import com.twitter.finagle.websocket.Netty4.toNetty
-
-  def write(frame: Frame): Future[Channel] = {
-    twitterFuture(channel.write(toNetty(frame)))
-  }
-
   private def twitterFuture(cf: ChannelFuture): Future[Channel] = {
     val p = Promise[Channel]
     cf.addListener(new ChannelFutureListener {
