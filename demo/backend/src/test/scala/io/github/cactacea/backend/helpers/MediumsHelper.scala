@@ -4,11 +4,11 @@ import java.nio.file.{Files, Paths}
 
 import com.twitter.finagle.http.FileElement
 import com.twitter.io.Buf
-import io.github.cactacea.backend.DemoServerSpec
+import io.github.cactacea.backend.BackendServerSpec
 import io.github.cactacea.backend.models.responses.MediumCreated
 
 trait MediumsHelper extends CommonHelper {
-  self: DemoServerSpec =>
+  self: BackendServerSpec =>
 
   def uploadMedium(path: String, resourceName: String, accessToken: String): Array[MediumCreated] = {
     println(path + resourceName)

@@ -1,12 +1,12 @@
 package io.github.cactacea.backend.helpers
 
 import com.twitter.finagle.http.Response
-import io.github.cactacea.backend.DemoServerSpec
+import io.github.cactacea.backend.BackendServerSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
 import io.github.cactacea.backend.models.requests.session.PutSessionProfileImage
 
 trait SessionHelper extends CommonHelper {
-  self: DemoServerSpec =>
+  self: BackendServerSpec =>
 
   def signOut(accessToken: String): Response = {
     server.httpDelete(

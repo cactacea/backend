@@ -1,14 +1,14 @@
 package io.github.cactacea.backend.helpers
 
 import com.twitter.finagle.http.Status
-import io.github.cactacea.backend.DemoServerSpec
+import io.github.cactacea.backend.BackendServerSpec
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
 import io.github.cactacea.backend.models.requests.feed.PostFeed
 import io.github.cactacea.backend.models.responses.FeedCreated
 
 trait FeedsHelper extends CommonHelper {
-  self: DemoServerSpec =>
+  self: BackendServerSpec =>
 
   def postFeed(message: String, mediumIds: Option[Array[MediumId]],
                tags: Option[Array[String]], privacyType: FeedPrivacyType, contentWarning: Boolean, accessToken: String): FeedCreated = {

@@ -3,12 +3,12 @@ package io.github.cactacea.backend.helpers
 import java.util.UUID
 
 import com.twitter.inject.server.FeatureTest
-import io.github.cactacea.backend.DemoServerSpec
+import io.github.cactacea.backend.BackendServerSpec
 import io.github.cactacea.backend.models.requests.sessions.PostSignUp
 import io.github.cactacea.backend.models.responses.Authentication
 
 trait SessionsHelper extends FeatureTest with CommonHelper {
-  self: DemoServerSpec =>
+  self: BackendServerSpec =>
 
   def signUp(accountName: String, password: String): Authentication = {
     val uuid = UUID.randomUUID().toString

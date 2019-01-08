@@ -4,7 +4,7 @@ import scala.collection.JavaConverters._
 import org.flywaydb.core.Flyway
 import io.github.cactacea.backend.core.util.configs.Config
 
-object DemoSetup {
+object BackendSetup {
 
   def migrate(): Unit = {
 

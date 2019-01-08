@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.helpers._
 
 @Singleton
-class DemoServerSpec extends FeatureTest with Helpers {
+class BackendServerSpec extends FeatureTest with Helpers {
 
   override val server = new EmbeddedHttpServer(
     twitterServer = new CactaceaServer {

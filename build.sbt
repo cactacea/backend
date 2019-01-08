@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(Migration.settings)
-  .aggregate(demo, server, core, plugin, finagger, filhouette, finasocket, finachat)
+  .aggregate(backendDemo, server, core, plugin, finagger, filhouette, finasocket, finachat)
   .enablePlugins(FlywayPlugin)
 
 
@@ -98,9 +98,9 @@ lazy val plugin = (project in file("plugin"))
   .dependsOn(core % "compile->compile;test->test")
 
 
-lazy val demo = (project in file("demo"))
+lazy val backendDemo = (project in file("demo/backend"))
   .settings(
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp"),
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.BackendDemoServerApp"),
     version in Docker := ( version in ThisBuild ).value,
     maintainer in Docker := "Cactacea",
     packageName in Docker := "backend",
@@ -209,7 +209,7 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   tagRelease,
   ReleaseStep(action = Command.process("publish", _)),
-  ReleaseStep(action = Command.process("demo/docker:publish", _)),
+  ReleaseStep(action = Command.process("backendDemo/docker:publish", _)),
   setNextVersion,
   commitNextVersion,
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),

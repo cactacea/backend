@@ -1,10 +1,10 @@
 package io.github.cactacea.backend.helpers
 
-import io.github.cactacea.backend.DemoServerSpec
+import io.github.cactacea.backend.BackendServerSpec
 import io.github.cactacea.backend.core.util.configs.Config
 
 trait CommonHelper {
-  self: DemoServerSpec =>
+  self: BackendServerSpec =>
 
   private val agent =
     "Mozilla/5.0 (iPhone; CPU iPhone OS 11_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) " +

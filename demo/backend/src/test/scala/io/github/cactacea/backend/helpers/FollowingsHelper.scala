@@ -1,12 +1,12 @@
 package io.github.cactacea.backend.helpers
 
 import com.twitter.finagle.http.Response
-import io.github.cactacea.backend.DemoServerSpec
+import io.github.cactacea.backend.BackendServerSpec
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 
 trait FollowingsHelper extends CommonHelper {
-  self: DemoServerSpec =>
+  self: BackendServerSpec =>
 
   def sessionFollowing(accessToken: String): Array[Account] = {
     val path = s"/session/following"
