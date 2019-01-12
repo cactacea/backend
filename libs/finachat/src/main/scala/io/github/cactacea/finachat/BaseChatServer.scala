@@ -42,9 +42,7 @@ trait BaseChatServer extends TwitterServer {
     WebSocket.Server()
   }
 
-  protected def chatService: Service[Client, Client] = {
-    NullService
-  }
+  def chatService: Service[Client, Client]
 
   /**
     * This method allows for further configuration of the chat server for parameters not exposed by

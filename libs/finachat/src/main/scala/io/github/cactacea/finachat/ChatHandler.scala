@@ -4,13 +4,13 @@ import com.twitter.util.Future
 
 trait ChatHandler[A <: AuthInfo] {
 
-  def connect(authInfo: String): Future[Option[AuthInfo]]
-  def disconnect(authInfo: AuthInfo): Future[Unit]
-  def join(authInfo: AuthInfo, room: String): Future[Boolean]
-  def leave(authInfo: AuthInfo, room: String): Future[Boolean]
-  def send(authInfo: AuthInfo, room: String): Future[Boolean]
-  def joinMessage(authInfo: AuthInfo): Future[String]
-  def leaveMessage(authInfo: AuthInfo): Future[String]
-  def sendMessage(authInfo: AuthInfo, message: String): Future[String]
+  def connect(authInfo: String): Future[Option[A]]
+  def disconnect(authInfo: A): Future[Unit]
+  def join(authInfo: A, room: String): Future[Boolean]
+  def leave(authInfo: A, room: String): Future[Boolean]
+  def send(authInfo: A, room: String): Future[Boolean]
+  def joinMessage(authInfo: A): Future[String]
+  def leaveMessage(authInfo: A): Future[String]
+  def sendMessage(authInfo: A, message: String): Future[String]
 
 }

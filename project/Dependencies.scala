@@ -207,6 +207,8 @@ object Dependencies {
     "com.twitter" %% "finagle-http" % versions.twitter,
     "com.twitter" %% "finagle-redis" % versions.twitter,
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.8",
+    "com.iheart" %% "ficus" % versions.ficus,
+    "com.typesafe" % "config" % versions.config,
     "org.scalatest" %% "scalatest" % "3.0.4" % Test,
     "junit" % "junit" % "4.12" % Test
   )
