@@ -6,9 +6,9 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
 import io.github.cactacea.backend.models.requests.setting.{PostActiveStatus, PostDevicePushToken, PutNotificationSetting}
-import io.github.cactacea.backend.swagger.CactaceaController
+import io.github.cactacea.backend.swagger.SwaggerController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -17,7 +17,7 @@ class SettingsController @Inject()(
                                     s: Swagger,
                                     settingsService: SettingsService,
                                     deviceTokenService: DevicesService
-                                  ) extends CactaceaController {
+                                  ) extends SwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 

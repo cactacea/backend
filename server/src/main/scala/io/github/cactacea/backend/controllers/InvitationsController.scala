@@ -9,14 +9,16 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount, PostInvitationAccounts}
 import io.github.cactacea.backend.models.requests.group.{PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
-import io.github.cactacea.backend.swagger.CactaceaController
+import io.github.cactacea.backend.swagger.SwaggerController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 @Singleton
-class InvitationsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, invitationService: GroupInvitationsService, s: Swagger)
-  extends CactaceaController {
+class InvitationsController @Inject()(
+                                       @Flag("cactacea.api.prefix") apiPrefix: String,
+                                       invitationService: GroupInvitationsService,
+                                       s: Swagger) extends SwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 

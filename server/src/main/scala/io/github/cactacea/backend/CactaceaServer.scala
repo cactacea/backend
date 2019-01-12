@@ -7,6 +7,7 @@ import io.cactacea.finagger.DocsController
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.utils.filters._
+import io.github.cactacea.backend.utils.oauth.OAuthFilter
 import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
 
 class CactaceaServer extends BaseServer {
@@ -41,14 +42,13 @@ class CactaceaServer extends BaseServer {
       .add[APIFilter, AuthFilter, OAuthFilter, ETagFilter, CorsFilter, SessionController]
       .add[APIFilter, AuthFilter, ETagFilter, CorsFilter, SettingsController]
       .add[APIFilter, CorsFilter, SessionsController]
-      .add[CorsFilter, OAuthController]
+      .add[CorsFilter, AuthController]
       .add[ResourcesController]
       .add[HealthController]
       .add[DocsController]
   }
 
   addFrameworkModule(CactaceaSwaggerModule)
-
 
   override def warmup() {
     handle[DatabaseMigrationHandler]()

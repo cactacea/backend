@@ -9,16 +9,16 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
-import io.github.cactacea.backend.swagger.CactaceaController
+import io.github.cactacea.backend.swagger.SwaggerController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 @Singleton
 class FeedsController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  feedsService: FeedsService,
-                                 s: Swagger) extends CactaceaController {
+                                 s: Swagger) extends SwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 

@@ -1,10 +1,9 @@
 package io.github.cactacea.backend.swagger
 
 import com.twitter.finatra.http.Controller
-import io.cactacea.finagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.PermissionController
+import io.cactacea.finagger.{SwaggerController => FinaggerController}
 
-trait CactaceaController extends SwaggerController with PermissionController {
+trait SwaggerController extends FinaggerController {
   self: Controller =>
 
   protected val successfulMessage = "Successful operation."

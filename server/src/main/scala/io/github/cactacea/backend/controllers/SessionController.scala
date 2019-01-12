@@ -13,9 +13,9 @@ import io.github.cactacea.backend.models.requests.feed.{GetSessionFeeds, GetSess
 import io.github.cactacea.backend.models.requests.group.{GetSessionGroups, GetSessionInvitations}
 import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
-import io.github.cactacea.backend.swagger.CactaceaController
+import io.github.cactacea.backend.swagger.SwaggerController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 
@@ -35,7 +35,7 @@ class SessionController @Inject()(
                                    sessionService: SessionsService,
                                    friendRequestsService: FriendRequestsService,
                                    blocksService: BlocksService
-                                 ) extends CactaceaController {
+                                 ) extends SwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 

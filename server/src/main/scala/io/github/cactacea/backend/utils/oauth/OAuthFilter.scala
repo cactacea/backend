@@ -1,14 +1,13 @@
-package io.github.cactacea.backend.utils.filters
+package io.github.cactacea.backend.utils.oauth
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
-import com.twitter.finagle.oauth2.{OAuthError}
+import com.twitter.finagle.oauth2.OAuthError
 import com.twitter.finagle.{OAuth2, Service, SimpleFilter}
 import com.twitter.inject.Logging
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.repositories.SessionsRepository
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.OAuthHandler
 
 @Singleton
 class OAuthFilter @Inject()(

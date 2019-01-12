@@ -8,16 +8,16 @@ import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFollowed, _}
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.account._
-import io.github.cactacea.backend.swagger.CactaceaController
+import io.github.cactacea.backend.swagger.SwaggerController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 @Singleton
 class FollowingsController @Inject()(
                                       @Flag("cactacea.api.prefix") apiPrefix: String,
                                       followingsService: FollowingsService,
-                                      s: Swagger) extends CactaceaController {
+                                      s: Swagger) extends SwaggerController with OAuthController {
 
   protected implicit val swagger: Swagger = s
 
