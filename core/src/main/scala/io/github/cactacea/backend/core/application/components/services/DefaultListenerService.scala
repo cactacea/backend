@@ -1,14 +1,14 @@
 package io.github.cactacea.backend.core.application.components.services
 
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.InjectionService
+import io.github.cactacea.backend.core.application.components.interfaces.ListenerService
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, GroupAuthorityType, GroupPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.AccountDetail
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 // No action injection service
 
-class DefaultInjectionService extends InjectionService {
+class DefaultListenerService extends ListenerService {
 
   override def signedUp(authentication: AccountDetail): Future[Unit] = {
     Future.Unit

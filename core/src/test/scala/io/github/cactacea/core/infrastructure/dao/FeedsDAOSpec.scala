@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
+import io.github.cactacea.backend.core.domain.enums.{DeviceType, FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
 import io.github.cactacea.backend.core.infrastructure.models._
@@ -1119,7 +1119,73 @@ class FeedsDAOSpec extends DAOSpec {
   }
 
 
-  test("updateNotified") {
+
+
+  test("findPushNotifications") {
+
+    val sessionAccount1 = createAccount("PushNotificationsDAOSPec5")
+    val sessionAccount2 = createAccount("PushNotificationsDAOSPec6")
+    val sessionAccount3 = createAccount("PushNotificationsDAOSPec7")
+    val sessionAccount4 = createAccount("PushNotificationsDAOSPec8")
+    val sessionAccount5 = createAccount("PushNotificationsDAOSPec9")
+    val sessionAccount6 = createAccount("PushNotificationsDAOSPec10")
+    val medium1 = createMedium(sessionAccount1.id)
+    val medium2 = createMedium(sessionAccount1.id)
+    val medium3 = createMedium(sessionAccount1.id)
+    val message = "message"
+    val mediums = List(medium1.id, medium2.id, medium3.id)
+    val tags = List("tag1", "tag2", "tag3")
+    val privacyType = FeedPrivacyType.followers
+    val contentWarning = true
+
+    // create feed
+    val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
+
+    // create following
+    execute(followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId))
+    execute(followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId))
+    execute(followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId))
+    execute(followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId))
+    execute(followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId))
+
+    // create account feeds
+    execute(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId))
+
+    val displayName = Some("Invitation Sender Name")
+    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
+    val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
+
+    execute(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount1.id.toSessionId))
+    execute(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount3.id.toSessionId))
+    execute(pushNotificationSettingDAO.create(false,false, false, false, false, false, false, sessionAccount4.id.toSessionId))
+    execute(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount5.id.toSessionId))
+    execute(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount6.id.toSessionId))
+
+    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount1.id.toSessionId))
+    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount3.id.toSessionId))
+    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount4.id.toSessionId))
+    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount5.id.toSessionId))
+    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount6.id.toSessionId))
+
+    execute(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
+    execute(devicesDAO.update(udid, pushToken, sessionAccount3.id.toSessionId))
+    execute(devicesDAO.update(udid, pushToken, sessionAccount4.id.toSessionId))
+    execute(devicesDAO.update(udid, pushToken, sessionAccount5.id.toSessionId))
+    execute(devicesDAO.update(udid, pushToken, sessionAccount6.id.toSessionId))
+    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
+    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount3.id.toSessionId))
+    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount4.id.toSessionId))
+    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount5.id.toSessionId))
+    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount6.id.toSessionId))
+
+    // find account feed tokens
+    val result = execute(feedsDAO.findPushNotifications(feedId))
+
+    assert(result.size == 4)
+
+  }
+
+  test("updatePushNotifications") {
 
     val sessionAccount = createAccount("FeedsDAOSpec23")
 
@@ -1179,6 +1245,8 @@ class FeedsDAOSpec extends DAOSpec {
     assert(feed3.notified == true)
 
   }
+
+
 
   test("updateDelivered") {
 

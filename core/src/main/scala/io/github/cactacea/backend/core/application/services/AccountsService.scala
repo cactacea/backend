@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.InjectionService
+import io.github.cactacea.backend.core.application.components.interfaces.ListenerService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail, AccountStatus}
@@ -14,7 +14,7 @@ class AccountsService @Inject()(
                                  db: DatabaseService,
                                  accountsRepository: AccountsRepository,
                                  reportsRepository: ReportsRepository,
-                                 actionService: InjectionService
+                                 actionService: ListenerService
                                ) {
 
   def find(sessionId: SessionId): Future[AccountDetail] = {

@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{EnqueueService, InjectionService}
+import io.github.cactacea.backend.core.application.components.interfaces.{QueueService, ListenerService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.Comment
@@ -14,8 +14,8 @@ class CommentsService @Inject()(
                                  db: DatabaseService,
                                  commentsRepository: CommentsRepository,
                                  reportsRepository: ReportsRepository,
-                                 publishService: EnqueueService,
-                                 actionService: InjectionService
+                                 publishService: QueueService,
+                                 actionService: ListenerService
                                ) {
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {

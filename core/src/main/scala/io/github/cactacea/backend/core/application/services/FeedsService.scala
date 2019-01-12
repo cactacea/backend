@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, EnqueueService}
+import io.github.cactacea.backend.core.application.components.interfaces.{ListenerService, QueueService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
@@ -14,8 +14,8 @@ class FeedsService @Inject()(
                               db: DatabaseService,
                               feedsRepository: FeedsRepository,
                               reportsRepository: ReportsRepository,
-                              publishService: EnqueueService,
-                              actionService: InjectionService
+                              publishService: QueueService,
+                              actionService: ListenerService
                             ) {
 
   def create(message: String,

@@ -2,8 +2,9 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.{GroupInvitationStatusType, MessageType}
-import io.github.cactacea.backend.core.domain.models.GroupInvitation
+import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
+import io.github.cactacea.backend.core.domain.enums.{GroupInvitationStatusType, MessageType, PushNotificationType}
+import io.github.cactacea.backend.core.domain.models.{GroupInvitation, PushNotification}
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -15,7 +16,8 @@ class GroupInvitationsRepository @Inject()(
                                             accountGroupsDAO: AccountGroupsDAO,
                                             groupAuthorityDAO: GroupAuthorityDAO,
                                             groupInvitationsDAO: GroupInvitationsDAO,
-                                            messagesDAO: MessagesDAO
+                                            messagesDAO: MessagesDAO,
+                                            deepLinkService: DeepLinkService,
                                           ) {
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
@@ -57,6 +59,30 @@ class GroupInvitationsRepository @Inject()(
       case false =>
         Future.exception(CactaceaException(GroupInvitationNotFound))
     })
+  }
+
+  def findPushNotifications(id: GroupInvitationId) : Future[List[PushNotification]] = {
+    groupInvitationsDAO.find(id).flatMap(_ match {
+      case Some(i) if i.notified == false => {
+        val pushType = PushNotificationType.groupInvitation
+        val postedAt = i.invitedAt
+        val sessionId = i.by.toSessionId
+        val url = deepLinkService.getInvitation(id)
+        groupInvitationsDAO.findPushNotifications(id).map({ t =>
+          t.groupBy(_.displayName).map({
+            case (displayName, fanOuts) =>
+              val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
+              PushNotification(displayName, pushType, postedAt, tokens, sessionId, url)
+          }).toList
+        })
+      }
+      case _ =>
+        Future.value(List[PushNotification]())
+    })
+  }
+
+  def updatePushNotifications(id: GroupInvitationId): Future[Unit] = {
+    groupInvitationsDAO.updatePushNotifications(id)
   }
 
 }

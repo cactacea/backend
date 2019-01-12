@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.InjectionService
+import io.github.cactacea.backend.core.application.components.interfaces.ListenerService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.domain.repositories.MutesRepository
@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 class MutesService @Inject()(
                               db: DatabaseService,
                               mutesRepository: MutesRepository,
-                              injectionService: InjectionService
+                              injectionService: ListenerService
                             ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

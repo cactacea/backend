@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, EnqueueService}
+import io.github.cactacea.backend.core.application.components.interfaces.{ListenerService, QueueService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.domain.repositories.FriendRequestsRepository
@@ -11,8 +11,8 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Fr
 class FriendRequestsService @Inject()(
                                        db: DatabaseService,
                                        friendRequestsRepository: FriendRequestsRepository,
-                                       publishService: EnqueueService,
-                                       actionService: InjectionService
+                                       publishService: QueueService,
+                                       actionService: ListenerService
                                      ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {

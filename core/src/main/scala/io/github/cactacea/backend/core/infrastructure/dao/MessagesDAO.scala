@@ -6,6 +6,7 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MessageType}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.infrastructure.results.PushNotifications
 
 @Singleton
 class MessagesDAO @Inject()(db: DatabaseService) {
@@ -129,7 +130,30 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == messageIds.size)
   }
 
-  def updateNotified(messageId: MessageId): Future[Unit] = {
+
+  def findPushNotifications(id: MessageId): Future[List[PushNotifications]] = {
+    val q = quote {
+      query[AccountMessages]
+        .filter(am => am.messageId == lift(id) && am.notified == false)
+        .filter(am => query[Relationships].filter(r => r.accountId == am.by && r.by == am.accountId && r.muting == true).isEmpty)
+        .join(query[Groups]).on((am, g) => g.id == am.groupId)
+        .join(query[PushNotificationSettings]).on({ case ((am, g), p) => p.accountId == am.accountId &&
+        ((p.message == true && g.directMessage == true) || (p.groupMessage == true && g.directMessage == false))})
+        .leftJoin(query[Relationships]).on({ case (((am, _), _), r) =>  r.accountId == am.by && r.by == am.accountId })
+        .join(query[Accounts]).on({ case ((((am, _), _), _), a) =>  a.id == am.by})
+        .join(query[Devices]).on({ case (((((am, _), _), _), _), d) => d.accountId == am.accountId && d.pushToken.isDefined})
+        .map({case (((((am, _), p), r), a), d) => (a.displayName, r.flatMap(_.displayName), p.showMessage, am.accountId, d.pushToken) })
+        .distinct
+    }
+    run(q).map(_.map({ case (displayName, editedDisplayName, showMessage, accountId, pushToken) => {
+      val name = editedDisplayName.getOrElse(displayName)
+      val token = pushToken.get
+      PushNotifications(accountId, name, token, showMessage)
+    }}))
+
+  }
+
+  def updatePushNotifications(messageId: MessageId): Future[Unit] = {
     val q = quote {
       query[Messages]
         .filter(_.id == lift(messageId))

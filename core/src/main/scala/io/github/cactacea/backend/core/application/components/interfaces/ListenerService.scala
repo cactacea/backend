@@ -5,7 +5,7 @@ import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, GroupAutho
 import io.github.cactacea.backend.core.domain.models.AccountDetail
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-trait InjectionService {
+trait ListenerService {
   def signedUp(authentication: AccountDetail): Future[Unit]
   def signedIn(authentication: AccountDetail): Future[Unit]
   def signedOut(sessionId: SessionId): Future[Unit]

@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.InjectionService
+import io.github.cactacea.backend.core.application.components.interfaces.ListenerService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.domain.repositories._
@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Gr
 class GroupAccountsService @Inject()(
                                       db: DatabaseService,
                                       groupAccountsRepository: GroupAccountsRepository,
-                                      injectionService: InjectionService
+                                      injectionService: ListenerService
                                     ) {
 
   def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {

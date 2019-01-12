@@ -7,6 +7,7 @@ import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
+import io.github.cactacea.backend.core.infrastructure.results.PushNotifications
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyRequested, FriendRequestNotFound}
 
@@ -125,7 +126,26 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def updateNotified(id: FriendRequestId, notified: Boolean = true): Future[Unit] = {
+  // Modible Push
+
+  def findPushNotifications(id: FriendRequestId): Future[List[PushNotifications]] = {
+    val q = quote {
+      query[FriendRequests].filter(g => g.id == lift(id) && g.notified == false
+        && query[PushNotificationSettings].filter(p => p.accountId == g.accountId && p.friendRequest == true).nonEmpty)
+        .leftJoin(query[Relationships]).on((g, r) => r.accountId == g.by && r.by == g.accountId)
+        .join(query[Accounts]).on({ case ((g, _), a) => a.id == g.by})
+        .join(query[Devices]).on({ case (((g, _), _), d) => d.accountId == g.accountId && d.pushToken.isDefined})
+        .map({ case (((g, r), a), d) => (a.displayName, r.flatMap(_.displayName), g.accountId, d.pushToken) })
+        .distinct
+    }
+    run(q).map(_.map({ case (displayName, editedDisplayName, accountId, pushToken) => {
+      val name = editedDisplayName.getOrElse(displayName)
+      val token = pushToken.get
+      PushNotifications(accountId, name, token, showContent = false)
+    }}))
+  }
+
+  def updatePushNotifications(id: FriendRequestId, notified: Boolean = true): Future[Unit] = {
     val q = quote {
       query[FriendRequests]
         .filter(_.id == lift(id))
@@ -134,6 +154,8 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => Unit)
   }
 
+
+  // Validator
 
   def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     exist(accountId, sessionId).flatMap(_ match {

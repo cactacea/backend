@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, EnqueueService}
+import io.github.cactacea.backend.core.application.components.interfaces.{ListenerService, QueueService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.domain.repositories.MessagesRepository
@@ -11,8 +11,8 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 class MessagesService @Inject()(
                                  db: DatabaseService,
                                  messagesRepository: MessagesRepository,
-                                 publishService: EnqueueService,
-                                 injectionService: InjectionService
+                                 publishService: QueueService,
+                                 injectionService: ListenerService
                                ) {
 
   def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {

@@ -3,10 +3,10 @@ package io.github.cactacea.backend.core.application.components.services
 import java.util.Locale
 
 import com.osinka.i18n.{Lang, Messages}
-import io.github.cactacea.backend.core.application.components.interfaces.NotificationMessagesService
+import io.github.cactacea.backend.core.application.components.interfaces.MessageService
 import io.github.cactacea.backend.core.domain.enums.{NotificationType, PushNotificationType}
 
-class DefaultNotificationMessagesService extends NotificationMessagesService {
+class DefaultMessageService extends MessageService {
 
   private def validLanguage(locales: Seq[Locale]): Lang = {
     val language = locales.filter(l => l == Locale.US || l == Locale.JAPAN).headOption.getOrElse(Locale.US)

@@ -351,11 +351,11 @@ class GroupInvitationsDAOSpec extends DAOSpec {
     val groupInvitationId4 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId4, owner4.id.toSessionId))
     val groupInvitationId5 = execute(groupInvitationsDAO.create(sessionAccount.id, groupId5, owner5.id.toSessionId))
 
-    execute(groupInvitationsDAO.updateNotified(groupInvitationId1, true))
-    execute(groupInvitationsDAO.updateNotified(groupInvitationId2, false))
-    execute(groupInvitationsDAO.updateNotified(groupInvitationId3, true))
-    execute(groupInvitationsDAO.updateNotified(groupInvitationId4, false))
-    execute(groupInvitationsDAO.updateNotified(groupInvitationId5, true))
+    execute(groupInvitationsDAO.updatePushNotifications(groupInvitationId1, true))
+    execute(groupInvitationsDAO.updatePushNotifications(groupInvitationId2, false))
+    execute(groupInvitationsDAO.updatePushNotifications(groupInvitationId3, true))
+    execute(groupInvitationsDAO.updatePushNotifications(groupInvitationId4, false))
+    execute(groupInvitationsDAO.updatePushNotifications(groupInvitationId5, true))
 
     val invitation1 = execute(groupInvitationsDAO.find(groupInvitationId1)).get
     val invitation2 = execute(groupInvitationsDAO.find(groupInvitationId2)).get

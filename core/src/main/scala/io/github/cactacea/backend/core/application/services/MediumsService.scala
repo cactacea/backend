@@ -3,14 +3,14 @@ package io.github.cactacea.backend.core.application.services
 import com.google.inject.Inject
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, StorageService}
+import io.github.cactacea.backend.core.application.components.interfaces.{ListenerService, StorageService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.repositories.MediumsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 
 class MediumsService @Inject()(
                                 db: DatabaseService,
-                                injectionService: InjectionService,
+                                injectionService: ListenerService,
                                 storageService: StorageService,
                                 mediumsRepository: MediumsRepository
                               ) {
