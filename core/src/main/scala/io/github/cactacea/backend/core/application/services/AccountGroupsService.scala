@@ -12,13 +12,13 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Gr
 class AccountGroupsService @Inject()(
                                       db: DatabaseService,
                                       accountGroupsRepository: AccountGroupsRepository,
-                                      actionService: ListenerService
+                                      listenerService: ListenerService
                                     ) {
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(accountGroupsRepository.delete(groupId,sessionId))
-      _ <- actionService.groupDeleted(groupId, sessionId)
+      _ <- listenerService.groupDeleted(groupId, sessionId)
     } yield (Unit)
   }
 

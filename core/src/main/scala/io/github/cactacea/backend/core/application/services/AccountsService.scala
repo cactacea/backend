@@ -14,7 +14,7 @@ class AccountsService @Inject()(
                                  db: DatabaseService,
                                  accountsRepository: AccountsRepository,
                                  reportsRepository: ReportsRepository,
-                                 actionService: ListenerService
+                                 listenerService: ListenerService
                                ) {
 
   def find(sessionId: SessionId): Future[AccountDetail] = {
@@ -43,12 +43,10 @@ class AccountsService @Inject()(
   }
 
   def update(accountName: String, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- accountsRepository.updateAccountName(accountName, sessionId)
-        _ <- actionService.accountNameUpdated(accountName, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(accountsRepository.updateAccountName(accountName, sessionId))
+      _ <- listenerService.accountNameUpdated(accountName, sessionId)
+    } yield (Unit)
   }
 
   def update(displayName: String,
@@ -58,39 +56,32 @@ class AccountsService @Inject()(
              bio: Option[String],
              sessionId: SessionId): Future[Unit] = {
 
-    db.transaction {
-      for {
-        _ <- accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId)
-        _ <- actionService.profileUpdated(displayName, web, birthday, location, bio, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId))
+      _ <- listenerService.profileUpdated(displayName, web, birthday, location, bio, sessionId)
+    } yield (Unit)
+
   }
 
   def updateProfileImage(profileImage: MediumId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        uri <- accountsRepository.updateProfileImage(Some(profileImage), sessionId)
-        _ <- actionService.profileImageUpdated(uri, sessionId)
-      } yield (Unit)
-    }
+    for {
+      uri <- db.transaction(accountsRepository.updateProfileImage(Some(profileImage), sessionId))
+      _ <- listenerService.profileImageUpdated(uri, sessionId)
+    } yield (Unit)
   }
 
   def deleteProfileImage(sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- accountsRepository.updateProfileImage(None, sessionId)
-        _ <- actionService.profileImageUpdated(None, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(accountsRepository.updateProfileImage(None, sessionId))
+      _ <- listenerService.profileImageUpdated(None, sessionId)
+    } yield (Unit)
   }
 
   def update(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- accountsRepository.updatePassword(oldPassword, newPassword, sessionId)
-        _ <- actionService.passwordUpdated(sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(accountsRepository.updatePassword(oldPassword, newPassword, sessionId))
+      _ <- listenerService.passwordUpdated(sessionId)
+    } yield (Unit)
   }
 
   def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
@@ -98,12 +89,10 @@ class AccountsService @Inject()(
   }
 
   def report(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId)
-        _ <- actionService.accountReported(accountId, reportType, reportContent, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId))
+      _ <- listenerService.accountReported(accountId, reportType, reportContent, sessionId)
+    } yield (Unit)
   }
 
 }

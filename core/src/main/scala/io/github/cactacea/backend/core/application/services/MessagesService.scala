@@ -11,37 +11,31 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 class MessagesService @Inject()(
                                  db: DatabaseService,
                                  messagesRepository: MessagesRepository,
-                                 publishService: QueueService,
-                                 injectionService: ListenerService
+                                 queueService: QueueService,
+                                 listenerService: ListenerService
                                ) {
 
   def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
-    db.transaction {
-      for {
-        m <- messagesRepository.createText(groupId, message, sessionId)
-        _ <- publishService.enqueueMessage(m.id)
-        _ <- injectionService.messageCreated(m.id, groupId, Some(message), None, sessionId)
-      } yield (m)
-    }
+    for {
+      m <- db.transaction(messagesRepository.createText(groupId, message, sessionId))
+      _ <- queueService.enqueueMessage(m.id)
+      _ <- listenerService.messageCreated(m.id, groupId, Some(message), None, sessionId)
+    } yield (m)
   }
 
   def createMedium(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
-    db.transaction {
-      for {
-        m <- messagesRepository.createMedium(groupId, mediumId, sessionId)
-        _ <- publishService.enqueueMessage(m.id)
-        _ <- injectionService.messageCreated(m.id, groupId, None, Some(mediumId), sessionId)
-      } yield (m)
-    }
+    for {
+      m <- db.transaction(messagesRepository.createMedium(groupId, mediumId, sessionId))
+      _ <- queueService.enqueueMessage(m.id)
+      _ <- listenerService.messageCreated(m.id, groupId, None, Some(mediumId), sessionId)
+    } yield (m)
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- injectionService.messagesDeleted(groupId, sessionId)
-        _ <- messagesRepository.delete(groupId, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(messagesRepository.delete(groupId, sessionId))
+      _ <- listenerService.messagesDeleted(groupId, sessionId)
+    } yield (Unit)
   }
 
   def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {

@@ -5,6 +5,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
 
 trait ChatService {
 
-  def publish(groupId: GroupId, message: String): Future[Unit]
+  def publish(groupId: GroupId, message: AnyRef): Future[Unit]
 
 }

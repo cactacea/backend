@@ -12,25 +12,22 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 class MutesService @Inject()(
                               db: DatabaseService,
                               mutesRepository: MutesRepository,
-                              injectionService: ListenerService
+                              listenerService: ListenerService
                             ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- mutesRepository.create(accountId, sessionId)
-        _ <- injectionService.accountMuted(accountId, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(mutesRepository.create(accountId, sessionId))
+      _ <- listenerService.accountMuted(accountId, sessionId)
+    } yield (Unit)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- mutesRepository.delete(accountId, sessionId)
-        _ <- injectionService.accountUnMuted(accountId, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(mutesRepository.delete(accountId, sessionId))
+      _ <- listenerService.accountUnMuted(accountId, sessionId)
+    } yield (Unit)
+
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {

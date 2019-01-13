@@ -1,55 +1,82 @@
 package io.github.cactacea.backend.core.application.components.services
 
-import java.util.concurrent.Executors
-
 import com.google.inject.Inject
-import com.twitter.concurrent.NamedPoolThreadFactory
-import com.twitter.util.{Future, FuturePool}
-import io.github.cactacea.backend.core.application.components.interfaces.{FanOutService, QueueService}
+import com.twitter.util.Future
+import io.github.cactacea.backend.core.application.components.interfaces.{NotificationService, QueueService}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-// No queue service
 
-class DefaultQueueService @Inject()(fanOutService: FanOutService) extends QueueService {
+class DefaultQueueService @Inject()(notificationService: NotificationService) extends QueueService {
 
-  val fixedThreadExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
-    new NamedPoolThreadFactory("QueueFuturePool", makeDaemons = true)
-  )
-  val futurePool: FuturePool = FuturePool(fixedThreadExecutor)
+  import java.util.concurrent.LinkedBlockingQueue
+
+  private val queue = new LinkedBlockingQueue[Queue]()
+  private val receiver = new Receiver(queue, notificationService)
+
+  override def start(): Unit = {
+    new Thread(receiver).start()
+  }
 
   def enqueueFeed(feedId: FeedId): Future[Unit] = {
-    futurePool {
-      fanOutService.dequeueFeed(feedId)
-    }
+    queue.put(FeedQueue(feedId))
     Future.Unit
   }
 
   def enqueueComment(commentId: CommentId): Future[Unit] = {
-    futurePool {
-      fanOutService.dequeueComment(commentId)
-    }
+    queue.put(CommentQueue(commentId))
     Future.Unit
   }
 
   def enqueueMessage(messageId: MessageId): Future[Unit] = {
-    futurePool {
-      fanOutService.dequeueMessage(messageId)
-    }
+    queue.put(MessageQueue(messageId))
     Future.Unit
   }
 
   def enqueueGroupInvitation(groupInvitationId: GroupInvitationId): Future[Unit] = {
-    futurePool {
-      fanOutService.dequeueGroupInvitation(groupInvitationId)
-    }
+    queue.put(GroupInvitationQueue(groupInvitationId))
     Future.Unit
   }
 
   def enqueueFriendRequest(friendRequestId: FriendRequestId): Future[Unit] = {
-    futurePool {
-      fanOutService.dequeueFriendRequest(friendRequestId)
-    }
+    queue.put(FriendRequestQueue(friendRequestId))
     Future.Unit
   }
 
+  import java.util.concurrent.BlockingQueue
+
+  private class Receiver(val queue: BlockingQueue[Queue], notificationService: NotificationService) extends Runnable {
+
+    var finished = false
+
+    override def run(): Unit = {
+      while (!finished) {
+        val item = queue.take()
+        item match {
+          case q: FeedQueue =>
+            notificationService.notifyNewFeedArrived(q.id)
+          case q: CommentQueue =>
+            notificationService.notifyNewCommentArrived(q.id)
+          case q: MessageQueue =>
+            notificationService.notifyNewMessageArrived(q.id)
+          case q: GroupInvitationQueue =>
+            notificationService.notifyNewGroupInvitationArrived(q.id)
+          case q: FriendRequestQueue =>
+            notificationService.notifyNewFriendRequestArrived(q.id)
+
+        }
+      }
+    }
+
+  }
+
+  private trait Queue
+  private case class FeedQueue(id: FeedId) extends Queue
+  private case class CommentQueue(id: CommentId) extends Queue
+  private case class MessageQueue(id: MessageId) extends Queue
+  private case class GroupInvitationQueue(id: GroupInvitationId) extends Queue
+  private case class FriendRequestQueue(id: FriendRequestId) extends Queue
+
+
 }
+
+

@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MessageType}
+import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.infrastructure.results.PushNotifications
@@ -113,12 +114,17 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(r).map(_ => Unit)
   }
 
-  def find(messageId: MessageId): Future[Option[Messages]] = {
+
+  def find(id: MessageId): Future[Option[Message]] = {
+
     val q = quote {
-      query[Messages]
-        .filter(_.id == lift(messageId))
+        query[Messages].filter(_.id == lift(id))
+        .join(query[Accounts]).on({ case (m, a) => a.id == m.by })
+        .leftJoin(query[Mediums]).on({ case ((m, _), i) => m.mediumId.contains(i.id) })
+        .map({ case ((m, a), i) => (m, a, i) })
     }
-    run(q).map(_.headOption)
+    run(q).map(_.map({ case (m, a, i) => Message(m, i, a)}).headOption)
+
   }
 
   def updateReadAccountCount(messageIds: List[MessageId]): Future[Unit] = {
@@ -130,6 +136,14 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ == messageIds.size)
   }
 
+
+  def findPushNotification(messageId: MessageId): Future[Option[Messages]] = {
+    val q = quote {
+      query[Messages]
+        .filter(_.id == lift(messageId))
+    }
+    run(q).map(_.headOption)
+  }
 
   def findPushNotifications(id: MessageId): Future[List[PushNotifications]] = {
     val q = quote {

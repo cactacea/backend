@@ -13,28 +13,29 @@ class ChatHandler extends BaseChatHandler[ChatAuthInfo] {
     Future.Done
   }
 
-  override def join(authInfo: ChatAuthInfo, room: String): Future[Boolean] = {
+  override def canJoin(authInfo: ChatAuthInfo, room: String): Future[Boolean] = {
     Future.True
   }
 
-  override def leave(authInfo: ChatAuthInfo, room: String): Future[Boolean] = {
+  override def canLeave(authInfo: ChatAuthInfo, room: String): Future[Boolean] = {
     Future.True
   }
 
-  override def send(authInfo: ChatAuthInfo, room: String): Future[Boolean] = {
-    Future.True
+  override def canSend(authInfo: ChatAuthInfo, room: String): Future[Boolean] = {
+    Future.False
   }
 
-  override def joinMessage(authInfo: ChatAuthInfo): Future[String] = {
-    Future.value("New member has joined.")
+  override def joinMessage(authInfo: ChatAuthInfo, room: String): Future[Option[String]] = {
+    Future.None
   }
 
-  override def leaveMessage(authInfo: ChatAuthInfo): Future[String] = {
-    Future.value("New member has left.")
+
+  override def leaveMessage(authInfo: ChatAuthInfo, room: String): Future[Option[String]] = {
+    Future.None
   }
 
-  override def sendMessage(authInfo: ChatAuthInfo, message: String): Future[String] = {
-    Future.value(message)
+  override def sendMessage(authInfo: ChatAuthInfo, room: String, message: String): Future[Option[String]] = {
+    Future.None
   }
 
 }

@@ -8,7 +8,7 @@ import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.utils.filters._
 import io.github.cactacea.backend.utils.oauth.OAuthFilter
-import io.github.cactacea.backend.utils.warmups.DatabaseMigrationHandler
+import io.github.cactacea.backend.utils.warmups.{DatabaseMigrationHandler, QueueHandler}
 
 class CactaceaServer extends BaseServer {
 
@@ -52,6 +52,7 @@ class CactaceaServer extends BaseServer {
 
   override def warmup() {
     handle[DatabaseMigrationHandler]()
+    handle[QueueHandler]()
   }
 
 }

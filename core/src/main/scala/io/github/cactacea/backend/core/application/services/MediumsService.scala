@@ -10,7 +10,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, Ses
 
 class MediumsService @Inject()(
                                 db: DatabaseService,
-                                injectionService: ListenerService,
+                                listenerService: ListenerService,
                                 storageService: StorageService,
                                 mediumsRepository: MediumsRepository
                               ) {
@@ -22,13 +22,13 @@ class MediumsService @Inject()(
   def create(request: Request, sessionId: SessionId): Future[Seq[(MediumId, String)]] = {
     for {
       s <- storageService.put(request)
-      r <- Future.traverseSequentially(s) { f =>
-        for {
-          id <- mediumsRepository.create(f.key, f.url, f.thumbnailUrl, f.mediumType, f.width, f.height, f.length, sessionId)
-          _ <- injectionService.mediumCreated(id, f.url, sessionId)
-        } yield ((id, f.url))
+      t <- db.transaction(Future.traverseSequentially(s) { f =>
+        mediumsRepository.create(f.key, f.url, f.thumbnailUrl, f.mediumType, f.width, f.height, f.length, sessionId).map(id => (id, f.url))
+      })
+      _ <- Future.traverseSequentially(t) { case (id, url) =>
+        listenerService.mediumCreated(id, url, sessionId)
       }
-    } yield (r)
+    } yield (t)
   }
 
   def delete(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {

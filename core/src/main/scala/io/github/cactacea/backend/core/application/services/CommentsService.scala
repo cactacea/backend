@@ -14,27 +14,23 @@ class CommentsService @Inject()(
                                  db: DatabaseService,
                                  commentsRepository: CommentsRepository,
                                  reportsRepository: ReportsRepository,
-                                 publishService: QueueService,
-                                 actionService: ListenerService
+                                 queueService: QueueService,
+                                 listenerService: ListenerService
                                ) {
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
-    db.transaction {
-      for {
-        id <- commentsRepository.create(feedId, message, sessionId)
-        _ <- publishService.enqueueComment(id)
-        _ <- actionService.commentCreated(id, feedId, message, sessionId)
-      } yield (id)
-    }
+    for {
+      id <- db.transaction(commentsRepository.create(feedId, message, sessionId))
+      _ <- queueService.enqueueComment(id)
+      _ <- listenerService.commentCreated(id, feedId, message, sessionId)
+    } yield (id)
   }
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- commentsRepository.delete(commentId, sessionId)
-        _ <- actionService.commentDeleted(commentId, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(commentsRepository.delete(commentId, sessionId))
+      _ <- listenerService.commentDeleted(commentId, sessionId)
+    } yield (Unit)
   }
 
   def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
@@ -51,7 +47,7 @@ class CommentsService @Inject()(
   def report(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(reportsRepository.createCommentReport(commentId, reportType, reportContent, sessionId))
-      _ <- actionService.commentReported(commentId, reportType, reportContent, sessionId)
+      _ <- listenerService.commentReported(commentId, reportType, reportContent, sessionId)
     } yield (Unit)
   }
 

@@ -70,8 +70,9 @@ class MessagesRepository @Inject()(
 
   }
 
+
   def findPushNotifications(id: MessageId) : Future[List[PushNotification]] = {
-    messagesDAO.find(id).flatMap(_ match {
+    messagesDAO.findPushNotification(id).flatMap(_ match {
       case Some(m) if m.notified == false => {
         val postedAt = m.postedAt
         val sessionId = m.by.toSessionId

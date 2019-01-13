@@ -13,7 +13,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 class FriendsService @Inject()(
                                 db: DatabaseService,
                                 friendsRepository: FriendsRepository,
-                                actionService: ListenerService
+                                listenerService: ListenerService
                               ) {
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
@@ -25,12 +25,11 @@ class FriendsService @Inject()(
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- friendsRepository.delete(accountId, sessionId)
-        _ <- actionService.accountUnFriended(accountId, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(friendsRepository.delete(accountId, sessionId))
+      _ <- listenerService.accountUnFriended(accountId, sessionId)
+    } yield (Unit)
+
   }
 
 }

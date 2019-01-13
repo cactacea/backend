@@ -22,7 +22,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultQueueModule,
         DefaultMobilePushModule,
         DefaultStorageModule,
-        DefaultFanOutModule,
+        DefaultNotificationModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,
         DefaultHashModule,

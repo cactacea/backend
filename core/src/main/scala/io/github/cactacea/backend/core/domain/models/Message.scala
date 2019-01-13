@@ -26,6 +26,27 @@ object Message {
     apply(m, am, i, a, r, Some(next))
   }
 
+  def apply(m: Messages, i: Option[Mediums], a: Accounts): Message = {
+    val images = i.map(Medium(_))
+    Message(
+      id                = m.id,
+      groupId           = m.groupId,
+      messageType       = m.messageType,
+      message           = m.message,
+      medium            = images,
+      account           = Account(a, None),
+      unread            = false,
+      accountCount      = m.accountCount,
+      readAccountCount  = m.readAccountCount,
+      contentWarning    = m.contentWarning,
+      contentDeleted    = false,
+      postedAt          = m.postedAt,
+      next              = None
+    )
+  }
+
+  // TODO : Check Relationship is required or Not ?
+
   def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], next: Option[Long]): Message = {
 
     m.contentStatus match {

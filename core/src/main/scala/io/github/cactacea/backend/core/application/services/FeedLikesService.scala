@@ -12,25 +12,21 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Fe
 class FeedLikesService @Inject()(
                                   db: DatabaseService,
                                   feedLikesRepository: FeedLikesRepository,
-                                  actionService: ListenerService
+                                  listenerService: ListenerService
                                 ) {
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- feedLikesRepository.create(feedId, sessionId)
-        _ <- actionService.feedLiked(feedId, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(feedLikesRepository.create(feedId, sessionId))
+      _ <- listenerService.feedLiked(feedId, sessionId)
+    } yield (Unit)
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- feedLikesRepository.delete(feedId, sessionId)
-        _ <- actionService.feedUnLiked(feedId, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(feedLikesRepository.delete(feedId, sessionId))
+      _ <- listenerService.feedUnLiked(feedId, sessionId)
+    } yield (Unit)
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {

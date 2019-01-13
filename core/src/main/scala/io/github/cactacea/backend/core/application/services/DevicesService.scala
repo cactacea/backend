@@ -12,25 +12,21 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 class DevicesService @Inject()(
                                 db: DatabaseService,
                                 deviceTokensRepository: DevicesRepository,
-                                actionService: ListenerService
+                                listenerService: ListenerService
                               ) {
 
   def update(pushToken: Option[String], sessionId: SessionId, udid: String): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- deviceTokensRepository.update(udid, pushToken, sessionId)
-        _ <- actionService.devicePushTokenUpdated(sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(deviceTokensRepository.update(udid, pushToken, sessionId))
+      _ <- listenerService.devicePushTokenUpdated(sessionId)
+    } yield (Unit)
   }
 
   def update(deviceStatus: ActiveStatusType, sessionId: SessionId, udid: String): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- deviceTokensRepository.update(udid, deviceStatus, sessionId)
-        _ <- actionService.deviceStatusUpdated(sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(deviceTokensRepository.update(udid, deviceStatus, sessionId))
+      _ <- listenerService.deviceStatusUpdated(sessionId)
+    } yield (Unit)
   }
 
 }
