@@ -12,28 +12,28 @@ class ExampleChatHandler extends ChatHandler[ExampleAuthInfo] {
     Future.Done
   }
 
-  override def join(authInfo: ExampleAuthInfo, room: String): Future[Boolean] = {
+  override def canJoin(authInfo: ExampleAuthInfo, room: String): Future[Boolean] = {
     Future.True
   }
 
-  override def leave(authInfo: ExampleAuthInfo, room: String): Future[Boolean] = {
+  override def canLeave(authInfo: ExampleAuthInfo, room: String): Future[Boolean] = {
     Future.True
   }
 
-  override def send(authInfo: ExampleAuthInfo, room: String): Future[Boolean] = {
+  override def canSend(authInfo: ExampleAuthInfo, room: String): Future[Boolean] = {
     Future.True
   }
 
-  override def joinMessage(authInfo: ExampleAuthInfo): Future[String] = {
-    Future.value(s"${authInfo.displayName} has joined.")
+  override def joinMessage(authInfo: ExampleAuthInfo, room: String): Future[Option[String]] = {
+    Future.value(Some(s"${authInfo.displayName} has joined."))
   }
 
-  override def leaveMessage(authInfo: ExampleAuthInfo): Future[String] = {
-    Future.value(s"${authInfo.displayName} has left.")
+  override def leaveMessage(authInfo: ExampleAuthInfo, room: String): Future[Option[String]] = {
+    Future.value(Some(s"${authInfo.displayName} has left."))
   }
 
-  override def sendMessage(authInfo: ExampleAuthInfo, message: String): Future[String] = {
-    Future.value(message)
+  override def sendMessage(authInfo: ExampleAuthInfo, room: String, message: String): Future[Option[String]] = {
+    Future.value(Some(message))
   }
 
 }

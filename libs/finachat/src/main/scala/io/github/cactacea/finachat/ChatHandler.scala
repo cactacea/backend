@@ -6,11 +6,11 @@ trait ChatHandler[A <: AuthInfo] {
 
   def connect(authInfo: String): Future[Option[A]]
   def disconnect(authInfo: A): Future[Unit]
-  def join(authInfo: A, room: String): Future[Boolean]
-  def leave(authInfo: A, room: String): Future[Boolean]
-  def send(authInfo: A, room: String): Future[Boolean]
-  def joinMessage(authInfo: A): Future[String]
-  def leaveMessage(authInfo: A): Future[String]
-  def sendMessage(authInfo: A, message: String): Future[String]
+  def canJoin(authInfo: A, room: String): Future[Boolean]
+  def canLeave(authInfo: A, room: String): Future[Boolean]
+  def canSend(authInfo: A, room: String): Future[Boolean]
+  def joinMessage(authInfo: A, room: String): Future[Option[AnyRef]]
+  def leaveMessage(authInfo: A, room: String): Future[Option[AnyRef]]
+  def sendMessage(authInfo: A, room: String, message: String): Future[Option[AnyRef]]
 
 }

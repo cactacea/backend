@@ -31,20 +31,21 @@ class ChatService[A <: AuthInfo](chatHandler: ChatHandler[A]) extends Service[Cl
   }
 
   private def handleFrame(frame: Frame, client: Client): Future[Frame] = {
-    frame match {
+    val result = frame match {
       case Frame.Text(text) =>
         ObjectMapper.read[Command](text) match {
           case Right(command) =>
             handleCommand(command, client)
           case Left(_) =>
-            Future.value(Response.InvalidCommand)
+            Future.value(Response.invalidCommand)
         }
       case _ =>
-        Future.value(Response.InvalidCommand)
+        Future.value(Response.invalidCommand)
     }
+    result.map(Frame.Text(_))
   }
 
-  private def handleCommand(command: Command, client: Client): Future[Frame] = {
+  private def handleCommand(command: Command, client: Client): Future[String] = {
     command.name match {
       case Command.Connect =>
         handleCommandConnect(command, client)
@@ -62,28 +63,28 @@ class ChatService[A <: AuthInfo](chatHandler: ChatHandler[A]) extends Service[Cl
         handleCommandSend(command, client)
 
       case _  =>
-        Future.value(Response.InvalidCommand)
+        Future.value(Response.invalidCommand)
     }
   }
 
-  private def handleCommandConnect(command: Command, client: Client): Future[Frame] = {
+  private def handleCommandConnect(command: Command, client: Client): Future[String] = {
     Option(authInfoMap.get(client)) match {
       case Some(_) =>
-        Future.value(Response.Done)
+        Future.value(Response.done)
       case None =>
         chatHandler.connect(command.value).map(_ match {
           case Some(authInfo) =>
             authInfoMap.put(client, authInfo)
             clientMap.put(authInfo, client)
-            Response.Done
+            Response.done
           case None =>
-            Response.CouldNotLogin
+            Response.couldNotLogin
         })
     }
 
   }
 
-  private def handleCommandDisconnect(command: Command, client: Client): Future[Frame] = {
+  private def handleCommandDisconnect(command: Command, client: Client): Future[String] = {
     Option(authInfoMap.get(client)) match {
       case Some(authInfo) =>
         chatHandler.disconnect(authInfo).flatMap({ _ =>
@@ -92,67 +93,70 @@ class ChatService[A <: AuthInfo](chatHandler: ChatHandler[A]) extends Service[Cl
           handleCommandLeave(command, client)
         })
       case None =>
-        Future.value(Response.Done)
+        Future.value(Response.done)
     }
   }
 
-  private def handleCommandJoin(command: Command, client: Client): Future[Frame] = {
+  private def handleCommandJoin(command: Command, client: Client): Future[String] = {
+    val room = command.value
     Option(roomMap.get(client)) match {
       case Some(_) =>
-        Future.value(Response.AlreadyJoinedRoom)
+        Future.value(Response.alreadyJoinedRoom)
       case None =>
         val authInfo = authInfoMap.get(client)
-        chatHandler.join(authInfo, command.value).flatMap(_ match {
+        chatHandler.canJoin(authInfo, room).flatMap(_ match {
           case true =>
-            roomMap.put(client, command.value)
-            val cg = channelGroup(command.value)
+            roomMap.put(client, room)
+            val cg = channelGroup(room)
             cg.add(client.channel)
             for {
-              message <- chatHandler.joinMessage(authInfo)
-              _ <- PublishService.publish(command.value, message)
-            } yield (Response.Done)
+              message <- chatHandler.joinMessage(authInfo, room).map(Response.memberJoined(_))
+              _ <- PublishService.publish(room, message)
+            } yield (Response.done)
           case false =>
-            Future.value(Response.CouldNotJoin)
+            Future.value(Response.couldNotJoin)
         })
     }
   }
 
-  private def handleCommandLeave(command: Command, client: Client): Future[Frame] = {
+  private def handleCommandLeave(command: Command, client: Client): Future[String] = {
+    val room = command.value
     Option(roomMap.get(client)) match {
       case Some(_) =>
         roomMap.remove(client)
         val authInfo = authInfoMap.get(client)
-        chatHandler.leave(authInfo, command.value).flatMap(_ match {
+        chatHandler.canLeave(authInfo, room).flatMap(_ match {
           case true =>
-            val cg = channelGroup(command.value)
+            val cg = channelGroup(room)
             cg.remove(client.channel)
             for {
-              message <- chatHandler.leaveMessage(authInfo)
-              _ <- PublishService.publish(command.value, message)
-            } yield (Response.Done)
+              message <- chatHandler.joinMessage(authInfo, room).map(Response.memberLeft(_))
+              _ <- PublishService.publish(room, message)
+            } yield (Response.done)
           case false =>
-            Future.value(Response.CouldNotLeave)
+            Future.value(Response.couldNotLeave)
         })
       case None =>
-        Future.value(Response.Done)
+        Future.value(Response.done)
     }
   }
 
-  private def handleCommandSend(command: Command, client: Client): Future[Frame] = {
+  private def handleCommandSend(command: Command, client: Client): Future[String] = {
+    val message = command.value
     Option(roomMap.get(client)) match {
       case Some(room) =>
         val authInfo = authInfoMap.get(client)
-        chatHandler.send(authInfo, command.value).flatMap(_ match {
+        chatHandler.canSend(authInfo, room).flatMap(_ match {
           case true =>
             for {
-              message <- chatHandler.sendMessage(authInfo, command.value)
+              message <- chatHandler.sendMessage(authInfo, room, message).map(Response.messageArrived(_))
               _ <- PublishService.publish(room, message)
-            } yield (Response.Done)
+            } yield (Response.done)
           case false =>
-            Future.value(Response.CouldNotSend)
+            Future.value(Response.couldNotSend)
         })
       case None =>
-        Future.value(Response.NotJoinedRoom)
+        Future.value(Response.notJoinedRoom)
     }
   }
 
@@ -181,8 +185,7 @@ class ChatService[A <: AuthInfo](chatHandler: ChatHandler[A]) extends Service[Cl
   private def write(room: String, message: String): Future[Unit] = {
     Option(channelGroupMap.get(room)) match {
       case Some(channelGroup) =>
-        val response = ObjectMapper.write(Response(0, Some(message), None))
-        channelGroup.writeAndFlush(toNetty(Frame.Text(response))).sync()
+        channelGroup.writeAndFlush(toNetty(Frame.Text(message))).sync()
         Future.Done
       case None =>
         Future.Done
