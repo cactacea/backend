@@ -7,7 +7,7 @@ swagger-codegen generate \
     --type-mappings number=Int64 \
     --language-specific-primitives Int16,Int32,Int64,NSDate \
     --additional-properties projectName="Cactacea" \
-    --additional-properties podVersion="19.01.00" \
+    --additional-properties podVersion="19.1.0" \
     --additional-properties podSummary="Cactacea iOS SDK" \
     --additional-properties podDescription="An iOS library to interface with Cactacea backend API" \
     --additional-properties podSource="" \
