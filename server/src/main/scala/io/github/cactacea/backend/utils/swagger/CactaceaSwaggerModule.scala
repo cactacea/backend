@@ -4,7 +4,7 @@ import com.google.inject.Provides
 import io.cactacea.finagger.SwaggerModule
 import io.github.cactacea.backend.CactaceaBuildInfo
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.utils.oauth.{Permissions}
 import io.github.cactacea.backend.utils.swagger.CactaceaSwagger
 import io.swagger.models._
 import io.swagger.models.auth.{ApiKeyAuthDefinition, OAuth2Definition}

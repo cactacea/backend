@@ -53,9 +53,9 @@ trait BaseChatServer extends TwitterServer {
     *    .withRequestTimeout(10.minutes)
     * }
     *
-    * @param server - the [[io.github.cactacea.finasocket.WebSocket.Server]] to configure.
+    * @param se]o configure.
     *
-    * @return a configured WebSocket.Server.
+    * @return a configud WebSocket.Server.
     */
   protected def configureChatServer(server: WebSocket.Server): WebSocket.Server = {
     server
