@@ -6,7 +6,7 @@ WebSocket support for Finagle
 
 ### Getting Started
 
-To get started, add a dependency on finasocket depending if you are using a server based on Fiangle and WebSocket.
+To get started, add a dependency on finasocket depending if you are using a server based on Finagle and WebSocket.
 
 ```
 "io.github.cactacea" %% "finasocket" % "19.01.00"
