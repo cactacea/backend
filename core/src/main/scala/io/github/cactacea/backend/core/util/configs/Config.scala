@@ -1,5 +1,7 @@
 package io.github.cactacea.backend.core.util.configs
 
+import java.net.InetAddress
+
 import com.twitter.util.Duration
 import com.twitter.conversions.time._
 import com.typesafe.config.ConfigFactory
@@ -69,8 +71,8 @@ object Config extends DurationReader {
   }
 
   object storage {
-    lazy val hostName = storageConfig.hostName.getOrElse("localhost")
-    lazy val port = storageConfig.port.getOrElse("")
+    lazy val hostName = storageConfig.hostName.getOrElse(InetAddress.getLocalHost().getHostName())
+    lazy val port = storageConfig.port.getOrElse(":9000")
     lazy val maxFileSize = storageConfig.maxFileSize.getOrElse(1.megabytes)
   }
 

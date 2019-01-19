@@ -161,6 +161,9 @@ object Dependencies {
 
   )
 
+
+  // Libraries
+
   lazy val filhouette = Seq(
     "io.jsonwebtoken" % "jjwt" % "0.9.1",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
@@ -192,6 +195,20 @@ object Dependencies {
   lazy val finasocket = Seq(
     "com.twitter" %% "finagle-core" % versions.twitter,
     "com.twitter" %% "finagle-netty4" % versions.twitter,
+    "org.scalatest" %% "scalatest" % "3.0.4" % Test,
+    "junit" % "junit" % "4.12" % Test,
+    "org.mockito" % "mockito-core" % "2.23.4" % Test
+  )
+
+  lazy val finachat = Seq(
+    "com.twitter" %% "twitter-server" % versions.twitter,
+    "com.twitter" %% "inject-server" % versions.twitter,
+    "com.twitter" %% "inject-utils" % versions.twitter,
+    "com.twitter" %% "finagle-http" % versions.twitter,
+    "com.twitter" %% "finagle-redis" % versions.twitter,
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.8",
+    "com.iheart" %% "ficus" % versions.ficus,
+    "com.typesafe" % "config" % versions.config,
     "org.scalatest" %% "scalatest" % "3.0.4" % Test,
     "junit" % "junit" % "4.12" % Test
   )

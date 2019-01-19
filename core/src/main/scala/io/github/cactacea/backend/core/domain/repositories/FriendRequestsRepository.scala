@@ -2,8 +2,9 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
-import io.github.cactacea.backend.core.domain.models.FriendRequest
+import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
+import io.github.cactacea.backend.core.domain.enums.{FriendRequestStatusType, PushNotificationType}
+import io.github.cactacea.backend.core.domain.models.{FriendRequest, PushNotification}
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, FriendRequestsDAO, FriendRequestsStatusDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
 
@@ -12,7 +13,8 @@ class FriendRequestsRepository @Inject()(
                                           accountsDAO: AccountsDAO,
                                           friendRequestsStatusDAO: FriendRequestsStatusDAO,
                                           friendRequestsDAO: FriendRequestsDAO,
-                                          friendsRepository: FriendsRepository
+                                          friendsRepository: FriendsRepository,
+                                          deepLinkService: DeepLinkService
                                         ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
@@ -56,6 +58,32 @@ class FriendRequestsRepository @Inject()(
       _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.toSessionId)
       _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.rejected, sessionId).map(_ => true)
     } yield (Unit)
+  }
+
+  // Mobile Push
+
+  def findPushNotifications(id: FriendRequestId) : Future[List[PushNotification]] = {
+    friendRequestsDAO.find(id).flatMap(_ match {
+      case Some(i) if i.notified == false => {
+        val pushType = PushNotificationType.groupInvitation
+        val postedAt = i.requestedAt
+        val sessionId = i.by.toSessionId
+        val url = deepLinkService.getRequest(id)
+        friendRequestsDAO.findPushNotifications(id).map({ t =>
+          t.groupBy(_.displayName).map({
+            case (displayName, fanOuts) =>
+              val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
+              PushNotification(displayName, pushType, postedAt, tokens, sessionId, url)
+          }).toList
+        })
+      }
+      case _ =>
+        Future.value(List[PushNotification]())
+    })
+  }
+
+  def updatePushNotifications(id: FriendRequestId): Future[Unit] = {
+    friendRequestsDAO.updatePushNotifications(id)
   }
 
 }

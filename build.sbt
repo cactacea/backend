@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(Migration.settings)
-  .aggregate(demo, server, core, plugin, finagger, filhouette, finasocket)
+  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat)
   .enablePlugins(FlywayPlugin)
 
 
@@ -30,7 +30,7 @@ lazy val server = (project in file("server"))
   .enablePlugins(FlywayPlugin)
   .enablePlugins(BuildInfoPlugin)
   .dependsOn(core % "compile->compile;test->test")
-  .dependsOn(finagger % "compile->compile;test->test")
+  .dependsOn(finagger)
 
 
 lazy val core = (project in file("core"))
@@ -41,7 +41,15 @@ lazy val core = (project in file("core"))
   .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
-  .dependsOn(finagger % "compile->compile;test->test")
+  .dependsOn(finagger)
+  .dependsOn(finachat)
+
+
+lazy val addons = (project in file("addons"))
+  .settings(addOsCommonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .dependsOn(core % "compile->compile;test->test")
 
 
 lazy val finagger = (project in file("libs/finagger"))
@@ -53,6 +61,7 @@ lazy val finagger = (project in file("libs/finagger"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
   .settings(libraryDependencies ++= Dependencies.finagger)
   .enablePlugins(BuildInfoPlugin)
 
@@ -70,6 +79,15 @@ lazy val finasocket = (project in file("libs/finasocket"))
   .settings(commonResolverSetting)
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.finasocket)
+
+
+lazy val finachat = (project in file("libs/finachat"))
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finachat)
+  .dependsOn(finasocket)
+
 
 lazy val swaggerUIVersion = SettingKey[String]("swaggerUIVersion")
 
@@ -89,12 +107,12 @@ lazy val plugin = (project in file("plugin"))
   .dependsOn(core % "compile->compile;test->test")
 
 
-lazy val demo = (project in file("demo"))
+lazy val api = (project in file("demo/api"))
   .settings(
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.DemoServerApp"),
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.APIServerApp"),
     version in Docker := ( version in ThisBuild ).value,
     maintainer in Docker := "Cactacea",
-    packageName in Docker := "backend",
+    packageName in Docker := "api",
     dockerBaseImage := "adoptopenjdk/openjdk8",
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea"),
@@ -104,8 +122,29 @@ lazy val demo = (project in file("demo"))
   .settings(commonResolverSetting)
   .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
   .settings(noPublishSettings)
+  .dependsOn(addons)
   .dependsOn(server % "compile->compile;test->test")
   .enablePlugins(JavaAppPackaging)
+
+
+lazy val chat = (project in file("demo/chat"))
+  .settings(
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.ChatServerApp"),
+    version in Docker := ( version in ThisBuild ).value,
+    maintainer in Docker := "Cactacea",
+    packageName in Docker := "chat",
+    dockerBaseImage := "adoptopenjdk/openjdk8",
+    dockerExposedPorts := Seq(9000, 9001),
+    dockerRepository := Some("cactacea"),
+    dockerUpdateLatest := true
+  )
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(noPublishSettings)
+  .dependsOn(finachat)
+  .enablePlugins(JavaAppPackaging)
+
 
 
 lazy val commonSettings = Seq(
@@ -118,6 +157,16 @@ lazy val commonSettings = Seq(
   fork := true
 )
 
+
+lazy val addOsCommonSettings = Seq(
+  organization := "io.github.cactacea.addons",
+  scalaVersion  := "2.12.7",
+  scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
+  testOptions in Test += Tests.Argument("-oI"),
+  concurrentRestrictions += Tags.limit(Tags.Test, 1),
+  parallelExecution := false,
+  fork := true
+)
 
 lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
@@ -200,7 +249,7 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   tagRelease,
   ReleaseStep(action = Command.process("publish", _)),
-  ReleaseStep(action = Command.process("demo/docker:publish", _)),
+  ReleaseStep(action = Command.process("backendDemo/docker:publish", _)),
   setNextVersion,
   commitNextVersion,
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),

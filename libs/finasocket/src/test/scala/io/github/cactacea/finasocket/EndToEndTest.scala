@@ -1,12 +1,13 @@
 package io.github.cactacea.finasocket
 
+import java.net.{InetSocketAddress, SocketAddress, URI}
+
 import com.twitter.concurrent.AsyncStream
 import com.twitter.conversions.time._
 import com.twitter.finagle.Service
 import com.twitter.finagle.param.Stats
 import com.twitter.finagle.stats.{NullStatsReceiver, StatsReceiver}
 import com.twitter.util._
-import java.net.{InetSocketAddress, SocketAddress, URI}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
@@ -15,16 +16,16 @@ import org.scalatest.junit.JUnitRunner
 class EndToEndTest extends FunSuite {
   import EndToEndTest._
   test("echo") {
-    val echo = new Service[Request, Response] {
-      def apply(req: Request): Future[Response] =
-        Future.value(Response(req.messages))
+    val echo = new Service[Client, Client] {
+      def apply(client: Client): Future[Client] =
+        Future.value(client)
     }
 
     connect(echo) { client =>
       val frames = texts("hello", "world")
       for {
         response <- client(mkRequest("/", frames))
-        messages <- response.messages.toSeq()
+        messages <- response.onReceived.toSeq()
       } yield assert(messages == frames)
     }
   }
@@ -32,17 +33,17 @@ class EndToEndTest extends FunSuite {
 
 private object EndToEndTest {
   def connect(
-    service: Service[Request, Response],
-    stats: StatsReceiver = NullStatsReceiver
+               service: Service[Client, Client],
+               stats: StatsReceiver = NullStatsReceiver
   )(run: Service[Request, Response] => Future[Unit]): Unit = {
-    val server = Server()
+    val server = WebSocket.server
       .withLabel("server")
       .configured(Stats(stats))
       .serve("localhost:*", service)
 
     val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
 
-    val client = Client()
+    val client = WebSocket.client
       .configured(Stats(stats))
       .newService(s"${addr.getHostName}:${addr.getPort}", "client")
 

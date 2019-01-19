@@ -7,13 +7,16 @@ import io.github.cactacea.backend.core.application.services.FriendsService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotFriend
 import io.github.cactacea.backend.models.requests.account.DeleteFriend
-import io.github.cactacea.backend.swagger.CactaceaController
+import io.github.cactacea.backend.swagger.SwaggerController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 @Singleton
-class FriendsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, friendsService: FriendsService, s: Swagger) extends CactaceaController {
+class FriendsController @Inject()(
+                                   @Flag("cactacea.api.prefix") apiPrefix: String,
+                                   friendsService: FriendsService,
+                                   s: Swagger) extends SwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 

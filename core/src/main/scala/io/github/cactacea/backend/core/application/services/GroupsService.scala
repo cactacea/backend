@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.InjectionService
+import io.github.cactacea.backend.core.application.components.interfaces.ListenerService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Group
@@ -14,16 +14,14 @@ class GroupsService @Inject()(
                                db: DatabaseService,
                                groupsRepository: GroupsRepository,
                                reportsRepository: ReportsRepository,
-                               injectionService: InjectionService
+                               listenerService: ListenerService
                              ) {
 
   def create(name: String, byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupId] = {
-    db.transaction {
-      for {
-        id <- groupsRepository.create(Some(name), byInvitationOnly, privacyType, authority, sessionId)
-        _ <- injectionService.groupCreated(id, Some(name), byInvitationOnly, privacyType, authority, sessionId)
-      } yield (id)
-    }
+    for {
+      id <- db.transaction(groupsRepository.create(Some(name), byInvitationOnly, privacyType, authority, sessionId))
+      _ <- listenerService.groupCreated(id, Some(name), byInvitationOnly, privacyType, authority, sessionId)
+    } yield (id)
   }
 
   def update(groupId: GroupId,
@@ -33,12 +31,11 @@ class GroupsService @Inject()(
              authority: GroupAuthorityType,
              sessionId: SessionId): Future[Unit] = {
 
-    db.transaction {
-      for {
-        _ <- groupsRepository.update(groupId, Some(name), invitationOnly, privacyType, authority, sessionId)
-        _ <- injectionService.groupUpdated(groupId, Some(name), invitationOnly, privacyType, authority, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(groupsRepository.update(groupId, Some(name), invitationOnly, privacyType, authority, sessionId))
+      _ <- listenerService.groupUpdated(groupId, Some(name), invitationOnly, privacyType, authority, sessionId)
+    } yield (Unit)
+
   }
 
   def find(name: Option[String],
@@ -56,12 +53,10 @@ class GroupsService @Inject()(
   }
 
   def report(groupId: GroupId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- reportsRepository.createGroupReport(groupId, reportType, reportContent, sessionId)
-        _ <- injectionService.groupReported(groupId, reportType, reportContent, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(reportsRepository.createGroupReport(groupId, reportType, reportContent, sessionId))
+      _ <- listenerService.groupReported(groupId, reportType, reportContent, sessionId)
+    } yield (Unit)
   }
 
 }

@@ -1,11 +1,12 @@
 package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MessageType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{MessageId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, MessageId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 case class Message(
                     id: MessageId,
+                    groupId: GroupId,
                     messageType: MessageType,
                     message: Option[String],
                     medium: Option[Medium],
@@ -25,12 +26,34 @@ object Message {
     apply(m, am, i, a, r, Some(next))
   }
 
+  def apply(m: Messages, i: Option[Mediums], a: Accounts): Message = {
+    val images = i.map(Medium(_))
+    Message(
+      id                = m.id,
+      groupId           = m.groupId,
+      messageType       = m.messageType,
+      message           = m.message,
+      medium            = images,
+      account           = Account(a, None),
+      unread            = false,
+      accountCount      = m.accountCount,
+      readAccountCount  = m.readAccountCount,
+      contentWarning    = m.contentWarning,
+      contentDeleted    = false,
+      postedAt          = m.postedAt,
+      next              = None
+    )
+  }
+
+  // TODO : Check Relationship is required or Not ?
+
   def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], next: Option[Long]): Message = {
 
     m.contentStatus match {
       case ContentStatusType.rejected =>
         Message(
           id                = m.id,
+          groupId           = m.groupId,
           messageType       = m.messageType,
           message           = None,
           medium            = None,
@@ -48,6 +71,7 @@ object Message {
 
         Message(
           id                = m.id,
+          groupId           = m.groupId,
           messageType       = m.messageType,
           message           = m.message,
           medium            = images,

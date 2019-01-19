@@ -35,13 +35,14 @@ class CactaceaServerSpec extends FeatureTest
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultInjectionModule,
-        DefaultNotificationModule,
-        DefaultNotificationMessagesModule,
-        DefaultEnqueueModule,
-        DefaultPushNotificationModule,
+        DefaultListenerModule,
+        DefaultChatModule,
+        DefaultMessageModule,
+        DefaultQueueModule,
+        DefaultMobilePushModule,
         DefaultStorageModule,
-        DefaultDequeueModule,
+        DefaultNotificationModule,
+        DefaultHashModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,
         DefaultJacksonModule

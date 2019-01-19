@@ -4,9 +4,8 @@ import java.util.Locale
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.NotificationMessagesService
+import io.github.cactacea.backend.core.application.components.interfaces.MessageService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.NotificationType
 import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.infrastructure.identifiers._
@@ -14,7 +13,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
 class NotificationsDAO @Inject()(db: DatabaseService,
-                                 notificationMessagesService: NotificationMessagesService,
+                                 notificationMessagesService: MessageService,
                                  ) {
 
   import db._

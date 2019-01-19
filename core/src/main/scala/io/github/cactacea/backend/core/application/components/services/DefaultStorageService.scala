@@ -3,7 +3,9 @@ package io.github.cactacea.backend.core.application.components.services
 import java.io.{BufferedOutputStream, FileInputStream}
 import java.nio.file.{Files, Paths}
 import java.util.UUID
+import java.util.concurrent.Executors
 
+import com.twitter.concurrent.NamedPoolThreadFactory
 import com.twitter.conversions.storage._
 import com.twitter.finagle.http.{Request, Response, Status, Version}
 import com.twitter.finatra.http.request.RequestUtils
@@ -19,8 +21,13 @@ import resource._
 
 class DefaultStorageService(val localPath: String) extends StorageService {
 
+  val fixedThreadExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
+    new NamedPoolThreadFactory("QueueFuturePool", makeDaemons = true)
+  )
+  val futurePool: FuturePool = FuturePool(fixedThreadExecutor)
+
   override def get(request: Request): Future[Response] = {
-    FuturePool.unboundedPool {
+    futurePool {
       val response = Response(Version.Http11, Status.Ok)
       response.withOutputStream { outputStream =>
         val f = new FileInputStream(localPath + request.params("*"))
@@ -40,7 +47,7 @@ class DefaultStorageService(val localPath: String) extends StorageService {
       Future.exception(CactaceaException(FileSizeLimitExceededError))
     } else {
       Future.traverseSequentially(mediums) { medium =>
-        FuturePool.unboundedPool {
+        futurePool {
           val filename = UUID.randomUUID.toString
           val host = Config.storage.hostName
           val url = s"http://${host}${Config.storage.port}/mediums/" + filename
@@ -57,7 +64,7 @@ class DefaultStorageService(val localPath: String) extends StorageService {
   }
 
   override def delete(key: String): Future[Boolean] = {
-    FuturePool.unboundedPool {
+    futurePool {
       val path = Paths.get(key)
       if (Files.exists(path)) {
         Files.delete(path)

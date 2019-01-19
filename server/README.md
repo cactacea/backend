@@ -10,13 +10,13 @@ Server
 To get started, add a dependency on cactacea depending.
 
 ```
-"io.github.cactacea" %% "server" % "18.12.11"
+"io.github.cactacea" %% "server" % "19.01.00"
 ```
 Or similarily with Maven:
 ```
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>server_2.12</artifactId>
-  <version>18.12.11</version>
+  <version>19.01.00</version>
 </dependency>
 ```

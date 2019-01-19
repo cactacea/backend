@@ -1,8 +1,8 @@
 package io.github.cactacea.finasocket
 
 import io.netty.channel.{ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter}
-import io.netty.handler.codec.http.{HttpHeaderNames, HttpRequest}
 import io.netty.handler.codec.http.websocketx._
+import io.netty.handler.codec.http.{HttpHeaderNames, HttpRequest}
 
 class WebSocketServerHandler extends ChannelInboundHandlerAdapter {
   private[this] var handshaker: Option[WebSocketServerHandshaker] = None
@@ -10,10 +10,8 @@ class WebSocketServerHandler extends ChannelInboundHandlerAdapter {
   override def channelRead(ctx: ChannelHandlerContext, msg: AnyRef): Unit = {
     msg match {
       case http: HttpRequest =>
-        println("Got HTTP Request")
         handleHttpRequest(ctx, http)
       case frame: WebSocketFrame =>
-        println("Got Websocket Frame")
         handleWebsocketFrame(ctx, frame)
     }
   }
@@ -28,7 +26,7 @@ class WebSocketServerHandler extends ChannelInboundHandlerAdapter {
         WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel())
       case Some(ref) =>
         ref.handshake(ctx.channel(), request)
-        ctx.fireChannelRead(request)
+        ctx.fireChannelRead((request, ctx.channel()))
     }
   }
 

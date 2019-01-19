@@ -6,9 +6,11 @@ import com.twitter.finagle.stats.DefaultStatsReceiver
 import com.twitter.finagle.transport.QueueTransport
 import com.twitter.finagle.{Service, Status}
 import com.twitter.util.{Await, Future}
+import io.netty.channel.Channel
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame
 import io.netty.handler.codec.http.{DefaultHttpRequest, HttpMethod, HttpVersion}
 import org.junit.runner.RunWith
+import org.mockito.Mockito._
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
@@ -16,9 +18,9 @@ import org.scalatest.junit.JUnitRunner
 class ServerDispatcherTest extends FunSuite {
   import ServerDispatcherTest._
 
-  val echo = new Service[Request, Response] {
-    def apply(req: Request): Future[Response] = {
-      Future.value(Response(req.messages))
+  val echo = new Service[Client, Client] {
+    def apply(client: Client): Future[Client] = {
+      Future.value(client)
     }
   }
 
@@ -32,11 +34,12 @@ class ServerDispatcherTest extends FunSuite {
 
   test("valid message then invalid") {
     val (in, out) = mkPair[Any, Any]
-    new ServerDispatcher(out, echo, DefaultStatsReceiver)
+    val disp = new ServerDispatcher(out, echo, DefaultStatsReceiver)
     val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/")
-    in.write(req)
+    val channel = mock(classOf[Channel])
+    in.write((req, channel))
     in.write(new TextWebSocketFrame("hello"))
-    val frame = Await.result(in.read(), 30.second)
+    val frame = Await.result(in.read(), 1.second)
     assert(frame.asInstanceOf[TextWebSocketFrame].text() == "hello")
     in.write("invalid")
     assert(out.status == Status.Closed)

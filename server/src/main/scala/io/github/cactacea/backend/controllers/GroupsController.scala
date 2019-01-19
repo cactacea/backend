@@ -9,9 +9,9 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.group._
 import io.github.cactacea.backend.models.responses.GroupCreated
-import io.github.cactacea.backend.swagger.CactaceaController
+import io.github.cactacea.backend.swagger.SwaggerController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -20,7 +20,7 @@ class GroupsController @Inject()(
                                   groupsService: GroupsService,
                                   groupAccountsService: GroupAccountsService,
                                   accountGroupsService: AccountGroupsService,
-                                  s: Swagger) extends CactaceaController {
+                                  s: Swagger) extends SwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 

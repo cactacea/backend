@@ -191,8 +191,6 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
 
     val by = sessionId.toAccountId
 
-    println(ids)
-
     val q = quote {
       query[AccountMessages]
         .filter(am => liftQuery(ids).contains(am.messageId))
@@ -210,9 +208,6 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
   private def joinMessages(
                           l1: List[(Groups, AccountGroupId)],
                           l2: List[(AccountMessages, Messages, Option[Mediums], Accounts, Option[Relationships])]): List[Group] = {
-
-    println(l1)
-    println(l2)
 
     l1.map({ case (g, n) =>
       g.messageId match {

@@ -16,16 +16,17 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultInjectionModule,
-        DefaultNotificationModule,
-        DefaultNotificationMessagesModule,
-        DefaultEnqueueModule,
-        DefaultPushNotificationModule,
+        DefaultListenerModule,
+        DefaultChatModule,
+        DefaultMessageModule,
+        DefaultQueueModule,
+        DefaultMobilePushModule,
         DefaultStorageModule,
-        DefaultDequeueModule,
+        DefaultNotificationModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,
-        DefaultHashModule
+        DefaultHashModule,
+        DefaultJacksonModule
       )
     ).create
 

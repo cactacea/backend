@@ -2,7 +2,9 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.models.Comment
+import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
+import io.github.cactacea.backend.core.domain.enums.PushNotificationType
+import io.github.cactacea.backend.core.domain.models.{Comment, PushNotification}
 import io.github.cactacea.backend.core.infrastructure.dao.{CommentsDAO, FeedsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -11,7 +13,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 @Singleton
 class CommentsRepository @Inject()(
                                     commentsDAO: CommentsDAO,
-                                    feedsDAO: FeedsDAO
+                                    feedsDAO: FeedsDAO,
+                                    deepLinkService: DeepLinkService
                                   ) {
 
   def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
@@ -42,6 +45,36 @@ class CommentsRepository @Inject()(
       _ <- commentsDAO.validateExist(commentId, sessionId)
       _ <- commentsDAO.delete(commentId, sessionId)
     } yield (Unit)
+  }
+
+
+  // Mobile Push
+
+  def findPushNotifications(id: CommentId) : Future[List[PushNotification]] = {
+    commentsDAO.find(id).flatMap(_ match {
+      case Some(c) if c.notified == false => {
+        val pushType = c.replyId.isDefined match {
+          case true => PushNotificationType.commentReply
+          case false => PushNotificationType.feedReply
+        }
+        val postedAt = c.postedAt
+        val sessionId = c.by.toSessionId
+        val url = deepLinkService.getComment(c.feedId, c.id)
+        commentsDAO.findPushNotifications(id, c.replyId.isDefined).map({ t =>
+          t.groupBy(_.displayName).map({
+            case (displayName, fanOuts) =>
+              val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
+              PushNotification(displayName, pushType, postedAt, tokens, sessionId, url)
+          }).toList
+        })
+      }
+      case None =>
+        Future.value(List[PushNotification]())
+    })
+  }
+
+  def updatePushNotifications(id: CommentId): Future[Unit] = {
+    commentsDAO.updatePushNotifications(id)
   }
 
 }

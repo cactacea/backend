@@ -79,7 +79,7 @@ class CommentsDAOSpec extends DAOSpec {
     execute(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
     execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
 
-    val result = execute(pushNotificationsDAO.findByCommentId(commentId, false))
+    val result = execute(commentsDAO.findPushNotifications(commentId, false))
 
     assert(result(0).accountId == sessionAccount1.id)
     assert(result(0).displayName == displayName.get)
@@ -226,8 +226,8 @@ class CommentsDAOSpec extends DAOSpec {
     val commentId1 = execute(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
     val commentId2 = execute(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
 
-    execute(commentsDAO.updateNotified(commentId1))
-    execute(commentsDAO.updateNotified(commentId2))
+    execute(commentsDAO.updatePushNotifications(commentId1))
+    execute(commentsDAO.updatePushNotifications(commentId2))
 
     val comment1 = execute(commentsDAO.find(commentId1)).get
     val comment2 = execute(commentsDAO.find(commentId1)).get

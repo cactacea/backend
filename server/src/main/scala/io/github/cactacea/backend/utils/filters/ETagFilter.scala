@@ -1,6 +1,5 @@
 package io.github.cactacea.backend.utils.filters
 
-import com.google.inject.Singleton
 import com.roundeights.hasher.Implicits._
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finagle.{Service, SimpleFilter, http}
@@ -9,7 +8,6 @@ import org.jboss.netty.handler.codec.http.HttpHeaders.Names._
 import com.twitter.finagle.http.Method
 import com.twitter.util.Future
 
-@Singleton
 class ETagFilter extends SimpleFilter[Request, Response] {
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {

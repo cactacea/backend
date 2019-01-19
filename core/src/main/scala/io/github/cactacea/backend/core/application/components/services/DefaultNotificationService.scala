@@ -2,64 +2,77 @@ package io.github.cactacea.backend.core.application.components.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{NotificationService, PushNotificationService}
-import io.github.cactacea.backend.core.domain.repositories.{NotificationsRepository, PushNotificationsRepository}
+import io.github.cactacea.backend.core.application.components.interfaces.{ChatService, MobilePushService, NotificationService}
+import io.github.cactacea.backend.core.domain.repositories._
+import io.github.cactacea.backend.core.infrastructure.dao.MessagesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 class DefaultNotificationService @Inject()(
-                                            db: DatabaseService,
-                                            pushNotificationService: PushNotificationService,
-                                            pushNotificationsRepository: PushNotificationsRepository,
-                                            notificationsRepository: NotificationsRepository
+                                           chatService: ChatService,
+                                           commentsRepository: CommentsRepository,
+                                           db: DatabaseService,
+                                           feedsRepository: FeedsRepository,
+                                           friendRequestsRepository: FriendRequestsRepository,
+                                           groupInvitationsRepository: GroupInvitationsRepository,
+                                           messagesDAO: MessagesDAO,
+                                           mobilePushService: MobilePushService,
+                                           messagesRepository: MessagesRepository,
+                                           notificationsRepository: NotificationsRepository
                                           ) extends NotificationService {
 
-  def fanOutFeed(id: FeedId): Future[Unit] = {
+  def notifyNewFeedArrived(feedId: FeedId): Future[Unit] = {
     db.transaction{
       for {
-        p <- pushNotificationsRepository.findByFeedId(id)
-        a <- pushNotificationService.send(p)
-        _ <- pushNotificationsRepository.updateFeedNotified(id, a)
-        _ <- notificationsRepository.createFeed(id, a)
+        p <- feedsRepository.findPushNotifications(feedId)
+        a <- mobilePushService.send(p)
+        _ <- feedsRepository.updatePushNotifications(feedId, a)
+        _ <- notificationsRepository.createFeed(feedId, a)
       } yield (Unit)
     }
   }
 
-  def fanOutComment(id: CommentId): Future[Unit] = {
+  def notifyNewCommentArrived(commentId: CommentId): Future[Unit] = {
     db.transaction{
       for {
-        p <- pushNotificationsRepository.findByCommentId(id)
-        _ <- pushNotificationService.send(p)
-        _ <- pushNotificationsRepository.updateCommentNotified(id)
-        _ <- notificationsRepository.createComment(id)
+        p <- commentsRepository.findPushNotifications(commentId)
+        _ <- mobilePushService.send(p)
+        _ <- commentsRepository.updatePushNotifications(commentId)
+        _ <- notificationsRepository.createComment(commentId)
       } yield (Unit)
     }
   }
 
-  def fanOutMessage(id: MessageId): Future[Unit] = {
+  def notifyNewMessageArrived(messageId: MessageId): Future[Unit] = {
     db.transaction{
       for {
-        p <- pushNotificationsRepository.findByMessageId(id)
-        a <- pushNotificationService.send(p)
-        _ <- pushNotificationsRepository.updateMessageNotified(id, a)
+        p <- messagesRepository.findPushNotifications(messageId)
+        a <- mobilePushService.send(p)
+        _ <- messagesRepository.updatePushNotifications(messageId, a)
+        _ <- messagesDAO.find(messageId).map(_ match {
+          case Some(m) =>
+            chatService.publish(m.groupId, m)
+          case None =>
+            Future.Done
+        })
       } yield (Unit)
     }
   }
 
-  def fanOutGroupInvitation(id: GroupInvitationId): Future[Unit] = {
+  def notifyNewGroupInvitationArrived(groupInvitationId: GroupInvitationId): Future[Unit] = {
     for {
-      p <- pushNotificationsRepository.findByInvitationId(id)
-      _ <- pushNotificationService.send(p)
-      _ <- pushNotificationsRepository.updateInvitationNotified(id)
-      _ <- notificationsRepository.createInvitation(id)
+      p <- groupInvitationsRepository.findPushNotifications(groupInvitationId)
+      _ <- mobilePushService.send(p)
+      _ <- groupInvitationsRepository.updatePushNotifications(groupInvitationId)
+      _ <- notificationsRepository.createInvitation(groupInvitationId)
     } yield (Unit)
   }
 
-  def fanOutFriendRequest(id: FriendRequestId): Future[Unit] = {
+  def notifyNewFriendRequestArrived(friendRequestId: FriendRequestId): Future[Unit] = {
     for {
-      p <- pushNotificationsRepository.findByRequestId(id)
-      _ <- pushNotificationService.send(p)
-      _ <- pushNotificationsRepository.updateFriendRequestNotified(id)
-      _ <- notificationsRepository.createRequest(id)
+      p <- friendRequestsRepository.findPushNotifications(friendRequestId)
+      _ <- mobilePushService.send(p)
+      _ <- friendRequestsRepository.updatePushNotifications(friendRequestId)
+      _ <- notificationsRepository.createRequest(friendRequestId)
     } yield (Unit)
   }
 

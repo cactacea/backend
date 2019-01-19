@@ -19,7 +19,8 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultHashModule
+        DefaultHashModule,
+        DefaultDeepLinkModule
       )
     ).create
 
@@ -45,7 +46,6 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   val commentReportsDAO = injector.instance[CommentReportsDAO]
   val pushNotificationSettingDAO = injector.instance[PushNotificationSettingsDAO]
   val devicesDAO = injector.instance[DevicesDAO]
-  val pushNotificationsDAO = injector.instance[PushNotificationsDAO]
   val feedLikesDAO = injector.instance[FeedLikesDAO]
   val feedReportsDAO = injector.instance[FeedReportsDAO]
   val commentsDAO = injector.instance[CommentsDAO]

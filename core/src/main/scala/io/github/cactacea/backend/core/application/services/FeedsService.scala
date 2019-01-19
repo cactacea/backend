@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{InjectionService, EnqueueService}
+import io.github.cactacea.backend.core.application.components.interfaces.{ListenerService, QueueService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
@@ -14,8 +14,8 @@ class FeedsService @Inject()(
                               db: DatabaseService,
                               feedsRepository: FeedsRepository,
                               reportsRepository: ReportsRepository,
-                              publishService: EnqueueService,
-                              actionService: InjectionService
+                              queueService: QueueService,
+                              listenerService: ListenerService
                             ) {
 
   def create(message: String,
@@ -26,22 +26,19 @@ class FeedsService @Inject()(
              expiration: Option[Long],
              sessionId: SessionId): Future[FeedId] = {
 
-    db.transaction {
-      for {
-        id <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
-        _ <- actionService.feedCreated(id, message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
-        _ <- publishService.enqueueFeed(id)
-      } yield (id)
-    }
+    for {
+      id <- db.transaction(feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId))
+      _ <- listenerService.feedCreated(id, message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
+      _ <- queueService.enqueueFeed(id)
+    } yield (id)
+
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- feedsRepository.delete(feedId, sessionId)
-        _ <- actionService.feedDeleted(feedId, sessionId)
-      } yield (Unit)
-    }
+    for {
+      _ <- db.transaction(feedsRepository.delete(feedId, sessionId))
+      _ <- listenerService.feedDeleted(feedId, sessionId)
+    } yield (Unit)
   }
 
   def edit(feedId: FeedId,

@@ -8,13 +8,16 @@ import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.message.{DeleteMessages, GetMessages, PostMedium, PostText}
-import io.github.cactacea.backend.swagger.CactaceaController
+import io.github.cactacea.backend.swagger.SwaggerController
 import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 @Singleton
-class MessagesController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, messagesService: MessagesService, s: Swagger) extends CactaceaController {
+class MessagesController @Inject()(
+                                    @Flag("cactacea.api.prefix") apiPrefix: String,
+                                    messagesService: MessagesService,
+                                    s: Swagger) extends SwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
