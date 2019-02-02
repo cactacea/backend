@@ -17,8 +17,11 @@ class APIServerSpec extends FeatureTest with Helpers {
   override val server = new EmbeddedHttpServer(
     twitterServer = new CactaceaServer {
       override def storageModule: TwitterModule = DemoStorageModule
+
       override def warmup() {
       }
+
+      override val defaultHttpPort = ":9002"
     }
   )
 
