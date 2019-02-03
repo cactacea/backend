@@ -7,7 +7,6 @@ import io.github.cactacea.backend.core.domain.enums.{GroupInvitationStatusType, 
 import io.github.cactacea.backend.core.domain.models.GroupInvitation
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.infrastructure.results.PushNotifications
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyInvited, GroupInvitationNotFound}
 
@@ -146,41 +145,6 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def find(id: GroupInvitationId): Future[Option[GroupInvitations]] = {
-    val q = quote {
-      query[GroupInvitations]
-        .filter(_.id == lift(id))
-    }
-    run(q).map(_.headOption)
-  }
-
-  // Mobile Push
-
-  def updatePushNotifications(id: GroupInvitationId, notified: Boolean = true): Future[Unit] = {
-    val q = quote {
-      query[GroupInvitations]
-        .filter(_.id == lift(id))
-        .update(_.notified -> lift(notified))
-    }
-    run(q).map(_ => Unit)
-  }
-
-  def findPushNotifications(id: GroupInvitationId): Future[List[PushNotifications]] = {
-    val q = quote {
-      query[GroupInvitations].filter(g => g.id == lift(id) && g.notified == false
-        && query[PushNotificationSettings].filter(p => p.accountId == g.accountId && p.groupInvitation == true).nonEmpty)
-        .leftJoin(query[Relationships]).on((g, r) => r.accountId == g.by && r.by == g.accountId)
-        .join(query[Accounts]).on({ case ((g, _), a) => a.id == g.by})
-        .join(query[Devices]).on({ case (((g, _), _), d) => d.accountId == g.accountId && d.pushToken.isDefined})
-        .map({ case (((g, r), a), d) => (a.displayName, r.flatMap(_.displayName), g.accountId, d.pushToken) })
-        .distinct
-    }
-    run(q).map(_.map({ case (displayName, editedDisplayName, accountId, pushToken) => {
-      val name = editedDisplayName.getOrElse(displayName)
-      val token = pushToken.get
-      PushNotifications(accountId, name, token, showContent = false)
-    }}))
-  }
 
 
   // Validators

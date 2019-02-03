@@ -11,8 +11,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class GroupAuthorityDAO @Inject()(
-                                   db: DatabaseService,
-                                   accountGroupsDAO: AccountGroupsDAO) {
+                                   db: DatabaseService) {
 
   import db._
 

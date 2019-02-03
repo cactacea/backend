@@ -12,6 +12,7 @@ class SessionsRepositorySpec extends RepositorySpec {
   val devicesDAO = injector.instance[DevicesDAO]
   var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
   val accountsDAO = injector.instance[AccountsDAO]
+
   import db._
 
   test("signUp") {

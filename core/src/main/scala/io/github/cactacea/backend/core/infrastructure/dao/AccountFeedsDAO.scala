@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.domain.models.Feed
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
@@ -26,17 +26,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
            (r.is_follower = true and (f.privacy_type in (0, 1)))
         or (r.is_friend = true and (f.privacy_type in (0, 1, 2)))
             )
+        and r.muting = 0
         """.as[Action[Long]]
-    }
-    run(q).map(_ => Unit)
-  }
-
-  def update(feedId: FeedId, accountIds: List[AccountId], notified: Boolean = true): Future[Unit] = {
-    val q = quote {
-      query[AccountFeeds]
-        .filter(_.feedId == lift(feedId))
-        .filter(m => liftQuery(accountIds).contains(m.accountId))
-        .update(_.notified -> lift(notified))
     }
     run(q).map(_ => Unit)
   }

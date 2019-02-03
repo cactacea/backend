@@ -2,9 +2,8 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, PushNotificationType}
-import io.github.cactacea.backend.core.domain.models.{Feed, PushNotification}
+import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -16,7 +15,7 @@ class FeedsRepository @Inject()(
                                  accountFeedsDAO: AccountFeedsDAO,
                                  feedsDAO: FeedsDAO,
                                  mediumsDAO: MediumsDAO,
-                                 deepLinkService: DeepLinkService
+                                 notificationsDAO: NotificationsDAO
                                ) {
 
   def create(message: String,
@@ -32,6 +31,8 @@ class FeedsRepository @Inject()(
       _ <- mediumsDAO.validateExist(ids, sessionId)
       id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- accountFeedsDAO.create(id, sessionId)
+      _ <- notificationsDAO.createFeed(id, sessionId)
+
     } yield (id)
   }
 
@@ -84,33 +85,6 @@ class FeedsRepository @Inject()(
       case None =>
         Future.exception(CactaceaException(FeedNotFound))
     })
-  }
-
-  def findPushNotifications(id: FeedId) : Future[List[PushNotification]] = {
-    feedsDAO.find(id).flatMap(_ match {
-      case Some(f) if f.notified == false => {
-        feedsDAO.findPushNotifications(id).map({ t =>
-          t.groupBy(_.displayName).map({
-            case (displayName, fanOuts) =>
-              val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
-              PushNotification(
-                displayName,
-                PushNotificationType.feed,
-                f.postedAt,
-                tokens,
-                f.by.toSessionId,
-                deepLinkService.getFeed(id)
-              )
-          }).toList
-        })
-      }
-      case _ =>
-        Future.value(List[PushNotification]())
-    })
-  }
-
-  def updatePushNotifications(id: FeedId, accountIds: List[AccountId]) : Future[Unit] = {
-    accountFeedsDAO.update(id, accountIds)
   }
 
 }

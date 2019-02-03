@@ -45,11 +45,27 @@ lazy val core = (project in file("core"))
   .dependsOn(finachat)
 
 
+lazy val utils = (project in file("utils"))
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(libraryDependencies ++= Dependencies.utils)
+
+
 lazy val addons = (project in file("addons"))
-  .settings(addOsCommonSettings)
+  .settings(
+    organization := "io.github.cactacea.addons",
+    scalaVersion  := "2.12.7",
+    scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
+    testOptions in Test += Tests.Argument("-oI"),
+    concurrentRestrictions += Tags.limit(Tags.Test, 1),
+    parallelExecution := false,
+    fork := true
+  )
   .settings(commonResolverSetting)
   .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.addons)
   .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(utils)
 
 
 lazy val finagger = (project in file("libs/finagger"))
@@ -158,20 +174,11 @@ lazy val commonSettings = Seq(
 )
 
 
-lazy val addOsCommonSettings = Seq(
-  organization := "io.github.cactacea.addons",
-  scalaVersion  := "2.12.7",
-  scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
-  testOptions in Test += Tests.Argument("-oI"),
-  concurrentRestrictions += Tags.limit(Tags.Test, 1),
-  parallelExecution := false,
-  fork := true
-)
-
 lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    "Maven central" at "http://central.maven.org/maven2/")
+    "Maven central" at "http://central.maven.org/maven2/",
+    "Monsanto Repository" at "https://dl.bintray.com/monsanto/maven/")
   )
 
 

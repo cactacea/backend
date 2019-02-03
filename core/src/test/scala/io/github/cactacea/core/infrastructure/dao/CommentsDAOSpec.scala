@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.{DeviceType, FeedPrivacyType}
+import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
 
@@ -59,30 +59,6 @@ class CommentsDAOSpec extends DAOSpec {
 
     val feed1 = execute(feedsDAO.find(feedId, sessionAccount1.id.toSessionId))
     assert(feed1.map(_.commentCount) == Some(5))
-
-  }
-
-  test("create - fanout") {
-
-    val sessionAccount1 = createAccount("CommentsDAOSpec3")
-    val sessionAccount2 = createAccount("CommentsDAOSpec4")
-
-    val feedId = execute(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
-    val commentId = execute(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
-
-    val displayName = Some("Invitation Sender Name")
-    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
-    val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
-
-    execute(pushNotificationSettingDAO.create(false, true, false, false, false, false, false, sessionAccount1.id.toSessionId))
-    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount1.id.toSessionId))
-    execute(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
-    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
-
-    val result = execute(commentsDAO.findPushNotifications(commentId, false))
-
-    assert(result(0).accountId == sessionAccount1.id)
-    assert(result(0).displayName == displayName.get)
 
   }
 
@@ -197,45 +173,6 @@ class CommentsDAOSpec extends DAOSpec {
     assert(result4.size == 0)
   }
 
-  test("find for push notification") {
 
-    val sessionAccount1 = createAccount("CommentsDAOSpec13")
-    val sessionAccount2 = createAccount("CommentsDAOSpec14")
-
-    val feedId = execute(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
-    val commentId1 = execute(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
-    val commentId2 = execute(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
-
-    val comment1 = execute(commentsDAO.find(commentId1)).get
-    val comment2 = execute(commentsDAO.find(commentId1)).get
-    assert(comment1.id == commentId1)
-    assert(comment2.id == commentId1)
-
-    execute(commentsDAO.delete(commentId2, sessionAccount1.id.toSessionId))
-    val comment3 = execute(commentsDAO.find(commentId2))
-    assert(comment3.isEmpty)
-
-  }
-
-  test("updateNotified") {
-
-    val sessionAccount1 = createAccount("CommentsDAOSpec15")
-    val sessionAccount2 = createAccount("CommentsDAOSpec16")
-
-    val feedId = execute(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionAccount1.id.toSessionId))
-    val commentId1 = execute(commentsDAO.create(feedId, "1" * 100, sessionAccount2.id.toSessionId))
-    val commentId2 = execute(commentsDAO.create(feedId, "2" * 100, sessionAccount1.id.toSessionId))
-
-    execute(commentsDAO.updatePushNotifications(commentId1))
-    execute(commentsDAO.updatePushNotifications(commentId2))
-
-    val comment1 = execute(commentsDAO.find(commentId1)).get
-    val comment2 = execute(commentsDAO.find(commentId1)).get
-    assert(comment1.id == commentId1)
-    assert(comment2.id == commentId1)
-    assert(comment1.notified == true)
-    assert(comment2.notified == true)
-
-  }
 
 }

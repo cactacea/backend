@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, FeedPrivacyType}
 import io.github.cactacea.backend.core.domain.models.{Account, Feed}
 import io.github.cactacea.backend.core.infrastructure.identifiers._

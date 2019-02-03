@@ -118,17 +118,6 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => Unit)
   }
 
-  def updateNotified(messageId: MessageId, accountIds: List[AccountId]): Future[Unit] = {
-    val q = quote {
-      query[AccountMessages]
-        .filter(_.messageId == lift(messageId))
-        .filter(m => liftQuery(accountIds).contains(m.accountId))
-        .update(_.notified -> true)
-    }
-    run(q).map(_ => Unit)
-  }
-
-
 
   def validateFind(id: MessageId, sessionId: SessionId): Future[Message] = {
 

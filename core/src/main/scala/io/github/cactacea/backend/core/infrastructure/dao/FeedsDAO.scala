@@ -4,10 +4,9 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType, FeedPrivacyType}
-import io.github.cactacea.backend.core.domain.models.Feed
+import io.github.cactacea.backend.core.domain.models.{Feed}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.infrastructure.results.PushNotifications
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.FeedNotFound
 
@@ -281,44 +280,6 @@ class FeedsDAO @Inject()(
           Feed(cf, t, m, cf.id.value)
         })
     })
-  }
-
-
-  def find(feedId: FeedId): Future[Option[Feeds]] = {
-    val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
-    }
-    run(q).map(_.headOption)
-  }
-
-  def findPushNotifications(id: FeedId): Future[List[PushNotifications]] = {
-    val q = quote {
-      query[AccountFeeds].filter(af => af.feedId == lift(id) && af.notified == false)
-        .filter(af => query[Relationships].filter(r => r.accountId == af.by && r.by == af.accountId && r.muting == true).isEmpty)
-        .filter(af => query[PushNotificationSettings].filter(p => p.accountId == af.accountId && p.feed == true).nonEmpty)
-        .leftJoin(query[Relationships]).on((af, r) => r.accountId == af.by && r.by == af.accountId)
-        .join(query[Feeds]).on({ case ((af, _), f) => f.id == af.feedId})
-        .join(query[Accounts]).on({ case (((af, _), _), a) =>  a.id == af.by})
-        .join(query[Devices]).on({ case ((((af, _), _), _), d) => d.accountId == af.accountId && d.pushToken.isDefined})
-        .map({case ((((af, r), _), a), d) => (a.displayName, r.flatMap(_.displayName), af.accountId, d.pushToken) })
-        .distinct
-    }
-    run(q).map(_.map({ case (displayName, editedDisplayName, accountId, pushToken) => {
-      val name = editedDisplayName.getOrElse(displayName)
-      val token = pushToken.get
-      PushNotifications(accountId, name, token, showContent = false)
-    }}))
-
-  }
-
-  def updateNotified(feedId: FeedId, notified: Boolean): Future[Unit] = {
-    val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
-        .update(_.notified -> lift(notified))
-    }
-    run(q).map(_ => Unit)
   }
 
 

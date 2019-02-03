@@ -7,7 +7,7 @@ import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.infrastructure.dao._
+import io.github.cactacea.backend.core.infrastructure.dao.{PushNotificationCommentsDAO, PushNotificationFriendRequestsDAO, PushNotificationGroupInvitationsDAO, _}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Mediums}
 import io.github.cactacea.core.helpers.HelperDAO
@@ -60,6 +60,12 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   val mutesDAO = injector.instance[MutesDAO]
   val outstandingFriendRequestsDAO = injector.instance[FriendRequestsStatusDAO]
   val pushNotificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
+  val pushNotificationFeedsDAO = injector.instance[PushNotificationFeedsDAO]
+  val pushNotificationCommentsDAO = injector.instance[PushNotificationCommentsDAO]
+  val pushNotificationMessagesDAO = injector.instance[PushNotificationMessagesDAO]
+  val pushNotificationGroupInvitationsDAO = injector.instance[PushNotificationGroupInvitationsDAO]
+  val pushNotificationFriendRequestsDAO = injector.instance[PushNotificationFriendRequestsDAO]
+
   val helperDAO = injector.instance[HelperDAO]
 
   def createAccount(accountName: String): Accounts = {

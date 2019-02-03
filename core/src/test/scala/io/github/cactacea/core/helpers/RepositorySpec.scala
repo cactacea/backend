@@ -24,7 +24,6 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
         DefaultQueueModule,
         DefaultMobilePushModule,
         DefaultStorageModule,
-        DefaultNotificationModule,
         DefaultHashModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,

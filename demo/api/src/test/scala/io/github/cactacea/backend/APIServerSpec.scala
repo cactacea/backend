@@ -35,7 +35,6 @@ class APIServerSpec extends FeatureTest with Helpers {
         DefaultQueueModule,
         DefaultMobilePushModule,
         DemoStorageModule,
-        DefaultNotificationModule,
         DefaultHashModule,
         DefaultTranscodeModule,
         DefaultDeepLinkModule,

@@ -2,16 +2,16 @@ package io.github.cactacea.backend.core.application.components.services
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{NotificationService, QueueService}
+import io.github.cactacea.backend.core.application.components.interfaces.{MobilePushService, QueueService}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 
-class DefaultQueueService @Inject()(notificationService: NotificationService) extends QueueService {
+class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extends QueueService {
 
   import java.util.concurrent.LinkedBlockingQueue
 
   private val queue = new LinkedBlockingQueue[Queue]()
-  private val receiver = new Receiver(queue, notificationService)
+  private val receiver = new Receiver(queue, mobilePushService)
 
   override def start(): Unit = {
     new Thread(receiver).start()
@@ -44,7 +44,7 @@ class DefaultQueueService @Inject()(notificationService: NotificationService) ex
 
   import java.util.concurrent.BlockingQueue
 
-  private class Receiver(val queue: BlockingQueue[Queue], notificationService: NotificationService) extends Runnable {
+  private class Receiver(val queue: BlockingQueue[Queue], mobilePushService: MobilePushService) extends Runnable {
 
     var finished = false
 
@@ -52,16 +52,11 @@ class DefaultQueueService @Inject()(notificationService: NotificationService) ex
       while (!finished) {
         val item = queue.take()
         item match {
-          case q: FeedQueue =>
-            notificationService.notifyNewFeedArrived(q.id)
-          case q: CommentQueue =>
-            notificationService.notifyNewCommentArrived(q.id)
-          case q: MessageQueue =>
-            notificationService.notifyNewMessageArrived(q.id)
-          case q: GroupInvitationQueue =>
-            notificationService.notifyNewGroupInvitationArrived(q.id)
-          case q: FriendRequestQueue =>
-            notificationService.notifyNewFriendRequestArrived(q.id)
+          case q: FeedQueue =>            mobilePushService.sendFeed(q.id)
+          case q: CommentQueue =>         mobilePushService.sendComment(q.id)
+          case q: MessageQueue =>         mobilePushService.sendMessage(q.id)
+          case q: GroupInvitationQueue => mobilePushService.sendGroupInvitation(q.id)
+          case q: FriendRequestQueue =>   mobilePushService.sendFriendRequest(q.id)
 
         }
       }

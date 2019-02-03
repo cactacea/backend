@@ -7,7 +7,6 @@ import io.github.cactacea.backend.core.domain.enums.ContentStatusType
 import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.infrastructure.results.PushNotifications
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.CommentNotFound
 
@@ -191,84 +190,6 @@ class CommentsDAO @Inject()(
         })
       })
   }
-
-  def find(commentId: CommentId): Future[Option[Comments]] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-    }
-    run(q).map(_.headOption)
-  }
-
-
-
-  // Mobile Push
-
-  def findPushNotifications(id: CommentId, isReply: Boolean): Future[List[PushNotifications]] = {
-
-    if (isReply) {
-
-      val q = quote {
-        query[Comments].filter(c => c.id == lift(id) && c.notified == false)
-          .join(query[Comments]).on((c, f) => f.replyId.exists(_ == c.id)
-          && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.muting == true).isEmpty
-          && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.comment == true).nonEmpty)
-          .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
-          .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
-          .join(query[Devices]).on({ case ((((_, f), _), _), d) => d.accountId == f.by && d.pushToken.isDefined})
-          .map({case ((((_, f), r), a), d) => (a.displayName, r.flatMap(_.displayName), f.by, d.pushToken) })
-          .distinct
-      }
-      run(q).map(_.map({ case (displayName, editedDisplayName, accountId, pushToken) => {
-        val name = editedDisplayName.getOrElse(displayName)
-        val token = pushToken.get
-        PushNotifications(accountId, name, token, showContent = false)
-      }}))
-
-    } else {
-
-      val q = quote {
-        query[Comments].filter(c => c.id == lift(id) && c.notified == false)
-          .join(query[Feeds]).on((c, f) => c.feedId == f.id
-          && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.muting == true).isEmpty
-          && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.comment == true).nonEmpty)
-          .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
-          .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
-          .join(query[Devices]).on({ case ((((_, f), _), _), d) => d.accountId == f.by && d.pushToken.isDefined})
-          .map({case ((((_, f), r), a), d) => (a.displayName, r.flatMap(_.displayName), f.by, d.pushToken) })
-          .distinct
-      }
-      run(q).map(_.map({ case (displayName, editedDisplayName, accountId, pushToken) => {
-        val name = editedDisplayName.getOrElse(displayName)
-        val token = pushToken.get
-        PushNotifications(accountId, name, token, showContent = false)
-      }}))
-
-    }
-
-  }
-
-  def updatePushNotifications(commentId: CommentId): Future[Unit] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-        .update(_.notified -> true)
-    }
-    run(q).map(_ => Unit)
-  }
-
-
-
-//  // TODO
-//  def findUnNotified(commentId: CommentId): Future[Option[Comments]] = {
-//    val q = quote {
-//      query[Comments]
-//        .filter(_.id == lift(commentId))
-//        .filter(_.notified == false)
-//    }
-//    run(q).map(_.headOption)
-//  }
-
 
   def validateExist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     exist(commentId, sessionId).flatMap(_ match {

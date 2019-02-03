@@ -16,7 +16,7 @@ object Dependencies {
     val ficus = "1.4.3"
     val jjwt = "0.9.1"
     val flyway = "5.2.4"
-    val quill = "2.6.0"
+    val quill = "3.0.0"
     val arm = "2.0"
     val hasher = "1.2.0"
     val extractor = "2.11.0"
@@ -162,6 +162,14 @@ object Dependencies {
   )
 
 
+  lazy val addons = Seq(
+    "com.monsanto.arch" %% "aws2scala-sns"         % "0.6.0",
+    "com.amazonaws"      % "aws-java-sdk-kms"  % "1.11.489"
+  )
+
+  lazy val utils = Seq(
+    "com.twitter" %% "util-core" % "18.11.0"
+  )
   // Libraries
 
   lazy val filhouette = Seq(

@@ -2,9 +2,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
-import io.github.cactacea.backend.core.domain.enums.PushNotificationType
-import io.github.cactacea.backend.core.domain.models.{Message, PushNotification}
+import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
@@ -14,8 +12,7 @@ class MessagesRepository @Inject()(
                                     accountGroupsDAO: AccountGroupsDAO,
                                     groupsDAO: GroupsDAO,
                                     mediumsDAO: MediumsDAO,
-                                    messagesDAO:  MessagesDAO,
-                                    deepLinkService: DeepLinkService,
+                                    messagesDAO:  MessagesDAO
                                   ) {
 
   def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
@@ -71,33 +68,5 @@ class MessagesRepository @Inject()(
   }
 
 
-  def findPushNotifications(id: MessageId) : Future[List[PushNotification]] = {
-    messagesDAO.findPushNotification(id).flatMap(_ match {
-      case Some(m) if m.notified == false => {
-        val postedAt = m.postedAt
-        val sessionId = m.by.toSessionId
-        val url = deepLinkService.getMessages(m.groupId, m.id)
-        messagesDAO.findPushNotifications(id).map({ t =>
-          t.groupBy({ g => (g.displayName, g.showContent)}).map({
-            case ((displayName, showContent), fanOuts) =>
-              val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
-              val pushType = showContent match {
-                case true =>
-                  PushNotificationType.message
-                case false =>
-                  PushNotificationType.noDisplayedMessage
-              }
-              PushNotification(displayName, pushType, postedAt, tokens, sessionId, url)
-          }).toList
-        })
-      }
-      case _ =>
-        Future.value(List[PushNotification]())
-    })
-  }
-
-  def updatePushNotifications(id: MessageId, accountIds: List[AccountId]): Future[Unit] = {
-    accountMessagesDAO.updateNotified(id, accountIds)
-  }
 
 }
