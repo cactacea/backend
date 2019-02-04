@@ -7,8 +7,6 @@ import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyFriend, AccountNotFriend}
 
 @Singleton
 class FriendsDAO @Inject()(db: DatabaseService) {
@@ -195,24 +193,5 @@ class FriendsDAO @Inject()(db: DatabaseService) {
   }
 
 
-  // Validators
-
-  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.exception(CactaceaException(AccountAlreadyFriend))
-      case false =>
-        Future.Unit
-    })
-  }
-
-  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case false =>
-        Future.exception(CactaceaException(AccountNotFriend))
-      case true =>
-        Future.Unit
-    })
-  }
 
 }

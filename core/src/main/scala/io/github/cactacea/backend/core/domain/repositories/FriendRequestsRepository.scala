@@ -4,12 +4,14 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.backend.core.domain.models.FriendRequest
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, FriendRequestsDAO, FriendRequestsStatusDAO, NotificationsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{FriendRequestsDAO, FriendRequestsStatusDAO, NotificationsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FriendRequestsValidator}
 
 @Singleton
 class FriendRequestsRepository @Inject()(
-                                          accountsDAO: AccountsDAO,
+                                          accountsValidator: AccountsValidator,
+                                          friendRequestsValidator: FriendRequestsValidator,
                                           friendRequestsStatusDAO: FriendRequestsStatusDAO,
                                           friendRequestsDAO: FriendRequestsDAO,
                                           friendsRepository: FriendsRepository,
@@ -18,10 +20,10 @@ class FriendRequestsRepository @Inject()(
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- friendRequestsDAO.validateNotExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- friendRequestsValidator.nnotExist(accountId, sessionId)
       _ <- friendRequestsStatusDAO.create(accountId, sessionId)
       id <- friendRequestsDAO.create(accountId, sessionId)
       _ <- notificationsDAO.createNotification(id, accountId, sessionId)
@@ -30,10 +32,10 @@ class FriendRequestsRepository @Inject()(
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- friendRequestsDAO.validateExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- friendRequestsValidator.exist(accountId, sessionId)
       _ <- friendRequestsStatusDAO.delete(accountId, sessionId)
       _ <- friendRequestsDAO.delete(accountId, sessionId)
     } yield (Unit)

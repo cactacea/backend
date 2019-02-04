@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.core.infrastructure.dao
+package io.github.cactacea.backend.core.infrastructure.validators
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
@@ -10,10 +10,62 @@ import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class GroupAuthorityDAO @Inject()(
+class GroupAuthorityValidator @Inject()(
                                    db: DatabaseService) {
 
   import db._
+
+  def hasFindMembersAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
+      _ <- canJoin(g, r, sessionId)
+    } yield (())
+  }
+
+  def hasAddMembersAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      r <- findRelationship(accountId, g.by.toSessionId)
+      _ <- canJoin(g, r, accountId.toSessionId)
+      _ <- canManage(g, sessionId)
+    } yield (())
+  }
+
+  def hasRemoveMembersAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      _ <- canManage(g, sessionId)
+    } yield (())
+
+  }
+
+  def hasUpdateAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      _ <- notDirectMessageGroup(g)
+      _ <- canManage(g, sessionId)
+    } yield (())
+  }
+
+  def hasJoinAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
+      _ <- notInvitationOnlyGroup(g)
+      _ <- canJoin(g, r, sessionId)
+    } yield (())
+  }
+
+  def hasInviteMembersAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    for {
+      g <- findGroup(groupId)
+      r <- findRelationship(accountId, g.by.toSessionId)
+      _ <- canJoin(g, r, accountId.toSessionId)
+      _ <- canManage(g, sessionId)
+    } yield (())
+  }
+
 
   private def findGroup(groupId: GroupId): Future[Groups] = {
     val q = quote {
@@ -100,61 +152,6 @@ class GroupAuthorityDAO @Inject()(
         Future.Unit
     }
   }
-
-
-
-  def validateSearchMembersAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      g <- findGroup(groupId)
-      r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
-      _ <- canJoin(g, r, sessionId)
-    } yield (())
-  }
-
-  def validateAddMembersAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      g <- findGroup(groupId)
-      r <- findRelationship(accountId, g.by.toSessionId)
-      _ <- canJoin(g, r, accountId.toSessionId)
-      _ <- canManage(g, sessionId)
-    } yield (())
-  }
-
-  def validateRemoveMembersAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      g <- findGroup(groupId)
-      _ <- canManage(g, sessionId)
-    } yield (())
-
-  }
-
-  def validateUpdateAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      g <- findGroup(groupId)
-      _ <- notDirectMessageGroup(g)
-      _ <- canManage(g, sessionId)
-    } yield (())
-  }
-
-  def validateJoinAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      g <- findGroup(groupId)
-      r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
-      _ <- notInvitationOnlyGroup(g)
-      _ <- canJoin(g, r, sessionId)
-    } yield (())
-  }
-
-  def validateInviteMembersAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      g <- findGroup(groupId)
-      r <- findRelationship(accountId, g.by.toSessionId)
-      _ <- canJoin(g, r, accountId.toSessionId)
-      _ <- canManage(g, sessionId)
-    } yield (())
-  }
-
-
 
 
 }

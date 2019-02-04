@@ -7,8 +7,6 @@ import io.github.cactacea.backend.core.domain.enums.{GroupInvitationStatusType, 
 import io.github.cactacea.backend.core.domain.models.GroupInvitation
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyInvited, GroupInvitationNotFound}
 
 @Singleton
 class GroupInvitationsDAO @Inject()(db: DatabaseService) {
@@ -145,33 +143,43 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
 
   }
 
-
-
-  // Validators
-
-  def validateNotExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
-    findExist(accountId, groupId).flatMap(_ match {
-      case true =>
-        Future.exception(CactaceaException(AccountAlreadyInvited))
-      case false =>
-        Future.Unit
-    })
-  }
-
-  def validateExist(groupInvitationId: GroupInvitationId, sessionId: SessionId): Future[GroupInvitations] = {
+  def find(groupInvitationId: GroupInvitationId, sessionId: SessionId): Future[Option[(GroupId, AccountId)]] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[GroupInvitations]
         .filter(_.id        == lift(groupInvitationId))
         .filter(_.accountId == lift(accountId))
+        .map(f => (f.groupId, f.accountId))
     }
-    run(q).flatMap(_.headOption match {
-      case None =>
-        Future.exception(CactaceaException(GroupInvitationNotFound))
-      case Some(i) =>
-        Future.value(i)
-    })
+    run(q).map(_.headOption)
   }
+
+
+//  // Validators
+//
+//  def validateNotExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+//    findExist(accountId, groupId).flatMap(_ match {
+//      case true =>
+//        Future.exception(CactaceaException(AccountAlreadyInvited))
+//      case false =>
+//        Future.Unit
+//    })
+//  }
+//
+//  def validateExist(groupInvitationId: GroupInvitationId, sessionId: SessionId): Future[GroupInvitations] = {
+//    val accountId = sessionId.toAccountId
+//    val q = quote {
+//      query[GroupInvitations]
+//        .filter(_.id        == lift(groupInvitationId))
+//        .filter(_.accountId == lift(accountId))
+//    }
+//    run(q).flatMap(_.headOption match {
+//      case None =>
+//        Future.exception(CactaceaException(GroupInvitationNotFound))
+//      case Some(i) =>
+//        Future.value(i)
+//    })
+//  }
 
 
 }

@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyRequested, FriendRequestNotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.FriendRequestNotFound
 
 @Singleton
 class FriendRequestsDAO @Inject()(db: DatabaseService) {
@@ -118,24 +118,5 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
   }
 
 
-  // Validator
-
-  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case false =>
-        Future.exception(CactaceaException(FriendRequestNotFound))
-      case true =>
-        Future.Unit
-    })
-  }
-
-  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.exception(CactaceaException(AccountAlreadyRequested))
-      case false =>
-        Future.Unit
-    })
-  }
 
 }

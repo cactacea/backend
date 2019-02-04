@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 
-class GroupAuthorityDAOSpec extends DAOSpec {
+class GroupAuthorityValidatorSpec extends DAOSpec {
 
 
   test("hasInviteAuthority") {

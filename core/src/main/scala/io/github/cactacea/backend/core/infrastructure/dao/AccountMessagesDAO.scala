@@ -119,7 +119,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
   }
 
 
-  def validateFind(id: MessageId, sessionId: SessionId): Future[Message] = {
+  def find(id: MessageId, sessionId: SessionId): Future[Message] = {
 
     val by = sessionId.toAccountId
 

@@ -5,34 +5,36 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, GroupsValidator, MediumsValidator}
 
 @Singleton
 class MessagesRepository @Inject()(
+                                    accountGroupsValidator: AccountGroupsValidator,
+                                    groupsValidator: GroupsValidator,
+                                    mediumsValidator: MediumsValidator,
                                     accountMessagesDAO: AccountMessagesDAO,
                                     accountGroupsDAO: AccountGroupsDAO,
-                                    groupsDAO: GroupsDAO,
-                                    mediumsDAO: MediumsDAO,
                                     messagesDAO:  MessagesDAO
                                   ) {
 
   def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
     for {
-      _  <- accountGroupsDAO.validateExist(sessionId.toAccountId, groupId)
+      _  <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
       id  <- messagesDAO.create(groupId, Some(message), None, sessionId)
       _  <- accountMessagesDAO.create(groupId, id, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesDAO.validateFind(id, sessionId)
+      m <- accountMessagesDAO.find(id, sessionId)
     } yield (m)
   }
 
   def createMedium(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
     for {
-      _  <- accountGroupsDAO.validateExist(sessionId.toAccountId, groupId)
-      _  <- mediumsDAO.validateExist(mediumId, sessionId)
+      _  <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
+      _  <- mediumsValidator.exist(mediumId, sessionId)
       id <- messagesDAO.create(groupId, None, Some(mediumId), sessionId)
       _  <- accountMessagesDAO.create(groupId, id, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesDAO.validateFind(id, sessionId)
+      m <- accountMessagesDAO.find(id, sessionId)
     } yield (m)
   }
 
@@ -60,8 +62,8 @@ class MessagesRepository @Inject()(
            ascending: Boolean,
            sessionId: SessionId): Future[List[Message]] = {
     for {
-      _ <- groupsDAO.validateExist(groupId, sessionId)
-      _ <- accountGroupsDAO.validateExist(sessionId.toAccountId, groupId)
+      _ <- groupsValidator.exist(groupId, sessionId)
+      _ <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
       r <- accountMessagesDAO.find(groupId, since, offset, count, ascending, sessionId)
     } yield (r)
 

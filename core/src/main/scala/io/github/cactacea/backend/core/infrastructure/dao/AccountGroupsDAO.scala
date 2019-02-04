@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyJoined, AccountNotJoined, GroupNotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.GroupNotFound
 
 @Singleton
 class AccountGroupsDAO @Inject()(db: DatabaseService) {
@@ -261,34 +261,6 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         .map(_.hidden)
     }
     run(q).map(_.headOption)
-  }
-
-
-  def validateFindByGroupId(groupId: GroupId, sessionId: SessionId): Future[Group] = {
-    findByGroupId(groupId, sessionId).flatMap(_ match {
-      case Some(t) =>
-        Future.value(t)
-      case _ =>
-        Future.exception(CactaceaException(AccountNotJoined))
-    })
-  }
-
-  def validateExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
-    exist(groupId, accountId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotJoined))
-    })
-  }
-
-  def validateNotExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
-    exist(groupId, accountId).flatMap(_ match {
-      case true =>
-        Future.exception(CactaceaException(AccountAlreadyJoined))
-      case false =>
-        Future.Unit
-    })
   }
 
 }

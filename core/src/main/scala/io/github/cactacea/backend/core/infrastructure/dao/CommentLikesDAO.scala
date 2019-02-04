@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, CommentLikeId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{CommentAlreadyLiked, CommentNotLiked}
 
 @Singleton
 class CommentLikesDAO @Inject()(db: DatabaseService) {
@@ -110,25 +108,6 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
-  }
-
-
-  def validateNotExist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    exist(commentId, sessionId).flatMap(_ match {
-      case false =>
-        Future.Unit
-      case true =>
-        Future.exception(CactaceaException(CommentAlreadyLiked))
-    })
-  }
-
-  def validateExist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    exist(commentId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(CommentNotLiked))
-    })
   }
 
 

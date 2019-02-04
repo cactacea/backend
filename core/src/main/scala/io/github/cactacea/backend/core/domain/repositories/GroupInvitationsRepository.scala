@@ -6,14 +6,17 @@ import io.github.cactacea.backend.core.domain.enums.{GroupInvitationStatusType, 
 import io.github.cactacea.backend.core.domain.models.GroupInvitation
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, AccountsValidator, GroupAuthorityValidator, GroupInvitationsValidator}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class GroupInvitationsRepository @Inject()(
-                                            accountsDAO: AccountsDAO,
+                                            accountsValidator: AccountsValidator,
+                                            accountGroupsValidator: AccountGroupsValidator,
+                                            groupAuthorityValidator: GroupAuthorityValidator,
+                                            groupInvitationsValidator: GroupInvitationsValidator,
                                             accountGroupsDAO: AccountGroupsDAO,
-                                            groupAuthorityDAO: GroupAuthorityDAO,
                                             groupInvitationsDAO: GroupInvitationsDAO,
                                             notificationsDAO: NotificationsDAO,
                                             messagesDAO: MessagesDAO
@@ -21,11 +24,11 @@ class GroupInvitationsRepository @Inject()(
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
     for {
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- accountGroupsDAO.validateNotExist(accountId, groupId)
-      _ <- groupInvitationsDAO.validateNotExist(accountId, groupId)
-      _ <- groupAuthorityDAO.validateInviteMembersAuthority(accountId, groupId, sessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- accountGroupsValidator.notExist(accountId, groupId)
+      _ <- groupInvitationsValidator.notExist(accountId, groupId)
+      _ <- groupAuthorityValidator.hasInviteMembersAuthority(accountId, groupId, sessionId)
       id <- groupInvitationsDAO.create(accountId, groupId, sessionId)
       _ <- notificationsDAO.createGroupInvitation(id, accountId, sessionId)
     } yield (id)
@@ -37,15 +40,15 @@ class GroupInvitationsRepository @Inject()(
 
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     (for {
-      i <- groupInvitationsDAO.validateExist(invitationId, sessionId)
-      r <- accountGroupsDAO.exist(i.groupId, i.accountId)
-      _ <- groupInvitationsDAO.update(i.groupId, i.accountId, GroupInvitationStatusType.accepted)
-    } yield ((i, r))).flatMap(_ match {
-      case (i, false) =>
+      (groupId, accountId) <- groupInvitationsValidator.find(invitationId, sessionId)
+      r <- accountGroupsDAO.exist(groupId, accountId)
+      _ <- groupInvitationsDAO.update(groupId, accountId, GroupInvitationStatusType.accepted)
+    } yield (groupId, accountId, r)).flatMap(_ match {
+      case (groupId, accountId, false) =>
         (for {
-          _ <- accountGroupsDAO.create(i.accountId, i.groupId)
-          _ <- groupInvitationsDAO.update(i.groupId, i.accountId, GroupInvitationStatusType.accepted)
-          _ <- messagesDAO.create(i.groupId, MessageType.groupInvitation, i.accountId.toSessionId)
+          _ <- accountGroupsDAO.create(accountId, groupId)
+          _ <- groupInvitationsDAO.update(groupId, accountId, GroupInvitationStatusType.accepted)
+          _ <- messagesDAO.create(groupId, MessageType.groupInvitation, accountId.toSessionId)
         } yield (()))
       case _ =>
         Future.value(())

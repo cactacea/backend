@@ -70,22 +70,4 @@ class MutesDAO @Inject()(db: DatabaseService) {
   }
 
 
-  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.exception(CactaceaException(AccountAlreadyMuted))
-      case false =>
-        Future.Unit
-    })
-  }
-
-  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotMuted))
-    })
-  }
-
 }

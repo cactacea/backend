@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Followings, Relationships}
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyFollowed, AccountNotFollowed}
 
 @Singleton
 class FollowingsDAO @Inject()(db: DatabaseService) {
@@ -149,22 +147,22 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
   }
 
 
-  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotFollowed))
-    })
-  }
-
-  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.exception(CactaceaException(AccountAlreadyFollowed))
-      case false =>
-        Future.Unit
-    })
-  }
+//  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+//    exist(accountId, sessionId).flatMap(_ match {
+//      case true =>
+//        Future.Unit
+//      case false =>
+//        Future.exception(CactaceaException(AccountNotFollowed))
+//    })
+//  }
+//
+//  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+//    exist(accountId, sessionId).flatMap(_ match {
+//      case true =>
+//        Future.exception(CactaceaException(AccountAlreadyFollowed))
+//      case false =>
+//        Future.Unit
+//    })
+//  }
 
 }

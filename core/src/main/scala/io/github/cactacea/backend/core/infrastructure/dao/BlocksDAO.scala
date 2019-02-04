@@ -7,8 +7,6 @@ import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Relationships}
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyBlocked, AccountNotBlocked}
 
 @Singleton
 class BlocksDAO @Inject()(db: DatabaseService) {
@@ -69,25 +67,6 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.map({case (a, r, b) => Account(a, r, b, b.id.value)}))
 
-  }
-
-
-  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotBlocked))
-    })
-  }
-
-  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.exception(CactaceaException(AccountAlreadyBlocked))
-      case false =>
-        Future.Unit
-    })
   }
 
 }

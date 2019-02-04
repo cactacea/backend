@@ -9,8 +9,6 @@ import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 import io.github.cactacea.backend.core.infrastructure.results.RelationshipBlocksCount
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class AccountsDAO @Inject()(
@@ -291,78 +289,6 @@ class AccountsDAO @Inject()(
     }
     run(q).map(_ => Unit)
   }
-
-
-  def validateNotExist(accountName: String): Future[Unit] = {
-    exist(accountName).flatMap(_ match {
-      case false =>
-        Future.Unit
-      case true =>
-        Future.exception(CactaceaException(AccountNameAlreadyUsed))
-    })
-  }
-
-  def validateExist(accountId: AccountId): Future[Unit] = {
-    exist(accountId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-  }
-
-  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-  }
-
-  def validateSessionId(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    if (accountId == by) {
-      Future.exception(CactaceaException(CanNotSpecifyMyself))
-    } else {
-      Future.Unit
-    }
-  }
-
-  def validateFind(sessionId: SessionId): Future[AccountDetail] = {
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[Accounts]
-        .filter(_.id == lift(accountId))
-    }
-    run(q).map(_.headOption).flatMap( _ match {
-      case Some(a) =>
-        if (a.isTerminated) {
-          Future.exception(CactaceaException(AccountTerminated))
-        } else {
-          Future.value(AccountDetail(a))
-        }
-      case None =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-  }
-
-
-  def validateFind(accountName: String, password: String): Future[AccountDetail] = {
-    find(accountName, password).flatMap(_ match {
-      case Some(a) =>
-        if (a.isTerminated) {
-          Future.exception(CactaceaException(AccountTerminated))
-        } else {
-          Future.value(AccountDetail(a))
-        }
-      case None =>
-        Future.exception(CactaceaException(InvalidAccountNameOrPassword))
-    })
-
-  }
-
-
 
 
 }

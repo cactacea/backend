@@ -7,8 +7,6 @@ import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, FeedPriv
 import io.github.cactacea.backend.core.domain.models.{Account, Feed}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models.{FeedLikes, _}
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{FeedAlreadyLiked, FeedNotLiked}
 
 @Singleton
 class FeedLikesDAO @Inject()(db: DatabaseService) {
@@ -186,25 +184,6 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.map({case (f, ff) => Feed(f, ff, ff.id.value)}))
 
-  }
-
-  def validateNotExist(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    exist(feedId, sessionId).flatMap(_ match {
-      case false =>
-        Future.Unit
-      case true =>
-        Future.exception(CactaceaException(FeedAlreadyLiked))
-    })
-  }
-
-
-  def validateExist(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    exist(feedId, sessionId).flatMap(_ match {
-      case false =>
-        Future.exception(CactaceaException(FeedNotLiked))
-      case true =>
-        Future.Unit
-    })
   }
 
 }

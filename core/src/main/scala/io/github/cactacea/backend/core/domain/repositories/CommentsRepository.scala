@@ -3,21 +3,23 @@ package io.github.cactacea.backend.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Comment
-import io.github.cactacea.backend.core.infrastructure.dao.{CommentsDAO, FeedsDAO, NotificationsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{CommentsDAO, NotificationsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{CommentsValidator, FeedsValidator}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class CommentsRepository @Inject()(
+                                    commentsValidator: CommentsValidator,
+                                    feedsValidator: FeedsValidator,
                                     commentsDAO: CommentsDAO,
-                                    feedsDAO: FeedsDAO,
                                     notificationsDAO: NotificationsDAO
                                   ) {
 
   def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
     for {
-      _ <- feedsDAO.validateExist(feedId, sessionId)
+      _ <- feedsValidator.exist(feedId, sessionId)
       r <- commentsDAO.find(feedId, since, offset, count, sessionId)
     } yield (r)
   }
@@ -33,7 +35,7 @@ class CommentsRepository @Inject()(
 
   def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
     for {
-      _ <- feedsDAO.validateExist(feedId, sessionId)
+      _ <- feedsValidator.exist(feedId, sessionId)
       id <- commentsDAO.create(feedId, message, sessionId)
       _ <- notificationsDAO.createComment(feedId, id, sessionId)
     } yield (id)
@@ -41,7 +43,7 @@ class CommentsRepository @Inject()(
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- commentsDAO.validateExist(commentId, sessionId)
+      _ <- commentsValidator.exist(commentId, sessionId)
       _ <- commentsDAO.delete(commentId, sessionId)
     } yield (Unit)
   }

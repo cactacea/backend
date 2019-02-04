@@ -4,11 +4,9 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType, FeedPrivacyType}
-import io.github.cactacea.backend.core.domain.models.{Feed}
+import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.FeedNotFound
 
 @Singleton
 class FeedsDAO @Inject()(
@@ -279,16 +277,6 @@ class FeedsDAO @Inject()(
           val cf = f.copy(commentCount = f.commentCount - cb.getOrElse(0L), likeCount = f.likeCount - fb.getOrElse(0L) )
           Feed(cf, t, m, cf.id.value)
         })
-    })
-  }
-
-
-  def validateExist(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    exist(feedId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(FeedNotFound))
     })
   }
 

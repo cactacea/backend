@@ -6,15 +6,17 @@ import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FeedsValidator, MediumsValidator}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class FeedsRepository @Inject()(
-                                 accountsDAO: AccountsDAO,
+                                 accountsValidator: AccountsValidator,
+                                 feedsValidator: FeedsValidator,
+                                 mediumsValidator: MediumsValidator,
                                  accountFeedsDAO: AccountFeedsDAO,
                                  feedsDAO: FeedsDAO,
-                                 mediumsDAO: MediumsDAO,
                                  notificationsDAO: NotificationsDAO
                                ) {
 
@@ -28,7 +30,7 @@ class FeedsRepository @Inject()(
 
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- mediumsDAO.validateExist(ids, sessionId)
+      _ <- mediumsValidator.exist(ids, sessionId)
       id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- accountFeedsDAO.create(id, sessionId)
       _ <- notificationsDAO.createFeed(id, sessionId)
@@ -47,23 +49,23 @@ class FeedsRepository @Inject()(
 
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- mediumsDAO.validateExist(ids, sessionId)
-      _ <- feedsDAO.validateExist(feedId, sessionId)
+      _ <- mediumsValidator.exist(ids, sessionId)
+      _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
     } yield (Unit)
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- feedsDAO.validateExist(feedId, sessionId)
+      _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedsDAO.delete(feedId, sessionId)
     } yield (Unit)
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
       r <- feedsDAO.find(accountId, since, offset, count, sessionId)
     } yield (r)
   }

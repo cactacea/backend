@@ -6,10 +6,12 @@ import io.github.cactacea.backend.core.domain.enums.{FriendsSortType, GroupPriva
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FriendsValidator}
 
 @Singleton
 class FriendsRepository @Inject()(
-                                   accountsDAO: AccountsDAO,
+                                   accountsValidator: AccountsValidator,
+                                   friendsValidator: FriendsValidator,
                                    followingsDAO: FollowingsDAO,
                                    followersDAO: FollowersDAO,
                                    friendsDAO: FriendsDAO,
@@ -18,10 +20,10 @@ class FriendsRepository @Inject()(
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- friendsDAO.validateNotExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- friendsValidator.notExist(accountId, sessionId)
       _ <- friendsDAO.create(accountId, sessionId)
       _ <- followingsDAO.create(accountId, sessionId)
       _ <- followingsDAO.create(sessionId.toAccountId, accountId.toSessionId)
@@ -33,10 +35,10 @@ class FriendsRepository @Inject()(
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- friendsDAO.validateExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- friendsValidator.exist(accountId, sessionId)
       _ <- friendsDAO.delete(accountId, sessionId)
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.friends, sessionId)
