@@ -20,7 +20,7 @@ class SessionsService @Inject()(
              password: String,
              udid: String,
              userAgent: Option[String],
-             deviceType: DeviceType): Future[AccountDetail] = {
+             deviceType: DeviceType): Future[Account] = {
 
     for {
       a <- db.transaction(sessionsRepository.signUp(accountName, password, udid, deviceType, userAgent))
@@ -29,7 +29,7 @@ class SessionsService @Inject()(
 
   }
 
-  def signIn(accountName: String, password: String, udid: String, userAgent: Option[String], deviceType: DeviceType): Future[AccountDetail] = {
+  def signIn(accountName: String, password: String, udid: String, userAgent: Option[String], deviceType: DeviceType): Future[Account] = {
     for {
       a <- db.transaction(sessionsRepository.signIn(accountName, password, udid, deviceType, userAgent))
       _ <- listenerService.signedIn(a)

@@ -154,32 +154,4 @@ class GroupInvitationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-
-//  // Validators
-//
-//  def validateNotExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
-//    findExist(accountId, groupId).flatMap(_ match {
-//      case true =>
-//        Future.exception(CactaceaException(AccountAlreadyInvited))
-//      case false =>
-//        Future.Unit
-//    })
-//  }
-//
-//  def validateExist(groupInvitationId: GroupInvitationId, sessionId: SessionId): Future[GroupInvitations] = {
-//    val accountId = sessionId.toAccountId
-//    val q = quote {
-//      query[GroupInvitations]
-//        .filter(_.id        == lift(groupInvitationId))
-//        .filter(_.accountId == lift(accountId))
-//    }
-//    run(q).flatMap(_.headOption match {
-//      case None =>
-//        Future.exception(CactaceaException(GroupInvitationNotFound))
-//      case Some(i) =>
-//        Future.value(i)
-//    })
-//  }
-
-
 }

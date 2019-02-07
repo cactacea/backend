@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail, AccountStatus}
+import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, MediumsValidator}
@@ -17,11 +17,11 @@ class AccountsRepository @Inject()(
                                     devicesDAO: DevicesDAO
                                   ) {
 
-  def find(sessionId: SessionId): Future[AccountDetail] = {
+  def find(sessionId: SessionId): Future[Account] = {
     accountsValidator.find(sessionId)
   }
 
-  def findDetail(accountId: AccountId, sessionId: SessionId): Future[AccountDetail] = {
+  def findDetail(accountId: AccountId, sessionId: SessionId): Future[Account] = {
     accountsDAO.find(accountId, sessionId).flatMap( _ match {
       case Some(a) =>
         Future.value(a)

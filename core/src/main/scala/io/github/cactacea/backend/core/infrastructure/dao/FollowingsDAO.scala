@@ -17,6 +17,7 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
       _ <- insertFollowing(accountId, sessionId)
       _ <- insertRelationship(accountId, sessionId)
       _ <- updateAccount(1L, sessionId)
+      _ <- updateFollowingBlockCount(accountId, 1L, sessionId)
     } yield (Unit)
   }
 
@@ -25,6 +26,7 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
       _ <- deleteFollowing(accountId, sessionId)
       _ <- updateRelationship(accountId, sessionId)
       _ <- updateAccount(-1L, sessionId)
+      _ <- updateFollowingBlockCount(accountId, -1L, sessionId)
     } yield (Unit)
   }
 
@@ -40,6 +42,18 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => Unit)
   }
 
+  private def updateFollowingBlockCount(accountId: AccountId, count: Long, sessionId: SessionId): Future[Unit] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      infix"""
+            insert into relationships (account_id, `by`, following_block_count)
+            select account_id, `by`, cnt from (select ${lift(accountId)} as account_id, `by`, ${lift(count)} as cnt from blocks where account_id = ${lift(by)}) t
+            on duplicate key update following_block_count = following_block_count + ${lift(count)};
+          """.as[Action[Long]]
+    }
+    run(q).map(_ => Unit)
+  }
+
   private def insertRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
@@ -47,8 +61,9 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
         .insert(
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
-          _.following          -> true
-        ).onConflictUpdate((t, _) => t.following -> true)
+          _.following       -> true
+        ).onConflictUpdate((t, _) =>
+          t.following -> true)
     }
     run(q).map(_ => Unit)
   }

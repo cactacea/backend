@@ -5,16 +5,14 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums._
-import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail}
+import io.github.cactacea.backend.core.domain.models.{Account}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.infrastructure.results.RelationshipBlocksCount
 
 @Singleton
 class AccountsDAO @Inject()(
                              db: DatabaseService,
-                             hashService: HashService,
-                             blocksCountDAO: BlockCountDAO
+                             hashService: HashService
                            ) {
 
   import db._
@@ -181,17 +179,17 @@ class AccountsDAO @Inject()(
     run(q).map(_.headOption)
   }
 
-  def find(sessionId: SessionId): Future[Option[(AccountDetail)]] = {
+  def find(sessionId: SessionId): Future[Option[(Account)]] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
     }
-    run(q).map(_.headOption.map(AccountDetail(_)))
+    run(q).map(_.headOption.map(Account(_)))
   }
 
 
-  def find(accountId: AccountId, sessionId: SessionId): Future[Option[AccountDetail]] = {
+  def find(accountId: AccountId, sessionId: SessionId): Future[Option[Account]] = {
 
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
@@ -204,27 +202,28 @@ class AccountsDAO @Inject()(
         ).isEmpty)
         .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by) })
     }
+    run(q).map(_.map({ case (a, r) => Account(a, r)}).headOption)
 
-    (for {
-      accounts <- run(q)
-      ids = accounts.map({ case (a, _) => a.id})
-      blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
-    } yield (accounts, blocksCount))
-      .map({ case (accounts, blocksCount) =>
-        accounts.map({ case (a, r) =>
-          val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
-          val displayName = r.flatMap(_.displayName).getOrElse(a.displayName)
-          val friendCount = a.friendCount - b.friendCount
-          val followingCount = a.followingCount - b.followingCount
-          val followerCount = a.followerCount - b.followerCount
-          val na = a.copy(displayName = displayName,
-                          friendCount = friendCount,
-                          followingCount = followingCount,
-                          followerCount = followerCount,
-                          feedsCount = a.feedsCount)
-          AccountDetail(na, r)
-        }).headOption
-    })
+//    (for {
+//      accounts <- run(q)
+//      ids = accounts.map({ case (a, _) => a.id})
+//      blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
+//    } yield (accounts, blocksCount))
+//      .map({ case (accounts, blocksCount) =>
+//        accounts.map({ case (a, r) =>
+//          val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
+//          val displayName = r.flatMap(_.displayName).getOrElse(a.displayName)
+//          val friendCount = a.friendCount - b.friendCount
+//          val followingCount = a.followingCount - b.followingCount
+//          val followerCount = a.followerCount - b.followerCount
+//          val na = a.copy(displayName = displayName,
+//                          friendCount = friendCount,
+//                          followingCount = followingCount,
+//                          followerCount = followerCount,
+//                          feedsCount = a.feedsCount)
+//          Account(na, r)
+//        }).headOption
+//    })
 
   }
 

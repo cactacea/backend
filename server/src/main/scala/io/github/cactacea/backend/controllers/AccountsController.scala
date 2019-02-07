@@ -36,10 +36,10 @@ class AccountsController @Inject()(
       o.summary("Get information about a account")
         .tag(accountsTag)
         .operationId("findDetail")
-        .request[GetAccountDetail]
-        .responseWith[AccountDetail](Status.Ok.code, successfulMessage)
+        .request[GetAccount]
+        .responseWith[Account](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
-    } { request: GetAccountDetail =>
+    } { request: GetAccount =>
       accountsService.findDetail(
         request.id,
         SessionContext.id

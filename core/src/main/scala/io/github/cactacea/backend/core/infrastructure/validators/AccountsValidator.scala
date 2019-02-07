@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.infrastructure.validators
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.{AccountDetail}
+import io.github.cactacea.backend.core.domain.models.{Account}
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
@@ -54,7 +54,7 @@ class AccountsValidator @Inject()(
     }
   }
 
-  def find(sessionId: SessionId): Future[AccountDetail] = {
+  def find(sessionId: SessionId): Future[Account] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
@@ -65,7 +65,7 @@ class AccountsValidator @Inject()(
         if (a.isTerminated) {
           Future.exception(CactaceaException(AccountTerminated))
         } else {
-          Future.value(AccountDetail(a))
+          Future.value(Account(a))
         }
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
@@ -73,13 +73,13 @@ class AccountsValidator @Inject()(
   }
 
 
-  def find(accountName: String, password: String): Future[AccountDetail] = {
+  def find(accountName: String, password: String): Future[Account] = {
     accountsDAO.find(accountName, password).flatMap(_ match {
       case Some(a) =>
         if (a.isTerminated) {
           Future.exception(CactaceaException(AccountTerminated))
         } else {
-          Future.value(AccountDetail(a))
+          Future.value(Account(a))
         }
       case None =>
         Future.exception(CactaceaException(InvalidAccountNameOrPassword))

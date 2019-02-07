@@ -17,6 +17,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     for {
       _ <- insertFriend(accountId, sessionId)
       _ <- updateAccount(1L, sessionId)
+      _ <- updateFriendBlockCount(accountId, 1L, sessionId)
       _ <- insertRelationship(accountId, sessionId)
     } yield (Unit)
   }
@@ -25,6 +26,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     for {
       _ <- deleteFriend(accountId, sessionId)
       _ <- updateAccount(-1L, sessionId)
+      _ <- updateFriendBlockCount(accountId, -1L, sessionId)
       _ <- updateRelationship(accountId, friend = false, sessionId)
     } yield (Unit)
   }
@@ -37,6 +39,18 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .update(
           a => a.friendCount -> (a.friendCount + lift(count))
         )
+    }
+    run(q).map(_ => Unit)
+  }
+
+  private def updateFriendBlockCount(accountId: AccountId, count: Long, sessionId: SessionId): Future[Unit] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      infix"""
+             insert into relationships (account_id, `by`, friend_block_count)
+             select account_id, `by`, cnt from (select ${lift(accountId)} as account_id, `by`, ${lift(count)} as cnt from blocks where account_id = ${lift(by)}) t
+             on duplicate key update friend_block_count = friend_block_count + ${lift(count)};
+          """.as[Action[Long]]
     }
     run(q).map(_ => Unit)
   }

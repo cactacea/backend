@@ -22,7 +22,7 @@ class SessionsRepository @Inject()(
              password: String,
              udid: String,
              deviceType: DeviceType,
-             userAgent: Option[String]): Future[AccountDetail] = {
+             userAgent: Option[String]): Future[Account] = {
 
     val account = for {
       _ <- accountsValidator.notExist(accountName)
@@ -42,7 +42,7 @@ class SessionsRepository @Inject()(
 
   }
 
-  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[AccountDetail] = {
+  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
     (for {
       a <- accountsValidator.find(accountName, password)
       d <- devicesDAO.exist(a.id.toSessionId, udid)

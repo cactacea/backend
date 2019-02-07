@@ -2,12 +2,12 @@ package io.github.cactacea.backend.core.application.components.interfaces
 
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, GroupAuthorityType, GroupPrivacyType, ReportType}
-import io.github.cactacea.backend.core.domain.models.AccountDetail
+import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 trait ListenerService {
-  def signedUp(authentication: AccountDetail): Future[Unit]
-  def signedIn(authentication: AccountDetail): Future[Unit]
+  def signedUp(authentication: Account): Future[Unit]
+  def signedIn(authentication: Account): Future[Unit]
   def signedOut(sessionId: SessionId): Future[Unit]
   def accountNameUpdated(accountName: String, sessionId: SessionId): Future[Unit]
   def profileUpdated(displayName: String, web: Option[String], birthday: Option[Long], location: Option[String],
