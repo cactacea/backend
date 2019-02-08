@@ -10,8 +10,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
 class CommentsDAO @Inject()(
-                             db: DatabaseService,
-                             blocksCountDAO: BlockCountDAO
+                             db: DatabaseService
                            ) {
 
   import db._
@@ -134,29 +133,31 @@ class CommentsDAO @Inject()(
 
     val q = quote {
       for {
-        c <- query[Comments]
+        (c, b) <- query[Comments]
           .filter(c => c.id == lift(commentId))
           .filter(c => query[Blocks].filter(b =>
             (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
           ).isEmpty)
+          .map(c =>
+            (c,
+              query[CommentLikes]
+                .filter(_.commentId == c.id)
+                .filter(c =>
+                  query[Blocks].filter(b =>
+                    (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+                  ).nonEmpty
+                ).size
+            )
+          )
         a <- query[Accounts]
           .join(_.id == c.by)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
-      } yield (c, a, r)
+      } yield (c, a, r, b)
     }
-
-    (for {
-      comments <- run(q)
-      ids = comments.map({ case (c, _, _) => c.id})
-      blocksCount <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
-    } yield (comments, blocksCount))
-      .map({ case (accounts, blocksCount) =>
-        accounts.map({ case (c, a, r) =>
-          val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          Comment(c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
-        }).headOption
-      })
+    run(q).map(_.map({ case (c, a, r, b) =>
+      Comment(c.copy(likeCount = c.likeCount - b), a, r)
+    }).headOption)
   }
 
   def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
@@ -165,34 +166,35 @@ class CommentsDAO @Inject()(
 
     val q = quote {
       (for {
-        c <- query[Comments]
+        (c, b) <- query[Comments]
           .filter(c => c.feedId == lift(feedId))
           .filter(c => lift(since).forall(c.id  < _))
           .filter(c => query[Blocks].filter(b =>
             (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
           ).isEmpty)
+            .map(c =>
+              (c,
+                query[CommentLikes]
+                  .filter(_.commentId == c.id)
+                  .filter(c =>
+                    query[Blocks].filter(b =>
+                      (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+                    ).nonEmpty
+                  ).size
+              )
+            )
         a <- query[Accounts]
           .join(_.id == c.by)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
-      } yield (c, a, r))
-        .sortBy({ case (c, _, _) => c.id })(Ord.desc)
+      } yield (c, a, r, b))
+        .sortBy(_._1.id)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-
-    (for {
-      c <- run(q)
-      ids = c.map({ case (c, _, _) =>  c.id})
-      b <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
-    } yield (c, b))
-      .map({ case (accounts, blocksCount) =>
-        accounts.map({ case (c, a, r) =>
-          val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          val c2 = c.copy(likeCount = c.likeCount - b.getOrElse(0L))
-          Comment(c2, a, r)
-        })
-      })
+    run(q).map(_.map({ case (c, a, r, b) =>
+      Comment(c.copy(likeCount = c.likeCount - b), a, r)
+    }))
   }
 
 
