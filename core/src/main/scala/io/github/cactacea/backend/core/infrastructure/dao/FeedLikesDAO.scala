@@ -26,9 +26,9 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[FeedLikes]
         .insert(
-          _.feedId   -> lift(feedId),
-          _.likedAt -> lift(likedAt),
-          _.by       -> lift(by)
+          _.feedId    -> lift(feedId),
+          _.likedAt   -> lift(likedAt),
+          _.by        -> lift(by)
         ).returning(_.id)
     }
     run(q)
@@ -83,6 +83,18 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
           .nonEmpty)
         .delete
     }
+
+    // GetQuill's Bug - Dose not work
+    //    val q = quote {
+    //      query[FeedLikes]
+    //        .filter(fl => fl.by == lift(by) &&
+    //          query[Feeds]
+    //            .filter(_.id      == fl.feedId)
+    //            .filter(_.by      == lift(accountId))
+    //            .nonEmpty)
+    //        .delete
+    //    }
+    //  }
     run(q).map(_ => Unit)
   }
 
@@ -104,22 +116,25 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
                    sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
-    val status = AccountStatusType.normally
 
     val q = quote {
-      query[FeedLikes]
-        .filter(f => f.feedId == lift(feedId))
-        .filter(f => lift(since).forall(f.id  < _))
-        .filter(ff => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((f, a) => a.id == f.by && a.accountStatus  == lift(status))
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f.id)})
-        .sortBy({ case (_, _, id) => id })(Ord.desc)
+      (for {
+        fl <- query[FeedLikes]
+          .filter(_.feedId == lift(feedId))
+          .filter(fl => lift(since).forall(fl.id  < _))
+          .filter(fl => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == fl.by) || (b.accountId == fl.by && b.by == lift(by))
+          ).isEmpty)
+        a <- query[Accounts]
+          .join(a => a.id == fl.by && a.accountStatus  == lift(AccountStatusType.normally))
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, fl.id))
+        .sortBy(_._3)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
+
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
 
@@ -133,25 +148,31 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedLikes]
-        .filter(ff => ff.by == lift(by))
-        .filter(ff => lift(since).forall(ff.id < _))
-        .filter(ff => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Feeds]).on({(ff, f) => f.id == ff.feedId &&
-          (f.privacyType == lift(FeedPrivacyType.everyone)) ||
-            (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
-            ).nonEmpty) ||
-            (f.by == lift(by))})
-        .map({case (ff, f) => (f, ff)})
-        .sortBy({ case (ff, _) => ff.id})(Ord.desc)
+      (for {
+        fl <- query[FeedLikes]
+          .filter(_.by == lift(by))
+          .filter(fl => lift(since).forall(fl.id < _))
+          .filter(fl => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == fl.by) || (b.accountId == fl.by && b.by == lift(by))
+          ).isEmpty)
+        f <- query[Feeds]
+            .join(f => f.id == fl.feedId &&
+              ((f.by == lift(by)) ||
+                f.privacyType == lift(FeedPrivacyType.everyone)) ||
+              (query[Relationships]
+                .filter(_.accountId == f.by)
+                .filter(_.by == lift(by))
+                .filter(r =>
+                  (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                  (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+              ).nonEmpty))
+      } yield (f , fl))
+        .sortBy(_._1.id)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
+
     }
-    run(q).map(_.map({case (f, ff) => Feed(f, ff, ff.id.value)}))
+    run(q).map(_.map({case (f, fl) => Feed(f, fl, fl.id.value)}))
 
   }
 
@@ -164,23 +185,29 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[FeedLikes]
-        .filter(ff => ff.by == lift(accountId))
-        .filter(ff => lift(since).forall(ff.id  < _))
-        .filter(ff => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == ff.by) || (b.accountId == ff.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Feeds]).on({(ff, f) => f.id == ff.feedId &&
-        ((f.privacyType == lift(FeedPrivacyType.everyone)) ||
-            (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
-            ).nonEmpty) ||
-            (f.by == lift(by)))})
-        .map({case (ff, f) => (f, ff)})
-        .sortBy({ case (ff, _) => ff.id})(Ord.desc)
+      (for {
+        fl <- query[FeedLikes]
+          .filter(_.by == lift(accountId))
+          .filter(fl => lift(since).forall(fl.id  < _))
+          .filter(fl => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == fl.by) || (b.accountId == fl.by && b.by == lift(by))
+          ).isEmpty)
+        f <- query[Feeds]
+          .join(f => f.id == fl.feedId &&
+            ((f.by == lift(by)) ||
+              f.privacyType == lift(FeedPrivacyType.everyone)) ||
+            (query[Relationships]
+              .filter(_.accountId == f.by)
+              .filter(_.by == lift(by))
+              .filter(r =>
+                (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                  (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
+            ).nonEmpty))
+      } yield (f , fl))
+        .sortBy(_._1.id)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
+
     }
     run(q).map(_.map({case (f, ff) => Feed(f, ff, ff.id.value)}))
 

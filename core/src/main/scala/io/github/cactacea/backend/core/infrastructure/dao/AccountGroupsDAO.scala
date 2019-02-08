@@ -118,41 +118,70 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
 
 
   def findByGroupId(groupId: GroupId, sessionId: SessionId): Future[Option[Group]] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[AccountGroups]
-        .filter(_.groupId         == lift(groupId))
-        .filter(_.by              == lift(by))
-        .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId })
-        .map({ case (ag, g) => (g, ag.id) })
-    }
 
-    for {
-      r <- run(q)
-      i = r.map({ case (g, _) => g.messageId}).flatten
-      m <- findMessages(i, sessionId)
-      g = joinMessages(r, m).headOption
-    } yield (g)
+    val by = sessionId.toAccountId
+
+    val q = quote {
+      for {
+        ag <- query[AccountGroups]
+          .filter(_.groupId         == lift(groupId))
+          .filter(_.by              == lift(by))
+        g <- query[Groups]
+          .join(_.id == ag.groupId)
+        am <- query[AccountMessages]
+          .leftJoin(am => g.messageId.exists(_ == am.messageId))
+        m <- query[Messages]
+          .leftJoin(m => g.messageId.exists(_ == m.id))
+        i <- query[Mediums]
+          .leftJoin(i => m.exists(_.mediumId.exists(_ == i.id)))
+        a <- query[Accounts]
+          .leftJoin(a => m.exists(_.by == a.id))
+        r <- query[Relationships]
+          .leftJoin(r => a.exists(_.id == r.accountId) && r.by == lift(by))
+      } yield (g, am, m, i, a, r, ag.id)
+
+    }
+    run(q).map(_.map({ case (g, am, m, i, a, r, id) =>
+      (am, m, a) match {
+        case (Some(am), Some(m), Some(a)) => Group(g, am, m, i, a, r, id.value)
+        case _ => Group(g, id.value)
+      }
+    }).headOption)
+
 
   }
 
 
   def findByAccountId(accountId: AccountId, sessionId: SessionId): Future[Option[Group]] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[AccountGroups]
-        .filter(_.accountId         == lift(accountId))
-        .filter(_.by                == lift(by))
-        .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
-        .map({ case (ag, g) => (g, ag.id) })
-    }
 
-    for {
-      r <- run(q)
-      i = r.map({ case (g, _) => g.messageId}).flatten
-      m <- findMessages(i, sessionId)
-      g = joinMessages(r, m).headOption
-    } yield (g)
+    val by = sessionId.toAccountId
+
+    val q = quote {
+      for {
+        ag <- query[AccountGroups]
+          .filter(_.accountId       == lift(accountId))
+          .filter(_.by              == lift(by))
+        g <- query[Groups]
+          .join(_.id == ag.groupId)
+        am <- query[AccountMessages]
+          .leftJoin(am => g.messageId.exists(_ == am.messageId))
+        m <- query[Messages]
+          .leftJoin(m => g.messageId.exists(_ == m.id))
+        i <- query[Mediums]
+          .leftJoin(i => m.exists(_.mediumId.exists(_ == i.id)))
+        a <- query[Accounts]
+          .leftJoin(a => m.exists(_.by == a.id))
+        r <- query[Relationships]
+          .leftJoin(r => a.exists(_.id == r.accountId) && r.by == lift(by))
+      } yield (g, am, m, i, a, r, ag.id)
+
+    }
+    run(q).map(_.map({ case (g, am, m, i, a, r, id) =>
+      (am, m, a) match {
+        case (Some(am), Some(m), Some(a)) => Group(g, am, m, i, a, r, id.value)
+        case _ => Group(g, id.value)
+      }
+    }).headOption)
 
   }
 
@@ -164,68 +193,40 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
            hidden: Boolean,
            sessionId: SessionId): Future[List[Group]] = {
 
-    val q = quote {
-      query[AccountGroups]
-        .filter(ag => ag.accountId == lift(accountId))
-        .filter(ag => ag.hidden == lift(hidden))
-        .filter(ag => lift(since).forall(ag.id < _))
-        .join(query[Groups]).on({ case (ag, g) => g.id == ag.groupId})
-        .map({ case (ag, g) => (g, ag.id) })
-        .sortBy({ case (_, id) => id})(Ord.desc)
-        .drop(lift(offset))
-        .take(lift(count))
-    }
-
-    for {
-      r <- run(q)
-      i = r.map({ case (g, _) => g.messageId}).flatten
-      m <- findMessages(i, sessionId)
-      g = joinMessages(r, m)
-    } yield (g)
-
-  }
-
-  private def findMessages(
-                            ids: List[MessageId],
-                            sessionId: SessionId): Future[List[(AccountMessages, Messages, Option[Mediums], Accounts, Option[Relationships])]] = {
-
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages]
-        .filter(am => liftQuery(ids).contains(am.messageId))
-        .join(query[Messages]).on({ case (am, m) => am.messageId == m.id })
-        .leftJoin(query[Mediums]).on({ case ((_, m), i) => m.mediumId.forall(_ == i.id) })
-        .join(query[Accounts]).on({ case (((_, m), _), a) => a.id == m.by })
-        .leftJoin(query[Relationships]).on({ case ((((_, _), _), a), r) => r.accountId == a.id && r.by == lift(by) })
-        .map({ case ((((am, m), i), a), r) => (am, m, i, a, r)})
+      (for {
+        ag <- query[AccountGroups]
+          .filter(_.accountId == lift(accountId))
+          .filter(_.hidden == lift(hidden))
+          .filter(ag => lift(since).forall(ag.id < _))
+        g <- query[Groups]
+          .join(_.id == ag.groupId)
+        am <- query[AccountMessages]
+          .leftJoin(am => g.messageId.exists(_ == am.messageId))
+        m <- query[Messages]
+          .leftJoin(m => g.messageId.exists(_ == m.id))
+        i <- query[Mediums]
+          .leftJoin(i => m.exists(_.mediumId.exists(_ == i.id)))
+        a <- query[Accounts]
+          .leftJoin(a => m.exists(_.by == a.id))
+        r <- query[Relationships]
+            .leftJoin(r => a.exists(_.id == r.accountId) && r.by == lift(by))
+      } yield (g, am, m, i, a, r, ag.id))
+        .sortBy(_._7)(Ord.desc)
+        .drop(lift(offset))
+        .take(lift(count))
+
     }
-
-    run(q)
+    run(q).map(_.map({ case (g, am, m, i, a, r, id) =>
+      (am, m, a) match {
+          case (Some(am), Some(m), Some(a)) => Group(g, am, m, i, a, r, id.value)
+          case _ => Group(g, id.value)
+        }
+    }))
 
   }
-
-  private def joinMessages(
-                          l1: List[(Groups, AccountGroupId)],
-                          l2: List[(AccountMessages, Messages, Option[Mediums], Accounts, Option[Relationships])]): List[Group] = {
-
-    l1.map({ case (g, n) =>
-      g.messageId match {
-        case Some(id) =>
-          l2.filter({ case (_, m, _, _, _) => m.id == id }).headOption match {
-            case Some((am, m, i, a, r)) =>
-              Group(g, am, m, i, a, r, n.value)
-            case None =>
-              Group(g, n.value)
-          }
-
-        case None =>
-          Group(g, n.value)
-      }
-    })
-  }
-
-
 
   def findGroupId(messageId: MessageId, sessionId: SessionId): Future[Option[GroupId]] = {
     val by = sessionId.toAccountId

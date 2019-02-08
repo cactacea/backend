@@ -121,13 +121,16 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
 
     val by = sessionId.toAccountId
     val q = quote {
-      query[Followings]
-        .filter(f => f.by == lift(by))
-        .filter(f => lift(since).forall(f.id < _))
-        .join(query[Accounts]).on((f, a) => a.id == f.accountId)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f.id)})
-        .sortBy({ case (_, _, id) => id} )(Ord.desc)
+      (for {
+        f <- query[Followings]
+          .filter(f => f.by == lift(by))
+          .filter(f => lift(since).forall(f.id < _))
+        a <- query[Accounts]
+          .join(a => a.id == f.accountId)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, f.id))
+        .sortBy(_._3)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -144,40 +147,24 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Followings]
-        .filter(f => f.by == lift(accountId))
-        .filter(f => lift(since).forall(f.id < _))
-        .filter(f => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((f, a) => a.id == f.accountId)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f.id)})
-        .sortBy({ case (_, _, id) => id} )(Ord.desc)
+      (for {
+        f <- query[Followings]
+          .filter(f => f.by == lift(accountId))
+          .filter(f => lift(since).forall(f.id < _))
+          .filter(f => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+          ).isEmpty)
+        a <- query[Accounts]
+          .join(a => a.id == f.accountId)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, f.id))
+        .sortBy(_._3)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
   }
-
-
-//  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-//    exist(accountId, sessionId).flatMap(_ match {
-//      case true =>
-//        Future.Unit
-//      case false =>
-//        Future.exception(CactaceaException(AccountNotFollowed))
-//    })
-//  }
-//
-//  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-//    exist(accountId, sessionId).flatMap(_ match {
-//      case true =>
-//        Future.exception(CactaceaException(AccountAlreadyFollowed))
-//      case false =>
-//        Future.Unit
-//    })
-//  }
 
 }

@@ -16,8 +16,12 @@ class FeedMediumDAO @Inject()(db: DatabaseService) {
       Future.value(List[(FeedId, Mediums)]())
     } else {
       val q = quote {
-        query[FeedMediums].filter(t => liftQuery(feedIds).contains(t.feedId))
-          .join(query[Mediums]).on((f, m) => m.id == f.mediumId)
+        (for {
+          fm <- query[FeedMediums]
+            .filter(fm => liftQuery(feedIds).contains(fm.feedId))
+          m <- query[Mediums]
+              .join(_.id == fm.mediumId)
+        } yield (fm, m))
           .sortBy({ case (f, _) => f.orderNo})
           .map({ case (f, m) => (f.feedId, m) })
       }

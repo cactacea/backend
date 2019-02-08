@@ -12,33 +12,7 @@ class BlockCountDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-//  def findRelationshipBlocks(accountIds: List[AccountId], sessionId: SessionId): Future[List[RelationshipBlocksCount]] = {
-//    if (accountIds.isEmpty) {
-//      Future.value(List[RelationshipBlocksCount]())
-//    } else {
-//      val ids = accountIds.mkString(",")
-//      val q = quote { infix"""
-//                       select
-//                       a.`by` id,
-//                       count(a.is_follower = true and a.account_id = b.account_id) follower_count,
-//                       count(a.following  = true and a.`by` = b.account_id) following_count,
-//                       count(a.is_friend = true and  a.`by` = b.account_id) friend_count
-//                       from
-//                       relationships a,
-//                       blocks b
-//                       where (a.account_id = b.account_id or a.`by` = b.account_id)
-//                       and (a.is_follower = true or a.following = true or a.is_friend = true)
-//                       and a.`by` in (${lift(ids)})
-//                       and b.`by` = ${lift(sessionId)}
-//                       group by
-//                       a.`by`
-//      """.as[Query[RelationshipBlocksCount]]
-//      }
-//      run(q)
-//    }
-//  }
-
-  // TODO : 
+  // TODO :
   def findCommentLikeBlocks(commentIds: List[CommentId], sessionId: SessionId): Future[List[CommentBlocksCount]] = {
     val by = sessionId.toAccountId
     val q = quote {

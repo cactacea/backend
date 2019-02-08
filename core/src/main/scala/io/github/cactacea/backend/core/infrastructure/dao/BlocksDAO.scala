@@ -55,13 +55,16 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     val status = AccountStatusType.normally
 
     val q = quote {
-      query[Blocks]
-        .filter(b => b.by == lift(by))
-        .filter(b => (lift(since).forall(b.id < _)) )
-        .join(query[Accounts]).on((b, a) => a.id == b.accountId && a.accountStatus == lift(status))
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by) })
-        .map({ case ((b, a), r) => (a, r, b)})
-        .sortBy({ case (_, _, b) => b.id })(Ord.desc)
+      (for {
+        b <- query[Blocks]
+          .filter(_.by == lift(by))
+          .filter(b => (lift(since).forall(b.id < _)))
+        a <- query[Accounts]
+          .join(a => a.id == b.accountId && a.accountStatus == lift(status))
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, b))
+        .sortBy(_._3.id)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

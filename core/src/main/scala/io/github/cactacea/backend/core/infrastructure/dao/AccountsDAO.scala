@@ -194,36 +194,18 @@ class AccountsDAO @Inject()(
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
     val q = quote {
-      query[Accounts]
-        .filter(_.id              == lift(accountId))
-        .filter(_.accountStatus   == lift(status))
-        .filter(a => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
-        ).isEmpty)
-        .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by) })
+      (for {
+        a <- query[Accounts]
+          .filter(_.id              == lift(accountId))
+          .filter(_.accountStatus   == lift(status))
+          .filter(a => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
+          ).isEmpty)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r))
     }
     run(q).map(_.map({ case (a, r) => Account(a, r)}).headOption)
-
-//    (for {
-//      accounts <- run(q)
-//      ids = accounts.map({ case (a, _) => a.id})
-//      blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
-//    } yield (accounts, blocksCount))
-//      .map({ case (accounts, blocksCount) =>
-//        accounts.map({ case (a, r) =>
-//          val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
-//          val displayName = r.flatMap(_.displayName).getOrElse(a.displayName)
-//          val friendCount = a.friendCount - b.friendCount
-//          val followingCount = a.followingCount - b.followingCount
-//          val followerCount = a.followerCount - b.followerCount
-//          val na = a.copy(displayName = displayName,
-//                          friendCount = friendCount,
-//                          followingCount = followingCount,
-//                          followerCount = followerCount,
-//                          feedsCount = a.feedsCount)
-//          Account(na, r)
-//        }).headOption
-//    })
 
   }
 
@@ -258,20 +240,25 @@ class AccountsDAO @Inject()(
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Accounts]
-        .filter({a => a.id !=  lift(by)})
-        .filter(a => a.accountStatus == lift(AccountStatusType.normally))
-        .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
-        .filter(a => lift(sinceAccountName).forall(a.accountName gt _))
-        .filter(a => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
-        ).isEmpty)
-      .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
-      .sortBy({ case (a, _) => a.accountName})(Ord.asc)
-      .drop(lift(offset))
-      .take(lift(count))
+      (for {
+        a <- query[Accounts]
+          .filter({a => a.id !=  lift(by)})
+          .filter(a => a.accountStatus == lift(AccountStatusType.normally))
+          .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
+          .filter(a => lift(sinceAccountName).forall(a.accountName gt _))
+          .filter(a => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
+          ).isEmpty)
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r))
+        .sortBy(_._1.accountName)(Ord.asc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
+
     run(q).map(_.map({ case (a, r) => Account(a, r) }))
+
   }
 
 

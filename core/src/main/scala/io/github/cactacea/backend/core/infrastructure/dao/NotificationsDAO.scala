@@ -132,18 +132,22 @@ class NotificationsDAO @Inject()(db: DatabaseService,
 
     val by = sessionId.toAccountId
     val q = quote {
-      query[Notifications]
-        .filter(n => n.accountId == lift(by))
-        .filter(n => lift(since).forall(n.id < _))
-        .filter(n => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == n.by) || (b.accountId == n.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((c, a) => a.id == c.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((n, a), r) => (n, a, r)})
+      (for {
+        n <- query[Notifications]
+          .filter(n => n.accountId == lift(by))
+          .filter(n => lift(since).forall(n.id < _))
+          .filter(n => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == n.by) || (b.accountId == n.by && b.by == lift(by))
+          ).isEmpty)
+        a <- query[Accounts]
+            .join(_.id == n.by)
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (n, a, r))
         .sortBy({ case (n, _, _) => n.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
+
     }
     run(q).map(_.map({ case (n, a, r) =>
         val displayName = r.map(_.displayName).getOrElse(a.accountName)

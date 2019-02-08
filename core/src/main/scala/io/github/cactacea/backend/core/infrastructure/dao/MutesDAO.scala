@@ -53,13 +53,16 @@ class MutesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Mutes]
-        .filter(m => m.by == lift(by))
-        .filter(m => lift(since).forall(m.id < _))
-        .join(query[Accounts]).on((m, a) => a.id == m.accountId)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((m, a), r) => (a, r, m.id)})
-        .sortBy({ case (_, _, id) => id })(Ord.desc)
+      (for {
+        m <- query[Mutes]
+          .filter(m => m.by == lift(by))
+          .filter(m => lift(since).forall(m.id < _))
+        a <- query[Accounts]
+            .join(_.id == m.accountId)
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, m.id))
+        .sortBy(_._3)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

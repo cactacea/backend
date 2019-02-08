@@ -5,11 +5,12 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, GroupsValidator, MediumsValidator}
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, AccountMessagesValidator, GroupsValidator, MediumsValidator}
 
 @Singleton
 class MessagesRepository @Inject()(
                                     accountGroupsValidator: AccountGroupsValidator,
+                                    accountMessagesValidator: AccountMessagesValidator,
                                     groupsValidator: GroupsValidator,
                                     mediumsValidator: MediumsValidator,
                                     accountMessagesDAO: AccountMessagesDAO,
@@ -23,7 +24,7 @@ class MessagesRepository @Inject()(
       id  <- messagesDAO.create(groupId, Some(message), None, sessionId)
       _  <- accountMessagesDAO.create(groupId, id, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesDAO.find(id, sessionId)
+      m <- accountMessagesValidator.find(id, sessionId)
     } yield (m)
   }
 
@@ -34,7 +35,7 @@ class MessagesRepository @Inject()(
       id <- messagesDAO.create(groupId, None, Some(mediumId), sessionId)
       _  <- accountMessagesDAO.create(groupId, id, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesDAO.find(id, sessionId)
+      m <- accountMessagesValidator.find(id, sessionId)
     } yield (m)
   }
 

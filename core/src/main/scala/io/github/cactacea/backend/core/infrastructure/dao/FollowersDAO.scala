@@ -113,13 +113,16 @@ class FollowersDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Followers]
-        .filter(f => f.accountId == lift(by))
-        .filter(f => lift(since).forall(f.id < _))
-        .join(query[Accounts]).on((f, a) => a.id == f.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f.id)})
-        .sortBy({ case (_, _, id) => id })(Ord.desc)
+      (for {
+        f <- query[Followers]
+          .filter(_.accountId == lift(by))
+          .filter(f => lift(since).forall(f.id < _))
+        a <- query[Accounts]
+          .join(a => a.id == f.by)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, f.id))
+        .sortBy(_._3)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -136,16 +139,19 @@ class FollowersDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Followers]
-        .filter(f => f.accountId == lift(accountId))
-        .filter(f => lift(since).forall(f.id < _))
-        .filter(f => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((f, a) => a.id == f.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f.id)})
-        .sortBy({ case (_, _, id) => id })(Ord.desc)
+      (for {
+        f <- query[Followers]
+          .filter(f => f.accountId == lift(accountId))
+          .filter(f => lift(since).forall(f.id < _))
+          .filter(f => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+          ).isEmpty)
+        a <- query[Accounts]
+          .join(a => a.id == f.by)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, f.id))
+        .sortBy(_._3)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

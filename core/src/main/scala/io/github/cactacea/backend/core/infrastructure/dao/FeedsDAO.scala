@@ -145,9 +145,12 @@ class FeedsDAO @Inject()(
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
-        .filter(f => f.expiration.forall(_ > lift(e)) || f.expiration.isEmpty)
+        .filter(f =>
+          f.expiration.forall(_ > lift(e)) ||
+          f.expiration.isEmpty)
         .filter(f => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
+            (b.accountId == lift(by) && b.by == f.by) ||
+            (b.accountId == f.by && b.by == lift(by))
         ).isEmpty)
         .filter({ f =>
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
@@ -163,49 +166,45 @@ class FeedsDAO @Inject()(
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
 
-    val status = AccountStatusType.normally
     val by = sessionId.toAccountId
     val q = quote {
       query[Feeds]
         .filter(f => f.by == lift(by))
-        .filter(f => lift(since).forall(f.id  < _))
-        .filter(f =>
-          (f.privacyType == lift(FeedPrivacyType.everyone)) ||
-            (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
-            ).nonEmpty) ||
-            (f.by == lift(by)))
-        .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (f, a, r) })
-        .sortBy({ case (f, _, _) => f.id})(Ord.desc)
+        .filter(f => lift(since).forall(f.id < _))
+        .sortBy(_.id)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q).flatMap(f => addTagsMedium2(f, sessionId))
+    run(q).flatMap(f => addTagsMedium(f, sessionId))
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Option[Feed]] = {
     val by = sessionId.toAccountId
-    val status = AccountStatusType.normally
     val e = System.currentTimeMillis()
     val q = quote {
-      query[Feeds].filter(f => f.id == lift(feedId))
-        .filter(f => f.expiration.forall(_ > lift(e)))
-        .filter(f => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
-        ).isEmpty)
-        .filter({ f =>
-          (f.privacyType == lift(FeedPrivacyType.everyone)) ||
-            (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
-                (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
-            ).nonEmpty) ||
-            (f.by == lift(by))})
-        .join(query[Accounts]).on((ff, a) => a.id == ff.by && a.accountStatus  == lift(status))
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (f, a, r) })
+      (for {
+        f <- query[Feeds]
+          .filter(f => f.id == lift(feedId))
+          .filter(f => f.expiration.forall(_ > lift(e)))
+          .filter(f => query[Blocks].filter(b =>
+              (b.accountId == lift(by) && b.by == f.by) ||
+              (b.accountId == f.by && b.by == lift(by))
+          ).isEmpty)
+          .filter(f =>
+            (f.by == lift(by)) ||
+            (f.privacyType == lift(FeedPrivacyType.everyone)) ||
+            (query[Relationships]
+              .filter(_.accountId == f.by)
+              .filter(_.by == lift(by))
+              .filter(r =>
+                (r.following && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.isFriend && (f.privacyType == lift(FeedPrivacyType.friends)))
+            ).nonEmpty))
+        a <- query[Accounts]
+          .join(a => a.id == f.by && a.accountStatus  == lift(AccountStatusType.normally))
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (f, a, r))
     }
 
     run(q).flatMap({ t => addTagsMedium2(t, sessionId).map(_.headOption) })
@@ -242,22 +241,32 @@ class FeedsDAO @Inject()(
 
     val by = sessionId.toAccountId
     val q = quote {
-      query[Feeds]
-        .filter(f => f.by == lift(accountId))
-        .filter(f => f.expiration.forall(_ > lift(e)))
-        .filter(f => lift(since).forall(f.id < _))
-        .filter(f =>
-          (f.privacyType == lift(FeedPrivacyType.everyone))
-            || (f.privacyType == lift(FeedPrivacyType.followers)
-            && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.following == true)).nonEmpty))
-            || (f.privacyType == lift(FeedPrivacyType.friends)
-            && ((query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(_.isFriend == true)).nonEmpty))
-            || (f.by == lift(by)))
-        .sortBy(_.id)(Ord.desc)
+      (for {
+        f <- query[Feeds]
+          .filter(f => f.by == lift(accountId))
+          .filter(f => f.expiration.forall(_ > lift(e)))
+          .filter(f => lift(since).forall(f.id < _))
+          .filter(f =>
+              (f.by == lift(by)) ||
+              (f.privacyType == lift(FeedPrivacyType.everyone)) ||
+              (query[Relationships]
+                .filter(_.accountId == f.by)
+                .filter(_.by == lift(by))
+                .filter(r =>
+                  (r.following && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                    (r.isFriend && (f.privacyType == lift(FeedPrivacyType.friends)))
+                ).nonEmpty))
+        a <- query[Accounts]
+          .join(a => a.id == f.by && a.accountStatus  == lift(AccountStatusType.normally))
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (f, a, r))
+        .sortBy({ case (f, _, _) => f.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
+
     }
-    run(q).flatMap(f => addTagsMedium(f, sessionId))
+    run(q).flatMap(f => addTagsMedium2(f, sessionId))
   }
 
   private def addTagsMedium(feeds: List[Feeds], sessionId: SessionId): Future[List[Feed]] = {

@@ -148,11 +148,14 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Friends]
-        .filter(f => f.by == lift(by))
-        .join(query[Accounts]).on((f, a) => a.id == f.accountId && lift(accountName).forall(a.accountName gt _))
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((_, a), r) => (a, r, a.id)})
+      (for {
+        f <- query[Friends]
+            .filter(_.by == lift(by))
+        a <- query[Accounts]
+            .join(a => a.id == f.accountId && lift(accountName).forall(a.accountName gt _))
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, a.id))
         .sortBy({ case (a, _, _) => a.accountName})(Ord.asc)
         .drop(lift(offset))
         .take(lift(count))
@@ -166,12 +169,15 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Friends]
-        .filter(f => f.by == lift(by))
-        .filter(f => lift(since).forall(f.id < _))
-        .join(query[Accounts]).on((f, a) => a.id == f.accountId)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f.id)})
+      (for {
+        f <- query[Friends]
+          .filter(f => f.by == lift(by))
+          .filter(f => lift(since).forall(f.id < _))
+        a <- query[Accounts]
+            .join(_.id == f.accountId)
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, f.id))
         .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))

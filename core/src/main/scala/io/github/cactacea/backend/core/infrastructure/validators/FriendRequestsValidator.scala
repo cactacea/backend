@@ -10,6 +10,17 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class FriendRequestsValidator @Inject()(friendRequestsDAO: FriendRequestsDAO) {
 
+  def find(id: FriendRequestId, sessionId: SessionId): Future[AccountId] = {
+
+    friendRequestsDAO.find(id, sessionId).flatMap(_ match {
+      case Some(r) =>
+        Future.value(r)
+      case None =>
+        Future.exception(CactaceaException(FriendRequestNotFound))
+    })
+  }
+
+
   def exist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     friendRequestsDAO.exist(accountId, sessionId).flatMap(_ match {
       case false =>
@@ -19,7 +30,7 @@ class FriendRequestsValidator @Inject()(friendRequestsDAO: FriendRequestsDAO) {
     })
   }
 
-  def nnotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def notExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     friendRequestsDAO.exist(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyRequested))

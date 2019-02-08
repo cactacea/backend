@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.MessageNotFound
 
 @Singleton
 class AccountMessagesDAO @Inject()(db: DatabaseService) {
@@ -24,7 +22,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
          from account_groups where group_id = ${lift(groupId)}
           """.as[Action[Long]]
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
 
@@ -36,7 +34,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .filter(_.accountId == lift(accountId))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def find(groupId: GroupId,
@@ -63,19 +61,26 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages]
-        .filter(am => am.accountId == lift(by) && am.groupId == lift(groupId))
-        .filter(am => lift(since).forall(am.messageId < _))
-        .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
-        .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
-        .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.contains(i.id) })
-        .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
-        .sortBy({ case (_, am, _, _, _) => am.messageId })(Ord.desc)
+      (for {
+        am <- query[AccountMessages]
+          .filter(_.accountId == lift(by))
+          .filter(_.groupId == lift(groupId) )
+          .filter(am => lift(since).forall(am.messageId < _))
+        m <- query[Messages]
+          .join(_.id == am.messageId)
+        a <- query[Accounts]
+          .join(_.id == m.by)
+        i <- query[Mediums]
+          .leftJoin(i => m.mediumId.exists(_ == i.id))
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (m, am, i, a, r))
+        .sortBy(_._2.messageId)(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
+
     }
-    run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value)}))
+    run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value) }))
 
   }
 
@@ -88,20 +93,26 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages]
-        .filter(am => am.accountId == lift(by))
-        .filter(am => am.groupId == lift(groupId) )
-        .filter(am => lift(since).forall(am.messageId > _))
-        .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
-        .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
-        .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.contains(i.id) })
-        .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
-        .sortBy({ case (_, am, _, _, _) => am.messageId})(Ord.asc)
+      (for {
+        am <- query[AccountMessages]
+          .filter(_.accountId == lift(by))
+          .filter(_.groupId == lift(groupId) )
+          .filter(am => lift(since).forall(am.messageId > _))
+        m <- query[Messages]
+          .join(_.id == am.messageId)
+        a <- query[Accounts]
+          .join(_.id == m.by)
+        i <- query[Mediums]
+          .leftJoin(i => m.mediumId.exists(_ == i.id))
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (m, am, i, a, r))
+        .sortBy(_._2.messageId)(Ord.asc)
         .drop(lift(offset))
         .take(lift(count))
+
     }
-    run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value)}))
+    run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value) }))
 
   }
 
@@ -119,25 +130,26 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
   }
 
 
-  def find(id: MessageId, sessionId: SessionId): Future[Message] = {
+  def find(id: MessageId, sessionId: SessionId): Future[Option[Message]] = {
 
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountMessages]
-        .filter(am => am.accountId == lift(by))
-        .filter(am => am.messageId == lift(id) )
-        .join(query[Messages]).on({ case (am, m) => m.id == am.messageId })
-        .join(query[Accounts]).on({ case ((_, m), a) => a.id == m.by })
-        .leftJoin(query[Mediums]).on({ case (((_, m), _), i) => m.mediumId.contains(i.id) })
-        .leftJoin(query[Relationships]).on({ case ((((_, _), a), _), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((((am, m), a), i), r) => (m, am, i, a, r) })
-        .sortBy({ case (_, am, _, _, _) => am.messageId})(Ord.asc)
+      (for {
+        am <- query[AccountMessages]
+          .filter(_.accountId == lift(by))
+          .filter(_.messageId == lift(id) )
+        m <- query[Messages]
+          .join(_.id == am.messageId)
+        a <- query[Accounts]
+          .join(_.id == m.by)
+        i <- query[Mediums]
+          .leftJoin(i => m.mediumId.exists(_ == i.id))
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (m, am, i, a, r))
     }
-    run(q).flatMap(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value)}).headOption match {
-      case Some(m) => Future.value(m)
-      case None => Future.exception(CactaceaException(MessageNotFound))
-    })
+    run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value) }).headOption)
 
   }
 

@@ -23,7 +23,7 @@ class FriendRequestsRepository @Inject()(
       _ <- accountsValidator.checkSessionId(accountId, sessionId)
       _ <- accountsValidator.exist(accountId, sessionId)
       _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- friendRequestsValidator.nnotExist(accountId, sessionId)
+      _ <- friendRequestsValidator.notExist(accountId, sessionId)
       _ <- friendRequestsStatusDAO.create(accountId, sessionId)
       id <- friendRequestsDAO.create(accountId, sessionId)
       _ <- notificationsDAO.createNotification(id, accountId, sessionId)
@@ -47,7 +47,7 @@ class FriendRequestsRepository @Inject()(
 
   def accept(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     for {
-      f <- friendRequestsDAO.findOwner(friendRequestId, sessionId)
+      f <- friendRequestsValidator.find(friendRequestId, sessionId)
       _ <- friendsRepository.create(sessionId.toAccountId, f.toSessionId)
       _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.toSessionId)
       _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.accepted, sessionId)
@@ -56,7 +56,7 @@ class FriendRequestsRepository @Inject()(
 
   def reject(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     for {
-      f <- friendRequestsDAO.findOwner(friendRequestId, sessionId)
+      f <- friendRequestsValidator.find(friendRequestId, sessionId)
       _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.toSessionId)
       _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.rejected, sessionId).map(_ => true)
     } yield (Unit)
