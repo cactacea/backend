@@ -16,7 +16,7 @@ object Dependencies {
     val ficus = "1.4.3"
     val jjwt = "0.9.1"
     val flyway = "5.2.4"
-    val quill = "3.0.0"
+    val quill = "3.0.1"
     val arm = "2.0"
     val hasher = "1.2.0"
     val extractor = "2.11.0"
