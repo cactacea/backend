@@ -24,27 +24,4 @@ class FeedTagsDAO @Inject()(db: DatabaseService) {
     }
   }
 
-
-  def create(feedId: FeedId, tagsOpt: Option[List[String]]): Future[Unit] = {
-    tagsOpt match {
-      case Some(tags) =>
-        val feedTags = tags.zipWithIndex.map({case (tag, index) => FeedTags(feedId, tag, index)})
-        val q = quote {
-          liftQuery(feedTags).foreach(c => query[FeedTags].insert(c))
-        }
-        run(q).map(_ => Unit)
-      case None =>
-        Future.Unit
-    }
-  }
-
-  def delete(feedId: FeedId): Future[Unit] = {
-    val q = quote {
-      query[FeedTags]
-        .filter(_.feedId == lift(feedId))
-        .delete
-    }
-    run(q).map(_ => Unit)
-  }
-
 }

@@ -42,13 +42,4 @@ class FeedMediumDAO @Inject()(db: DatabaseService) {
     }
   }
 
-  def delete(feedId: FeedId): Future[Unit] = {
-    val q = quote {
-      query[FeedMediums]
-        .filter(_.feedId == lift(feedId))
-        .delete
-    }
-    run(q).map(_ => Unit)
-  }
-
 }

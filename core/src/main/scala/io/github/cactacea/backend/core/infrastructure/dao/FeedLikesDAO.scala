@@ -45,15 +45,6 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => Unit)
   }
 
-  def delete(feedId: FeedId): Future[Unit] = {
-    val q = quote {
-      query[FeedLikes]
-        .filter(_.feedId == lift(feedId))
-        .delete
-    }
-    run(q).map(_ => Unit)
-  }
-
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- deleteFeedLikes(feedId, sessionId)

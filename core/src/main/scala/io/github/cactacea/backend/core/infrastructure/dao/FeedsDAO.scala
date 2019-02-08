@@ -32,7 +32,7 @@ class FeedsDAO @Inject()(
     for {
       id  <- insertFeed(message, privacyType, contentWarning, expiration, by)
       _ <- updateAccount(1L, sessionId)
-      _  <- feedTagsDAO.create(id, tags)
+      _  <- createTags(id, tags)
       _  <- feedMediumDAO.create(id, mediumIds)
     } yield (id)
   }
@@ -74,9 +74,9 @@ class FeedsDAO @Inject()(
     val by = sessionId.toAccountId
     for {
       _ <- updateFeeds(feedId, message, privacyType, contentWarning, expiration, by)
-      _ <- feedTagsDAO.delete(feedId)
-      _ <- feedMediumDAO.delete(feedId)
-      _ <- feedTagsDAO.create(feedId, tags)
+      _ <- deleteTags(feedId)
+      _ <- deleteMediums(feedId)
+      _ <- createTags(feedId, tags)
       _ <- feedMediumDAO.create(feedId, mediumIds)
     } yield (Unit)
   }
@@ -106,10 +106,10 @@ class FeedsDAO @Inject()(
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     for {
-      _ <- feedTagsDAO.delete(feedId)
-      _ <- feedLikesDAO.delete(feedId)
-      _ <- feedMediumDAO.delete(feedId)
-      _ <- feedReportsDAO.delete(feedId)
+      _ <- deleteTags(feedId)
+      _ <- deleteLikes(feedId)
+      _ <- deleteMediums(feedId)
+      _ <- deleteReports(feedId)
       _ <- commentsDAO.delete(feedId)
       r <- deleteFeeds(feedId, by)
       _ <- updateAccount((r * -1L), sessionId)
@@ -307,7 +307,54 @@ class FeedsDAO @Inject()(
     })
   }
 
+  private def deleteTags(feedId: FeedId): Future[Unit] = {
+    val q = quote {
+      query[FeedTags]
+        .filter(_.feedId == lift(feedId))
+        .delete
+    }
+    run(q).map(_ => Unit)
+  }
 
+  private def deleteLikes(feedId: FeedId): Future[Unit] = {
+    val q = quote {
+      query[FeedLikes]
+        .filter(_.feedId == lift(feedId))
+        .delete
+    }
+    run(q).map(_ => Unit)
+  }
+
+  private def deleteMediums(feedId: FeedId): Future[Unit] = {
+    val q = quote {
+      query[FeedMediums]
+        .filter(_.feedId == lift(feedId))
+        .delete
+    }
+    run(q).map(_ => Unit)
+  }
+
+  private def deleteReports(feedId: FeedId): Future[Unit] = {
+    val q = quote {
+      query[FeedReports]
+        .filter(_.feedId == lift(feedId))
+        .delete
+    }
+    run(q).map(_ => Unit)
+  }
+
+  private def createTags(feedId: FeedId, tagsOpt: Option[List[String]]): Future[Unit] = {
+    tagsOpt match {
+      case Some(tags) =>
+        val feedTags = tags.zipWithIndex.map({case (tag, index) => FeedTags(feedId, tag, index)})
+        val q = quote {
+          liftQuery(feedTags).foreach(c => query[FeedTags].insert(c))
+        }
+        run(q).map(_ => Unit)
+      case None =>
+        Future.Unit
+    }
+  }
 
 }
 
