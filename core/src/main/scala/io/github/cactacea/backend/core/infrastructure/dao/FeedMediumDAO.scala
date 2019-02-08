@@ -20,7 +20,7 @@ class FeedMediumDAO @Inject()(db: DatabaseService) {
           fm <- query[FeedMediums]
             .filter(fm => liftQuery(feedIds).contains(fm.feedId))
           m <- query[Mediums]
-              .join(_.id == fm.mediumId)
+            .join(_.id == fm.mediumId)
         } yield (fm, m))
           .sortBy({ case (f, _) => f.orderNo})
           .map({ case (f, m) => (f.feedId, m) })

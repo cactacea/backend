@@ -133,14 +133,17 @@ class CommentsDAO @Inject()(
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Comments]
-        .filter(c => c.id == lift(commentId))
-        .filter(c => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((c, a) => a.id == c.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((c, a), r) => (c, a, r) })
+      for {
+        c <- query[Comments]
+          .filter(c => c.id == lift(commentId))
+          .filter(c => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+          ).isEmpty)
+        a <- query[Accounts]
+          .join(_.id == c.by)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (c, a, r)
     }
 
     (for {
@@ -161,15 +164,18 @@ class CommentsDAO @Inject()(
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Comments]
-        .filter(c => c.feedId == lift(feedId))
-        .filter(c => lift(since).forall(c.id  < _))
-        .filter(c => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((c, a) => a.id == c.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((c, a), r) => (c, a, r) })
+      (for {
+        c <- query[Comments]
+          .filter(c => c.feedId == lift(feedId))
+          .filter(c => lift(since).forall(c.id  < _))
+          .filter(c => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+          ).isEmpty)
+        a <- query[Accounts]
+          .join(_.id == c.by)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (c, a, r))
         .sortBy({ case (c, _, _) => c.id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
