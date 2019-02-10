@@ -31,7 +31,7 @@ class MediumsService @Inject()(
     } yield (t)
   }
 
-  def delete(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {
+  def delete(mediumId: MediumId, sessionId: SessionId): Future[Unit] = {
     db.transaction {
       for {
         key <- mediumsRepository.delete(mediumId, sessionId)

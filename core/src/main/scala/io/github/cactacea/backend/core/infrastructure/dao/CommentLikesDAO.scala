@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, CommentLikeId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{CommentAlreadyLiked, CommentNotLiked}
 
 @Singleton
 class CommentLikesDAO @Inject()(db: DatabaseService) {
@@ -95,40 +93,25 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[CommentLikes]
-        .filter(c => c.commentId == lift(commentId))
-        .filter(c => lift(since).forall(c.id  < _))
-        .filter(cf => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == cf.by) || (b.accountId == cf.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((cf, a) => a.id == cf.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((c, a), r) => (a, r, c.id)})
-        .sortBy({ case (_, _, id) => id })(Ord.desc)
+      (for {
+        cl <- query[CommentLikes]
+          .filter(_.commentId == lift(commentId))
+          .filter(cl => lift(since).forall(cl.id  < _))
+          .filter(cl => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == cl.by) || (b.accountId == cl.by && b.by == lift(by))
+          ).isEmpty)
+        a <- query[Accounts]
+          .join(_.id == cl.by)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, cl.id))
+        .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
-  }
 
-
-  def validateNotExist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    exist(commentId, sessionId).flatMap(_ match {
-      case false =>
-        Future.Unit
-      case true =>
-        Future.exception(CactaceaException(CommentAlreadyLiked))
-    })
-  }
-
-  def validateExist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    exist(commentId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(CommentNotLiked))
-    })
   }
 
 

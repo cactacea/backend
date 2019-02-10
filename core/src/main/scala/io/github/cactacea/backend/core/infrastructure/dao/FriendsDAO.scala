@@ -7,8 +7,6 @@ import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyFriend, AccountNotFriend}
 
 @Singleton
 class FriendsDAO @Inject()(db: DatabaseService) {
@@ -19,6 +17,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     for {
       _ <- insertFriend(accountId, sessionId)
       _ <- updateAccount(1L, sessionId)
+      _ <- updateFriendBlockCount(accountId, 1L, sessionId)
       _ <- insertRelationship(accountId, sessionId)
     } yield (Unit)
   }
@@ -27,6 +26,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     for {
       _ <- deleteFriend(accountId, sessionId)
       _ <- updateAccount(-1L, sessionId)
+      _ <- updateFriendBlockCount(accountId, -1L, sessionId)
       _ <- updateRelationship(accountId, friend = false, sessionId)
     } yield (Unit)
   }
@@ -39,6 +39,18 @@ class FriendsDAO @Inject()(db: DatabaseService) {
         .update(
           a => a.friendCount -> (a.friendCount + lift(count))
         )
+    }
+    run(q).map(_ => Unit)
+  }
+
+  private def updateFriendBlockCount(accountId: AccountId, count: Long, sessionId: SessionId): Future[Unit] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      infix"""
+             insert into relationships (account_id, `by`, friend_block_count)
+             select account_id, `by`, cnt from (select ${lift(accountId)} as account_id, `by`, ${lift(count)} as cnt from blocks where account_id = ${lift(by)}) t
+             on duplicate key update friend_block_count = friend_block_count + ${lift(count)};
+          """.as[Action[Long]]
     }
     run(q).map(_ => Unit)
   }
@@ -136,11 +148,14 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Friends]
-        .filter(f => f.by == lift(by))
-        .join(query[Accounts]).on((f, a) => a.id == f.accountId && lift(accountName).forall(a.accountName gt _))
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((_, a), r) => (a, r, a.id)})
+      (for {
+        f <- query[Friends]
+            .filter(_.by == lift(by))
+        a <- query[Accounts]
+            .join(a => a.id == f.accountId && lift(accountName).forall(a.accountName gt _))
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, a.id))
         .sortBy({ case (a, _, _) => a.accountName})(Ord.asc)
         .drop(lift(offset))
         .take(lift(count))
@@ -154,12 +169,15 @@ class FriendsDAO @Inject()(db: DatabaseService) {
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Friends]
-        .filter(f => f.by == lift(by))
-        .filter(f => lift(since).forall(f.id < _))
-        .join(query[Accounts]).on((f, a) => a.id == f.accountId)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((f, a), r) => (a, r, f.id)})
+      (for {
+        f <- query[Friends]
+          .filter(f => f.by == lift(by))
+          .filter(f => lift(since).forall(f.id < _))
+        a <- query[Accounts]
+            .join(_.id == f.accountId)
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r, f.id))
         .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
@@ -195,24 +213,5 @@ class FriendsDAO @Inject()(db: DatabaseService) {
   }
 
 
-  // Validators
-
-  def validateNotExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.exception(CactaceaException(AccountAlreadyFriend))
-      case false =>
-        Future.Unit
-    })
-  }
-
-  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case false =>
-        Future.exception(CactaceaException(AccountNotFriend))
-      case true =>
-        Future.Unit
-    })
-  }
 
 }

@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.domain.models.Feed
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
@@ -26,17 +26,8 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
            (r.is_follower = true and (f.privacy_type in (0, 1)))
         or (r.is_friend = true and (f.privacy_type in (0, 1, 2)))
             )
+        and r.muting = 0
         """.as[Action[Long]]
-    }
-    run(q).map(_ => Unit)
-  }
-
-  def update(feedId: FeedId, accountIds: List[AccountId], notified: Boolean = true): Future[Unit] = {
-    val q = quote {
-      query[AccountFeeds]
-        .filter(_.feedId == lift(feedId))
-        .filter(m => liftQuery(accountIds).contains(m.accountId))
-        .update(_.notified -> lift(notified))
     }
     run(q).map(_ => Unit)
   }
@@ -50,25 +41,28 @@ class AccountFeedsDAO @Inject()(db: DatabaseService, feedTagsDAO: FeedTagsDAO, f
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[AccountFeeds]
-        .filter(f => f.accountId == lift(by))
-        .filter(f => lift(since).forall(f.feedId < _ ))
-        .join(query[Feeds])
-        .on({ case (af, f) => af.feedId == f.id && lift(privacyType).forall(_ == f.privacyType) &&
-          ((f.privacyType == lift(FeedPrivacyType.everyone)) ||
+      (for {
+        af <- query[AccountFeeds]
+          .filter(af => af.accountId == lift(by))
+          .filter(af => lift(since).forall(af.feedId < _ ))
+        f <- query[Feeds]
+          .join(_.id == af.feedId)
+          .filter(f => lift(privacyType).forall(_ == f.privacyType))
+          .filter(f => f.by == lift(by) || (f.privacyType == lift(FeedPrivacyType.everyone) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
               (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
                 (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
-            ).nonEmpty) ||
-            (f.by == lift(by)))})
-        .join(query[Accounts]).on({ case ((_, f), a) => a.id == f.by })
-        .leftJoin(query[Relationships]).on({ case (((_, f), _), r) => r.accountId == f.by && r.by == lift(by) })
-        .map({ case (((af, f), a), r) => (af, f, a, r) })
-        .sortBy({ case (af, _, _, _) => af.feedId })(Ord.desc)
+            ).nonEmpty)))
+        a <- query[Accounts]
+          .join(_.id == f.by)
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == f.by && r.by == lift(by))
+      } yield (af, f, a, r))
+        .sortBy({ case (af, _, _, _) => af.feedId})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
-
     }
+
     run(q).flatMap(
       findTagsAndImages(_)
     )

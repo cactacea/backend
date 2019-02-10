@@ -8,6 +8,6 @@ trait StorageService  {
 
   def get(request: Request): Future[Response]
   def put(request: Request): Future[Seq[StorageFile]]
-  def delete(key: String): Future[Boolean]
+  def delete(key: String): Future[Unit]
 
 }

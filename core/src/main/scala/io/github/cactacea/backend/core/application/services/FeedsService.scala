@@ -28,8 +28,8 @@ class FeedsService @Inject()(
 
     for {
       id <- db.transaction(feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId))
-      _ <- listenerService.feedCreated(id, message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- queueService.enqueueFeed(id)
+      _ <- listenerService.feedCreated(id, message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
     } yield (id)
 
   }

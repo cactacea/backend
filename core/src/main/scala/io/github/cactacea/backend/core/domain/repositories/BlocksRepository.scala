@@ -5,10 +5,12 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, BlocksValidator}
 
 @Singleton
 class BlocksRepository @Inject()(
-                                  accountsDAO: AccountsDAO,
+                                  accountsValidator: AccountsValidator,
+                                  blocksValidator: BlocksValidator,
                                   blocksDAO: BlocksDAO,
                                   followingsDAO: FollowingsDAO,
                                   followersDAO: FollowersDAO,
@@ -28,9 +30,9 @@ class BlocksRepository @Inject()(
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId)
-      _ <- blocksDAO.validateNotExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId)
+      _ <- blocksValidator.notExist(accountId, sessionId)
       _ <- blocksDAO.create(accountId, sessionId)
       _ <- followingsDAO.delete(accountId, sessionId)
       _ <- followingsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
@@ -49,9 +51,9 @@ class BlocksRepository @Inject()(
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId)
-      _ <- blocksDAO.validateExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId)
+      _ <- blocksValidator.exist(accountId, sessionId)
       _ <- blocksDAO.delete(accountId, sessionId)
     } yield (Unit)
   }

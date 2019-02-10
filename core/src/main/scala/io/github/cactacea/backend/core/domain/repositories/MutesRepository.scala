@@ -3,31 +3,33 @@ package io.github.cactacea.backend.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, MutesDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.MutesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, MutesValidator}
 
 @Singleton
 class MutesRepository @Inject()(
-                                 accountsDAO: AccountsDAO,
+                                 accountsValidator: AccountsValidator,
+                                 mutesValidator: MutesValidator,
                                  mutesDAO: MutesDAO
                                ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- mutesDAO.validateNotExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- mutesValidator.notExist(accountId, sessionId)
       _ <- mutesDAO.create(accountId, sessionId)
     } yield (Unit)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- mutesDAO.validateExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- mutesValidator.exist(accountId, sessionId)
       _ <- mutesDAO.delete(accountId, sessionId)
     } yield (Unit)
   }

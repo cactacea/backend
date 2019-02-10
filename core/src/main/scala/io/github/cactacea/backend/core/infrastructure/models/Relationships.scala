@@ -10,5 +10,9 @@ case class Relationships(
                           isFollower: Boolean,
                           muting: Boolean,
                           isFriend: Boolean,
-                          friendRequestInProgress: Boolean
+                          friendRequestInProgress: Boolean,
+                          followerBlockCount: Long,
+                          followingBlockCount: Long,
+                          friendBlockCount: Long
                       )
+

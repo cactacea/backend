@@ -1,8 +1,8 @@
 package io.github.cactacea.backend.models.responses
 
-import io.github.cactacea.backend.core.domain.models.AccountDetail
+import io.github.cactacea.backend.core.domain.models.Account
 
 case class Authentication(
-                           account: AccountDetail,
+                           account: Account,
                            accessToken: String
                           )

@@ -7,14 +7,10 @@ import io.github.cactacea.backend.core.domain.enums.ContentStatusType
 import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.infrastructure.results.PushNotifications
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.CommentNotFound
 
 @Singleton
 class CommentsDAO @Inject()(
-                             db: DatabaseService,
-                             blocksCountDAO: BlockCountDAO
+                             db: DatabaseService
                            ) {
 
   import db._
@@ -136,27 +132,32 @@ class CommentsDAO @Inject()(
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Comments]
-        .filter(c => c.id == lift(commentId))
-        .filter(c => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((c, a) => a.id == c.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((c, a), r) => (c, a, r) })
+      for {
+        (c, b) <- query[Comments]
+          .filter(c => c.id == lift(commentId))
+          .filter(c => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+          ).isEmpty)
+          .map(c =>
+            (c,
+              query[CommentLikes]
+                .filter(_.commentId == c.id)
+                .filter(c =>
+                  query[Blocks].filter(b =>
+                    (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+                  ).nonEmpty
+                ).size
+            )
+          )
+        a <- query[Accounts]
+          .join(_.id == c.by)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (c, a, r, b)
     }
-
-    (for {
-      comments <- run(q)
-      ids = comments.map({ case (c, _, _) => c.id})
-      blocksCount <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
-    } yield (comments, blocksCount))
-      .map({ case (accounts, blocksCount) =>
-        accounts.map({ case (c, a, r) =>
-          val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          Comment(c.copy(likeCount = c.likeCount - b.getOrElse(0L)), a, r)
-        }).headOption
-      })
+    run(q).map(_.map({ case (c, a, r, b) =>
+      Comment(c.copy(likeCount = c.likeCount - b), a, r)
+    }).headOption)
   }
 
   def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
@@ -164,121 +165,37 @@ class CommentsDAO @Inject()(
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Comments]
-        .filter(c => c.feedId == lift(feedId))
-        .filter(c => lift(since).forall(c.id  < _))
-        .filter(c => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
-        ).isEmpty)
-        .join(query[Accounts]).on((c, a) => a.id == c.by)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id && r.by == lift(by)})
-        .map({ case ((c, a), r) => (c, a, r) })
-        .sortBy({ case (c, _, _) => c.id })(Ord.desc)
+      (for {
+        (c, b) <- query[Comments]
+          .filter(c => c.feedId == lift(feedId))
+          .filter(c => lift(since).forall(c.id  < _))
+          .filter(c => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+          ).isEmpty)
+            .map(c =>
+              (c,
+                query[CommentLikes]
+                  .filter(_.commentId == c.id)
+                  .filter(c =>
+                    query[Blocks].filter(b =>
+                      (b.accountId == lift(by) && b.by == c.by) || (b.accountId == c.by && b.by == lift(by))
+                    ).nonEmpty
+                  ).size
+              )
+            )
+        a <- query[Accounts]
+          .join(_.id == c.by)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (c, a, r, b))
+        .sortBy({ case (c, _, _, _) => c.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-
-    (for {
-      c <- run(q)
-      ids = c.map({ case (c, _, _) =>  c.id})
-      b <- blocksCountDAO.findCommentLikeBlocks(ids, sessionId)
-    } yield (c, b))
-      .map({ case (accounts, blocksCount) =>
-        accounts.map({ case (c, a, r) =>
-          val b = blocksCount.filter(_.id == c.id).map(_.count).headOption
-          val c2 = c.copy(likeCount = c.likeCount - b.getOrElse(0L))
-          Comment(c2, a, r)
-        })
-      })
+    run(q).map(_.map({ case (c, a, r, b) =>
+      Comment(c.copy(likeCount = c.likeCount - b), a, r)
+    }))
   }
-
-  def find(commentId: CommentId): Future[Option[Comments]] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-    }
-    run(q).map(_.headOption)
-  }
-
-
-
-  // Mobile Push
-
-  def findPushNotifications(id: CommentId, isReply: Boolean): Future[List[PushNotifications]] = {
-
-    if (isReply) {
-
-      val q = quote {
-        query[Comments].filter(c => c.id == lift(id) && c.notified == false)
-          .join(query[Comments]).on((c, f) => f.replyId.exists(_ == c.id)
-          && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.muting == true).isEmpty
-          && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.comment == true).nonEmpty)
-          .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
-          .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
-          .join(query[Devices]).on({ case ((((_, f), _), _), d) => d.accountId == f.by && d.pushToken.isDefined})
-          .map({case ((((_, f), r), a), d) => (a.displayName, r.flatMap(_.displayName), f.by, d.pushToken) })
-          .distinct
-      }
-      run(q).map(_.map({ case (displayName, editedDisplayName, accountId, pushToken) => {
-        val name = editedDisplayName.getOrElse(displayName)
-        val token = pushToken.get
-        PushNotifications(accountId, name, token, showContent = false)
-      }}))
-
-    } else {
-
-      val q = quote {
-        query[Comments].filter(c => c.id == lift(id) && c.notified == false)
-          .join(query[Feeds]).on((c, f) => c.feedId == f.id
-          && query[Relationships].filter(r => r.accountId == c.by && r.by == f.by && r.muting == true).isEmpty
-          && query[PushNotificationSettings].filter(p => p.accountId == f.by && p.comment == true).nonEmpty)
-          .leftJoin(query[Relationships]).on({ case ((c, f), r) => r.accountId == c.by && r.by == f.by})
-          .join(query[Accounts]).on({ case (((c, _), _), a) =>  a.id == c.by})
-          .join(query[Devices]).on({ case ((((_, f), _), _), d) => d.accountId == f.by && d.pushToken.isDefined})
-          .map({case ((((_, f), r), a), d) => (a.displayName, r.flatMap(_.displayName), f.by, d.pushToken) })
-          .distinct
-      }
-      run(q).map(_.map({ case (displayName, editedDisplayName, accountId, pushToken) => {
-        val name = editedDisplayName.getOrElse(displayName)
-        val token = pushToken.get
-        PushNotifications(accountId, name, token, showContent = false)
-      }}))
-
-    }
-
-  }
-
-  def updatePushNotifications(commentId: CommentId): Future[Unit] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-        .update(_.notified -> true)
-    }
-    run(q).map(_ => Unit)
-  }
-
-
-
-//  // TODO
-//  def findUnNotified(commentId: CommentId): Future[Option[Comments]] = {
-//    val q = quote {
-//      query[Comments]
-//        .filter(_.id == lift(commentId))
-//        .filter(_.notified == false)
-//    }
-//    run(q).map(_.headOption)
-//  }
-
-
-  def validateExist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    exist(commentId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(CommentNotFound))
-    })
-  }
-
 
 
 }

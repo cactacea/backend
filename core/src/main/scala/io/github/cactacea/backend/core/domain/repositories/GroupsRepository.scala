@@ -6,12 +6,14 @@ import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPr
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{GroupAuthorityValidator, GroupsValidator}
 
 @Singleton
 class GroupsRepository @Inject()(
+                                  groupsValidator: GroupsValidator,
+                                  groupAuthorityValidator: GroupAuthorityValidator,
                                   accountGroupsDAO: AccountGroupsDAO,
-                                  groupsDAO: GroupsDAO,
-                                  groupAuthorityDAO: GroupAuthorityDAO
+                                  groupsDAO: GroupsDAO
                                 ) {
 
   def create(name: Option[String],
@@ -33,7 +35,7 @@ class GroupsRepository @Inject()(
              sessionId: SessionId): Future[Unit] = {
 
     for {
-      _ <- groupAuthorityDAO.validateUpdateAuthority(groupId, sessionId)
+      _ <- groupAuthorityValidator.hasUpdateAuthority(groupId, sessionId)
       _ <- groupsDAO.update(groupId, name, byInvitationOnly, privacyType, authority, sessionId)
     } yield (Unit)
   }
@@ -58,7 +60,7 @@ class GroupsRepository @Inject()(
 
   def find(groupId: GroupId, sessionId: SessionId): Future[Group] = {
     for {
-      r <- groupsDAO.validateFind(groupId, sessionId)
+      r <- groupsValidator.find(groupId, sessionId)
     } yield (r)
   }
 

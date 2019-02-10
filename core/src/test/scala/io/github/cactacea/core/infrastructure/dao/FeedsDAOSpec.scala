@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.{DeviceType, FeedPrivacyType, ReportType}
+import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
 import io.github.cactacea.backend.core.infrastructure.models._
@@ -992,8 +992,8 @@ class FeedsDAOSpec extends DAOSpec {
     assert(sessionFeed1.contentWarning == contentWarning4)
     assert(sessionFeed2.contentWarning == contentWarning3)
 
-    assert(sessionFeed1.account.map(_.id) == Some(sessionAccount1.id))
-    assert(sessionFeed2.account.map(_.id) == Some(sessionAccount1.id))
+//    assert(sessionFeed1.account.map(_.id) == Some(sessionAccount1.id))
+//    assert(sessionFeed2.account.map(_.id) == Some(sessionAccount1.id))
 
     assert(sessionFeedTags1 == Some(tags4))
     assert(sessionFeedTags2 == Some(tags3))
@@ -1024,8 +1024,8 @@ class FeedsDAOSpec extends DAOSpec {
     assert(sessionFeed3.contentWarning == contentWarning2)
     assert(sessionFeed4.contentWarning == contentWarning1)
 
-    assert(sessionFeed3.account.map(_.id) == Some(sessionAccount1.id))
-    assert(sessionFeed4.account.map(_.id) == Some(sessionAccount1.id))
+//    assert(sessionFeed3.account.map(_.id) == Some(sessionAccount1.id))
+//    assert(sessionFeed4.account.map(_.id) == Some(sessionAccount1.id))
 
     assert(sessionMediums3.map(_.size)  == Some(mediums2.size))
     assert(sessionMediums4.map(_.size)  == Some(mediums1.size))
@@ -1038,273 +1038,145 @@ class FeedsDAOSpec extends DAOSpec {
   }
 
 
-  test("find for push notification") {
-
-    val sessionAccount1 = createAccount("FeedsDAOSpec21")
-    val sessionAccount2 = createAccount("FeedsDAOSpec22")
-
-    val medium1 = createMedium(sessionAccount1.id)
-    val medium2 = createMedium(sessionAccount1.id)
-    val medium3 = createMedium(sessionAccount1.id)
-
-    val message1 = "message1"
-    val message2 = "message2"
-    val message3 = "message3"
-    val message4 = "message4"
-    val message5 = "message5"
-    val message6 = "message6"
-    val mediums1 = List[MediumId]()
-    val mediums2 = List(medium1.id)
-    val mediums3 = List(medium1.id, medium2.id)
-    val mediums4 = List(medium1.id, medium2.id, medium3.id)
-    val mediums5 = List(medium1.id, medium2.id)
-    val mediums6 = List(medium1.id, medium2.id, medium3.id)
-    val tags1 = List[String]()
-    val tags2 = List("tag1")
-    val tags3 = List("tag1", "tag2")
-    val tags4 = List("tag1", "tag2", "tag3")
-    val tags5 = List("tag1")
-    val tags6 = List("tag1", "tag2", "tag3")
-    val privacyType1 = FeedPrivacyType.self
-    val privacyType2 = FeedPrivacyType.friends
-    val privacyType3 = FeedPrivacyType.self
-    val privacyType4 = FeedPrivacyType.followers
-    val privacyType5 = FeedPrivacyType.friends
-    val privacyType6 = FeedPrivacyType.self
-    val contentWarning1 = false
-    val contentWarning2 = true
-    val contentWarning3 = false
-    val contentWarning4 = true
-    val contentWarning5 = false
-    val contentWarning6 = true
-
-    // create feeds
-    val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId))
-    val feedId2 = execute(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId))
-    val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId))
-    val feedId4 = execute(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId))
-    val feedId5 = execute(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId))
-    val feedId6 = execute(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId))
-
-
-    val result1 = execute(feedsDAO.find(feedId1))
-    val result2 = execute(feedsDAO.find(feedId2))
-    val result3 = execute(feedsDAO.find(feedId3))
-    val result4 = execute(feedsDAO.find(feedId4))
-    val result5 = execute(feedsDAO.find(feedId5))
-    val result6 = execute(feedsDAO.find(feedId6))
-
-    assert(result1.isDefined == true)
-    assert(result2.isDefined == true)
-    assert(result3.isDefined == true)
-    assert(result4.isDefined == true)
-    assert(result5.isDefined == true)
-    assert(result6.isDefined == true)
-
-    val feed1 = result1.head
-    val feed2 = result2.head
-    val feed3 = result3.head
-    val feed4 = result4.head
-    val feed5 = result5.head
-    val feed6 = result6.head
-
-    assert(feed1.by == sessionAccount1.id)
-    assert(feed2.by == sessionAccount1.id)
-    assert(feed3.by == sessionAccount1.id)
-    assert(feed4.by == sessionAccount1.id)
-    assert(feed5.by == sessionAccount2.id)
-    assert(feed6.by == sessionAccount2.id)
-
-
-  }
-
-
-
-
-  test("findPushNotifications") {
-
-    val sessionAccount1 = createAccount("PushNotificationsDAOSPec5")
-    val sessionAccount2 = createAccount("PushNotificationsDAOSPec6")
-    val sessionAccount3 = createAccount("PushNotificationsDAOSPec7")
-    val sessionAccount4 = createAccount("PushNotificationsDAOSPec8")
-    val sessionAccount5 = createAccount("PushNotificationsDAOSPec9")
-    val sessionAccount6 = createAccount("PushNotificationsDAOSPec10")
-    val medium1 = createMedium(sessionAccount1.id)
-    val medium2 = createMedium(sessionAccount1.id)
-    val medium3 = createMedium(sessionAccount1.id)
-    val message = "message"
-    val mediums = List(medium1.id, medium2.id, medium3.id)
-    val tags = List("tag1", "tag2", "tag3")
-    val privacyType = FeedPrivacyType.followers
-    val contentWarning = true
-
-    // create feed
-    val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
-
-    // create following
-    execute(followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId))
-    execute(followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId))
-    execute(followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId))
-    execute(followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId))
-    execute(followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId))
-
-    // create account feeds
-    execute(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId))
-
-    val displayName = Some("Invitation Sender Name")
-    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
-    val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
-
-    execute(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount1.id.toSessionId))
-    execute(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount3.id.toSessionId))
-    execute(pushNotificationSettingDAO.create(false,false, false, false, false, false, false, sessionAccount4.id.toSessionId))
-    execute(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount5.id.toSessionId))
-    execute(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount6.id.toSessionId))
-
-    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount1.id.toSessionId))
-    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount3.id.toSessionId))
-    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount4.id.toSessionId))
-    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount5.id.toSessionId))
-    execute(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount6.id.toSessionId))
-
-    execute(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
-    execute(devicesDAO.update(udid, pushToken, sessionAccount3.id.toSessionId))
-    execute(devicesDAO.update(udid, pushToken, sessionAccount4.id.toSessionId))
-    execute(devicesDAO.update(udid, pushToken, sessionAccount5.id.toSessionId))
-    execute(devicesDAO.update(udid, pushToken, sessionAccount6.id.toSessionId))
-    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
-    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount3.id.toSessionId))
-    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount4.id.toSessionId))
-    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount5.id.toSessionId))
-    execute(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount6.id.toSessionId))
-
-    // find account feed tokens
-    val result = execute(feedsDAO.findPushNotifications(feedId))
-
-    assert(result.size == 4)
-
-  }
-
-  test("updatePushNotifications") {
-
-    val sessionAccount = createAccount("FeedsDAOSpec23")
-
-    val medium1 = createMedium(sessionAccount.id)
-    val medium2 = createMedium(sessionAccount.id)
-    createMedium(sessionAccount.id)
-
-    val message1 = "message1"
-    val message2 = "message2"
-    val message3 = "message3"
+//  test("find for push notification") {
+//
+//    val sessionAccount1 = createAccount("FeedsDAOSpec21")
+//    val sessionAccount2 = createAccount("FeedsDAOSpec22")
+//
+//    val medium1 = createMedium(sessionAccount1.id)
+//    val medium2 = createMedium(sessionAccount1.id)
+//    val medium3 = createMedium(sessionAccount1.id)
+//
+//    val message1 = "message1"
+//    val message2 = "message2"
+//    val message3 = "message3"
 //    val message4 = "message4"
 //    val message5 = "message5"
 //    val message6 = "message6"
-    val mediums1 = List[MediumId]()
-    val mediums2 = List(medium1.id)
-    val mediums3 = List(medium1.id, medium2.id)
+//    val mediums1 = List[MediumId]()
+//    val mediums2 = List(medium1.id)
+//    val mediums3 = List(medium1.id, medium2.id)
 //    val mediums4 = List(medium1.id, medium2.id, medium3.id)
 //    val mediums5 = List(medium1.id, medium2.id)
 //    val mediums6 = List(medium1.id, medium2.id, medium3.id)
-    val tags1 = List[String]()
-    val tags2 = List("tag1")
-    val tags3 = List("tag1", "tag2")
-    val privacyType1 = FeedPrivacyType.self
-    val privacyType2 = FeedPrivacyType.friends
-    val privacyType3 = FeedPrivacyType.self
-    val contentWarning1 = false
-    val contentWarning2 = true
-    val contentWarning3 = false
+//    val tags1 = List[String]()
+//    val tags2 = List("tag1")
+//    val tags3 = List("tag1", "tag2")
+//    val tags4 = List("tag1", "tag2", "tag3")
+//    val tags5 = List("tag1")
+//    val tags6 = List("tag1", "tag2", "tag3")
+//    val privacyType1 = FeedPrivacyType.self
+//    val privacyType2 = FeedPrivacyType.friends
+//    val privacyType3 = FeedPrivacyType.self
+//    val privacyType4 = FeedPrivacyType.followers
+//    val privacyType5 = FeedPrivacyType.friends
+//    val privacyType6 = FeedPrivacyType.self
+//    val contentWarning1 = false
+//    val contentWarning2 = true
+//    val contentWarning3 = false
+//    val contentWarning4 = true
+//    val contentWarning5 = false
+//    val contentWarning6 = true
+//
+//    // create feeds
+//    val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount1.id.toSessionId))
+//    val feedId2 = execute(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount1.id.toSessionId))
+//    val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount1.id.toSessionId))
+//    val feedId4 = execute(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount1.id.toSessionId))
+//    val feedId5 = execute(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount2.id.toSessionId))
+//    val feedId6 = execute(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount2.id.toSessionId))
+//
+//    val result1 = execute(db.run(query[Feeds].filter(_.id == lift(feedId1))).map(_.headOption))
+//    val result2 = execute(db.run(query[Feeds].filter(_.id == lift(feedId2))).map(_.headOption))
+//    val result3 = execute(db.run(query[Feeds].filter(_.id == lift(feedId3))).map(_.headOption))
+//    val result4 = execute(db.run(query[Feeds].filter(_.id == lift(feedId4))).map(_.headOption))
+//    val result5 = execute(db.run(query[Feeds].filter(_.id == lift(feedId5))).map(_.headOption))
+//    val result6 = execute(db.run(query[Feeds].filter(_.id == lift(feedId6))).map(_.headOption))
+//
+//    assert(result1.isDefined == true)
+//    assert(result2.isDefined == true)
+//    assert(result3.isDefined == true)
+//    assert(result4.isDefined == true)
+//    assert(result5.isDefined == true)
+//    assert(result6.isDefined == true)
+//
+//    val feed1 = result1.head
+//    val feed2 = result2.head
+//    val feed3 = result3.head
+//    val feed4 = result4.head
+//    val feed5 = result5.head
+//    val feed6 = result6.head
+//
+//    assert(feed1.by == sessionAccount1.id)
+//    assert(feed2.by == sessionAccount1.id)
+//    assert(feed3.by == sessionAccount1.id)
+//    assert(feed4.by == sessionAccount1.id)
+//    assert(feed5.by == sessionAccount2.id)
+//    assert(feed6.by == sessionAccount2.id)
+//
+//
+//  }
 
-    // create feeds
-    val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
-    val feedId2 = execute(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId))
-    val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
-
-    execute(
-      for {
-        _ <- feedsDAO.updateNotified(feedId1, true)
-        _ <- feedsDAO.updateNotified(feedId2, false)
-        _ <- feedsDAO.updateNotified(feedId3, true)
-      } yield (Unit)
-    )
-
-    val result1 = execute(feedsDAO.find(feedId1))
-    val result2 = execute(feedsDAO.find(feedId2))
-    val result3 = execute(feedsDAO.find(feedId3))
-
-    assert(result1.isDefined == true)
-    assert(result2.isDefined == true)
-    assert(result3.isDefined == true)
-
-    val feed1 = result1.head
-    val feed2 = result2.head
-    val feed3 = result3.head
-
-    assert(feed1.notified == true)
-    assert(feed2.notified == false)
-    assert(feed3.notified == true)
-
-  }
 
 
 
-  test("updateDelivered") {
-
-    val sessionAccount = createAccount("FeedsDAOSpec24")
-
-    val medium1 = createMedium(sessionAccount.id)
-    val medium2 = createMedium(sessionAccount.id)
-    val medium3 = createMedium(sessionAccount.id)
-
-    val message1 = "message1"
-    val message2 = "message2"
-    val message3 = "message3"
-    val message4 = "message4"
-    val message5 = "message5"
-    val message6 = "message6"
-    val mediums1 = List[MediumId]()
-    val mediums2 = List(medium1.id)
-    val mediums3 = List(medium1.id, medium2.id)
-    val mediums4 = List(medium1.id, medium2.id, medium3.id)
-    val mediums5 = List(medium1.id, medium2.id)
-    val mediums6 = List(medium1.id, medium2.id, medium3.id)
-    val tags1 = List[String]()
-    val tags2 = List("tag1")
-    val tags3 = List("tag1", "tag2")
-    val tags4 = List("tag1", "tag2", "tag3")
-    val tags5 = List("tag1")
-    val tags6 = List("tag1", "tag2", "tag3")
-    val privacyType1 = FeedPrivacyType.self
-    val privacyType2 = FeedPrivacyType.friends
-    val privacyType3 = FeedPrivacyType.self
-    val privacyType4 = FeedPrivacyType.followers
-    val privacyType5 = FeedPrivacyType.friends
-    val privacyType6 = FeedPrivacyType.self
-    val contentWarning1 = false
-    val contentWarning2 = true
-    val contentWarning3 = false
-    val contentWarning4 = true
-    val contentWarning5 = false
-    val contentWarning6 = true
-
-    // create feeds
-    val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
-    val feedId2 = execute(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId))
-    val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
-    execute(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount.id.toSessionId))
-    execute(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount.id.toSessionId))
-    execute(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount.id.toSessionId))
-
-    val result1 = execute(feedsDAO.find(feedId1))
-    val result2 = execute(feedsDAO.find(feedId2))
-    val result3 = execute(feedsDAO.find(feedId3))
-
-    assert(result1.isDefined == true)
-    assert(result2.isDefined == true)
-    assert(result3.isDefined == true)
-
-  }
-
+//  test("updateDelivered") {
+//
+//    val sessionAccount = createAccount("FeedsDAOSpec24")
+//
+//    val medium1 = createMedium(sessionAccount.id)
+//    val medium2 = createMedium(sessionAccount.id)
+//    val medium3 = createMedium(sessionAccount.id)
+//
+//    val message1 = "message1"
+//    val message2 = "message2"
+//    val message3 = "message3"
+//    val message4 = "message4"
+//    val message5 = "message5"
+//    val message6 = "message6"
+//    val mediums1 = List[MediumId]()
+//    val mediums2 = List(medium1.id)
+//    val mediums3 = List(medium1.id, medium2.id)
+//    val mediums4 = List(medium1.id, medium2.id, medium3.id)
+//    val mediums5 = List(medium1.id, medium2.id)
+//    val mediums6 = List(medium1.id, medium2.id, medium3.id)
+//    val tags1 = List[String]()
+//    val tags2 = List("tag1")
+//    val tags3 = List("tag1", "tag2")
+//    val tags4 = List("tag1", "tag2", "tag3")
+//    val tags5 = List("tag1")
+//    val tags6 = List("tag1", "tag2", "tag3")
+//    val privacyType1 = FeedPrivacyType.self
+//    val privacyType2 = FeedPrivacyType.friends
+//    val privacyType3 = FeedPrivacyType.self
+//    val privacyType4 = FeedPrivacyType.followers
+//    val privacyType5 = FeedPrivacyType.friends
+//    val privacyType6 = FeedPrivacyType.self
+//    val contentWarning1 = false
+//    val contentWarning2 = true
+//    val contentWarning3 = false
+//    val contentWarning4 = true
+//    val contentWarning5 = false
+//    val contentWarning6 = true
+//
+//    // create feeds
+//    val feedId1 = execute(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
+//    val feedId2 = execute(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId))
+//    val feedId3 = execute(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
+//    execute(feedsDAO.create(message4, Some(mediums4), Some(tags4), privacyType4, contentWarning4, None, sessionAccount.id.toSessionId))
+//    execute(feedsDAO.create(message5, Some(mediums5), Some(tags5), privacyType5, contentWarning5, None, sessionAccount.id.toSessionId))
+//    execute(feedsDAO.create(message6, Some(mediums6), Some(tags6), privacyType6, contentWarning6, None, sessionAccount.id.toSessionId))
+//
+//    val result1 = execute(db.run(query[Feeds].filter(_.id == lift(feedId1))).map(_.headOption))
+//    val result2 = execute(db.run(query[Feeds].filter(_.id == lift(feedId2))).map(_.headOption))
+//    val result3 = execute(db.run(query[Feeds].filter(_.id == lift(feedId3))).map(_.headOption))
+//
+//    assert(result1.isDefined == true)
+//    assert(result2.isDefined == true)
+//    assert(result3.isDefined == true)
+//
+//  }
+//
 
 }
 

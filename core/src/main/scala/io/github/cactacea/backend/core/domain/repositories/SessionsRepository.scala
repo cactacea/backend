@@ -6,11 +6,13 @@ import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, DeviceTy
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
+import io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class SessionsRepository @Inject()(
+                                    accountsValidator: AccountsValidator,
                                     accountsDAO: AccountsDAO,
                                     devicesDAO: DevicesDAO,
                                     notificationSettingsDAO: PushNotificationSettingsDAO
@@ -20,10 +22,10 @@ class SessionsRepository @Inject()(
              password: String,
              udid: String,
              deviceType: DeviceType,
-             userAgent: Option[String]): Future[AccountDetail] = {
+             userAgent: Option[String]): Future[Account] = {
 
     val account = for {
-      _ <- accountsDAO.validateNotExist(accountName)
+      _ <- accountsValidator.notExist(accountName)
       accountId <- accountsDAO.create(accountName, password)
       sessionId = accountId.toSessionId
       _             <- devicesDAO.create(udid, deviceType, userAgent, sessionId)
@@ -40,9 +42,9 @@ class SessionsRepository @Inject()(
 
   }
 
-  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[AccountDetail] = {
+  def signIn(accountName: String, password: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
     (for {
-      a <- accountsDAO.validateFind(accountName, password)
+      a <- accountsValidator.find(accountName, password)
       d <- devicesDAO.exist(a.id.toSessionId, udid)
     } yield ((d, a))).flatMap(_ match {
       case (false, a) =>

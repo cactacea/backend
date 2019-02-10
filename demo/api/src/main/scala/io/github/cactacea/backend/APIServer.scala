@@ -5,7 +5,8 @@ import io.github.cactacea.backend.utils.warmups.QueueHandler
 class APIServer extends CactaceaServer {
 
   override def warmup() {
-    handle[APISetupHandler]()
+    handle[MigrationHandler]()
+    handle[ImageSetupHandler]()
     handle[QueueHandler]()
   }
 

@@ -2,21 +2,22 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, PushNotificationType}
-import io.github.cactacea.backend.core.domain.models.{Feed, PushNotification}
+import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FeedsValidator, MediumsValidator}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class FeedsRepository @Inject()(
-                                 accountsDAO: AccountsDAO,
+                                 accountsValidator: AccountsValidator,
+                                 feedsValidator: FeedsValidator,
+                                 mediumsValidator: MediumsValidator,
                                  accountFeedsDAO: AccountFeedsDAO,
                                  feedsDAO: FeedsDAO,
-                                 mediumsDAO: MediumsDAO,
-                                 deepLinkService: DeepLinkService
+                                 notificationsDAO: NotificationsDAO
                                ) {
 
   def create(message: String,
@@ -29,9 +30,11 @@ class FeedsRepository @Inject()(
 
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- mediumsDAO.validateExist(ids, sessionId)
+      _ <- mediumsValidator.exist(ids, sessionId)
       id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- accountFeedsDAO.create(id, sessionId)
+      _ <- notificationsDAO.createFeed(id, sessionId)
+
     } yield (id)
   }
 
@@ -46,23 +49,23 @@ class FeedsRepository @Inject()(
 
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- mediumsDAO.validateExist(ids, sessionId)
-      _ <- feedsDAO.validateExist(feedId, sessionId)
+      _ <- mediumsValidator.exist(ids, sessionId)
+      _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
     } yield (Unit)
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- feedsDAO.validateExist(feedId, sessionId)
+      _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedsDAO.delete(feedId, sessionId)
     } yield (Unit)
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
-      _ <- accountsDAO.validateExist(accountId, sessionId)
-      _ <- accountsDAO.validateExist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
       r <- feedsDAO.find(accountId, since, offset, count, sessionId)
     } yield (r)
   }
@@ -84,33 +87,6 @@ class FeedsRepository @Inject()(
       case None =>
         Future.exception(CactaceaException(FeedNotFound))
     })
-  }
-
-  def findPushNotifications(id: FeedId) : Future[List[PushNotification]] = {
-    feedsDAO.find(id).flatMap(_ match {
-      case Some(f) if f.notified == false => {
-        feedsDAO.findPushNotifications(id).map({ t =>
-          t.groupBy(_.displayName).map({
-            case (displayName, fanOuts) =>
-              val tokens = fanOuts.map(fanOut => (fanOut.accountId, fanOut.token))
-              PushNotification(
-                displayName,
-                PushNotificationType.feed,
-                f.postedAt,
-                tokens,
-                f.by.toSessionId,
-                deepLinkService.getFeed(id)
-              )
-          }).toList
-        })
-      }
-      case _ =>
-        Future.value(List[PushNotification]())
-    })
-  }
-
-  def updatePushNotifications(id: FeedId, accountIds: List[AccountId]) : Future[Unit] = {
-    accountFeedsDAO.update(id, accountIds)
   }
 
 }

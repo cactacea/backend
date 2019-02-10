@@ -3,14 +3,17 @@ package io.github.cactacea.backend.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Group
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, AccountsDAO, GroupsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, GroupsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, AccountsValidator}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotJoined, GroupAlreadyHidden, GroupNotHidden}
 
 @Singleton
 class AccountGroupsRepository @Inject()(
-                                         accountsDAO: AccountsDAO,
+                                         accountsValidator: AccountsValidator,
+                                         accountGroupsValidator: AccountGroupsValidator,
+//                                         accountsDAO: AccountsDAO,
                                          accountGroupsDAO: AccountGroupsDAO,
                                          accountMessagesDAO: AccountMessagesDAO,
                                          groupsDAO: GroupsDAO
@@ -26,8 +29,8 @@ class AccountGroupsRepository @Inject()(
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Group]] = {
     for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
-      _ <- accountsDAO.validateExist(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
+      _ <- accountsValidator.exist(accountId, sessionId)
       r <- accountGroupsDAO.find(accountId, since, offset, count, false, sessionId)
     } yield (r)
   }
@@ -39,7 +42,7 @@ class AccountGroupsRepository @Inject()(
 
   def findOrCreate(accountId: AccountId, sessionId: SessionId): Future[Group] = {
     (for {
-      _ <- accountsDAO.validateSessionId(accountId, sessionId)
+      _ <- accountsValidator.checkSessionId(accountId, sessionId)
       r <- accountGroupsDAO.findByAccountId(accountId, sessionId)
     } yield (r)).flatMap(_ match {
       case Some(g) =>
@@ -49,7 +52,7 @@ class AccountGroupsRepository @Inject()(
           id <- groupsDAO.create(sessionId)
           _ <- accountGroupsDAO.create(accountId, id, sessionId)
           _ <- accountGroupsDAO.create(sessionId.toAccountId, id, accountId.toSessionId)
-          g <- accountGroupsDAO.validateFindByGroupId(id, sessionId)
+          g <- accountGroupsValidator.findByGroupId(id, sessionId)
         } yield (g)
     })
   }

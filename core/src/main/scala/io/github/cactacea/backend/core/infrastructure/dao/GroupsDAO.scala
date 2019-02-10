@@ -3,13 +3,10 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.application.services.TimeService
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.GroupNotFound
 
 @Singleton
 class GroupsDAO @Inject()(db: DatabaseService) {
@@ -158,22 +155,6 @@ class GroupsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-
-  def validateExist(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    exist(groupId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(GroupNotFound))
-    })
-  }
-
-  def validateFind(groupId: GroupId, sessionId: SessionId): Future[Group] = {
-    find(groupId, sessionId).flatMap(_ match {
-      case Some(t) => Future.value(t)
-      case None => Future.exception(CactaceaException(GroupNotFound))
-    })
-  }
 
 }
 

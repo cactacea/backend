@@ -24,12 +24,15 @@ class AuthDAO @Inject()(db: DatabaseService) {
 
   def validateClient(id: String, secret: String, grantType: String): Future[Boolean] = {
     val q = quote {
-      query[Clients]
-        .filter(_.id == lift(id))
-        .filter(_.secret.exists(_ == lift(secret) || lift(secret) == ""))
-        .join(query[ClientGrantTypes]).on({ case (c, cgt) => cgt.clientId == c.id })
-        .join(query[GrantTypes]).on({ case ((_, cgt), gt) => gt.id == cgt.grantTypeId && gt.grantType == lift(grantType) })
-        .size
+      (for {
+        c <- query[Clients]
+          .filter(_.id == lift(id))
+          .filter(_.secret.exists(_ == lift(secret) || lift(secret) == lift("")))
+        cgt <- query[ClientGrantTypes]
+          .join(_.clientId == c.id)
+        gt <- query[GrantTypes]
+          .join(gt => gt.id == cgt.grantTypeId && gt.grantType == lift(grantType))
+      } yield (gt)).size
     }
     run(q).map(_ > 0)
   }

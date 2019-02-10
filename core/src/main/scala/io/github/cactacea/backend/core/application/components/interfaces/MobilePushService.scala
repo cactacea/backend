@@ -1,9 +1,14 @@
 package io.github.cactacea.backend.core.application.components.interfaces
 
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.models.PushNotification
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 trait MobilePushService {
-  def send(fanOuts: List[PushNotification]): Future[List[AccountId]]
+
+  def sendFeed(feedId: FeedId): Future[Unit]
+  def sendComment(commentId: CommentId): Future[Unit]
+  def sendMessage(id: MessageId): Future[Unit]
+  def sendFriendRequest(id: FriendRequestId): Future[Unit]
+  def sendGroupInvitation(id: GroupInvitationId): Future[Unit]
+
 }

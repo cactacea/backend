@@ -18,12 +18,15 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
            count: Int): Future[List[Account]] = {
 
     val q = quote {
-      query[AccountGroups]
-        .filter(ag => ag.groupId == lift(groupId))
-        .filter(ag => lift(since).forall(ag.id < _))
-        .join(query[Accounts]).on((ag, a) => a.id == ag.accountId)
-        .leftJoin(query[Relationships]).on({ case ((_, a), r) => r.accountId == a.id})
-        .map({ case ((ag, a), r) => (a, r, ag.id)})
+      (for {
+        ag <- query[AccountGroups]
+          .filter(_.groupId == lift(groupId))
+          .filter(ag => lift(since).forall(ag.id < _))
+        a <- query[Accounts]
+          .join(_.id == ag.accountId)
+        r <- query[Relationships]
+          .leftJoin(_.accountId == a.id)
+      } yield (a, r, ag.id))
         .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))

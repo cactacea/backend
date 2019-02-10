@@ -5,18 +5,14 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums._
-import io.github.cactacea.backend.core.domain.models.{Account, AccountDetail}
+import io.github.cactacea.backend.core.domain.models.{Account}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
-import io.github.cactacea.backend.core.infrastructure.results.RelationshipBlocksCount
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
 class AccountsDAO @Inject()(
                              db: DatabaseService,
-                             hashService: HashService,
-                             blocksCountDAO: BlockCountDAO
+                             hashService: HashService
                            ) {
 
   import db._
@@ -183,50 +179,33 @@ class AccountsDAO @Inject()(
     run(q).map(_.headOption)
   }
 
-  def find(sessionId: SessionId): Future[Option[(AccountDetail)]] = {
+  def find(sessionId: SessionId): Future[Option[(Account)]] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
     }
-    run(q).map(_.headOption.map(AccountDetail(_)))
+    run(q).map(_.headOption.map(Account(_)))
   }
 
 
-  def find(accountId: AccountId, sessionId: SessionId): Future[Option[AccountDetail]] = {
+  def find(accountId: AccountId, sessionId: SessionId): Future[Option[Account]] = {
 
     val by = sessionId.toAccountId
     val status = AccountStatusType.normally
     val q = quote {
-      query[Accounts]
-        .filter(_.id              == lift(accountId))
-        .filter(_.accountStatus   == lift(status))
-        .filter(a => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
-        ).isEmpty)
-        .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by) })
+      (for {
+        a <- query[Accounts]
+          .filter(_.id              == lift(accountId))
+          .filter(_.accountStatus   == lift(status))
+          .filter(a => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
+          ).isEmpty)
+        r <- query[Relationships]
+          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r))
     }
-
-    (for {
-      accounts <- run(q)
-      ids = accounts.map({ case (a, _) => a.id})
-      blocksCount <- blocksCountDAO.findRelationshipBlocks(ids, sessionId)
-    } yield (accounts, blocksCount))
-      .map({ case (accounts, blocksCount) =>
-        accounts.map({ case (a, r) =>
-          val b = blocksCount.find(_.id == a.id).getOrElse(RelationshipBlocksCount(a.id, 0L, 0L, 0L))
-          val displayName = r.flatMap(_.displayName).getOrElse(a.displayName)
-          val friendCount = a.friendCount - b.friendCount
-          val followingCount = a.followingCount - b.followingCount
-          val followerCount = a.followerCount - b.followerCount
-          val na = a.copy(displayName = displayName,
-                          friendCount = friendCount,
-                          followingCount = followingCount,
-                          followerCount = followerCount,
-                          feedsCount = a.feedsCount)
-          AccountDetail(na, r)
-        }).headOption
-    })
+    run(q).map(_.map({ case (a, r) => Account(a, r)}).headOption)
 
   }
 
@@ -261,20 +240,25 @@ class AccountsDAO @Inject()(
     val by = sessionId.toAccountId
 
     val q = quote {
-      query[Accounts]
-        .filter({a => a.id !=  lift(by)})
-        .filter(a => a.accountStatus == lift(AccountStatusType.normally))
-        .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
-        .filter(a => lift(sinceAccountName).forall(a.accountName gt _))
-        .filter(a => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
-        ).isEmpty)
-      .leftJoin(query[Relationships]).on({ case (a, r) => r.accountId == a.id && r.by == lift(by)})
-      .sortBy({ case (a, _) => a.accountName})(Ord.asc)
-      .drop(lift(offset))
-      .take(lift(count))
+      (for {
+        a <- query[Accounts]
+          .filter({a => a.id !=  lift(by)})
+          .filter(a => a.accountStatus == lift(AccountStatusType.normally))
+          .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
+          .filter(a => lift(sinceAccountName).forall(a.accountName gt _))
+          .filter(a => query[Blocks].filter(b =>
+            (b.accountId == lift(by) && b.by == a.id) || (b.accountId == a.id && b.by == lift(by))
+          ).isEmpty)
+        r <- query[Relationships]
+            .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+      } yield (a, r))
+        .sortBy({ case (a, _) => a.accountName})(Ord.asc)
+        .drop(lift(offset))
+        .take(lift(count))
     }
+
     run(q).map(_.map({ case (a, r) => Account(a, r) }))
+
   }
 
 
@@ -291,78 +275,6 @@ class AccountsDAO @Inject()(
     }
     run(q).map(_ => Unit)
   }
-
-
-  def validateNotExist(accountName: String): Future[Unit] = {
-    exist(accountName).flatMap(_ match {
-      case false =>
-        Future.Unit
-      case true =>
-        Future.exception(CactaceaException(AccountNameAlreadyUsed))
-    })
-  }
-
-  def validateExist(accountId: AccountId): Future[Unit] = {
-    exist(accountId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-  }
-
-  def validateExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    exist(accountId, sessionId).flatMap(_ match {
-      case true =>
-        Future.Unit
-      case false =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-  }
-
-  def validateSessionId(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    if (accountId == by) {
-      Future.exception(CactaceaException(CanNotSpecifyMyself))
-    } else {
-      Future.Unit
-    }
-  }
-
-  def validateFind(sessionId: SessionId): Future[AccountDetail] = {
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[Accounts]
-        .filter(_.id == lift(accountId))
-    }
-    run(q).map(_.headOption).flatMap( _ match {
-      case Some(a) =>
-        if (a.isTerminated) {
-          Future.exception(CactaceaException(AccountTerminated))
-        } else {
-          Future.value(AccountDetail(a))
-        }
-      case None =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
-  }
-
-
-  def validateFind(accountName: String, password: String): Future[AccountDetail] = {
-    find(accountName, password).flatMap(_ match {
-      case Some(a) =>
-        if (a.isTerminated) {
-          Future.exception(CactaceaException(AccountTerminated))
-        } else {
-          Future.value(AccountDetail(a))
-        }
-      case None =>
-        Future.exception(CactaceaException(InvalidAccountNameOrPassword))
-    })
-
-  }
-
-
 
 
 }
