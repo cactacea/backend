@@ -59,13 +59,13 @@ class DemoStorageService(val localPath: String) extends StorageService {
     }
   }
 
-  override def delete(key: String): Future[Boolean] = {
+  override def delete(key: String): Future[Unit] = {
     FuturePool.unboundedPool {
       val path = Paths.get(key)
       if (Files.exists(path)) {
         Files.delete(path)
       }
-      true
+      ()
     }
   }
 

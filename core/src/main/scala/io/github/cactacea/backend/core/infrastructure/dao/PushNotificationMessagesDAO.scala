@@ -23,7 +23,7 @@ class PushNotificationMessagesDAO @Inject()(
           val pt = PushNotificationType.groupInvitation
           val url = deepLinkService.getMessages(m.groupId, m.id)
           val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
-            PushNotification(accountName, m.postedAt, url, destinations, pt)
+            PushNotification(accountName, m.message, m.postedAt, url, destinations, pt)
           }).toList
           Some(r)
         })

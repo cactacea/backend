@@ -22,7 +22,7 @@ class PushNotificationFeedsDAO @Inject()(
         findDestinations(id).map({ d =>
           val url = deepLinkService.getFeed(id)
           val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
-            PushNotification(accountName, f.postedAt, url, destinations, PushNotificationType.feed)
+            PushNotification(accountName, None, f.postedAt, url, destinations, PushNotificationType.feed)
           }).toList
           Some(r)
         })

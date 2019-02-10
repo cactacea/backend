@@ -21,7 +21,7 @@ class AccountsRepository @Inject()(
     accountsValidator.find(sessionId)
   }
 
-  def findDetail(accountId: AccountId, sessionId: SessionId): Future[Account] = {
+  def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
     accountsDAO.find(accountId, sessionId).flatMap( _ match {
       case Some(a) =>
         Future.value(a)

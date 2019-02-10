@@ -21,8 +21,8 @@ class AccountsService @Inject()(
     accountsRepository.find(sessionId)
   }
 
-  def findDetail(accountId: AccountId, sessionId: SessionId): Future[Account] = {
-    accountsRepository.findDetail(accountId, sessionId)
+  def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
+    accountsRepository.find(accountId, sessionId)
   }
 
   def notExist(accountName: String): Future[Boolean] = {

@@ -11,17 +11,27 @@ services:
       MYSQL_PASSWORD: cactacea
       MYSQL_ROOT_PASSWORD: root
 
-  cactacea_api:
-    image: cactacea/api
-    depends_on:
-    - mysql
-    environment:
-      CACTACEA_MASTER_DB_NAME: cactacea
-      CACTACEA_MASTER_DB_USERNAME: cactacea
-      CACTACEA_MASTER_DB_PASSWORD: cactacea
-      CACTACEA_MASTER_DB_DEST: docker.for.mac.host.internal:3306
+  localstack:
+    image: localstack/localstack:latest
     ports:
-    - "9000:9000"
+      - "4567-4584:4567-4584"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - SERVICES=${SERVICES- }
+      - DEBUG=${DEBUG- }
+      - DATA_DIR=${DATA_DIR- }
+      - PORT_WEB_UI=${PORT_WEB_UI- }
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  redis:
+    image: redis:4.0.5-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
 
   cactacea_chat:
     image: cactacea/chat

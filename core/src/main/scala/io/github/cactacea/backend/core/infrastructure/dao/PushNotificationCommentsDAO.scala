@@ -29,7 +29,7 @@ class PushNotificationCommentsDAO @Inject()(
             case false => deepLinkService.getComment(c.feedId, c.id)
           }
           val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
-            PushNotification(accountName, c.postedAt, url, destinations, pt)
+            PushNotification(accountName, None, c.postedAt, url, destinations, pt)
           }).toList
           Some(r)
         })

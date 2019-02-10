@@ -2,6 +2,7 @@ import sbt.Keys.{libraryDependencies, publishArtifact, resolvers, scalacOptions}
 import sbt.url
 import sbtbuildinfo.BuildInfoPlugin.autoImport.buildInfoKeys
 
+
 lazy val root = (project in file("."))
   .settings(
     name := "backend"
@@ -9,7 +10,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(Migration.settings)
-  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat)
+  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws)
   .enablePlugins(FlywayPlugin)
 
 
@@ -22,11 +23,11 @@ lazy val server = (project in file("server"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.oauth2LibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.mysqlLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.oauth2)
+  .settings(libraryDependencies ++= Dependencies.mysql)
+  .settings(libraryDependencies ++= Dependencies.finatra)
+  .settings(libraryDependencies ++= Dependencies.test)
+  .settings(libraryDependencies ++= Dependencies.log)
   .enablePlugins(FlywayPlugin)
   .enablePlugins(BuildInfoPlugin)
   .dependsOn(core % "compile->compile;test->test")
@@ -37,35 +38,17 @@ lazy val core = (project in file("core"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.coreLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
-  .settings(libraryDependencies ++= Dependencies.logLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.core)
+  .settings(libraryDependencies ++= Dependencies.finatra)
+  .settings(libraryDependencies ++= Dependencies.test)
+  .settings(libraryDependencies ++= Dependencies.log)
   .dependsOn(finagger)
-  .dependsOn(finachat)
 
 
 lazy val utils = (project in file("utils"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(libraryDependencies ++= Dependencies.utils)
-
-
-lazy val addons = (project in file("addons"))
-  .settings(
-    organization := "io.github.cactacea.addons",
-    scalaVersion  := "2.12.7",
-    scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
-    testOptions in Test += Tests.Argument("-oI"),
-    concurrentRestrictions += Tags.limit(Tags.Test, 1),
-    parallelExecution := false,
-    fork := true
-  )
-  .settings(commonResolverSetting)
-  .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.addons)
-  .dependsOn(core % "compile->compile;test->test")
-  .dependsOn(utils)
 
 
 lazy val finagger = (project in file("libs/finagger"))
@@ -77,7 +60,7 @@ lazy val finagger = (project in file("libs/finagger"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.finagger)
   .enablePlugins(BuildInfoPlugin)
 
@@ -86,7 +69,8 @@ lazy val filhouette = (project in file("libs/filhouette"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.finatraLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.finatra
+  )
   .settings(libraryDependencies ++= Dependencies.filhouette)
 
 
@@ -119,7 +103,7 @@ lazy val plugin = (project in file("plugin"))
     scalacOptions ++= Seq("-feature", "-deprecation")
   )
   .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.test)
   .dependsOn(core % "compile->compile;test->test")
 
 
@@ -136,9 +120,11 @@ lazy val api = (project in file("demo/api"))
   )
   .settings(commonSettings)
   .settings(commonResolverSetting)
-  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.test)
   .settings(noPublishSettings)
-  .dependsOn(addons)
+  .dependsOn(aws)
+  .dependsOn(onesignal)
+  .dependsOn(redis)
   .dependsOn(server % "compile->compile;test->test")
   .enablePlugins(JavaAppPackaging)
 
@@ -156,7 +142,7 @@ lazy val chat = (project in file("demo/chat"))
   )
   .settings(commonSettings)
   .settings(commonResolverSetting)
-  .settings(libraryDependencies ++= Dependencies.testLibrarySettings)
+  .settings(libraryDependencies ++= Dependencies.test)
   .settings(noPublishSettings)
   .dependsOn(finachat)
   .enablePlugins(JavaAppPackaging)
@@ -177,11 +163,52 @@ lazy val commonSettings = Seq(
 lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    "Maven central" at "http://central.maven.org/maven2/",
+    "Maven central" at "http://central.maven.org/maven2/"))
+
+
+lazy val onesignal = (project in file("addons/onesignal"))
+  .settings(addonsCommonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finatra)
+  .settings(libraryDependencies ++= Dependencies.ficus)
+  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(utils)
+
+
+lazy val aws = (project in file("addons/aws"))
+  .settings(addonsCommonSettings)
+  .settings(awsCommonResolverSetting)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.aws)
+  .settings(libraryDependencies ++= Dependencies.ficus)
+  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(utils)
+
+
+lazy val redis = (project in file("addons/redis"))
+  .settings(addonsCommonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(finachat)
+
+
+lazy val addonsCommonSettings = Seq(
+  organization := "io.github.cactacea.addons",
+  scalaVersion  := "2.12.7",
+  scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
+  testOptions in Test += Tests.Argument("-oI"),
+  concurrentRestrictions += Tags.limit(Tags.Test, 1),
+  parallelExecution := false,
+  fork := true
+)
+
+lazy val awsCommonResolverSetting = Seq(
+  resolvers ++= Seq(
     "Monsanto Repository" at "https://dl.bintray.com/monsanto/maven/")
-  )
-
-
+)
 
 // Publish Settings
 

@@ -42,7 +42,6 @@ class CactaceaServerSpec extends FeatureTest
         DefaultMobilePushModule,
         DefaultStorageModule,
         DefaultHashModule,
-        DefaultTranscodeModule,
         DefaultDeepLinkModule,
         DefaultJacksonModule
       )

@@ -1,0 +1,1 @@
+docker run -d -p 127.0.0.1:3306:3306 -e MYSQL_DATABASE=cactacea -e MYSQL_USER=cactacea -e MYSQL_PASSWORD=cactacea -e MYSQL_ROOT_PASSWORD=root mysql:8.0.3 --innodb_log_file_size=256MB --innodb_buffer_pool_size=512MB --max_allowed_packet=16MB --local-infile=1 --character-set-server=utf8 --collation-server=utf8_unicode_ci

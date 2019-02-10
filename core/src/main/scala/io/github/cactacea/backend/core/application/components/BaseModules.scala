@@ -8,24 +8,22 @@ trait BaseModules extends App {
 
   protected  def databaseModule: TwitterModule = DatabaseModule
 
-  def injectionModule: TwitterModule =  DefaultListenerModule
-  def chatFanOutModule: TwitterModule = DefaultChatModule
-  def notificationMessagesModule: TwitterModule = DefaultMessageModule
-  def enqueueModule: TwitterModule =  DefaultQueueModule
-  def pushNotificationModule: TwitterModule = DefaultMobilePushModule
+  def listenerModule: TwitterModule =  DefaultListenerModule
+  def chatModule: TwitterModule = DefaultChatModule
+  def messageModule: TwitterModule = DefaultMessageModule
+  def queueModule: TwitterModule =  DefaultQueueModule
+  def mobilePushModule: TwitterModule = DefaultMobilePushModule
   def storageModule: TwitterModule = DefaultStorageModule
   def deepLinkModule: TwitterModule = DefaultDeepLinkModule
-  def transcodeModule: TwitterModule = DefaultTranscodeModule
   def hashModule: TwitterModule = DefaultHashModule
 
-  addFrameworkModule(injectionModule)
-  addFrameworkModule(chatFanOutModule)
-  addFrameworkModule(notificationMessagesModule)
-  addFrameworkModule(enqueueModule)
-  addFrameworkModule(pushNotificationModule)
+  addFrameworkModule(listenerModule)
+  addFrameworkModule(chatModule)
+  addFrameworkModule(messageModule)
+  addFrameworkModule(queueModule)
+  addFrameworkModule(mobilePushModule)
   addFrameworkModule(storageModule)
   addFrameworkModule(deepLinkModule)
-  addFrameworkModule(transcodeModule)
   addFrameworkModule(databaseModule)
   addFrameworkModule(hashModule)
 

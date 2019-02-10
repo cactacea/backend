@@ -40,7 +40,7 @@ class AccountsController @Inject()(
         .responseWith[Account](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: GetAccount =>
-      accountsService.findDetail(
+      accountsService.find(
         request.id,
         SessionContext.id
       )
