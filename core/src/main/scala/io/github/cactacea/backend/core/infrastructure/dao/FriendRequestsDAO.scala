@@ -80,7 +80,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (f, a, r))
-        .sortBy(_._1.id)(Ord.desc)
+        .sortBy({ case (f, _, _) => f.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -105,7 +105,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (f, a, r))
-        .sortBy(_._1.id)(Ord.desc)
+        .sortBy({ case (f, _, _) => f.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

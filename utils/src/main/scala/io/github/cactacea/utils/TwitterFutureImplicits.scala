@@ -1,10 +1,10 @@
 package io.github.cactacea.utils
 
-object TwitterFutureImplicits {
+import com.twitter.util.{Future => TwitterFuture, Promise => TwitterPromise, Return, Throw}
+import scala.concurrent.{Future => ScalaFuture, Promise => ScalaPromise, ExecutionContext}
+import scala.util.{Success, Failure}
 
-  import com.twitter.util.{Future => TwitterFuture, Promise => TwitterPromise, Return, Throw}
-  import scala.concurrent.{Future => ScalaFuture, Promise => ScalaPromise, ExecutionContext}
-  import scala.util.{Success, Failure}
+object TwitterFutureImplicits {
 
   /** Convert from a Twitter Future to a Scala Future */
   implicit class RichTwitterFuture[A](val tf: TwitterFuture[A]) extends AnyVal {

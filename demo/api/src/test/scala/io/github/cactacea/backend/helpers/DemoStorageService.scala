@@ -38,11 +38,10 @@ class DemoStorageService(val localPath: String) extends StorageService {
     } else {
       val mediums = multiParams.toList.flatMap({ case (_, item) =>
         MediaExtractor.extract(item.contentType, item.data).map((_, item.filename.getOrElse(UUID.randomUUID.toString))) })
-      if (mediums.filter(_._1.data.size.bytes > Config.storage.maxFileSize).size > 0) {
+      if (mediums.filter({ case (m, _) => m.data.size.bytes > Config.storage.maxFileSize}).size > 0) {
         Future.exception(CactaceaException(FileSizeLimitExceededError))
       } else {
         Future.traverseSequentially(mediums) { case (medium, filename) =>
-//          val filename = UUID.randomUUID.toString
           FuturePool.unboundedPool {
             val host = Config.storage.hostName
             val url = s"http://${host}:${9000}/mediums/" + filename

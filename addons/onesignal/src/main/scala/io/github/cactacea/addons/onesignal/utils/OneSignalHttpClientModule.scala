@@ -5,11 +5,10 @@ import com.twitter.finagle.Http
 import com.twitter.finatra.httpclient.HttpClient
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.TwitterModule
+import com.twitter.conversions.time._
 import io.github.cactacea.addons.onesignal.OneSignalHttpClient
 
 object OneSignalHttpClientModule extends TwitterModule {
-
-  import com.twitter.conversions.time._
 
   @Singleton
   @Provides

@@ -105,7 +105,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r, cl.id))
-        .sortBy(_._3)(Ord.desc)
+        .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

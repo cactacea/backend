@@ -27,7 +27,7 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
           .leftJoin(_.accountId == a.id)
       } yield (a, r, ag.id))
-        .sortBy(_._3)(Ord.desc)
+        .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

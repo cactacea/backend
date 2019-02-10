@@ -75,7 +75,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (m, am, i, a, r))
-        .sortBy(_._2.messageId)(Ord.desc)
+        .sortBy({ case (_, am, _, _, _) => am.messageId})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
 
@@ -107,7 +107,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (m, am, i, a, r))
-        .sortBy(_._2.messageId)(Ord.asc)
+        .sortBy({ case (_, am, _, _, _) => am.messageId})(Ord.asc)
         .drop(lift(offset))
         .take(lift(count))
 

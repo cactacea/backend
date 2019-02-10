@@ -188,7 +188,7 @@ class CommentsDAO @Inject()(
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (c, a, r, b))
-        .sortBy(_._1.id)(Ord.desc)
+        .sortBy({ case (c, _, _, _) => c.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

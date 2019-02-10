@@ -121,7 +121,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r, fl.id))
-        .sortBy(_._3)(Ord.desc)
+        .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
@@ -158,7 +158,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
                   (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
               ).nonEmpty))
       } yield (f , fl))
-        .sortBy(_._1.id)(Ord.desc)
+        .sortBy({ case (f , _) => f.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
 
@@ -195,7 +195,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
                   (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty))
       } yield (f , fl))
-        .sortBy(_._1.id)(Ord.desc)
+        .sortBy({ case (f , _) => f.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
 

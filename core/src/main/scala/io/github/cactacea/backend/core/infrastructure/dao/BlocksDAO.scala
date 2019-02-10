@@ -64,7 +64,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r, b))
-        .sortBy(_._3.id)(Ord.desc)
+        .sortBy({ case (_, _, b) => b.id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

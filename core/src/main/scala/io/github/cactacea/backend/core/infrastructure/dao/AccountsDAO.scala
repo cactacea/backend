@@ -252,7 +252,7 @@ class AccountsDAO @Inject()(
         r <- query[Relationships]
             .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r))
-        .sortBy(_._1.accountName)(Ord.asc)
+        .sortBy({ case (a, _) => a.accountName})(Ord.asc)
         .drop(lift(offset))
         .take(lift(count))
     }
