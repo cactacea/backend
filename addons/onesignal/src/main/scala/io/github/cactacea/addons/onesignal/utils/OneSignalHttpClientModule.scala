@@ -28,7 +28,7 @@ object OneSignalHttpClientModule extends TwitterModule {
       .withSessionPool.minSize(minPoolSize)
       .withSessionPool.maxSize(maxPoolSize)
       .withSessionPool.maxWaiters(maxPoolWaiters)
-      .newService(s"$hostname:443")
+      .newService(s"${hostname}:443")
     new HttpClient(hostname = hostname, httpService = httpService, retryPolicy = None, defaultHeaders = defaultHeaders, mapper = objectMapper)
   }
 

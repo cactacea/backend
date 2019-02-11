@@ -19,25 +19,6 @@ class NotificationsDAO @Inject()(db: DatabaseService,
 
   import db._
 
-//  def create(accountIds: List[AccountId], by: AccountId, notificationType: NotificationType, contentId: Long, url: String): Future[List[NotificationId]] = {
-//    for {
-//      ids <- insertNotifications(accountIds, by, notificationType, Some(contentId), url)
-//    } yield (ids)
-//  }
-//
-//  private def insertNotifications(ids: List[AccountId],
-//                                  by: AccountId,
-//                                  notificationType: NotificationType,
-//                                  contentId: Option[Long], url: String): Future[List[NotificationId]] = {
-//
-//    val notifiedAt = System.currentTimeMillis()
-//    val n = ids.map(id => Notifications(NotificationId(0L), id, by, notificationType, contentId, url, true,notifiedAt))
-//    val q = quote {
-//      liftQuery(n).foreach(e => query[Notifications].insert(e).returning(_.id))
-//    }
-//    run(q)
-//  }
-
   private def insert(accountId: AccountId, by: AccountId, notificationType: NotificationType, contentId: Long, url: String): Future[NotificationId] = {
     val notifiedAt = System.currentTimeMillis()
     val contentIdOpt: Option[Long] = Some(contentId)

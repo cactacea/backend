@@ -10,9 +10,9 @@ private[aws] object AWSConfig extends DurationReader {
   private val config = ConfigFactory.load().as[TypeSafeConfig]
   private val s3Config = config.as[AWSS3Config]("s3")
 
-  object s3 {
-    lazy val awsAccessKeyId = s3Config.bucketName.getOrElse("EKD4SWF0SAENSZ3Z1CFA") // for Minio service
-    lazy val awsSecretAccessKey = s3Config.bucketName.getOrElse("n7ynf2m/rheYuPWoLwK2b+pZTGQ7RBZDEhwOBYzx") // for Minio service
+  object s3 { // scalastyle:ignore
+    lazy val awsAccessKeyId = s3Config.bucketName.getOrElse("")
+    lazy val awsSecretAccessKey = s3Config.bucketName.getOrElse("")
     lazy val bucketName = s3Config.bucketName.getOrElse("cactacea")
     lazy val region = s3Config.region.getOrElse("us-east-1")
     lazy val endpoint = s3Config.endpoint

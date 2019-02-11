@@ -25,7 +25,7 @@ class DefaultMessageService extends MessageService {
       case PushNotificationType.commentReply => "comment_reply"
     }
     val lang = validLanguage(locales)
-    Messages(message)(lang).format(args)
+    Messages(message, args:_*)(lang)
   }
 
   def getNotificationMessage(notificationType: NotificationType, locales: Seq[Locale], args : Any*): String = {
@@ -38,7 +38,7 @@ class DefaultMessageService extends MessageService {
       case NotificationType.commentReply => "comment_reply"
     }
     val lang = validLanguage(locales)
-    Messages(message)(lang).format(args)
+    Messages(message, args:_*)(lang)
   }
 
 }

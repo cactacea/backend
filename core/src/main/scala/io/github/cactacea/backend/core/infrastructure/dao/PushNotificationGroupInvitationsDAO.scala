@@ -48,7 +48,7 @@ class PushNotificationGroupInvitationsDAO @Inject()(
           .filter(_.id == lift(id))
           .filter(_.notified == lift(false))
         a <- query[Accounts]
-          .join(_.id == g.accountId)
+          .join(_.id == g.by)
         d <- query[Devices]
           .join(_.accountId == g.accountId)
           .filter(_.pushToken.isDefined)

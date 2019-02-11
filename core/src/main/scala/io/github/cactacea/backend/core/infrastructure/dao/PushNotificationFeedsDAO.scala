@@ -40,6 +40,7 @@ class PushNotificationFeedsDAO @Inject()(
     run(q).map(_.headOption)
   }
 
+
   private def findDestinations(id: FeedId): Future[List[Destination]] = {
     val q = quote {
       for {
@@ -47,7 +48,7 @@ class PushNotificationFeedsDAO @Inject()(
           .filter(_.feedId == lift(id))
           .filter(_.notified == false)
         a <- query[Accounts]
-          .join(_.id == af.accountId)
+          .join(_.id == af.by)
         d <- query[Devices]
           .join(_.accountId == af.accountId)
           .filter(_.pushToken.isDefined)
@@ -56,6 +57,7 @@ class PushNotificationFeedsDAO @Inject()(
           .filter(_.feed == true)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == af.by && r.by == af.accountId)
+
       } yield {
         Destination(
           af.accountId,

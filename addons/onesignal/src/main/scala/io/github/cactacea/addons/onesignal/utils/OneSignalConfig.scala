@@ -14,7 +14,7 @@ object OneSignalConfig {
   private val config = ConfigFactory.load().as[TypeSafeConfig]
   private val onesignalConfig = config.as[OneSignalConfig]("onesignal")
 
-  object onesignal {
+  object onesignal { // scalastyle:ignore
     lazy val apiKey = onesignalConfig.apiKey.getOrElse("must be ONESIGNAL_API_KEY")
     lazy val appId = onesignalConfig.appId.getOrElse("must be ONESIGNAL_APP_ID")
   }
