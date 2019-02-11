@@ -19,7 +19,7 @@ case class OneSignalNotification(
 
                                   // Content & Language
                                   contents: OneSignalNotificationContent,
-                                  headings: Option[OneSignalNotificationContent] = None,
+                                  headings: Option[OneSignalNotificationContent],
                                   subtitle: Option[String],
                                   templateId: Option[String],
                                   contentAvailable: Option[Boolean],
@@ -87,17 +87,83 @@ case class OneSignalNotification(
                                   isWP: Option[Boolean],
                                   isWPWNS: Option[Boolean],
                                   isAdm: Option[Boolean],
-                                  isChrome: Option[Boolean]
+                                  isChrome: Option[Boolean] = None
 
                                 )
 
 object OneSignalNotification {
-  def apply(appId: String, includePlayerIds: List[String], en: String, jp: String): OneSignalNotification = {
+
+  def apply(appId: String, includePlayerIds: List[String], en: String, ja: String, url: String): OneSignalNotification = {
+    val contents = OneSignalNotificationContent(en = Some(en), ja = Some(ja))
     OneSignalNotification(
-      appId = appId,
-      includePlayerIds = includePlayerIds,
-      en = en,
-      jp = jp
+      appId,
+      Some(includePlayerIds),
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      contents,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      Some(url),
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None
     )
   }
+
 }

@@ -114,19 +114,19 @@ class OneSignalMobilePushService @Inject()(
 
 
   private def createContentList(notifications: List[PushNotification]): List[(OneSignalNotification, List[AccountId])] = {
-    notifications.map({ notification =>
+    notifications.flatMap({ notification =>
       val displayName = notification.displayName
       val message = notification.message
       val en = messageService.getPushNotificationMessage(notification.notificationType, Seq(Locale.US), displayName, message)
       val jp = messageService.getPushNotificationMessage(notification.notificationType, Seq(Locale.JAPAN), displayName, message)
-      val c = notification.destinations.grouped(numberOfGrouped).map({ groupedDestinations =>
+      val url = notification.url
+      notification.destinations.grouped(numberOfGrouped).map({ groupedDestinations =>
         val accessTokens = groupedDestinations.map(_.accountToken)
         val accountIds =  groupedDestinations.map(_.accountId)
-        val content = OneSignalNotification(OneSignalConfig.onesignal.appId, accessTokens, en, jp)
+        val content = OneSignalNotification(OneSignalConfig.onesignal.appId, accessTokens, en, jp, url)
         (content, accountIds)
       })
-      c.toList
-    }).flatten
+    })
   }
 
   private def sendContentList(l: List[(OneSignalNotification, List[AccountId])]): Future[List[List[AccountId]]] = {
