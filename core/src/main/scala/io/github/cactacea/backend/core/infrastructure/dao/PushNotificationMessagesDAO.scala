@@ -49,7 +49,7 @@ class PushNotificationMessagesDAO @Inject()(
         g <- query[Groups]
           .join(_.id == am.groupId)
         a <- query[Accounts]
-          .join(_.id == am.accountId)
+          .join(_.id == am.by)
         d <- query[Devices]
           .join(_.accountId == am.accountId)
           .filter(_.pushToken.isDefined)

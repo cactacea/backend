@@ -11,7 +11,6 @@ import io.github.cactacea.backend.core.infrastructure.validators.{CommentLikesVa
 class CommentLikesRepository @Inject()(
                                         commentsValidator: CommentsValidator,
                                         commentLikesValidator: CommentLikesValidator,
-                                        commentsDAO: CommentsDAO,
                                         commentLikesDAO: CommentLikesDAO,
                                       ) {
 
