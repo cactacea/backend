@@ -13,7 +13,7 @@ case class Accounts(
                      followingCount: Long,
                      followerCount: Long,
                      friendCount: Long,
-                     feedsCount: Long,
+                     feedCount: Long,
                      web: Option[String],
                      birthday: Option[Long],
                      location: Option[String],

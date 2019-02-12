@@ -173,10 +173,10 @@ class FeedsDAOSpec extends DAOSpec {
 
     // Feeds count
     val session1 = execute(accountsDAO.find(sessionAccount1.id.toSessionId))
-    assert(session1.head.feedsCount == 4L)
+    assert(session1.head.feedCount == 4L)
 
     val session2 = execute(accountsDAO.find(sessionAccount2.id.toSessionId))
-    assert(session2.head.feedsCount == 2L)
+    assert(session2.head.feedCount == 2L)
 
   }
 
@@ -556,10 +556,10 @@ class FeedsDAOSpec extends DAOSpec {
 
     // Feeds count
     val session1 = execute(accountsDAO.find(sessionAccount1.id.toSessionId))
-    assert(session1.head.feedsCount == 4L)
+    assert(session1.head.feedCount == 4L)
 
     val session2 = execute(accountsDAO.find(sessionAccount2.id.toSessionId))
-    assert(session2.head.feedsCount == 1L)
+    assert(session2.head.feedCount == 1L)
 
   }
 
