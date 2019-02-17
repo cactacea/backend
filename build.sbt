@@ -4,8 +4,7 @@ import sbtbuildinfo.BuildInfoPlugin.autoImport.buildInfoKeys
 
 lazy val root = (project in file("."))
   .settings(
-    name := "backend",
-    organization := "io.github.cactacea"
+    name := "backend"
   )
   .settings(commonSettings)
   .settings(noPublishSettings)
@@ -213,6 +212,10 @@ lazy val awsCommonResolverSetting = Seq(
 
 
 lazy val docs = project
+  .settings(
+    name := "backend",
+    organization := "io.github.cactacea"
+  )
   .settings(docSettings)
   .settings(noPublishSettings)
   .enablePlugins(MicrositesPlugin)
@@ -253,7 +256,7 @@ lazy val docSettings = commonSettings ++ Seq(
   scalacOptions ~= {
     _.filterNot(Set("-Yno-predef", "-Xlint", "-Ywarn-unused-import"))
   },
-  git.remoteRepo := "https://github.com/cactacea/backend.git",
+  git.remoteRepo := "git@github.com:cactacea/backend.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) := inProjects(core, server),
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md" | "*.json",
   siteSubdirName in ScalaUnidoc := "docs"
