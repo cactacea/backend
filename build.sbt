@@ -2,15 +2,15 @@ import sbt.Keys.{libraryDependencies, publishArtifact, resolvers, scalacOptions}
 import sbt.url
 import sbtbuildinfo.BuildInfoPlugin.autoImport.buildInfoKeys
 
-
 lazy val root = (project in file("."))
   .settings(
-    name := "backend"
+    name := "backend",
+    organization := "io.github.cactacea"
   )
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(Migration.settings)
-  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws)
+  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, docs)
   .enablePlugins(FlywayPlugin)
 
 
@@ -205,10 +205,64 @@ lazy val addonsCommonSettings = Seq(
   fork := true
 )
 
+
 lazy val awsCommonResolverSetting = Seq(
   resolvers ++= Seq(
     "Monsanto Repository" at "https://dl.bintray.com/monsanto/maven/")
 )
+
+
+lazy val docs = project
+  .settings(docSettings)
+  .settings(noPublishSettings)
+  .enablePlugins(MicrositesPlugin)
+  .dependsOn(core, server, plugin, onesignal, aws)
+
+lazy val docSettings = commonSettings ++ Seq(
+  micrositeName := "Cactacea",
+  micrositeDescription := "A framework to construct social networking applications",
+  micrositeAuthor := "Takeshi Shimada",
+  micrositeHighlightTheme := "atom-one-light",
+  micrositeHomepage := "https://github.com/cactacea/backend",
+  micrositeDocumentationUrl := "/cactacea/scaladoc",
+  micrositeGithubOwner := "cactacea",
+  micrositeGithubRepo := "backend",
+  micrositeBaseUrl := "cactacea",
+  micrositeStaticDirectory := (resourceDirectory in Compile).value / "microsite" / "static",
+  micrositeDataDirectory := (resourceDirectory in Compile).value / "microsite" / "data",
+    //  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
+  micrositePalette := Map(
+    "brand-primary" -> "#6FACDD",
+    "brand-secondary" -> "#6FABDD",
+    "brand-tertiary" -> "#6FAADD",
+    "gray-dark" -> "#48494B",
+    "gray" -> "#7D7E7D",
+    "gray-light" -> "#E5E6E5",
+    "gray-lighter" -> "#F4F3F4",
+    "white-color" -> "#FFFFFF"),
+//  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
+  ghpagesNoJekyll := false,
+  scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
+    "-groups",
+    "-implicits",
+    "-skip-packages", "scalaz",
+    "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
+    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath,
+    "-doc-root-content", (resourceDirectory.in(Compile).value / "rootdoc.txt").getAbsolutePath
+  ),
+  scalacOptions ~= {
+    _.filterNot(Set("-Yno-predef", "-Xlint", "-Ywarn-unused-import"))
+  },
+  git.remoteRepo := "https://github.com/cactacea/backend.git",
+  unidocProjectFilter in (ScalaUnidoc, unidoc) := inProjects(core, server),
+  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md" | "*.json",
+  siteSubdirName in ScalaUnidoc := "docs"
+)
+
+
+
+
+
 
 // Publish Settings
 
@@ -228,6 +282,7 @@ lazy val publishSettings = Seq(
 
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/cactacea/backend")),
+  organizationHomepage := Some(url("https://github.com/cactacea")),
 
   publishMavenStyle := true,
   publishArtifact in Test := false,
@@ -285,9 +340,10 @@ releaseProcess := Seq[ReleaseStep](
   ReleaseStep(action = Command.process("publish", _)),
   ReleaseStep(action = Command.process("api/docker:publish", _)),
   ReleaseStep(action = Command.process("chat/docker:publish", _)),
+  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+  releaseStepTask(publishMicrosite in LocalProject("docs")),
   setNextVersion,
   commitNextVersion,
-  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
   pushChanges
 
 )
