@@ -33,6 +33,8 @@ before_cache:
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
   - find $HOME/.sbt -name "*.lock" -delete
+  # sbt-microsites
+  - export PATH=${PATH}:./vendor/bundle
 
 before_install:
   - sudo service mysql stop
