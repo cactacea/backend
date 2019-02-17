@@ -230,7 +230,7 @@ lazy val docSettings = commonSettings ++ Seq(
   micrositeDocumentationUrl := "/cactacea/scaladoc",
   micrositeGithubOwner := "cactacea",
   micrositeGithubRepo := "backend",
-  micrositeBaseUrl := "cactacea",
+  micrositeBaseUrl := "backend",
   micrositeStaticDirectory := (resourceDirectory in Compile).value / "microsite" / "static",
   micrositeDataDirectory := (resourceDirectory in Compile).value / "microsite" / "data",
     //  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
@@ -244,7 +244,7 @@ lazy val docSettings = commonSettings ++ Seq(
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"),
 //  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
-  ghpagesNoJekyll := false,
+  ghpagesNoJekyll := true,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
     "-implicits",
