@@ -1,8 +1,0 @@
-operator = 運営からのお知らせがあります。
-message = {0} : {1}
-no_displayed_message = メッセージが届きました。
-image = {0}さんが画像を送信しました。
-group_invitation = {0}さんからグループへ招待が届きました。
-friend_request = {0}さんからフレンド申請が届きました。
-feed =  {0}さんがフィードを投稿しました。
-comment =  {0}さんがコメントを残しました。

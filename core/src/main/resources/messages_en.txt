@@ -1,8 +1,0 @@
-operator = Notification from the administrative office.
-message = {0} : {1}
-no_displayed_message = Yous've got a message.
-image = {0} sent a image.
-group_invitation = {0}'ve invitation you to a group.
-friend_request = {0}'ve sent a friend request.
-feed = {0} posted a feed.
-comment = {0} posted a comment.
