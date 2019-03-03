@@ -218,8 +218,7 @@ lazy val docs = project
   )
   .settings(docSettings)
   .settings(noPublishSettings)
-  .enablePlugins(MicrositesPlugin)
-  .dependsOn(core, server, plugin, onesignal, aws)
+  .enablePlugins(MicrositesPlugin, ScalaUnidocPlugin)
 
 lazy val docSettings = commonSettings ++ Seq(
   micrositeName := "Cactacea",
@@ -227,7 +226,7 @@ lazy val docSettings = commonSettings ++ Seq(
   micrositeAuthor := "Takeshi Shimada",
   micrositeHighlightTheme := "atom-one-light",
   micrositeHomepage := "https://github.com/cactacea/backend",
-  micrositeDocumentationUrl := "/cactacea/scaladoc",
+  micrositeDocumentationUrl := "/backend/scaladoc",
   micrositeGithubOwner := "cactacea",
   micrositeGithubRepo := "backend",
   micrositeBaseUrl := "backend",
@@ -243,7 +242,7 @@ lazy val docSettings = commonSettings ++ Seq(
     "gray-light" -> "#E5E6E5",
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"),
-//  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
   ghpagesNoJekyll := true,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
@@ -257,9 +256,10 @@ lazy val docSettings = commonSettings ++ Seq(
     _.filterNot(Set("-Yno-predef", "-Xlint", "-Ywarn-unused-import"))
   },
   git.remoteRepo := "git@github.com:cactacea/backend.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := inProjects(core, server),
+  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(finagger, filhouette, finasocket, finachat),
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md" | "*.json",
-  siteSubdirName in ScalaUnidoc := "docs"
+  siteSubdirName in ScalaUnidoc := "scaladoc",
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
 )
 
 
