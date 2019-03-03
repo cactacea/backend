@@ -218,8 +218,7 @@ lazy val docs = project
   )
   .settings(docSettings)
   .settings(noPublishSettings)
-  .enablePlugins(MicrositesPlugin)
-  .dependsOn(core, server, plugin, onesignal, aws)
+  .enablePlugins(MicrositesPlugin, ScalaUnidocPlugin)
 
 lazy val docSettings = commonSettings ++ Seq(
   micrositeName := "Cactacea",
@@ -227,10 +226,10 @@ lazy val docSettings = commonSettings ++ Seq(
   micrositeAuthor := "Takeshi Shimada",
   micrositeHighlightTheme := "atom-one-light",
   micrositeHomepage := "https://github.com/cactacea/backend",
-  micrositeDocumentationUrl := "/cactacea/scaladoc",
+  micrositeDocumentationUrl := "/backend/scaladoc/io/github/cactacea/backend/",
   micrositeGithubOwner := "cactacea",
   micrositeGithubRepo := "backend",
-  micrositeBaseUrl := "cactacea",
+  micrositeBaseUrl := "backend",
   micrositeStaticDirectory := (resourceDirectory in Compile).value / "microsite" / "static",
   micrositeDataDirectory := (resourceDirectory in Compile).value / "microsite" / "data",
     //  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
@@ -243,8 +242,8 @@ lazy val docSettings = commonSettings ++ Seq(
     "gray-light" -> "#E5E6E5",
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"),
-//  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
-  ghpagesNoJekyll := false,
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
+  ghpagesNoJekyll := true,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
     "-implicits",
@@ -257,9 +256,10 @@ lazy val docSettings = commonSettings ++ Seq(
     _.filterNot(Set("-Yno-predef", "-Xlint", "-Ywarn-unused-import"))
   },
   git.remoteRepo := "git@github.com:cactacea/backend.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := inProjects(core, server),
+  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(finagger, filhouette, finasocket, finachat),
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md" | "*.json",
-  siteSubdirName in ScalaUnidoc := "docs"
+  siteSubdirName in ScalaUnidoc := "scaladoc",
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
 )
 
 
