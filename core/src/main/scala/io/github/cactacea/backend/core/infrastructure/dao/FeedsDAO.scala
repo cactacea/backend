@@ -130,7 +130,7 @@ class FeedsDAO @Inject()(
       query[Accounts]
         .filter(_.id == lift(accountId))
         .update(
-          a => a.feedsCount -> (a.feedsCount + lift(count))
+          a => a.feedCount -> (a.feedCount + lift(count))
         )
     }
     run(q).map(_ => Unit)

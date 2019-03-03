@@ -193,7 +193,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     assert(account1Result.map(_.followingCount == 1).getOrElse(false))
     assert(account1Result.map(_.followerCount == 3).getOrElse(false))
     assert(account1Result.map(_.friendCount == 2).getOrElse(false))
-    assert(account1Result.map(_.feedsCount == 0).getOrElse(false))
+    assert(account1Result.map(_.feedCount == 0).getOrElse(false))
 
     val user = account1Result.get
     assert(user.id == account1.id)
