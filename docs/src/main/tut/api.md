@@ -1,12 +1,10 @@
 ---
 layout: docs
-title: API
+title: Server REST API Reference
 position: 2
 ---
 
-## Swagger V2
+## Server REST API Reference
 
-[ReDocでSpecを表示](/backend/swagger.html)
-
-[JSONファイルを表示](/backend/swagger.json)
-
+- **[ReDoc](/backend/swagger.html)**
+- **[Json](/backend/swagger.json)**
