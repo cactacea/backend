@@ -3,5 +3,18 @@ options:
   - title: Getting Started
     url: getting-started.html
 
-  - title: API
+  - title: Server REST API Reference
     url: api.html
+
+  - title: SDK
+    url: sdk
+    menu_section: sdk
+
+    nested_options:
+      - title: iOS
+        url: sdk/ios.html
+        menu_section: sdk
+
+      - title: Android
+        url: sdk/android.html
+        menu_section: sdk
