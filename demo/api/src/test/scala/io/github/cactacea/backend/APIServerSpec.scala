@@ -49,7 +49,7 @@ class APIServerSpec extends FeatureTest with Helpers {
     val swagger = server.httpGet(s"/docs/model")
     assert(swagger.contentString.isEmpty == false)
 
-    val path = CactaceaBuildInfo.baseDirectory.getParent + "/docs/swagger.json"
+    val path = CactaceaBuildInfo.baseDirectory.getParent + "/docs/src/main/tut/swagger.json"
     val file = new PrintWriter(path)
     file.write(swagger.contentString)
     file.close()
