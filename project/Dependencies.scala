@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
 
   val versions = new {
-    val twitter = "18.11.0"
+    val twitter = "18.12.0"
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
@@ -15,7 +15,7 @@ object Dependencies {
     val ficus = "1.4.3"
     val jjwt = "0.9.1"
     val flyway = "5.2.4"
-    val quill = "3.0.1"
+    val quill = "3.1.0"
     val arm = "2.0"
     val hasher = "1.2.0"
     val extractor = "2.11.0"
