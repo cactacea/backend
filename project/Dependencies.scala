@@ -109,7 +109,7 @@ object Dependencies {
 
   lazy val finagger = Seq(
     "com.twitter" %% "finatra-http" % versions.twitter,
-    "org.joda" % "joda-convert" % "2.1.1",
+    "org.joda" % "joda-convert" % "1.2",
     "org.reflections" % "reflections" % "0.9.10",
     "org.projectlombok" % "lombok" % "1.16.22" % "provided",
     "org.assertj" % "assertj-core" % "3.0.0" % Test,
