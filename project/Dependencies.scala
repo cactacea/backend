@@ -6,7 +6,7 @@ object Dependencies {
     val twitter = "18.12.0"
     val guice = "4.0"
     val logback = "1.2.3"
-    val mockito = "1.10.19"
+    val mockito = "2.23.4"
     val scalaCheck = "1.13.4"
     val scalaTest = "3.0.4"
     val specs2 = "3.8.6"
@@ -109,7 +109,7 @@ object Dependencies {
 
   lazy val finagger = Seq(
     "com.twitter" %% "finatra-http" % versions.twitter,
-    "org.joda" % "joda-convert" % "1.2",
+    "org.joda" % "joda-convert" % "2.1.1",
     "org.reflections" % "reflections" % "0.9.10",
     "org.projectlombok" % "lombok" % "1.16.22" % "provided",
     "org.assertj" % "assertj-core" % "3.0.0" % Test,
