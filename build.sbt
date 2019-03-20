@@ -47,6 +47,7 @@ lazy val core = (project in file("core"))
 lazy val utils = (project in file("utils"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
+  .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.utils)
 
 
