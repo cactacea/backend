@@ -12,7 +12,7 @@ object Dependencies {
     val specs2 = "3.8.6"
     val mysql = "8.0.15"
     val config = "1.3.2"
-    val ficus = "1.4.3"
+    val ficus = "1.4.5"
     val jjwt = "0.9.1"
     val flyway = "5.2.4"
     val quill = "3.1.0"
@@ -21,6 +21,7 @@ object Dependencies {
     val extractor = "2.11.0"
     val logstash = "4.11"
     val i18n = "1.0.2"
+    val junit = "4.12"
   }
 
 
@@ -87,32 +88,32 @@ object Dependencies {
   )
 
   lazy val utils = Seq(
-    "com.twitter" %% "util-core" % "18.11.0"
+    "com.twitter" %% "util-core" % versions.twitter
   )
 
   
   // Libraries
 
   lazy val filhouette = Seq(
-    "io.jsonwebtoken" % "jjwt" % "0.9.1",
-    "ch.qos.logback" % "logback-classic" % "1.2.3",
+    "io.jsonwebtoken" % "jjwt" % versions.jjwt,
+    "ch.qos.logback" % "logback-classic" % versions.logback,
     "org.apache.commons" % "commons-lang3" % "3.8.1",
     "de.svenkubiak" % "jBCrypt" % "0.4.1",
-    "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
-    "org.scalatest" %% "scalatest" %  "3.0.4" % "test",
-    "org.specs2" %% "specs2-core" % "3.8.6" % "test",
-    "org.specs2" %% "specs2-junit" % "3.8.6" % "test",
-    "org.specs2" %% "specs2-matcher-extra" % "3.8.6" % "test",
-    "org.specs2" %% "specs2-mock" % "3.8.6" % "test"
+    "org.scalacheck" %% "scalacheck" % versions.scalaCheck % "test",
+    "org.scalatest" %% "scalatest" %  versions.scalaTest % "test",
+    "org.specs2" %% "specs2-core" % versions.specs2 % "test",
+    "org.specs2" %% "specs2-junit" % versions.specs2 % "test",
+    "org.specs2" %% "specs2-matcher-extra" % versions.specs2 % "test",
+    "org.specs2" %% "specs2-mock" % versions.specs2 % "test"
   )
 
   lazy val finagger = Seq(
     "com.twitter" %% "finatra-http" % versions.twitter,
-    "org.joda" % "joda-convert" % "2.1.1",
+    "org.joda" % "joda-convert" % "1.2",
     "org.reflections" % "reflections" % "0.9.10",
     "org.projectlombok" % "lombok" % "1.16.22" % "provided",
     "org.assertj" % "assertj-core" % "3.0.0" % Test,
-    "junit" % "junit" % "4.12" % Test,
+    "junit" % "junit" % versions.junit % Test,
     "uk.co.jemos.podam" % "podam" % "4.7.2.RELEASE" % Test,
     "io.swagger" % "swagger-core" % "1.5.21",
     "io.swagger" %% "swagger-scala-module" % "1.0.4",
@@ -124,9 +125,9 @@ object Dependencies {
   lazy val finasocket = Seq(
     "com.twitter" %% "finagle-core" % versions.twitter,
     "com.twitter" %% "finagle-netty4" % versions.twitter,
-    "org.scalatest" %% "scalatest" % "3.0.4" % Test,
-    "junit" % "junit" % "4.12" % Test,
-    "org.mockito" % "mockito-core" % "2.23.4" % Test
+    "org.scalatest" %% "scalatest" % versions.scalaTest % Test,
+    "junit" % "junit" % versions.junit % Test,
+    "org.mockito" % "mockito-core" % versions.mockito % Test
   )
 
   lazy val finachat = Seq(
@@ -138,8 +139,8 @@ object Dependencies {
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.8",
     "com.iheart" %% "ficus" % versions.ficus,
     "com.typesafe" % "config" % versions.config,
-    "org.scalatest" %% "scalatest" % "3.0.4" % Test,
-    "junit" % "junit" % "4.12" % Test
+    "org.scalatest" %% "scalatest" % versions.scalaTest % Test,
+    "junit" % "junit" % versions.junit % Test
   )
 
 }
