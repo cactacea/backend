@@ -6,7 +6,7 @@ object Dependencies {
     val twitter = "18.12.0"
     val guice = "4.0"
     val logback = "1.2.3"
-    val mockito = "2.23.4"
+    val mockito = "1.10.19"
     val scalaCheck = "1.13.4"
     val scalaTest = "3.0.4"
     val specs2 = "3.8.6"
@@ -127,7 +127,7 @@ object Dependencies {
     "com.twitter" %% "finagle-netty4" % versions.twitter,
     "org.scalatest" %% "scalatest" % versions.scalaTest % Test,
     "junit" % "junit" % versions.junit % Test,
-    "org.mockito" % "mockito-core" % versions.mockito % Test
+    "org.mockito" % "mockito-core" % "2.23.4" % Test
   )
 
   lazy val finachat = Seq(
