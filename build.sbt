@@ -335,6 +335,8 @@ releaseVersionFile := baseDirectory.value / "version.sbt"
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
+  ReleaseStep(action = Command.process("flywayClean", _)),
+  ReleaseStep(action = Command.process("flywayMigrate", _)),
   runClean,
   runTest,
   setReleaseVersion,
