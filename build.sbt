@@ -8,7 +8,7 @@ lazy val root = (project in file("."))
   )
   .settings(commonSettings)
   .settings(noPublishSettings)
-  .settings(Migration.settings)
+  .settings(migrationSettings)
   .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, docs)
   .enablePlugins(FlywayPlugin)
 
@@ -27,7 +27,6 @@ lazy val server = (project in file("server"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .enablePlugins(FlywayPlugin)
   .enablePlugins(BuildInfoPlugin)
   .dependsOn(core % "compile->compile;test->test")
   .dependsOn(finagger)
@@ -336,6 +335,8 @@ releaseVersionFile := baseDirectory.value / "version.sbt"
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
+  ReleaseStep(action = Command.process("flywayClean", _)),
+  ReleaseStep(action = Command.process("flywayMigrate", _)),
   runClean,
   runTest,
   setReleaseVersion,
@@ -351,3 +352,31 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges
 
 )
+
+
+// Migration Settings
+
+val user = sys.env.get("CACTACEA_MASTER_DB_USERNAME").getOrElse("cactacea")
+val password = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("cactacea")
+val databaseName = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
+val hostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
+val port = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
+val options = sys.env.get("CACTACEA_MASTER_DB_OPTIONS").getOrElse("?useSSL=false&allowPublicKeyRetrieval=true")
+
+val migrationSettings = Seq(
+  flywayUser := user,
+  flywayPassword := password,
+  flywayUrl := s"jdbc:mysql://${hostName}:${port}/${databaseName}${options}",
+  flywayPlaceholders := Map("schema" -> databaseName),
+  flywayLocations := Seq("filesystem:core/src/main/resources/db/migration/cactacea"),
+
+  flywayUser in Test := user,
+  flywayPassword in Test:= password,
+  flywayUrl in Test:= s"jdbc:mysql://${hostName}:${port}/${databaseName}${options}",
+  flywayPlaceholders in Test:= Map("schema" -> databaseName),
+  flywayLocations in Test:= Seq("filesystem:core/src/main/resources/db/migration/cactacea"),
+
+  libraryDependencies ++= Dependencies.mysql
+)
+
+addCommandAlias("flywayTest", ";flywayClean ;flywayMigrate ;test")

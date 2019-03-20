@@ -127,7 +127,7 @@ object Dependencies {
     "com.twitter" %% "finagle-netty4" % versions.twitter,
     "org.scalatest" %% "scalatest" % versions.scalaTest % Test,
     "junit" % "junit" % versions.junit % Test,
-    "org.mockito" % "mockito-core" % versions.mockito % Test
+    "org.mockito" % "mockito-core" % "2.23.4" % Test
   )
 
   lazy val finachat = Seq(
