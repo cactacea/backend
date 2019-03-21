@@ -5,6 +5,7 @@ import java.util.Date
 import com.google.inject.Singleton
 import io.github.cactacea.backend.core.util.configs.Config
 import io.jsonwebtoken._
+import org.joda.time.DateTime
 
 @Singleton
 class OAuthTokenGenerator {
@@ -20,7 +21,7 @@ class OAuthTokenGenerator {
   }
 
   private def generate(subject: String, audience: Long, clientId: String, scope: String, expired: Long): String = {
-
+    val expired = new DateTime().plusMinutes(3).toDate
     val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
 
     Jwts.builder()
@@ -30,6 +31,7 @@ class OAuthTokenGenerator {
       .setHeaderParam("client_id", clientId)
       .setHeaderParam("scope", scope)
       .setHeaderParam("expired", expired.toString)
+      .setExpiration(expired)
       .setAudience(audience.toString())
       .signWith(signatureAlgorithm, Config.auth.token.signingKey)
       .compact()
