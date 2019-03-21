@@ -4,7 +4,6 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
-import io.github.cactacea.backend.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.utils.filters._
 import io.github.cactacea.backend.utils.oauth.OAuthFilter
 import io.github.cactacea.backend.utils.warmups.{DatabaseMigrationHandler, QueueHandler}

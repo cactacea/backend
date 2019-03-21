@@ -18,22 +18,15 @@ import io.github.cactacea.backend.swagger.CactaceaSwaggerModule
 class APIServerSpec extends FeatureTest with Helpers {
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new CactaceaServer {
+    twitterServer = new APIServer {
 
       override def storageModule: TwitterModule = DemoStorageModule
 
       override def warmup() {
       }
 
-      override def configureHttp(router: HttpRouter): Unit = {
-        super.configureHttp(router)
-        router
-          .add[DocsController]
-      }
-
       override val defaultHttpPort = ":9002"
 
-      addFrameworkModule(CactaceaSwaggerModule)
 
 
     }
