@@ -25,7 +25,7 @@ class MediumsController @Inject()(
 
   prefix(apiPrefix) {
 
-    getWithPermission("/mediums/*")(Permissions.media) { o =>
+    getWithPermission("/mediums/:*")(Permissions.media) { o =>
 
       o.summary("Get a medium")
         .tag(mediumsTag)
