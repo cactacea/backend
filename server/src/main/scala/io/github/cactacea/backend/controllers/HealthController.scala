@@ -17,6 +17,7 @@ class HealthController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
 
     getWithDoc("/ping") { o =>
       o.summary("Health checking")
+        .operationId("ping")
         .tag("System")
         .responseWith(200, "Service is operating normally")
     } { (_: Request) =>

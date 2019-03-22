@@ -30,6 +30,7 @@ class MediumsController @Inject()(
       o.summary("Get a medium")
         .tag(mediumsTag)
         .operationId("findMedium")
+      o.responseWith[File](Status.Ok.code, successfulMessage)
 
     }  { request: Request =>
       mediumsService.find(request)

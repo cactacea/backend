@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(migrationSettings)
-  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, docs)
+  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, docs, utils)
   .enablePlugins(FlywayPlugin)
 
 
@@ -361,7 +361,7 @@ val password = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("cactacea")
 val databaseName = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
 val hostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
 val port = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
-val options = sys.env.get("CACTACEA_MASTER_DB_OPTIONS").getOrElse("?useSSL=false&allowPublicKeyRetrieval=true")
+val options = sys.env.get("CACTACEA_MASTER_DB_OPTIONS").getOrElse("")
 
 val migrationSettings = Seq(
   flywayUser := user,
