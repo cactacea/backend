@@ -20,7 +20,7 @@ class OAuthTokenGenerator {
     generate("refreshToken", audience, clientId, scope, expired)
   }
 
-  private def generate(subject: String, audience: Long, clientId: String, scope: String, expiration: Long): String = {
+  private def generate(subject: String, audience: Long, clientId: String, scope: String, expiration: Int): String = {
     val expired = new DateTime().plusMinutes(expiration).toDate
     val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
 
