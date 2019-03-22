@@ -1,7 +1,6 @@
 package io.github.cactacea.backend
 
-import com.google.inject.{Inject, Singleton}
-import com.twitter.inject.annotations.Flag
+import com.google.inject.Singleton
 import com.twitter.inject.utils.Handler
 import io.github.cactacea.backend.core.util.configs.Config
 import org.flywaydb.core.Flyway
@@ -10,7 +9,7 @@ import scala.collection.JavaConverters._
 
 
 @Singleton
-class MigrationHandler  @Inject()(@Flag("storage.localPath") localPath: String) extends Handler {
+class MigrationHandler extends Handler {
 
   override def handle(): Unit = {
     val database = Config.db.master.database

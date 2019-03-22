@@ -21,7 +21,7 @@ class OAuthTokenGenerator {
   }
 
   private def generate(subject: String, audience: Long, clientId: String, scope: String, expired: Long): String = {
-    val expired = new DateTime().plusMinutes(3).toDate
+    val expired = new DateTime().plusMinutes(expired).toDate
     val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
 
     Jwts.builder()
