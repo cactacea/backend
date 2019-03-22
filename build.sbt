@@ -150,7 +150,7 @@ lazy val chat = (project in file("demo/chat"))
 
 lazy val commonSettings = Seq(
   organization := "io.github.cactacea",
-  scalaVersion  := "2.12.7",
+  scalaVersion  := "2.12.8",
   scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
   testOptions in Test += Tests.Argument("-oI"),
   concurrentRestrictions += Tags.limit(Tags.Test, 1),
@@ -196,7 +196,7 @@ lazy val redis = (project in file("addons/redis"))
 
 lazy val addonsCommonSettings = Seq(
   organization := "io.github.cactacea.addons",
-  scalaVersion  := "2.12.7",
+  scalaVersion  := "2.12.8",
   scalacOptions ++= Seq("-Ywarn-unused", "-Ywarn-unused-import", "-Xlint"),
   testOptions in Test += Tests.Argument("-oI"),
   concurrentRestrictions += Tags.limit(Tags.Test, 1),
