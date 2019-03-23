@@ -32,10 +32,27 @@ class AccountsController @Inject()(
 
   prefix(apiPrefix) {
 
+    getWithPermission("/accounts")(Permissions.basic) { o =>
+      o.summary("Find accounts")
+        .tag(sessionTag)
+        .operationId("findAccounts")
+        .request[GetAccounts]
+        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+
+    } { request: GetAccounts =>
+      accountsService.find(
+        request.accountName,
+        request.since,
+        request.offset.getOrElse(0),
+        request.count.getOrElse(20),
+        SessionContext.id
+      )
+    }
+
     getWithPermission("/accounts/:id")(Permissions.basic) { o =>
       o.summary("Get information about a account")
         .tag(accountsTag)
-        .operationId("find")
+        .operationId("findAccount")
         .request[GetAccount]
         .responseWith[Account](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -49,7 +66,7 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id/status")(Permissions.basic) { o =>
       o.summary("Get account on")
         .tag(accountsTag)
-        .operationId("findStatus")
+        .operationId("findAccountStatus")
         .request[GetAccountStatus]
         .responseWith[AccountStatus](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -63,7 +80,7 @@ class AccountsController @Inject()(
     putWithPermission("/accounts/:id/display_name")(Permissions.relationships) { o =>
       o.summary("Change display name to session account")
         .tag(accountsTag)
-        .operationId("updateDisplayName")
+        .operationId("updateAccountDisplayName")
         .request[PutAccountDisplayName]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -79,7 +96,7 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id/feeds")(Permissions.basic) { o =>
       o.summary("Get feeds list a account posted")
         .tag(accountsTag)
-        .operationId("findFeeds")
+        .operationId("findAccountFeeds")
         .request[GetAccountFeeds]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -96,7 +113,7 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id/likes")(Permissions.basic) { o =>
       o.summary("Get account's liked feeds")
         .tag(accountsTag)
-        .operationId("findLikes")
+        .operationId("findAccountFeedsLiked")
         .request[GetLikes]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -113,7 +130,7 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id/followers")(Permissions.followerList) { o =>
       o.summary("Get accounts list a account is followed by")
         .tag(accountsTag)
-        .operationId("findFollowers")
+        .operationId("findAccountFollowers")
         .request[GetFollowers]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -130,7 +147,7 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id/friends")(Permissions.followerList) { o =>
       o.summary("Get a account's friends list")
         .tag(accountsTag)
-        .operationId("findFriends")
+        .operationId("findAccountFriends")
         .request[GetFriends]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -148,7 +165,7 @@ class AccountsController @Inject()(
     postWithPermission("/accounts/:accountId/groups/:groupId/join")(Permissions.groups) { o =>
       o.summary("Join a account in a group")
         .tag(accountsTag)
-        .operationId("join")
+        .operationId("joinAccount")
         .request[PostAccountJoinGroup]
         .responseWith(Status.Ok.code, Status.NoContent.reason)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound, AccountNotFound))))
@@ -163,7 +180,7 @@ class AccountsController @Inject()(
     postWithPermission("/accounts/:accountId/groups/:groupId/leave")(Permissions.groups) { o =>
       o.summary("Leave a account from a group")
         .tag(accountsTag)
-        .operationId("leave")
+        .operationId("leaveAccount")
         .request[PostAccountJoinGroup]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
@@ -179,7 +196,7 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id/group")(Permissions.basic) { o =>
       o.summary("Get a direct message group to a account")
         .tag(accountsTag)
-        .operationId("findGroup")
+        .operationId("findAccountGroup")
         .request[GetAccountGroup]
         .responseWith[Group](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -194,7 +211,7 @@ class AccountsController @Inject()(
     getWithPermission("/accounts/:id/groups")(Permissions.basic) { o =>
       o.summary("Get groups list a account groupJoined")
         .tag(accountsTag)
-        .operationId("findGroups")
+        .operationId("findAccountGroups")
         .request[GetAccountGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
@@ -212,7 +229,7 @@ class AccountsController @Inject()(
     postWithPermission("/accounts/:id/reports")(Permissions.reports) { o =>
       o.summary("Report a account")
         .tag(accountsTag)
-        .operationId("report")
+        .operationId("reportAccount")
         .request[PostAccountReport]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))

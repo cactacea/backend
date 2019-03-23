@@ -80,7 +80,7 @@ class MessagesController @Inject()(
     deleteWithPermission("/messages")(Permissions.messages) { o =>
       o.summary("Delete messages form a group")
         .tag(messagesTag)
-        .operationId("delete")
+        .operationId("deleteMessage")
         .request[DeleteMessages]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: DeleteMessages =>

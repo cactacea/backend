@@ -26,7 +26,7 @@ class CommentLikesController @Inject()(
     getWithPermission("/comments/:id/likes")(Permissions.basic) { o =>
       o.summary("Get accounts list who liked on a comment")
         .tag(commentLikesTag)
-        .operationId("findLikes")
+        .operationId("findAccountsLikedComment")
         .request[GetCommentLikes]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Array(CommentNotFound))))
@@ -43,7 +43,7 @@ class CommentLikesController @Inject()(
     postWithPermission("/comments/:id/likes")(Permissions.commentLikes) { o =>
       o.summary("Set a like on a comment")
         .tag(commentLikesTag)
-        .operationId("like")
+        .operationId("likeComment")
         .request[PostCommentLike]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CommentAlreadyLiked))))
@@ -58,7 +58,7 @@ class CommentLikesController @Inject()(
     deleteWithPermission("/comments/:id/likes")(Permissions.comments) { o =>
       o.summary("Remove a like on a comment")
         .tag(commentLikesTag)
-        .operationId("unlike")
+        .operationId("unlikeComment")
         .request[DeleteCommentLike]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CommentNotLiked))))

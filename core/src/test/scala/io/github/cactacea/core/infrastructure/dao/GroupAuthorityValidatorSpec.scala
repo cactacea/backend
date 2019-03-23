@@ -14,9 +14,12 @@ class GroupAuthorityValidatorSpec extends DAOSpec {
     val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.friends, GroupAuthorityType.member, owner.id.toSessionId))
     val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.friends, GroupAuthorityType.member, owner.id.toSessionId))
     val groupId3 = execute(groupsDAO.create(Some("new group name3"), true, GroupPrivacyType.friends, GroupAuthorityType.owner, owner.id.toSessionId))
-    val group1 = execute(helperDAO.selectGroup(groupId1)).get
-    val group2 = execute(helperDAO.selectGroup(groupId2)).get
-    val group3 = execute(helperDAO.selectGroup(groupId3)).get
+//    val group1 = execute(helperDAO.selectGroup(groupId1)).get
+//    val group2 = execute(helperDAO.selectGroup(groupId2)).get
+//    val group3 = execute(helperDAO.selectGroup(groupId3)).get
+    execute(helperDAO.selectGroup(groupId1)).get
+    execute(helperDAO.selectGroup(groupId2)).get
+    execute(helperDAO.selectGroup(groupId3)).get
     execute(accountGroupsDAO.create(owner.id, groupId1))
     execute(accountGroupsDAO.create(owner.id, groupId2))
     execute(accountGroupsDAO.create(member.id, groupId1))

@@ -40,7 +40,7 @@ class MediumsController @Inject()(
 
       o.summary("Upload a medium")
         .tag(mediumsTag)
-        .operationId("upload")
+        .operationId("uploadMedium")
         .consumes("multipart/form-data")
         .formParam[File](name = "file", description = "Upload a medium file", true)
         .responseWith[Array[MediumCreated]](Status.Created.code, successfulMessage)
@@ -57,7 +57,7 @@ class MediumsController @Inject()(
     deleteWithPermission("/mediums/:id")(Permissions.media) { o =>
       o.summary("Delete a medium")
         .tag(mediumsTag)
-        .operationId("delete")
+        .operationId("deleteMedium")
         .request[DeleteMedium]
         .responseWith(Status.Ok.code, MediumNotFound.message)
 

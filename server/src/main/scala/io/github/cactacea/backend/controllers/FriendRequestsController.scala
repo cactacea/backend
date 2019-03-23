@@ -60,7 +60,7 @@ class FriendRequestsController @Inject()(
   postWithPermission("/requests/:id/accept")(Permissions.friendRequests) { o =>
     o.summary("Accept a friend request")
       .tag(friendRequestsTag)
-      .operationId("accept")
+      .operationId("acceptRequest")
       .request[PostAcceptFriendRequest]
       .responseWith(Status.Ok.code, successfulMessage)
       .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FriendRequestNotFound))))
@@ -74,7 +74,7 @@ class FriendRequestsController @Inject()(
   postWithPermission("/requests/:id/reject")(Permissions.friendRequests) { o =>
     o.summary("Reject a friend request")
       .tag(friendRequestsTag)
-      .operationId("reject")
+      .operationId("rejectRequest")
       .request[PostRejectFriendRequest]
       .responseWith(Status.Ok.code, successfulMessage)
       .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FriendRequestNotFound))))
