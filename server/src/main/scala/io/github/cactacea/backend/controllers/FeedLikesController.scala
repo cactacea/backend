@@ -27,7 +27,7 @@ class FeedLikesController @Inject()(
     getWithPermission("/feeds/:id/likes")(Permissions.basic) { o =>
       o.summary("Get accounts list who set a like to a feed")
         .tag(feedsLikeTag)
-        .operationId("findLikes")
+        .operationId("findAccountsLikedFeed")
         .request[GetFeedLikes]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
@@ -44,7 +44,7 @@ class FeedLikesController @Inject()(
     postWithPermission("/feeds/:id/likes")(Permissions.feedLikes) { o =>
       o.summary("Set a like on a feed")
         .tag(feedsLikeTag)
-        .operationId("like")
+        .operationId("likeFeed")
         .request[PostFeedLike]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(FeedAlreadyLiked))))
@@ -59,7 +59,7 @@ class FeedLikesController @Inject()(
     deleteWithPermission("/feeds/:id/likes")(Permissions.feeds) { o =>
       o.summary("Remove a like on a feed")
         .tag(feedsLikeTag)
-        .operationId("unlike")
+        .operationId("unlikeFeed")
         .request[DeleteFeedLike]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(FeedNotLiked))))

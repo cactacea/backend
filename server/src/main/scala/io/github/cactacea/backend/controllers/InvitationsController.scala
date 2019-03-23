@@ -27,7 +27,7 @@ class InvitationsController @Inject()(
     postWithPermission("/groups/:id/invitations")(Permissions.groupInvitations) { o =>
       o.summary("Post a groupInvitation to some accounts")
         .tag(invitationsTag)
-        .operationId("create")
+        .operationId("inviteAccounts")
         .request[PostInvitationAccounts]
         .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -42,7 +42,7 @@ class InvitationsController @Inject()(
     postWithPermission("/accounts/:accountId/groups/:groupId/invitations")(Permissions.groupInvitations) { o =>
       o.summary("Create a groupInvitation to a account")
         .tag(accountsTag)
-        .operationId("invite")
+        .operationId("inviteAccount")
         .request[PostInvitationAccount]
         .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
@@ -57,7 +57,7 @@ class InvitationsController @Inject()(
     postWithPermission("/invitations/:id/accept")(Permissions.groupInvitations) { o =>
       o.summary("Accept a groupInvitation")
         .tag(invitationsTag)
-        .operationId("accept")
+        .operationId("acceptInvitation")
         .request[PostAcceptInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
@@ -72,7 +72,7 @@ class InvitationsController @Inject()(
     postWithPermission("/invitations/:id/reject")(Permissions.groupInvitations) { o =>
       o.summary("Reject a groupInvitation")
         .tag(invitationsTag)
-        .operationId("reject")
+        .operationId("rejectInvitation")
         .request[PostRejectInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupInvitationNotFound))))

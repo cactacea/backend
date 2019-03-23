@@ -43,7 +43,7 @@ class FollowingsController @Inject()(
     postWithPermission("/accounts/:id/follow")(Permissions.relationships) { o =>
       o.summary("Follow a account")
         .tag(accountsTag)
-        .operationId("follow")
+        .operationId("followAccount")
         .request[PostFollow]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyFollowed))))
@@ -58,7 +58,7 @@ class FollowingsController @Inject()(
     deleteWithPermission("/accounts/:id/follow")(Permissions.relationships) { o =>
       o.summary("UnFollow a account")
         .tag(accountsTag)
-        .operationId("unfollow")
+        .operationId("unfollowAccount")
         .request[DeleteFollow]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotFollowed))))

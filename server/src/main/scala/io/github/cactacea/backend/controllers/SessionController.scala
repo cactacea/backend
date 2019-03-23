@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.models.requests.account.{GetAccountName, GetAccounts}
+import io.github.cactacea.backend.models.requests.account.GetAccountName
 import io.github.cactacea.backend.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
 import io.github.cactacea.backend.models.requests.group.{GetSessionGroups, GetSessionInvitations}
 import io.github.cactacea.backend.models.requests.session._
@@ -149,23 +149,6 @@ class SessionController @Inject()(
       ).map(_ => response.ok)
     }
 
-    getWithPermission("/session/accounts")(Permissions.basic) { o =>
-      o.summary("Search accounts")
-        .tag(sessionTag)
-        .operationId("findAccounts")
-        .request[GetAccounts]
-        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-
-    } { request: GetAccounts =>
-      accountsService.find(
-        request.accountName,
-        request.since,
-        request.offset.getOrElse(0),
-        request.count.getOrElse(20),
-        SessionContext.id
-      )
-    }
-
     getWithPermission("/session/blocks")(Permissions.basic) { o =>
       o.summary("Get blocking accounts list")
         .tag(blocksTag)
@@ -184,7 +167,7 @@ class SessionController @Inject()(
     getWithPermission("/session/feeds")(Permissions.basic) { o =>
       o.summary("Get feeds list session account posted")
         .tag(sessionTag)
-        .operationId("findFeeds")
+        .operationId("findSessionFeeds")
         .request[GetSessionFeeds]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFeeds =>
@@ -199,7 +182,7 @@ class SessionController @Inject()(
     getWithPermission("/session/likes")(Permissions.basic) { o =>
       o.summary("Get feeds list session account set a like")
         .tag(sessionTag)
-        .operationId("findLikes")
+        .operationId("findSessionFeedsLiked")
         .request[GetSessionLikedFeeds]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetSessionLikedFeeds =>
@@ -214,7 +197,7 @@ class SessionController @Inject()(
     getWithPermission("/session/following")(Permissions.followerList) { o =>
       o.summary("Get accounts list session account followed")
         .tag(sessionTag)
-        .operationId("findFollowing")
+        .operationId("findSessionFollowing")
         .request[GetSessionFollowings]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollowings =>
@@ -229,7 +212,7 @@ class SessionController @Inject()(
     getWithPermission("/session/followers")(Permissions.followerList) { o =>
       o.summary("Get accounts list session account is followed by")
         .tag(sessionTag)
-        .operationId("findFollowers")
+        .operationId("findSessionFollowers")
         .request[GetSessionFollowers]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollowers =>
@@ -244,7 +227,7 @@ class SessionController @Inject()(
     getWithPermission("/session/friends")(Permissions.followerList) { o =>
       o.summary("Get friends list")
         .tag(sessionTag)
-        .operationId("findFriends")
+        .operationId("findSessionFriends")
         .request[GetSessionFriends]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     }  { request: GetSessionFriends =>
@@ -260,7 +243,7 @@ class SessionController @Inject()(
     getWithPermission("/session/groups")(Permissions.basic) { o =>
       o.summary("Get groups list session account groupJoined")
         .tag(sessionTag)
-        .operationId("findGroups")
+        .operationId("findSessionGroups")
         .request[GetSessionGroups]
         .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
     } { request: GetSessionGroups =>
