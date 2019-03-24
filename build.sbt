@@ -361,7 +361,7 @@ val password = sys.env.get("CACTACEA_MASTER_DB_PASSWORD").getOrElse("cactacea")
 val databaseName = sys.env.get("CACTACEA_MASTER_DB_NAME").getOrElse("cactacea")
 val hostName = sys.env.get("CACTACEA_MASTER_DB_HOSTNAME").getOrElse("localhost")
 val port = sys.env.get("CACTACEA_MASTER_DB_PORT").getOrElse("3306")
-val options = sys.env.get("CACTACEA_MASTER_DB_OPTIONS").getOrElse("")
+val options = sys.env.get("CACTACEA_MASTER_DB_OPTIONS").getOrElse("?verifyServerCertificate=false&useSSL=false")
 
 val migrationSettings = Seq(
   flywayUser := user,
