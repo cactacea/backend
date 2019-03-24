@@ -10,7 +10,7 @@ position: 1
 `build.sbt`に下記の依存関係を追加します。
 
 ```
-"io.github.cactacea" %% "server" % "19.3.4"
+"io.github.cactacea" %% "server" % "19.3.5"
 ```
 
 `Maven`による表記:
@@ -19,7 +19,7 @@ position: 1
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>server_2.12</artifactId>
-  <version>19.3.4</version>
+  <version>19.3.5</version>
 </dependency>
 ```
 
