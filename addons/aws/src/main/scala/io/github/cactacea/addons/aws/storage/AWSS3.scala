@@ -22,7 +22,7 @@ private[aws] object AWSS3 {
 
   implicit val region = Region0(AWSConfig.s3.region)
   implicit val s3 = {
-    val s3 = S3.at(region)
+    val s3 = S3(AWSConfig.s3.awsAccessKeyId, AWSConfig.s3.awsSecretAccessKey)
     endpoint.foreach(s3.setEndpoint(_))
     s3.setS3ClientOptions(
       S3ClientOptions.builder

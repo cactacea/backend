@@ -11,8 +11,8 @@ private[aws] object AWSConfig extends DurationReader {
   private val s3Config = config.as[AWSS3Config]("s3")
 
   object s3 { // scalastyle:ignore
-    lazy val awsAccessKeyId = s3Config.bucketName.getOrElse("")
-    lazy val awsSecretAccessKey = s3Config.bucketName.getOrElse("")
+    lazy val awsAccessKeyId = s3Config.awsAccessKeyId.getOrElse("")
+    lazy val awsSecretAccessKey = s3Config.awsSecretAccessKey.getOrElse("")
     lazy val bucketName = s3Config.bucketName.getOrElse("cactacea")
     lazy val region = s3Config.region.getOrElse("us-east-1")
     lazy val endpoint = s3Config.endpoint
