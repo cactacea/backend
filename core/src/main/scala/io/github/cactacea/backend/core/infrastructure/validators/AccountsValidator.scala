@@ -27,6 +27,15 @@ class AccountsValidator @Inject()(
     })
   }
 
+  def notExist(accountName: String, sessionId: SessionId): Future[Unit] = {
+    accountsDAO.exist(accountName, sessionId).flatMap(_ match {
+      case false =>
+        Future.Unit
+      case true =>
+        Future.exception(CactaceaException(AccountNameAlreadyUsed))
+    })
+  }
+
   def exist(accountId: AccountId): Future[Unit] = {
     accountsDAO.exist(accountId).flatMap(_ match {
       case true =>

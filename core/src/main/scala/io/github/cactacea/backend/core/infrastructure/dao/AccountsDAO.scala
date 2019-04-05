@@ -95,6 +95,18 @@ class AccountsDAO @Inject()(
     run(q).map(_ => Unit)
   }
 
+  def updatePassword(newPassword: String, sessionId: SessionId): Future[Unit] = {
+    val accountId = sessionId.toAccountId
+    val hashedNewPassword = hashService.hash(newPassword)
+    val q = quote {
+      query[Accounts]
+        .filter(_.id == lift(accountId))
+        .update(
+          _.password -> lift(hashedNewPassword)
+        )
+    }
+    run(q).map(_ => Unit)
+  }
 
   def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
@@ -124,6 +136,17 @@ class AccountsDAO @Inject()(
     val q = quote {
       query[Accounts]
         .filter(_.accountName == lift(accountName))
+        .nonEmpty
+    }
+    run(q)
+  }
+
+  def exist(accountName: String, sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[Accounts]
+        .filter(_.accountName == lift(accountName))
+        .filter(_.id != lift(by))
         .nonEmpty
     }
     run(q)

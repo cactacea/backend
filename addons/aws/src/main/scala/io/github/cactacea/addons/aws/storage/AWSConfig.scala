@@ -15,16 +15,14 @@ private[aws] object AWSConfig extends DurationReader {
     lazy val awsSecretAccessKey = s3Config.awsSecretAccessKey.getOrElse("")
     lazy val bucketName = s3Config.bucketName.getOrElse("cactacea")
     lazy val region = s3Config.region.getOrElse("us-east-1")
-    lazy val endpoint = s3Config.endpoint
+    lazy val endpoint = s3Config.endpoint.getOrElse("http://localhost:4572")
   }
 
   println("---------------------------------------------------------------")
   println(s"s3.awsAccessKeyId = ${s3.awsAccessKeyId}")
   println(s"s3.awsSecretAccessKey = ${s3.awsSecretAccessKey}")
   println(s"s3.region = ${s3.region}")
-  s3.endpoint.foreach({ endpoint =>
-    println(s"s3.endpoint = ${endpoint}")
-  })
+  println(s"s3.endpoint = ${s3.endpoint}")
   println(s"s3.bucketName = ${s3.bucketName}")
   println("---------------------------------------------------------------")
   println("")
