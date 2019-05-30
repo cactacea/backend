@@ -3,7 +3,7 @@ package io.github.cactacea.finachat
 import java.net.InetSocketAddress
 
 import com.twitter.app.Flag
-import com.twitter.conversions.time._
+import com.twitter.conversions.DurationOps._
 import com.twitter.finagle.{ListeningServer, NullServer, Service}
 import com.twitter.inject.annotations.Lifecycle
 import com.twitter.inject.conversions.string._

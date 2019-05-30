@@ -3,12 +3,12 @@ package io.github.cactacea.backend.core.util.configs
 import java.net.InetAddress
 
 import com.twitter.util.Duration
-import com.twitter.conversions.time._
+import com.twitter.conversions.DurationOps._
 import com.typesafe.config.ConfigFactory
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
-import com.twitter.conversions.storage._
+import com.twitter.conversions.StorageUnitOps._
 
 object Config extends DurationReader {
 

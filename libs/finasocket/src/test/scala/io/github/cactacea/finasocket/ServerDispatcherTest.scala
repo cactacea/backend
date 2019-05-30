@@ -1,7 +1,7 @@
 package io.github.cactacea.finasocket
 
 import com.twitter.concurrent.AsyncQueue
-import com.twitter.conversions.time._
+import com.twitter.conversions.DurationOps._
 import com.twitter.finagle.stats.DefaultStatsReceiver
 import com.twitter.finagle.transport.QueueTransport
 import com.twitter.finagle.{Service, Status}

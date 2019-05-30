@@ -6,7 +6,7 @@ import java.util.UUID
 import java.util.concurrent.Executors
 
 import com.twitter.concurrent.NamedPoolThreadFactory
-import com.twitter.conversions.storage._
+import com.twitter.conversions.StorageUnitOps._
 import com.twitter.finagle.http.{Request, Response, Status, Version}
 import com.twitter.finatra.http.request.RequestUtils
 import com.twitter.util.{Future, FuturePool}

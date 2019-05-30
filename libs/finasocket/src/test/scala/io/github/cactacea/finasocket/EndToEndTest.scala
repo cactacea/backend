@@ -3,7 +3,7 @@ package io.github.cactacea.finasocket
 import java.net.{InetSocketAddress, SocketAddress, URI}
 
 import com.twitter.concurrent.AsyncStream
-import com.twitter.conversions.time._
+import com.twitter.conversions.DurationOps._
 import com.twitter.finagle.Service
 import com.twitter.finagle.param.Stats
 import com.twitter.finagle.stats.{NullStatsReceiver, StatsReceiver}
