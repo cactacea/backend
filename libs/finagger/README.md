@@ -9,14 +9,14 @@ Swagger support for Finatra
 To get started, add a dependency on finagger depending if you are using a server based on Finatra and swagger.
 
 ```
-"io.github.cactacea" %% "finagger" % "19.3.8"
+"io.github.cactacea" %% "finagger" % "19.5.0"
 ```
 Or similarily with Maven:
 ```
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>finagger_2.12</artifactId>
-  <version>19.3.8</version>
+  <version>19.5.0</version>
 </dependency>
 ```
 

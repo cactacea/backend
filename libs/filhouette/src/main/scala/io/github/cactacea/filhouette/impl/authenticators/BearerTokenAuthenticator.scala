@@ -17,7 +17,7 @@ package io.github.cactacea.filhouette.impl.authenticators
 
 import org.joda.time.DateTime
 import com.twitter.finagle.http.{Request, Response}
-import com.twitter.conversions.time._
+import com.twitter.conversions.DurationOps._
 import com.twitter.util.{Duration, Future}
 import io.github.cactacea.filhouette.api.Authenticator.Implicits._
 import io.github.cactacea.filhouette.api.exceptions._

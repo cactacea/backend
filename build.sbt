@@ -112,7 +112,7 @@ lazy val api = (project in file("demo/api"))
     version in Docker := ( version in ThisBuild ).value,
     maintainer in Docker := "Cactacea",
     packageName in Docker := "api",
-    dockerBaseImage := "adoptopenjdk/openjdk10",
+    dockerBaseImage := "adoptopenjdk/openjdk8",
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea"),
     dockerUpdateLatest := true
@@ -367,14 +367,14 @@ val migrationSettings = Seq(
   flywayUser := user,
   flywayPassword := password,
   flywayUrl := s"jdbc:mysql://${hostName}:${port}/${databaseName}${options}",
-  flywayPlaceholders := Map("schema" -> databaseName),
-  flywayLocations := Seq("filesystem:core/src/main/resources/db/migration/cactacea"),
+  flywayPlaceholders := Map("schema" -> databaseName, "hostName" -> "localhost:9000"),
+  flywayLocations := Seq("filesystem:core/src/main/resources/db/migration/cactacea", "filesystem:demo/api/src/main/resources/db/migration/cactacea"),
 
   flywayUser in Test := user,
   flywayPassword in Test:= password,
   flywayUrl in Test:= s"jdbc:mysql://${hostName}:${port}/${databaseName}${options}",
-  flywayPlaceholders in Test:= Map("schema" -> databaseName),
-  flywayLocations in Test:= Seq("filesystem:core/src/main/resources/db/migration/cactacea"),
+  flywayPlaceholders in Test := Map("schema" -> databaseName, "hostName" -> "localhost:9000"),
+  flywayLocations in Test := Seq("filesystem:core/src/main/resources/db/migration/cactacea", "filesystem:demo/api/src/main/resources/db/migration/cactacea"),
 
   libraryDependencies ++= Dependencies.mysql
 )

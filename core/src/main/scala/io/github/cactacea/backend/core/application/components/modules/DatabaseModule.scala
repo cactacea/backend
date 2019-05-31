@@ -6,7 +6,7 @@ import com.google.inject.{Provides, Singleton}
 import com.twitter.finagle.client.DefaultPool
 import com.twitter.finagle.{Mysql, mysql}
 import com.twitter.inject.TwitterModule
-import com.twitter.conversions.time._
+import com.twitter.conversions.DurationOps._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.util.configs.Config
 

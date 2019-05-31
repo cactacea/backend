@@ -16,7 +16,7 @@
 package io.github.cactacea.filhouette.impl.providers.state
 
 import com.google.inject.Inject
-import com.twitter.conversions.time._
+import com.twitter.conversions.DurationOps._
 import com.twitter.finagle.http.{Cookie, Request, Response}
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util._
