@@ -3,7 +3,7 @@ package io.github.cactacea.backend
 import com.twitter.finatra.http.routing.HttpRouter
 import io.cactacea.finagger.DocsController
 import io.github.cactacea.backend.utils.swagger.CactaceaSwaggerModule
-import io.github.cactacea.backend.utils.warmups.QueueHandler
+import io.github.cactacea.backend.utils.warmups.CactaceaQueueHandler
 
 class APIServer extends CactaceaServer {
 
@@ -18,7 +18,7 @@ class APIServer extends CactaceaServer {
   override def warmup() {
     handle[MigrationHandler]()
     handle[ImageSetupHandler]()
-    handle[QueueHandler]()
+    handle[CactaceaQueueHandler]()
   }
 
 }

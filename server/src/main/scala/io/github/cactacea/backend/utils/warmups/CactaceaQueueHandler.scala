@@ -5,7 +5,7 @@ import com.twitter.inject.utils.Handler
 import io.github.cactacea.backend.core.application.components.interfaces.QueueService
 
 @Singleton
-class QueueHandler @Inject()(queueService: QueueService) extends Handler {
+class CactaceaQueueHandler @Inject()(queueService: QueueService) extends Handler {
 
   override def handle(): Unit = {
     queueService.start()

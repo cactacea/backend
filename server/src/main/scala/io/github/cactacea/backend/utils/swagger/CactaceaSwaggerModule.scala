@@ -1,6 +1,7 @@
 package io.github.cactacea.backend.utils.swagger
 
 import com.google.inject.Provides
+import io.cactacea.finagger
 import io.cactacea.finagger.SwaggerModule
 import io.github.cactacea.backend.CactaceaBuildInfo
 import io.github.cactacea.backend.core.util.configs.Config
@@ -17,7 +18,7 @@ object CactaceaSwaggerModule extends SwaggerModule {
       .description("Cactacea / Cactacea backend API for web and mobile applications")
       .version(CactaceaBuildInfo.version)
 
-    val swaggerDefine = CactaceaSwagger.info(info)
+    val swaggerDefine = finagger.Swagger.info(info)
 
     // Model defines
     swaggerDefine.addDefinition("CactaceaError", errorResponseScheme("CactaceaError"))

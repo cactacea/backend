@@ -9,7 +9,7 @@ import com.twitter.finatra.validation.ErrorCode._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 
 @Singleton
-class CaseClassExceptionMapper @Inject()(response: ResponseBuilder)
+class CactaceaCaseClassExceptionMapper @Inject()(response: ResponseBuilder)
   extends ExceptionMapper[CaseClassMappingException] {
 
   override def toResponse(request: Request, e: CaseClassMappingException): Response =

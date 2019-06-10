@@ -1,11 +1,10 @@
-package io.github.cactacea.backend.utils.swagger
+package io.cactacea.finagger
 
-import io.cactacea.finagger.{ParadoxicalWrappedValueModelResolver, Resolvers, WrappedValueModelResolver}
 import io.swagger.converter.{ModelConverter, ModelConverters}
 import io.swagger.models.Swagger
 import io.swagger.scala.converter.SwaggerScalaModelConverter
 
-object CactaceaSwagger extends Swagger {
+object Swagger extends Swagger {
 
   swaggerConverters.reverse.foreach(ModelConverters.getInstance().addConverter)
 

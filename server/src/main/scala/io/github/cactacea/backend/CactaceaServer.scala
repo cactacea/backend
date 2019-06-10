@@ -5,7 +5,7 @@ import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceI
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.utils.filters._
-import io.github.cactacea.backend.utils.warmups.{CactaceaDatabaseMigrationHandler, QueueHandler}
+import io.github.cactacea.backend.utils.warmups.{CactaceaDatabaseMigrationHandler, CactaceaQueueHandler}
 import io.github.cactacea.utils.{CorsFilter, ETagFilter}
 
 class CactaceaServer extends BaseServer {
@@ -46,7 +46,7 @@ class CactaceaServer extends BaseServer {
 
   override def warmup() {
     handle[CactaceaDatabaseMigrationHandler]()
-    handle[QueueHandler]()
+    handle[CactaceaQueueHandler]()
   }
 
 }
