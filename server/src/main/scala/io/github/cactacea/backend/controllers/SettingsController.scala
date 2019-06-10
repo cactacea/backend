@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
 import io.github.cactacea.backend.models.requests.setting.{PostActiveStatus, PostDevicePushToken, PutNotificationSetting}
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.auth.CactaceaContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+
 import io.swagger.models.Swagger
 
 @Singleton
@@ -17,7 +17,7 @@ class SettingsController @Inject()(
                                     s: Swagger,
                                     settingsService: SettingsService,
                                     deviceTokenService: DevicesService
-                                  ) extends CactaceaSwaggerController with OAuthController {
+                                  ) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
@@ -25,7 +25,7 @@ class SettingsController @Inject()(
 
   prefix(apiPrefix) {
 
-    getWithPermission("/session/push_notification") (Permissions.basic) { o =>
+    getWithDoc("/session/push_notification")  { o =>
       o.summary("Get push notification settings")
         .tag(tagName)
         .operationId("findPushNotificationSettings")
@@ -36,7 +36,7 @@ class SettingsController @Inject()(
       )
     }
 
-    putWithPermission("/session/push_notification") (Permissions.basic) { o =>
+    putWithDoc("/session/push_notification")  { o =>
       o.summary("Update ths push notification settings")
         .tag(tagName)
         .operationId("updatePushNotificationSettings")
@@ -55,7 +55,7 @@ class SettingsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/session/push_token") (Permissions.basic) { o =>
+    postWithDoc("/session/push_token")  { o =>
       o.summary("Update device push token")
         .tag(tagName)
         .operationId("updatePushToken")
@@ -69,7 +69,7 @@ class SettingsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/session/status") (Permissions.basic) { o =>
+    postWithDoc("/session/status")  { o =>
       o.summary("Update device status")
         .tag(tagName)
         .operationId("updateDeviceStatus")

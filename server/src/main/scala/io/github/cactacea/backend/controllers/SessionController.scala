@@ -15,7 +15,7 @@ import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.auth.CactaceaContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+
 import io.swagger.models.Swagger
 
 
@@ -35,13 +35,13 @@ class SessionController @Inject()(
                                    sessionService: SessionsService,
                                    friendRequestsService: FriendRequestsService,
                                    blocksService: BlocksService
-                                 ) extends CactaceaSwaggerController with OAuthController {
+                                 ) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/session")(Permissions.basic) { o =>
+    getWithDoc("/session") { o =>
       o.summary("Get basic information about session account")
         .tag(sessionTag)
         .operationId("findSession")
@@ -53,7 +53,7 @@ class SessionController @Inject()(
     }
 
 
-    deleteWithPermission("/session")(Permissions.basic) { o =>
+    deleteWithDoc("/session") { o =>
       o.summary("Sign out")
         .tag(sessionTag)
         .operationId("signOut")
@@ -65,7 +65,7 @@ class SessionController @Inject()(
       ).map(_ => response.ok)
     }
 
-    getWithPermission("/session/account_name/:accountName")(Permissions.basic) { o =>
+    getWithDoc("/session/account_name/:accountName") { o =>
       o.summary("Confirm account name exist")
         .tag(sessionTag)
         .operationId("existAccountName")
@@ -77,7 +77,7 @@ class SessionController @Inject()(
       ).map(r => response.ok(AccountNameNotExists(request.accountName, r)))
     }
 
-    putWithPermission("/session/account_name")(Permissions.basic) { o =>
+    putWithDoc("/session/account_name") { o =>
       o.summary("Update the account name")
         .tag(sessionTag)
         .operationId("updateAccountName")
@@ -92,7 +92,7 @@ class SessionController @Inject()(
     }
 
 
-    putWithPermission("/session/password")(Permissions.basic) { o =>
+    putWithDoc("/session/password") { o =>
       o.summary("Update the password")
         .tag(sessionTag)
         .operationId("updatePassword")
@@ -107,7 +107,7 @@ class SessionController @Inject()(
     }
 
 
-    putWithPermission("/session/profile")(Permissions.basic) { o =>
+    putWithDoc("/session/profile") { o =>
       o.summary("Update the profile")
         .tag(sessionTag)
         .operationId("updateProfile")
@@ -124,7 +124,7 @@ class SessionController @Inject()(
       ).map(_ => response.ok)
     }
 
-    putWithPermission("/session/profile_image")(Permissions.basic) { o =>
+    putWithDoc("/session/profile_image") { o =>
       o.summary("Update the profile image")
         .tag(sessionTag)
         .operationId("updateProfileImage")
@@ -138,7 +138,7 @@ class SessionController @Inject()(
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/session/profile_image")(Permissions.basic) { o =>
+    deleteWithDoc("/session/profile_image") { o =>
       o.summary("Remove the profile image")
         .tag(sessionTag)
         .operationId("deleteProfileImage")
@@ -149,7 +149,7 @@ class SessionController @Inject()(
       ).map(_ => response.ok)
     }
 
-    getWithPermission("/session/blocks")(Permissions.basic) { o =>
+    getWithDoc("/session/blocks") { o =>
       o.summary("Get blocking accounts list")
         .tag(blocksTag)
         .operationId("findBlockingAccounts")
@@ -164,7 +164,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/feeds")(Permissions.basic) { o =>
+    getWithDoc("/session/feeds") { o =>
       o.summary("Get feeds list session account posted")
         .tag(sessionTag)
         .operationId("findSessionFeeds")
@@ -179,7 +179,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/likes")(Permissions.basic) { o =>
+    getWithDoc("/session/likes") { o =>
       o.summary("Get feeds list session account set a like")
         .tag(sessionTag)
         .operationId("findSessionFeedsLiked")
@@ -194,7 +194,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/following")(Permissions.followerList) { o =>
+    getWithDoc("/session/following") { o =>
       o.summary("Get accounts list session account followed")
         .tag(sessionTag)
         .operationId("findSessionFollowing")
@@ -209,7 +209,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/followers")(Permissions.followerList) { o =>
+    getWithDoc("/session/followers") { o =>
       o.summary("Get accounts list session account is followed by")
         .tag(sessionTag)
         .operationId("findSessionFollowers")
@@ -224,7 +224,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/friends")(Permissions.followerList) { o =>
+    getWithDoc("/session/friends") { o =>
       o.summary("Get friends list")
         .tag(sessionTag)
         .operationId("findSessionFriends")
@@ -240,7 +240,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/groups")(Permissions.basic) { o =>
+    getWithDoc("/session/groups") { o =>
       o.summary("Get groups list session account groupJoined")
         .tag(sessionTag)
         .operationId("findSessionGroups")
@@ -256,7 +256,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/hides")(Permissions.basic) { o =>
+    getWithDoc("/session/hides") { o =>
       o.summary("Get hidden groups list session account groupJoined")
         .tag(sessionTag)
         .operationId("findHiddenGroups")
@@ -273,7 +273,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/invitations")(Permissions.basic) { o =>
+    getWithDoc("/session/invitations") { o =>
       o.summary("Get invitations list session account received")
         .tag(sessionTag)
         .operationId("findGroupInvitations")
@@ -288,7 +288,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/mutes")(Permissions.basic) { o =>
+    getWithDoc("/session/mutes") { o =>
       o.summary("Get accounts list session account muted")
         .tag(sessionTag)
         .operationId("findMutingAccounts")
@@ -303,7 +303,7 @@ class SessionController @Inject()(
       )
     }
 
-    getWithPermission("/session/requests")(Permissions.basic) { o =>
+    getWithDoc("/session/requests") { o =>
       o.summary("Get friend requests list session account created or received")
         .tag(sessionTag)
         .operationId("findFriendRequests")

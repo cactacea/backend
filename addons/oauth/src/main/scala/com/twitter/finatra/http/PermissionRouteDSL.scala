@@ -1,16 +1,12 @@
 package com.twitter.finatra.http
 
 import com.twitter.finagle.http.RouteIndex
-import io.github.cactacea.backend.utils.oauth.Permission
+import io.github.cactacea.addons.oauth.Permission
 import io.swagger.models.{Operation, Swagger}
+
 import scala.collection.JavaConverters._
 
-/**
-  * To work around the accessibility of RouteDSL, this class is in "com.twitter.finatra.http" package
-  */
-object PermissionRouteDSL {
-  implicit def convert(dsl: RouteDSL)(implicit swagger: Swagger): PermissionRouteDSL = new PermissionRouteDSLWrapper(dsl)(swagger)
-}
+private class PermissionRouteDSLWrapper(override protected val dsl: RouteDSL)(implicit protected val swagger: Swagger) extends PermissionRouteDSL
 
 trait PermissionRouteDSL extends SwaggerRouteDSL {
 
@@ -134,4 +130,9 @@ trait PermissionRouteDSL extends SwaggerRouteDSL {
 
 }
 
-private class PermissionRouteDSLWrapper(override protected val dsl: RouteDSL)(implicit protected val swagger: Swagger) extends PermissionRouteDSL
+/**
+  * To work around the accessibility of RouteDSL, this class is in "com.twitter.finatra.http" package
+  */
+object PermissionRouteDSL {
+  implicit def convert(dsl: RouteDSL)(implicit swagger: Swagger): PermissionRouteDSL = new PermissionRouteDSLWrapper(dsl)(swagger)
+}

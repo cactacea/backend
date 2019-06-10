@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.notification.GetNotifications
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.auth.CactaceaContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+
 import io.github.cactacea.backend.core.application.services.NotificationsService
 import io.github.cactacea.backend.core.domain.models.Notification
 import io.swagger.models.Swagger
@@ -15,13 +15,13 @@ import io.swagger.models.Swagger
 class NotificationsController @Inject()(
                                          @Flag("cactacea.api.prefix") apiPrefix: String,
                                          notificationsService: NotificationsService,
-                                         s: Swagger) extends CactaceaSwaggerController with OAuthController {
+                                         s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/notifications")(Permissions.basic) { o =>
+    getWithDoc("/notifications") { o =>
       o.summary("Search notifications")
         .tag(notificationsTag)
         .operationId("findNotifications")

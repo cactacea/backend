@@ -10,20 +10,20 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.comment._
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.auth.CactaceaContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+
 import io.swagger.models.Swagger
 
 @Singleton
 class CommentLikesController @Inject()(
                                         @Flag("cactacea.api.prefix") apiPrefix: String,
                                         commentLikesService: CommentLikesService,
-                                        s: Swagger) extends CactaceaSwaggerController with OAuthController {
+                                        s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/comments/:id/likes")(Permissions.basic) { o =>
+    getWithDoc("/comments/:id/likes") { o =>
       o.summary("Get accounts list who liked on a comment")
         .tag(commentLikesTag)
         .operationId("findAccountsLikedComment")
@@ -40,7 +40,7 @@ class CommentLikesController @Inject()(
       )
     }
 
-    postWithPermission("/comments/:id/likes")(Permissions.commentLikes) { o =>
+    postWithDoc("/comments/:id/likes") { o =>
       o.summary("Set a like on a comment")
         .tag(commentLikesTag)
         .operationId("likeComment")
@@ -55,7 +55,7 @@ class CommentLikesController @Inject()(
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/comments/:id/likes")(Permissions.comments) { o =>
+    deleteWithDoc("/comments/:id/likes") { o =>
       o.summary("Remove a like on a comment")
         .tag(commentLikesTag)
         .operationId("unlikeComment")

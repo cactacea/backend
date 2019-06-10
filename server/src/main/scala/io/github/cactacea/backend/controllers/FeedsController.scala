@@ -11,20 +11,20 @@ import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.auth.CactaceaContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+
 import io.swagger.models.Swagger
 
 @Singleton
 class FeedsController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  feedsService: FeedsService,
-                                 s: Swagger) extends CactaceaSwaggerController with OAuthController {
+                                 s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/feeds")(Permissions.basic) { o =>
+    getWithDoc("/feeds") { o =>
       o.summary("Find feeds")
         .tag(feedsTag)
         .operationId("findFeeds")
@@ -41,7 +41,7 @@ class FeedsController @Inject()(
       )
     }
 
-    postWithPermission("/feeds")(Permissions.feeds) { o =>
+    postWithDoc("/feeds") { o =>
       o.summary("Post a feed")
         .tag(feedsTag)
         .operationId("postFeed")
@@ -60,7 +60,7 @@ class FeedsController @Inject()(
       ).map(FeedCreated(_)).map(response.created(_))
     }
 
-    getWithPermission("/feeds/:id")(Permissions.basic) { o =>
+    getWithDoc("/feeds/:id") { o =>
       o.summary("Get basic information about a feed")
         .tag(feedsTag)
         .operationId("findFeed")
@@ -74,7 +74,7 @@ class FeedsController @Inject()(
       )
     }
 
-    putWithPermission("/feeds/:id")(Permissions.feeds) { o =>
+    putWithDoc("/feeds/:id") { o =>
       o.summary("Update a feed")
         .tag(feedsTag)
         .operationId("updateFeed")
@@ -94,7 +94,7 @@ class FeedsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/feeds/:id")(Permissions.feeds) { o =>
+    deleteWithDoc("/feeds/:id") { o =>
       o.summary("Delete a feed")
         .tag(feedsTag)
         .operationId("deleteFeed")
@@ -108,7 +108,7 @@ class FeedsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/feeds/:id/reports")(Permissions.reports) { o =>
+    postWithDoc("/feeds/:id/reports") { o =>
       o.summary("Report a feed")
         .tag(feedsTag)
         .operationId("reportFeed")

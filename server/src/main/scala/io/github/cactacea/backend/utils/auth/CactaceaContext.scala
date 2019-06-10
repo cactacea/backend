@@ -53,12 +53,4 @@ object CactaceaContext {
   def setDeviceType(deviceType: DeviceType): Unit = localDeviceType.update(deviceType)
   def clearDeviceType(): Unit = localDeviceType.clear()
 
-  private[this] val localPermissions = new Local[Int]
-  def permissions: Int = localPermissions() match {
-    case Some(permissions) => permissions
-    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
-  }
-  def setPermissions(permissions: Int): Unit = localPermissions.update(permissions)
-  def clearPermissions(): Unit = localPermissions.clear()
-
 }

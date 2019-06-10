@@ -10,20 +10,20 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.auth.CactaceaContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+
 import io.swagger.models.Swagger
 
 @Singleton
 class FollowingsController @Inject()(
                                       @Flag("cactacea.api.prefix") apiPrefix: String,
                                       followingsService: FollowingsService,
-                                      s: Swagger) extends CactaceaSwaggerController with OAuthController {
+                                      s: Swagger) extends CactaceaSwaggerController {
 
   protected implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/accounts/:id/following")(Permissions.followerList) { o =>
+    getWithDoc("/accounts/:id/following") { o =>
       o.summary("Get accounts list a account following")
         .tag(accountsTag)
         .operationId("findFollowing")
@@ -40,7 +40,7 @@ class FollowingsController @Inject()(
       )
     }
 
-    postWithPermission("/accounts/:id/follow")(Permissions.relationships) { o =>
+    postWithDoc("/accounts/:id/follow") { o =>
       o.summary("Follow a account")
         .tag(accountsTag)
         .operationId("followAccount")
@@ -55,7 +55,7 @@ class FollowingsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/accounts/:id/follow")(Permissions.relationships) { o =>
+    deleteWithDoc("/accounts/:id/follow") { o =>
       o.summary("UnFollow a account")
         .tag(accountsTag)
         .operationId("unfollowAccount")

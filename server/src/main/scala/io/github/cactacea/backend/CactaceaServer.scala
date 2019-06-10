@@ -5,7 +5,6 @@ import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceI
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.controllers._
 import io.github.cactacea.backend.utils.filters._
-import io.github.cactacea.backend.utils.oauth.OAuthFilter
 import io.github.cactacea.backend.utils.warmups.{CactaceaDatabaseMigrationHandler, QueueHandler}
 import io.github.cactacea.utils.{CorsFilter, ETagFilter}
 
@@ -24,24 +23,23 @@ class CactaceaServer extends BaseServer {
       .filter[LoggingMDCFilter[Request, Response]]
       .filter[TraceIdMDCFilter[Request, Response]]
       .filter[CommonFilters]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, AccountsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, BlocksController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, CommentsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, CommentLikesController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, FeedsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, FeedLikesController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, FriendsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, FollowingsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, GroupsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, InvitationsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, MediumsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, MessagesController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, MutesController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, FriendRequestsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, OAuthFilter, ETagFilter, CorsFilter, SessionController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, AccountsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, BlocksController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, CommentsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, CommentLikesController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, FeedsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, FeedLikesController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, FriendsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, FollowingsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, GroupsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, InvitationsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, MediumsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, MessagesController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, MutesController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, FriendRequestsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaTokenFilter, ETagFilter, CorsFilter, SettingsController]
       .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CorsFilter, SessionsController]
-      .add[CorsFilter, AuthController]
       .add[ResourcesController]
       .add[HealthController]
   }

@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.utils.oauth
+package io.github.cactacea.addons.oauth
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.oauth2._

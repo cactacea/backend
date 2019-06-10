@@ -9,8 +9,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountTer
 import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.models.responses.Authentication
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.auth.{CactaceaTokenGenerator, CactaceaContext}
-import io.github.cactacea.backend.utils.oauth.OAuthController
+import io.github.cactacea.backend.utils.auth.{CactaceaContext, CactaceaTokenGenerator}
 import io.swagger.models.Swagger
 
 @Singleton
@@ -18,7 +17,7 @@ class SessionsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     sessionService: SessionsService
-                                  ) extends CactaceaSwaggerController with OAuthController {
+                                  ) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
@@ -43,7 +42,7 @@ class SessionsController @Inject()(
       })
     }
 
-    getWithPermission("/sessions")() { o =>
+    getWithDoc("/sessions") { o =>
       o.summary("Sign in")
         .tag(sessionsTag)
         .operationId("signIn")

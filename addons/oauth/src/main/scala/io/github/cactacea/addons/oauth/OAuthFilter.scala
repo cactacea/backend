@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.utils.oauth
+package io.github.cactacea.addons.oauth
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
@@ -25,7 +25,6 @@ class OAuthFilter @Inject()(
           sessionsRepository.checkAccountStatus(auth.user.accountId.toSessionId, expiresIn).flatMap({_ =>
             CactaceaContext.setAuthenticated(true)
             CactaceaContext.setId(auth.user.accountId.toSessionId)
-            CactaceaContext.setPermissions(auth.user.permissions)
             service(request)
           })
         } handle {

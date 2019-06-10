@@ -6,8 +6,7 @@ import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.repositories.SessionsRepository
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.utils.auth.{CactaceaTokenGenerator, CactaceaContext}
-import io.github.cactacea.backend.utils.oauth.Permissions
+import io.github.cactacea.backend.utils.auth.{CactaceaContext, CactaceaTokenGenerator}
 
 @Singleton
 class CactaceaTokenFilter @Inject()(sessionsRepository: SessionsRepository) extends SimpleFilter[Request, Response] {
@@ -23,7 +22,6 @@ class CactaceaTokenFilter @Inject()(sessionsRepository: SessionsRepository) exte
             CactaceaContext.setAuthenticated(true)
             CactaceaContext.setId(auth.sessionId)
             CactaceaContext.setUdid(auth.sessionUdid)
-            CactaceaContext.setPermissions(Permissions.all)
             service(request)
           })
         })

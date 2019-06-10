@@ -1,16 +1,11 @@
-package io.github.cactacea.backend.swagger
+package io.github.cactacea.backend.utils.swagger
 
 import com.google.inject.Provides
 import io.cactacea.finagger.SwaggerModule
 import io.github.cactacea.backend.CactaceaBuildInfo
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.utils.oauth.{Permissions}
-import io.github.cactacea.backend.utils.swagger.CactaceaSwagger
 import io.swagger.models._
-import io.swagger.models.auth.{ApiKeyAuthDefinition, OAuth2Definition}
-
-import scala.collection.JavaConverters._
-import io.swagger.models.auth.In
+import io.swagger.models.auth.{ApiKeyAuthDefinition, In}
 
 object CactaceaSwaggerModule extends SwaggerModule {
 
@@ -48,10 +43,10 @@ object CactaceaSwaggerModule extends SwaggerModule {
     val authorizationKeyAuthDefinition = new ApiKeyAuthDefinition(Config.auth.headerNames.authorizationKey, In.HEADER)
     swaggerDefine.securityDefinition("authorization", authorizationKeyAuthDefinition)
 
-    val scopes = Permissions.values.map(t => (t.value -> t.description)).toMap
-    val accessCode = new OAuth2Definition().accessCode("http://localhost:9000/oauth2/authorization", "http://localhost:9000/oauth2/token")
-    accessCode.setScopes(scopes.asJava)
-    swaggerDefine.addSecurityDefinition("cactacea_auth", accessCode)
+//    val scopes = Permissions.values.map(t => (t.value -> t.description)).toMap
+//    val accessCode = new OAuth2Definition().accessCode("http://localhost:9000/oauth2/authorization", "http://localhost:9000/oauth2/token")
+//    accessCode.setScopes(scopes.asJava)
+//    swaggerDefine.addSecurityDefinition("cactacea_auth", accessCode)
 
     swaggerDefine
 

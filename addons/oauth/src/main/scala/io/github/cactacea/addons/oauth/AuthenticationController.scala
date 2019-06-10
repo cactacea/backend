@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.controllers
+package io.github.cactacea.addons.oauth
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.OAuth2
@@ -7,11 +7,10 @@ import com.twitter.finagle.oauth2._
 import com.twitter.finatra.http.Controller
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.oauth.GetAuthorize
-import io.github.cactacea.backend.utils.oauth.{OAuthCodeGenerator, OAuthHandler, OAuthService, OAuthTokenGenerator}
 import io.github.cactacea.backend.views.{ErrorView, SignInView}
 
 @Singleton
-class AuthController @Inject()(
+class AuthenticationController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  oauthService: OAuthService,
                                  tokenGenerator: OAuthTokenGenerator,

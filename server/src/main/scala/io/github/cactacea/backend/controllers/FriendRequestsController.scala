@@ -10,7 +10,7 @@ import io.github.cactacea.backend.models.requests.account.{DeleteFriendRequest, 
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.auth.CactaceaContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+
 import io.swagger.models.Swagger
 
 @Singleton
@@ -18,13 +18,13 @@ class FriendRequestsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     friendRequestsService: FriendRequestsService,
-                                  ) extends CactaceaSwaggerController with OAuthController {
+                                  ) extends CactaceaSwaggerController {
 
   protected implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    postWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
+    postWithDoc("/accounts/:id/requests") { o =>
       o.summary("Create a friend request to a account")
         .tag(accountsTag)
         .operationId("request")
@@ -40,7 +40,7 @@ class FriendRequestsController @Inject()(
       ).map(FriendRequestCreated(_)).map(response.created(_))
     }
 
-    deleteWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
+    deleteWithDoc("/accounts/:id/requests") { o =>
       o.summary("Remove a friend request to a account")
         .tag(accountsTag)
         .operationId("unrequest")
@@ -57,7 +57,7 @@ class FriendRequestsController @Inject()(
 
   }
 
-  postWithPermission("/requests/:id/accept")(Permissions.friendRequests) { o =>
+  postWithDoc("/requests/:id/accept") { o =>
     o.summary("Accept a friend request")
       .tag(friendRequestsTag)
       .operationId("acceptRequest")
@@ -71,7 +71,7 @@ class FriendRequestsController @Inject()(
     ).map(_ => response.ok)
   }
 
-  postWithPermission("/requests/:id/reject")(Permissions.friendRequests) { o =>
+  postWithDoc("/requests/:id/reject") { o =>
     o.summary("Reject a friend request")
       .tag(friendRequestsTag)
       .operationId("rejectRequest")

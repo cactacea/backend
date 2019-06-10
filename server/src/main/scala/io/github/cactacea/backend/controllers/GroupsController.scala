@@ -11,7 +11,7 @@ import io.github.cactacea.backend.models.requests.group._
 import io.github.cactacea.backend.models.responses.GroupCreated
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.auth.CactaceaContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+
 import io.swagger.models.Swagger
 
 @Singleton
@@ -20,13 +20,13 @@ class GroupsController @Inject()(
                                   groupsService: GroupsService,
                                   groupAccountsService: GroupAccountsService,
                                   accountGroupsService: AccountGroupsService,
-                                  s: Swagger) extends CactaceaSwaggerController with OAuthController {
+                                  s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/groups")(Permissions.basic) { o =>
+    getWithDoc("/groups") { o =>
       o.summary("Search groups")
         .tag(groupsTag)
         .operationId("searchGroups")
@@ -44,7 +44,7 @@ class GroupsController @Inject()(
       )
     }
 
-    getWithPermission("/groups/:id")(Permissions.basic) { o =>
+    getWithDoc("/groups/:id") { o =>
       o.summary("Get basic information about a group")
         .tag(groupsTag)
         .operationId("findGroup")
@@ -58,7 +58,7 @@ class GroupsController @Inject()(
       )
     }
 
-    postWithPermission("/groups")(Permissions.groups) { o =>
+    postWithDoc("/groups") { o =>
       o.summary("Create a group")
         .tag(groupsTag)
         .operationId("createGroup")
@@ -74,7 +74,7 @@ class GroupsController @Inject()(
       ).map(GroupCreated(_)).map(response.created(_))
     }
 
-    putWithPermission("/groups/:id")(Permissions.groups) { o =>
+    putWithDoc("/groups/:id") { o =>
       o.summary("Update a group")
         .tag(groupsTag)
         .operationId("updateGroup")
@@ -93,7 +93,7 @@ class GroupsController @Inject()(
     }
 
 
-    postWithPermission("/groups/:id/join")(Permissions.groups) { o =>
+    postWithDoc("/groups/:id/join") { o =>
       o.summary("Join to a group,")
         .tag(groupsTag)
         .operationId("joinGroup")
@@ -108,7 +108,7 @@ class GroupsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/groups/:id/leave")(Permissions.groups) { o =>
+    postWithDoc("/groups/:id/leave") { o =>
       o.summary("Leave from a group")
         .tag(groupsTag)
         .operationId("leaveGroup")
@@ -123,7 +123,7 @@ class GroupsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    getWithPermission("/groups/:id/accounts")(Permissions.basic) { o =>
+    getWithDoc("/groups/:id/accounts") { o =>
       o.summary("Get accounts list of a group")
         .tag(groupsTag)
         .operationId("findGroupAccounts")
@@ -140,7 +140,7 @@ class GroupsController @Inject()(
       )
     }
 
-    deleteWithPermission("/groups/:id")(Permissions.groups) { o =>
+    deleteWithDoc("/groups/:id") { o =>
       o.summary("Hide a group and delete all messages")
         .tag(groupsTag)
         .operationId("deleteGroup")
@@ -154,7 +154,7 @@ class GroupsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/groups/:id/hides")(Permissions.groups) { o =>
+    postWithDoc("/groups/:id/hides") { o =>
       o.summary("Hide a group")
         .tag(groupsTag)
         .operationId("hideGroup")
@@ -168,7 +168,7 @@ class GroupsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/groups/:id/hides")(Permissions.groups) { o =>
+    deleteWithDoc("/groups/:id/hides") { o =>
       o.summary("Show a group")
         .tag(groupsTag)
         .operationId("showGroup")
@@ -182,7 +182,7 @@ class GroupsController @Inject()(
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/groups/:id/reports")(Permissions.reports) { o =>
+    postWithDoc("/groups/:id/reports") { o =>
       o.summary("Report a group")
         .tag(groupsTag)
         .operationId("reportGroup")

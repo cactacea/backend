@@ -12,7 +12,6 @@ import com.twitter.inject.server.FeatureTest
 import io.cactacea.finagger.DocsController
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.helpers._
-import io.github.cactacea.backend.swagger.CactaceaSwaggerModule
 
 @Singleton
 class APIServerSpec extends FeatureTest with Helpers {
