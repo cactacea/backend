@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNot
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.feed.GetAccountFeeds
 import io.github.cactacea.backend.models.requests.group.{GetAccountGroup, GetAccountGroups}
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -26,7 +26,7 @@ class AccountsController @Inject()(
                                     groupAccountsService: GroupAccountsService,
                                     accountGroupsService: AccountGroupsService,
                                     s: Swagger
-                                  ) extends SwaggerController with OAuthController {
+                                  ) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -45,7 +45,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -59,7 +59,7 @@ class AccountsController @Inject()(
     } { request: GetAccount =>
       accountsService.find(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -73,7 +73,7 @@ class AccountsController @Inject()(
     } { request: GetAccountStatus =>
       accountsService.findAccountStatus(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -89,7 +89,7 @@ class AccountsController @Inject()(
       accountsService.update(
         request.id,
         request.displayName,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -106,7 +106,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -123,7 +123,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -140,7 +140,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -157,7 +157,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -173,7 +173,7 @@ class AccountsController @Inject()(
       groupAccountsService.create(
         request.accountId,
         request.groupId,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -188,7 +188,7 @@ class AccountsController @Inject()(
       groupAccountsService.delete(
         request.accountId,
         request.groupId,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -204,7 +204,7 @@ class AccountsController @Inject()(
     } { request: GetAccountGroup =>
       accountGroupsService.find(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -222,7 +222,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -239,7 +239,7 @@ class AccountsController @Inject()(
         request.id,
         request.reportType,
         request.reportContent,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

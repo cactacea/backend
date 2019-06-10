@@ -9,14 +9,14 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.comment._
 import io.github.cactacea.backend.models.responses.CommentCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
 @Singleton
 class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, commentsService: CommentsService, s: Swagger)
-  extends SwaggerController with OAuthController {
+  extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -35,7 +35,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -50,7 +50,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
       commentsService.create(
         request.id,
         request.message,
-        SessionContext.id
+        CactaceaContext.id
       ).map(CommentCreated(_)).map(response.created(_))
     }
 
@@ -64,7 +64,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     } { request: GetComment =>
       commentsService.find(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -78,7 +78,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     } { request: DeleteComment =>
       commentsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -94,7 +94,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.id,
         request.reportType,
         request.reportContent,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 

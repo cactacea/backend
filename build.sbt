@@ -40,13 +40,14 @@ lazy val core = (project in file("core"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .dependsOn(finagger)
+  .dependsOn(finagger, utils)
 
 
 lazy val utils = (project in file("utils"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.utils)
 
 

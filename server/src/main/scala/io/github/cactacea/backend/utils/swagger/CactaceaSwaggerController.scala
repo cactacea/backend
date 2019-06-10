@@ -3,7 +3,7 @@ package io.github.cactacea.backend.swagger
 import com.twitter.finatra.http.Controller
 import io.cactacea.finagger.{SwaggerController => FinaggerController}
 
-trait SwaggerController extends FinaggerController {
+trait CactaceaSwaggerController extends FinaggerController {
   self: Controller =>
 
   protected val successfulMessage = "Successful operation."

@@ -9,8 +9,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -18,7 +18,7 @@ import io.swagger.models.Swagger
 class FeedsController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  feedsService: FeedsService,
-                                 s: Swagger) extends SwaggerController with OAuthController {
+                                 s: Swagger) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -37,7 +37,7 @@ class FeedsController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         request.feedPrivacyType,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -56,7 +56,7 @@ class FeedsController @Inject()(
         request.privacyType,
         request.contentWarning,
         request.expiration,
-        SessionContext.id
+        CactaceaContext.id
       ).map(FeedCreated(_)).map(response.created(_))
     }
 
@@ -70,7 +70,7 @@ class FeedsController @Inject()(
     } { request: GetFeed =>
       feedsService.find(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -90,7 +90,7 @@ class FeedsController @Inject()(
         request.privacyType,
         request.contentWarning,
         request.expiration,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -104,7 +104,7 @@ class FeedsController @Inject()(
     } { request: DeleteFeed =>
       feedsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -120,7 +120,7 @@ class FeedsController @Inject()(
         request.id,
         request.reportType,
         request.reportContent,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

@@ -9,8 +9,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount, PostInvitationAccounts}
 import io.github.cactacea.backend.models.requests.group.{PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -18,7 +18,7 @@ import io.swagger.models.Swagger
 class InvitationsController @Inject()(
                                        @Flag("cactacea.api.prefix") apiPrefix: String,
                                        invitationService: GroupInvitationsService,
-                                       s: Swagger) extends SwaggerController with OAuthController {
+                                       s: Swagger) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -35,7 +35,7 @@ class InvitationsController @Inject()(
       invitationService.create(
         request.accountIds.toList,
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_.map(InvitationCreated(_))).map(response.created(_))
     }
 
@@ -50,7 +50,7 @@ class InvitationsController @Inject()(
       invitationService.create(
         request.accountId,
         request.groupId,
-        SessionContext.id
+        CactaceaContext.id
       ).map(InvitationCreated(_)).map(response.created(_))
     }
 
@@ -65,7 +65,7 @@ class InvitationsController @Inject()(
     } { request: PostAcceptInvitation =>
       invitationService.accept(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -79,7 +79,7 @@ class InvitationsController @Inject()(
     } { request: PostRejectInvitation =>
       invitationService.reject(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

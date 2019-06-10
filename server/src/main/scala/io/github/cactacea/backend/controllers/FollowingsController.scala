@@ -8,8 +8,8 @@ import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFollowed, _}
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.account._
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -17,7 +17,7 @@ import io.swagger.models.Swagger
 class FollowingsController @Inject()(
                                       @Flag("cactacea.api.prefix") apiPrefix: String,
                                       followingsService: FollowingsService,
-                                      s: Swagger) extends SwaggerController with OAuthController {
+                                      s: Swagger) extends CactaceaSwaggerController with OAuthController {
 
   protected implicit val swagger: Swagger = s
 
@@ -36,7 +36,7 @@ class FollowingsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -51,7 +51,7 @@ class FollowingsController @Inject()(
     } { request: PostFollow =>
       followingsService.create(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -66,7 +66,7 @@ class FollowingsController @Inject()(
     } { request: DeleteFollow =>
       followingsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

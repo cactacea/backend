@@ -4,7 +4,7 @@ import com.twitter.util.{Future => TwitterFuture, Promise => TwitterPromise, Ret
 import scala.concurrent.{Future => ScalaFuture, Promise => ScalaPromise, ExecutionContext}
 import scala.util.{Success, Failure}
 
-object TwitterFutureImplicits {
+object FutureImplicits {
 
   /** Convert from a Twitter Future to a Scala Future */
   implicit class RichTwitterFuture[A](val tf: TwitterFuture[A]) extends AnyVal {

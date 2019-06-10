@@ -4,8 +4,8 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.notification.GetNotifications
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.github.cactacea.backend.core.application.services.NotificationsService
 import io.github.cactacea.backend.core.domain.models.Notification
@@ -15,7 +15,7 @@ import io.swagger.models.Swagger
 class NotificationsController @Inject()(
                                          @Flag("cactacea.api.prefix") apiPrefix: String,
                                          notificationsService: NotificationsService,
-                                         s: Swagger) extends SwaggerController with OAuthController {
+                                         s: Swagger) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -32,8 +32,8 @@ class NotificationsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.locales,
-        SessionContext.id
+        CactaceaContext.locales,
+        CactaceaContext.id
       )
     }
 

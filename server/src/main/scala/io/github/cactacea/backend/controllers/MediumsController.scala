@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -19,7 +19,7 @@ import io.swagger.models.Swagger
 class MediumsController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    mediumsService: MediumsService,
-                                   s: Swagger) extends SwaggerController with OAuthController {
+                                   s: Swagger) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -50,7 +50,7 @@ class MediumsController @Inject()(
     } { request: Request =>
       mediumsService.create(
         request,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_.map({ case (id, uri) => MediumCreated(id, uri) }))
     }
 
@@ -64,7 +64,7 @@ class MediumsController @Inject()(
     } { request: DeleteMedium =>
       mediumsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

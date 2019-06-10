@@ -8,8 +8,8 @@ import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.comment._
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -17,7 +17,7 @@ import io.swagger.models.Swagger
 class CommentLikesController @Inject()(
                                         @Flag("cactacea.api.prefix") apiPrefix: String,
                                         commentLikesService: CommentLikesService,
-                                        s: Swagger) extends SwaggerController with OAuthController {
+                                        s: Swagger) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -36,7 +36,7 @@ class CommentLikesController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -51,7 +51,7 @@ class CommentLikesController @Inject()(
     } { request: PostCommentLike =>
       commentLikesService.create(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -66,7 +66,7 @@ class CommentLikesController @Inject()(
     } { request: DeleteCommentLike =>
       commentLikesService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

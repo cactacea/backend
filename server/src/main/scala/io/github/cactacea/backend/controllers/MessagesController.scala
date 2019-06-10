@@ -8,8 +8,8 @@ import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.message.{DeleteMessages, GetMessages, PostMedium, PostText}
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -17,7 +17,7 @@ import io.swagger.models.Swagger
 class MessagesController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     messagesService: MessagesService,
-                                    s: Swagger) extends SwaggerController with OAuthController {
+                                    s: Swagger) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -39,7 +39,7 @@ class MessagesController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         request.ascending,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
@@ -56,7 +56,7 @@ class MessagesController @Inject()(
       messagesService.createText(
         request.groupId,
         request.message,
-        SessionContext.id
+        CactaceaContext.id
       ).map(response.created(_))
     }
 
@@ -73,7 +73,7 @@ class MessagesController @Inject()(
       messagesService.createMedium(
         request.groupId,
         request.mediumId,
-        SessionContext.id
+        CactaceaContext.id
       ).map(response.created(_))
     }
 
@@ -86,7 +86,7 @@ class MessagesController @Inject()(
     } { request: DeleteMessages =>
       messagesService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

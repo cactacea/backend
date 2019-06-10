@@ -7,8 +7,8 @@ import io.github.cactacea.backend.core.application.services.MutesService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -17,7 +17,7 @@ class MutesController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  s: Swagger,
                                  mutesService: MutesService,
-                               ) extends SwaggerController with OAuthController {
+                               ) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -34,7 +34,7 @@ class MutesController @Inject()(
     } { request: PostMute =>
       mutesService.create(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -49,7 +49,7 @@ class MutesController @Inject()(
     } { request: DeleteMute =>
       mutesService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

@@ -4,7 +4,7 @@ import io.github.cactacea.backend.core.util.configs.Config
 import scala.collection.JavaConverters._
 import org.flywaydb.core.Flyway
 
-object DatabaseMigration {
+object CactaceaDatabaseMigration {
 
   def execute(): Unit = {
     val database = Config.db.master.database

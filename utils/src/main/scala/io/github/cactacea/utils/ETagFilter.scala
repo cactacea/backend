@@ -1,12 +1,11 @@
-package io.github.cactacea.backend.utils.filters
+package io.github.cactacea.utils
 
-import com.roundeights.hasher.Implicits._
-import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finagle.{Service, SimpleFilter, http}
+import com.twitter.finagle.http.{Method, Request, Response}
 import com.twitter.io.Buf.ByteArray.Owned.extract
-import org.jboss.netty.handler.codec.http.HttpHeaders.Names._
-import com.twitter.finagle.http.Method
 import com.twitter.util.Future
+import com.roundeights.hasher.Implicits._
+import org.jboss.netty.handler.codec.http.HttpHeaders.Names._
 
 class ETagFilter extends SimpleFilter[Request, Response] {
 

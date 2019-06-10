@@ -88,7 +88,7 @@ object Dependencies {
   )
 
   lazy val utils = Seq(
-    "com.twitter" %% "util-core" % versions.twitter
+    "com.roundeights" %% "hasher" % versions.hasher
   )
 
   

@@ -2,9 +2,7 @@ package io.github.cactacea.backend.utils.auth
 
 import java.util.Date
 
-import com.google.inject.Singleton
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.DeviceType
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -13,8 +11,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.jsonwebtoken._
 import org.joda.time.DateTime
 
-@Singleton
-class AuthTokenGenerator {
+object CactaceaTokenGenerator {
 
   def generate(audience: Long, udid: String): String = {
 
@@ -34,7 +31,7 @@ class AuthTokenGenerator {
     token
   }
 
-  def parse(authorization: Option[String]): Future[SessionUser] = {
+  def parse(authorization: Option[String]): Future[CactaceaSessionUser] = {
 
     authorization match {
       case None =>
@@ -56,7 +53,7 @@ class AuthTokenGenerator {
           if (header.getAlgorithm().equals(signatureAlgorithm.getValue)
               && body.getSubject.equals(Config.auth.token.subject)
               && body.getIssuer.equals(Config.auth.token.issuer)) {
-            Future.value(SessionUser(SessionId(audience), udid, expiration))
+            Future.value(CactaceaSessionUser(SessionId(audience), udid, expiration))
           } else {
             Future.exception(CactaceaException(CactaceaErrors.SessionNotAuthorized))
 
@@ -73,14 +70,6 @@ class AuthTokenGenerator {
     }
   }
 
-  def check(requestApiKey: Option[String]): Future[DeviceType] = {
-    requestApiKey.flatMap(key => Config.auth.keys.all.filter({ case (_, k) => k == key}).headOption.map({ case (d, _) => d})) match {
-      case Some(t) =>
-        Future.value(t)
-      case None =>
-        Future.exception(CactaceaException(APIKeyIsInValid))
-    }
-  }
 
 }
 

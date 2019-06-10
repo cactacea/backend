@@ -4,10 +4,10 @@ import com.google.inject.Singleton
 import com.twitter.inject.utils.Handler
 
 @Singleton
-class DatabaseMigrationHandler extends Handler {
+class CactaceaDatabaseMigrationHandler extends Handler {
 
   override def handle(): Unit = {
-    DatabaseMigration.execute()
+    CactaceaDatabaseMigration.execute()
   }
 
 }

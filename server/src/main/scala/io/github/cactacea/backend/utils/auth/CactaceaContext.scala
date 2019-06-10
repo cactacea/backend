@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 
-object SessionContext {
+object CactaceaContext {
 
   private[this] val localAuthenticated = new Local[Boolean]
   def authenticated: Boolean = localAuthenticated() match {

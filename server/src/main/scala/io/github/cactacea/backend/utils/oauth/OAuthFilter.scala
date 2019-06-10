@@ -7,7 +7,7 @@ import com.twitter.finagle.{OAuth2, Service, SimpleFilter}
 import com.twitter.inject.Logging
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.repositories.SessionsRepository
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 
 @Singleton
 class OAuthFilter @Inject()(
@@ -16,16 +16,16 @@ class OAuthFilter @Inject()(
                            ) extends SimpleFilter[Request, Response] with OAuth2 with Logging {
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
-    SessionContext.authenticated match {
+    CactaceaContext.authenticated match {
       case true =>
         service(request)
       case false =>
         authorize(request, dataHandler) flatMap { auth =>
           val expiresIn = auth.user.expiresIn
           sessionsRepository.checkAccountStatus(auth.user.accountId.toSessionId, expiresIn).flatMap({_ =>
-            SessionContext.setAuthenticated(true)
-            SessionContext.setId(auth.user.accountId.toSessionId)
-            SessionContext.setPermissions(auth.user.permissions)
+            CactaceaContext.setAuthenticated(true)
+            CactaceaContext.setId(auth.user.accountId.toSessionId)
+            CactaceaContext.setPermissions(auth.user.permissions)
             service(request)
           })
         } handle {

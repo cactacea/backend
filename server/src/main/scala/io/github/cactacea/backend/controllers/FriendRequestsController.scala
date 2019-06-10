@@ -8,8 +8,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{DeleteFriendRequest, PostAcceptFriendRequest, PostFriendRequest, PostRejectFriendRequest}
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
 import io.swagger.models.Swagger
 
@@ -18,7 +18,7 @@ class FriendRequestsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     friendRequestsService: FriendRequestsService,
-                                  ) extends SwaggerController with OAuthController {
+                                  ) extends CactaceaSwaggerController with OAuthController {
 
   protected implicit val swagger: Swagger = s
 
@@ -36,7 +36,7 @@ class FriendRequestsController @Inject()(
     } { request: PostFriendRequest =>
       friendRequestsService.create(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(FriendRequestCreated(_)).map(response.created(_))
     }
 
@@ -51,7 +51,7 @@ class FriendRequestsController @Inject()(
     } { request: DeleteFriendRequest =>
       friendRequestsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
@@ -67,7 +67,7 @@ class FriendRequestsController @Inject()(
   } { request: PostAcceptFriendRequest =>
     friendRequestsService.accept(
       request.id,
-      SessionContext.id
+      CactaceaContext.id
     ).map(_ => response.ok)
   }
 
@@ -81,7 +81,7 @@ class FriendRequestsController @Inject()(
   } { request: PostRejectFriendRequest =>
     friendRequestsService.reject(
       request.id,
-      SessionContext.id
+      CactaceaContext.id
     ).map(_ => response.ok)
   }
 

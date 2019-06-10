@@ -4,7 +4,7 @@ import com.twitter.finatra.validation.ValidationResult
 
 import scala.util.matching.Regex
 
-object Validations {
+object CactaceaValidations {
 
   def validateEmail(maybeValue: Option[String]): ValidationResult = {
     validate(

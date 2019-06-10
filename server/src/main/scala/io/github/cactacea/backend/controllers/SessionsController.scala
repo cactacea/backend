@@ -8,8 +8,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountTerminated, InvalidAccountNameOrPassword}
 import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.models.responses.Authentication
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.{AuthTokenGenerator, SessionContext}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.{CactaceaTokenGenerator, CactaceaContext}
 import io.github.cactacea.backend.utils.oauth.OAuthController
 import io.swagger.models.Swagger
 
@@ -17,9 +17,8 @@ import io.swagger.models.Swagger
 class SessionsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
-                                    sessionService: SessionsService,
-                                    tokenGenerator: AuthTokenGenerator
-                                  ) extends SwaggerController with OAuthController {
+                                    sessionService: SessionsService
+                                  ) extends CactaceaSwaggerController with OAuthController {
 
   implicit val swagger: Swagger = s
 
@@ -37,9 +36,9 @@ class SessionsController @Inject()(
         request.password,
         request.udid,
         request.userAgent,
-        SessionContext.deviceType
+        CactaceaContext.deviceType
       ).map({ a =>
-        val accessToken = tokenGenerator.generate(a.id.value, request.udid)
+        val accessToken = CactaceaTokenGenerator.generate(a.id.value, request.udid)
         Authentication(a, accessToken)
       })
     }
@@ -59,9 +58,9 @@ class SessionsController @Inject()(
         request.password,
         request.udid,
         request.userAgent,
-        SessionContext.deviceType
+        CactaceaContext.deviceType
       ).map({ a =>
-        val accessToken = tokenGenerator.generate(a.id.value, request.udid)
+        val accessToken = CactaceaTokenGenerator.generate(a.id.value, request.udid)
         Authentication(a, accessToken)
       })
     }
