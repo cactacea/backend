@@ -6,9 +6,9 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
 import io.github.cactacea.backend.models.requests.setting.{PostActiveStatus, PostDevicePushToken, PutNotificationSetting}
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
@@ -17,7 +17,7 @@ class SettingsController @Inject()(
                                     s: Swagger,
                                     settingsService: SettingsService,
                                     deviceTokenService: DevicesService
-                                  ) extends SwaggerController with OAuthController {
+                                  ) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
@@ -25,18 +25,18 @@ class SettingsController @Inject()(
 
   prefix(apiPrefix) {
 
-    getWithPermission("/session/push_notification") (Permissions.basic) { o =>
+    getWithDoc("/session/push_notification")  { o =>
       o.summary("Get push notification settings")
         .tag(tagName)
         .operationId("findPushNotificationSettings")
         .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
     } { _: Request =>
       settingsService.findPushNotificationSettings(
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    putWithPermission("/session/push_notification") (Permissions.basic) { o =>
+    putWithDoc("/session/push_notification")  { o =>
       o.summary("Update ths push notification settings")
         .tag(tagName)
         .operationId("updatePushNotificationSettings")
@@ -51,11 +51,11 @@ class SettingsController @Inject()(
         request.groupMessage,
         request.groupInvitation,
         request.showMessage,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/session/push_token") (Permissions.basic) { o =>
+    postWithDoc("/session/push_token")  { o =>
       o.summary("Update device push token")
         .tag(tagName)
         .operationId("updatePushToken")
@@ -64,12 +64,12 @@ class SettingsController @Inject()(
     } { request: PostDevicePushToken =>
       deviceTokenService.update(
         request.pushToken,
-        SessionContext.id,
-        SessionContext.udid
+        CactaceaContext.id,
+        CactaceaContext.udid
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/session/status") (Permissions.basic) { o =>
+    postWithDoc("/session/status")  { o =>
       o.summary("Update device status")
         .tag(tagName)
         .operationId("updateDeviceStatus")
@@ -78,8 +78,8 @@ class SettingsController @Inject()(
     } { request: PostActiveStatus =>
       deviceTokenService.update(
         request.status,
-        SessionContext.id,
-        SessionContext.udid
+        CactaceaContext.id,
+        CactaceaContext.udid
       ).map(_ => response.ok)
     }
 

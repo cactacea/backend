@@ -9,20 +9,20 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.comment._
 import io.github.cactacea.backend.models.responses.CommentCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
 class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, commentsService: CommentsService, s: Swagger)
-  extends SwaggerController with OAuthController {
+  extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/comments")(Permissions.basic) { o =>
+    getWithDoc("/comments") { o =>
       o.summary("Search comments")
         .tag(commentsTag)
         .operationId("findComments")
@@ -35,11 +35,11 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    postWithPermission("/comments")(Permissions.comments) { o =>
+    postWithDoc("/comments") { o =>
       o.summary("Create a comment on a feed")
         .tag(commentsTag)
         .operationId("postComment")
@@ -50,11 +50,11 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
       commentsService.create(
         request.id,
         request.message,
-        SessionContext.id
+        CactaceaContext.id
       ).map(CommentCreated(_)).map(response.created(_))
     }
 
-    getWithPermission("/comments/:id")(Permissions.basic) { o =>
+    getWithDoc("/comments/:id") { o =>
       o.summary("Get basic information about a comment")
         .tag(commentsTag)
         .operationId("findComment")
@@ -64,11 +64,11 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     } { request: GetComment =>
       commentsService.find(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    deleteWithPermission("/comments/:id")(Permissions.comments) { o =>
+    deleteWithDoc("/comments/:id") { o =>
       o.summary("Delete a comment")
         .tag(commentsTag)
         .operationId("deleteComment")
@@ -78,11 +78,11 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     } { request: DeleteComment =>
       commentsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/comments/:id/reports")(Permissions.reports) { o =>
+    postWithDoc("/comments/:id/reports") { o =>
       o.summary("Report a comment")
         .tag(commentsTag)
         .operationId("reportComment")
@@ -94,7 +94,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.id,
         request.reportType,
         request.reportContent,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 

@@ -8,22 +8,22 @@ import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.comment._
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
 class CommentLikesController @Inject()(
                                         @Flag("cactacea.api.prefix") apiPrefix: String,
                                         commentLikesService: CommentLikesService,
-                                        s: Swagger) extends SwaggerController with OAuthController {
+                                        s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/comments/:id/likes")(Permissions.basic) { o =>
+    getWithDoc("/comments/:id/likes") { o =>
       o.summary("Get accounts list who liked on a comment")
         .tag(commentLikesTag)
         .operationId("findAccountsLikedComment")
@@ -36,11 +36,11 @@ class CommentLikesController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    postWithPermission("/comments/:id/likes")(Permissions.commentLikes) { o =>
+    postWithDoc("/comments/:id/likes") { o =>
       o.summary("Set a like on a comment")
         .tag(commentLikesTag)
         .operationId("likeComment")
@@ -51,11 +51,11 @@ class CommentLikesController @Inject()(
     } { request: PostCommentLike =>
       commentLikesService.create(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/comments/:id/likes")(Permissions.comments) { o =>
+    deleteWithDoc("/comments/:id/likes") { o =>
       o.summary("Remove a like on a comment")
         .tag(commentLikesTag)
         .operationId("unlikeComment")
@@ -66,7 +66,7 @@ class CommentLikesController @Inject()(
     } { request: DeleteCommentLike =>
       commentLikesService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

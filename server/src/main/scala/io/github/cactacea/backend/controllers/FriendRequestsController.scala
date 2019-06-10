@@ -8,9 +8,9 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{DeleteFriendRequest, PostAcceptFriendRequest, PostFriendRequest, PostRejectFriendRequest}
 import io.github.cactacea.backend.models.responses.FriendRequestCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
@@ -18,13 +18,13 @@ class FriendRequestsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     friendRequestsService: FriendRequestsService,
-                                  ) extends SwaggerController with OAuthController {
+                                  ) extends CactaceaSwaggerController {
 
   protected implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    postWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
+    postWithDoc("/accounts/:id/requests") { o =>
       o.summary("Create a friend request to a account")
         .tag(accountsTag)
         .operationId("request")
@@ -36,11 +36,11 @@ class FriendRequestsController @Inject()(
     } { request: PostFriendRequest =>
       friendRequestsService.create(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(FriendRequestCreated(_)).map(response.created(_))
     }
 
-    deleteWithPermission("/accounts/:id/requests")(Permissions.friendRequests) { o =>
+    deleteWithDoc("/accounts/:id/requests") { o =>
       o.summary("Remove a friend request to a account")
         .tag(accountsTag)
         .operationId("unrequest")
@@ -51,13 +51,13 @@ class FriendRequestsController @Inject()(
     } { request: DeleteFriendRequest =>
       friendRequestsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
   }
 
-  postWithPermission("/requests/:id/accept")(Permissions.friendRequests) { o =>
+  postWithDoc("/requests/:id/accept") { o =>
     o.summary("Accept a friend request")
       .tag(friendRequestsTag)
       .operationId("acceptRequest")
@@ -67,11 +67,11 @@ class FriendRequestsController @Inject()(
   } { request: PostAcceptFriendRequest =>
     friendRequestsService.accept(
       request.id,
-      SessionContext.id
+      CactaceaContext.id
     ).map(_ => response.ok)
   }
 
-  postWithPermission("/requests/:id/reject")(Permissions.friendRequests) { o =>
+  postWithDoc("/requests/:id/reject") { o =>
     o.summary("Reject a friend request")
       .tag(friendRequestsTag)
       .operationId("rejectRequest")
@@ -81,7 +81,7 @@ class FriendRequestsController @Inject()(
   } { request: PostRejectFriendRequest =>
     friendRequestsService.reject(
       request.id,
-      SessionContext.id
+      CactaceaContext.id
     ).map(_ => response.ok)
   }
 

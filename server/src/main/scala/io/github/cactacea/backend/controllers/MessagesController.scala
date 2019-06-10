@@ -8,16 +8,16 @@ import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.message.{DeleteMessages, GetMessages, PostMedium, PostText}
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
 class MessagesController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     messagesService: MessagesService,
-                                    s: Swagger) extends SwaggerController with OAuthController {
+                                    s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
@@ -25,7 +25,7 @@ class MessagesController @Inject()(
 
   prefix(apiPrefix) {
 
-    getWithPermission("/messages")(Permissions.basic) { o =>
+    getWithDoc("/messages") { o =>
       o.summary("Search messages")
         .tag(messagesTag)
         .operationId("findMessages")
@@ -39,11 +39,11 @@ class MessagesController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         request.ascending,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    postWithPermission("/messages/text")(Permissions.messages) { o =>
+    postWithDoc("/messages/text") { o =>
       o.summary("Send a text to a group")
         .tag(messagesTag)
         .operationId("postText")
@@ -56,11 +56,11 @@ class MessagesController @Inject()(
       messagesService.createText(
         request.groupId,
         request.message,
-        SessionContext.id
+        CactaceaContext.id
       ).map(response.created(_))
     }
 
-    postWithPermission("/messages/medium")(Permissions.messages) { o =>
+    postWithDoc("/messages/medium") { o =>
       o.summary("Send a medium to a group")
         .tag(messagesTag)
         .operationId("postMedium")
@@ -73,11 +73,11 @@ class MessagesController @Inject()(
       messagesService.createMedium(
         request.groupId,
         request.mediumId,
-        SessionContext.id
+        CactaceaContext.id
       ).map(response.created(_))
     }
 
-    deleteWithPermission("/messages")(Permissions.messages) { o =>
+    deleteWithDoc("/messages") { o =>
       o.summary("Delete messages form a group")
         .tag(messagesTag)
         .operationId("deleteMessage")
@@ -86,7 +86,7 @@ class MessagesController @Inject()(
     } { request: DeleteMessages =>
       messagesService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

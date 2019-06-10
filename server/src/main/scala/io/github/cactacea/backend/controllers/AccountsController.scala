@@ -10,9 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNot
 import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.feed.GetAccountFeeds
 import io.github.cactacea.backend.models.requests.group.{GetAccountGroup, GetAccountGroups}
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.swagger.models.Swagger
 
 @Singleton
@@ -26,13 +25,13 @@ class AccountsController @Inject()(
                                     groupAccountsService: GroupAccountsService,
                                     accountGroupsService: AccountGroupsService,
                                     s: Swagger
-                                  ) extends SwaggerController with OAuthController {
+                                  ) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/accounts")(Permissions.basic) { o =>
+    getWithDoc("/accounts") { o =>
       o.summary("Find accounts")
         .tag(sessionTag)
         .operationId("findAccounts")
@@ -45,11 +44,11 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    getWithPermission("/accounts/:id")(Permissions.basic) { o =>
+    getWithDoc("/accounts/:id") { o =>
       o.summary("Get information about a account")
         .tag(accountsTag)
         .operationId("findAccount")
@@ -59,11 +58,11 @@ class AccountsController @Inject()(
     } { request: GetAccount =>
       accountsService.find(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    getWithPermission("/accounts/:id/status")(Permissions.basic) { o =>
+    getWithDoc("/accounts/:id/status") { o =>
       o.summary("Get account on")
         .tag(accountsTag)
         .operationId("findAccountStatus")
@@ -73,11 +72,11 @@ class AccountsController @Inject()(
     } { request: GetAccountStatus =>
       accountsService.findAccountStatus(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    putWithPermission("/accounts/:id/display_name")(Permissions.relationships) { o =>
+    putWithDoc("/accounts/:id/display_name") { o =>
       o.summary("Change display name to session account")
         .tag(accountsTag)
         .operationId("updateAccountDisplayName")
@@ -89,11 +88,11 @@ class AccountsController @Inject()(
       accountsService.update(
         request.id,
         request.displayName,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    getWithPermission("/accounts/:id/feeds")(Permissions.basic) { o =>
+    getWithDoc("/accounts/:id/feeds") { o =>
       o.summary("Get feeds list a account posted")
         .tag(accountsTag)
         .operationId("findAccountFeeds")
@@ -106,11 +105,11 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    getWithPermission("/accounts/:id/likes")(Permissions.basic) { o =>
+    getWithDoc("/accounts/:id/likes") { o =>
       o.summary("Get account's liked feeds")
         .tag(accountsTag)
         .operationId("findAccountFeedsLiked")
@@ -123,11 +122,11 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    getWithPermission("/accounts/:id/followers")(Permissions.followerList) { o =>
+    getWithDoc("/accounts/:id/followers") { o =>
       o.summary("Get accounts list a account is followed by")
         .tag(accountsTag)
         .operationId("findAccountFollowers")
@@ -140,11 +139,11 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    getWithPermission("/accounts/:id/friends")(Permissions.followerList) { o =>
+    getWithDoc("/accounts/:id/friends") { o =>
       o.summary("Get a account's friends list")
         .tag(accountsTag)
         .operationId("findAccountFriends")
@@ -157,12 +156,12 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
 
-    postWithPermission("/accounts/:accountId/groups/:groupId/join")(Permissions.groups) { o =>
+    postWithDoc("/accounts/:accountId/groups/:groupId/join") { o =>
       o.summary("Join a account in a group")
         .tag(accountsTag)
         .operationId("joinAccount")
@@ -173,11 +172,11 @@ class AccountsController @Inject()(
       groupAccountsService.create(
         request.accountId,
         request.groupId,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/accounts/:accountId/groups/:groupId/leave")(Permissions.groups) { o =>
+    postWithDoc("/accounts/:accountId/groups/:groupId/leave") { o =>
       o.summary("Leave a account from a group")
         .tag(accountsTag)
         .operationId("leaveAccount")
@@ -188,12 +187,12 @@ class AccountsController @Inject()(
       groupAccountsService.delete(
         request.accountId,
         request.groupId,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
 
-    getWithPermission("/accounts/:id/group")(Permissions.basic) { o =>
+    getWithDoc("/accounts/:id/group") { o =>
       o.summary("Get a direct message group to a account")
         .tag(accountsTag)
         .operationId("findAccountGroup")
@@ -204,11 +203,11 @@ class AccountsController @Inject()(
     } { request: GetAccountGroup =>
       accountGroupsService.find(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    getWithPermission("/accounts/:id/groups")(Permissions.basic) { o =>
+    getWithDoc("/accounts/:id/groups") { o =>
       o.summary("Get groups list a account groupJoined")
         .tag(accountsTag)
         .operationId("findAccountGroups")
@@ -222,11 +221,11 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    postWithPermission("/accounts/:id/reports")(Permissions.reports) { o =>
+    postWithDoc("/accounts/:id/reports") { o =>
       o.summary("Report a account")
         .tag(accountsTag)
         .operationId("reportAccount")
@@ -239,7 +238,7 @@ class AccountsController @Inject()(
         request.id,
         request.reportType,
         request.reportContent,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

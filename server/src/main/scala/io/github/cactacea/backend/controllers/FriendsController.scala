@@ -7,22 +7,21 @@ import io.github.cactacea.backend.core.application.services.FriendsService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotFriend
 import io.github.cactacea.backend.models.requests.account.DeleteFriend
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.swagger.models.Swagger
 
 @Singleton
 class FriendsController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    friendsService: FriendsService,
-                                   s: Swagger) extends SwaggerController with OAuthController {
+                                   s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    deleteWithPermission("/accounts/:id/friends")(Permissions.relationships) { o =>
+    deleteWithDoc("/accounts/:id/friends") { o =>
       o.summary("Remove friendship to a account")
         .tag(accountsTag)
         .operationId("unfriend")
@@ -33,7 +32,7 @@ class FriendsController @Inject()(
     } { request: DeleteFriend =>
       friendsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

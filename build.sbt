@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(migrationSettings)
-  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, docs, utils)
+  .aggregate(chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, oauth, docs, utils)
   .enablePlugins(FlywayPlugin)
 
 
@@ -22,7 +22,6 @@ lazy val server = (project in file("server"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.oauth2)
   .settings(libraryDependencies ++= Dependencies.mysql)
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
@@ -40,13 +39,14 @@ lazy val core = (project in file("core"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .dependsOn(finagger)
+  .dependsOn(finagger, utils)
 
 
 lazy val utils = (project in file("utils"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.utils)
 
 
@@ -163,6 +163,17 @@ lazy val commonResolverSetting = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     "Maven central" at "http://central.maven.org/maven2/"))
+
+
+
+lazy val oauth = (project in file("addons/oauth"))
+  .settings(addonsCommonSettings)
+  .settings(commonResolverSetting)
+//  .settings(publishSettings)
+  .settings(noPublishSettings)
+  .settings(libraryDependencies ++= Dependencies.oauth2)
+  .dependsOn(server % "compile->compile;test->test")
+  .dependsOn(utils)
 
 
 lazy val onesignal = (project in file("addons/onesignal"))

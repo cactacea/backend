@@ -9,22 +9,22 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.feed._
 import io.github.cactacea.backend.models.responses.FeedCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
 class FeedsController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  feedsService: FeedsService,
-                                 s: Swagger) extends SwaggerController with OAuthController {
+                                 s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/feeds")(Permissions.basic) { o =>
+    getWithDoc("/feeds") { o =>
       o.summary("Find feeds")
         .tag(feedsTag)
         .operationId("findFeeds")
@@ -37,11 +37,11 @@ class FeedsController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         request.feedPrivacyType,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    postWithPermission("/feeds")(Permissions.feeds) { o =>
+    postWithDoc("/feeds") { o =>
       o.summary("Post a feed")
         .tag(feedsTag)
         .operationId("postFeed")
@@ -56,11 +56,11 @@ class FeedsController @Inject()(
         request.privacyType,
         request.contentWarning,
         request.expiration,
-        SessionContext.id
+        CactaceaContext.id
       ).map(FeedCreated(_)).map(response.created(_))
     }
 
-    getWithPermission("/feeds/:id")(Permissions.basic) { o =>
+    getWithDoc("/feeds/:id") { o =>
       o.summary("Get basic information about a feed")
         .tag(feedsTag)
         .operationId("findFeed")
@@ -70,11 +70,11 @@ class FeedsController @Inject()(
     } { request: GetFeed =>
       feedsService.find(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       )
     }
 
-    putWithPermission("/feeds/:id")(Permissions.feeds) { o =>
+    putWithDoc("/feeds/:id") { o =>
       o.summary("Update a feed")
         .tag(feedsTag)
         .operationId("updateFeed")
@@ -90,11 +90,11 @@ class FeedsController @Inject()(
         request.privacyType,
         request.contentWarning,
         request.expiration,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/feeds/:id")(Permissions.feeds) { o =>
+    deleteWithDoc("/feeds/:id") { o =>
       o.summary("Delete a feed")
         .tag(feedsTag)
         .operationId("deleteFeed")
@@ -104,11 +104,11 @@ class FeedsController @Inject()(
     } { request: DeleteFeed =>
       feedsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/feeds/:id/reports")(Permissions.reports) { o =>
+    postWithDoc("/feeds/:id/reports") { o =>
       o.summary("Report a feed")
         .tag(feedsTag)
         .operationId("reportFeed")
@@ -120,7 +120,7 @@ class FeedsController @Inject()(
         request.id,
         request.reportType,
         request.reportContent,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

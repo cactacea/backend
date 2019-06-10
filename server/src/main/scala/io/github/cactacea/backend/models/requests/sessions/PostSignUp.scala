@@ -2,7 +2,7 @@ package io.github.cactacea.backend.models.requests.sessions
 
 import com.twitter.finatra.request.Header
 import com.twitter.finatra.validation._
-import io.github.cactacea.backend.utils.validaters.Validations
+import io.github.cactacea.backend.utils.validaters.CactaceaValidations
 import io.swagger.annotations.ApiModelProperty
 
 case class PostSignUp(
@@ -21,9 +21,9 @@ case class PostSignUp(
                   ) {
 
   @MethodValidation
-  def accountNameCheck: ValidationResult = Validations.validateAccountName(accountName)
+  def accountNameCheck: ValidationResult = CactaceaValidations.validateAccountName(accountName)
 
   @MethodValidation
-  def passwordCheck: ValidationResult = Validations.validatePassword(password)
+  def passwordCheck: ValidationResult = CactaceaValidations.validatePassword(password)
 
 }

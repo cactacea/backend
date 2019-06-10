@@ -10,22 +10,22 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
 class MediumsController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    mediumsService: MediumsService,
-                                   s: Swagger) extends SwaggerController with OAuthController {
+                                   s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithPermission("/mediums/:*")(Permissions.media) { o =>
+    getWithDoc("/mediums/:*") { o =>
 
       o.summary("Get a medium")
         .tag(mediumsTag)
@@ -36,7 +36,7 @@ class MediumsController @Inject()(
       mediumsService.find(request)
     }
 
-    postWithPermission("/mediums")(Permissions.media) { o =>
+    postWithDoc("/mediums") { o =>
 
       o.summary("Upload a medium")
         .tag(mediumsTag)
@@ -50,11 +50,11 @@ class MediumsController @Inject()(
     } { request: Request =>
       mediumsService.create(
         request,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_.map({ case (id, uri) => MediumCreated(id, uri) }))
     }
 
-    deleteWithPermission("/mediums/:id")(Permissions.media) { o =>
+    deleteWithDoc("/mediums/:id") { o =>
       o.summary("Delete a medium")
         .tag(mediumsTag)
         .operationId("deleteMedium")
@@ -64,7 +64,7 @@ class MediumsController @Inject()(
     } { request: DeleteMedium =>
       mediumsService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

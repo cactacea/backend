@@ -7,22 +7,22 @@ import io.github.cactacea.backend.core.application.services.BlocksService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{DeleteBlock, PostBlock}
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
 class BlocksController @Inject()(
                                   @Flag("cactacea.api.prefix") apiPrefix: String,
                                   blocksService: BlocksService,
-                                  s: Swagger) extends SwaggerController with OAuthController {
+                                  s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    postWithPermission("/accounts/:id/blocks")(Permissions.relationships) { o =>
+    postWithDoc("/accounts/:id/blocks") { o =>
       o.summary("Block a account")
         .tag(accountsTag)
         .operationId("block")
@@ -33,11 +33,11 @@ class BlocksController @Inject()(
     } { request: PostBlock =>
       blocksService.create(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/accounts/:id/blocks")(Permissions.relationships) { o =>
+    deleteWithDoc("/accounts/:id/blocks") { o =>
       o.summary("Unblock a account")
         .tag(accountsTag)
         .operationId("unblock")
@@ -48,7 +48,7 @@ class BlocksController @Inject()(
     } { request: DeleteBlock =>
       blocksService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

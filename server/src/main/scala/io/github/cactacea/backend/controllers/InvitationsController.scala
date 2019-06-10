@@ -9,22 +9,22 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.account.{PostInvitationAccount, PostInvitationAccounts}
 import io.github.cactacea.backend.models.requests.group.{PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.models.responses.InvitationCreated
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
 class InvitationsController @Inject()(
                                        @Flag("cactacea.api.prefix") apiPrefix: String,
                                        invitationService: GroupInvitationsService,
-                                       s: Swagger) extends SwaggerController with OAuthController {
+                                       s: Swagger) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    postWithPermission("/groups/:id/invitations")(Permissions.groupInvitations) { o =>
+    postWithDoc("/groups/:id/invitations") { o =>
       o.summary("Post a groupInvitation to some accounts")
         .tag(invitationsTag)
         .operationId("inviteAccounts")
@@ -35,11 +35,11 @@ class InvitationsController @Inject()(
       invitationService.create(
         request.accountIds.toList,
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_.map(InvitationCreated(_))).map(response.created(_))
     }
 
-    postWithPermission("/accounts/:accountId/groups/:groupId/invitations")(Permissions.groupInvitations) { o =>
+    postWithDoc("/accounts/:accountId/groups/:groupId/invitations") { o =>
       o.summary("Create a groupInvitation to a account")
         .tag(accountsTag)
         .operationId("inviteAccount")
@@ -50,11 +50,11 @@ class InvitationsController @Inject()(
       invitationService.create(
         request.accountId,
         request.groupId,
-        SessionContext.id
+        CactaceaContext.id
       ).map(InvitationCreated(_)).map(response.created(_))
     }
 
-    postWithPermission("/invitations/:id/accept")(Permissions.groupInvitations) { o =>
+    postWithDoc("/invitations/:id/accept") { o =>
       o.summary("Accept a groupInvitation")
         .tag(invitationsTag)
         .operationId("acceptInvitation")
@@ -65,11 +65,11 @@ class InvitationsController @Inject()(
     } { request: PostAcceptInvitation =>
       invitationService.accept(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    postWithPermission("/invitations/:id/reject")(Permissions.groupInvitations) { o =>
+    postWithDoc("/invitations/:id/reject") { o =>
       o.summary("Reject a groupInvitation")
         .tag(invitationsTag)
         .operationId("rejectInvitation")
@@ -79,7 +79,7 @@ class InvitationsController @Inject()(
     } { request: PostRejectInvitation =>
       invitationService.reject(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 

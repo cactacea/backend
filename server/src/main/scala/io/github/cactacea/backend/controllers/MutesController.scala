@@ -7,9 +7,9 @@ import io.github.cactacea.backend.core.application.services.MutesService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.models.requests.account.{DeleteMute, PostMute}
-import io.github.cactacea.backend.swagger.SwaggerController
-import io.github.cactacea.backend.utils.auth.SessionContext
-import io.github.cactacea.backend.utils.oauth.{OAuthController, Permissions}
+import io.github.cactacea.backend.swagger.CactaceaSwaggerController
+import io.github.cactacea.backend.utils.auth.CactaceaContext
+
 import io.swagger.models.Swagger
 
 @Singleton
@@ -17,13 +17,13 @@ class MutesController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  s: Swagger,
                                  mutesService: MutesService,
-                               ) extends SwaggerController with OAuthController {
+                               ) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    postWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
+    postWithDoc("/accounts/:id/mutes") { o =>
       o.summary("Mute a account")
         .tag(accountsTag)
         .operationId("muteAccount")
@@ -34,11 +34,11 @@ class MutesController @Inject()(
     } { request: PostMute =>
       mutesService.create(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
-    deleteWithPermission("/accounts/:id/mutes")(Permissions.relationships) { o =>
+    deleteWithDoc("/accounts/:id/mutes") { o =>
       o.summary("Unmute a account")
         .tag(accountsTag)
         .operationId("unmuteAccount")
@@ -49,7 +49,7 @@ class MutesController @Inject()(
     } { request: DeleteMute =>
       mutesService.delete(
         request.id,
-        SessionContext.id
+        CactaceaContext.id
       ).map(_ => response.ok)
     }
 
