@@ -255,8 +255,8 @@
                         <a href="Followers.html" title="">Followers</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="Followings.html" title=""></a>
-                        <a href="Followings.html" title="">Followings</a>
+                        <a class="class" href="Follows.html" title=""></a>
+                        <a href="Follows.html" title="">Follows</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="FriendRequests.html" title=""></a>
@@ -328,7 +328,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Relationships</span><span class="params">(<span name="accountId">accountId: <a href="../identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="by">by: <a href="../identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="following">following: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="muting">muting: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followerBlockCount">followerBlockCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followingBlockCount">followingBlockCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendBlockCount">friendBlockCount: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Relationships</span><span class="params">(<span name="accountId">accountId: <a href="../identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="by">by: <a href="../identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="follow">follow: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="muting">muting: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followerBlockCount">followerBlockCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followBlockCount">followBlockCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendBlockCount">friendBlockCount: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -389,9 +389,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.infrastructure.models.Relationships#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,displayName:Option[String],by:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,following:Boolean,isFollower:Boolean,muting:Boolean,isFriend:Boolean,friendRequestInProgress:Boolean,followerBlockCount:Long,followingBlockCount:Long,friendBlockCount:Long):io.github.cactacea.backend.core.infrastructure.models.Relationships"></a><a id="&lt;init&gt;:Relationships"></a>
+      <a id="&lt;init&gt;(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,displayName:Option[String],by:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,follow:Boolean,isFollower:Boolean,muting:Boolean,isFriend:Boolean,friendRequestInProgress:Boolean,followerBlockCount:Long,followBlockCount:Long,friendBlockCount:Long):io.github.cactacea.backend.core.infrastructure.models.Relationships"></a><a id="&lt;init&gt;:Relationships"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/models/Relationships.html#&lt;init&gt;(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,displayName:Option[String],by:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,following:Boolean,isFollower:Boolean,muting:Boolean,isFriend:Boolean,friendRequestInProgress:Boolean,followerBlockCount:Long,followingBlockCount:Long,friendBlockCount:Long):io.github.cactacea.backend.core.infrastructure.models.Relationships" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/models/Relationships.html#&lt;init&gt;(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,displayName:Option[String],by:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,follow:Boolean,isFollower:Boolean,muting:Boolean,isFriend:Boolean,friendRequestInProgress:Boolean,followerBlockCount:Long,followBlockCount:Long,friendBlockCount:Long):io.github.cactacea.backend.core.infrastructure.models.Relationships" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -400,7 +400,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Relationships</span><span class="params">(<span name="accountId">accountId: <a href="../identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="by">by: <a href="../identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="following">following: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="muting">muting: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followerBlockCount">followerBlockCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followingBlockCount">followingBlockCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendBlockCount">friendBlockCount: <span class="extype" name="scala.Long">Long</span></span>)</span>
+        <span class="name">Relationships</span><span class="params">(<span name="accountId">accountId: <a href="../identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="by">by: <a href="../identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="follow">follow: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="muting">muting: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followerBlockCount">followerBlockCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followBlockCount">followBlockCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendBlockCount">friendBlockCount: <span class="extype" name="scala.Long">Long</span></span>)</span>
       </span>
       
       
@@ -711,6 +711,38 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.infrastructure.models.Relationships#follow" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="follow:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/models/Relationships.html#follow:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">follow</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.infrastructure.models.Relationships#followBlockCount" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="followBlockCount:Long"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/models/Relationships.html#followBlockCount:Long" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">followBlockCount</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      
+      
     </li><li name="io.github.cactacea.backend.core.infrastructure.models.Relationships#followerBlockCount" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="followerBlockCount:Long"></a>
       <span class="permalink">
@@ -724,38 +756,6 @@
       </span>
       <span class="symbol">
         <span class="name">followerBlockCount</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.infrastructure.models.Relationships#following" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="following:Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/models/Relationships.html#following:Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">following</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.infrastructure.models.Relationships#followingBlockCount" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="followingBlockCount:Long"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/models/Relationships.html#followingBlockCount:Long" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">followingBlockCount</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       
       
