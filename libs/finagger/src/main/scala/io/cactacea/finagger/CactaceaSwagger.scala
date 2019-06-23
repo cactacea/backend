@@ -4,7 +4,7 @@ import io.swagger.converter.{ModelConverter, ModelConverters}
 import io.swagger.models.Swagger
 import io.swagger.scala.converter.SwaggerScalaModelConverter
 
-object Swagger extends Swagger {
+object CactaceaSwagger extends Swagger {
 
   swaggerConverters.reverse.foreach(ModelConverters.getInstance().addConverter)
 
