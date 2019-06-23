@@ -124,20 +124,20 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       for {
         ag <- query[AccountGroups]
-          .filter(_.groupId         == lift(groupId))
-          .filter(_.by              == lift(by))
+          .filter(_.groupId == lift(groupId))
+          .filter(_.by      == lift(by))
         g <- query[Groups]
           .join(_.id == ag.groupId)
         am <- query[AccountMessages]
-          .leftJoin(am => g.messageId.exists(_ == am.messageId))
+          .leftJoin(_.messageId == g.messageId)
         m <- query[Messages]
-          .leftJoin(m => g.messageId.exists(_ == m.id))
+          .leftJoin(_.id == g.messageId)
         i <- query[Mediums]
-          .leftJoin(i => m.exists(_.mediumId.exists(_ == i.id)))
+          .leftJoin(_.id == m.map(_.mediumId))
         a <- query[Accounts]
-          .leftJoin(a => m.exists(_.by == a.id))
+          .leftJoin(_.id == m.map(_.by))
         r <- query[Relationships]
-          .leftJoin(r => a.exists(_.id == r.accountId) && r.by == lift(by))
+          .leftJoin(r => a.map(_.id) == r.accountId && r.by == lift(by))
       } yield (g, am, m, i, a, r, ag.id)
 
     }
@@ -164,15 +164,15 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         g <- query[Groups]
           .join(_.id == ag.groupId)
         am <- query[AccountMessages]
-          .leftJoin(am => g.messageId.exists(_ == am.messageId))
+          .leftJoin(_.messageId == g.messageId)
         m <- query[Messages]
-          .leftJoin(m => g.messageId.exists(_ == m.id))
+          .leftJoin(_.id == g.messageId)
         i <- query[Mediums]
-          .leftJoin(i => m.exists(_.mediumId.exists(_ == i.id)))
+          .leftJoin(_.id == m.map(_.mediumId))
         a <- query[Accounts]
-          .leftJoin(a => m.exists(_.by == a.id))
+          .leftJoin(_.id == m.map(_.by))
         r <- query[Relationships]
-          .leftJoin(r => a.exists(_.id == r.accountId) && r.by == lift(by))
+          .leftJoin(r => r.accountId == a.map(_.id) && r.by == lift(by))
       } yield (g, am, m, i, a, r, ag.id)
 
     }
@@ -204,15 +204,15 @@ class AccountGroupsDAO @Inject()(db: DatabaseService) {
         g <- query[Groups]
           .join(_.id == ag.groupId)
         am <- query[AccountMessages]
-          .leftJoin(am => g.messageId.exists(_ == am.messageId))
+          .leftJoin(_.messageId == g.messageId)
         m <- query[Messages]
-          .leftJoin(m => g.messageId.exists(_ == m.id))
+          .leftJoin(_.id == g.messageId)
         i <- query[Mediums]
-          .leftJoin(i => m.exists(_.mediumId.exists(_ == i.id)))
+          .leftJoin(_.id == m.map(_.mediumId))
         a <- query[Accounts]
-          .leftJoin(a => m.exists(_.by == a.id))
+          .leftJoin(_.id == m.map(_.by))
         r <- query[Relationships]
-            .leftJoin(r => a.exists(_.id == r.accountId) && r.by == lift(by))
+            .leftJoin(r => r.accountId == a.map(_.id) && r.by == lift(by))
       } yield (g, am, m, i, a, r, ag.id))
         .sortBy({ case (_, _, _, _, _, _, id) => id})(Ord.desc)
         .drop(lift(offset))

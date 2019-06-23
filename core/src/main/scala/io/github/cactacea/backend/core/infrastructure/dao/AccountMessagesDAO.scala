@@ -103,7 +103,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         a <- query[Accounts]
           .join(_.id == m.by)
         i <- query[Mediums]
-          .leftJoin(i => m.mediumId.exists(_ == i.id))
+          .leftJoin(_.id == m.mediumId)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (m, am, i, a, r))
@@ -144,7 +144,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         a <- query[Accounts]
           .join(_.id == m.by)
         i <- query[Mediums]
-          .leftJoin(i => m.mediumId.exists(_ == i.id))
+          .leftJoin(_.id == m.mediumId)
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (m, am, i, a, r))

@@ -115,7 +115,7 @@ class AccountsDAO @Inject()(
         .insert(
           _.accountId         -> lift(accountId),
           _.by                -> lift(by),
-          _.displayName -> lift(displayName)
+          _.displayName       -> lift(displayName)
         ).onConflictUpdate((t, _) => t.displayName -> lift(displayName))
     }
     run(q).map(_ => Unit)
