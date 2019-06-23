@@ -34,7 +34,7 @@ class GroupsService @Inject()(
     for {
       _ <- db.transaction(groupsRepository.update(groupId, Some(name), invitationOnly, privacyType, authority, sessionId))
       _ <- listenerService.groupUpdated(groupId, Some(name), invitationOnly, privacyType, authority, sessionId)
-    } yield (Unit)
+    } yield (())
 
   }
 
@@ -56,7 +56,7 @@ class GroupsService @Inject()(
     for {
       _ <- db.transaction(reportsRepository.createGroupReport(groupId, reportType, reportContent, sessionId))
       _ <- listenerService.groupReported(groupId, reportType, reportContent, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

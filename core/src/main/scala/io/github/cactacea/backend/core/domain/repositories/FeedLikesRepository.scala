@@ -20,7 +20,7 @@ class FeedLikesRepository @Inject()(
       _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedLikesValidator.notExist(feedId, sessionId)
       _ <- feedLikesDAO.create(feedId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
@@ -28,7 +28,7 @@ class FeedLikesRepository @Inject()(
       _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedLikesValidator.exist(feedId, sessionId)
       _ <- feedLikesDAO.delete(feedId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {

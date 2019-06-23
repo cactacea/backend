@@ -43,24 +43,24 @@ class GroupAuthorityValidatorSpec extends DAOSpec {
     val follow = createAccount("GroupAuthorityDAOSpec6")
     val friend = createAccount("GroupAuthorityDAOSpec7")
 
-    // create following
+    // create follows
     execute(followersDAO.create(owner.id, follow.id.toSessionId))
-    execute(followingsDAO.create(follow.id, owner.id.toSessionId))
+    execute(followsDAO.create(follow.id, owner.id.toSessionId))
 
     // create follower
     execute(followersDAO.create(follower.id, owner.id.toSessionId))
-    execute(followingsDAO.create(owner.id, follower.id.toSessionId))
+    execute(followsDAO.create(owner.id, follower.id.toSessionId))
 
     // create friend
-    execute(followingsDAO.create(owner.id, friend.id.toSessionId))
-    execute(followingsDAO.create(friend.id, owner.id.toSessionId))
+    execute(followsDAO.create(owner.id, friend.id.toSessionId))
+    execute(followsDAO.create(friend.id, owner.id.toSessionId))
     execute(followersDAO.create(friend.id, owner.id.toSessionId))
     execute(followersDAO.create(owner.id, friend.id.toSessionId))
     execute(friendsDAO.create(friend.id, owner.id.toSessionId))
     execute(friendsDAO.create(owner.id, friend.id.toSessionId))
 
     val groupId1 = execute(groupsDAO.create(Some("new group name1"), true, GroupPrivacyType.followers, GroupAuthorityType.owner, owner.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.following, GroupAuthorityType.owner, owner.id.toSessionId))
+    val groupId2 = execute(groupsDAO.create(Some("new group name2"), true, GroupPrivacyType.follows, GroupAuthorityType.owner, owner.id.toSessionId))
     val groupId3 = execute(groupsDAO.create(Some("new group name3"), true, GroupPrivacyType.friends, GroupAuthorityType.owner, owner.id.toSessionId))
     val groupId4 = execute(groupsDAO.create(Some("new group name4"), true, GroupPrivacyType.everyone, GroupAuthorityType.owner, owner.id.toSessionId))
     val group1 = execute(helperDAO.selectGroup(groupId1)).get
@@ -90,7 +90,7 @@ class GroupAuthorityValidatorSpec extends DAOSpec {
 //    assert(execute(groupAuthorityDAO._hasJoinAuthority(group3, friend.id.toSessionId)) == Right(true))
 //    assert(execute(groupAuthorityDAO._hasJoinAuthority(group4, friend.id.toSessionId)) == Right(true))
 //
-//    // check by following
+//    // check by follows
 //    assert(execute(groupAuthorityDAO._hasJoinAuthority(group1, follow.id.toSessionId)) == Left(AuthorityNotFound))
 //    assert(execute(groupAuthorityDAO._hasJoinAuthority(group2, follow.id.toSessionId)) == Right(true))
 //    assert(execute(groupAuthorityDAO._hasJoinAuthority(group3, follow.id.toSessionId)) == Left(AuthorityNotFound))

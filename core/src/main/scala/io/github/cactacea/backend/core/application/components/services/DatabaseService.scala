@@ -8,7 +8,8 @@ import io.github.cactacea.backend.core.util.db.{Encoders, Operators}
 
 
 class DatabaseService(client: OperationType => mysql.Client with mysql.Transactions, timeZone: TimeZone)
-  extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), client, timeZone, timeZone) with Encoders with Operators {
+  extends FinagleMysqlContext(NamingStrategy(PluralizedTableNames, SnakeCase, MysqlEscape), client, timeZone, timeZone)
+    with Encoders with Operators {
 
   def this(master: mysql.Client with mysql.Transactions, slave: mysql.Client with mysql.Transactions, timeZone: TimeZone) = {
     this(_ match {

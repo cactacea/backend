@@ -30,7 +30,7 @@ class CommentsService @Inject()(
     for {
       _ <- db.transaction(commentsRepository.delete(commentId, sessionId))
       _ <- listenerService.commentDeleted(commentId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
@@ -48,7 +48,7 @@ class CommentsService @Inject()(
     for {
       _ <- db.transaction(reportsRepository.createCommentReport(commentId, reportType, reportContent, sessionId))
       _ <- listenerService.commentReported(commentId, reportType, reportContent, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

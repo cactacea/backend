@@ -16,7 +16,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     for {
       _ <- insertCommentLikes(commentId, sessionId)
       _ <- updateLikeCount(commentId)
-    } yield (Unit)
+    } yield (())
   }
 
   private def insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[CommentLikeId] = {
@@ -48,7 +48,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     for {
       _ <- deleteCommentLikes(commentId, sessionId)
       _ <- updateUnlikeCount(commentId)
-    } yield (Unit)
+    } yield (())
   }
 
   private def deleteCommentLikes(commentId: CommentId, sessionId: SessionId): Future[Unit] = {

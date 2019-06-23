@@ -38,7 +38,7 @@ class FriendRequestsRepository @Inject()(
       _ <- friendRequestsValidator.exist(accountId, sessionId)
       _ <- friendRequestsStatusDAO.delete(accountId, sessionId)
       _ <- friendRequestsDAO.delete(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
@@ -51,7 +51,7 @@ class FriendRequestsRepository @Inject()(
       _ <- friendsRepository.create(sessionId.toAccountId, f.toSessionId)
       _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.toSessionId)
       _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.accepted, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def reject(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
@@ -59,7 +59,7 @@ class FriendRequestsRepository @Inject()(
       f <- friendRequestsValidator.find(friendRequestId, sessionId)
       _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.toSessionId)
       _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.rejected, sessionId).map(_ => true)
-    } yield (Unit)
+    } yield (())
   }
 
 }

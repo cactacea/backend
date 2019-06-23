@@ -11,12 +11,12 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   val friendRequestsRepository = injector.instance[FriendRequestsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
-  val followerRepository = injector.instance[FollowingsRepository]
+  val followerRepository = injector.instance[FollowsRepository]
   val followersRepository = injector.instance[FollowersRepository]
   val friendsRepository = injector.instance[FriendsRepository]
   val mutesRepository = injector.instance[MutesRepository]
   val blocksDAO = injector.instance[BlocksDAO]
-  val followingDAO = injector.instance[FollowingsDAO]
+  val followDAO = injector.instance[FollowsDAO]
   val followersDAO = injector.instance[FollowersDAO]
   val friendsDAO = injector.instance[FriendsDAO]
   val mutesDAO = injector.instance[MutesDAO]
@@ -44,11 +44,11 @@ class BlocksRepositorySpec extends RepositorySpec {
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
-    assert(execute(followingDAO.exist(sessionUser.id, user.id.toSessionId)) == false)
+    assert(execute(followDAO.exist(sessionUser.id, user.id.toSessionId)) == false)
 
   }
 
-  test("block a following") {
+  test("block a follows") {
 
     val sessionUser = signUp("BlocksRepositorySpec5", "session user password", "session udid")
     val user = signUp("BlocksRepositorySpec6", "user password", "user udid")
@@ -61,7 +61,7 @@ class BlocksRepositorySpec extends RepositorySpec {
     assert(result.size == 1)
     assert(result(0).id == user.id)
 
-    assert(execute(followingDAO.exist(user.id, sessionUser.id.toSessionId)) == false)
+    assert(execute(followDAO.exist(user.id, sessionUser.id.toSessionId)) == false)
 
   }
 

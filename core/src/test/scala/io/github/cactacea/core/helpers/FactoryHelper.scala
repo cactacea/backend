@@ -31,7 +31,7 @@ object FactoryHelper {
       displayName = accountName,
       password = "password",
       accountStatus = AccountStatusType.normally,
-      followingCount = 0L,
+      followCount = 0L,
       followerCount = 0L,
       friendCount = 0L,
       feedCount = 0L,

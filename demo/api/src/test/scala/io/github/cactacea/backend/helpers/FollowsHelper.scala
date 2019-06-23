@@ -5,11 +5,11 @@ import io.github.cactacea.backend.APIServerSpec
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 
-trait FollowingsHelper extends CommonHelper {
+trait FollowsHelper extends CommonHelper {
   self: APIServerSpec =>
 
-  def sessionFollowing(accessToken: String): Array[Account] = {
-    val path = s"/session/following"
+  def sessionFollow(accessToken: String): Array[Account] = {
+    val path = s"/session/follows"
     server.httpGetJson[Array[Account]](
       path = path,
       headers = headers(accessToken)
@@ -18,7 +18,7 @@ trait FollowingsHelper extends CommonHelper {
 
   def follow(accountId: AccountId, accessToken: String): Response = {
     server.httpPost(
-      path = s"/accounts/${accountId.value}/following",
+      path = s"/accounts/${accountId.value}/follows",
       headers = headers(accessToken),
       postBody = ""
     )

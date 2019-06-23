@@ -19,14 +19,14 @@ class BlocksService @Inject()(
     for {
       _ <- db.transaction(blocksRepository.create(accountId, sessionId))
       _ <- listenerService.accountBlocked(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(blocksRepository.delete(accountId, sessionId))
       _ <- listenerService.accountUnBlocked(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {

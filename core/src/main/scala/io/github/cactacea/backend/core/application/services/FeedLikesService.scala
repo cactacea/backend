@@ -19,14 +19,14 @@ class FeedLikesService @Inject()(
     for {
       _ <- db.transaction(feedLikesRepository.create(feedId, sessionId))
       _ <- listenerService.feedLiked(feedId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(feedLikesRepository.delete(feedId, sessionId))
       _ <- listenerService.feedUnLiked(feedId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {

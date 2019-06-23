@@ -6,13 +6,13 @@ case class Relationships(
                           accountId: AccountId,
                           displayName: Option[String],
                           by: AccountId,
-                          following: Boolean,
+                          follow: Boolean,
                           isFollower: Boolean,
                           muting: Boolean,
                           isFriend: Boolean,
                           friendRequestInProgress: Boolean,
                           followerBlockCount: Long,
-                          followingBlockCount: Long,
+                          followBlockCount: Long,
                           friendBlockCount: Long
                       )
 

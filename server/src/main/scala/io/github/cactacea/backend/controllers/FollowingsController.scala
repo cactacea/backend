@@ -14,24 +14,24 @@ import io.github.cactacea.backend.utils.auth.CactaceaContext
 import io.swagger.models.Swagger
 
 @Singleton
-class FollowingsController @Inject()(
+class FollowsController @Inject()(
                                       @Flag("cactacea.api.prefix") apiPrefix: String,
-                                      followingsService: FollowingsService,
+                                      followsService: FollowsService,
                                       s: Swagger) extends CactaceaSwaggerController {
 
   protected implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    getWithDoc("/accounts/:id/following") { o =>
-      o.summary("Get accounts list a account following")
+    getWithDoc("/accounts/:id/follows") { o =>
+      o.summary("Get accounts list a account follows")
         .tag(accountsTag)
-        .operationId("findFollowing")
-        .request[GetFollowing]
+        .operationId("findFollow")
+        .request[GetFollow]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
-    } { request: GetFollowing =>
-      followingsService.find(
+    } { request: GetFollow =>
+      followsService.find(
         request.id,
         request.since,
         request.offset.getOrElse(0),
@@ -49,7 +49,7 @@ class FollowingsController @Inject()(
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyFollowed))))
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: PostFollow =>
-      followingsService.create(
+      followsService.create(
         request.id,
         CactaceaContext.id
       ).map(_ => response.ok)
@@ -64,7 +64,7 @@ class FollowingsController @Inject()(
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotFollowed))))
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: DeleteFollow =>
-      followingsService.delete(
+      followsService.delete(
         request.id,
         CactaceaContext.id
       ).map(_ => response.ok)

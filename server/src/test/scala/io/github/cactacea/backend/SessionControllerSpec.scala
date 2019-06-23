@@ -16,7 +16,7 @@ trait SessionControllerSpec extends FeatureTest {
   test("DELETE /session/profile_image") (pending)
   test("GET /session/feeds") (pending)
   test("GET /session/likes") (pending)
-  test("GET /session/following") (pending)
+  test("GET /session/follows") (pending)
   test("GET /session/followers") (pending)
   test("GET /session/friends") (pending)
   test("GET /session/groups") (pending)

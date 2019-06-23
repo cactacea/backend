@@ -19,7 +19,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
       _ <- updateAccount(1L, sessionId)
       _ <- updateFriendBlockCount(accountId, 1L, sessionId)
       _ <- insertRelationship(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -28,7 +28,7 @@ class FriendsDAO @Inject()(db: DatabaseService) {
       _ <- updateAccount(-1L, sessionId)
       _ <- updateFriendBlockCount(accountId, -1L, sessionId)
       _ <- updateRelationship(accountId, friend = false, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   private def updateAccount(count: Long, sessionId: SessionId): Future[Unit] = {

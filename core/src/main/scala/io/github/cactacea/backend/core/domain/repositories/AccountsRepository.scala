@@ -56,7 +56,7 @@ class AccountsRepository @Inject()(
     for {
       _ <- accountsValidator.notExist(accountName, sessionId)
       _ <- accountsDAO.updateAccountName(accountName, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {
@@ -65,7 +65,7 @@ class AccountsRepository @Inject()(
       _ <- accountsValidator.exist(accountId, sessionId)
       _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
       _ <- accountsDAO.updateDisplayName(accountId, userName, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {

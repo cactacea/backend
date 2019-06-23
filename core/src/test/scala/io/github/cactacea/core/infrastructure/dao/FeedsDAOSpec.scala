@@ -69,7 +69,7 @@ class FeedsDAOSpec extends DAOSpec {
         _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
         _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
         _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create feed likes
@@ -77,14 +77,14 @@ class FeedsDAOSpec extends DAOSpec {
       for {
         _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
         _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create report
     execute(
       for {
         _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create feeds result
@@ -239,7 +239,7 @@ class FeedsDAOSpec extends DAOSpec {
         _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
         _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
         _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create feed likes
@@ -247,14 +247,14 @@ class FeedsDAOSpec extends DAOSpec {
       for {
         _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
         _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create report
     execute(
       for {
         _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create feeds result
@@ -431,7 +431,7 @@ class FeedsDAOSpec extends DAOSpec {
         _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
         _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
         _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create feed likes
@@ -439,14 +439,14 @@ class FeedsDAOSpec extends DAOSpec {
       for {
         _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
         _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create report
     execute(
       for {
         _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create feeds result
@@ -600,21 +600,21 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId7 = execute(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionUser.id.toSessionId))
     val feedId8 = execute(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionUser.id.toSessionId))
 
-    // following user
+    // follows user
     execute(
       for {
-        _ <- followingsDAO.create(sessionUser.id, followUser.id.toSessionId)
+        _ <- followsDAO.create(sessionUser.id, followUser.id.toSessionId)
         _ <- followersDAO.create(followUser.id, sessionUser.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // friend user
     execute(
       for {
-        _ <- followingsDAO.create(sessionUser.id, friendUser.id.toSessionId)
+        _ <- followsDAO.create(sessionUser.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionUser.id.toSessionId)
         _ <- friendsDAO.create(sessionUser.id, friendUser.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // exist by follower
@@ -686,24 +686,24 @@ class FeedsDAOSpec extends DAOSpec {
         _ <- feedsDAO.create("followers", Some(mediums6), Some(tags6), FeedPrivacyType.followers,  false, None, sessionAccount.id.toSessionId)
         _ <- feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId)
         _ <- feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
-    // following user
+    // follows user
     execute(
       for {
-        _ <- followingsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+        _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
         _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // friend user
     execute(
       for {
-        _ <- followingsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // find by follower
@@ -753,21 +753,21 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId7 = execute(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
     val feedId8 = execute(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
 
-    // following user
+    // follows user
     execute(
       for {
-        _ <- followingsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+        _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
         _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // friend user
     execute(
       for {
-        _ <- followingsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // find by follower
@@ -871,7 +871,7 @@ class FeedsDAOSpec extends DAOSpec {
         _ <- commentsDAO.create(feedId6, "feed6 comment2", sessionAccount2.id.toSessionId)
         _ <- commentsDAO.create(feedId6, "feed6 comment3", sessionAccount2.id.toSessionId)
         _ <- commentsDAO.create(feedId6, "feed6 comment4", sessionAccount2.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create feed likes
@@ -879,14 +879,14 @@ class FeedsDAOSpec extends DAOSpec {
       for {
         _ <- feedLikesDAO.create(feedId5, sessionAccount1.id.toSessionId)
         _ <- feedLikesDAO.create(feedId6, sessionAccount1.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create report
     execute(
       for {
         _ <- feedReportsDAO.create(feedId6, ReportType.spam, Some("report content"), sessionAccount1.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create feeds result

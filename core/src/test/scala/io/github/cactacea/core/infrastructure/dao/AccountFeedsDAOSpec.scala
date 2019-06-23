@@ -30,7 +30,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
     // create feed
     val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
-    // create following
+    // create follows
     execute(
       for {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)
@@ -38,7 +38,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId)
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId)
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create account feeds

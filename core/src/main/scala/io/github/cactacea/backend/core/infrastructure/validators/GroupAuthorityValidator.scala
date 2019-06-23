@@ -91,12 +91,12 @@ class GroupAuthorityValidator @Inject()(
   }
 
   private def canJoin(g: Groups, r: Option[Relationships], sessionId: SessionId): Future[Unit] = {
-    val follow = r.fold(false)(_.following)
+    val follow = r.fold(false)(_.follow)
     val follower = r.fold(false)(_.isFollower)
     val friend = r.fold(false)(_.isFriend)
     if (g.by.toSessionId == sessionId) {
       Future.Unit
-    } else if (g.privacyType == GroupPrivacyType.following && follow) {
+    } else if (g.privacyType == GroupPrivacyType.follows && follow) {
       Future.Unit
     } else if (g.privacyType == GroupPrivacyType.followers && follower) {
       Future.Unit

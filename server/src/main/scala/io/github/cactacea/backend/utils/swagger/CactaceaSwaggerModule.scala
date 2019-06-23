@@ -18,7 +18,7 @@ object CactaceaSwaggerModule extends SwaggerModule {
       .description("Cactacea / Cactacea backend API for web and mobile applications")
       .version(CactaceaBuildInfo.version)
 
-    val swaggerDefine = finagger.Swagger.info(info)
+    val swaggerDefine = finagger.CactaceaSwagger.info(info)
 
     // Model defines
     swaggerDefine.addDefinition("CactaceaError", errorResponseScheme("CactaceaError"))

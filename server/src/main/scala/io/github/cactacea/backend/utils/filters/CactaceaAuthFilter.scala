@@ -9,7 +9,7 @@ import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.backend.utils.auth.{CactaceaContext, CactaceaTokenGenerator}
 
 @Singleton
-class CactaceaTokenFilter @Inject()(sessionsRepository: SessionsRepository) extends SimpleFilter[Request, Response] {
+class CactaceaAuthFilter @Inject()(sessionsRepository: SessionsRepository) extends SimpleFilter[Request, Response] {
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     CactaceaContext.authenticated match {

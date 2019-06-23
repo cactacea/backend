@@ -21,7 +21,7 @@ class MutesRepository @Inject()(
       _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
       _ <- mutesValidator.notExist(accountId, sessionId)
       _ <- mutesDAO.create(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -31,7 +31,7 @@ class MutesRepository @Inject()(
       _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
       _ <- mutesValidator.exist(accountId, sessionId)
       _ <- mutesDAO.delete(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {

@@ -161,14 +161,14 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     val friend2 = createAccount("AccountsDAOSpec25")
     val blockingUser = createAccount("AccountsDAOSpec26")
 
-    // account1 following user1
-    execute(followingsDAO.create(user1.id, account1.id.toSessionId))
+    // account1 follows user1
+    execute(followsDAO.create(user1.id, account1.id.toSessionId))
     execute(followersDAO.create(user1.id, account1.id.toSessionId))
 
-    // user2, user3, user4 following account1
-    execute(followingsDAO.create(account1.id, user2.id.toSessionId))
-    execute(followingsDAO.create(account1.id, user3.id.toSessionId))
-    execute(followingsDAO.create(account1.id, user4.id.toSessionId))
+    // user2, user3, user4 follows account1
+    execute(followsDAO.create(account1.id, user2.id.toSessionId))
+    execute(followsDAO.create(account1.id, user3.id.toSessionId))
+    execute(followsDAO.create(account1.id, user4.id.toSessionId))
 
     execute(followersDAO.create(account1.id, user2.id.toSessionId))
     execute(followersDAO.create(account1.id, user3.id.toSessionId))
@@ -180,17 +180,17 @@ class AccountsDAOSpec extends DAOSpec with Logging {
     execute(friendsDAO.create(friend1.id, account1.id.toSessionId))
     execute(friendsDAO.create(friend2.id, account1.id.toSessionId))
 
-    // account1 followingCount = 1, followerCount = 3, friendCount = 2
+    // account1 followCount = 1, followerCount = 3, friendCount = 2
 
     // find account1 by session user
     val account1Result = execute(accountsDAO.find(account1.id, sessionAccount.id.toSessionId))
     assert(account1Result.isDefined == true)
 
-    // following count, follower count, friend count
+    // follows count, follower count, friend count
     assert(account1Result.get.accountName == account1.accountName)
     assert(account1Result.get.displayName == account1.displayName)
     assert(account1Result.get.id == account1.id)
-    assert(account1Result.map(_.followingCount == 1).getOrElse(false))
+    assert(account1Result.map(_.followCount == 1).getOrElse(false))
     assert(account1Result.map(_.followerCount == 3).getOrElse(false))
     assert(account1Result.map(_.friendCount == 2).getOrElse(false))
     assert(account1Result.map(_.feedCount == 0).getOrElse(false))

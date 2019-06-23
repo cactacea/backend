@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`accounts` (
   `account_name` VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
   `display_name` VARCHAR(50) NOT NULL DEFAULT ' ',
   `password` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
-  `following_count` BIGINT(20) NOT NULL DEFAULT '0',
+  `follow_count` BIGINT(20) NOT NULL DEFAULT '0',
   `profile_image` BIGINT(20) NULL DEFAULT NULL,
   `profile_image_url` VARCHAR(2083) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
   `follower_count` BIGINT(20) NOT NULL DEFAULT '0',
@@ -535,9 +535,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`followings`
+-- Table `${schema}`.`follows`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`followings` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`follows` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
@@ -545,10 +545,10 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`followings` (
   PRIMARY KEY (`id`),
   INDEX `fk_follow_accounts1_idx` (`account_id` ASC),
   INDEX `fk_follow_accounts2_idx` (`by` ASC),
-  CONSTRAINT `fk_following_accounts1`
+  CONSTRAINT `fk_follow_accounts1`
     FOREIGN KEY (`account_id`)
     REFERENCES `${schema}`.`accounts` (`id`),
-  CONSTRAINT `fk_following_accounts2`
+  CONSTRAINT `fk_follow_accounts2`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`accounts` (`id`))
 ENGINE = InnoDB
@@ -721,20 +721,20 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`relationships` (
   `account_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `display_name` VARCHAR(50) NULL DEFAULT NULL,
-  `following` TINYINT(4) NOT NULL DEFAULT '0',
+  `follow` TINYINT(4) NOT NULL DEFAULT '0',
   `muting` TINYINT(4) NOT NULL DEFAULT '0',
   `is_friend` TINYINT(4) NOT NULL DEFAULT '0',
   `is_follower` TINYINT(4) NOT NULL DEFAULT '0',
   `friend_request_in_progress` TINYINT(4) NOT NULL DEFAULT '0',
   `follower_block_count` BIGINT(20) NOT NULL DEFAULT '0',
-  `following_block_count` BIGINT(20) NOT NULL DEFAULT '0',
+  `follow_block_count` BIGINT(20) NOT NULL DEFAULT '0',
   `friend_block_count` BIGINT(20) NOT NULL DEFAULT '0',
   `friended_at` BIGINT(20) NOT NULL DEFAULT '0',
   UNIQUE INDEX `unique` (`account_id` ASC, `by` ASC),
   INDEX `fk_account_relationships_accounts1_idx` (`account_id` ASC),
   INDEX `fk_account_relationships_accounts2_idx` (`by` ASC),
-  INDEX `index4` (`account_id` ASC, `by` ASC, `following` ASC, `is_follower` ASC, `muting` ASC, `is_friend` ASC, `friend_request_in_progress` ASC),
-  INDEX `index5` (`account_id` ASC, `by` ASC, `is_follower` ASC, `following` ASC, `is_friend` ASC),
+  INDEX `index4` (`account_id` ASC, `by` ASC, `follow` ASC, `is_follower` ASC, `muting` ASC, `is_friend` ASC, `friend_request_in_progress` ASC),
+  INDEX `index5` (`account_id` ASC, `by` ASC, `is_follower` ASC, `follow` ASC, `is_friend` ASC),
   CONSTRAINT `fk_account_status_accounts1`
     FOREIGN KEY (`account_id`)
     REFERENCES `${schema}`.`accounts` (`id`),

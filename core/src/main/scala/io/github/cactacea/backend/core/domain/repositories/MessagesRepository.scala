@@ -48,7 +48,7 @@ class MessagesRepository @Inject()(
       for {
         _ <- messagesDAO.updateReadAccountCount(ids)
         _ <- accountMessagesDAO.updateUnread(ids, sessionId)
-      } yield (Unit)
+      } yield (())
     }
   }
 

@@ -13,7 +13,7 @@ trait Helpers extends FeatureTest
   with CommonHelper
   with MediumsHelper
   with AccountsHelper
-  with FollowingsHelper
+  with FollowsHelper
   with SessionHelper
   with SessionsHelper {
 
