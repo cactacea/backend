@@ -4,12 +4,10 @@ import java.io.PrintWriter
 
 import com.google.inject.Singleton
 import com.twitter.finatra.http.EmbeddedHttpServer
-import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.TwitterModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
-import io.cactacea.finagger.DocsController
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.helpers._
 
