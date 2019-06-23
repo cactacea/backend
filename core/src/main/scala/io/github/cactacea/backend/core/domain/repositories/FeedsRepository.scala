@@ -52,14 +52,14 @@ class FeedsRepository @Inject()(
       _ <- mediumsValidator.exist(ids, sessionId)
       _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedsDAO.delete(feedId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {

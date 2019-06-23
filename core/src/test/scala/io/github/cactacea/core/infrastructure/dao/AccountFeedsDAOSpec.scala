@@ -38,7 +38,7 @@ class AccountFeedsDAOSpec extends DAOSpec {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId)
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId)
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create account feeds

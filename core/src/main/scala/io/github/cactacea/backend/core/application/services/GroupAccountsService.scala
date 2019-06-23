@@ -23,7 +23,7 @@ class GroupAccountsService @Inject()(
     for {
       _ <- db.transaction(groupAccountsRepository.create(groupId, sessionId))
       _ <- listenerService.accountGroupJoined(groupId, sessionId)
-    } yield (Unit)
+    } yield (())
 
   }
 
@@ -31,21 +31,21 @@ class GroupAccountsService @Inject()(
     for {
       _ <- db.transaction(groupAccountsRepository.create(accountId, groupId, sessionId))
       _ <- listenerService.accountGroupJoined(accountId, groupId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(groupAccountsRepository.delete(groupId, sessionId))
       _ <- listenerService.accountGroupLeft(groupId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(groupAccountsRepository.delete(accountId, groupId, sessionId))
       _ <- listenerService.accountGroupLeft(accountId, groupId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

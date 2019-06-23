@@ -24,28 +24,28 @@ class ReportsRepository @Inject()(
       _ <- accountsValidator.exist(accountId, sessionId)
       _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
       _ <- accountReportsDAO.create(accountId, reportType, reportContent, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def createFeedReport(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- feedsValidator.exist(feedId, sessionId)
       _ <- feedReportsDAO.create(feedId, reportType, reportContent, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def createCommentReport(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- commentsValidator.exist(commentId, sessionId)
       _ <- commentReportsDAO.create(commentId, reportType, reportContent, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def createGroupReport(groupId: GroupId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- groupsValidator.exist(groupId, sessionId)
       _ <- groupReportsDAO.create(groupId, reportType, reportContent, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

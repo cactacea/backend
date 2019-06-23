@@ -19,14 +19,14 @@ class FollowingsService @Inject()(
     for {
       _ <- db.transaction(followingsRepository.create(accountId, sessionId))
       _ <- listenerService.accountFollowed(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(followingsRepository.delete(accountId, sessionId))
       _ <- listenerService.accountUnFollowed(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {

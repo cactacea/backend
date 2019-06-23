@@ -30,7 +30,7 @@ class FriendsRepository @Inject()(
       _ <- followersDAO.create(accountId, sessionId)
       _ <- followersDAO.create(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendsDAO.create(sessionId.toAccountId, accountId.toSessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -43,7 +43,7 @@ class FriendsRepository @Inject()(
       _ <- friendsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.friends, sessionId)
       _ <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.friends, accountId.toSessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sortType: FriendsSortType, sessionId: SessionId) : Future[List[Account]]= {

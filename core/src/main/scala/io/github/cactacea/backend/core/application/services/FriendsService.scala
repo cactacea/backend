@@ -28,7 +28,7 @@ class FriendsService @Inject()(
     for {
       _ <- db.transaction(friendsRepository.delete(accountId, sessionId))
       _ <- listenerService.accountUnFriended(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
 
   }
 

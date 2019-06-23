@@ -76,7 +76,7 @@ class FeedsDAO @Inject()(
       _ <- deleteMediums(feedId)
       _ <- createTags(feedId, tags)
       _ <- feedMediumDAO.create(feedId, mediumIds)
-    } yield (Unit)
+    } yield (())
   }
 
   private def updateFeeds(feedId: FeedId,

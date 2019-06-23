@@ -38,7 +38,7 @@ class FeedsService @Inject()(
     for {
       _ <- db.transaction(feedsRepository.delete(feedId, sessionId))
       _ <- listenerService.feedDeleted(feedId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def edit(feedId: FeedId,

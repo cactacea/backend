@@ -38,7 +38,7 @@ class GroupAccountsRepository @Inject()(
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupInvitationsDAO.update(groupId, accountId, GroupInvitationStatusType.accepted)
       _ <- messagesDAO.create(groupId, MessageType.groupJoined, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
@@ -50,7 +50,7 @@ class GroupAccountsRepository @Inject()(
       _ <- accountGroupsDAO.create(accountId, groupId)
       _ <- groupInvitationsDAO.update(groupId, accountId, GroupInvitationStatusType.accepted)
       _ <- messagesDAO.create(groupId, MessageType.groupJoined, accountId.toSessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
@@ -68,11 +68,11 @@ class GroupAccountsRepository @Inject()(
           _ <- groupReportsDAO.delete(groupId)
           _ <- groupInvitationsDAO.deleteByGroupId(groupId)
           _ <- groupsDAO.delete(groupId)
-        } yield (Unit))
+        } yield (()))
       } else {
         (for {
           _ <- messagesDAO.create(groupId, MessageType.groupLeft, accountId.toSessionId).map(_ => true)
-        } yield (Unit))
+        } yield (()))
       }
     )
   }
@@ -94,11 +94,11 @@ class GroupAccountsRepository @Inject()(
           _ <- groupReportsDAO.delete(groupId)
           _ <- groupInvitationsDAO.deleteByGroupId(groupId)
           _ <- groupsDAO.delete(groupId)
-        } yield (Unit))
+        } yield (()))
       } else {
         (for {
           _ <- messagesDAO.create(groupId, MessageType.groupLeft, accountId.toSessionId).map(_ => true)
-        } yield (Unit))
+        } yield (()))
       }
     )
   }

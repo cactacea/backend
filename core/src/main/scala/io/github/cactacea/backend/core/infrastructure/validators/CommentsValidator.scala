@@ -58,7 +58,7 @@ class CommentsValidator @Inject()(commentsDAO: CommentsDAO) {
 //          _ <- deleteCommentReports(commentId)
 //          _ <- deleteCommentLikes(commentId)
 //          _ <- deleteComments(commentId, by)
-//        } yield (Unit)
+//        } yield (())
 //      case None =>
 //        Future.Unit
 //    })

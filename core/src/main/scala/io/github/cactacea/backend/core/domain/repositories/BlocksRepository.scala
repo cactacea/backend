@@ -46,7 +46,7 @@ class BlocksRepository @Inject()(
       _ <- mutesDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendRequestsDAO.delete(accountId, sessionId)
       _ <- friendRequestsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -55,7 +55,7 @@ class BlocksRepository @Inject()(
       _ <- accountsValidator.exist(accountId)
       _ <- blocksValidator.exist(accountId, sessionId)
       _ <- blocksDAO.delete(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

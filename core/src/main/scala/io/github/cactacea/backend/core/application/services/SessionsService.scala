@@ -41,7 +41,7 @@ class SessionsService @Inject()(
     for {
       _ <- db.transaction(sessionsRepository.signOut(udid, sessionId))
       _ <- listenerService.signedOut(sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

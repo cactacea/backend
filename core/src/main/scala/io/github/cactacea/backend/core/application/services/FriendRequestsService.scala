@@ -27,7 +27,7 @@ class FriendRequestsService @Inject()(
     for {
       _ <- db.transaction(friendRequestsRepository.delete(accountId, sessionId))
       _ <- listenerService.friendRequestDeleted(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
@@ -38,14 +38,14 @@ class FriendRequestsService @Inject()(
     for {
       _ <- db.transaction(friendRequestsRepository.accept(friendRequestId, sessionId))
       _ <- listenerService.friendRequestAccepted(friendRequestId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def reject(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(friendRequestsRepository.reject(friendRequestId, sessionId))
       _ <- listenerService.friendRequestRejected(friendRequestId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

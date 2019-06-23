@@ -19,14 +19,14 @@ class DevicesService @Inject()(
     for {
       _ <- db.transaction(deviceTokensRepository.update(udid, pushToken, sessionId))
       _ <- listenerService.devicePushTokenUpdated(sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def update(deviceStatus: ActiveStatusType, sessionId: SessionId, udid: String): Future[Unit] = {
     for {
       _ <- db.transaction(deviceTokensRepository.update(udid, deviceStatus, sessionId))
       _ <- listenerService.deviceStatusUpdated(sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

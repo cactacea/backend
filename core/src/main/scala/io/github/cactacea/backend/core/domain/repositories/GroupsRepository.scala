@@ -37,7 +37,7 @@ class GroupsRepository @Inject()(
     for {
       _ <- groupAuthorityValidator.hasUpdateAuthority(groupId, sessionId)
       _ <- groupsDAO.update(groupId, name, byInvitationOnly, privacyType, authority, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(name: Option[String],

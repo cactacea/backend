@@ -36,7 +36,7 @@ class FollowingsRepository @Inject()(
       _ <- followingsValidator.notExist(accountId, sessionId)
       _ <- followingsDAO.create(accountId, sessionId)
       _ <- followersDAO.create(accountId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -49,7 +49,7 @@ class FollowingsRepository @Inject()(
       _ <- followersDAO.delete(accountId, sessionId)
       _ <- groupInvitationsDAO.delete(accountId, GroupPrivacyType.following, sessionId)
       _ <- groupInvitationsDAO.delete(sessionId.toAccountId, GroupPrivacyType.followers, accountId.toSessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

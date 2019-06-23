@@ -35,7 +35,7 @@ class MessagesService @Inject()(
     for {
       _ <- db.transaction(messagesRepository.delete(groupId, sessionId))
       _ <- listenerService.messagesDeleted(groupId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {

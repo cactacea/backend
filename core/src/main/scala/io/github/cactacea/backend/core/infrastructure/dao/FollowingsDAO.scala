@@ -18,7 +18,7 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
       _ <- insertRelationship(accountId, sessionId)
       _ <- updateAccount(1L, sessionId)
       _ <- updateFollowingBlockCount(accountId, 1L, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -27,7 +27,7 @@ class FollowingsDAO @Inject()(db: DatabaseService) {
       _ <- updateRelationship(accountId, sessionId)
       _ <- updateAccount(-1L, sessionId)
       _ <- updateFollowingBlockCount(accountId, -1L, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   private def updateAccount(count: Long, sessionId: SessionId): Future[Unit] = {

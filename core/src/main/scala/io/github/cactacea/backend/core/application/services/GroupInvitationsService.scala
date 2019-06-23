@@ -40,14 +40,14 @@ class GroupInvitationsService @Inject()(
     for {
       _ <- db.transaction(groupInvitationsRepository.accept(invitationId, sessionId))
       _ <- listenerService.groupInvitationAccepted(invitationId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def reject(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(groupInvitationsRepository.reject(invitationId, sessionId))
       _ <- listenerService.groupInvitationRejected(invitationId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

@@ -58,7 +58,7 @@ class SessionsRepository @Inject()(
     for {
       _ <- accountsDAO.signOut(sessionId)
       _ <- devicesDAO.delete(udid, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 

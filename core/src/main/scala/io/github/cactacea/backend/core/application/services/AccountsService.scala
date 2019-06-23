@@ -46,7 +46,7 @@ class AccountsService @Inject()(
     for {
       _ <- db.transaction(accountsRepository.updateAccountName(accountName, sessionId))
       _ <- listenerService.accountNameUpdated(accountName, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def update(displayName: String,
@@ -59,7 +59,7 @@ class AccountsService @Inject()(
     for {
       _ <- db.transaction(accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId))
       _ <- listenerService.profileUpdated(displayName, web, birthday, location, bio, sessionId)
-    } yield (Unit)
+    } yield (())
 
   }
 
@@ -67,21 +67,21 @@ class AccountsService @Inject()(
     for {
       uri <- db.transaction(accountsRepository.updateProfileImage(Some(profileImage), sessionId))
       _ <- listenerService.profileImageUpdated(uri, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def deleteProfileImage(sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(accountsRepository.updateProfileImage(None, sessionId))
       _ <- listenerService.profileImageUpdated(None, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def update(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(accountsRepository.updatePassword(oldPassword, newPassword, sessionId))
       _ <- listenerService.passwordUpdated(sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
   def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
@@ -92,7 +92,7 @@ class AccountsService @Inject()(
     for {
       _ <- db.transaction(reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId))
       _ <- listenerService.accountReported(accountId, reportType, reportContent, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 }

@@ -101,7 +101,7 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId)
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId)
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId)
-      } yield (Unit)
+      } yield (())
     )
 
     // create account feeds
@@ -167,7 +167,7 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
         _ <- pushNotificationFeedsDAO.update(feedId1, true)
         _ <- pushNotificationFeedsDAO.update(feedId2, false)
         _ <- pushNotificationFeedsDAO.update(feedId3, true)
-      } yield (Unit)
+      } yield (())
     )
 
     val result1 = execute(db.run(query[Feeds].filter(_.id == lift(feedId1))).map(_.headOption))

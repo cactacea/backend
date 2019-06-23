@@ -45,7 +45,7 @@ class CommentsRepository @Inject()(
     for {
       _ <- commentsValidator.exist(commentId, sessionId)
       _ <- commentsDAO.delete(commentId, sessionId)
-    } yield (Unit)
+    } yield (())
   }
 
 

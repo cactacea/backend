@@ -24,7 +24,7 @@ class AccountGroupsRepository @Inject()(
     for {
       _ <- accountGroupsDAO.updateHidden(groupId, true, sessionId)
       _ <- accountMessagesDAO.delete(accountId, groupId)
-    } yield (Unit)
+    } yield (())
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Group]] = {
