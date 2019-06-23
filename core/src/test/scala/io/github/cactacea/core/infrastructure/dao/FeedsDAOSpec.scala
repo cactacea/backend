@@ -600,10 +600,10 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId7 = execute(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionUser.id.toSessionId))
     val feedId8 = execute(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionUser.id.toSessionId))
 
-    // following user
+    // follows user
     execute(
       for {
-        _ <- followingsDAO.create(sessionUser.id, followUser.id.toSessionId)
+        _ <- followsDAO.create(sessionUser.id, followUser.id.toSessionId)
         _ <- followersDAO.create(followUser.id, sessionUser.id.toSessionId)
       } yield (())
     )
@@ -611,7 +611,7 @@ class FeedsDAOSpec extends DAOSpec {
     // friend user
     execute(
       for {
-        _ <- followingsDAO.create(sessionUser.id, friendUser.id.toSessionId)
+        _ <- followsDAO.create(sessionUser.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionUser.id.toSessionId)
         _ <- friendsDAO.create(sessionUser.id, friendUser.id.toSessionId)
       } yield (())
@@ -689,10 +689,10 @@ class FeedsDAOSpec extends DAOSpec {
       } yield (())
     )
 
-    // following user
+    // follows user
     execute(
       for {
-        _ <- followingsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+        _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
         _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
       } yield (())
     )
@@ -700,7 +700,7 @@ class FeedsDAOSpec extends DAOSpec {
     // friend user
     execute(
       for {
-        _ <- followingsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
       } yield (())
@@ -753,10 +753,10 @@ class FeedsDAOSpec extends DAOSpec {
     val feedId7 = execute(feedsDAO.create("friends"  , Some(mediums6), Some(tags6), FeedPrivacyType.friends,    false, None, sessionAccount.id.toSessionId))
     val feedId8 = execute(feedsDAO.create("self"     , Some(mediums6), Some(tags6), FeedPrivacyType.self,       false, None, sessionAccount.id.toSessionId))
 
-    // following user
+    // follows user
     execute(
       for {
-        _ <- followingsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
+        _ <- followsDAO.create(sessionAccount.id, followerUser.id.toSessionId)
         _ <- followersDAO.create(followerUser.id, sessionAccount.id.toSessionId)
       } yield (())
     )
@@ -764,7 +764,7 @@ class FeedsDAOSpec extends DAOSpec {
     // friend user
     execute(
       for {
-        _ <- followingsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
+        _ <- followsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- friendsDAO.create(sessionAccount.id, friendUser.id.toSessionId)
         _ <- followersDAO.create(friendUser.id, sessionAccount.id.toSessionId)
       } yield (())

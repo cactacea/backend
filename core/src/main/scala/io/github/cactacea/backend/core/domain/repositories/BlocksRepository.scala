@@ -12,7 +12,7 @@ class BlocksRepository @Inject()(
                                   accountsValidator: AccountsValidator,
                                   blocksValidator: BlocksValidator,
                                   blocksDAO: BlocksDAO,
-                                  followingsDAO: FollowingsDAO,
+                                  followsDAO: FollowsDAO,
                                   followersDAO: FollowersDAO,
                                   friendsDAO: FriendsDAO,
                                   friendRequestsDAO: FriendRequestsDAO,
@@ -34,8 +34,8 @@ class BlocksRepository @Inject()(
       _ <- accountsValidator.exist(accountId)
       _ <- blocksValidator.notExist(accountId, sessionId)
       _ <- blocksDAO.create(accountId, sessionId)
-      _ <- followingsDAO.delete(accountId, sessionId)
-      _ <- followingsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
+      _ <- followsDAO.delete(accountId, sessionId)
+      _ <- followsDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.delete(accountId, sessionId)
       _ <- followersDAO.delete(sessionId.toAccountId, accountId.toSessionId)
       _ <- followersDAO.delete(accountId, sessionId)

@@ -28,7 +28,7 @@ class FriendsRepositorySpec extends RepositorySpec {
     val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
     assert(account1.id == sessionUser.id)
     assert(account1.followerCount == 1L)
-    assert(account1.followingCount == 1L)
+    assert(account1.followCount == 1L)
     assert(account1.friendCount == 1L)
 
     val account2 = execute(accountsRepository.find(friendUser.id.toSessionId))
@@ -106,7 +106,7 @@ class FriendsRepositorySpec extends RepositorySpec {
     val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
     assert(account1.friendCount == 1L)
     assert(account1.followerCount == 1L)
-    assert(account1.followingCount == 1L)
+    assert(account1.followCount == 1L)
 
     execute(friendsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
     val account2 = execute(accountsRepository.find(friendUser.id.toSessionId))

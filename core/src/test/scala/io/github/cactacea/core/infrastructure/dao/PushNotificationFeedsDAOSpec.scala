@@ -29,7 +29,7 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
     // create feed
     val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
-    // create following
+    // create follows
     execute(followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId))
     execute(followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId))
     execute(followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId))
@@ -93,7 +93,7 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
     // create feed
     val feedId = execute(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
 
-    // create following
+    // create follows
     execute(
       for {
         _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)

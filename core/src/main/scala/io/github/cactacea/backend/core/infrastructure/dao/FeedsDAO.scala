@@ -152,7 +152,7 @@ class FeedsDAO @Inject()(
         .filter({ f =>
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships].filter(_.accountId == f.by).filter(_.by == lift(by)).filter(r =>
-              (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+              (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
                 (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty) ||
             (f.by == lift(by))})
@@ -194,7 +194,7 @@ class FeedsDAO @Inject()(
               .filter(_.accountId == f.by)
               .filter(_.by == lift(by))
               .filter(r =>
-                (r.following && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.follow && (f.privacyType == lift(FeedPrivacyType.followers))) ||
                 (r.isFriend && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty))
             .map(f =>
@@ -244,7 +244,7 @@ class FeedsDAO @Inject()(
                 .filter(_.accountId == f.by)
                 .filter(_.by == lift(by))
                 .filter(r =>
-                  (r.following && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                  (r.follow && (f.privacyType == lift(FeedPrivacyType.followers))) ||
                     (r.isFriend && (f.privacyType == lift(FeedPrivacyType.friends)))
                 ).nonEmpty))
           .map(f =>

@@ -30,7 +30,7 @@ class CactaceaServer extends BaseServer {
       .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaAuthFilter, ETagFilter, CorsFilter, FeedsController]
       .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaAuthFilter, ETagFilter, CorsFilter, FeedLikesController]
       .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaAuthFilter, ETagFilter, CorsFilter, FriendsController]
-      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaAuthFilter, ETagFilter, CorsFilter, FollowingsController]
+      .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaAuthFilter, ETagFilter, CorsFilter, FollowsController]
       .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaAuthFilter, ETagFilter, CorsFilter, GroupsController]
       .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaAuthFilter, ETagFilter, CorsFilter, InvitationsController]
       .add[CactaceaLocaleFilter, CactaceaAPIKeyFilter, CactaceaAuthFilter, ETagFilter, CorsFilter, MediumsController]

@@ -4,7 +4,7 @@ import com.twitter.finatra.request.QueryParam
 import com.twitter.finatra.validation.Max
 import io.swagger.annotations.ApiModelProperty
 
-case class GetSessionFollowings(
+case class GetSessionFollows(
                                 @ApiModelProperty(value = "Filters follower which started on since or later.")
                                 @QueryParam since: Option[Long],
 

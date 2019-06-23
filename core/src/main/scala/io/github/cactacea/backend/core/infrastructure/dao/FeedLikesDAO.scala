@@ -154,7 +154,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
                 .filter(_.accountId == f.by)
                 .filter(_.by == lift(by))
                 .filter(r =>
-                  (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                  (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
                   (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
               ).nonEmpty))
       } yield (f , fl))
@@ -191,7 +191,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
               .filter(_.accountId == f.by)
               .filter(_.by == lift(by))
               .filter(r =>
-                (r.following == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
+                (r.follow == true && (f.privacyType == lift(FeedPrivacyType.followers))) ||
                   (r.isFriend == true && (f.privacyType == lift(FeedPrivacyType.friends)))
             ).nonEmpty))
       } yield (f , fl))

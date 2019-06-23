@@ -27,7 +27,7 @@ class SessionController @Inject()(
                                    accountGroupsService: AccountGroupsService,
                                    feedsService: FeedsService,
                                    feedLikesService: FeedLikesService,
-                                   followingsService: FollowingsService,
+                                   followsService: FollowsService,
                                    followersService: FollowersService,
                                    friendsService: FriendsService,
                                    invitationService: GroupInvitationsService,
@@ -194,14 +194,14 @@ class SessionController @Inject()(
       )
     }
 
-    getWithDoc("/session/following") { o =>
+    getWithDoc("/session/follows") { o =>
       o.summary("Get accounts list session account followed")
         .tag(sessionTag)
-        .operationId("findSessionFollowing")
-        .request[GetSessionFollowings]
+        .operationId("findSessionFollow")
+        .request[GetSessionFollows]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
-    } { request: GetSessionFollowings =>
-      followingsService.find(
+    } { request: GetSessionFollows =>
+      followsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
