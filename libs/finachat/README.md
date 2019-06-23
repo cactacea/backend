@@ -9,7 +9,7 @@ WebSocket based chat library for Finagle
 To get started, add a dependency on finachat depending if you are using a server based on Finagle.
 
 ```
-"io.github.cactacea" %% "finasocket" % "19.6.0"
+"io.github.cactacea" %% "finachat" % "19.6.0"
 ```
 Or similarily with Maven:
 ```
