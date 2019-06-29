@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
 
   val versions = new {
-    val twitter = "19.5.1"
+    val twitter = "19.6.0"
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
