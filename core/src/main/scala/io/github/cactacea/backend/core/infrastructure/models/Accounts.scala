@@ -9,7 +9,6 @@ case class Accounts(
                      displayName: String,
                      profileImage: Option[MediumId],
                      profileImageUrl: Option[String],
-                     password: String,
                      followCount: Long,
                      followerCount: Long,
                      friendCount: Long,

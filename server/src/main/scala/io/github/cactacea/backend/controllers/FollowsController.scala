@@ -36,7 +36,7 @@ class FollowsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -51,7 +51,7 @@ class FollowsController @Inject()(
     } { request: PostFollow =>
       followsService.create(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -66,7 +66,7 @@ class FollowsController @Inject()(
     } { request: DeleteFollow =>
       followsService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

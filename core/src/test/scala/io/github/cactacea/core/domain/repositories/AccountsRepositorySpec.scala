@@ -1,16 +1,85 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import io.github.cactacea.backend.core.domain.enums.MediumType
+import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, DeviceType, MediumType}
 import io.github.cactacea.backend.core.helpers.RepositorySpec
+import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO, PushNotificationSettingsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, MediumNotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, AccountTerminated, MediumNotFound, SessionTimeout}
 
 class AccountsRepositorySpec extends RepositorySpec {
 
-  val accountsRepository = injector.instance[AccountsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
   val mediumRepository = injector.instance[MediumsRepository]
+  val devicesDAO = injector.instance[DevicesDAO]
+  var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
+  val accountsDAO = injector.instance[AccountsDAO]
+
+  test("find") {
+
+    val accountName = "SessionsRepositorySpec2"
+    val displayName = "SessionsRepositorySpec2"
+//    val password = "password"
+    val udid = "0123456789012345678901234567890123456789"
+    val userAgent = Some("userAgent")
+    val result = execute(accountsRepository.create(accountName, udid,  DeviceType.ios, userAgent))
+    val account = execute(accountsRepository.find(result.accountName, udid,  DeviceType.ios, userAgent))
+
+    assert(account.displayName == displayName)
+
+  }
+
+  //  test("invalid password signIn ") {
+  //
+  //    val accountName = "SessionsRepositorySpec3"
+  //    val password = "password"
+  //    val udid = "0123456789012345678901234567890123456789"
+  //    val userAgent = Some("userAgent")
+  //
+  //    execute(sessionsRepository.signUp(accountName, password, udid,  DeviceType.ios, userAgent))
+  //
+  //    assert(intercept[CactaceaException] {
+  //      execute(sessionsRepository.signIn(accountName, "invalid password", udid,  DeviceType.ios, userAgent))
+  //    }.error == InvalidAccountNameOrPassword)
+  //
+  //  }
+
+  test("signOut") {
+    val accountName = "SessionsRepositorySpec4"
+    //    val password = "password"
+    val udid = "0123456789012345678901234567890123456789"
+    val userAgent = Some("userAgent")
+    val session = execute(accountsRepository.create(accountName, udid,  DeviceType.ios, userAgent))
+    execute(accountsRepository.signOut(udid, session.id.toSessionId))
+
+  }
+
+  test("create") {
+
+    val accountName = "SessionsRepositorySpec1"
+    val displayName = "SessionsRepositorySpec1"
+    //    val password = "password"
+    val udid = "0123456789012345678901234567890123456789"
+    val userAgent = Some("userAgent")
+    val account = execute(accountsRepository.create(accountName, udid,  DeviceType.ios, userAgent))
+
+    // result user
+    assert(account.accountName == accountName)
+    assert(account.displayName == displayName)
+
+    // result device
+    val devices = execute(devicesDAO.exist(account.id.toSessionId, udid))
+    assert(devices == true)
+
+    // result notificationSettings
+    val notificationSettings = execute(notificationSettingsDAO.find(account.id.toSessionId))
+    assert(notificationSettings.isDefined == true)
+
+    // result users
+    val users = execute(accountsDAO.find(account.id.toSessionId))
+    assert(users.isDefined == true)
+
+  }
 
   test("find accounts") {
 
@@ -182,16 +251,40 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("update password") {
+//  test("update password") {
+//
+//    val session = signUp("aaa_test_account_28", "password", "udid")
+//    execute(accountsRepository.updatePassword("password", "new password", session.id.toSessionId))
+//
+//    val session2 = signIn("aaa_test_account_28", "new password", "udid")
+//    assert(session2.id == session.id)
+//    assert(session2.accountName == "aaa_test_account_28")
+//
+//  }
 
-    val session = signUp("aaa_test_account_28", "password", "udid")
-    execute(accountsRepository.updatePassword("password", "new password", session.id.toSessionId))
+  test("checkAccountStatus") {
 
-    val session2 = signIn("aaa_test_account_28", "new password", "udid")
-    assert(session2.id == session.id)
-    assert(session2.accountName == "aaa_test_account_28")
+    val accountName = "SessionsRepositorySpec5"
+//    val password = "password"
+    val udid = "0123456789012345678901234567890123456789"
+    val userAgent = Some("userAgent")
+    val session = execute(accountsRepository.create(accountName, udid,  DeviceType.ios, userAgent))
+
+    val expired = System.currentTimeMillis()
+    execute(accountsRepository.find(session.id.toSessionId, expired))
+
+    // Session Timeout
+    execute(accountsRepository.signOut(udid, session.id.toSessionId))
+    assert(intercept[CactaceaException] {
+      execute(accountsRepository.find(session.id.toSessionId, expired))
+    }.error == SessionTimeout)
+
+    // Terminated user
+    execute(accountsRepository.updateAccountStatus(AccountStatusType.terminated, session.id.toSessionId))
+    assert(intercept[CactaceaException] {
+      execute(accountsRepository.find(session.id.toSessionId, expired))
+    }.error == AccountTerminated)
 
   }
-
 
 }

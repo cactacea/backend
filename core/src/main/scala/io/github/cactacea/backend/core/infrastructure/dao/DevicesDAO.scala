@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{ActiveStatusType, DeviceType}
 import io.github.cactacea.backend.core.domain.models.AccountStatus
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, DeviceId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
@@ -33,24 +33,18 @@ class DevicesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def create(udid: String, deviceType: DeviceType, info: Option[String], sessionId: SessionId): Future[DeviceId] = {
-    for {
-      id <- insert(udid, deviceType, info, sessionId)
-    } yield (id)
-  }
-
-  private def insert(udid: String, deviceType: DeviceType, info: Option[String], sessionId: SessionId): Future[DeviceId] = {
+  def create(udid: String, deviceType: DeviceType, info: Option[String], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Devices].insert(
         _.accountId     -> lift(accountId),
         _.udid          -> lift(udid),
         _.deviceType    -> lift(deviceType),
-        _.activeStatus  -> lift(ActiveStatusType.inactive),
+        _.activeStatus  -> lift(ActiveStatusType.active),
         _.userAgent     -> lift(info)
-      ).returning(_.id)
+      ).onConflictIgnore
     }
-    run(q)
+    run(q).map(_ => ())
   }
 
   def delete(udid: String, sessionId: SessionId): Future[Unit] = {
@@ -61,7 +55,7 @@ class DevicesDAO @Inject()(db: DatabaseService) {
         .filter(_.udid        == lift(udid))
         .delete
     }
-    run(r).map(_ => Unit)
+    run(r).map(_ => ())
   }
 
   def update(udid: String, deviceStatus: ActiveStatusType, sessionId: SessionId): Future[Unit] = {
@@ -74,7 +68,7 @@ class DevicesDAO @Inject()(db: DatabaseService) {
           _.activeStatus   -> lift(deviceStatus)
         )
     }
-    run(r).map(_ => Unit)
+    run(r).map(_ => ())
   }
 
   def update(udid: String, pushToken: Option[String], sessionId: SessionId): Future[Unit] = {
@@ -87,7 +81,7 @@ class DevicesDAO @Inject()(db: DatabaseService) {
           _.pushToken   -> lift(pushToken)
         )
     }
-    run(r).map(_ => Unit)
+    run(r).map(_ => ())
   }
 
 

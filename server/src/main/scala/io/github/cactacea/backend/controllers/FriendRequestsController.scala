@@ -36,7 +36,7 @@ class FriendRequestsController @Inject()(
     } { request: PostFriendRequest =>
       friendRequestsService.create(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(FriendRequestCreated(_)).map(response.created(_))
     }
 
@@ -51,7 +51,7 @@ class FriendRequestsController @Inject()(
     } { request: DeleteFriendRequest =>
       friendRequestsService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -67,7 +67,7 @@ class FriendRequestsController @Inject()(
   } { request: PostAcceptFriendRequest =>
     friendRequestsService.accept(
       request.id,
-      CactaceaContext.id
+      CactaceaContext.sessionId
     ).map(_ => response.ok)
   }
 
@@ -81,7 +81,7 @@ class FriendRequestsController @Inject()(
   } { request: PostRejectFriendRequest =>
     friendRequestsService.reject(
       request.id,
-      CactaceaContext.id
+      CactaceaContext.sessionId
     ).map(_ => response.ok)
   }
 

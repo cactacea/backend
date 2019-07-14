@@ -35,7 +35,7 @@ class InvitationsController @Inject()(
       invitationService.create(
         request.accountIds.toList,
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_.map(InvitationCreated(_))).map(response.created(_))
     }
 
@@ -50,7 +50,7 @@ class InvitationsController @Inject()(
       invitationService.create(
         request.accountId,
         request.groupId,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(InvitationCreated(_)).map(response.created(_))
     }
 
@@ -65,7 +65,7 @@ class InvitationsController @Inject()(
     } { request: PostAcceptInvitation =>
       invitationService.accept(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -79,7 +79,7 @@ class InvitationsController @Inject()(
     } { request: PostRejectInvitation =>
       invitationService.reject(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

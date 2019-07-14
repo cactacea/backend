@@ -33,7 +33,7 @@ class BlocksController @Inject()(
     } { request: PostBlock =>
       blocksService.create(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -48,7 +48,7 @@ class BlocksController @Inject()(
     } { request: DeleteBlock =>
       blocksService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

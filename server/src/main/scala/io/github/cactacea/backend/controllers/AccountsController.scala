@@ -44,7 +44,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -58,7 +58,7 @@ class AccountsController @Inject()(
     } { request: GetAccount =>
       accountsService.find(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -72,7 +72,7 @@ class AccountsController @Inject()(
     } { request: GetAccountStatus =>
       accountsService.findAccountStatus(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -85,10 +85,10 @@ class AccountsController @Inject()(
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
 
     } { request: PutAccountDisplayName =>
-      accountsService.update(
+      accountsService.updateDisplayName(
         request.id,
         request.displayName,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -105,7 +105,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -122,7 +122,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -139,7 +139,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -156,7 +156,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -172,7 +172,7 @@ class AccountsController @Inject()(
       groupAccountsService.create(
         request.accountId,
         request.groupId,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -187,7 +187,7 @@ class AccountsController @Inject()(
       groupAccountsService.delete(
         request.accountId,
         request.groupId,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -203,7 +203,7 @@ class AccountsController @Inject()(
     } { request: GetAccountGroup =>
       accountGroupsService.find(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -221,7 +221,7 @@ class AccountsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -238,7 +238,7 @@ class AccountsController @Inject()(
         request.id,
         request.reportType,
         request.reportContent,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

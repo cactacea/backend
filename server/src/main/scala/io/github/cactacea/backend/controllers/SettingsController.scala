@@ -32,7 +32,7 @@ class SettingsController @Inject()(
         .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
     } { _: Request =>
       settingsService.findPushNotificationSettings(
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -51,7 +51,7 @@ class SettingsController @Inject()(
         request.groupMessage,
         request.groupInvitation,
         request.showMessage,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -64,8 +64,8 @@ class SettingsController @Inject()(
     } { request: PostDevicePushToken =>
       deviceTokenService.update(
         request.pushToken,
-        CactaceaContext.id,
-        CactaceaContext.udid
+        CactaceaContext.sessionId,
+        request.udid
       ).map(_ => response.ok)
     }
 
@@ -78,8 +78,8 @@ class SettingsController @Inject()(
     } { request: PostActiveStatus =>
       deviceTokenService.update(
         request.status,
-        CactaceaContext.id,
-        CactaceaContext.udid
+        CactaceaContext.sessionId,
+        request.udid
       ).map(_ => response.ok)
     }
 

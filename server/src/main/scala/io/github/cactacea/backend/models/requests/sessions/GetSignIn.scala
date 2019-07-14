@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.models.requests.sessions
 
+import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.{Header, QueryParam}
 import io.swagger.annotations.ApiModelProperty
 
@@ -14,6 +15,9 @@ case class GetSignIn(
                       @QueryParam udid: String,
 
                       @ApiModelProperty(hidden = true)
-                      @Header("user-agent") userAgent: Option[String]
+                      @Header("user-agent") userAgent: Option[String],
+
+                      @ApiModelProperty(hidden = true)
+                      request: Request
 
                     )

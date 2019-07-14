@@ -6,6 +6,7 @@ import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.utils.auth.CactaceaAuthModule
 
 @Singleton
 class CactaceaServerSpec extends FeatureTest
@@ -28,22 +29,25 @@ class CactaceaServerSpec extends FeatureTest
   with SettingsControllerSpec {
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new CactaceaServer
+    twitterServer = new CactaceaServer {
+      addFrameworkModule(CactaceaAuthModule)
+
+    }
   )
 
   override val injector =
     TestInjector(
       modules = Seq(
-        DatabaseModule,
-        DefaultListenerModule,
-        DefaultChatModule,
-        DefaultMessageModule,
-        DefaultQueueModule,
-        DefaultMobilePushModule,
-        DefaultStorageModule,
-        DefaultHashModule,
-        DefaultDeepLinkModule,
-        DefaultJacksonModule
+          DatabaseModule,
+        CactaceaAuthModule,
+          DefaultChatModule,
+          DefaultDeepLinkModule,
+          DefaultJacksonModule,
+          DefaultListenerModule,
+          DefaultMessageModule,
+          DefaultMobilePushModule,
+          DefaultQueueModule,
+          DefaultStorageModule
       )
     ).create
 

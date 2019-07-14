@@ -30,7 +30,7 @@ class CredentialsProvider (
     *
     * @return The provider ID.
     */
-  override def id = ID
+  override def id: String = ID
 
   /**
     * Authenticates a user with its credentials.

@@ -40,7 +40,7 @@ class GroupsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -54,7 +54,7 @@ class GroupsController @Inject()(
     } { request: GetGroup =>
       groupsService.find(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -70,7 +70,7 @@ class GroupsController @Inject()(
         request.byInvitationOnly,
         request.privacyType,
         request.authorityType,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(GroupCreated(_)).map(response.created(_))
     }
 
@@ -88,7 +88,7 @@ class GroupsController @Inject()(
         request.byInvitationOnly,
         request.privacyType,
         request.authorityType,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -104,7 +104,7 @@ class GroupsController @Inject()(
     } { request: PostJoinGroup =>
       groupAccountsService.create(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -119,7 +119,7 @@ class GroupsController @Inject()(
     } { request: PostLeaveGroup =>
       groupAccountsService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -136,7 +136,7 @@ class GroupsController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -150,7 +150,7 @@ class GroupsController @Inject()(
     } { request: DeleteGroup =>
       accountGroupsService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -164,7 +164,7 @@ class GroupsController @Inject()(
     } { request: PostHideGroup =>
       accountGroupsService.hide(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -178,7 +178,7 @@ class GroupsController @Inject()(
     } { request: DeleteHideGroup =>
       accountGroupsService.show(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -194,7 +194,7 @@ class GroupsController @Inject()(
         request.id,
         request.reportType,
         request.reportContent,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

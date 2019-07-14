@@ -50,7 +50,7 @@ class MediumsController @Inject()(
     } { request: Request =>
       mediumsService.create(
         request,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_.map({ case (id, uri) => MediumCreated(id, uri) }))
     }
 
@@ -64,7 +64,7 @@ class MediumsController @Inject()(
     } { request: DeleteMedium =>
       mediumsService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

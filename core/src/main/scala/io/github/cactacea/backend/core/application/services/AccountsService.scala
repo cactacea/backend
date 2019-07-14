@@ -14,7 +14,7 @@ class AccountsService @Inject()(
                                  db: DatabaseService,
                                  accountsRepository: AccountsRepository,
                                  reportsRepository: ReportsRepository,
-                                 listenerService: ListenerService
+                                 listenerService: ListenerService,
                                ) {
 
   def find(sessionId: SessionId): Future[Account] = {
@@ -38,23 +38,23 @@ class AccountsService @Inject()(
     accountsRepository.find(displayName, since, offset, count, sessionId)
   }
 
-  def update(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
+  def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
     accountsRepository.updateDisplayName(accountId, displayName, sessionId)
   }
 
-  def update(accountName: String, sessionId: SessionId): Future[Unit] = {
+  def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(accountsRepository.updateAccountName(accountName, sessionId))
       _ <- listenerService.accountNameUpdated(accountName, sessionId)
     } yield (())
   }
 
-  def update(displayName: String,
-             web: Option[String],
-             birthday: Option[Long],
-             location: Option[String],
-             bio: Option[String],
-             sessionId: SessionId): Future[Unit] = {
+  def updateProfile(displayName: String,
+                    web: Option[String],
+                    birthday: Option[Long],
+                    location: Option[String],
+                    bio: Option[String],
+                    sessionId: SessionId): Future[Unit] = {
 
     for {
       _ <- db.transaction(accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId))
@@ -74,13 +74,6 @@ class AccountsService @Inject()(
     for {
       _ <- db.transaction(accountsRepository.updateProfileImage(None, sessionId))
       _ <- listenerService.profileImageUpdated(None, sessionId)
-    } yield (())
-  }
-
-  def update(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(accountsRepository.updatePassword(oldPassword, newPassword, sessionId))
-      _ <- listenerService.passwordUpdated(sessionId)
     } yield (())
   }
 

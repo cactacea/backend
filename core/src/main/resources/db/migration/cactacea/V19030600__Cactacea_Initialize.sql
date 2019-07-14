@@ -25,8 +25,8 @@ USE `${schema}` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`mediums` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `key` VARCHAR(1024) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
-  `uri` VARCHAR(2048) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `key` VARCHAR(1024) NOT NULL,
+  `uri` VARCHAR(2048) NOT NULL,
   `width` INT(11) NOT NULL,
   `height` INT(11) NOT NULL,
   `size` BIGINT(20) NOT NULL,
@@ -45,19 +45,18 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`accounts` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `account_name` VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `account_name` VARCHAR(50) NOT NULL,
   `display_name` VARCHAR(50) NOT NULL DEFAULT ' ',
-  `password` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
   `follow_count` BIGINT(20) NOT NULL DEFAULT '0',
   `profile_image` BIGINT(20) NULL DEFAULT NULL,
-  `profile_image_url` VARCHAR(2083) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `profile_image_url` VARCHAR(2083) NULL DEFAULT NULL,
   `follower_count` BIGINT(20) NOT NULL DEFAULT '0',
   `friend_count` BIGINT(20) NOT NULL DEFAULT '0',
   `feed_count` BIGINT(20) NOT NULL DEFAULT '0',
-  `web` VARCHAR(2083) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `web` VARCHAR(2083) NULL DEFAULT NULL,
   `birthday` BIGINT(20) NULL DEFAULT NULL,
-  `location` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
-  `bio` VARCHAR(1024) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `location` VARCHAR(255) NULL DEFAULT NULL,
+  `bio` VARCHAR(1024) NULL DEFAULT NULL,
   `account_status` TINYINT(4) NOT NULL DEFAULT '0',
   `signed_out_at` BIGINT(20) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -75,7 +74,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`feeds` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `message` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `message` VARCHAR(1000) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `like_count` BIGINT(20) NOT NULL,
   `comment_count` BIGINT(20) NOT NULL,
@@ -116,7 +115,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`groups` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `name` VARCHAR(1000) NULL DEFAULT NULL,
   `privacy_type` TINYINT(4) NOT NULL,
   `invitation_only` TINYINT(4) NOT NULL,
   `direct_message` TINYINT(4) NOT NULL,
@@ -175,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`messages` (
   `by` BIGINT(20) NOT NULL,
   `group_id` BIGINT(20) NOT NULL,
   `message_type` TINYINT(4) NOT NULL,
-  `message` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `message` VARCHAR(1000) NULL DEFAULT NULL,
   `medium_id` BIGINT(20) NULL DEFAULT NULL,
   `stamp_id` BIGINT(20) NULL DEFAULT NULL,
   `account_count` BIGINT(20) NOT NULL DEFAULT '0',
@@ -236,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`account_reports` (
   `account_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `report_type` TINYINT(4) NOT NULL,
-  `report_content` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `report_content` VARCHAR(1000) NULL DEFAULT NULL,
   `reported_at` BIGINT(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UNIQUE` (`account_id` ASC, `report_type` ASC, `by` ASC),
@@ -295,10 +294,10 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `${schema}`.`clients`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`clients` (
-  `id` VARCHAR(80) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
-  `secret` VARCHAR(80) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
-  `redirect_uri` VARCHAR(2000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
-  `scope` VARCHAR(2000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `id` VARCHAR(80) NOT NULL,
+  `secret` VARCHAR(80) NULL DEFAULT NULL,
+  `redirect_uri` VARCHAR(2000) NOT NULL,
+  `scope` VARCHAR(2000) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
@@ -309,7 +308,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`grant_types` (
   `id` TINYINT(4) NOT NULL,
-  `grant_type` VARCHAR(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `grant_type` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
@@ -320,7 +319,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`client_grant_types` (
   `grant_type_id` TINYINT(4) NOT NULL,
-  `client_id` VARCHAR(80) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `client_id` VARCHAR(80) NOT NULL,
   INDEX `fk_oauth_client_grant_type_oauth_grant_type_idx` (`grant_type_id` ASC),
   INDEX `fk_oauth_client_grant_type_oauth_client1_idx` (`client_id` ASC),
   CONSTRAINT `fk_oauth_client_grant_type_oauth_client1`
@@ -338,7 +337,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`comments` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `message` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `message` VARCHAR(1000) NOT NULL,
   `feed_id` BIGINT(20) NOT NULL,
   `reply_id` BIGINT(20) NULL DEFAULT NULL,
   `like_count` BIGINT(20) NOT NULL,
@@ -382,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`comment_reports` (
   `comment_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `report_type` TINYINT(4) NOT NULL,
-  `report_content` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `report_content` VARCHAR(1000) NULL DEFAULT NULL,
   `reported_at` BIGINT(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UNIQUE` (`comment_id` ASC, `by` ASC),
@@ -403,11 +402,11 @@ DEFAULT CHARACTER SET = utf8mb4;
 CREATE TABLE IF NOT EXISTS `${schema}`.`devices` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT(20) NOT NULL,
-  `udid` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `udid` VARCHAR(255) NOT NULL,
   `device_type` TINYINT(4) NOT NULL,
   `active_status` TINYINT(4) NOT NULL,
-  `push_token` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
-  `user_agent` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `push_token` VARCHAR(255) NULL DEFAULT NULL,
+  `user_agent` VARCHAR(1000) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `fk_devices_accounts_idx` (`account_id` ASC, `udid` ASC),
   CONSTRAINT `fk_devices_accounts1`
@@ -461,7 +460,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`feed_reports` (
   `feed_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `report_type` TINYINT(4) NOT NULL,
-  `report_content` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `report_content` VARCHAR(1000) NULL DEFAULT NULL,
   `reported_at` BIGINT(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UNIQUE` (`by` ASC),
@@ -482,7 +481,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`feed_tags` (
   `feed_id` BIGINT(20) NOT NULL,
-  `name` VARCHAR(1024) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `name` VARCHAR(1024) NOT NULL,
   `order_no` INT(11) NOT NULL,
   INDEX `fk_feed_tags_feeds1_idx` (`feed_id` ASC),
   CONSTRAINT `fk_feed_tags_feeds1`
@@ -635,7 +634,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`group_reports` (
   `group_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `report_type` TINYINT(4) NOT NULL,
-  `report_content` VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `report_content` VARCHAR(1000) NULL DEFAULT NULL,
   `reported_at` BIGINT(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UNIQUE` (`report_type` ASC, `by` ASC),
@@ -678,7 +677,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`notifications` (
   `by` BIGINT(20) NOT NULL,
   `notification_type` BIGINT(20) NOT NULL,
   `content_id` BIGINT(20) NULL DEFAULT NULL,
-  `url` VARCHAR(2083) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NOT NULL,
+  `url` VARCHAR(2083) NOT NULL,
   `unread` TINYINT(4) NOT NULL,
   `notified_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`, `notification_type`),
@@ -741,6 +740,20 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`relationships` (
   CONSTRAINT `fk_account_status_accounts2`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`accounts` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+
+-- -----------------------------------------------------
+-- Table `${schema}`.`authentications`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `${schema}`.`authentications` (
+  `provider_id` VARCHAR(30) NOT NULL,
+  `provider_key` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `hasher` VARCHAR(30) NOT NULL,
+  `confirm` TINYINT(1) NOT NULL,
+  `account_id` BIGINT(20) NULL DEFAULT NULL,
+  PRIMARY KEY (`provider_id`, `provider_key`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 

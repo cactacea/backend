@@ -2,9 +2,11 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, DeviceType}
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO, PushNotificationSettingsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.models.Accounts
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, MediumsValidator}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
@@ -14,8 +16,38 @@ class AccountsRepository @Inject()(
                                     accountsValidator: AccountsValidator,
                                     mediumsValidator: MediumsValidator,
                                     accountsDAO: AccountsDAO,
-                                    devicesDAO: DevicesDAO
+                                    devicesDAO: DevicesDAO,
+                                    notificationSettingsDAO: PushNotificationSettingsDAO
+
                                   ) {
+
+  def create(accountName: String,
+             udid: String,
+             deviceType: DeviceType,
+             userAgent: Option[String]): Future[Account] = {
+
+    for {
+      _ <- accountsValidator.notExist(accountName)
+      i <- accountsDAO.create(accountName)
+      _ <- devicesDAO.create(udid, deviceType, userAgent, i.toSessionId)
+      _ <- notificationSettingsDAO.create(i.toSessionId)
+      a <- accountsValidator.find(i.toSessionId)
+    } yield (a)
+  }
+
+  def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
+    for {
+      _ <- accountsDAO.signOut(sessionId)
+      _ <- devicesDAO.delete(udid, sessionId)
+    } yield (())
+  }
+
+  def find(accountName: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
+    for {
+      a <- accountsValidator.find(accountName)
+      _ <- devicesDAO.create(udid, deviceType, userAgent, a.id.toSessionId)
+    } yield (a)
+  }
 
   def find(sessionId: SessionId): Future[Account] = {
     accountsValidator.find(sessionId)
@@ -59,6 +91,10 @@ class AccountsRepository @Inject()(
     } yield (())
   }
 
+  def updateAccountStatus(accountStatus: AccountStatusType, sessionId: SessionId): Future[Unit] = {
+    accountsDAO.updateAccountStatus(accountStatus, sessionId)
+  }
+
   def updateDisplayName(accountId: AccountId, userName: Option[String], sessionId: SessionId): Future[Unit] = {
     for {
       _ <- accountsValidator.checkSessionId(accountId, sessionId)
@@ -66,14 +102,6 @@ class AccountsRepository @Inject()(
       _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
       _ <- accountsDAO.updateDisplayName(accountId, userName, sessionId)
     } yield (())
-  }
-
-  def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
-    accountsDAO.updatePassword(oldPassword, newPassword, sessionId)
-  }
-
-  def updatePassword(newPassword: String, sessionId: SessionId): Future[Unit] = {
-    accountsDAO.updatePassword(newPassword, sessionId)
   }
 
   def updateProfile(displayName: String,
@@ -96,6 +124,23 @@ class AccountsRepository @Inject()(
       case None =>
         accountsDAO.updateProfileImageUrl(None, None, sessionId).flatMap(_ => Future.None)
     }
+  }
+
+  def find(sessionId: SessionId, expiresIn: Long): Future[Accounts] = {
+    accountsDAO.find(sessionId).flatMap( _ match {
+      case Some(a) =>
+        if (a.accountStatus == AccountStatusType.deleted) {
+          Future.exception(CactaceaException(AccountDeleted))
+        } else if (a.accountStatus == AccountStatusType.terminated) {
+          Future.exception(CactaceaException(AccountTerminated))
+        } else if (a.signedOutAt.map(_ > expiresIn).getOrElse(false)) {
+          Future.exception(CactaceaException(SessionTimeout))
+        } else {
+          Future.value(a)
+        }
+      case None =>
+        Future.exception(CactaceaException(SessionNotAuthorized))
+    })
   }
 
 }

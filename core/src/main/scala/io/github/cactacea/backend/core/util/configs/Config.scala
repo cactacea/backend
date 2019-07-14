@@ -13,6 +13,7 @@ import com.twitter.conversions.StorageUnitOps._
 object Config extends DurationReader {
 
   private val config = ConfigFactory.load()
+  private val crypterConfig = config.as[CrypterConfig]("crypter")
   private val masterDBConfig = config.as[DatabaseConfig]("db.master")
   private val slaveDBConfig = config.as[DatabaseConfig]("db.slave")
   private val authConfig = config.as[AuthConfig]("auth")
@@ -97,9 +98,10 @@ object Config extends DurationReader {
     }
 
     object headerNames { // scalastyle:ignore
-      lazy val apiKey = authConfig.apiKeyHeaderName.getOrElse("X-API-KEY")
-      lazy val authorizationKey = authConfig.authorizationHeaderName.getOrElse("X-AUTHORIZATION")
+      lazy val apiKey = authConfig.apiKeyHeaderName.getOrElse("x-api-key")
+      lazy val authorizationKey = authConfig.authorizationHeaderName.getOrElse("Authorization")
     }
+
   }
 
   object password { // scalastyle:ignore
@@ -107,6 +109,12 @@ object Config extends DurationReader {
     lazy val iterations = passwordConfig.iterations.getOrElse(1000)
     lazy val keyLength = passwordConfig.keyLength.getOrElse(128)
   }
+
+  object crypter {
+    lazy val signerKey = crypterConfig.signerKey.getOrElse("todo")
+    lazy val crypterKey = crypterConfig.crypterKey.getOrElse("todo")
+  }
+
 
   println( // scalastyle:ignore
 """   ___           _                           ___            _                  _
@@ -154,6 +162,8 @@ object Config extends DurationReader {
   println(s"password.salt = ${password.salt}") // scalastyle:ignore
   println(s"password.iterations = ${password.iterations}") // scalastyle:ignore
   println(s"password.keyLength = ${password.keyLength}") // scalastyle:ignore
+  println(s"crypter.crypterKey = ${crypter.crypterKey}")
+  println(s"crypter.signerKey = ${crypter.signerKey}")
   println("") // scalastyle:ignore
 
 }

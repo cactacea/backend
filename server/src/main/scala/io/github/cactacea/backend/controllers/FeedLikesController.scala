@@ -37,7 +37,7 @@ class FeedLikesController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -52,7 +52,7 @@ class FeedLikesController @Inject()(
     } { request: PostFeedLike =>
       feedLikesService.create(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -67,7 +67,7 @@ class FeedLikesController @Inject()(
     } { request: DeleteFeedLike =>
       feedLikesService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

@@ -20,7 +20,7 @@ class MigrationHandler extends Handler {
 
     val flyway = Flyway.configure()
       .dataSource(url, user, password)
-      .locations("classpath:db/migration/cactacea")
+      .locations("classpath:db/migration/cactacea", "classpath:db/migration/cactacea/demo")
       .placeholders(Map("schema" -> database, "hostName" -> (Config.storage.hostName + Config.storage.port)).asJava)
       .load()
 

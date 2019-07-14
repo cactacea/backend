@@ -2,10 +2,10 @@ package io.github.cactacea.backend.helpers
 
 import com.twitter.finagle.http.Response
 import com.twitter.inject.server.FeatureTest
-import io.github.cactacea.backend.APIServerSpec
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
-import io.github.cactacea.backend.models.responses.{Authentication, CommentCreated, FeedCreated}
+import io.github.cactacea.backend.models.responses.{CommentCreated, FeedCreated}
+import io.github.cactacea.backend.{APIServerSpec, Authentication}
 
 trait Helpers extends FeatureTest
   with CommentsHelper

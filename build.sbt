@@ -28,7 +28,7 @@ lazy val server = (project in file("server"))
   .settings(libraryDependencies ++= Dependencies.log)
   .enablePlugins(BuildInfoPlugin)
   .dependsOn(core % "compile->compile;test->test")
-  .dependsOn(finagger)
+  .dependsOn(finagger, filhouette)
 
 
 lazy val core = (project in file("core"))
