@@ -32,7 +32,7 @@ class FriendsController @Inject()(
     } { request: DeleteFriend =>
       friendsService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

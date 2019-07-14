@@ -82,8 +82,9 @@ class AccountsValidator @Inject()(
   }
 
 
-  def find(accountName: String, password: String): Future[Account] = {
-    accountsDAO.find(accountName, password).flatMap(_ match {
+
+  def find(accountName: String): Future[Account] = {
+    accountsDAO.find(accountName).flatMap(_ match {
       case Some(a) =>
         if (a.isTerminated) {
           Future.exception(CactaceaException(AccountTerminated))
@@ -95,8 +96,6 @@ class AccountsValidator @Inject()(
     })
 
   }
-
-
 
 
 }

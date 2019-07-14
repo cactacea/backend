@@ -33,7 +33,7 @@ class NotificationsController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         CactaceaContext.locales,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 

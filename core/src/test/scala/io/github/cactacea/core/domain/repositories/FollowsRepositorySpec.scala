@@ -10,7 +10,6 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   val followRepository = injector.instance[FollowsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
-  val accountsRepository = injector.instance[AccountsRepository]
 
   test("follows a user") {
 

@@ -11,6 +11,24 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
+  def create(sessionId: SessionId): Future[Unit] = {
+
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[PushNotificationSettings].insert(
+        _.accountId           -> lift(accountId),
+        _.feed                -> lift(true),
+        _.comment             -> lift(true),
+        _.friendRequest       -> lift(true),
+        _.message             -> lift(true),
+        _.groupMessage        -> lift(true),
+        _.groupInvitation     -> lift(true),
+        _.showMessage         -> lift(true)
+      )
+    }
+    run(q).map(_ => Unit)
+  }
+
   def create(feed: Boolean,
              comment:Boolean,
              friendRequest: Boolean,

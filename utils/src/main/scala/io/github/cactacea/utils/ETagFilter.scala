@@ -24,4 +24,9 @@ class ETagFilter extends SimpleFilter[Request, Response] {
       }
     })
   }
+
+  def md5(text: String): String = {
+    java.security.MessageDigest.getInstance("MD5").digest(text.getBytes).map("%02x".format(_)).mkString
+  }
+
 }

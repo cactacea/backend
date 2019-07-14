@@ -11,7 +11,6 @@ class FriendsRepositorySpec extends RepositorySpec {
 
   val friendsRepository = injector.instance[FriendsRepository]
   val blocksRepository = injector.instance[BlocksRepository]
-  val accountsRepository = injector.instance[AccountsRepository]
 
   test("create friendship a user") {
 

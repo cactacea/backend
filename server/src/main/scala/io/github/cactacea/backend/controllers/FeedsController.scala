@@ -37,7 +37,7 @@ class FeedsController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         request.feedPrivacyType,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -56,7 +56,7 @@ class FeedsController @Inject()(
         request.privacyType,
         request.contentWarning,
         request.expiration,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(FeedCreated(_)).map(response.created(_))
     }
 
@@ -70,7 +70,7 @@ class FeedsController @Inject()(
     } { request: GetFeed =>
       feedsService.find(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -90,7 +90,7 @@ class FeedsController @Inject()(
         request.privacyType,
         request.contentWarning,
         request.expiration,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -104,7 +104,7 @@ class FeedsController @Inject()(
     } { request: DeleteFeed =>
       feedsService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -120,7 +120,7 @@ class FeedsController @Inject()(
         request.id,
         request.reportType,
         request.reportContent,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

@@ -34,7 +34,7 @@ class MutesController @Inject()(
     } { request: PostMute =>
       mutesService.create(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -49,7 +49,7 @@ class MutesController @Inject()(
     } { request: DeleteMute =>
       mutesService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

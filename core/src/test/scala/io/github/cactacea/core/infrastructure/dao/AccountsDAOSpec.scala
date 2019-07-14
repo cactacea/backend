@@ -1,7 +1,6 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.inject.Logging
-import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.helpers.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
@@ -13,7 +12,7 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
     val newUser = createAccount("AccountsDAOSpec2")
     val accountId = execute(
-      accountsDAO.create(newUser.accountName, newUser.password)
+      accountsDAO.create(newUser.accountName)
     )
 
     val userList = selectAccounts(accountId, sessionAccount.id.toSessionId)
@@ -27,20 +26,20 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   }
 
-  test("exist by account name and password") {
-
-    val sessionAccount = createAccount("AccountsDAOSpec3")
-
-    val result = execute(
-      accountsDAO.find(
-        sessionAccount.accountName,
-        "password"
-      )
-    ).get
-
-    assert(result.password == hashService.hash("password"))
-
-  }
+//  test("exist by account name and password") {
+//
+//    val sessionAccount = createAccount("AccountsDAOSpec3")
+//
+//    val result = execute(
+//      accountsDAO.find(
+//        sessionAccount.accountName,
+//        "password"
+//      )
+//    ).get
+//
+//    assert(result.password == hashService.hash("password"))
+//
+//  }
 
   test("exists by session id") {
 
@@ -66,22 +65,22 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   }
 
-  test("update password") {
-
-    val sessionAccount = createAccount("AccountsDAOSpec8")
-
-    execute(
-      accountsDAO.updatePassword(
-        "password",
-        "password2",
-        sessionAccount.id.toSessionId
-      )
-    )
-
-//    val result = execute(accountsDAO.find(sessionAccount.id.toSessionId)).get
-//    assert(result.password == hashService.hash("password2"))
-
-  }
+//  test("update password") {
+//
+//    val sessionAccount = createAccount("AccountsDAOSpec8")
+//
+//    execute(
+//      accountsDAO.updatePassword(
+//        "password",
+//        "password2",
+//        sessionAccount.id.toSessionId
+//      )
+//    )
+//
+////    val result = execute(accountsDAO.find(sessionAccount.id.toSessionId)).get
+////    assert(result.password == hashService.hash("password2"))
+//
+//  }
 
   test("update account name") {
 
@@ -267,15 +266,15 @@ class AccountsDAOSpec extends DAOSpec with Logging {
 
   }
 
-  test("findStatus") {
-
-    val sessionAccount = createAccount("AccountsDAOSpec36")
-    val result = execute(accountsDAO.findStatus(sessionAccount.id.toSessionId))
-    assert(result.isDefined == true)
-    val (accountStatus, signedOutAt) = result.get
-    assert(accountStatus == AccountStatusType.normally)
-    assert(signedOutAt.isEmpty == true)
-  }
+//  test("findStatus") {
+//
+//    val sessionAccount = createAccount("AccountsDAOSpec36")
+//    val result = execute(accountsDAO.find(sessionAccount.id.toSessionId))
+//    assert(result.isDefined == true)
+//    val (accountStatus, signedOutAt) = result.get
+//    assert(accountStatus == AccountStatusType.normally)
+//    assert(signedOutAt.isEmpty == true)
+//  }
 
 }
 

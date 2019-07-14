@@ -20,8 +20,8 @@ trait CommonHelper {
   def headers(accessToken: String): Map[String, String] = {
     Map(
       Config.auth.headerNames.apiKey -> Config.auth.keys.all.head._2,
+      Config.auth.headerNames.authorizationKey -> accessToken,
       "User-Agent" -> agent,
-      "X-AUTHORIZATION" -> accessToken
     )
   }
 

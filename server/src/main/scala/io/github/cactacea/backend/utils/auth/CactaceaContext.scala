@@ -5,6 +5,7 @@ import java.util.Locale
 import com.twitter.util.Local
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
+import io.github.cactacea.backend.core.infrastructure.models.Accounts
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 
@@ -27,23 +28,23 @@ object CactaceaContext {
   def setLocales(locales: Seq[Locale]): Unit = localLocales.update(locales)
   def clearLocales(): Unit = localLocales.clear()
 
-
-  private[this] val localUdid = new Local[String]
-  def udid: String = localUdid() match {
-    case Some(udid) => udid
-    case None => ""
-  }
-  def setUdid(udid: String): Unit = localUdid.update(udid)
-  def clearUdid(): Unit = localUdid.clear()
-
-
-  private[this] val localSessionId = new Local[SessionId]
-  def id: SessionId = localSessionId() match {
-    case Some(sessionId) => sessionId
+  private[this] val localAccount = new Local[Accounts]
+  def account: Accounts = localAccount() match {
+    case Some(account) => account
     case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
   }
-  def setId(sessionId: SessionId): Unit = localSessionId.update(sessionId)
-  def clearId(): Unit = localSessionId.clear()
+  def setAccount(account: Accounts): Unit = localAccount.update(account)
+  def clearId(): Unit = localAccount.clear()
+
+  def sessionId: SessionId = localAccount() match {
+    case Some(a) => a.id.toSessionId
+    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
+  }
+
+  def accountName: String = localAccount() match {
+    case Some(a) => a.accountName
+    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
+  }
 
   private[this] val localDeviceType = new Local[DeviceType]
   def deviceType: DeviceType = localDeviceType() match {

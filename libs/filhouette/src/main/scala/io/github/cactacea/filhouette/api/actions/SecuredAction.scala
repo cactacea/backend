@@ -61,7 +61,7 @@ case class SecuredRequestHandlerBuilder[I <: Identity, A <: Authenticator](
     * @param errorHandler An error handler instance.
     * @return A secured action handler builder with a new error handler in place.
     */
-  def apply(errorHandler: SecuredErrorHandler) =
+  def apply(errorHandler: SecuredErrorHandler)=
     SecuredRequestHandlerBuilder[I, A](identityService, authenticatorService, requestProviders, errorHandler, authorization)
 
   /**
@@ -111,7 +111,8 @@ case class SecuredRequestHandlerBuilder[I <: Identity, A <: Authenticator](
     * @param request The current request.
     * @return The authentication result with the additional authorization status.
     */
-  private def withAuthorization(result: Future[(Option[Either[A, A]], Option[I])])(implicit request: Request) = {
+  private def withAuthorization(result: Future[(Option[Either[A, A]], Option[I])])
+                               (implicit request: Request): Future[(Option[Either[A, A]], Option[I], Option[Boolean])] = {
     result.flatMap {
       case (Some(a), Some(i)) =>
         authorization.map(_.isAuthorized(i, a.extract)).getOrElse(Future.True).map(b => (Some(a), Some(i), Some(b)))
@@ -174,7 +175,7 @@ class DefaultSecuredRequestHandler(val errorHandler: SecuredErrorHandler)
                                                          identityService: IdentityService[I],
                                                          authenticatorService: AuthenticatorService[A],
                                                          requestProviders: Seq[RequestProvider]
-                                                       ) =
+                                                       ): SecuredRequestHandlerBuilder[I, A] =
     SecuredRequestHandlerBuilder[I, A](identityService, authenticatorService, requestProviders, errorHandler, None)
 }
 
@@ -193,7 +194,9 @@ case class SecuredActionBuilder[I <: Identity, A <: Authenticator ](requestHandl
     * @param errorHandler An error handler instance.
     * @return A secured action builder.
     */
-  def apply(errorHandler: SecuredErrorHandler) = SecuredActionBuilder[I, A](requestHandler(errorHandler))
+  def apply(errorHandler: SecuredErrorHandler): SecuredActionBuilder[I, A] = {
+    SecuredActionBuilder[I, A](requestHandler(errorHandler))
+  }
 
   /**
     * Creates a secured action builder with an authorization in place.
@@ -201,7 +204,9 @@ case class SecuredActionBuilder[I <: Identity, A <: Authenticator ](requestHandl
     * @param authorization An authorization object that checks if the user is authorized to invoke the action.
     * @return A secured action builder.
     */
-  def apply(authorization: Authorization[I, A]) = SecuredActionBuilder[I, A](requestHandler(authorization))
+  def apply(authorization: Authorization[I, A]): SecuredActionBuilder[I, A] = {
+    SecuredActionBuilder[I, A](requestHandler(authorization))
+  }
 
   /**
     * Invokes the block.
@@ -210,7 +215,7 @@ case class SecuredActionBuilder[I <: Identity, A <: Authenticator ](requestHandl
     * @param block   The block of code to invoke.
     * @return A handler result.
     */
-  def invokeBlock(request: Request, block: SecuredRequest[I, A] => Future[Response]) = {
+  def invokeBlock(request: Request, block: SecuredRequest[I, A] => Future[Response]): Future[Response] = {
     implicit val req = request
     val b = (r: SecuredRequest[I, A]) => block(r).map(r => HandlerResult(r))
 
@@ -266,7 +271,7 @@ class DefaultSecuredAction(val requestHandler: SecuredRequestHandler) extends Se
                                                           identityService: IdentityService[I],
                                                           authenticatorService: AuthenticatorService[A],
                                                           requestProviders: Seq[RequestProvider]
-                                                        ) =
+                                                        ): SecuredActionBuilder[I, A] =
     SecuredActionBuilder[I, A](requestHandler[I, A](identityService, authenticatorService, requestProviders))
 }
 
@@ -295,16 +300,4 @@ trait SecuredErrorHandler extends NotAuthenticatedErrorHandler with NotAuthorize
 class DefaultSecuredErrorHandler
   extends SecuredErrorHandler
     with DefaultNotAuthenticatedErrorHandler
-    with DefaultNotAuthorizedErrorHandler {
-
-  /**
-    * Exception handler which chains the exceptions handlers from the sub types.
-    *
-    * @param request The request header.
-    * @return A partial function which maps an exception to a Play result.
-    */
-  override def exceptionHandler(implicit request: Request): PartialFunction[Throwable, Future[Response]] = {
-    super[DefaultNotAuthenticatedErrorHandler].exceptionHandler orElse
-      super[DefaultNotAuthorizedErrorHandler].exceptionHandler
-  }
-}
+    with DefaultNotAuthorizedErrorHandler

@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.models.responses
+package io.github.cactacea.backend
 
 import io.github.cactacea.backend.core.domain.models.Account
 

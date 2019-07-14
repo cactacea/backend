@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.models.requests.sessions
 
+import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.Header
 import com.twitter.finatra.validation._
 import io.github.cactacea.backend.utils.validaters.CactaceaValidations
@@ -16,9 +17,12 @@ case class PostSignUp(
                        @UUID udid: String,
 
                        @ApiModelProperty(hidden = true)
-                       @Header("user-agent") userAgent: Option[String]
+                       @Header("user-agent") userAgent: Option[String],
 
-                  ) {
+                       @ApiModelProperty(hidden = true)
+                       request: Request
+
+                     ) {
 
   @MethodValidation
   def accountNameCheck: ValidationResult = CactaceaValidations.validateAccountName(accountName)

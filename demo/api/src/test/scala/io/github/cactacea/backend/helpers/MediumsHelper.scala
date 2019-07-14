@@ -11,8 +11,7 @@ trait MediumsHelper extends CommonHelper {
   self: APIServerSpec =>
 
   def uploadMedium(path: String, resourceName: String, accessToken: String): Array[MediumCreated] = {
-    println(path + resourceName)
-    val bytes = Files.readAllBytes(Paths.get(this.getClass.getClassLoader.getResource(path + resourceName).toURI))
+    val bytes = Files.readAllBytes(Paths.get(this.getClass.getClassLoader.getResource(path + "/" + resourceName).toURI))
     val response = server.httpMultipartFormPost("/mediums",
       params = Seq(
         FileElement("file",

@@ -4,7 +4,6 @@ import com.twitter.inject.IntegrationTest
 import com.twitter.inject.app.TestInjector
 import com.twitter.util.logging.Logging
 import com.twitter.util.{Await, Future}
-import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.infrastructure.dao.{PushNotificationCommentsDAO, PushNotificationFriendRequestsDAO, PushNotificationGroupInvitationsDAO, _}
@@ -20,7 +19,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultHashModule,
+//        DefaultAuthenticationModule,
         DefaultDeepLinkModule
       )
     ).create
@@ -42,7 +41,6 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
   val userReportsDAO = injector.instance[AccountReportsDAO]
   val followsDAO = injector.instance[FollowsDAO]
   val friendsDAO = injector.instance[FriendsDAO]
-  val hashService = injector.instance[HashService]
   val commentLikesDAO = injector.instance[CommentLikesDAO]
   val commentReportsDAO = injector.instance[CommentReportsDAO]
   val pushNotificationSettingDAO = injector.instance[PushNotificationSettingsDAO]
@@ -112,8 +110,7 @@ class DAOSpec extends IntegrationTest with BeforeAndAfter with Logging {
     execute(
       db.transaction(
         accountsDAO.create(
-          a.accountName,
-          a.password
+          a.accountName
         )
       )
     )

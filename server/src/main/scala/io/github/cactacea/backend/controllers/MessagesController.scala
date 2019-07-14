@@ -39,7 +39,7 @@ class MessagesController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         request.ascending,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -56,7 +56,7 @@ class MessagesController @Inject()(
       messagesService.createText(
         request.groupId,
         request.message,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(response.created(_))
     }
 
@@ -73,7 +73,7 @@ class MessagesController @Inject()(
       messagesService.createMedium(
         request.groupId,
         request.mediumId,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(response.created(_))
     }
 
@@ -86,7 +86,7 @@ class MessagesController @Inject()(
     } { request: DeleteMessages =>
       messagesService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

@@ -35,7 +35,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -50,7 +50,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
       commentsService.create(
         request.id,
         request.message,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(CommentCreated(_)).map(response.created(_))
     }
 
@@ -64,7 +64,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     } { request: GetComment =>
       commentsService.find(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -78,7 +78,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     } { request: DeleteComment =>
       commentsService.delete(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -94,7 +94,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         request.id,
         request.reportType,
         request.reportContent,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 

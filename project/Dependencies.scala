@@ -34,11 +34,9 @@ object Dependencies {
     "com.typesafe" % "config" % versions.config,
     "com.iheart" %% "ficus" % versions.ficus,
     "io.getquill" %% "quill-finagle-mysql" % versions.quill,
-    "io.jsonwebtoken" % "jjwt" % versions.jjwt,
     "com.osinka.i18n" %% "scala-i18n" % versions.i18n,
     "org.flywaydb" % "flyway-core" % versions.flyway,
     "com.jsuereth" %% "scala-arm" % versions.arm,
-    "com.roundeights" %% "hasher" % versions.hasher,
     "com.drewnoakes" % "metadata-extractor" % versions.extractor
   )
 

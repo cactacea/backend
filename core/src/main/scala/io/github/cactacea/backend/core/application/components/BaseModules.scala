@@ -15,7 +15,6 @@ trait BaseModules extends App {
   def mobilePushModule: TwitterModule = DefaultMobilePushModule
   def storageModule: TwitterModule = DefaultStorageModule
   def deepLinkModule: TwitterModule = DefaultDeepLinkModule
-  def hashModule: TwitterModule = DefaultHashModule
 
   addFrameworkModule(listenerModule)
   addFrameworkModule(chatModule)
@@ -25,6 +24,5 @@ trait BaseModules extends App {
   addFrameworkModule(storageModule)
   addFrameworkModule(deepLinkModule)
   addFrameworkModule(databaseModule)
-  addFrameworkModule(hashModule)
 
 }

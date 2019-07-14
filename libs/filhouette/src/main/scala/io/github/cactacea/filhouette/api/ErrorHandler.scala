@@ -82,7 +82,7 @@ trait DefaultNotAuthorizedErrorHandler
     * @param request The request header.
     * @return A partial function which maps an exception to a Play result.
     */
-  override def exceptionHandler(implicit request: Request) = {
+  override def exceptionHandler(implicit request: Request): PartialFunction[Throwable, Future[Response]] = {
     case e: NotAuthorizedException =>
       logger.info(e.getMessage, e)
       super.exceptionHandler(request)(e)
@@ -94,7 +94,7 @@ trait DefaultNotAuthorizedErrorHandler
     * @param request The request header.
     * @return The result to send to the client.
     */
-  override def onNotAuthorized(implicit request: Request) = {
+  override def onNotAuthorized(implicit request: Request): Future[Response] = {
     logger.debug("[Filhouette] Unauthorized user trying to access '%s'".format(request.uri))
     Future.value(Response(request.version, Status.Unauthorized))
     //    produceResponse(Forbidden, Messages("silhouette.not.authorized"))
@@ -143,7 +143,7 @@ trait DefaultNotAuthenticatedErrorHandler
     * @param request The request header.
     * @return A partial function which maps an exception to a Play result.
     */
-  override def exceptionHandler(implicit request: Request) = {
+  override def exceptionHandler(implicit request: Request): PartialFunction[Throwable, Future[Response]] = {
     case e: NotAuthenticatedException =>
       logger.info(e.getMessage, e)
       super.exceptionHandler(request)(e)
@@ -155,7 +155,7 @@ trait DefaultNotAuthenticatedErrorHandler
     * @param request The request header.
     * @return The result to send to the client.
     */
-  override def onNotAuthenticated(implicit request: Request) = {
+  override def onNotAuthenticated(implicit request: Request): Future[Response] = {
     logger.debug("[Filhouette] Unauthenticated user trying to access '%s'".format(request.uri))
     Future.value(Response(request.version, Status.Unauthorized))
     //    produceResponse(Unauthorized, Messages("silhouette.not.authenticated"))

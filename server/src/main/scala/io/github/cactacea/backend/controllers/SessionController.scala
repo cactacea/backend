@@ -12,10 +12,10 @@ import io.github.cactacea.backend.models.requests.account.GetAccountName
 import io.github.cactacea.backend.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
 import io.github.cactacea.backend.models.requests.group.{GetSessionGroups, GetSessionInvitations}
 import io.github.cactacea.backend.models.requests.session._
+import io.github.cactacea.backend.models.requests.sessions.DeleteSignOut
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.auth.CactaceaContext
-
+import io.github.cactacea.backend.utils.auth.{CactaceaContext, SessionsService}
 import io.swagger.models.Swagger
 
 
@@ -48,7 +48,7 @@ class SessionController @Inject()(
         .responseWith[Account](Status.Ok.code, successfulMessage)
     } { _: Request =>
       accountsService.find(
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -58,10 +58,10 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("signOut")
         .responseWith(Status.Ok.code, successfulMessage)
-    } { _: Request =>
+    } { request: DeleteSignOut =>
       sessionService.signOut(
-        CactaceaContext.udid,
-        CactaceaContext.id
+        request.udid,
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -85,9 +85,9 @@ class SessionController @Inject()(
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNameAlreadyUsed))))
     } { request: PutSessionAccountName =>
-      accountsService.update(
+      accountsService.updateAccountName(
         request.name,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -99,10 +99,9 @@ class SessionController @Inject()(
         .request[PutSessionPassword]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutSessionPassword =>
-      accountsService.update(
-        request.oldPassword,
-        request.newPassword,
-        CactaceaContext.id
+      sessionService.updatePassword(
+        request.password,
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -114,13 +113,13 @@ class SessionController @Inject()(
         .request[PutSessionProfile]
         .responseWith(Status.Ok.code, successfulMessage)
     }  { request: PutSessionProfile =>
-      accountsService.update(
+      accountsService.updateProfile(
         request.displayName,
         request.web,
         request.birthday,
         request.location,
         request.bio,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -134,7 +133,7 @@ class SessionController @Inject()(
     }  { request: PutSessionProfileImage =>
       accountsService.updateProfileImage(
         request.id,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -145,7 +144,7 @@ class SessionController @Inject()(
         .responseWith(Status.Ok.code, successfulMessage)
     }  { _: Request =>
       accountsService.deleteProfileImage(
-        CactaceaContext.id
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
@@ -160,7 +159,7 @@ class SessionController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -175,7 +174,7 @@ class SessionController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -190,7 +189,7 @@ class SessionController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -205,7 +204,7 @@ class SessionController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -220,7 +219,7 @@ class SessionController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -236,7 +235,7 @@ class SessionController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         request.sortType.getOrElse(FriendsSortType.friendsAt),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -252,7 +251,7 @@ class SessionController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         true,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -269,7 +268,7 @@ class SessionController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         false,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -284,7 +283,7 @@ class SessionController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -299,7 +298,7 @@ class SessionController @Inject()(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
@@ -315,7 +314,7 @@ class SessionController @Inject()(
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
         request.received,
-        CactaceaContext.id
+        CactaceaContext.sessionId
       )
     }
 
