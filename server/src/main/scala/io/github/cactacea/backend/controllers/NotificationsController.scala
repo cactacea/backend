@@ -5,10 +5,9 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.models.requests.notification.GetNotifications
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.auth.CactaceaContext
-
 import io.github.cactacea.backend.core.application.services.NotificationsService
 import io.github.cactacea.backend.core.domain.models.Notification
+import io.github.cactacea.backend.utils.context.CactaceaContext
 import io.swagger.models.Swagger
 
 @Singleton

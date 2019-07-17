@@ -11,8 +11,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.models.responses.MediumCreated
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.auth.CactaceaContext
-
+import io.github.cactacea.backend.utils.context.CactaceaContext
 import io.swagger.models.Swagger
 
 @Singleton

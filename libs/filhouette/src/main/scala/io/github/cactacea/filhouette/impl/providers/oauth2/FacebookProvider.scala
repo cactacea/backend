@@ -23,9 +23,9 @@
 package io.github.cactacea.filhouette.impl.providers.oauth2
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.google.inject.Inject
-import com.twitter.finagle.http.{Method, Request, Version}
-import com.twitter.finatra.httpclient.HttpClient
+import com.twitter.finatra.httpclient.modules.HttpClientModule
+import com.twitter.finatra.httpclient.{HttpClient, RequestBuilder}
+import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util.Future
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.impl.exceptions.ProfileRetrievalException
@@ -64,7 +64,7 @@ trait BaseFacebookProvider extends OAuth2Provider {
    * @return On success the build social profile, otherwise a failure.
    */
   override protected def buildProfile(authInfo: OAuth2Info): Future[Profile] = {
-    val request = Request(Version.Http11, Method.Get, urls("api").format(authInfo.accessToken))
+    val request = RequestBuilder.get(urls("api").format(authInfo.accessToken))
     httpLayer.execute(request).flatMap({ response =>
       val json = Json.obj(response.contentString)
       val error = json.get("error")
@@ -92,7 +92,7 @@ class FacebookProfileParser extends SocialProfileParser[JsonNode, CommonSocialPr
    * @param authInfo The auth info to query the provider again for additional data.
    * @return The social profile from given result.
    */
-  override def parse(json: JsonNode, authInfo: OAuth2Info) = Future.value {
+  override def parse(json: JsonNode, authInfo: OAuth2Info): Future[CommonSocialProfile] = Future.value {
     val userID =  json.get("id").asText()
     val firstName = Some(json.get("first_name").asText())
     val lastName = Some(json.get("last_name").asText())
@@ -121,10 +121,14 @@ class FacebookProvider (
                         val settings: OAuth2Settings)
   extends BaseFacebookProvider with CommonSocialProfileBuilder {
 
+  private val httpClientModule = new HttpClientModule() {
+    val dest = "graph.facebook.com"
+  }
+
   /**
     * The HTTP layer implementation.
     */
-  @Inject var httpLayer: HttpClient = _
+  var httpLayer: HttpClient = httpClientModule.provideHttpClient(FinatraObjectMapper.create(), httpClientModule.provideHttpService)
 
   /**
    * The type of this class.
@@ -142,7 +146,7 @@ class FacebookProvider (
    * @param f A function which gets the settings passed and returns different settings.
    * @return An instance of the provider initialized with new settings.
    */
-  override def withSettings(f: (Settings) => Settings) = new FacebookProvider(stateHandler, f(settings))
+  override def withSettings(f: (Settings) => Settings): FacebookProvider = new FacebookProvider(stateHandler, f(settings))
 }
 
 /**

@@ -7,8 +7,7 @@ import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
 import io.github.cactacea.backend.models.requests.setting.{PostActiveStatus, PostDevicePushToken, PutNotificationSetting}
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.auth.CactaceaContext
-
+import io.github.cactacea.backend.utils.context.CactaceaContext
 import io.swagger.models.Swagger
 
 @Singleton

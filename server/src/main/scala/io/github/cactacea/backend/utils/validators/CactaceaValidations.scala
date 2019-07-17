@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.utils.validaters
+package io.github.cactacea.backend.utils.validators
 
 import com.twitter.finatra.validation.ValidationResult
 

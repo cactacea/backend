@@ -1,15 +1,15 @@
-package io.github.cactacea.backend.utils.auth
+package io.github.cactacea.backend.utils.models
 
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.github.cactacea.backend.core.infrastructure.models.Accounts
 import io.github.cactacea.filhouette.api.Identity
 
-case class CactaceaAccount(id: AccountId) extends Identity
+case class User(id: AccountId) extends Identity
 
-object CactaceaAccount {
+object User {
 
-  def apply(a: Accounts): CactaceaAccount = {
-    CactaceaAccount(a.id)
+  def apply(a: Accounts): User = {
+    User(a.id)
   }
 
 }
