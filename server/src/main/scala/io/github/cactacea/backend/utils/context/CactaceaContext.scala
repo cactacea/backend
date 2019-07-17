@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.utils.auth
+package io.github.cactacea.backend.utils.context
 
 import java.util.Locale
 

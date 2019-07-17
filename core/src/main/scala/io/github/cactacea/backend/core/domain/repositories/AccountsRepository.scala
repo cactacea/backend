@@ -2,9 +2,9 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, DeviceType}
+import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO, PushNotificationSettingsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, AuthenticationsDAO, DevicesDAO, PushNotificationSettingsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.Accounts
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, MediumsValidator}
@@ -15,21 +15,30 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 class AccountsRepository @Inject()(
                                     accountsValidator: AccountsValidator,
                                     mediumsValidator: MediumsValidator,
+                                    authenticationsDAO: AuthenticationsDAO,
                                     accountsDAO: AccountsDAO,
                                     devicesDAO: DevicesDAO,
                                     notificationSettingsDAO: PushNotificationSettingsDAO
 
                                   ) {
 
-  def create(accountName: String,
-             udid: String,
-             deviceType: DeviceType,
-             userAgent: Option[String]): Future[Account] = {
+  def save(providerId: String, providerKey: String, accountName: String, displayName: Option[String]): Future[Account] = {
+    authenticationsDAO.find(providerId, providerKey).map(_.flatMap(_.accountId)).flatMap(_ match {
+      case Some(id) =>
+        accountsValidator.find(id.toSessionId)
+      case None =>
+        for {
+          i <- accountsDAO.create(accountName, displayName.getOrElse(accountName))
+          _ <- notificationSettingsDAO.create(i.toSessionId)
+          a <- accountsValidator.find(i.toSessionId)
+        } yield (a)
+    })
+  }
 
+  def create(accountName: String): Future[Account] = {
     for {
       _ <- accountsValidator.notExist(accountName)
       i <- accountsDAO.create(accountName)
-      _ <- devicesDAO.create(udid, deviceType, userAgent, i.toSessionId)
       _ <- notificationSettingsDAO.create(i.toSessionId)
       a <- accountsValidator.find(i.toSessionId)
     } yield (a)
@@ -40,13 +49,6 @@ class AccountsRepository @Inject()(
       _ <- accountsDAO.signOut(sessionId)
       _ <- devicesDAO.delete(udid, sessionId)
     } yield (())
-  }
-
-  def find(accountName: String, udid: String, deviceType: DeviceType, userAgent: Option[String]): Future[Account] = {
-    for {
-      a <- accountsValidator.find(accountName)
-      _ <- devicesDAO.create(udid, deviceType, userAgent, a.id.toSessionId)
-    } yield (a)
   }
 
   def find(sessionId: SessionId): Future[Account] = {
@@ -141,6 +143,10 @@ class AccountsRepository @Inject()(
       case None =>
         Future.exception(CactaceaException(SessionNotAuthorized))
     })
+  }
+
+  def link(providerId: String, providerKey: String, accountId: AccountId): Future[Unit] = {
+    authenticationsDAO.link(providerId, providerKey, accountId)
   }
 
 }

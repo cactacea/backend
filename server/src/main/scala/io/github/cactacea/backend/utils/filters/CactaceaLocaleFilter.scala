@@ -6,7 +6,7 @@ import com.google.inject.Singleton
 import com.twitter.finagle.http.{Fields, Request, Response}
 import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.Future
-import io.github.cactacea.backend.utils.auth.CactaceaContext
+import io.github.cactacea.backend.utils.context.CactaceaContext
 
 import scala.collection.JavaConverters._
 

@@ -7,7 +7,6 @@ import io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO
 class DevicesRepositorySpec extends RepositorySpec {
 
   val devicesRepository = injector.instance[DevicesRepository]
-  val devicesDAO = injector.instance[DevicesDAO]
 
   test("updateDeviceToken") {
 

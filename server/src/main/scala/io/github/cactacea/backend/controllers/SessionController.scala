@@ -15,7 +15,8 @@ import io.github.cactacea.backend.models.requests.session._
 import io.github.cactacea.backend.models.requests.sessions.DeleteSignOut
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.auth.{CactaceaContext, SessionsService}
+import io.github.cactacea.backend.utils.context.CactaceaContext
+import io.github.cactacea.backend.utils.services.AuthenticationsService
 import io.swagger.models.Swagger
 
 
@@ -32,7 +33,7 @@ class SessionController @Inject()(
                                    friendsService: FriendsService,
                                    invitationService: GroupInvitationsService,
                                    mutesService: MutesService,
-                                   sessionService: SessionsService,
+                                   sessionService: AuthenticationsService,
                                    friendRequestsService: FriendRequestsService,
                                    blocksService: BlocksService
                                  ) extends CactaceaSwaggerController {

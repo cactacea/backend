@@ -3,7 +3,7 @@ package io.github.cactacea.backend.models.requests.sessions
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.Header
 import com.twitter.finatra.validation._
-import io.github.cactacea.backend.utils.validaters.CactaceaValidations
+import io.github.cactacea.backend.utils.validators.CactaceaValidations
 import io.swagger.annotations.ApiModelProperty
 
 case class PostSignUp(

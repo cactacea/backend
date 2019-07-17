@@ -8,14 +8,15 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountTerminated, InvalidAccountNameOrPassword}
 import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.auth.{CactaceaContext, SessionsService}
+import io.github.cactacea.backend.utils.context.CactaceaContext
+import io.github.cactacea.backend.utils.services.AuthenticationsService
 import io.swagger.models.Swagger
 
 @Singleton
 class SessionsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
-                                    sessionsService: SessionsService
+                                    sessionsService: AuthenticationsService
 
                                   ) extends CactaceaSwaggerController {
 

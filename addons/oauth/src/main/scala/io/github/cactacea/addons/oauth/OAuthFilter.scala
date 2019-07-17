@@ -7,7 +7,7 @@ import com.twitter.finagle.{OAuth2, Service, SimpleFilter}
 import com.twitter.inject.Logging
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.repositories.AccountsRepository
-import io.github.cactacea.backend.utils.auth.CactaceaContext
+import io.github.cactacea.backend.utils.context.CactaceaContext
 
 @Singleton
 class OAuthFilter @Inject()(

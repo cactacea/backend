@@ -11,7 +11,7 @@ import io.github.cactacea.backend.models.requests.account._
 import io.github.cactacea.backend.models.requests.feed.GetAccountFeeds
 import io.github.cactacea.backend.models.requests.group.{GetAccountGroup, GetAccountGroups}
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.auth.CactaceaContext
+import io.github.cactacea.backend.utils.context.CactaceaContext
 import io.swagger.models.Swagger
 
 @Singleton

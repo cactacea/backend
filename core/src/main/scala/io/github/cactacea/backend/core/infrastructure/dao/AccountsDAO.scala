@@ -26,6 +26,19 @@ class AccountsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
+  def create(accountName: String, displayName: String): Future[AccountId] = {
+
+    val accountStatus = AccountStatusType.normally
+    val q = quote {
+      query[Accounts].insert(
+        _.accountName           -> lift(accountName),
+        _.displayName           -> lift(displayName),
+        _.accountStatus         -> lift(accountStatus)
+      ).returning(_.id)
+    }
+    run(q)
+  }
+
   def updateProfile(displayName: String,
                     web: Option[String],
                     birthday: Option[Long],

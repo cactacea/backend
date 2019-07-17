@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.utils.auth
+package io.github.cactacea.backend.utils.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
@@ -7,8 +7,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.ListenerService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.DeviceType
-import io.github.cactacea.backend.core.domain.repositories.AccountsRepository
-import io.github.cactacea.backend.core.infrastructure.dao.AuthenticationsDAO
+import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, DevicesRepository}
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator
 import io.github.cactacea.filhouette.api.LoginInfo
@@ -18,17 +17,17 @@ import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService
 import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 
 @Singleton
-class SessionsService @Inject()(
-                                 db: DatabaseService,
-                                 response: ResponseBuilder,
-                                 accountsValidator: AccountsValidator,
-                                 accountsRepository: AccountsRepository,
-                                 authInfoRepository: AuthInfoRepository,
-                                 authenticationsDAO: AuthenticationsDAO,
-                                 credentialsProvider: CredentialsProvider,
-                                 passwordHasherRegistry: PasswordHasherRegistry,
-                                 authenticatorService: JWTAuthenticatorService,
-                                 listenerService: ListenerService
+class AuthenticationsService @Inject()(
+                                        db: DatabaseService,
+                                        response: ResponseBuilder,
+                                        accountsValidator: AccountsValidator,
+                                        accountsRepository: AccountsRepository,
+                                        authInfoRepository: AuthInfoRepository,
+                                        credentialsProvider: CredentialsProvider,
+                                        devicesRepository: DevicesRepository,
+                                        passwordHasherRegistry: PasswordHasherRegistry,
+                                        authenticatorService: JWTAuthenticatorService,
+                                        listenerService: ListenerService
                                ) {
 
   import db._
@@ -40,13 +39,13 @@ class SessionsService @Inject()(
              deviceType: DeviceType)(implicit request: Request): Future[Response] = {
 
     val l = LoginInfo(CredentialsProvider.ID, accountName)
-
     for {
         (r, a) <- transaction {
           for {
-            a <- accountsRepository.create(accountName, udid, deviceType, userAgent)
+            a <- accountsRepository.create(accountName)
             _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
-            _ <- authenticationsDAO.updateAccountId(CredentialsProvider.ID, accountName, a.id)
+            _ <- accountsRepository.link(l.providerId, l.providerKey, a.id)
+            _ <- devicesRepository.save(l.providerId, l.providerKey, udid, deviceType, userAgent)
             s <- authenticatorService.create(l)
             c <- authenticatorService.init(s)
             r <- authenticatorService.embed(c, response.ok(a))
@@ -68,7 +67,8 @@ class SessionsService @Inject()(
         (r, a) <- transaction {
           for {
             l <- credentialsProvider.authenticate(Credentials(accountName, password))
-            a <- accountsRepository.find(accountName, udid, deviceType, userAgent)
+            d <- devicesRepository.save(l.providerId, l.providerKey, udid, deviceType, userAgent)
+            a <- accountsRepository.find(d.toSessionId)
             s <- authenticatorService.create(l)
             c <- authenticatorService.init(s)
             r <- authenticatorService.embed(c, response.ok(a))

@@ -1,8 +1,8 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, DeviceType, MediumType}
+import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, MediumType}
 import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO, PushNotificationSettingsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, PushNotificationSettingsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, AccountTerminated, MediumNotFound, SessionTimeout}
@@ -11,7 +11,7 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   val blocksRepository = injector.instance[BlocksRepository]
   val mediumRepository = injector.instance[MediumsRepository]
-  val devicesDAO = injector.instance[DevicesDAO]
+//  val devicesDAO = injector.instance[DevicesDAO]
   var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
   val accountsDAO = injector.instance[AccountsDAO]
 
@@ -20,10 +20,10 @@ class AccountsRepositorySpec extends RepositorySpec {
     val accountName = "SessionsRepositorySpec2"
     val displayName = "SessionsRepositorySpec2"
 //    val password = "password"
-    val udid = "0123456789012345678901234567890123456789"
-    val userAgent = Some("userAgent")
-    val result = execute(accountsRepository.create(accountName, udid,  DeviceType.ios, userAgent))
-    val account = execute(accountsRepository.find(result.accountName, udid,  DeviceType.ios, userAgent))
+//    val udid = "0123456789012345678901234567890123456789"
+//    val userAgent = Some("userAgent")
+    val result = execute(accountsRepository.create(accountName))
+    val account = execute(accountsRepository.find(result.id.toSessionId))
 
     assert(account.displayName == displayName)
 
@@ -48,8 +48,8 @@ class AccountsRepositorySpec extends RepositorySpec {
     val accountName = "SessionsRepositorySpec4"
     //    val password = "password"
     val udid = "0123456789012345678901234567890123456789"
-    val userAgent = Some("userAgent")
-    val session = execute(accountsRepository.create(accountName, udid,  DeviceType.ios, userAgent))
+//    val userAgent = Some("userAgent")
+    val session = execute(accountsRepository.create(accountName))
     execute(accountsRepository.signOut(udid, session.id.toSessionId))
 
   }
@@ -60,16 +60,16 @@ class AccountsRepositorySpec extends RepositorySpec {
     val displayName = "SessionsRepositorySpec1"
     //    val password = "password"
     val udid = "0123456789012345678901234567890123456789"
-    val userAgent = Some("userAgent")
-    val account = execute(accountsRepository.create(accountName, udid,  DeviceType.ios, userAgent))
+//    val userAgent = Some("userAgent")
+    val account = execute(accountsRepository.create(accountName))
 
     // result user
     assert(account.accountName == accountName)
     assert(account.displayName == displayName)
 
-    // result device
-    val devices = execute(devicesDAO.exist(account.id.toSessionId, udid))
-    assert(devices == true)
+//    // result device
+//    val devices = execute(devicesDAO.exist(account.id.toSessionId, udid))
+//    assert(devices == true)
 
     // result notificationSettings
     val notificationSettings = execute(notificationSettingsDAO.find(account.id.toSessionId))
@@ -267,8 +267,8 @@ class AccountsRepositorySpec extends RepositorySpec {
     val accountName = "SessionsRepositorySpec5"
 //    val password = "password"
     val udid = "0123456789012345678901234567890123456789"
-    val userAgent = Some("userAgent")
-    val session = execute(accountsRepository.create(accountName, udid,  DeviceType.ios, userAgent))
+//    val userAgent = Some("userAgent")
+    val session = execute(accountsRepository.create(accountName))
 
     val expired = System.currentTimeMillis()
     execute(accountsRepository.find(session.id.toSessionId, expired))

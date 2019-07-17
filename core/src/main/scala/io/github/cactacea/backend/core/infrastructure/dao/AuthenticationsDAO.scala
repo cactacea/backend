@@ -49,7 +49,7 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => Unit)
   }
 
-  def updateAccountId(providerId: String, providerKey: String, accountId: AccountId): Future[Unit] = {
+  def link(providerId: String, providerKey: String, accountId: AccountId): Future[Unit] = {
     val q = quote {
       query[Authentications]
         .filter(_.providerId == lift(providerId))

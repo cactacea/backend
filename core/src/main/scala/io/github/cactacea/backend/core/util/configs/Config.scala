@@ -2,13 +2,13 @@ package io.github.cactacea.backend.core.util.configs
 
 import java.net.InetAddress
 
-import com.twitter.util.Duration
 import com.twitter.conversions.DurationOps._
+import com.twitter.conversions.StorageUnitOps._
+import com.twitter.util.Duration
 import com.typesafe.config.ConfigFactory
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
-import com.twitter.conversions.StorageUnitOps._
 
 object Config extends DurationReader {
 
@@ -19,7 +19,8 @@ object Config extends DurationReader {
   private val authConfig = config.as[AuthConfig]("auth")
   private val passwordConfig = config.as[PasswordConfig]("password")
   private val storageConfig = config.as[StorageConfig]("storage")
-
+  private val facebookConfig = config.as[OAuth2Config]("socials.facebook")
+  private val twitterConfig = config.as[OAuth1Config]("socials.twitte")
   object db { // scalastyle:ignore
 
     trait config {
@@ -110,11 +111,28 @@ object Config extends DurationReader {
     lazy val keyLength = passwordConfig.keyLength.getOrElse(128)
   }
 
-  object crypter {
+  object crypter { // scalastyle:ignore
     lazy val signerKey = crypterConfig.signerKey.getOrElse("todo")
     lazy val crypterKey = crypterConfig.crypterKey.getOrElse("todo")
   }
 
+  object facebook { // scalastyle:ignore
+    val authorizationURL = facebookConfig.authorizationURL
+    val accessTokenURL = facebookConfig.accessTokenURL.getOrElse("")
+    val redirectURL = facebookConfig.redirectURL
+    val clientID = facebookConfig.clientID.getOrElse("")
+    val clientSecret = facebookConfig.clientSecret.getOrElse("")
+    val scope = facebookConfig.scope
+  }
+
+  object twitter { // scalastyle:ignore
+    val requestTokenURL = twitterConfig.requestTokenURL.getOrElse("")
+    val accessTokenURL = twitterConfig.accessTokenURL.getOrElse("")
+    val authorizationURL = twitterConfig.authorizationURL.getOrElse("")
+    val callbackURL = twitterConfig.callbackURL.getOrElse("")
+    val consumerKey = twitterConfig.consumerKey.getOrElse("")
+    val consumerSecret = twitterConfig.consumerSecret.getOrElse("")
+  }
 
   println( // scalastyle:ignore
 """   ___           _                           ___            _                  _
@@ -162,8 +180,20 @@ object Config extends DurationReader {
   println(s"password.salt = ${password.salt}") // scalastyle:ignore
   println(s"password.iterations = ${password.iterations}") // scalastyle:ignore
   println(s"password.keyLength = ${password.keyLength}") // scalastyle:ignore
-  println(s"crypter.crypterKey = ${crypter.crypterKey}")
-  println(s"crypter.signerKey = ${crypter.signerKey}")
+  println(s"crypter.crypterKey = ${crypter.crypterKey}") // scalastyle:ignore
+  println(s"crypter.signerKey = ${crypter.signerKey}") // scalastyle:ignore
+  println(s"facebook.authorizationURL = ${facebook.authorizationURL}") // scalastyle:ignore
+  println(s"facebook.accessTokenURL = ${facebook.accessTokenURL}") // scalastyle:ignore
+  println(s"facebook.redirectURL = ${facebook.redirectURL}") // scalastyle:ignore
+  println(s"facebook.clientID = ${facebook.clientID}") // scalastyle:ignore
+  println(s"facebook.clientSecret = ${facebook.clientSecret}") // scalastyle:ignore
+  println(s"facebook.scope = ${facebook.scope}") // scalastyle:ignore
+  println(s"twitter.requestTokenURL = ${twitter.requestTokenURL}") // scalastyle:ignore
+  println(s"twitter.accessTokenURL = ${twitter.accessTokenURL}") // scalastyle:ignore
+  println(s"twitter.authorizationURL = ${twitter.authorizationURL}") // scalastyle:ignore
+  println(s"twitter.callbackURL = ${twitter.callbackURL}") // scalastyle:ignore
+  println(s"twitter.consumerKey = ${twitter.consumerKey}") // scalastyle:ignore
+  println(s"twitter.consumerSecret = ${twitter.consumerSecret}") // scalastyle:ignore
   println("") // scalastyle:ignore
 
 }

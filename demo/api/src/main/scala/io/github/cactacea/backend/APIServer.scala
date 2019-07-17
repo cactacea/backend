@@ -2,7 +2,7 @@ package io.github.cactacea.backend
 
 import com.twitter.finatra.http.routing.HttpRouter
 import io.cactacea.finagger.DocsController
-import io.github.cactacea.backend.utils.auth.CactaceaAuthModule
+import io.github.cactacea.backend.utils.modules.AuthenticationModule
 import io.github.cactacea.backend.utils.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.utils.warmups.CactaceaQueueHandler
 
@@ -15,7 +15,7 @@ class APIServer extends CactaceaServer {
   }
 
   addFrameworkModule(CactaceaSwaggerModule)
-  addFrameworkModule(CactaceaAuthModule)
+  addFrameworkModule(AuthenticationModule)
 
   override def warmup() {
     handle[MigrationHandler]()
