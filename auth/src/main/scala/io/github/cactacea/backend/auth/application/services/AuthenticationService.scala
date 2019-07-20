@@ -10,7 +10,6 @@ import io.github.cactacea.backend.auth.domain.repositories.{TokensRepository, Us
 import io.github.cactacea.backend.auth.enums.TokenType
 import io.github.cactacea.backend.auth.infrastructure.mailer.Mailer
 import io.github.cactacea.backend.auth.utils.providers.EmailsProvider
-import io.github.cactacea.backend.core.application.components.interfaces.ListenerService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository}
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
@@ -33,8 +32,7 @@ class AuthenticationService @Inject()(
                                        credentialsProvider: CredentialsProvider,
                                        passwordHasherRegistry: PasswordHasherRegistry,
                                        authenticatorService: JWTAuthenticatorService,
-                                       mailer: Mailer,
-                                       listenerService: ListenerService
+                                       mailer: Mailer
                                ) {
 
   import db._
@@ -50,7 +48,6 @@ class AuthenticationService @Inject()(
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
         r <- authenticatorService.embed(c, response.ok)
-        _ <- listenerService.signedUp(a)
       } yield (r)
     }
 
@@ -71,7 +68,6 @@ class AuthenticationService @Inject()(
     db.transaction {
       for {
         _ <- authenticationsRepository.updateAccountName(CredentialsProvider.ID, accountName, sessionId)
-        _ <- listenerService.accountNameUpdated(accountName, sessionId)
       } yield (())
     }
   }

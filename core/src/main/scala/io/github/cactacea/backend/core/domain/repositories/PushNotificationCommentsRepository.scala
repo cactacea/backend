@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.domain.models.PushNotification
 import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationCommentsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.CommentId
 
-@Singleton
+
 class PushNotificationCommentsRepository @Inject()(pushNotificationCommentsDAO: PushNotificationCommentsDAO) {
 
   def find(id: CommentId): Future[Option[List[PushNotification]]] = {

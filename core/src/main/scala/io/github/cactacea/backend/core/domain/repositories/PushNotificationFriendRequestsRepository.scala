@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.domain.models.PushNotification
 import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationFriendRequestsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId
 
-@Singleton
+
 class PushNotificationFriendRequestsRepository @Inject()(pushNotificationFriendRequestsDAO: PushNotificationFriendRequestsDAO) {
 
   def find(id: FriendRequestId): Future[Option[List[PushNotification]]] = {

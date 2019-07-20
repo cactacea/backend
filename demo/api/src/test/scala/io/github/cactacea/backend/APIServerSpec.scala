@@ -10,6 +10,7 @@ import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.auth.utils.modules.AuthenticationModule
 import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.util.modules.CoreModule
 import io.github.cactacea.backend.helpers._
 
 @Singleton
@@ -36,10 +37,10 @@ class APIServerSpec extends FeatureTest with Helpers {
       modules = Seq(
           DatabaseModule,
           AuthenticationModule,
+          CoreModule,
           DefaultChatModule,
           DefaultDeepLinkModule,
           DefaultJacksonModule,
-          DefaultListenerModule,
           DefaultMessageModule,
           DefaultMobilePushModule,
           DefaultQueueModule,

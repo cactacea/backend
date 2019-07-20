@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-@Singleton
+
 class NotificationsRepository @Inject()(
                                          notificationsDAO: NotificationsDAO
                                        ) {

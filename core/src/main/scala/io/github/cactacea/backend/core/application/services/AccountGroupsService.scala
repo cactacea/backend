@@ -1,24 +1,20 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.ListenerService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 
-@Singleton
 class AccountGroupsService @Inject()(
                                       db: DatabaseService,
-                                      accountGroupsRepository: AccountGroupsRepository,
-                                      listenerService: ListenerService
+                                      accountGroupsRepository: AccountGroupsRepository
                                     ) {
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(accountGroupsRepository.delete(groupId,sessionId))
-      _ <- listenerService.groupDeleted(groupId, sessionId)
     } yield (())
   }
 

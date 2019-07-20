@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, GroupsDAO}
@@ -9,11 +9,10 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsV
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotJoined, GroupAlreadyHidden, GroupNotHidden}
 
-@Singleton
+
 class AccountGroupsRepository @Inject()(
                                          accountsValidator: AccountsValidator,
                                          accountGroupsValidator: AccountGroupsValidator,
-//                                         accountsDAO: AccountsDAO,
                                          accountGroupsDAO: AccountGroupsDAO,
                                          accountMessagesDAO: AccountMessagesDAO,
                                          groupsDAO: GroupsDAO

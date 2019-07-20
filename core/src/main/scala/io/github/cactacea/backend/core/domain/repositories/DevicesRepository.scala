@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.infrastructure.validators.AuthenticationsValidator
 
-@Singleton
+
 class DevicesRepository @Inject()(
                                    authenticationsValidator: AuthenticationsValidator,
                                    devicesDAO: DevicesDAO

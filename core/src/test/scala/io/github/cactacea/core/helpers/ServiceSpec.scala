@@ -8,6 +8,7 @@ import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.application.services.FeedsService
 import io.github.cactacea.backend.core.domain.repositories.AccountsRepository
+import io.github.cactacea.backend.core.util.modules.CoreModule
 import org.scalatest.BeforeAndAfter
 
 class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
@@ -16,7 +17,7 @@ class ServiceSpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultListenerModule,
+        CoreModule,
         DefaultChatModule,
         DefaultMessageModule,
         DefaultQueueModule,

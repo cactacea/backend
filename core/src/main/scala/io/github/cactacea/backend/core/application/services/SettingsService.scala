@@ -7,7 +7,6 @@ import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
 import io.github.cactacea.backend.core.domain.repositories.PushNotificationSettingsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
-@Singleton
 class SettingsService @Inject()(
                                  notificationSettingsRepository: PushNotificationSettingsRepository,
                                  db: DatabaseService

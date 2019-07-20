@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.MediumsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.MediumsValidator
 
-@Singleton
+
 class MediumsRepository @Inject()(
                                  mediumsValidator: MediumsValidator,
                                  mediumsDAO: MediumsDAO

@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.FeedLikesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FeedLikesValidator, FeedsValidator}
 
-@Singleton
+
 class FeedLikesRepository @Inject()(
                                      accountsValidator: AccountsValidator,
                                      feedsValidator: FeedsValidator,

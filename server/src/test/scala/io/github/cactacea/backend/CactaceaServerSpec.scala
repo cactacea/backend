@@ -7,6 +7,7 @@ import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.auth.utils.modules.AuthenticationModule
 import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.util.modules.CoreModule
 
 @Singleton
 class CactaceaServerSpec extends FeatureTest
@@ -39,15 +40,15 @@ class CactaceaServerSpec extends FeatureTest
     TestInjector(
       modules = Seq(
           DatabaseModule,
-        AuthenticationModule,
+          AuthenticationModule,
+          CoreModule,
           DefaultChatModule,
           DefaultDeepLinkModule,
           DefaultJacksonModule,
-          DefaultListenerModule,
           DefaultMessageModule,
           DefaultMobilePushModule,
           DefaultQueueModule,
-          DefaultStorageModule
+          DefaultStorageModule,
       )
     ).create
 

@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 import io.github.cactacea.backend.core.infrastructure.models.Authentications
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, AuthenticationsValidator}
 
-@Singleton
+
 class AuthenticationsRepository @Inject()(
                                            accountsValidator: AccountsValidator,
                                            authenticationsValidator: AuthenticationsValidator,
