@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, AuthenticationsDAO, DevicesDAO, PushNotificationSettingsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO, PushNotificationSettingsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.Accounts
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, MediumsValidator}
@@ -15,25 +15,11 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 class AccountsRepository @Inject()(
                                     accountsValidator: AccountsValidator,
                                     mediumsValidator: MediumsValidator,
-                                    authenticationsDAO: AuthenticationsDAO,
                                     accountsDAO: AccountsDAO,
                                     devicesDAO: DevicesDAO,
                                     notificationSettingsDAO: PushNotificationSettingsDAO
 
                                   ) {
-
-  def save(providerId: String, providerKey: String, accountName: String, displayName: Option[String]): Future[Account] = {
-    authenticationsDAO.find(providerId, providerKey).map(_.flatMap(_.accountId)).flatMap(_ match {
-      case Some(id) =>
-        accountsValidator.find(id.toSessionId)
-      case None =>
-        for {
-          i <- accountsDAO.create(accountName, displayName.getOrElse(accountName))
-          _ <- notificationSettingsDAO.create(i.toSessionId)
-          a <- accountsValidator.find(i.toSessionId)
-        } yield (a)
-    })
-  }
 
   def create(accountName: String): Future[Account] = {
     for {
@@ -44,16 +30,22 @@ class AccountsRepository @Inject()(
     } yield (a)
   }
 
-  def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
+  def create(accountName: String, displayName: Option[String]): Future[Account] = {
     for {
-      _ <- accountsDAO.signOut(sessionId)
-      _ <- devicesDAO.delete(udid, sessionId)
-    } yield (())
+      i <- accountsDAO.create(accountName, displayName.getOrElse(accountName))
+      _ <- notificationSettingsDAO.create(i.toSessionId)
+      a <- accountsValidator.find(i.toSessionId)
+    } yield (a)
   }
 
   def find(sessionId: SessionId): Future[Account] = {
     accountsValidator.find(sessionId)
   }
+
+  def find(providerId: String, providerKey: String): Future[Account] = {
+    accountsValidator.find(providerId, providerKey)
+  }
+
 
   def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
     accountsDAO.find(accountId, sessionId).flatMap( _ match {
@@ -62,10 +54,6 @@ class AccountsRepository @Inject()(
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })
-  }
-
-  def notExist(accountName: String): Future[Boolean] = {
-    accountsDAO.exist(accountName).map(!_)
   }
 
   def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
@@ -86,11 +74,25 @@ class AccountsRepository @Inject()(
     } yield (r)
   }
 
-  def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- accountsValidator.notExist(accountName, sessionId)
-      _ <- accountsDAO.updateAccountName(accountName, sessionId)
-    } yield (())
+  def notExist(accountName: String): Future[Boolean] = {
+    accountsDAO.exist(accountName).map(!_)
+  }
+
+  def find(sessionId: SessionId, expiresIn: Long): Future[Accounts] = {
+    accountsDAO.find(sessionId).flatMap( _ match {
+      case Some(a) =>
+        if (a.accountStatus == AccountStatusType.deleted) {
+          Future.exception(CactaceaException(AccountDeleted))
+        } else if (a.accountStatus == AccountStatusType.terminated) {
+          Future.exception(CactaceaException(AccountTerminated))
+        } else if (a.signedOutAt.map(_ > expiresIn).getOrElse(false)) {
+          Future.exception(CactaceaException(SessionTimeout))
+        } else {
+          Future.value(a)
+        }
+      case None =>
+        Future.exception(CactaceaException(SessionNotAuthorized))
+    })
   }
 
   def updateAccountStatus(accountStatus: AccountStatusType, sessionId: SessionId): Future[Unit] = {
@@ -128,26 +130,13 @@ class AccountsRepository @Inject()(
     }
   }
 
-  def find(sessionId: SessionId, expiresIn: Long): Future[Accounts] = {
-    accountsDAO.find(sessionId).flatMap( _ match {
-      case Some(a) =>
-        if (a.accountStatus == AccountStatusType.deleted) {
-          Future.exception(CactaceaException(AccountDeleted))
-        } else if (a.accountStatus == AccountStatusType.terminated) {
-          Future.exception(CactaceaException(AccountTerminated))
-        } else if (a.signedOutAt.map(_ > expiresIn).getOrElse(false)) {
-          Future.exception(CactaceaException(SessionTimeout))
-        } else {
-          Future.value(a)
-        }
-      case None =>
-        Future.exception(CactaceaException(SessionNotAuthorized))
-    })
+  def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
+    for {
+      _ <- accountsDAO.signOut(sessionId)
+      _ <- devicesDAO.delete(udid, sessionId)
+    } yield (())
   }
 
-  def link(providerId: String, providerKey: String, accountId: AccountId): Future[Unit] = {
-    authenticationsDAO.link(providerId, providerKey, accountId)
-  }
 
 }
 

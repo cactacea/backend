@@ -3,8 +3,9 @@ package io.github.cactacea.backend
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
+import io.github.cactacea.backend.auth.application.components.modules.DefaultMailModule
 import io.github.cactacea.backend.controllers._
-import io.github.cactacea.backend.utils.filters._
+import io.github.cactacea.backend.utils.filters.{CactaceaAuthenticationFilter, _}
 import io.github.cactacea.backend.utils.warmups.{CactaceaDatabaseMigrationHandler, CactaceaQueueHandler}
 import io.github.cactacea.utils.{CorsFilter, ETagFilter}
 
@@ -44,6 +45,8 @@ class CactaceaServer extends BaseServer {
       .add[ResourcesController]
       .add[HealthController]
   }
+
+  addFrameworkModule(DefaultMailModule)
 
   override def warmup() {
     handle[CactaceaDatabaseMigrationHandler]()

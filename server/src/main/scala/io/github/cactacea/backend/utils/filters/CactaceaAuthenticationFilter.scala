@@ -4,9 +4,9 @@ import com.google.inject.Inject
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.Future
+import io.github.cactacea.backend.auth.domain.models.User
 import io.github.cactacea.backend.core.domain.repositories.AccountsRepository
 import io.github.cactacea.backend.utils.context.CactaceaContext
-import io.github.cactacea.backend.utils.models.User
 import io.github.cactacea.filhouette.api.actions.{SecuredActionBuilder, SecuredRequest}
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator
 

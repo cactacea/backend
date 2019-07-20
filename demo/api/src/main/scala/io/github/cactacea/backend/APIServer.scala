@@ -2,7 +2,7 @@ package io.github.cactacea.backend
 
 import com.twitter.finatra.http.routing.HttpRouter
 import io.cactacea.finagger.DocsController
-import io.github.cactacea.backend.utils.modules.AuthenticationModule
+import io.github.cactacea.backend.auth.utils.modules.AuthenticationModule
 import io.github.cactacea.backend.utils.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.utils.warmups.CactaceaQueueHandler
 

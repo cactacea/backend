@@ -3,6 +3,7 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
+import io.github.cactacea.backend.auth.application.services.AuthenticationService
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models._
@@ -16,7 +17,7 @@ import io.github.cactacea.backend.models.requests.sessions.DeleteSignOut
 import io.github.cactacea.backend.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
 import io.github.cactacea.backend.utils.context.CactaceaContext
-import io.github.cactacea.backend.utils.services.AuthenticationsService
+import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 import io.swagger.models.Swagger
 
 
@@ -24,6 +25,7 @@ import io.swagger.models.Swagger
 class SessionController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    s: Swagger,
+                                   accountAuthenticationService: AuthenticationService,
                                    accountsService: AccountsService,
                                    accountGroupsService: AccountGroupsService,
                                    feedsService: FeedsService,
@@ -33,7 +35,6 @@ class SessionController @Inject()(
                                    friendsService: FriendsService,
                                    invitationService: GroupInvitationsService,
                                    mutesService: MutesService,
-                                   sessionService: AuthenticationsService,
                                    friendRequestsService: FriendRequestsService,
                                    blocksService: BlocksService
                                  ) extends CactaceaSwaggerController {
@@ -60,7 +61,7 @@ class SessionController @Inject()(
         .operationId("signOut")
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: DeleteSignOut =>
-      sessionService.signOut(
+      accountsService.signOut(
         request.udid,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
@@ -84,9 +85,10 @@ class SessionController @Inject()(
         .operationId("updateAccountName")
         .request[PutSessionAccountName]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNameAlreadyUsed))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyExist))))
     } { request: PutSessionAccountName =>
-      accountsService.updateAccountName(
+      accountsService.changeAccountName(
+        CredentialsProvider.ID,
         request.name,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
@@ -100,7 +102,7 @@ class SessionController @Inject()(
         .request[PutSessionPassword]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutSessionPassword =>
-      sessionService.updatePassword(
+      accountAuthenticationService.changePassword(
         request.password,
         CactaceaContext.sessionId
       ).map(_ => response.ok)

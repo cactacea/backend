@@ -273,7 +273,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def find(providerId: String, providerKey: String): Future[Option[Accounts]] = {
+  def find(providerId: String, providerKey: String): Future[Option[Account]] = {
     val q = quote {
       for {
         au <- query[Authentications]
@@ -283,7 +283,7 @@ class AccountsDAO @Inject()(db: DatabaseService) {
           .filter(_.id == au.accountId)
       } yield (a)
     }
-    run(q).map(_.headOption)
+    run(q).map(_.headOption.map(Account(_)))
   }
 
 

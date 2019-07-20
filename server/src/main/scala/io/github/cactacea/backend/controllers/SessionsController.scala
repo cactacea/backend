@@ -3,21 +3,19 @@ package io.github.cactacea.backend.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
+import io.github.cactacea.backend.auth.application.services.AuthenticationService
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountTerminated, InvalidAccountNameOrPassword}
 import io.github.cactacea.backend.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.swagger.CactaceaSwaggerController
-import io.github.cactacea.backend.utils.context.CactaceaContext
-import io.github.cactacea.backend.utils.services.AuthenticationsService
 import io.swagger.models.Swagger
 
 @Singleton
 class SessionsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
-                                    sessionsService: AuthenticationsService
-
+                                    accountAuthenticationService: AuthenticationService
                                   ) extends CactaceaSwaggerController {
 
   implicit val swagger: Swagger = s
@@ -33,12 +31,9 @@ class SessionsController @Inject()(
     } { request: PostSignUp =>
       implicit val r = request.request
 
-      sessionsService.signUp(
+      accountAuthenticationService.signUp(
         request.accountName,
-        request.password,
-        request.udid,
-        request.userAgent,
-        CactaceaContext.deviceType
+        request.password
       )
     }
 
@@ -53,12 +48,9 @@ class SessionsController @Inject()(
 
     } { request: GetSignIn =>
       implicit val r = request.request
-      sessionsService.signIn(
+      accountAuthenticationService.signIn(
         request.accountName,
-        request.password,
-        request.udid,
-        request.userAgent,
-        CactaceaContext.deviceType
+        request.password
       )
     }
 

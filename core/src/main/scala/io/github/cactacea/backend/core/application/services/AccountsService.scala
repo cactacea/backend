@@ -6,13 +6,14 @@ import io.github.cactacea.backend.core.application.components.interfaces.Listene
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
-import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, ReportsRepository}
+import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository, ReportsRepository}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 
 @Singleton
 class AccountsService @Inject()(
                                  db: DatabaseService,
                                  accountsRepository: AccountsRepository,
+                                 authenticationsRepository: AuthenticationsRepository,
                                  reportsRepository: ReportsRepository,
                                  listenerService: ListenerService,
                                ) {
@@ -42,13 +43,6 @@ class AccountsService @Inject()(
     accountsRepository.updateDisplayName(accountId, displayName, sessionId)
   }
 
-  def updateAccountName(accountName: String, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(accountsRepository.updateAccountName(accountName, sessionId))
-      _ <- listenerService.accountNameUpdated(accountName, sessionId)
-    } yield (())
-  }
-
   def updateProfile(displayName: String,
                     web: Option[String],
                     birthday: Option[Long],
@@ -70,6 +64,22 @@ class AccountsService @Inject()(
     } yield (())
   }
 
+  def changeAccountName(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
+    db.transaction {
+      for {
+        _ <- authenticationsRepository.updateAccountName(providerId, providerKey, sessionId)
+        _ <- listenerService.accountNameUpdated(providerKey, sessionId)
+      } yield (())
+    }
+  }
+
+  def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
+    for {
+      _ <- db.transaction(accountsRepository.signOut(udid, sessionId))
+      _ <- listenerService.signedOut(sessionId)
+    } yield (())
+  }
+
   def deleteProfileImage(sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(accountsRepository.updateProfileImage(None, sessionId))
@@ -87,5 +97,6 @@ class AccountsService @Inject()(
       _ <- listenerService.accountReported(accountId, reportType, reportContent, sessionId)
     } yield (())
   }
+
 
 }

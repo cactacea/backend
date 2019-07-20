@@ -1,11 +1,11 @@
-package io.github.cactacea.backend.utils.modules
+package io.github.cactacea.backend.auth.utils.modules
 
 import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.TwitterModule
+import io.github.cactacea.backend.auth.domain.models.User
+import io.github.cactacea.backend.auth.domain.repositories.{PasswordsRepository, SocialsRepository, UsersRepository}
+import io.github.cactacea.backend.auth.utils.providers.EmailsProvider
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.utils.models.User
-import io.github.cactacea.backend.utils.repositories.{OAuth2Repository, PasswordsRepository}
-import io.github.cactacea.backend.utils.services.UserService
 import io.github.cactacea.filhouette.api.actions._
 import io.github.cactacea.filhouette.api.crypto.CrypterAuthenticatorEncoder
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
@@ -30,9 +30,9 @@ object AuthenticationModule extends TwitterModule {
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[Clock].toInstance(Clock())
-    bindSingleton[IdentityService[User]].to[UserService]
+    bindSingleton[IdentityService[User]].to[UsersRepository]
     bindSingleton[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordsRepository]
-    bindSingleton[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2Repository]
+    bindSingleton[DelegableAuthInfoDAO[OAuth2Info]].to[SocialsRepository]
   }
 
   /**
@@ -114,6 +114,22 @@ object AuthenticationModule extends TwitterModule {
                                   passwordHasherRegistry: PasswordHasherRegistry): CredentialsProvider = {
 
     new CredentialsProvider(authInfoRepository, passwordHasherRegistry)
+  }
+
+  /**
+    * Provides the emails provider.
+    *
+    * @param authInfoRepository The auth info repository implementation.
+    * @param passwordHasherRegistry The password hasher registry.
+    * @return The credentials provider.
+    */
+  @Provides
+  @Singleton
+  def provideEmailsProvider(
+                                  authInfoRepository: AuthInfoRepository,
+                                  passwordHasherRegistry: PasswordHasherRegistry): EmailsProvider = {
+
+    new EmailsProvider(authInfoRepository, passwordHasherRegistry)
   }
 
   @Provides

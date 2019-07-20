@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.utils.repositories
+package io.github.cactacea.backend.auth.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
@@ -7,7 +7,7 @@ import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.impl.providers.OAuth2Info
 import io.github.cactacea.filhouette.persistence.daos.DelegableAuthInfoDAO
 
-class OAuth2Repository @Inject()(authenticationsDAO: AuthenticationsDAO)
+class SocialsRepository @Inject()(authenticationsDAO: AuthenticationsDAO)
   extends DelegableAuthInfoDAO[OAuth2Info] {
 
   override def add(loginInfo: LoginInfo, authInfo: OAuth2Info): Future[OAuth2Info] = {

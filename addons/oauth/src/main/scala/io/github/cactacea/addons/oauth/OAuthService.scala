@@ -3,8 +3,9 @@ package io.github.cactacea.addons.oauth
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.oauth2._
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, AuthDAO}
-import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Clients}
+import io.github.cactacea.backend.core.infrastructure.models.Clients
 
 @Singleton
 class OAuthService @Inject()(
@@ -47,7 +48,7 @@ class OAuthService @Inject()(
     }
   }
 
-  def signIn(username: String, password: String): Future[Option[Accounts]] = {
+  def signIn(username: String, password: String): Future[Option[Account]] = {
     accountsDAO.find(username, password)
   }
 

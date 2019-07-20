@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
+import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.infrastructure.models.Authentications
 
 @Singleton
@@ -49,7 +49,21 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => Unit)
   }
 
-  def link(providerId: String, providerKey: String, accountId: AccountId): Future[Unit] = {
+  def updateProviderKey(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[Authentications]
+        .filter(_.providerId == lift(providerId))
+        .filter(_.accountId == lift(accountId))
+        .update(
+          _.providerKey    -> lift(providerKey)
+        )
+    }
+    run(q).map(_ => Unit)
+  }
+
+  def link(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
+    val accountId = sessionId.toAccountId
     val q = quote {
       query[Authentications]
         .filter(_.providerId == lift(providerId))
@@ -59,6 +73,26 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
         )
     }
     run(q).map(_ => Unit)
+  }
+
+  def exist(providerId: String, providerKey: String): Future[Boolean] = {
+    val q = quote {
+      query[Authentications]
+        .filter(_.providerId == lift(providerId))
+        .filter(_.providerKey == lift(providerKey))
+        .nonEmpty
+    }
+    run(q)
+  }
+
+  def find(providerId: String, providerKey: String, confirm: Boolean): Future[Option[Authentications]] = {
+    val q = quote {
+      query[Authentications]
+        .filter(_.providerId == lift(providerId))
+        .filter(_.providerKey == lift(providerKey))
+        .filter(_.confirm == lift(confirm))
+    }
+    run(q).map(_.headOption)
   }
 
   def find(providerId: String, providerKey: String): Future[Option[Authentications]] = {

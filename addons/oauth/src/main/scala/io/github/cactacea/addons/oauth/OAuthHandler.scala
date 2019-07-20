@@ -23,7 +23,7 @@ class OAuthHandler @Inject()(
 
   def findUser(username: String, password: String): Future[Option[OAuthUser]] = {
     accountsDAO.find(username, password)
-      .map(_.map({ a => OAuthUser(a.id, 0, new Date(), a.signedOutAt.getOrElse(0L)) }))
+      .map(_.map({ a => OAuthUser(a.id, 0, new Date(), 0L) }))
   }
 
   def findClientUser(clientId: String, clientSecret: String, scope: Option[String]): Future[Option[OAuthUser]] = {
