@@ -59,7 +59,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     val accountName = "SessionsRepositorySpec1"
     val displayName = "SessionsRepositorySpec1"
     //    val password = "password"
-    val udid = "0123456789012345678901234567890123456789"
+//    val udid = "0123456789012345678901234567890123456789"
 //    val userAgent = Some("userAgent")
     val account = execute(accountsRepository.create(accountName))
 
@@ -176,16 +176,16 @@ class AccountsRepositorySpec extends RepositorySpec {
 
   }
 
-  test("update session name") {
-
-    val session = signUp("aaa_test_account_21", "password", "udid")
-
-    execute(accountsRepository.updateAccountName("new account name", session.id.toSessionId))
-    val result = execute(accountsRepository.find(session.id.toSessionId))
-    assert(result.id == session.id)
-    assert(result.accountName == "new account name")
-
-  }
+//  test("update session name") {
+//
+//    val session = signUp("aaa_test_account_21", "password", "udid")
+//
+//    execute(accountsRepository.updateAccountName("new account name", session.id.toSessionId))
+//    val result = execute(accountsRepository.find(session.id.toSessionId))
+//    assert(result.id == session.id)
+//    assert(result.accountName == "new account name")
+//
+//  }
 
   test("update other account's name") {
 

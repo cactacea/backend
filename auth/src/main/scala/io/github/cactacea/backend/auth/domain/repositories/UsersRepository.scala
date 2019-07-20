@@ -1,15 +1,14 @@
-package io.github.cactacea.backend.utils.services
+package io.github.cactacea.backend.auth.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, AuthenticationsDAO}
-import io.github.cactacea.backend.utils.models.User
+import io.github.cactacea.backend.auth.domain.models.User
+import io.github.cactacea.backend.core.infrastructure.dao.AccountsDAO
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.services.IdentityService
 
-class UserService @Inject()(
-                                    accountsDAO: AccountsDAO,
-                                    authenticationsDAO: AuthenticationsDAO
+class UsersRepository @Inject()(
+                                    accountsDAO: AccountsDAO
                                   ) extends IdentityService[User] {
 
   override def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {

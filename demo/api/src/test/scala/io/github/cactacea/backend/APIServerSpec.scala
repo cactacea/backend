@@ -8,9 +8,9 @@ import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.TwitterModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
+import io.github.cactacea.backend.auth.utils.modules.AuthenticationModule
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.helpers._
-import io.github.cactacea.backend.utils.modules.AuthenticationModule
 
 @Singleton
 class APIServerSpec extends FeatureTest with Helpers {

@@ -24,9 +24,25 @@ class AuthenticationsValidator @Inject()(
       case None =>
         Future.exception(CactaceaException(AccountNotFound))
     })
-
   }
 
+  def notExist(providerId: String, providerKey: String): Future[Unit] = {
+    authenticationsDAO.exist(providerId, providerKey).flatMap(_ match {
+      case false =>
+        Future.Unit
+      case true =>
+        Future.exception(CactaceaException(AccountAlreadyExist))
+    })
+  }
+
+  def exist(providerId: String, providerKey: String): Future[Unit] = {
+    authenticationsDAO.exist(providerId, providerKey).flatMap(_ match {
+      case false =>
+        Future.exception(CactaceaException(AccountNotFound))
+      case true =>
+        Future.Unit
+    })
+  }
 
 }
 
