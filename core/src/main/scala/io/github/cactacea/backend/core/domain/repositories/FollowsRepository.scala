@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.{FollowersDAO, Follows
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FollowsValidator}
 
-@Singleton
+
 class FollowsRepository @Inject()(
                                       accountsValidator: AccountsValidator,
                                       followsValidator: FollowsValidator,

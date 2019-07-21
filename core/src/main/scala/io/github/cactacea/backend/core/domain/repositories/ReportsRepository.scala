@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, CommentsValidator, FeedsValidator, GroupsValidator}
 
-@Singleton
+
 class ReportsRepository @Inject()(
                                    accountsValidator: AccountsValidator,
                                    accountReportsDAO: AccountReportsDAO,

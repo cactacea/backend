@@ -10,7 +10,7 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsV
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
-@Singleton
+
 class GroupInvitationsRepository @Inject()(
                                             accountsValidator: AccountsValidator,
                                             accountGroupsValidator: AccountGroupsValidator,

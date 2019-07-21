@@ -10,6 +10,7 @@ import io.github.cactacea.backend.core.domain.enums.DeviceType
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.domain.repositories.AccountsRepository
 import io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO
+import io.github.cactacea.backend.core.util.modules.CoreModule
 import io.github.cactacea.core.helpers.HelperDAO
 import org.scalatest.BeforeAndAfter
 
@@ -19,7 +20,7 @@ class RepositorySpec extends IntegrationTest with BeforeAndAfter with Logging {
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultListenerModule,
+        CoreModule,
         DefaultChatModule,
         DefaultMessageModule,
         DefaultQueueModule,

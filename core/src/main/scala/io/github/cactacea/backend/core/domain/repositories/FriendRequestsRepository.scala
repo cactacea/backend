@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.{FriendRequestsDAO, Fr
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FriendRequestsValidator}
 
-@Singleton
+
 class FriendRequestsRepository @Inject()(
                                           accountsValidator: AccountsValidator,
                                           friendRequestsValidator: FriendRequestsValidator,

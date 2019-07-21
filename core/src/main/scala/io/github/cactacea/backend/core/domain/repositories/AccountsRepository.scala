@@ -11,7 +11,7 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValida
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
-@Singleton
+
 class AccountsRepository @Inject()(
                                     accountsValidator: AccountsValidator,
                                     mediumsValidator: MediumsValidator,

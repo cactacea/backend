@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.domain.models.PushNotification
 import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationMessagesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MessageId}
 
-@Singleton
+
 class PushNotificationMessagesRepository @Inject()(pushNotificationMessagesDAO: PushNotificationMessagesDAO) {
 
   def find(id: MessageId): Future[Option[List[PushNotification]]] = {

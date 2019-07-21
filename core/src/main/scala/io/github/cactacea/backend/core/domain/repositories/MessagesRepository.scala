@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, AccountMessagesValidator, GroupsValidator, MediumsValidator}
 
-@Singleton
+
 class MessagesRepository @Inject()(
                                     accountGroupsValidator: AccountGroupsValidator,
                                     accountMessagesValidator: AccountMessagesValidator,

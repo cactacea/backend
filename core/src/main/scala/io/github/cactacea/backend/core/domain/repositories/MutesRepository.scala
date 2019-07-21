@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.MutesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, MutesValidator}
 
-@Singleton
+
 class MutesRepository @Inject()(
                                  accountsValidator: AccountsValidator,
                                  mutesValidator: MutesValidator,

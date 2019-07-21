@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.domain.models.PushNotification
 import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationGroupInvitationsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.GroupInvitationId
 
-@Singleton
+
 class PushNotificationGroupInvitationsRepository @Inject()(pushNotificationGroupInvitationsDAO: PushNotificationGroupInvitationsDAO) {
 
   def find(id: GroupInvitationId): Future[Option[List[PushNotification]]] = {

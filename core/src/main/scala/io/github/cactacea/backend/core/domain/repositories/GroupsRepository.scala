@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{GroupAuthorityValidator, GroupsValidator}
 
-@Singleton
+
 class GroupsRepository @Inject()(
                                   groupsValidator: GroupsValidator,
                                   groupAuthorityValidator: GroupAuthorityValidator,

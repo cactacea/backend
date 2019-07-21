@@ -2,20 +2,18 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{ListenerService, QueueService}
+import io.github.cactacea.backend.core.application.components.interfaces.QueueService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
 
-@Singleton
 class FeedsService @Inject()(
                               db: DatabaseService,
                               feedsRepository: FeedsRepository,
                               reportsRepository: ReportsRepository,
-                              queueService: QueueService,
-                              listenerService: ListenerService
+                              queueService: QueueService
                             ) {
 
   def create(message: String,
@@ -29,7 +27,6 @@ class FeedsService @Inject()(
     for {
       id <- db.transaction(feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId))
       _ <- queueService.enqueueFeed(id)
-      _ <- listenerService.feedCreated(id, message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
     } yield (id)
 
   }
@@ -37,7 +34,6 @@ class FeedsService @Inject()(
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(feedsRepository.delete(feedId, sessionId))
-      _ <- listenerService.feedDeleted(feedId, sessionId)
     } yield (())
   }
 
