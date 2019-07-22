@@ -38,7 +38,6 @@ lazy val oauth = (project in file("oauth"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .enablePlugins(BuildInfoPlugin)
   .dependsOn(core, auth, utils, filhouette)
 
 
@@ -49,7 +48,6 @@ lazy val auth = (project in file("auth"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .enablePlugins(BuildInfoPlugin)
   .dependsOn(core, utils, filhouette)
 
 
