@@ -64,7 +64,7 @@ case class JWTAuthenticator(
   lastUsedDateTime: DateTime,
   expirationDateTime: DateTime,
   idleTimeout: Option[Duration],
-  customClaims: Option[java.util.Map[String, Object]] = None)
+  customClaims: Option[Map[String, Object]] = None)
   extends StorableAuthenticator with ExpirableAuthenticator {
 
   /**
@@ -92,29 +92,28 @@ object JWTAuthenticator {
     settings: JWTAuthenticatorSettings): String = {
 
     val signatureAlgorithm = SignatureAlgorithm.HS256
-    val subject = Json.toJson(authenticator.loginInfo)
+    val subject = authenticatorEncoder.encode(Json.toJson(authenticator.loginInfo))
     val issuedAt = new Date() // new Date(authenticator.lastUsedDateTime.getMillis / 1000)
     val expired = new DateTime().plus(authenticator.expirationDateTime.getMillis / 1000).toDate //new Date(authenticator.expirationDateTime.getMillis / 1000)
-
-
-
-    authenticator.customClaims.foreach({ c =>
-      c.asScala.foreach({ case (key, _) =>
-        if (ReservedClaims.contains(key)) {
-          Future.exception(new AuthenticatorException(OverrideReservedClaim.format(ID, key, ReservedClaims.mkString(", "))))
-        }
-      })
-    })
 
     val token = Jwts.builder()
       .setIssuer(settings.issuerClaim)
       .setIssuedAt(issuedAt)
-      .setSubject(authenticatorEncoder.encode(subject))
+      .setSubject(subject)
       .setExpiration(expired)
       .setId(authenticator.id)
-    authenticator.customClaims.foreach(token.addClaims(_))
 
-    settings.authenticateType +  token
+    authenticator.customClaims.foreach({ c =>
+      c.foreach({ case (key, _) =>
+        if (ReservedClaims.contains(key)) {
+          Future.exception(new AuthenticatorException(OverrideReservedClaim.format(ID, key, ReservedClaims.mkString(", "))))
+        } else {
+          token.addClaims(c.asJava)
+        }
+      })
+    })
+
+    settings.authenticateType + token
       .signWith(signatureAlgorithm, settings.sharedSecret)
       .compact()
 
@@ -143,10 +142,13 @@ object JWTAuthenticator {
 
     }.map { jwtObject =>
 
-      val body = jwtObject.getBody()
-      val loginInfo = Json.fromJson[LoginInfo](authenticatorEncoder.decode(body.getSubject))
-      val filteredClaims = body.asScala.filterNot({ case (k, v) => ReservedClaims.contains(k) || v == null })
-      val customClaims = filteredClaims.map({ case (k, v) => (k, v.asInstanceOf[Object]) }).asJava
+      val body: Claims = jwtObject.getBody()
+      val subject = authenticatorEncoder.decode(body.getSubject())
+      val loginInfo = Json.fromJson[LoginInfo](subject)
+      val customClaims = body.asScala
+        .filterNot({ case (k, v) => ReservedClaims.contains(k) || v == null })
+        .map({ case (k, v) => (k, v.asInstanceOf[Object]) })
+        .toMap
 
       JWTAuthenticator(
         id = body.getId,

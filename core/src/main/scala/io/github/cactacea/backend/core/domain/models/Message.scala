@@ -23,7 +23,7 @@ case class Message(
 object Message {
 
   def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], next: Long): Message = {
-    apply(m, am, i, a, r, Some(next))
+    apply(m, am, i, a, r, Option(next))
   }
 
   def apply(m: Messages, i: Option[Mediums], a: Accounts): Message = {
