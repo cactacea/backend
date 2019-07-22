@@ -191,6 +191,10 @@
                         <a href="" title="">AccountsRepository</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
+                        <a class="class" href="AuthenticationsRepository.html" title=""></a>
+                        <a href="AuthenticationsRepository.html" title="">AuthenticationsRepository</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
                         <a class="class" href="BlocksRepository.html" title=""></a>
                         <a href="BlocksRepository.html" title="">BlocksRepository</a>
                       </li><li class="current-entities indented7">
@@ -285,10 +289,6 @@
                         <span class="separator"></span>
                         <a class="class" href="ReportsRepository.html" title=""></a>
                         <a href="ReportsRepository.html" title="">ReportsRepository</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="SessionsRepository.html" title=""></a>
-                        <a href="SessionsRepository.html" title="">SessionsRepository</a>
                       </li>
               </ul>
             </div>
@@ -317,10 +317,7 @@
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@Singleton</span><span class="args">()</span>
-              
-        </dd><dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/core/src/main/scala/io/github/cactacea/backend/core/domain/repositories/AccountsRepository.scala" target="_blank">AccountsRepository.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/core/src/main/scala/io/github/cactacea/backend/core/domain/repositories/AccountsRepository.scala" target="_blank">AccountsRepository.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -376,9 +373,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(accountsValidator:io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator,mediumsValidator:io.github.cactacea.backend.core.infrastructure.validators.MediumsValidator,accountsDAO:io.github.cactacea.backend.core.infrastructure.dao.AccountsDAO,devicesDAO:io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO):io.github.cactacea.backend.core.domain.repositories.AccountsRepository"></a><a id="&lt;init&gt;:AccountsRepository"></a>
+      <a id="&lt;init&gt;(accountsValidator:io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator,mediumsValidator:io.github.cactacea.backend.core.infrastructure.validators.MediumsValidator,accountsDAO:io.github.cactacea.backend.core.infrastructure.dao.AccountsDAO,devicesDAO:io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO,notificationSettingsDAO:io.github.cactacea.backend.core.infrastructure.dao.PushNotificationSettingsDAO):io.github.cactacea.backend.core.domain.repositories.AccountsRepository"></a><a id="&lt;init&gt;:AccountsRepository"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#&lt;init&gt;(accountsValidator:io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator,mediumsValidator:io.github.cactacea.backend.core.infrastructure.validators.MediumsValidator,accountsDAO:io.github.cactacea.backend.core.infrastructure.dao.AccountsDAO,devicesDAO:io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO):io.github.cactacea.backend.core.domain.repositories.AccountsRepository" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#&lt;init&gt;(accountsValidator:io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator,mediumsValidator:io.github.cactacea.backend.core.infrastructure.validators.MediumsValidator,accountsDAO:io.github.cactacea.backend.core.infrastructure.dao.AccountsDAO,devicesDAO:io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO,notificationSettingsDAO:io.github.cactacea.backend.core.infrastructure.dao.PushNotificationSettingsDAO):io.github.cactacea.backend.core.domain.repositories.AccountsRepository" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -387,7 +384,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">AccountsRepository</span><span class="params">(<span name="accountsValidator">accountsValidator: <a href="../../infrastructure/validators/AccountsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator">AccountsValidator</a></span>, <span name="mediumsValidator">mediumsValidator: <a href="../../infrastructure/validators/MediumsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.MediumsValidator">MediumsValidator</a></span>, <span name="accountsDAO">accountsDAO: <a href="../../infrastructure/dao/AccountsDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.AccountsDAO">AccountsDAO</a></span>, <span name="devicesDAO">devicesDAO: <a href="../../infrastructure/dao/DevicesDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO">DevicesDAO</a></span>)</span>
+        <span class="name">AccountsRepository</span><span class="params">(<span name="accountsValidator">accountsValidator: <a href="../../infrastructure/validators/AccountsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator">AccountsValidator</a></span>, <span name="mediumsValidator">mediumsValidator: <a href="../../infrastructure/validators/MediumsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.MediumsValidator">MediumsValidator</a></span>, <span name="accountsDAO">accountsDAO: <a href="../../infrastructure/dao/AccountsDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.AccountsDAO">AccountsDAO</a></span>, <span name="devicesDAO">devicesDAO: <a href="../../infrastructure/dao/DevicesDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO">DevicesDAO</a></span>, <span name="notificationSettingsDAO">notificationSettingsDAO: <a href="../../infrastructure/dao/PushNotificationSettingsDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.PushNotificationSettingsDAO">PushNotificationSettingsDAO</a></span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -535,6 +532,38 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#create" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="create(accountName:String,displayName:Option[String]):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.Account]"></a><a id="create(String,Option[String]):Future[Account]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#create(accountName:String,displayName:Option[String]):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.Account]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">create</span><span class="params">(<span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../models/Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a>]</span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#create" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="create(accountName:String):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.Account]"></a><a id="create(String):Future[Account]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#create(accountName:String):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.Account]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">create</span><span class="params">(<span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../models/Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a>]</span>
+      </span>
+      
+      
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((AccountsRepository)⇒Boolean,⇒Any):AccountsRepository"></a>
       <span class="permalink">
@@ -670,6 +699,22 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="find(sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId,expiresIn:Long):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.models.Accounts]"></a><a id="find(SessionId,Long):Future[Accounts]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#find(sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId,expiresIn:Long):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.models.Accounts]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">find</span><span class="params">(<span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>, <span name="expiresIn">expiresIn: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../infrastructure/models/Accounts.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Accounts">Accounts</a>]</span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="find(accountName:Option[String],since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.Account]]"></a><a id="find(Option[String],Option[Long],Int,Int,SessionId):Future[List[Account]]"></a>
       <span class="permalink">
       <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#find(accountName:Option[String],since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.Account]]" title="Permalink">
@@ -698,6 +743,22 @@
       </span>
       <span class="symbol">
         <span class="name">find</span><span class="params">(<span name="accountId">accountId: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../models/Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a>]</span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="find(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.Account]"></a><a id="find(String,String):Future[Account]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#find(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.Account]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">find</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../models/Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a>]</span>
       </span>
       
       
@@ -880,6 +941,22 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#signOut" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="signOut(udid:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="signOut(String,SessionId):Future[Unit]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#signOut(udid:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">signOut</span><span class="params">(<span name="udid">udid: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -912,10 +989,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#updateAccountName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="updateAccountName(accountName:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="updateAccountName(String,SessionId):Future[Unit]"></a>
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#updateAccountStatus" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="updateAccountStatus(accountStatus:io.github.cactacea.backend.core.domain.enums.AccountStatusType,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="updateAccountStatus(AccountStatusType,SessionId):Future[Unit]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#updateAccountName(accountName:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#updateAccountStatus(accountStatus:io.github.cactacea.backend.core.domain.enums.AccountStatusType,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -924,7 +1001,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">updateAccountName</span><span class="params">(<span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+        <span class="name">updateAccountStatus</span><span class="params">(<span name="accountStatus">accountStatus: <a href="../enums/AccountStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.AccountStatusType">AccountStatusType</a></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
       
@@ -941,38 +1018,6 @@
       </span>
       <span class="symbol">
         <span class="name">updateDisplayName</span><span class="params">(<span name="accountId">accountId: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="userName">userName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#updatePassword" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="updatePassword(newPassword:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="updatePassword(String,SessionId):Future[Unit]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#updatePassword(newPassword:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">updatePassword</span><span class="params">(<span name="newPassword">newPassword: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository#updatePassword" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="updatePassword(oldPassword:String,newPassword:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="updatePassword(String,String,SessionId):Future[Unit]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/AccountsRepository.html#updatePassword(oldPassword:String,newPassword:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">updatePassword</span><span class="params">(<span name="oldPassword">oldPassword: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="newPassword">newPassword: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
       

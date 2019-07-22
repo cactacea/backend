@@ -191,6 +191,10 @@
                         <a href="AccountsRepository.html" title="">AccountsRepository</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
+                        <a class="class" href="AuthenticationsRepository.html" title=""></a>
+                        <a href="AuthenticationsRepository.html" title="">AuthenticationsRepository</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
                         <a class="class" href="BlocksRepository.html" title=""></a>
                         <a href="BlocksRepository.html" title="">BlocksRepository</a>
                       </li><li class="current-entities indented7">
@@ -285,10 +289,6 @@
                         <span class="separator"></span>
                         <a class="class" href="ReportsRepository.html" title=""></a>
                         <a href="ReportsRepository.html" title="">ReportsRepository</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="SessionsRepository.html" title=""></a>
-                        <a href="SessionsRepository.html" title="">SessionsRepository</a>
                       </li>
               </ul>
             </div>
@@ -317,10 +317,7 @@
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@Singleton</span><span class="args">()</span>
-              
-        </dd><dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/core/src/main/scala/io/github/cactacea/backend/core/domain/repositories/DevicesRepository.scala" target="_blank">DevicesRepository.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/core/src/main/scala/io/github/cactacea/backend/core/domain/repositories/DevicesRepository.scala" target="_blank">DevicesRepository.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -376,9 +373,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.repositories.DevicesRepository#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(devicesDAO:io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO):io.github.cactacea.backend.core.domain.repositories.DevicesRepository"></a><a id="&lt;init&gt;:DevicesRepository"></a>
+      <a id="&lt;init&gt;(authenticationsValidator:io.github.cactacea.backend.core.infrastructure.validators.AuthenticationsValidator,devicesDAO:io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO):io.github.cactacea.backend.core.domain.repositories.DevicesRepository"></a><a id="&lt;init&gt;:DevicesRepository"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/DevicesRepository.html#&lt;init&gt;(devicesDAO:io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO):io.github.cactacea.backend.core.domain.repositories.DevicesRepository" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/DevicesRepository.html#&lt;init&gt;(authenticationsValidator:io.github.cactacea.backend.core.infrastructure.validators.AuthenticationsValidator,devicesDAO:io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO):io.github.cactacea.backend.core.domain.repositories.DevicesRepository" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -387,7 +384,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DevicesRepository</span><span class="params">(<span name="devicesDAO">devicesDAO: <a href="../../infrastructure/dao/DevicesDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO">DevicesDAO</a></span>)</span>
+        <span class="name">DevicesRepository</span><span class="params">(<span name="authenticationsValidator">authenticationsValidator: <a href="../../infrastructure/validators/AuthenticationsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.AuthenticationsValidator">AuthenticationsValidator</a></span>, <span name="devicesDAO">devicesDAO: <a href="../../infrastructure/dao/DevicesDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO">DevicesDAO</a></span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -535,6 +532,22 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.DevicesRepository#create" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="create(udid:String,deviceType:io.github.cactacea.backend.core.domain.enums.DeviceType,userAgent:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="create(String,DeviceType,Option[String],SessionId):Future[Unit]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/DevicesRepository.html#create(udid:String,deviceType:io.github.cactacea.backend.core.domain.enums.DeviceType,userAgent:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">create</span><span class="params">(<span name="udid">udid: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="deviceType">deviceType: <a href="../enums/DeviceType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.DeviceType">DeviceType</a></span>, <span name="userAgent">userAgent: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((DevicesRepository)⇒Boolean,⇒Any):DevicesRepository"></a>
       <span class="permalink">

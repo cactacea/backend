@@ -259,10 +259,6 @@
                         <a href="NotificationsService.html" title="">NotificationsService</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="SessionsService.html" title=""></a>
-                        <a href="SessionsService.html" title="">SessionsService</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
                         <a class="class" href="SettingsService.html" title=""></a>
                         <a href="SettingsService.html" title="">SettingsService</a>
                       </li>
@@ -293,10 +289,7 @@
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@Singleton</span><span class="args">()</span>
-              
-        </dd><dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/core/src/main/scala/io/github/cactacea/backend/core/application/services/AccountsService.scala" target="_blank">AccountsService.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/core/src/main/scala/io/github/cactacea/backend/core/application/services/AccountsService.scala" target="_blank">AccountsService.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -352,9 +345,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.application.services.AccountsService#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(db:io.github.cactacea.backend.core.application.components.services.DatabaseService,accountsRepository:io.github.cactacea.backend.core.domain.repositories.AccountsRepository,reportsRepository:io.github.cactacea.backend.core.domain.repositories.ReportsRepository,listenerService:io.github.cactacea.backend.core.application.components.interfaces.ListenerService):io.github.cactacea.backend.core.application.services.AccountsService"></a><a id="&lt;init&gt;:AccountsService"></a>
+      <a id="&lt;init&gt;(db:io.github.cactacea.backend.core.application.components.services.DatabaseService,accountsRepository:io.github.cactacea.backend.core.domain.repositories.AccountsRepository,authenticationsRepository:io.github.cactacea.backend.core.domain.repositories.AuthenticationsRepository,reportsRepository:io.github.cactacea.backend.core.domain.repositories.ReportsRepository):io.github.cactacea.backend.core.application.services.AccountsService"></a><a id="&lt;init&gt;:AccountsService"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#&lt;init&gt;(db:io.github.cactacea.backend.core.application.components.services.DatabaseService,accountsRepository:io.github.cactacea.backend.core.domain.repositories.AccountsRepository,reportsRepository:io.github.cactacea.backend.core.domain.repositories.ReportsRepository,listenerService:io.github.cactacea.backend.core.application.components.interfaces.ListenerService):io.github.cactacea.backend.core.application.services.AccountsService" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#&lt;init&gt;(db:io.github.cactacea.backend.core.application.components.services.DatabaseService,accountsRepository:io.github.cactacea.backend.core.domain.repositories.AccountsRepository,authenticationsRepository:io.github.cactacea.backend.core.domain.repositories.AuthenticationsRepository,reportsRepository:io.github.cactacea.backend.core.domain.repositories.ReportsRepository):io.github.cactacea.backend.core.application.services.AccountsService" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -363,7 +356,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">AccountsService</span><span class="params">(<span name="db">db: <a href="../components/services/DatabaseService.html" class="extype" name="io.github.cactacea.backend.core.application.components.services.DatabaseService">DatabaseService</a></span>, <span name="accountsRepository">accountsRepository: <a href="../../domain/repositories/AccountsRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository">AccountsRepository</a></span>, <span name="reportsRepository">reportsRepository: <a href="../../domain/repositories/ReportsRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.ReportsRepository">ReportsRepository</a></span>, <span name="listenerService">listenerService: <a href="../components/interfaces/ListenerService.html" class="extype" name="io.github.cactacea.backend.core.application.components.interfaces.ListenerService">ListenerService</a></span>)</span>
+        <span class="name">AccountsService</span><span class="params">(<span name="db">db: <a href="../components/services/DatabaseService.html" class="extype" name="io.github.cactacea.backend.core.application.components.services.DatabaseService">DatabaseService</a></span>, <span name="accountsRepository">accountsRepository: <a href="../../domain/repositories/AccountsRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository">AccountsRepository</a></span>, <span name="authenticationsRepository">authenticationsRepository: <a href="../../domain/repositories/AuthenticationsRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.AuthenticationsRepository">AuthenticationsRepository</a></span>, <span name="reportsRepository">reportsRepository: <a href="../../domain/repositories/ReportsRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.ReportsRepository">ReportsRepository</a></span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -487,6 +480,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.application.services.AccountsService#changeAccountName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="changeAccountName(providerId:String,providerKey:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="changeAccountName(String,String,SessionId):Future[Unit]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#changeAccountName(providerId:String,providerKey:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">changeAccountName</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
@@ -888,6 +897,22 @@
       </span>
       
       
+    </li><li name="io.github.cactacea.backend.core.application.services.AccountsService#signOut" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="signOut(udid:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="signOut(String,SessionId):Future[Unit]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#signOut(udid:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">signOut</span><span class="params">(<span name="udid">udid: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -920,10 +945,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.application.services.AccountsService#update" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="update(oldPassword:String,newPassword:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="update(String,String,SessionId):Future[Unit]"></a>
+    </li><li name="io.github.cactacea.backend.core.application.services.AccountsService#updateDisplayName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="updateDisplayName(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,displayName:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="updateDisplayName(AccountId,Option[String],SessionId):Future[Unit]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#update(oldPassword:String,newPassword:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#updateDisplayName(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,displayName:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -932,14 +957,14 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="oldPassword">oldPassword: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="newPassword">newPassword: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+        <span class="name">updateDisplayName</span><span class="params">(<span name="accountId">accountId: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.core.application.services.AccountsService#update" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="update(displayName:String,web:Option[String],birthday:Option[Long],location:Option[String],bio:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="update(String,Option[String],Option[Long],Option[String],Option[String],SessionId):Future[Unit]"></a>
+    </li><li name="io.github.cactacea.backend.core.application.services.AccountsService#updateProfile" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="updateProfile(displayName:String,web:Option[String],birthday:Option[Long],location:Option[String],bio:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="updateProfile(String,Option[String],Option[Long],Option[String],Option[String],SessionId):Future[Unit]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#update(displayName:String,web:Option[String],birthday:Option[Long],location:Option[String],bio:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#updateProfile(displayName:String,web:Option[String],birthday:Option[Long],location:Option[String],bio:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -948,39 +973,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="web">web: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="birthday">birthday: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="location">location: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="bio">bio: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.application.services.AccountsService#update" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="update(accountName:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="update(String,SessionId):Future[Unit]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#update(accountName:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.application.services.AccountsService#update" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="update(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,displayName:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="update(AccountId,Option[String],SessionId):Future[Unit]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/AccountsService.html#update(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,displayName:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="accountId">accountId: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+        <span class="name">updateProfile</span><span class="params">(<span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="web">web: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="birthday">birthday: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="location">location: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="bio">bio: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
       
