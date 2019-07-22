@@ -94,20 +94,13 @@ class GoogleProfileParser extends SocialProfileParser[JsonNode, CommonSocialProf
     * @return The social profile from given result.
     */
   override def parse(json: JsonNode, authInfo: OAuth2Info) = Future.value {
+    // https://developers.google.com/+/api/latest/people#emails.type
     val userID =  json.get("id").asText()
     val firstName = Some(json.get("name").get("givenName").asText())
     val lastName = Some(json.get("name").get("familyName").asText())
     val fullName = Some(json.get("displayName").asText())
     val avatarURL = Some(json.get("image").get("url").asText())
     val isDefaultAvatar = json.get("image").get("isDefault").asBoolean(false)
-
-//    // https://developers.google.com/+/api/latest/people#emails.type
-//    val emailIndex = (json \ "emails" \\ "type").indexWhere(_.as[String] == "account")
-//    val emailValue = if ((json \ "emails" \\ "value").isDefinedAt(emailIndex)) {
-//      (json \ "emails" \\ "value")(emailIndex).asOpt[String]
-//    } else {
-//      None
-//    }
 
     // TODO
 //    val emailIndex = ""

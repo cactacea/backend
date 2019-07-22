@@ -39,8 +39,10 @@ object CactaceaErrors {
   final val c40033 = "40033"
   final val c40034 = "40034"
   final val c40035 = "40035"
-  final val c40036 = "40038"
-  final val c40037 = "40039"
+  final val c40036 = "40036"
+  final val c40037 = "40037"
+  final val c40038 = "40038"
+  final val c40039 = "40039"
 
   final val c40400 = "40400"
   final val c40401 = "40401"
@@ -51,8 +53,8 @@ object CactaceaErrors {
   final val c40406 = "40406"
   final val c40407 = "40407"
 
-  final val c40600 = "40600"
-  final val c40601 = "40601"
+  final val c40100 = "40100"
+  final val c40101 = "40101"
 
   final val m40000 = "Account not signed up."
   final val m40001 = "Account deleted."
@@ -89,6 +91,8 @@ object CactaceaErrors {
   final val m40035 = "Feed not liked."
   final val m40036 = "Group already hidden."
   final val m40037 = "Group not hidden."
+  final val m40038 = "Token already expired."
+  final val m40039 = "Invalid token error."
 
   final val m40400 = "Account not found."
   final val m40401 = "Comment not found."
@@ -99,8 +103,8 @@ object CactaceaErrors {
   final val m40406 = "Group invitation not found."
   final val m40407 = "Message not found."
 
-  final val m40600 = "Session not authorized."
-  final val m40601 = "Access token expired."
+  final val m40100 = "Session not authorized."
+  final val m40101 = "Access token expired."
 
   // 400 Bad Request
 
@@ -149,7 +153,7 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40008)  override val message: String = m40008
   }
 
-  final object AccountNameAlreadyUsed extends BadRequest {
+  final object AccountAlreadyExist extends BadRequest {
     @ApiModelProperty(example = c40009)  override val code: Int =       c40009.toInt
     @ApiModelProperty(example = m40009)  override val message: String = m40009
   }
@@ -274,6 +278,17 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40037)  override val message: String = m40037
   }
 
+  final object TokenAlreadyExpired extends BadRequest {
+    @ApiModelProperty(example = c40038)  override val code: Int =       c40038.toInt
+    @ApiModelProperty(example = m40038)  override val message: String = m40038
+  }
+
+  final object InvalidTokenError extends BadRequest {
+    @ApiModelProperty(example = c40039)  override val code: Int =       c40039.toInt
+    @ApiModelProperty(example = m40039)  override val message: String = m40039
+  }
+
+
   // 404 Not Found
 
   final object AccountNotFound extends NotFound {
@@ -316,16 +331,16 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40407)  override val message: String = m40407
   }
 
-  // 406 Unauthorized
+  // 401 Unauthorized
 
   final object SessionNotAuthorized extends Unauthorized {
-    @ApiModelProperty(example = c40600)  override val code: Int =       c40600.toInt
-    @ApiModelProperty(example = m40600)  override val message: String = m40600
+    @ApiModelProperty(example = c40100)  override val code: Int =       c40100.toInt
+    @ApiModelProperty(example = m40100)  override val message: String = m40100
   }
 
   final object SessionTimeout extends Unauthorized {
-    @ApiModelProperty(example = c40601)  override val code: Int =       c40601.toInt
-    @ApiModelProperty(example = m40601)  override val message: String = m40601
+    @ApiModelProperty(example = c40101)  override val code: Int =       c40101.toInt
+    @ApiModelProperty(example = m40101)  override val message: String = m40101
   }
 
   // 400 Bad Request

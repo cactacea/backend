@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 
-@Singleton
+
 class PushNotificationSettingsRepository @Inject()(
                                                     notificationSettingsDAO: PushNotificationSettingsDAO) {
 

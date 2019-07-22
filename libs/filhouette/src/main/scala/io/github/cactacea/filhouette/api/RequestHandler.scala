@@ -113,42 +113,6 @@ trait RequestHandlerBuilder[I <: Identity, A <: Authenticator, +R] {
     */
   def invokeBlock[T](block: R => Future[HandlerResult[T]])(implicit request: Request): Future[HandlerResult[T]]
 
-  //  /**
-//    * Constructs a request handler with default content.
-//    *
-//    * @param block The block of code to invoke.
-//    * @param request The current request.
-//    * @tparam T The type of the data included in the handler result.
-//    * @return A handler result.
-//    */
-//  final def apply[T](block: Request => Future[HandlerResult[T]])(implicit request: Request): Future[HandlerResult[T]] = {
-//    invokeBlock(block)
-//  }
-//
-//  /**
-//    * Constructs a request handler with the content of the given request.
-//    *
-//    * @param request The current request.
-//    * @param block The block of code to invoke.
-//    * @tparam T The type of the data included in the handler result.
-//    * @return A handler result.
-//    */
-//  final def apply[T](request: Request)(block: Request => Future[HandlerResult[T]]): Future[HandlerResult[T]] = {
-//    invokeBlock(block)(request)
-//  }
-//
-//  /**
-//    * Invoke the block.
-//    *
-//    * This is the main method that an request handler has to implement.
-//    *
-//    * @param block The block of code to invoke.
-//    * @param request The current request.
-//    * @tparam T The type of the data included in the handler result.
-//    * @return A handler result.
-//    */
-//  def invokeBlock[T](block: Request => Future[HandlerResult[T]])(implicit request: Request): Future[HandlerResult[T]]
-
   /**
     * Handles a block for an authenticator.
     *

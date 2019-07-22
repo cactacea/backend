@@ -2,18 +2,16 @@ package io.github.cactacea.backend.core.application.services
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.{QueueService, ListenerService}
+import io.github.cactacea.backend.core.application.components.interfaces.QueueService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.GroupInvitation
 import io.github.cactacea.backend.core.domain.repositories.GroupInvitationsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-@Singleton
 class GroupInvitationsService @Inject()(
                                          db: DatabaseService,
                                          groupInvitationsRepository: GroupInvitationsRepository,
-                                         queueService: QueueService,
-                                         listenerService: ListenerService
+                                         queueService: QueueService
                                        ) {
 
   def create(accountIds: List[AccountId], groupId: GroupId, sessionId: SessionId): Future[List[GroupInvitationId]] = {
@@ -27,7 +25,6 @@ class GroupInvitationsService @Inject()(
   def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[GroupInvitationId] = {
     for {
       id <- db.transaction(groupInvitationsRepository.create(accountId, groupId, sessionId))
-      _ <- listenerService.groupInvitationCreated(List(accountId), groupId, sessionId)
       _ <- queueService.enqueueGroupInvitation(id)
     } yield (id)
   }
@@ -39,14 +36,12 @@ class GroupInvitationsService @Inject()(
   def accept(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(groupInvitationsRepository.accept(invitationId, sessionId))
-      _ <- listenerService.groupInvitationAccepted(invitationId, sessionId)
     } yield (())
   }
 
   def reject(invitationId: GroupInvitationId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- db.transaction(groupInvitationsRepository.reject(invitationId, sessionId))
-      _ <- listenerService.groupInvitationRejected(invitationId, sessionId)
     } yield (())
   }
 

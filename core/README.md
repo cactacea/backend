@@ -10,14 +10,14 @@ Core
 To get started, add a dependency on cactacea depending.
 
 ```
-"io.github.cactacea" %% "core" % "19.6.2"
+"io.github.cactacea" %% "core" % "19.7.0"
 ```
 Or similarily with Maven:
 ```
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>core_2.12</artifactId>
-  <version>19.6.2</version>
+  <version>19.7.0</version>
 </dependency>
 ```
 

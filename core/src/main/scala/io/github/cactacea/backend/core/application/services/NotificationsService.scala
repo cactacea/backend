@@ -9,7 +9,6 @@ import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.domain.repositories.NotificationsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
-@Singleton
 class NotificationsService @Inject()(
                                       db: DatabaseService,
                                       notificationsRepository: NotificationsRepository

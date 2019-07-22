@@ -2,7 +2,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.application.components.interfaces.HashService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums._
 import io.github.cactacea.backend.core.domain.models.{Account}
@@ -10,23 +9,30 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Me
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class AccountsDAO @Inject()(
-                             db: DatabaseService,
-                             hashService: HashService
-                           ) {
+class AccountsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(accountName: String,
-             password: String): Future[AccountId] = {
+  def create(accountName: String): Future[AccountId] = {
 
     val accountStatus = AccountStatusType.normally
-    val hashedPassword = hashService.hash(password)
     val q = quote {
       query[Accounts].insert(
         _.accountName           -> lift(accountName),
         _.displayName           -> lift(accountName),
-        _.password              -> lift(hashedPassword),
+        _.accountStatus         -> lift(accountStatus)
+      ).returning(_.id)
+    }
+    run(q)
+  }
+
+  def create(accountName: String, displayName: String): Future[AccountId] = {
+
+    val accountStatus = AccountStatusType.normally
+    val q = quote {
+      query[Accounts].insert(
+        _.accountName           -> lift(accountName),
+        _.displayName           -> lift(displayName),
         _.accountStatus         -> lift(accountStatus)
       ).returning(_.id)
     }
@@ -80,29 +86,13 @@ class AccountsDAO @Inject()(
     run(q).map(_ => Unit)
   }
 
-  def updatePassword(oldPassword: String, newPassword: String, sessionId: SessionId): Future[Unit] = {
+  def updateAccountStatus(accountStatus: AccountStatusType, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
-    val hashedNewPassword = hashService.hash(newPassword)
-    val hashedOldPassword = hashService.hash(oldPassword)
-    val q = quote {
-      query[Accounts]
-        .filter(_.id == lift(accountId))
-        .filter(_.password == lift(hashedOldPassword))
-        .update(
-          _.password -> lift(hashedNewPassword)
-        )
-    }
-    run(q).map(_ => Unit)
-  }
-
-  def updatePassword(newPassword: String, sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
-    val hashedNewPassword = hashService.hash(newPassword)
     val q = quote {
       query[Accounts]
         .filter(_.id == lift(accountId))
         .update(
-          _.password -> lift(hashedNewPassword)
+          _.accountStatus   -> lift(accountStatus)
         )
     }
     run(q).map(_ => Unit)
@@ -119,17 +109,6 @@ class AccountsDAO @Inject()(
         ).onConflictUpdate((t, _) => t.displayName -> lift(displayName))
     }
     run(q).map(_ => Unit)
-  }
-
-
-  def find(accountName: String, password: String): Future[Option[Accounts]] = {
-    val hashedPassword = hashService.hash(password)
-    val q = quote {
-      query[Accounts]
-        .filter(_.accountName == lift(accountName))
-        .filter(_.password    == lift(hashedPassword))
-    }
-    run(q).map(_.headOption)
   }
 
   def exist(accountName: String): Future[Boolean] = {
@@ -191,26 +170,6 @@ class AccountsDAO @Inject()(
     }
     run(q).map(_ == accountIds.size)
   }
-
-  def findStatus(sessionId: SessionId): Future[Option[(AccountStatusType, Option[Long])]] = {
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[Accounts]
-        .filter(_.id == lift(accountId))
-        .map(a => (a.accountStatus, a.signedOutAt))
-    }
-    run(q).map(_.headOption)
-  }
-
-  def find(sessionId: SessionId): Future[Option[(Account)]] = {
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[Accounts]
-        .filter(_.id == lift(accountId))
-    }
-    run(q).map(_.headOption.map(Account(_)))
-  }
-
 
   def find(accountId: AccountId, sessionId: SessionId): Future[Option[Account]] = {
 
@@ -284,8 +243,6 @@ class AccountsDAO @Inject()(
 
   }
 
-
-
   def signOut(sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val signedOutAt: Option[Long] = Some(System.currentTimeMillis())
@@ -298,6 +255,37 @@ class AccountsDAO @Inject()(
     }
     run(q).map(_ => Unit)
   }
+
+  def find(sessionId: SessionId): Future[Option[(Accounts)]] = {
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[Accounts]
+        .filter(_.id == lift(accountId))
+    }
+    run(q).map(_.headOption)
+  }
+
+  def find(accountName: String): Future[Option[(Accounts)]] = {
+    val q = quote {
+      query[Accounts]
+        .filter(_.accountName == lift(accountName))
+    }
+    run(q).map(_.headOption)
+  }
+
+  def find(providerId: String, providerKey: String): Future[Option[Account]] = {
+    val q = quote {
+      for {
+        au <- query[Authentications]
+          .filter(_.providerId == lift(providerId))
+          .filter(_.providerKey == lift(providerKey))
+        a <- query[Accounts]
+          .filter(_.id == au.accountId)
+      } yield (a)
+    }
+    run(q).map(_.headOption.map(Account(_)))
+  }
+
 
 
 }

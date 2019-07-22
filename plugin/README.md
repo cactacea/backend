@@ -9,5 +9,5 @@
 Update to your project/plugin.sbt file to include:
 
 ```
-addSbtPlugin("io.github.cactacea" % "plugin" % "19.6.2")
+addSbtPlugin("io.github.cactacea" % "plugin" % "19.7.0")
 ```

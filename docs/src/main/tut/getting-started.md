@@ -10,7 +10,7 @@ position: 1
 `build.sbt`に下記の依存関係を追加します。
 
 ```
-"io.github.cactacea" %% "server" % "19.6.2"
+"io.github.cactacea" %% "server" % "19.7.0"
 ```
 
 `Maven`による表記:
@@ -19,7 +19,7 @@ position: 1
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>server_2.12</artifactId>
-  <version>19.6.2</version>
+  <version>19.7.0</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@ position: 1
 `CactaceaServer`の継承するクラスを作成します。
 
 ```$xslt
-import io.github.cactacea.backend.CactaceaServer
+import io.github.cactacea.backend.server.CactaceaServer
 
 class DemoServer extends CactaceaServer
 ```

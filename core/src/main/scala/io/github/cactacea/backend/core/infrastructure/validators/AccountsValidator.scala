@@ -23,7 +23,7 @@ class AccountsValidator @Inject()(
       case false =>
         Future.Unit
       case true =>
-        Future.exception(CactaceaException(AccountNameAlreadyUsed))
+        Future.exception(CactaceaException(AccountAlreadyExist))
     })
   }
 
@@ -32,7 +32,7 @@ class AccountsValidator @Inject()(
       case false =>
         Future.Unit
       case true =>
-        Future.exception(CactaceaException(AccountNameAlreadyUsed))
+        Future.exception(CactaceaException(AccountAlreadyExist))
     })
   }
 
@@ -81,9 +81,17 @@ class AccountsValidator @Inject()(
     })
   }
 
+  def find(providerId: String, providerKey: String): Future[Account] = {
+    accountsDAO.find(providerId, providerKey).flatMap(_ match {
+      case Some(a) =>
+        Future.value(a)
+      case None =>
+        Future.exception(CactaceaException(AccountNotFound))
+    })
+  }
 
-  def find(accountName: String, password: String): Future[Account] = {
-    accountsDAO.find(accountName, password).flatMap(_ match {
+  def find(accountName: String): Future[Account] = {
+    accountsDAO.find(accountName).flatMap(_ match {
       case Some(a) =>
         if (a.isTerminated) {
           Future.exception(CactaceaException(AccountTerminated))
@@ -93,11 +101,7 @@ class AccountsValidator @Inject()(
       case None =>
         Future.exception(CactaceaException(InvalidAccountNameOrPassword))
     })
-
   }
-
-
-
 
 }
 

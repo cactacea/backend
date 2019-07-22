@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{CommentLikesValidator, CommentsValidator}
 
-@Singleton
+
 class CommentLikesRepository @Inject()(
                                         commentsValidator: CommentsValidator,
                                         commentLikesValidator: CommentLikesValidator,
