@@ -8,7 +8,7 @@ import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.domain.repositories.TokensRepository
 import io.github.cactacea.backend.auth.enums.TokenType
-import io.github.cactacea.backend.auth.infrastructure.mailer.Mailer
+import io.github.cactacea.backend.auth.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.utils.providers.EmailsProvider
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository}

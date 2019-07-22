@@ -29,7 +29,7 @@ position: 1
 `CactaceaServer`の継承するクラスを作成します。
 
 ```$xslt
-import io.github.cactacea.backend.CactaceaServer
+import io.github.cactacea.backend.server.CactaceaServer
 
 class DemoServer extends CactaceaServer
 ```

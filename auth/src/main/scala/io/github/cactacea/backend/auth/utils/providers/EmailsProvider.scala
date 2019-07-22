@@ -10,7 +10,7 @@ import io.github.cactacea.filhouette.impl.providers.CredentialsProvider._
 import io.github.cactacea.filhouette.impl.providers.PasswordProvider
 
 /**
-  * A provider for authenticating with credentials.
+  * A provider for authenticating with emails.
   *
   * The provider supports the change of password hashing algorithms on the fly. Sometimes it may be possible to change
   * the hashing algorithm used by the application. But the hashes stored in the backing store can't be converted back
@@ -53,7 +53,7 @@ class EmailsProvider (
   /**
     * Gets the login info for the given credentials.
     *
-    * Override this method to manipulate the creation of the login info from the credentials.
+    * Override this method to manipulate the creation of the login info from the emails.
     *
     * By default the credentials provider creates the login info with the identifier entered
     * in the form. For some cases this may not be enough. It could also be possible that a login

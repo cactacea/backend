@@ -5,7 +5,7 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository, DevicesRepository}
+import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository}
 import io.github.cactacea.filhouette.api.exceptions.ProviderException
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService

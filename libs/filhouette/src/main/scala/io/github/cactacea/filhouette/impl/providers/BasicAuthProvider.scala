@@ -7,7 +7,7 @@ import io.github.cactacea.filhouette.api.exceptions.ConfigurationException
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
 import io.github.cactacea.filhouette.api.util.RequestExtractor._
 import io.github.cactacea.filhouette.api.util.{Credentials, PasswordHasherRegistry}
-import io.github.cactacea.filhouette.api.{Logger, LoginInfo, RequestProvider}
+import io.github.cactacea.filhouette.api.{LoginInfo, RequestProvider}
 import io.github.cactacea.filhouette.impl.providers.BasicAuthProvider._
 
 /**
@@ -25,14 +25,14 @@ import io.github.cactacea.filhouette.impl.providers.BasicAuthProvider._
 class BasicAuthProvider (
                                     protected val authInfoRepository: AuthInfoRepository,
                                     protected val passwordHasherRegistry: PasswordHasherRegistry)
-  extends RequestProvider with PasswordProvider with Logger {
+  extends RequestProvider with PasswordProvider {
 
   /**
     * Gets the provider ID.
     *
     * @return The provider ID.
     */
-  override def id = ID
+  override def id: String = ID
 
   /**
     * Authenticates an identity based on credentials sent in a request.
@@ -46,12 +46,10 @@ class BasicAuthProvider (
         val loginInfo = LoginInfo(id, credentials.identifier)
         authenticate(loginInfo, credentials.password).flatMap {
           case Authenticated => Future.value(Some(loginInfo))
-          case InvalidPassword(error) =>
-            logger.debug(error)
+          case InvalidPassword(_) =>
             Future.None
           case UnsupportedHasher(error) => Future.exception(new ConfigurationException(error))
-          case NotFound(error) =>
-            logger.debug(error)
+          case NotFound(_) =>
             Future.None
         }
       case None => Future.None

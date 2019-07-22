@@ -27,8 +27,19 @@ lazy val server = (project in file("server"))
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
   .enablePlugins(BuildInfoPlugin)
-  .dependsOn(core % "compile->compile;test->test")
-  .dependsOn(auth, finagger, filhouette)
+  .dependsOn(core, auth, oauth, finagger, filhouette)
+
+
+lazy val oauth = (project in file("oauth"))
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(publishSettings)
+  .settings(libraryDependencies ++= Dependencies.oauth2)
+  .settings(libraryDependencies ++= Dependencies.finatra)
+  .settings(libraryDependencies ++= Dependencies.test)
+  .settings(libraryDependencies ++= Dependencies.log)
+  .enablePlugins(BuildInfoPlugin)
+  .dependsOn(core, auth, utils, filhouette)
 
 
 lazy val auth = (project in file("auth"))
@@ -39,9 +50,7 @@ lazy val auth = (project in file("auth"))
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
   .enablePlugins(BuildInfoPlugin)
-  .dependsOn(core % "compile->compile;test->test")
-  .dependsOn(utils)
-  .dependsOn(filhouette)
+  .dependsOn(core, utils, filhouette)
 
 
 lazy val core = (project in file("core"))
@@ -81,8 +90,7 @@ lazy val filhouette = (project in file("libs/filhouette"))
   .settings(commonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
-  .settings(libraryDependencies ++= Dependencies.finatra
-  )
+  .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.filhouette)
 
 
@@ -116,7 +124,7 @@ lazy val plugin = (project in file("plugin"))
   )
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.test)
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(core)
 
 
 lazy val api = (project in file("demo/api"))
@@ -137,7 +145,7 @@ lazy val api = (project in file("demo/api"))
   .dependsOn(aws)
   .dependsOn(onesignal)
   .dependsOn(redis)
-  .dependsOn(server % "compile->compile;test->test")
+  .dependsOn(server)
   .enablePlugins(JavaAppPackaging)
 
 
@@ -179,23 +187,13 @@ lazy val commonResolverSetting = Seq(
 
 
 
-lazy val oauth = (project in file("addons/oauth"))
-  .settings(addonsCommonSettings)
-  .settings(commonResolverSetting)
-//  .settings(publishSettings)
-  .settings(noPublishSettings)
-  .settings(libraryDependencies ++= Dependencies.oauth2)
-  .dependsOn(server % "compile->compile;test->test")
-  .dependsOn(utils)
-
-
 lazy val onesignal = (project in file("addons/onesignal"))
   .settings(addonsCommonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.ficus)
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(core)
   .dependsOn(utils)
 
 
@@ -206,7 +204,7 @@ lazy val aws = (project in file("addons/aws"))
   .settings(publishSettings)
   .settings(libraryDependencies ++= Dependencies.aws)
   .settings(libraryDependencies ++= Dependencies.ficus)
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(core)
   .dependsOn(utils)
 
 
@@ -214,7 +212,7 @@ lazy val redis = (project in file("addons/redis"))
   .settings(addonsCommonSettings)
   .settings(commonResolverSetting)
   .settings(publishSettings)
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(core)
   .dependsOn(finachat)
 
 
