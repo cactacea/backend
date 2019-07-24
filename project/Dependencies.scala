@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
 
   val versions = new {
-    val twitter = "19.6.0"
+    val twitter = "19.7.0"
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
@@ -11,8 +11,8 @@ object Dependencies {
     val scalaTest = "3.0.4"
     val specs2 = "3.8.6"
     val mysql = "8.0.15"
-    val config = "1.3.2"
-    val ficus = "1.4.5"
+    val config = "1.3.4"
+    val ficus = "1.4.7"
     val jjwt = "0.9.1"
     val flyway = "5.2.4"
     val quill = "3.2.2"
@@ -23,7 +23,6 @@ object Dependencies {
     val i18n = "1.0.2"
     val junit = "4.12"
   }
-
 
   lazy val finatra = Seq(
     "com.twitter" %% "finatra-http" % versions.twitter,
