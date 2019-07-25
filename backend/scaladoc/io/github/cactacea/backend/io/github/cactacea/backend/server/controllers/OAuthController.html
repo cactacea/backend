@@ -272,7 +272,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">OAuthController</span><span class="result"> extends <span class="extype" name="com.twitter.finatra.http.Controller">Controller</span> with <span class="extype" name="com.twitter.finagle.OAuth2">OAuth2</span> with <a href="../../../oauth/OAuth2Code.html" class="extype" name="io.github.cactacea.oauth.OAuth2Code">OAuth2Code</a></span>
+        <span class="name">OAuthController</span><span class="result"> extends <span class="extype" name="com.twitter.finatra.http.Controller">Controller</span> with <span class="extype" name="com.twitter.finagle.OAuth2">OAuth2</span> with <a href="../../oauth/OAuth2Code.html" class="extype" name="io.github.cactacea.backend.oauth.OAuth2Code">OAuth2Code</a></span>
       </span>
       </h4>
 
@@ -281,7 +281,7 @@
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../../oauth/OAuth2Code.html" class="extype" name="io.github.cactacea.oauth.OAuth2Code">OAuth2Code</a>, <span class="extype" name="com.twitter.finagle.OAuth2">OAuth2</span>, <span class="extype" name="com.twitter.finatra.http.Controller">Controller</span>, <span class="extype" name="com.twitter.inject.Logging">Logging</span>, <span class="extype" name="com.twitter.util.logging.Logging">Logging</span>, <span class="extype" name="com.twitter.finatra.http.RouteDSL">RouteDSL</span>, <span class="extype" name="com.twitter.finatra.http.RouteState">RouteState</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../oauth/OAuth2Code.html" class="extype" name="io.github.cactacea.backend.oauth.OAuth2Code">OAuth2Code</a>, <span class="extype" name="com.twitter.finagle.OAuth2">OAuth2</span>, <span class="extype" name="com.twitter.finatra.http.Controller">Controller</span>, <span class="extype" name="com.twitter.inject.Logging">Logging</span>, <span class="extype" name="com.twitter.util.logging.Logging">Logging</span>, <span class="extype" name="com.twitter.finatra.http.RouteDSL">RouteDSL</span>, <span class="extype" name="com.twitter.finatra.http.RouteState">RouteState</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -307,7 +307,7 @@
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="io.github.cactacea.backend.server.controllers.OAuthController"><span>OAuthController</span></li><li class="in" name="io.github.cactacea.oauth.OAuth2Code"><span>OAuth2Code</span></li><li class="in" name="com.twitter.finagle.OAuth2"><span>OAuth2</span></li><li class="in" name="com.twitter.finatra.http.Controller"><span>Controller</span></li><li class="in" name="com.twitter.inject.Logging"><span>Logging</span></li><li class="in" name="com.twitter.util.logging.Logging"><span>Logging</span></li><li class="in" name="com.twitter.finatra.http.RouteDSL"><span>RouteDSL</span></li><li class="in" name="com.twitter.finatra.http.RouteState"><span>RouteState</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="io.github.cactacea.backend.server.controllers.OAuthController"><span>OAuthController</span></li><li class="in" name="io.github.cactacea.backend.oauth.OAuth2Code"><span>OAuth2Code</span></li><li class="in" name="com.twitter.finagle.OAuth2"><span>OAuth2</span></li><li class="in" name="com.twitter.finatra.http.Controller"><span>Controller</span></li><li class="in" name="com.twitter.inject.Logging"><span>Logging</span></li><li class="in" name="com.twitter.util.logging.Logging"><span>Logging</span></li><li class="in" name="com.twitter.finatra.http.RouteDSL"><span>RouteDSL</span></li><li class="in" name="com.twitter.finatra.http.RouteState"><span>RouteState</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
                   <span class="filtertype">Implicitly<br />
@@ -333,9 +333,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.server.controllers.OAuthController#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(apiPrefix:String,dataHandler:io.github.cactacea.oauth.OAuthDataHandler):io.github.cactacea.backend.server.controllers.OAuthController"></a><a id="&lt;init&gt;:OAuthController"></a>
+      <a id="&lt;init&gt;(apiPrefix:String,dataHandler:io.github.cactacea.backend.oauth.OAuthDataHandler):io.github.cactacea.backend.server.controllers.OAuthController"></a><a id="&lt;init&gt;:OAuthController"></a>
       <span class="permalink">
-      <a href="../../../../../../io/github/cactacea/backend/server/controllers/OAuthController.html#&lt;init&gt;(apiPrefix:String,dataHandler:io.github.cactacea.oauth.OAuthDataHandler):io.github.cactacea.backend.server.controllers.OAuthController" title="Permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/OAuthController.html#&lt;init&gt;(apiPrefix:String,dataHandler:io.github.cactacea.backend.oauth.OAuthDataHandler):io.github.cactacea.backend.server.controllers.OAuthController" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -344,7 +344,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">OAuthController</span><span class="params">(<span name="apiPrefix">apiPrefix: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dataHandler">dataHandler: <a href="../../../oauth/OAuthDataHandler.html" class="extype" name="io.github.cactacea.oauth.OAuthDataHandler">OAuthDataHandler</a></span>)</span>
+        <span class="name">OAuthController</span><span class="params">(<span name="apiPrefix">apiPrefix: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dataHandler">dataHandler: <a href="../../oauth/OAuthDataHandler.html" class="extype" name="io.github.cactacea.backend.oauth.OAuthDataHandler">OAuthDataHandler</a></span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -1519,10 +1519,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
-    </li><li name="io.github.cactacea.oauth.OAuth2Code#issueAccessCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="issueAccessCode(responseType:String,clientId:String,scope:Option[String],redirectUri:Option[String],dataHandler:io.github.cactacea.oauth.OAuthDataHandler):com.twitter.util.Future[String]"></a><a id="issueAccessCode(String,String,Option[String],Option[String],OAuthDataHandler):Future[String]"></a>
+    </li><li name="io.github.cactacea.backend.oauth.OAuth2Code#issueAccessCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="issueAccessCode(responseType:String,clientId:String,scope:Option[String],redirectUri:Option[String],dataHandler:io.github.cactacea.backend.oauth.OAuthDataHandler):com.twitter.util.Future[String]"></a><a id="issueAccessCode(String,String,Option[String],Option[String],OAuthDataHandler):Future[String]"></a>
       <span class="permalink">
-      <a href="../../../../../../io/github/cactacea/backend/server/controllers/OAuthController.html#issueAccessCode(responseType:String,clientId:String,scope:Option[String],redirectUri:Option[String],dataHandler:io.github.cactacea.oauth.OAuthDataHandler):com.twitter.util.Future[String]" title="Permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/OAuthController.html#issueAccessCode(responseType:String,clientId:String,scope:Option[String],redirectUri:Option[String],dataHandler:io.github.cactacea.backend.oauth.OAuthDataHandler):com.twitter.util.Future[String]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1531,10 +1531,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">issueAccessCode</span><span class="params">(<span name="responseType">responseType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="clientId">clientId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="scope">scope: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="redirectUri">redirectUri: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="dataHandler">dataHandler: <a href="../../../oauth/OAuthDataHandler.html" class="extype" name="io.github.cactacea.oauth.OAuthDataHandler">OAuthDataHandler</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">issueAccessCode</span><span class="params">(<span name="responseType">responseType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="clientId">clientId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="scope">scope: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="redirectUri">redirectUri: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="dataHandler">dataHandler: <a href="../../oauth/OAuthDataHandler.html" class="extype" name="io.github.cactacea.backend.oauth.OAuthDataHandler">OAuthDataHandler</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../oauth/OAuth2Code.html" class="extype" name="io.github.cactacea.oauth.OAuth2Code">OAuth2Code</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../oauth/OAuth2Code.html" class="extype" name="io.github.cactacea.backend.oauth.OAuth2Code">OAuth2Code</a></dd></dl></div>
     </li><li name="com.twitter.finagle.OAuth2#issueAccessToken" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="issueAccessToken[U](request:com.twitter.finagle.oauth2.Request.Authorization,dataHandler:com.twitter.finagle.oauth2.DataHandler[U]):com.twitter.util.Future[com.twitter.finagle.oauth2.GrantResult]"></a><a id="issueAccessToken[U](Authorization,DataHandler[U]):Future[GrantResult]"></a>
       <span class="permalink">
@@ -2391,8 +2391,8 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="io.github.cactacea.oauth.OAuth2Code">
-              <h3>Inherited from <a href="../../../oauth/OAuth2Code.html" class="extype" name="io.github.cactacea.oauth.OAuth2Code">OAuth2Code</a></h3>
+        <div class="parent" name="io.github.cactacea.backend.oauth.OAuth2Code">
+              <h3>Inherited from <a href="../../oauth/OAuth2Code.html" class="extype" name="io.github.cactacea.backend.oauth.OAuth2Code">OAuth2Code</a></h3>
             </div><div class="parent" name="com.twitter.finagle.OAuth2">
               <h3>Inherited from <span class="extype" name="com.twitter.finagle.OAuth2">OAuth2</span></h3>
             </div><div class="parent" name="com.twitter.finatra.http.Controller">
