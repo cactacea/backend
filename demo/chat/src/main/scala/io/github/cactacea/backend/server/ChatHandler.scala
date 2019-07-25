@@ -1,4 +1,4 @@
-package io.github.cactacea.backend
+package io.github.cactacea.backend.server
 
 import com.twitter.util.Future
 import io.github.cactacea.finachat.{ChatHandler => BaseChatHandler}
