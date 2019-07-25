@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{ActiveStatusType, DeviceType}
 import io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO
@@ -19,11 +19,11 @@ class DevicesRepository @Inject()(
 
 
   def update(udid: String, pushToken: Option[String], sessionId: SessionId): Future[Unit] = {
-    devicesDAO.update(udid, pushToken, sessionId).flatMap(_ => Future.Unit)
+    devicesDAO.update(udid, pushToken, sessionId)
   }
 
   def update(udid: String, deviceStatus: ActiveStatusType, sessionId: SessionId): Future[Unit] = {
-    devicesDAO.update(udid, deviceStatus, sessionId).flatMap(_ => Future.Unit)
+    devicesDAO.update(udid, deviceStatus, sessionId)
   }
 
 }

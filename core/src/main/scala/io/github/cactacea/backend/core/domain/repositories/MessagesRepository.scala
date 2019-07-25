@@ -53,7 +53,7 @@ class MessagesRepository @Inject()(
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountMessagesDAO.delete(sessionId.toAccountId, groupId).flatMap(_ => Future.Unit)
+    accountMessagesDAO.delete(sessionId.toAccountId, groupId)
   }
 
   def find(groupId: GroupId,
