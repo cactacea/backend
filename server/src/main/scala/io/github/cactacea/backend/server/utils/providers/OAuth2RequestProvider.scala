@@ -16,6 +16,7 @@ class OAuth2RequestProvider @Inject()(accountsRepository: AccountsRepository, da
     authorize(request, dataHandler) flatMap { auth =>
       val expiresIn = auth.user.issuedAt.getTime
       accountsRepository.find(auth.user.accountId.toSessionId, expiresIn).map({ a =>
+        CactaceaContext.setScope(auth.scope)
         CactaceaContext.setAccount(a)
         Option(LoginInfo(CredentialsProvider.ID, a.accountName))
       })
