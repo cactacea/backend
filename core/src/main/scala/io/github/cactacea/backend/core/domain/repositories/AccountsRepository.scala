@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
@@ -118,15 +118,15 @@ class AccountsRepository @Inject()(
     accountsDAO.updateProfile(displayName, web, birthday, location, bio, sessionId)
   }
 
-  def updateProfileImage(profileImage: Option[MediumId], sessionId: SessionId): Future[Option[String]] = {
+  def updateProfileImage(profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
     profileImage match {
       case Some(id) =>
         for {
           uri <- mediumsValidator.find(id, sessionId).map(m => Some(m.uri))
           _ <- accountsDAO.updateProfileImageUrl(uri, profileImage, sessionId)
-        } yield (uri)
+        } yield (())
       case None =>
-        accountsDAO.updateProfileImageUrl(None, None, sessionId).flatMap(_ => Future.None)
+        accountsDAO.updateProfileImageUrl(None, None, sessionId).map(_ => ())
     }
   }
 

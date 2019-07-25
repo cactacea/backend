@@ -9,22 +9,26 @@ import io.github.cactacea.backend.core.domain.repositories.FriendRequestsReposit
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
 
 class FriendRequestsService @Inject()(
-                                       db: DatabaseService,
+                                       databaseService: DatabaseService,
                                        friendRequestsRepository: FriendRequestsRepository,
                                        queueService: QueueService
                                      ) {
 
+  import databaseService._
+
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
-    for {
-      id <- db.transaction(friendRequestsRepository.create(accountId, sessionId))
-      _ <- queueService.enqueueFriendRequest(id)
-    } yield (id)
+    transaction {
+      for {
+        i <- friendRequestsRepository.create(accountId, sessionId)
+        _ <- queueService.enqueueFriendRequest(i)
+      } yield (i)
+    }
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(friendRequestsRepository.delete(accountId, sessionId))
-    } yield (())
+    transaction {
+      friendRequestsRepository.delete(accountId, sessionId)
+    }
   }
 
   def find(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
@@ -32,15 +36,15 @@ class FriendRequestsService @Inject()(
   }
 
   def accept(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(friendRequestsRepository.accept(friendRequestId, sessionId))
-    } yield (())
+    transaction {
+      friendRequestsRepository.accept(friendRequestId, sessionId)
+    }
   }
 
   def reject(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(friendRequestsRepository.reject(friendRequestId, sessionId))
-    } yield (())
+    transaction {
+      friendRequestsRepository.reject(friendRequestId, sessionId)
+    }
   }
 
 }
