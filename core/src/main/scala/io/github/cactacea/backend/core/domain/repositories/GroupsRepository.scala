@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.domain.models.Group
@@ -48,20 +48,11 @@ class GroupsRepository @Inject()(
            count: Int,
            sessionId: SessionId): Future[List[Group]] = {
 
-    groupsDAO.find(
-      name,
-      byInvitation,
-      privacyType,
-      since,
-      offset,
-      count,
-      sessionId)
+    groupsDAO.find(name, byInvitation, privacyType, since, offset, count, sessionId)
   }
 
   def find(groupId: GroupId, sessionId: SessionId): Future[Group] = {
-    for {
-      r <- groupsValidator.find(groupId, sessionId)
-    } yield (r)
+    groupsValidator.find(groupId, sessionId)
   }
 
 }

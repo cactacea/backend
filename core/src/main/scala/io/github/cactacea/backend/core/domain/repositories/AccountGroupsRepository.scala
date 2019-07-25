@@ -6,8 +6,6 @@ import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountGroupsDAO, AccountMessagesDAO, GroupsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, AccountsValidator}
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotJoined, GroupAlreadyHidden, GroupNotHidden}
 
 
 class AccountGroupsRepository @Inject()(
@@ -19,10 +17,9 @@ class AccountGroupsRepository @Inject()(
                                        ) {
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
     for {
       _ <- accountGroupsDAO.updateHidden(groupId, true, sessionId)
-      _ <- accountMessagesDAO.delete(accountId, groupId)
+      _ <- accountMessagesDAO.delete(sessionId.toAccountId, groupId)
     } yield (())
   }
 
@@ -35,47 +32,39 @@ class AccountGroupsRepository @Inject()(
   }
 
   def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Group]] = {
-    val accountId = sessionId.toAccountId
-    accountGroupsDAO.find(accountId, since, offset, count, hidden, sessionId)
+    accountGroupsDAO.find(sessionId.toAccountId, since, offset, count, hidden, sessionId)
   }
 
   def findOrCreate(accountId: AccountId, sessionId: SessionId): Future[Group] = {
-    (for {
+    val r = for {
       _ <- accountsValidator.checkSessionId(accountId, sessionId)
       r <- accountGroupsDAO.findByAccountId(accountId, sessionId)
-    } yield (r)).flatMap(_ match {
-      case Some(g) =>
-        Future.value(g)
+    } yield (r)
+    r.flatMap(_ match {
       case None =>
         for {
-          id <- groupsDAO.create(sessionId)
-          _ <- accountGroupsDAO.create(accountId, id, sessionId)
-          _ <- accountGroupsDAO.create(sessionId.toAccountId, id, accountId.toSessionId)
-          g <- accountGroupsValidator.findByGroupId(id, sessionId)
+          i <- groupsDAO.create(sessionId)
+          _ <- accountGroupsDAO.create(accountId, i, sessionId)
+          _ <- accountGroupsDAO.create(sessionId.toAccountId, i, accountId.toSessionId)
+          g <- accountGroupsValidator.findByGroupId(i, sessionId)
         } yield (g)
+      case Some(g) =>
+        Future.value(g)
     })
   }
 
   def show(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountGroupsDAO.findHidden(groupId, sessionId).flatMap(_ match {
-      case Some(true) =>
-        accountGroupsDAO.updateHidden(groupId, false, sessionId)
-      case Some(false) =>
-        Future.exception(CactaceaException(GroupNotHidden))
-      case None =>
-        Future.exception(CactaceaException(AccountNotJoined))
-    })
+    for {
+      _ <- accountGroupsValidator.hidden(groupId, sessionId)
+      _ <- accountGroupsDAO.updateHidden(groupId, false, sessionId)
+    } yield (())
   }
 
   def hide(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountGroupsDAO.findHidden(groupId, sessionId).flatMap(_ match {
-      case Some(true) =>
-        Future.exception(CactaceaException(GroupAlreadyHidden))
-      case Some(false) =>
-        accountGroupsDAO.updateHidden(groupId, true, sessionId)
-      case None =>
-        Future.exception(CactaceaException(AccountNotJoined))
-    })
+    for {
+      _ <- accountGroupsValidator.notHidden(groupId, sessionId)
+      _ <- accountGroupsDAO.updateHidden(groupId, true, sessionId)
+    } yield (())
   }
 
 }

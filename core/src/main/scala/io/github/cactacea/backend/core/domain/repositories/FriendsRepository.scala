@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{FriendsSortType, GroupPrivacyType}
 import io.github.cactacea.backend.core.domain.models.Account
@@ -51,12 +51,7 @@ class FriendsRepository @Inject()(
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    friendsDAO.find(
-      accountId,
-      since,
-      offset,
-      count,
-      sessionId)
+    friendsDAO.find(accountId, since, offset, count, sessionId)
   }
 
 

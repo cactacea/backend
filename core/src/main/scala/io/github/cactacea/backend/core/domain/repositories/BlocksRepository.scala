@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.dao._
@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValida
 
 class BlocksRepository @Inject()(
                                   accountsValidator: AccountsValidator,
-                                  blocksValidator: BlocksValidator,
                                   blocksDAO: BlocksDAO,
+                                  blocksValidator: BlocksValidator,
                                   followsDAO: FollowsDAO,
                                   followersDAO: FollowersDAO,
                                   friendsDAO: FriendsDAO,
@@ -20,12 +20,7 @@ class BlocksRepository @Inject()(
                                 ) {
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    blocksDAO.find(
-      since,
-      offset,
-      count,
-      sessionId
-    )
+    blocksDAO.find(since, offset, count, sessionId)
   }
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

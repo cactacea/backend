@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{GroupInvitationStatusType, MessageType}
 import io.github.cactacea.backend.core.domain.models.Account
@@ -11,15 +11,15 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsV
 
 class GroupAccountsRepository @Inject()(
                                          accountsValidator: AccountsValidator,
-                                         accountGroupsValidator: AccountGroupsValidator,
-                                         groupsValidator: GroupsValidator,
-                                         groupAuthorityValidator: GroupAuthorityValidator,
                                          accountGroupsDAO: AccountGroupsDAO,
+                                         accountGroupsValidator: AccountGroupsValidator,
                                          accountMessagesDAO: AccountMessagesDAO,
-                                         groupsDAO: GroupsDAO,
+                                         groupsValidator: GroupsValidator,
                                          groupAccountsDAO: GroupAccountsDAO,
-                                         groupReportsDAO: GroupReportsDAO,
+                                         groupAuthorityValidator: GroupAuthorityValidator,
+                                         groupsDAO: GroupsDAO,
                                          groupInvitationsDAO: GroupInvitationsDAO,
+                                         groupReportsDAO: GroupReportsDAO,
                                          messagesDAO: MessagesDAO
                                        ) {
 

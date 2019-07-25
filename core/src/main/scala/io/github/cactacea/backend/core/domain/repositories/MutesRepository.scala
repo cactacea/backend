@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.dao.MutesDAO
@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValida
 
 class MutesRepository @Inject()(
                                  accountsValidator: AccountsValidator,
-                                 mutesValidator: MutesValidator,
-                                 mutesDAO: MutesDAO
+                                 mutesDAO: MutesDAO,
+                                 mutesValidator: MutesValidator
                                ) {
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

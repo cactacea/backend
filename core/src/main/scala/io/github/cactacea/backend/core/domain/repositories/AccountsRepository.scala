@@ -6,17 +6,14 @@ import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, DevicesDAO, PushNotificationSettingsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.models.Accounts
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, MediumsValidator}
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 
 class AccountsRepository @Inject()(
-                                    accountsValidator: AccountsValidator,
-                                    mediumsValidator: MediumsValidator,
                                     accountsDAO: AccountsDAO,
+                                    accountsValidator: AccountsValidator,
                                     devicesDAO: DevicesDAO,
+                                    mediumsValidator: MediumsValidator,
                                     notificationSettingsDAO: PushNotificationSettingsDAO
 
                                   ) {
@@ -48,22 +45,11 @@ class AccountsRepository @Inject()(
 
 
   def find(accountId: AccountId, sessionId: SessionId): Future[Account] = {
-    accountsDAO.find(accountId, sessionId).flatMap( _ match {
-      case Some(a) =>
-        Future.value(a)
-      case None =>
-        Future.exception(CactaceaException(AccountNotFound))
-    })
+    accountsValidator.find(accountId, sessionId)
   }
 
   def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    accountsDAO.find(
-      accountName,
-      since,
-      offset,
-      count,
-      sessionId
-    )
+    accountsDAO.find(accountName, since, offset, count, sessionId)
   }
 
   def findActiveStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
@@ -78,21 +64,8 @@ class AccountsRepository @Inject()(
     accountsDAO.exist(accountName).map(!_)
   }
 
-  def find(sessionId: SessionId, expiresIn: Long): Future[Accounts] = {
-    accountsDAO.find(sessionId).flatMap( _ match {
-      case Some(a) =>
-        if (a.accountStatus == AccountStatusType.deleted) {
-          Future.exception(CactaceaException(AccountDeleted))
-        } else if (a.accountStatus == AccountStatusType.terminated) {
-          Future.exception(CactaceaException(AccountTerminated))
-        } else if (a.signedOutAt.map(_ > expiresIn).getOrElse(false)) {
-          Future.exception(CactaceaException(SessionTimeout))
-        } else {
-          Future.value(a)
-        }
-      case None =>
-        Future.exception(CactaceaException(SessionNotAuthorized))
-    })
+  def find(sessionId: SessionId, expiresIn: Long): Future[Account] = {
+    accountsValidator.find(sessionId, expiresIn)
   }
 
   def updateAccountStatus(accountStatus: AccountStatusType, sessionId: SessionId): Future[Unit] = {
@@ -119,15 +92,13 @@ class AccountsRepository @Inject()(
   }
 
   def updateProfileImage(profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
-    profileImage match {
-      case Some(id) =>
+    profileImage
+      .fold(accountsDAO.updateProfileImageUrl(None, None, sessionId).map(_ => ())) { id =>
         for {
-          uri <- mediumsValidator.find(id, sessionId).map(m => Some(m.uri))
-          _ <- accountsDAO.updateProfileImageUrl(uri, profileImage, sessionId)
+          u <- mediumsValidator.find(id, sessionId).map(m => Some(m.uri))
+          _ <- accountsDAO.updateProfileImageUrl(u, profileImage, sessionId)
         } yield (())
-      case None =>
-        accountsDAO.updateProfileImageUrl(None, None, sessionId).map(_ => ())
-    }
+      }
   }
 
   def signOut(udid: String, sessionId: SessionId): Future[Unit] = {

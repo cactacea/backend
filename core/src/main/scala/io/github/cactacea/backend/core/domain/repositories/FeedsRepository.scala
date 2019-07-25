@@ -1,22 +1,20 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FeedsValidator, MediumsValidator}
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 
 class FeedsRepository @Inject()(
                                  accountsValidator: AccountsValidator,
-                                 feedsValidator: FeedsValidator,
-                                 mediumsValidator: MediumsValidator,
                                  accountFeedsDAO: AccountFeedsDAO,
                                  feedsDAO: FeedsDAO,
+                                 feedsValidator: FeedsValidator,
+                                 mediumsValidator: MediumsValidator,
                                  notificationsDAO: NotificationsDAO
                                ) {
 
@@ -31,11 +29,11 @@ class FeedsRepository @Inject()(
     val ids = mediumIds.map(_.distinct)
     for {
       _ <- mediumsValidator.exist(ids, sessionId)
-      id <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
-      _ <- accountFeedsDAO.create(id, sessionId)
-      _ <- notificationsDAO.createFeed(id, sessionId)
+      i <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
+      _ <- accountFeedsDAO.create(i, sessionId)
+      _ <- notificationsDAO.createFeed(i, sessionId)
 
-    } yield (id)
+    } yield (i)
   }
 
   def update(feedId: FeedId,
@@ -81,12 +79,7 @@ class FeedsRepository @Inject()(
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {
-    feedsDAO.find(feedId, sessionId).flatMap(_ match {
-      case Some(f) =>
-        Future.value(f)
-      case None =>
-        Future.exception(CactaceaException(FeedNotFound))
-    })
+    feedsValidator.find(feedId, sessionId)
   }
 
 }

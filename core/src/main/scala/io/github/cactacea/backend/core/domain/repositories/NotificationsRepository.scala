@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import java.util.Locale
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.infrastructure.dao._
@@ -21,7 +21,7 @@ class NotificationsRepository @Inject()(
     if (notifications.size == 0) {
       Future.Unit
     } else {
-      notificationsDAO.updateUnread(notifications.map(_.id), sessionId).flatMap(_ => Future.Unit)
+      notificationsDAO.updateUnread(notifications.map(_.id), sessionId)
     }
   }
 

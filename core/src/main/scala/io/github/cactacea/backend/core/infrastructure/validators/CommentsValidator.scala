@@ -2,6 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.validators
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -182,6 +183,15 @@ class CommentsValidator @Inject()(commentsDAO: CommentsDAO) {
 //        })
 //      })
 //  }
+
+  def find(commentId: CommentId, sessionId: SessionId): Future[Comment] = {
+    commentsDAO.find(commentId, sessionId).flatMap(_ match {
+      case Some(c) =>
+        Future.value(c)
+      case None =>
+        Future.exception(CactaceaException(CommentNotFound))
+    })
+  }
 
   def exist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     commentsDAO.exist(commentId, sessionId).flatMap(_ match {
