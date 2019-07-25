@@ -1,22 +1,22 @@
-Core
+OAuth
 ==========================================================
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/server_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/server_2.12)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/oauth_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cactacea/oauth_2.12)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-**cactacea-core** is a library for providing main services for Cactacea.
+**cactacea-oauth** is a library for providing OAuth2 services for Cactacea.
 
 ### Getting Started
 
 To get started, add a dependency on cactacea depending.
 
 ```
-"io.github.cactacea" %% "core" % "19.7.1"
+"io.github.cactacea" %% "oauth" % "19.7.1"
 ```
 Or similarily with Maven:
 ```
 <dependency>
   <groupId>io.github.cactacea</groupId>
-  <artifactId>core_2.12</artifactId>
+  <artifactId>oauth_2.12</artifactId>
   <version>19.7.1</version>
 </dependency>
 ```
