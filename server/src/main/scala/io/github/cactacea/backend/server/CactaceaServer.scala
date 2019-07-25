@@ -7,7 +7,7 @@ import io.github.cactacea.backend.auth.application.components.modules.DefaultMai
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.warmups.{CactaceaDatabaseMigrationHandler, CactaceaQueueHandler}
-import io.github.cactacea.utils.{CorsFilter, ETagFilter}
+import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
 
 class CactaceaServer extends BaseServer {
 

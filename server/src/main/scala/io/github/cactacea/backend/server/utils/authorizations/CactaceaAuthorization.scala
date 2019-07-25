@@ -3,10 +3,10 @@ package io.github.cactacea.backend.server.utils.authorizations
 import com.twitter.finagle.http.Request
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.domain.models.User
+import io.github.cactacea.backend.oauth.Scope
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
 import io.github.cactacea.filhouette.api.Authorization
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator
-import io.github.cactacea.oauth.Scope
 
 case class CactaceaAuthorization(scope: Scope) extends Authorization[User, JWTAuthenticator] {
 
