@@ -7,7 +7,6 @@ import com.twitter.finagle.oauth2.{AccessToken, AuthInfo, DataHandler, InvalidSc
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, ClientsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
-import io.github.cactacea.backend.oauth.TokenType
 import io.github.cactacea.filhouette.api.util.Credentials
 import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 

@@ -4,7 +4,6 @@ import java.util.Date
 
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.oauth.TokenType
 import io.jsonwebtoken.{JwtException, Jwts, SignatureAlgorithm}
 
 object OAuthTokenGenerator {

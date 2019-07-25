@@ -5,11 +5,9 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{ActiveStatusType, DeviceType}
 import io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.backend.core.infrastructure.validators.AuthenticationsValidator
 
 
 class DevicesRepository @Inject()(
-                                   authenticationsValidator: AuthenticationsValidator,
                                    devicesDAO: DevicesDAO
                                  ) {
 
