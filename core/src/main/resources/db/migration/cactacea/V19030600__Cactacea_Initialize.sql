@@ -252,24 +252,6 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`advertisement_settings`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`advertisement_settings` (
-  `account_id` BIGINT(20) NOT NULL,
-  `ad1` TINYINT(4) NOT NULL,
-  `ad2` TINYINT(4) NOT NULL,
-  `ad3` TINYINT(4) NOT NULL,
-  `ad4` TINYINT(4) NOT NULL,
-  `ad5` TINYINT(4) NOT NULL,
-  INDEX `fk_advertisement_settings_accounts1_idx` (`account_id` ASC),
-  CONSTRAINT `fk_advertisement_settings_accounts1`
-    FOREIGN KEY (`account_id`)
-    REFERENCES `${schema}`.`accounts` (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4;
-
-
--- -----------------------------------------------------
 -- Table `${schema}`.`blocks`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`blocks` (
