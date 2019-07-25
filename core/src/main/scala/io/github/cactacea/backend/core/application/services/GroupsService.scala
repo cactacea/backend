@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, ReportType}
@@ -9,15 +9,17 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, SessionId}
 
 class GroupsService @Inject()(
-                               db: DatabaseService,
+                               databaseService: DatabaseService,
                                groupsRepository: GroupsRepository,
                                reportsRepository: ReportsRepository
                              ) {
 
+  import databaseService._
+
   def create(name: String, byInvitationOnly: Boolean, privacyType: GroupPrivacyType, authority: GroupAuthorityType, sessionId: SessionId): Future[GroupId] = {
-    for {
-      id <- db.transaction(groupsRepository.create(Some(name), byInvitationOnly, privacyType, authority, sessionId))
-    } yield (id)
+    transaction {
+      groupsRepository.create(Some(name), byInvitationOnly, privacyType, authority, sessionId)
+    }
   }
 
   def update(groupId: GroupId,
@@ -27,10 +29,9 @@ class GroupsService @Inject()(
              authority: GroupAuthorityType,
              sessionId: SessionId): Future[Unit] = {
 
-    for {
-      _ <- db.transaction(groupsRepository.update(groupId, Some(name), invitationOnly, privacyType, authority, sessionId))
-    } yield (())
-
+    transaction {
+      groupsRepository.update(groupId, Some(name), invitationOnly, privacyType, authority, sessionId)
+    }
   }
 
   def find(name: Option[String],
@@ -48,9 +49,9 @@ class GroupsService @Inject()(
   }
 
   def report(groupId: GroupId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(reportsRepository.createGroupReport(groupId, reportType, reportContent, sessionId))
-    } yield (())
+    transaction {
+      reportsRepository.createGroupReport(groupId, reportType, reportContent, sessionId)
+    }
   }
 
 }

@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.QueueService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
@@ -10,11 +10,13 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
 
 class FeedsService @Inject()(
-                              db: DatabaseService,
+                              databaseService: DatabaseService,
                               feedsRepository: FeedsRepository,
                               reportsRepository: ReportsRepository,
                               queueService: QueueService
                             ) {
+
+  import databaseService._
 
   def create(message: String,
              mediumIds: Option[List[MediumId]],
@@ -24,17 +26,18 @@ class FeedsService @Inject()(
              expiration: Option[Long],
              sessionId: SessionId): Future[FeedId] = {
 
-    for {
-      id <- db.transaction(feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId))
-      _ <- queueService.enqueueFeed(id)
-    } yield (id)
-
+    transaction {
+      for {
+        i <- feedsRepository.create(message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
+        _ <- queueService.enqueueFeed(i)
+      } yield (i)
+    }
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(feedsRepository.delete(feedId, sessionId))
-    } yield (())
+    transaction {
+      feedsRepository.delete(feedId, sessionId)
+    }
   }
 
   def edit(feedId: FeedId,
@@ -46,17 +49,8 @@ class FeedsService @Inject()(
            expiration: Option[Long],
            sessionId: SessionId): Future[Unit] = {
 
-    db.transaction {
-      feedsRepository.update(
-        feedId,
-        message,
-        mediumIds,
-        tags,
-        privacyType,
-        contentWarning,
-        expiration,
-        sessionId
-      )
+    transaction {
+      feedsRepository.update(feedId, message, mediumIds, tags, privacyType, contentWarning, expiration, sessionId)
     }
   }
 
@@ -73,14 +67,11 @@ class FeedsService @Inject()(
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {
-    feedsRepository.find(
-      feedId,
-      sessionId
-    )
+    feedsRepository.find(feedId, sessionId)
   }
 
   def report(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
-    db.transaction {
+    transaction {
       reportsRepository.createFeedReport(feedId, reportType, reportContent, sessionId)
     }
   }

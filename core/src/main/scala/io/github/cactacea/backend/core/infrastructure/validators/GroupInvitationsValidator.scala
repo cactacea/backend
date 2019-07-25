@@ -10,6 +10,15 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class GroupInvitationsValidator @Inject()(groupInvitationsDAO: GroupInvitationsDAO) {
 
+  def exist(invitationId: GroupInvitationId): Future[Unit] = {
+    groupInvitationsDAO.exist(invitationId).flatMap(_ match {
+      case true =>
+        Future.Unit
+      case false =>
+        Future.exception(CactaceaException(GroupInvitationNotFound))
+    })
+  }
+
   def notExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     groupInvitationsDAO.findExist(accountId, groupId).flatMap(_ match {
       case true =>

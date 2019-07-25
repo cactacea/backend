@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, AuthenticationsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
@@ -9,10 +9,10 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValida
 
 
 class AuthenticationsRepository @Inject()(
-                                           accountsValidator: AccountsValidator,
-                                           authenticationsValidator: AuthenticationsValidator,
                                            accountsDAO: AccountsDAO,
-                                           authenticationsDAO: AuthenticationsDAO
+                                           accountsValidator: AccountsValidator,
+                                           authenticationsDAO: AuthenticationsDAO,
+                                           authenticationsValidator: AuthenticationsValidator
                                   ) {
 
   def find(providerId: String, providerKey: String): Future[Option[Authentications]] = {

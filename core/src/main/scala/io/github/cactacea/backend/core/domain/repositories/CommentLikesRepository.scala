@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.dao._
@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.infrastructure.validators.{CommentLikesVa
 
 class CommentLikesRepository @Inject()(
                                         commentsValidator: CommentsValidator,
-                                        commentLikesValidator: CommentLikesValidator,
                                         commentLikesDAO: CommentLikesDAO,
+                                        commentLikesValidator: CommentLikesValidator
                                       ) {
 
   def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {

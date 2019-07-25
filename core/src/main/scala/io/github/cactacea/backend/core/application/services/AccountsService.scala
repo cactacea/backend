@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
@@ -9,11 +9,13 @@ import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, 
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 
 class AccountsService @Inject()(
-                                 db: DatabaseService,
                                  accountsRepository: AccountsRepository,
                                  authenticationsRepository: AuthenticationsRepository,
+                                 databaseService: DatabaseService,
                                  reportsRepository: ReportsRepository
                                ) {
+
+  import databaseService._
 
   def find(sessionId: SessionId): Future[Account] = {
     accountsRepository.find(sessionId)
@@ -37,7 +39,9 @@ class AccountsService @Inject()(
   }
 
   def updateDisplayName(accountId: AccountId, displayName: Option[String], sessionId: SessionId): Future[Unit] = {
-    accountsRepository.updateDisplayName(accountId, displayName, sessionId)
+    transaction {
+      accountsRepository.updateDisplayName(accountId, displayName, sessionId)
+    }
   }
 
   def updateProfile(displayName: String,
@@ -47,36 +51,33 @@ class AccountsService @Inject()(
                     bio: Option[String],
                     sessionId: SessionId): Future[Unit] = {
 
-    for {
-      _ <- db.transaction(accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId))
-    } yield (())
-
+    transaction {
+      accountsRepository.updateProfile(displayName, web, birthday, location, bio, sessionId)
+    }
   }
 
   def updateProfileImage(profileImage: MediumId, sessionId: SessionId): Future[Unit] = {
-    for {
-      uri <- db.transaction(accountsRepository.updateProfileImage(Some(profileImage), sessionId))
-    } yield (())
+    transaction {
+      accountsRepository.updateProfileImage(Some(profileImage), sessionId)
+    }
   }
 
   def changeAccountName(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
-      for {
-        _ <- authenticationsRepository.updateAccountName(providerId, providerKey, sessionId)
-      } yield (())
+    transaction {
+      authenticationsRepository.updateAccountName(providerId, providerKey, sessionId)
     }
   }
 
   def signOut(udid: String, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(accountsRepository.signOut(udid, sessionId))
-    } yield (())
+    transaction {
+      accountsRepository.signOut(udid, sessionId)
+    }
   }
 
   def deleteProfileImage(sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(accountsRepository.updateProfileImage(None, sessionId))
-    } yield (())
+    transaction {
+      accountsRepository.updateProfileImage(None, sessionId)
+    }
   }
 
   def findAccountStatus(accountId: AccountId, sessionId: SessionId): Future[AccountStatus] = {
@@ -84,10 +85,9 @@ class AccountsService @Inject()(
   }
 
   def report(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId))
-    } yield (())
+    transaction {
+      reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId)
+    }
   }
-
 
 }

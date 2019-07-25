@@ -9,7 +9,7 @@ import io.github.cactacea.backend.server.models.requests.notification.GetNotific
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
-import io.github.cactacea.utils.RequestImplicits._
+import io.github.cactacea.backend.utils.RequestImplicits._
 import io.swagger.models.Swagger
 
 @Singleton
@@ -17,7 +17,6 @@ class NotificationsController @Inject()(
                                          @Flag("cactacea.api.prefix") apiPrefix: String,
                                          notificationsService: NotificationsService,
                                          s: Swagger) extends CactaceaController {
-
 
   implicit val swagger: Swagger = s
 

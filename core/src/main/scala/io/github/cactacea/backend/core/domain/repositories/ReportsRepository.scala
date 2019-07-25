@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.infrastructure.dao._
@@ -12,11 +12,11 @@ class ReportsRepository @Inject()(
                                    accountsValidator: AccountsValidator,
                                    accountReportsDAO: AccountReportsDAO,
                                    commentsValidator: CommentsValidator,
-                                   feedsValidator: FeedsValidator,
-                                   groupsValidator: GroupsValidator,
                                    commentReportsDAO: CommentReportsDAO,
                                    feedReportsDAO: FeedReportsDAO,
-                                   groupReportsDAO: GroupReportsDAO
+                                   feedsValidator: FeedsValidator,
+                                   groupReportsDAO: GroupReportsDAO,
+                                   groupsValidator: GroupsValidator
                                  ) {
 
   def createAccountReport(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {

@@ -8,22 +8,21 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
 
 class AccountGroupsService @Inject()(
-                                      db: DatabaseService,
-                                      accountGroupsRepository: AccountGroupsRepository
+                                      accountGroupsRepository: AccountGroupsRepository,
+                                      databaseService: DatabaseService
                                     ) {
 
+  import databaseService._
+
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    for {
-      _ <- db.transaction(accountGroupsRepository.delete(groupId,sessionId))
-    } yield (())
+    transaction {
+      accountGroupsRepository.delete(groupId,sessionId)
+    }
   }
 
   def find(accountId: AccountId, sessionId: SessionId): Future[Group] = {
-    db.transaction {
-      accountGroupsRepository.findOrCreate(
-        accountId,
-        sessionId
-      )
+    transaction {
+      accountGroupsRepository.findOrCreate(accountId, sessionId)
     }
   }
 
@@ -36,13 +35,13 @@ class AccountGroupsService @Inject()(
   }
 
   def hide(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
+    transaction {
       accountGroupsRepository.hide(groupId, sessionId)
     }
   }
 
   def show(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    db.transaction {
+    transaction {
       accountGroupsRepository.show(groupId, sessionId)
     }
   }

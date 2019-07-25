@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
@@ -8,9 +8,11 @@ import io.github.cactacea.backend.core.domain.repositories.PushNotificationSetti
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
 class SettingsService @Inject()(
-                                 notificationSettingsRepository: PushNotificationSettingsRepository,
-                                 db: DatabaseService
+                                 databaseService: DatabaseService,
+                                 notificationSettingsRepository: PushNotificationSettingsRepository
                                ) {
+
+  import databaseService._
 
   def findPushNotificationSettings(sessionId: SessionId): Future[PushNotificationSetting] = {
     notificationSettingsRepository.find(sessionId)
@@ -24,7 +26,7 @@ class SettingsService @Inject()(
                                      groupInvitation: Boolean,
                                      showMessage: Boolean,
                                      sessionId: SessionId): Future[Unit] = {
-    db.transaction {
+    transaction {
       notificationSettingsRepository.update(
         feed,
         comment,

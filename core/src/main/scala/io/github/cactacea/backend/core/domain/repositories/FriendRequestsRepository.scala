@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.backend.core.domain.models.FriendRequest
@@ -11,9 +11,9 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValida
 
 class FriendRequestsRepository @Inject()(
                                           accountsValidator: AccountsValidator,
-                                          friendRequestsValidator: FriendRequestsValidator,
-                                          friendRequestsStatusDAO: FriendRequestsStatusDAO,
                                           friendRequestsDAO: FriendRequestsDAO,
+                                          friendRequestsStatusDAO: FriendRequestsStatusDAO,
+                                          friendRequestsValidator: FriendRequestsValidator,
                                           friendsRepository: FriendsRepository,
                                           notificationsDAO: NotificationsDAO
                                         ) {
@@ -25,9 +25,9 @@ class FriendRequestsRepository @Inject()(
       _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
       _ <- friendRequestsValidator.notExist(accountId, sessionId)
       _ <- friendRequestsStatusDAO.create(accountId, sessionId)
-      id <- friendRequestsDAO.create(accountId, sessionId)
-      _ <- notificationsDAO.createNotification(id, accountId, sessionId)
-    } yield (id)
+      i <- friendRequestsDAO.create(accountId, sessionId)
+      _ <- notificationsDAO.createNotification(i, accountId, sessionId)
+    } yield (i)
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {

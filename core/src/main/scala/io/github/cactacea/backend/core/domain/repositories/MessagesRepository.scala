@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.dao._
@@ -9,22 +9,22 @@ import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsV
 
 
 class MessagesRepository @Inject()(
+                                    accountGroupsDAO: AccountGroupsDAO,
                                     accountGroupsValidator: AccountGroupsValidator,
+                                    accountMessagesDAO: AccountMessagesDAO,
                                     accountMessagesValidator: AccountMessagesValidator,
                                     groupsValidator: GroupsValidator,
                                     mediumsValidator: MediumsValidator,
-                                    accountMessagesDAO: AccountMessagesDAO,
-                                    accountGroupsDAO: AccountGroupsDAO,
                                     messagesDAO:  MessagesDAO
                                   ) {
 
   def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
     for {
       _  <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
-      id  <- messagesDAO.create(groupId, Some(message), None, sessionId)
-      _  <- accountMessagesDAO.create(groupId, id, sessionId)
+      i  <- messagesDAO.create(groupId, Some(message), None, sessionId)
+      _  <- accountMessagesDAO.create(groupId, i, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesValidator.find(id, sessionId)
+      m <- accountMessagesValidator.find(i, sessionId)
     } yield (m)
   }
 
@@ -32,10 +32,10 @@ class MessagesRepository @Inject()(
     for {
       _  <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
       _  <- mediumsValidator.exist(mediumId, sessionId)
-      id <- messagesDAO.create(groupId, None, Some(mediumId), sessionId)
-      _  <- accountMessagesDAO.create(groupId, id, sessionId)
+      i <- messagesDAO.create(groupId, None, Some(mediumId), sessionId)
+      _  <- accountMessagesDAO.create(groupId, i, sessionId)
       _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesValidator.find(id, sessionId)
+      m <- accountMessagesValidator.find(i, sessionId)
     } yield (m)
   }
 
@@ -53,7 +53,7 @@ class MessagesRepository @Inject()(
   }
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountMessagesDAO.delete(sessionId.toAccountId, groupId).flatMap(_ => Future.Unit)
+    accountMessagesDAO.delete(sessionId.toAccountId, groupId)
   }
 
   def find(groupId: GroupId,
