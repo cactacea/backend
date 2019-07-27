@@ -25,9 +25,9 @@ class FriendRequestsController @Inject()(
   prefix(apiPrefix) {
 
     scope(relationships).postWithDoc("/accounts/:id/requests") { o =>
-      o.summary("Create a friend request to a account")
+      o.summary("Create a friend friendRequest to an account")
         .tag(accountsTag)
-        .operationId("request")
+        .operationId("friendRequest")
         .request[PostFriendRequest]
         .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyRequested))))
@@ -41,7 +41,7 @@ class FriendRequestsController @Inject()(
     }
 
     scope(relationships).deleteWithDoc("/accounts/:id/requests") { o =>
-      o.summary("Remove a friend request to a account")
+      o.summary("Remove a friend friendRequest to an account")
         .tag(accountsTag)
         .operationId("unrequest")
         .request[DeleteFriendRequest]
@@ -58,7 +58,7 @@ class FriendRequestsController @Inject()(
   }
 
   scope(relationships).postWithDoc("/requests/:id/accept") { o =>
-    o.summary("Accept a friend request")
+    o.summary("Accept a friend friendRequest")
       .tag(friendRequestsTag)
       .operationId("acceptRequest")
       .request[PostAcceptFriendRequest]
@@ -72,7 +72,7 @@ class FriendRequestsController @Inject()(
   }
 
   scope(relationships).postWithDoc("/requests/:id/reject") { o =>
-    o.summary("Reject a friend request")
+    o.summary("Reject a friend friendRequest")
       .tag(friendRequestsTag)
       .operationId("rejectRequest")
       .request[PostRejectFriendRequest]

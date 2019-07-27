@@ -3,10 +3,10 @@ package io.github.cactacea.backend.server.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.core.application.services.GroupInvitationsService
+import io.github.cactacea.backend.core.application.services.InvitationsService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.server.models.requests.account.{PostInvitationAccount, PostInvitationAccounts}
+import io.github.cactacea.backend.server.models.requests.account.{DeleteInvitation, PostInvitations}
 import io.github.cactacea.backend.server.models.requests.group.{PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.server.models.responses.InvitationCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
@@ -17,21 +17,21 @@ import io.swagger.models.Swagger
 @Singleton
 class InvitationsController @Inject()(
                                        @Flag("cactacea.api.prefix") apiPrefix: String,
-                                       invitationService: GroupInvitationsService,
+                                       invitationService: InvitationsService,
                                        s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    scope(invitations).postWithDoc("/groups/:id/invitations") { o =>
-      o.summary("Post a groupInvitation to some accounts")
+    scope(invitations).postWithDoc("/invitations") { o =>
+      o.summary("Create invitations")
         .tag(invitationsTag)
-        .operationId("inviteAccounts")
-        .request[PostInvitationAccounts]
+        .operationId("createInvitations")
+        .request[PostInvitations]
         .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
-    } { request: PostInvitationAccounts =>
+    } { request: PostInvitations =>
       invitationService.create(
         request.accountIds.toList,
         request.id,
@@ -39,23 +39,23 @@ class InvitationsController @Inject()(
       ).map(_.map(InvitationCreated(_))).map(response.created(_))
     }
 
-    scope(invitations).postWithDoc("/accounts/:accountId/groups/:groupId/invitations") { o =>
-      o.summary("Create a groupInvitation to a account")
+    scope(invitations).deleteWithDoc("/invitations") { o =>
+      o.summary("Delete a invitation ")
         .tag(accountsTag)
-        .operationId("inviteAccount")
-        .request[PostInvitationAccount]
-        .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
+        .operationId("deleteInvitation")
+        .request[DeleteInvitation]
+        .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
-    }  { request: PostInvitationAccount =>
-      invitationService.create(
+    }  { request: DeleteInvitation =>
+      invitationService.delete(
         request.accountId,
         request.groupId,
         CactaceaContext.sessionId
-      ).map(InvitationCreated(_)).map(response.created(_))
+      ).map(response.ok)
     }
 
     scope(invitations).postWithDoc("/invitations/:id/accept") { o =>
-      o.summary("Accept a groupInvitation")
+      o.summary("Accept a invitation")
         .tag(invitationsTag)
         .operationId("acceptInvitation")
         .request[PostAcceptInvitation]
@@ -70,12 +70,12 @@ class InvitationsController @Inject()(
     }
 
     scope(invitations).postWithDoc("/invitations/:id/reject") { o =>
-      o.summary("Reject a groupInvitation")
+      o.summary("Reject a invitation")
         .tag(invitationsTag)
         .operationId("rejectInvitation")
         .request[PostRejectInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupInvitationNotFound))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(InvitationNotFound))))
     } { request: PostRejectInvitation =>
       invitationService.reject(
         request.id,

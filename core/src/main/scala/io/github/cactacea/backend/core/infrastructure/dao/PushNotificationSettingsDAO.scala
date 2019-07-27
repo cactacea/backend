@@ -22,36 +22,11 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
         _.friendRequest       -> lift(true),
         _.message             -> lift(true),
         _.groupMessage        -> lift(true),
-        _.groupInvitation     -> lift(true),
+        _.invitation     -> lift(true),
         _.showMessage         -> lift(true)
       )
     }
-    run(q).map(_ => Unit)
-  }
-
-  def create(feed: Boolean,
-             comment:Boolean,
-             friendRequest: Boolean,
-             message: Boolean,
-             groupMessage: Boolean,
-             groupInvitation: Boolean,
-             showMessage: Boolean,
-             sessionId: SessionId): Future[Unit] = {
-
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[PushNotificationSettings].insert(
-        _.accountId           -> lift(accountId),
-        _.feed                -> lift(feed),
-        _.comment             -> lift(comment),
-        _.friendRequest       -> lift(friendRequest),
-        _.message             -> lift(message),
-        _.groupMessage        -> lift(groupMessage),
-        _.groupInvitation     -> lift(groupInvitation),
-        _.showMessage         -> lift(showMessage)
-      )
-    }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def update(feed: Boolean,
@@ -59,7 +34,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
              friendRequest: Boolean,
              message: Boolean,
              groupMessage: Boolean,
-             groupInvitation: Boolean,
+             invitation: Boolean,
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
 
@@ -73,11 +48,11 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
           _.friendRequest   -> lift(friendRequest),
           _.message         -> lift(message),
           _.groupMessage    -> lift(groupMessage),
-          _.groupInvitation -> lift(groupInvitation),
+          _.invitation      -> lift(invitation),
           _.showMessage     -> lift(showMessage)
         )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def find(sessionId: SessionId): Future[Option[PushNotificationSettings]] = {

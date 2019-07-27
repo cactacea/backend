@@ -39,7 +39,7 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
   // Client Credential Flow
   override def findClientUser(clientId: String, clientSecret: String, scope: Option[String]): Future[Option[OAuthUser]] = {
     for {
-      c <- clientsDAO.findClient(clientId, clientSecret)
+      c <- clientsDAO.find(clientId, clientSecret)
       _ <- validateScope(scope, c.flatMap(_.scope))
     } yield (Option(OAuthUser(AccountId(0), new Date())))
   }
@@ -56,7 +56,7 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
 
   // Issue Access Token
   override def validateClient(clientId: String, clientSecret: String, grantType: String): Future[Boolean] = {
-    clientsDAO.validateClient(clientId, clientSecret, grantType)
+    clientsDAO.exists(clientId, clientSecret, grantType)
   }
 
   // Issue Access Token

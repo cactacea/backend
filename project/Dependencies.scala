@@ -7,7 +7,7 @@ object Dependencies {
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
-    val scalaCheck = "1.13.4"
+    val scalaCheck = "1.14.0"
     val scalaTest = "3.0.4"
     val specs2 = "3.8.6"
     val mysql = "8.0.15"

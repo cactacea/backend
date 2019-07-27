@@ -13,16 +13,16 @@ class FollowersRepository @Inject()(
                                      followersDAO: FollowersDAO
                                    ) {
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+  def find(accountId: AccountId, accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
     (for {
-      _ <- accountsValidator.exist(accountId, sessionId)
-      r <- followersDAO.find(accountId, since, offset, count, sessionId)
+      _ <- accountsValidator.mustExist(accountId, sessionId)
+      r <- followersDAO.find(accountId, accountName, since, offset, count, sessionId)
     } yield (r))
 
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    followersDAO.find(since, offset, count, sessionId)
+  def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+    followersDAO.find(sessionId.toAccountId, accountName, since, offset, count, sessionId)
   }
 
 }

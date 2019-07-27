@@ -1,10 +1,10 @@
 package io.github.cactacea.backend.server.models.requests.group
 
 import com.twitter.finatra.request.RouteParam
-import io.github.cactacea.backend.core.infrastructure.identifiers.GroupInvitationId
+import io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId
 import io.swagger.annotations.ApiModelProperty
 
 case class PostRejectInvitation(
-                                 @ApiModelProperty(value = "Group groupInvitation identifier.", required = true)
-                                 @RouteParam id: GroupInvitationId
+                                 @ApiModelProperty(value = "Invitation identifier.", required = true)
+                                 @RouteParam id: InvitationId
                             )

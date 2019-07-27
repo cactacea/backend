@@ -8,80 +8,29 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Follows, Relationships}
 
 @Singleton
-class FollowsDAO @Inject()(db: DatabaseService) {
+class FollowsDAO @Inject()(db: DatabaseService, relationshipsDAO: RelationshipsDAO) {
 
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- insertFollow(accountId, sessionId)
-      _ <- insertRelationship(accountId, sessionId)
-      _ <- updateAccount(1L, sessionId)
-      _ <- updateFollowBlockCount(accountId, 1L, sessionId)
+      _ <- insertFollows(accountId, sessionId)
+      _ <- updateFollowCount(1L, sessionId)
+      _ <- relationshipsDAO.createFollow(accountId, sessionId)
+      _ <- relationshipsDAO.updateFollowBlockCount(accountId, 1L, sessionId)
     } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- deleteFollow(accountId, sessionId)
-      _ <- updateRelationship(accountId, sessionId)
-      _ <- updateAccount(-1L, sessionId)
-      _ <- updateFollowBlockCount(accountId, -1L, sessionId)
+      _ <- deleteFollows(accountId, sessionId)
+      _ <- updateFollowCount(-1L, sessionId)
+      _ <- relationshipsDAO.deleteFollow(accountId, sessionId)
+      _ <- relationshipsDAO.updateFollowBlockCount(accountId, -1L, sessionId)
     } yield (())
   }
 
-  private def updateAccount(count: Long, sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[Accounts]
-        .filter(_.id == lift(accountId))
-        .update(
-          a => a.followCount -> (a.followCount + lift(count))
-        )
-    }
-    run(q).map(_ => Unit)
-  }
-
-  private def updateFollowBlockCount(accountId: AccountId, count: Long, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      infix"""
-            insert into relationships (account_id, `by`, follow_block_count)
-            select account_id, `by`, cnt from (select ${lift(accountId)} as account_id, `by`, ${lift(count)} as cnt from blocks where account_id = ${lift(by)}) t
-            on duplicate key update follow_block_count = follow_block_count + ${lift(count)};
-          """.as[Action[Long]]
-    }
-    run(q).map(_ => Unit)
-  }
-
-  private def insertRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[Relationships]
-        .insert(
-          _.accountId       -> lift(accountId),
-          _.by              -> lift(by),
-          _.follow       -> true
-        ).onConflictUpdate((t, _) =>
-          t.follow -> true)
-    }
-    run(q).map(_ => Unit)
-  }
-
-  private def updateRelationship(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[Relationships]
-        .filter(_.accountId     == lift(accountId))
-        .filter(_.by            == lift(by))
-        .update(
-          _.follow          -> false
-        )
-    }
-    run(q).map(_ => Unit)
-  }
-
-  private def insertFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def insertFollows(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val followedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
@@ -92,10 +41,10 @@ class FollowsDAO @Inject()(db: DatabaseService) {
           _.followedAt      -> lift(followedAt)
         )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  private def deleteFollow(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  private def deleteFollows(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Follows]
@@ -103,10 +52,10 @@ class FollowsDAO @Inject()(db: DatabaseService) {
         .filter(_.by            == lift(by))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def own(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Follows]
@@ -117,28 +66,16 @@ class FollowsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
-
-    val by = sessionId.toAccountId
-    val q = quote {
-      (for {
-        f <- query[Follows]
-          .filter(f => f.by == lift(by))
-          .filter(f => lift(since).forall(f.id < _))
-        a <- query[Accounts]
-          .join(a => a.id == f.accountId)
-        r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
-      } yield (a, r, f.id))
-        .sortBy({ case (_, _, id) => id})(Ord.desc)
-        .drop(lift(offset))
-        .take(lift(count))
-    }
-    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
-
+  def find(accountName: Option[String],
+           since: Option[Long],
+           offset: Int,
+           count: Int,
+           sessionId: SessionId): Future[List[Account]] = {
+    find(sessionId.toAccountId, accountName, since, offset, count, sessionId)
   }
 
   def find(accountId: AccountId,
+           accountName: Option[String],
            since: Option[Long],
            offset: Int,
            count: Int,
@@ -151,11 +88,10 @@ class FollowsDAO @Inject()(db: DatabaseService) {
         f <- query[Follows]
           .filter(f => f.by == lift(accountId))
           .filter(f => lift(since).forall(f.id < _))
-          .filter(f => query[Blocks].filter(b =>
-            (b.accountId == lift(by) && b.by == f.by) || (b.accountId == f.by && b.by == lift(by))
-          ).isEmpty)
+          .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.accountId).isEmpty)
         a <- query[Accounts]
-          .join(a => a.id == f.accountId)
+          .join(_.id == f.accountId)
+          .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r, f.id))
@@ -166,5 +102,18 @@ class FollowsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
   }
+
+  private def updateFollowCount(plus: Long, sessionId: SessionId): Future[Unit] = {
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[Accounts]
+        .filter(_.id == lift(accountId))
+        .update(
+          a => a.followCount -> (a.followCount + lift(plus))
+        )
+    }
+    run(q).map(_ => ())
+  }
+
 
 }

@@ -9,6 +9,6 @@ trait MobilePushService {
   def sendComment(commentId: CommentId): Future[Unit]
   def sendMessage(id: MessageId): Future[Unit]
   def sendFriendRequest(id: FriendRequestId): Future[Unit]
-  def sendGroupInvitation(id: GroupInvitationId): Future[Unit]
+  def sendInvitation(id: InvitationId): Future[Unit]
 
 }

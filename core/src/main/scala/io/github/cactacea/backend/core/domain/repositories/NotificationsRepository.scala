@@ -21,7 +21,7 @@ class NotificationsRepository @Inject()(
     if (notifications.size == 0) {
       Future.Unit
     } else {
-      notificationsDAO.updateUnread(notifications.map(_.id), sessionId)
+      notificationsDAO.updateReadStatus(notifications.map(_.id), sessionId)
     }
   }
 

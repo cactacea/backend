@@ -11,7 +11,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.MessageNotF
 @Singleton
 class AccountMessagesValidator @Inject()(accountMessagesDAO: AccountMessagesDAO) {
 
-  def find(id: MessageId, sessionId: SessionId): Future[Message] = {
+  def mustFind(id: MessageId, sessionId: SessionId): Future[Message] = {
     accountMessagesDAO.find(id, sessionId).flatMap(_ match {
       case Some(m) => Future.value(m)
       case None => Future.exception(CactaceaException(MessageNotFound))

@@ -3,17 +3,23 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class FriendRequestsDAO @Inject()(db: DatabaseService) {
+class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: RelationshipsDAO) {
 
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
+    for {
+      _ <- relationshipsDAO.createRequestInProgress(accountId, sessionId)
+      r <- createFriendsRequest(accountId, sessionId)
+    } yield (r)
+  }
+
+  private def createFriendsRequest(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
     val requestedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
@@ -22,7 +28,6 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
           _.accountId       -> lift(accountId),
           _.by              -> lift(by),
           _.notified        -> false,
-          _.requestStatus   -> lift(FriendRequestStatusType.noResponded),
           _.requestedAt     -> lift(requestedAt)
         ).returning(_.id)
     }
@@ -30,18 +35,24 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    for {
+      _ <- relationshipsDAO.deleteRequestInProgress(accountId, sessionId)
+      r <- deleteFriendRequests(accountId, sessionId)
+    } yield (r)
+  }
+
+  private def deleteFriendRequests(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
         .filter(_.accountId     == lift(accountId))
         .filter(_.by            == lift(by))
-        .filter(_.requestStatus == lift(FriendRequestStatusType.noResponded))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def own(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[FriendRequests]
@@ -52,8 +63,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(id: FriendRequestId, sessionId: SessionId): Future[Option[AccountId]] = {
-    val accountId = sessionId.toAccountId
+  def find(id: FriendRequestId, accountId: AccountId): Future[Option[AccountId]] = {
     val q = quote {
       query[FriendRequests]
         .filter(_.id          == lift(id))
@@ -63,10 +73,25 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  private def findReceivedRequests(since: Option[Long],
+  def find(since: Option[Long],
            offset: Int,
            count: Int,
+           received: Boolean,
            sessionId: SessionId): Future[List[FriendRequest]] = {
+
+
+    if (received) {
+      findReceivedRequests(since, offset, count, sessionId)
+    } else {
+      findSentRequests(since, offset, count, sessionId)
+    }
+
+  }
+
+  private def findReceivedRequests(since: Option[Long],
+                                   offset: Int,
+                                   count: Int,
+                                   sessionId: SessionId): Future[List[FriendRequest]] = {
 
     val by = sessionId.toAccountId
 
@@ -89,9 +114,9 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
   }
 
   private def findSentRequests(since: Option[Long],
-                                   offset: Int,
-                                   count: Int,
-                                   sessionId: SessionId): Future[List[FriendRequest]] = {
+                               offset: Int,
+                               count: Int,
+                               sessionId: SessionId): Future[List[FriendRequest]] = {
 
     val by = sessionId.toAccountId
 
@@ -112,35 +137,5 @@ class FriendRequestsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({case (f, a, r) => FriendRequest(f, a, r, f.id.value)}))
 
   }
-
-
-  def find(since: Option[Long],
-           offset: Int,
-           count: Int,
-           received: Boolean,
-           sessionId: SessionId): Future[List[FriendRequest]] = {
-
-
-    if (received) {
-      findReceivedRequests(since, offset, count, sessionId)
-    } else {
-      findSentRequests(since, offset, count, sessionId)
-    }
-
-  }
-
-  def update(id: FriendRequestId, status: FriendRequestStatusType, sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[FriendRequests]
-        .filter(_.id            == lift(id))
-        .filter(_.accountId     == lift(accountId))
-        .update(_.requestStatus -> lift(status))
-    }
-    run(q).map(_ => Unit)
-
-  }
-
-
 
 }

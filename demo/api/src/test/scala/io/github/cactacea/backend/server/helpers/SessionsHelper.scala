@@ -13,8 +13,7 @@ trait SessionsHelper extends FeatureTest with CommonHelper {
   self: APIServerSpec =>
 
   def signUp(accountName: String, password: String): Authentication = {
-    val uuid = UUID.randomUUID().toString
-    val request = PostSignUp(accountName, password, uuid, None, Request())
+    val request = PostSignUp(accountName, password, Request())
     val body = mapper.writePrettyString(request)
     val result = server.httpPost(
       path = "/sessions",

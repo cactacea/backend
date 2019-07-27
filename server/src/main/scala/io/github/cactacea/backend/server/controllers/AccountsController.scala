@@ -50,7 +50,7 @@ class AccountsController @Inject()(
     }
 
     scope(basic).getWithDoc("/accounts/:id") { o =>
-      o.summary("Get information about a account")
+      o.summary("Get information about an account")
         .tag(accountsTag)
         .operationId("findAccount")
         .request[GetAccount]
@@ -94,7 +94,7 @@ class AccountsController @Inject()(
     }
 
     scope(feeds).getWithDoc("/accounts/:id/feeds") { o =>
-      o.summary("Get feeds list a account posted")
+      o.summary("Get feeds list an account posted")
         .tag(accountsTag)
         .operationId("findAccountFeeds")
         .request[GetAccountFeeds]
@@ -128,7 +128,7 @@ class AccountsController @Inject()(
     }
 
     scope(followerList).getWithDoc("/accounts/:id/followers") { o =>
-      o.summary("Get accounts list a account is followed by")
+      o.summary("Get accounts list an account is followed by")
         .tag(accountsTag)
         .operationId("findAccountFollowers")
         .request[GetFollowers]
@@ -137,6 +137,7 @@ class AccountsController @Inject()(
     } { request: GetFollowers =>
       followersService.find(
         request.id,
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -145,7 +146,7 @@ class AccountsController @Inject()(
     }
 
     scope(relationships).getWithDoc("/accounts/:id/friends") { o =>
-      o.summary("Get a account's friends list")
+      o.summary("Get an account's friends list")
         .tag(accountsTag)
         .operationId("findAccountFriends")
         .request[GetFriends]
@@ -154,6 +155,7 @@ class AccountsController @Inject()(
     } { request: GetFriends =>
       friendsService.find(
         request.id,
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -163,7 +165,7 @@ class AccountsController @Inject()(
 
 
     scope(groups).postWithDoc("/accounts/:accountId/groups/:groupId/join") { o =>
-      o.summary("Join a account in a group")
+      o.summary("Join an account in a group")
         .tag(accountsTag)
         .operationId("joinAccount")
         .request[PostAccountJoinGroup]
@@ -178,7 +180,7 @@ class AccountsController @Inject()(
     }
 
     scope(groups).postWithDoc("/accounts/:accountId/groups/:groupId/leave") { o =>
-      o.summary("Leave a account from a group")
+      o.summary("Leave an account from a group")
         .tag(accountsTag)
         .operationId("leaveAccount")
         .request[PostAccountJoinGroup]
@@ -194,7 +196,7 @@ class AccountsController @Inject()(
 
 
     scope(groups).getWithDoc("/accounts/:id/group") { o =>
-      o.summary("Get a direct message group to a account")
+      o.summary("Get a direct message group to an account")
         .tag(accountsTag)
         .operationId("findAccountGroup")
         .request[GetAccountGroup]
@@ -209,7 +211,7 @@ class AccountsController @Inject()(
     }
 
     scope(groups).getWithDoc("/accounts/:id/groups") { o =>
-      o.summary("Get groups list a account groupJoined")
+      o.summary("Get groups list an account groupJoined")
         .tag(accountsTag)
         .operationId("findAccountGroups")
         .request[GetAccountGroups]
@@ -227,7 +229,7 @@ class AccountsController @Inject()(
     }
 
     scope(reports).postWithDoc("/accounts/:id/reports") { o =>
-      o.summary("Report a account")
+      o.summary("Report an account")
         .tag(accountsTag)
         .operationId("reportAccount")
         .request[PostAccountReport]

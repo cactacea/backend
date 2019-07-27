@@ -12,7 +12,7 @@ case class Messages(
                      mediumId: Option[MediumId],
                      stampId: Option[StampId],
                      accountCount: Long,
-                     readAccountCount: Long,
+                     readCount: Long,
                      contentWarning: Boolean,
                      contentStatus: ContentStatusType,
                      notified: Boolean,

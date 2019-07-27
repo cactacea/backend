@@ -1,68 +1,84 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
-import io.github.cactacea.backend.core.helpers.RepositorySpec
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 
 class FollowersRepositorySpec extends RepositorySpec {
 
-  val followersRepository = injector.instance[FollowersRepository]
-  val followsRepository = injector.instance[FollowsRepository]
 
-  test("find a user's followers") {
+  feature("find") {
 
-    val sessionUser = signUp("FollowersRepositorySpec1", "session user password", "session user udid")
-    val user = signUp("FollowersRepositorySpec2", "user password", "user udid")
-    val followedUser1 = signUp("FollowersRepositorySpec3", "followed1 user password", "followed1 user udid")
-    val followedUser2 = signUp("FollowersRepositorySpec4", "followed2 user password", "followed2 user udid")
-    val followedUser3 = signUp("FollowersRepositorySpec5", "followed3 user password", "followed3 user udid")
-    val followedUser4 = signUp("FollowersRepositorySpec6", "followed4 user password", "followed4 user udid")
-    val followedUser5 = signUp("FollowersRepositorySpec7", "followed5 user password", "followed5 user udid")
+    scenario("should return session follower list") {
+      forAll(sortedNameGen, accountGen, sortedAccountGen, sortedAccountGen, sortedAccountGen, accountGen)
+      { (h, s, a1, a2, a3, a4) =>
 
-    execute(followsRepository.create(user.id, followedUser1.id.toSessionId))
-    execute(followsRepository.create(user.id, followedUser2.id.toSessionId))
-    execute(followsRepository.create(user.id, followedUser3.id.toSessionId))
-    execute(followsRepository.create(user.id, followedUser4.id.toSessionId))
-    execute(followsRepository.create(user.id, followedUser5.id.toSessionId))
+        // preparing
+        //   session account follower account1
+        //   session account follower account2
+        //   session account follower account3
+        //   session account follower account4
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        val accountId1 = await(accountsRepository.create(h + a1.accountName)).id
+        val accountId2 = await(accountsRepository.create(h + a2.accountName)).id
+        val accountId3 = await(accountsRepository.create(h + a3.accountName)).id
+        val accountId4 = await(accountsRepository.create(a4.accountName)).id
+        await(followsRepository.create(sessionId.toAccountId, accountId1.toSessionId))
+        await(followsRepository.create(sessionId.toAccountId, accountId2.toSessionId))
+        await(followsRepository.create(sessionId.toAccountId, accountId3.toSessionId))
+        await(followsRepository.create(sessionId.toAccountId, accountId4.toSessionId))
 
-    val follower1 = execute(followersRepository.find(user.id, None, 0, 3, sessionUser.id.toSessionId))
-    assert(follower1.size == 3)
-    assert(follower1(0).id == followedUser5.id)
-    assert(follower1(1).id == followedUser4.id)
-    assert(follower1(2).id == followedUser3.id)
+        // return account1 found
+        // return account2 found
+        // return account3 found
+        // return account4 not found because of account name not matched
+        val result1 = await(followersRepository.find(Option(h), None, 0, 2, sessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == accountId3)
+        assert(result1(1).id == accountId2)
 
-    val follower2 = execute(followersRepository.find(user.id, follower1(2).next, 0, 3, sessionUser.id.toSessionId))
-    assert(follower2.size == 2)
-    assert(follower2(0).id == followedUser2.id)
-    assert(follower2(1).id == followedUser1.id)
+        val result2 = await(followersRepository.find(Option(h), result1.lastOption.map(_.next), 0, 2, sessionId))
+        assert(result2.size == 1)
+        assert(result2(0).id == accountId1)
+      }
+    }
+
+    scenario("should return an account's follower list") {
+      forAll(sortedNameGen, accountGen, sortedAccountGen, sortedAccountGen, sortedAccountGen, accountGen)
+      { (h, s, a1, a2, a3, a4) =>
+
+        // preparing
+        //   session account follower account1
+        //   session account follower account2
+        //   session account follower account3
+        //   session account follower account4
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        val accountId1 = await(accountsRepository.create(h + a1.accountName)).id
+        val accountId2 = await(accountsRepository.create(h + a2.accountName)).id
+        val accountId3 = await(accountsRepository.create(h + a3.accountName)).id
+        val accountId4 = await(accountsRepository.create(a4.accountName)).id
+        await(followsRepository.create(sessionId.toAccountId, accountId1.toSessionId))
+        await(followsRepository.create(sessionId.toAccountId, accountId2.toSessionId))
+        await(followsRepository.create(sessionId.toAccountId, accountId3.toSessionId))
+        await(followsRepository.create(sessionId.toAccountId, accountId4.toSessionId))
+
+        // account2 block account1
+        await(blocksRepository.create(accountId1, accountId2.toSessionId))
+
+        // return account1 found
+        // return account2 not found because of account2 be blocked by account1
+        // return account3 found
+        // return account4 not found because of account name not matched
+        val result1 = await(followersRepository.find(sessionId.toAccountId, Option(h), None, 0, 2, accountId1.toSessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == accountId3)
+        assert(result1(1).id == accountId1)
+
+        val result2 = await(followersRepository.find(sessionId.toAccountId, Option(h), result1.lastOption.map(_.next), 0, 2, accountId1.toSessionId))
+        assert(result2.size == 0)
+      }
+    }
 
   }
 
-  test("find session's followers") {
-
-    val sessionUser = signUp("FollowersRepositorySpec8", "session user password", "session user udid")
-    val followedUser1 = signUp("FollowersRepositorySpec9", "followed1 user password", "followed1 user udid")
-    val followedUser2 = signUp("FollowersRepositorySpec10", "followed2 user password", "followed2 user udid")
-    val followedUser3 = signUp("FollowersRepositorySpec11", "followed3 user password", "followed3 user udid")
-    val followedUser4 = signUp("FollowersRepositorySpec12", "followed4 user password", "followed4 user udid")
-    val followedUser5 = signUp("FollowersRepositorySpec13", "followed5 user password", "followed5 user udid")
-
-    execute(followsRepository.create(sessionUser.id, followedUser1.id.toSessionId))
-    execute(followsRepository.create(sessionUser.id, followedUser2.id.toSessionId))
-    execute(followsRepository.create(sessionUser.id, followedUser3.id.toSessionId))
-    execute(followsRepository.create(sessionUser.id, followedUser4.id.toSessionId))
-    execute(followsRepository.create(sessionUser.id, followedUser5.id.toSessionId))
-
-    val follower1 = execute(followersRepository.find(None, 0, 3, sessionUser.id.toSessionId))
-    assert(follower1.size == 3)
-    assert(follower1(0).id == followedUser5.id)
-    assert(follower1(1).id == followedUser4.id)
-    assert(follower1(2).id == followedUser3.id)
-
-    val follower2 = execute(followersRepository.find(follower1(2).next, 0, 3, sessionUser.id.toSessionId))
-    assert(follower2.size == 2)
-    assert(follower2(0).id == followedUser2.id)
-    assert(follower2(1).id == followedUser1.id)
-
-  }
 
 }

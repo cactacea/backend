@@ -1,5 +1,9 @@
 package io.github.cactacea.backend.core.domain.enums;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public enum ActiveStatusType {
     active((byte)0),
     inactive((byte)1);
@@ -22,4 +26,10 @@ public enum ActiveStatusType {
     public byte toValue() {
         return value;
     }
+
+    public static final List<ActiveStatusType> all = Collections.unmodifiableList(new ArrayList<ActiveStatusType>() {{
+        add(active);
+        add(inactive);
+    }} );
+
 }

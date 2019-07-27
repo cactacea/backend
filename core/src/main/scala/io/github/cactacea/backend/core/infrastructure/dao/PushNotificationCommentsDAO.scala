@@ -84,7 +84,7 @@ class PushNotificationCommentsDAO @Inject()(
         .filter(_.id == lift(commentId))
         .update(_.notified -> true)
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
 

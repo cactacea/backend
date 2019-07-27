@@ -13,7 +13,7 @@ class PushNotificationSettingsRepository @Inject()(
                                                     pushNotificationSettingsDAO: PushNotificationSettingsDAO) {
 
   def find(sessionId: SessionId): Future[PushNotificationSetting] = {
-    pushNotificationSettingsValidator.find(sessionId)
+    pushNotificationSettingsValidator.mustFind(sessionId)
   }
 
   def update(feed: Boolean,
@@ -21,7 +21,7 @@ class PushNotificationSettingsRepository @Inject()(
              friendRequest: Boolean,
              message: Boolean,
              groupMessage: Boolean,
-             groupInvitation: Boolean,
+             invitation: Boolean,
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
 
@@ -31,7 +31,7 @@ class PushNotificationSettingsRepository @Inject()(
       friendRequest,
       message,
       groupMessage,
-      groupInvitation,
+      invitation,
       showMessage,
       sessionId)
   }

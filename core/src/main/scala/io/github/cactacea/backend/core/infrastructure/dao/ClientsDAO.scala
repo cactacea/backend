@@ -10,18 +10,7 @@ class ClientsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def findClient2(clientId: String, grantType: String): Future[Option[Clients]] = {
-    val q = quote {
-      query[Clients]
-        .filter(_.id == lift(clientId))
-        .join(query[ClientGrantTypes]).on({ case (c, ocg) => ocg.clientId == c.id})
-        .join(query[GrantTypes]).on({ case ((_, ocg), gt) => gt.id == ocg.grantTypeId && gt.grantType == lift(grantType)})
-        .map({ case ((c, _), _) => c})
-    }
-    run(q).map(_.headOption)
-  }
-
-  def findClient(clientId: String, clientSecret: String): Future[Option[Clients]] = {
+  def find(clientId: String, clientSecret: String): Future[Option[Clients]] = {
     val q = quote {
       query[Clients]
         .filter(c => c.id == lift(clientId) && c.secret == lift(clientSecret))
@@ -32,7 +21,7 @@ class ClientsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.headOption)
   }
 
-  def validateClient(id: String, secret: String, grantType: String): Future[Boolean] = {
+  def exists(id: String, secret: String, grantType: String): Future[Boolean] = {
     val q = quote {
       (for {
         c <- query[Clients]

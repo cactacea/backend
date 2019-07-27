@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.core.domain.models
 
+import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
 import io.github.cactacea.backend.core.infrastructure.models.{AccountGroups, Accounts, Blocks, Relationships}
 
@@ -15,36 +16,38 @@ case class Account(id: AccountId,
                    followerCount: Long,
                    friendCount: Long,
                    feedCount: Long,
-                   muting: Boolean,
-                   blocking: Boolean,
+                   muted: Boolean,
+                   blocked: Boolean,
                    web: Option[String],
                    birthday: Option[Long],
                    location: Option[String],
                    bio: Option[String],
                    joinedAt: Option[Long],
-                   next: Option[Long]
+                   accountStatus: AccountStatusType,
+                   signedOutAt: Option[Long],
+                   next: Long
                         )
 
 
 object Account {
 
-  def apply(a: Accounts, r: Option[Relationships], b: Blocks, n: Long): Account = {
-    apply(a, r, None, Some(n), Some(b))
+  def apply(a: Accounts, r: Option[Relationships], b: Blocks): Account = {
+    apply(a, r, None, b.id.value, Some(b))
   }
 
   def apply(a: Accounts, r: Option[Relationships], n: Long): Account = {
-    apply(a, r, None, Some(n), None)
+    apply(a, r, None, n, None)
   }
 
   def apply(a: Accounts, r: Option[Relationships]): Account = {
-    apply(a, r, None, Some(a.id.value), None)
+    apply(a, r, None, a.id.value, None)
   }
 
   def apply(a: Accounts): Account = {
-    apply(a, None, None, None, None)
+    apply(a, None, None, a.id.value, None)
   }
 
-  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Option[Long], b: Option[Blocks]): Account = {
+  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Long, b: Option[Blocks]): Account = {
     Account(
       a.id,
       a.accountName,
@@ -65,6 +68,8 @@ object Account {
       a.location,
       a.bio,
       ag.map(_.joinedAt),
+      a.accountStatus,
+      a.signedOutAt,
       next
     )
   }

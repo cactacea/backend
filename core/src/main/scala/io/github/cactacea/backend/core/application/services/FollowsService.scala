@@ -26,12 +26,12 @@ class FollowsService @Inject()(
     }
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    followsRepository.find(accountId, since, offset, count, sessionId)
+  def find(accountId: AccountId, accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+    followsRepository.find(accountId, accountName, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    followsRepository.find(since, offset, count, sessionId)
+  def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+    followsRepository.find(accountName, since, offset, count, sessionId)
   }
 
 }

@@ -16,24 +16,24 @@ class CommentLikesRepository @Inject()(
 
   def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- commentsValidator.exist(commentId, sessionId)
-      _ <- commentLikesValidator.notExist(commentId, sessionId)
+      _ <- commentsValidator.mustExist(commentId, sessionId)
+      _ <- commentLikesValidator.mustNotLiked(commentId, sessionId)
       _ <- commentLikesDAO.create(commentId, sessionId)
     } yield (())
   }
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- commentsValidator.exist(commentId, sessionId)
-      _ <- commentLikesValidator.exist(commentId, sessionId)
+      _ <- commentsValidator.mustExist(commentId, sessionId)
+      _ <- commentLikesValidator.mustLiked(commentId, sessionId)
       _ <- commentLikesDAO.delete(commentId, sessionId)
     } yield (())
   }
 
   def findAccounts(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     for {
-      _ <- commentsValidator.exist(commentId, sessionId)
-      r <- commentLikesDAO.find(commentId, since, offset, count, sessionId)
+      _ <- commentsValidator.mustExist(commentId, sessionId)
+      r <- commentLikesDAO.findAccounts(commentId, since, offset, count, sessionId)
     } yield (r)
   }
 

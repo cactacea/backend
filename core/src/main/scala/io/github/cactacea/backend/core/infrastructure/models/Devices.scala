@@ -10,5 +10,6 @@ case class Devices(
                     deviceType: DeviceType,
                     activeStatus: ActiveStatusType,
                     pushToken: Option[String],
-                    userAgent: Option[String]
+                    userAgent: Option[String],
+                    registeredAt: Long
               )

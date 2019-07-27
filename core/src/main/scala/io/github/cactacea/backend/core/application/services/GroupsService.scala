@@ -10,8 +10,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, Sess
 
 class GroupsService @Inject()(
                                databaseService: DatabaseService,
-                               groupsRepository: GroupsRepository,
-                               reportsRepository: ReportsRepository
+                               groupsRepository: GroupsRepository
                              ) {
 
   import databaseService._
@@ -34,23 +33,13 @@ class GroupsService @Inject()(
     }
   }
 
-  def find(name: Option[String],
-           byInvitation: Option[Boolean],
-           privacyType: Option[GroupPrivacyType],
-           since: Option[Long],
-           offset: Int,
-           count: Int, sessionId: SessionId): Future[List[Group]] = {
-
-    groupsRepository.find(name, byInvitation, privacyType, since, offset, count, sessionId)
-  }
-
   def find(groupId: GroupId, sessionId: SessionId): Future[Group] = {
     groupsRepository.find(groupId, sessionId)
   }
 
   def report(groupId: GroupId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     transaction {
-      reportsRepository.createGroupReport(groupId, reportType, reportContent, sessionId)
+      groupsRepository.report(groupId, reportType, reportContent, sessionId)
     }
   }
 

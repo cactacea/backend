@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.models.{AccountGroups, Groups, Relationships}
+import io.github.cactacea.backend.core.infrastructure.models.{Groups, Relationships}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
@@ -19,7 +19,7 @@ class GroupAuthorityValidator @Inject()(
     for {
       g <- findGroup(groupId)
       r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
-      _ <- canJoin(g, r, sessionId)
+      _ <- mustHaveJoinAuthority(g, r, sessionId)
     } yield (())
   }
 
@@ -27,15 +27,17 @@ class GroupAuthorityValidator @Inject()(
     for {
       g <- findGroup(groupId)
       r <- findRelationship(accountId, g.by.toSessionId)
-      _ <- canJoin(g, r, accountId.toSessionId)
-      _ <- canManage(g, sessionId)
+      _ <- mustNotDirectMessageGroup(g.directMessage)
+      _ <- mustHaveJoinAuthority(g, r, accountId.toSessionId)
+      _ <- mustHaveInviteAuthority(g, sessionId)
     } yield (())
   }
 
   def hasRemoveMembersAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
       g <- findGroup(groupId)
-      _ <- canManage(g, sessionId)
+      _ <- mustNotDirectMessageGroup(g.directMessage)
+      _ <- mustHaveInviteAuthority(g, sessionId)
     } yield (())
 
   }
@@ -43,8 +45,8 @@ class GroupAuthorityValidator @Inject()(
   def hasUpdateAuthority(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
       g <- findGroup(groupId)
-      _ <- notDirectMessageGroup(g)
-      _ <- canManage(g, sessionId)
+      _ <- mustNotDirectMessageGroup(g.directMessage)
+      _ <- mustHaveInviteAuthority(g, sessionId)
     } yield (())
   }
 
@@ -52,17 +54,19 @@ class GroupAuthorityValidator @Inject()(
     for {
       g <- findGroup(groupId)
       r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
-      _ <- notInvitationOnlyGroup(g)
-      _ <- canJoin(g, r, sessionId)
+      _ <- mustNotDirectMessageGroup(g.directMessage)
+      _ <- mustNotInvitationOnlyGroup(g.invitationOnly)
+      _ <- mustHaveJoinAuthority(g, r, sessionId)
     } yield (())
   }
 
-  def hasInviteMembersAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+  def hasInviteAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
       g <- findGroup(groupId)
       r <- findRelationship(accountId, g.by.toSessionId)
-      _ <- canJoin(g, r, accountId.toSessionId)
-      _ <- canManage(g, sessionId)
+      _ <- mustNotDirectMessageGroup(g.directMessage)
+      _ <- mustHaveJoinAuthority(g, r, accountId.toSessionId)
+      _ <- mustHaveInviteAuthority(g, sessionId)
     } yield (())
   }
 
@@ -90,15 +94,15 @@ class GroupAuthorityValidator @Inject()(
     run(select).map(_.headOption)
   }
 
-  private def canJoin(g: Groups, r: Option[Relationships], sessionId: SessionId): Future[Unit] = {
+  private def mustHaveJoinAuthority(g: Groups, r: Option[Relationships], sessionId: SessionId): Future[Unit] = {
     val follow = r.fold(false)(_.follow)
     val follower = r.fold(false)(_.isFollower)
     val friend = r.fold(false)(_.isFriend)
     if (g.by.toSessionId == sessionId) {
       Future.Unit
-    } else if (g.privacyType == GroupPrivacyType.follows && follow) {
+    } else if (g.privacyType == GroupPrivacyType.follows && (follow || friend)) {
       Future.Unit
-    } else if (g.privacyType == GroupPrivacyType.followers && follower) {
+    } else if (g.privacyType == GroupPrivacyType.followers && (follower || friend)) {
       Future.Unit
     } else if (g.privacyType == GroupPrivacyType.friends && friend) {
       Future.Unit
@@ -109,45 +113,29 @@ class GroupAuthorityValidator @Inject()(
     }
   }
 
-  private def canManage(g: Groups, sessionId: SessionId): Future[Unit] = {
+  private def mustHaveInviteAuthority(g: Groups, sessionId: SessionId): Future[Unit] = {
     if (sessionId.toAccountId == g.by) {
       Future.Unit
-    } else if (g.authorityType == GroupAuthorityType.owner) {
+    } else if (g.authorityType == GroupAuthorityType.organizer) {
       Future.exception(CactaceaException(AuthorityNotFound))
     } else {
-      findAccountGroupExist(g.id, sessionId.toAccountId).flatMap(_ match {
-        case true =>
-          Future.Unit
-        case false =>
-          Future.exception(CactaceaException(AuthorityNotFound))
-      })
+      Future.Unit
     }
   }
 
-  private def findAccountGroupExist(groupId: GroupId, accountId: AccountId): Future[Boolean] = {
-    val q = quote {
-      query[AccountGroups]
-        .filter(_.groupId     == lift(groupId))
-        .filter(_.accountId   == lift(accountId))
-        .nonEmpty
-    }
-    run(q)
-  }
-
-
-  private def notInvitationOnlyGroup(g: Groups): Future[Unit] = {
-    g.invitationOnly match {
+  private def mustNotInvitationOnlyGroup(invitationOnly: Boolean): Future[Unit] = {
+    invitationOnly match {
       case true =>
-        Future.exception(CactaceaException(InnvitationOnlyGroup))
+        Future.exception(CactaceaException(InvitationGroupFound))
       case false =>
         Future.Unit
     }
   }
 
-  private def notDirectMessageGroup(g: Groups): Future[Unit] = {
-    g.directMessage match {
+  private def mustNotDirectMessageGroup(directMessage: Boolean): Future[Unit] = {
+    directMessage match {
       case true =>
-        Future.exception(CactaceaException(DirectMessageGroupCanNotUpdated))
+        Future.exception(CactaceaException(AuthorityNotFound))
       case false =>
         Future.Unit
     }

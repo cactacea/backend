@@ -14,10 +14,53 @@ import io.github.cactacea.backend.core.infrastructure.models._
 @Singleton
 class NotificationsDAO @Inject()(db: DatabaseService,
                                  deepLinkService: DeepLinkService,
-                                 notificationMessagesService: MessageService,
+                                 messageService: MessageService,
                                  ) {
 
   import db._
+
+  def create(id: InvitationId, accountId: AccountId, sessionId: SessionId): Future[NotificationId] = {
+    val by = sessionId.toAccountId
+    val url = deepLinkService.getInvitation(id)
+    insert(accountId, by, NotificationType.invitation, id.value, url)
+  }
+
+  def create(id: FriendRequestId, accountId: AccountId, sessionId: SessionId): Future[NotificationId] = {
+    val by = sessionId.toAccountId
+    val url = deepLinkService.getRequest(id)
+    insert(accountId, by, NotificationType.friendRequest, id.value, url)
+  }
+
+  def create(feedId: FeedId, commentId: CommentId, accountId: AccountId, commentReply: Boolean, sessionId: SessionId): Future[NotificationId] = {
+    val by = sessionId.toAccountId
+    val notificationType = commentReply match {
+      case true => NotificationType.commentReply
+      case false => NotificationType.feedReply
+    }
+    val url = deepLinkService.getComment(feedId, commentId)
+    insert(accountId, by, notificationType, commentId.value, url)
+  }
+
+  def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+    val by = sessionId.toAccountId
+    val url = deepLinkService.getFeed(feedId)
+    val q = quote {
+      infix"""
+        insert into notifications (account_id, `by`, content_id, notification_type, url, unread, notified_at)
+        select r.`by`, r.account_id, ${lift(feedId)}, ${lift(NotificationType.feed.toValue)}, ${lift(url)}, true as unread, CURRENT_TIMESTAMP
+        from relationships r, feeds f
+        where f.id = ${lift(feedId)}
+        and r.account_id = ${lift(by)}
+        and (
+           (r.follow = true and (f.privacy_type in (0, 1)))
+        or (r.is_friend = true and (f.privacy_type in (0, 1, 2)))
+            )
+        and r.muting = 0
+        """.as[Action[Long]]
+    }
+    run(q).map(_ => ())
+  }
+
 
   private def insert(accountId: AccountId, by: AccountId, notificationType: NotificationType, contentId: Long, url: String): Future[NotificationId] = {
     val notifiedAt = System.currentTimeMillis()
@@ -36,65 +79,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     run(q)
   }
 
-  def createGroupInvitation(id: GroupInvitationId, accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    val url = deepLinkService.getInvitation(id)
-    insert(accountId, by, NotificationType.groupInvitation, id.value, url).flatMap(_ => Future.Done)
-  }
-
-  def createNotification(id: FriendRequestId, accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    val url = deepLinkService.getRequest(id)
-    insert(accountId, by, NotificationType.friendRequest, id.value, url).flatMap(_ => Future.Done)
-  }
-
-  def createComment(feedId: FeedId, commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    findByCommentId(commentId).flatMap({
-      case Some((accountId, replied)) =>
-        val by = sessionId.toAccountId
-        val notificationType = replied match {
-          case true => NotificationType.commentReply
-          case false => NotificationType.feedReply
-        }
-        val url = deepLinkService.getComment(feedId, commentId)
-        insert(accountId, by, notificationType, commentId.value, url).flatMap(_ => Future.Done)
-      case None =>
-        Future.Done
-    })
-  }
-
-  private def findByCommentId(commentId: CommentId): Future[Option[(AccountId, Boolean)]] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-        .join(query[Feeds]).on((c, f) => c.feedId == f.id)
-        .map({ case (c, f) => (f.by, c.replyId.isDefined) })
-    }
-    run(q).map(_.headOption)
-  }
-
-
-
-  def createFeed(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
-    val url = deepLinkService.getFeed(feedId)
-    val q = quote {
-      infix"""
-        insert into notifications (account_id, `by`, notification_type, content_id, url, unread, notified_at)
-        select r.`by`, r.account_id, ${lift(NotificationType.feed.toValue)}, ${lift(feedId)}, ${lift(url)}, false as unread, CURRENT_TIMESTAMP
-        from relationships r, feeds f
-        where f.id = ${lift(feedId)}
-        and r.account_id = ${lift(by)}
-        and (
-           (r.is_follower = true and (f.privacy_type in (0, 1)))
-        or (r.is_friend = true and (f.privacy_type in (0, 1, 2)))
-            )
-        """.as[Action[Long]]
-    }
-    run(q).map(_ => Unit)
-  }
-
-  def updateUnread(notificationIds: List[NotificationId], sessionId: SessionId): Future[Unit] = {
+  def updateReadStatus(notificationIds: List[NotificationId], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Notifications]
@@ -102,7 +87,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
         .filter(n => liftQuery(notificationIds).contains(n.id))
         .update(_.unread -> false)
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def find(since: Option[Long],
@@ -117,9 +102,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
         n <- query[Notifications]
           .filter(n => n.accountId == lift(by))
           .filter(n => lift(since).forall(n.id < _))
-          .filter(n => query[Blocks].filter(b =>
-            (b.accountId == lift(by) && b.by == n.by) || (b.accountId == n.by && b.by == lift(by))
-          ).isEmpty)
+          .filter(n => query[Blocks].filter(b => b.accountId == lift(by) && b.by == n.by).isEmpty)
         a <- query[Accounts]
             .join(_.id == n.by)
         r <- query[Relationships]
@@ -132,7 +115,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     }
     run(q).map(_.map({ case (n, a, r) =>
         val displayName = r.map(_.displayName).getOrElse(a.accountName)
-        val message = notificationMessagesService.getNotificationMessage(n.notificationType, locales, displayName)
+        val message = messageService.getNotificationMessage(n.notificationType, locales, displayName)
         Notification(n, message, n.id.value)
       }))
 

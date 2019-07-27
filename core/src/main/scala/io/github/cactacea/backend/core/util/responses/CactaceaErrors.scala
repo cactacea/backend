@@ -63,7 +63,7 @@ object CactaceaErrors {
   final val m40004 = "File upload error occurred."
   final val m40005 = "Authority not found."
   final val m40006 = "Group is invitation only."
-  final val m40007 = "Direct message group can not be updated."
+  final val m40007 = "Organizer can not leave."
   final val m40008 = "API Key is invalid."
   final val m40009 = "Account name already used."
   final val m40010 = "Can not specify myself."
@@ -100,7 +100,7 @@ object CactaceaErrors {
   final val m40403 = "Feed not found."
   final val m40404 = "Request not found."
   final val m40405 = "Group not found."
-  final val m40406 = "Group invitation not found."
+  final val m40406 = "Invitation not found."
   final val m40407 = "Message not found."
 
   final val m40100 = "Session not authorized."
@@ -113,10 +113,10 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40000)  override val message: String = m40000
   }
 
-  final object AccountDeleted extends BadRequest {
-    @ApiModelProperty(example = c40001)  override val code: Int =       c40001.toInt
-    @ApiModelProperty(example = m40001)  override val message: String = m40001
-  }
+//  final object AccountDeleted extends BadRequest {
+//    @ApiModelProperty(example = c40001)  override val code: Int =       c40001.toInt
+//    @ApiModelProperty(example = m40001)  override val message: String = m40001
+//  }
 
   final object AccountTerminated extends BadRequest {
     @ApiModelProperty(example = c40002)  override val code: Int =       c40002.toInt
@@ -138,12 +138,12 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40005)  override val message: String = m40005
   }
 
-  final object InnvitationOnlyGroup extends BadRequest {
+  final object InvitationGroupFound extends BadRequest {
     @ApiModelProperty(example = c40006)  override val code: Int =       c40006.toInt
     @ApiModelProperty(example = m40006)  override val message: String = m40006
   }
 
-  final object DirectMessageGroupCanNotUpdated extends BadRequest {
+  final object OrganizerCanNotLeave extends BadRequest {
     @ApiModelProperty(example = c40007)  override val code: Int =       c40007.toInt
     @ApiModelProperty(example = m40007)  override val message: String = m40007
   }
@@ -158,7 +158,7 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40009)  override val message: String = m40009
   }
 
-  final object CanNotSpecifyMyself extends BadRequest {
+  final object InvalidAccountIdError extends BadRequest {
     @ApiModelProperty(example = c40010)  override val code: Int =       c40010.toInt
     @ApiModelProperty(example = m40010)  override val message: String = m40010
   }
@@ -321,7 +321,7 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40405)  override val message: String = m40405
   }
 
-  final object GroupInvitationNotFound extends NotFound {
+  final object InvitationNotFound extends NotFound {
     @ApiModelProperty(example = c40406)  override val code: Int =       c40406.toInt
     @ApiModelProperty(example = m40406)  override val message: String = m40406
   }

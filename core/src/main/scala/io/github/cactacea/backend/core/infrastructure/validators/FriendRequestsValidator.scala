@@ -10,9 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class FriendRequestsValidator @Inject()(friendRequestsDAO: FriendRequestsDAO) {
 
-  def find(id: FriendRequestId, sessionId: SessionId): Future[AccountId] = {
-
-    friendRequestsDAO.find(id, sessionId).flatMap(_ match {
+  def mustFind(id: FriendRequestId, sessionId: SessionId): Future[AccountId] = {
+    friendRequestsDAO.find(id, sessionId.toAccountId).flatMap(_ match {
       case Some(r) =>
         Future.value(r)
       case None =>
@@ -21,8 +20,8 @@ class FriendRequestsValidator @Inject()(friendRequestsDAO: FriendRequestsDAO) {
   }
 
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    friendRequestsDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustRequested(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    friendRequestsDAO.own(accountId, sessionId).flatMap(_ match {
       case false =>
         Future.exception(CactaceaException(FriendRequestNotFound))
       case true =>
@@ -30,8 +29,8 @@ class FriendRequestsValidator @Inject()(friendRequestsDAO: FriendRequestsDAO) {
     })
   }
 
-  def notExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    friendRequestsDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustNotRequested(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    friendRequestsDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyRequested))
       case false =>

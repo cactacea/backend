@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class FollowsValidator @Inject()(followsDAO: FollowsDAO) {
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    followsDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustFollowed(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    followsDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -19,8 +19,8 @@ class FollowsValidator @Inject()(followsDAO: FollowsDAO) {
     })
   }
 
-  def notExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    followsDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustNotFollowed(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    followsDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyFollowed))
       case false =>

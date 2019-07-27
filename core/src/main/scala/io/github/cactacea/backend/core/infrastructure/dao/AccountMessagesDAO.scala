@@ -25,8 +25,6 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-
-
   def delete(accountId: AccountId, groupId: GroupId): Future[Unit] = {
     val q = quote {
       query[AccountMessages]
@@ -59,7 +57,6 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
                   sessionId: SessionId): Future[List[Message]] = {
 
     val by = sessionId.toAccountId
-
     val q = quote {
       (for {
         am <- query[AccountMessages]
@@ -78,7 +75,6 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .sortBy({ case (_, am, _, _, _) => am.messageId})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
-
     }
     run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value) }))
 
@@ -89,9 +85,7 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
                 offset: Int,
                 count: Int,
                 sessionId: SessionId): Future[List[Message]] = {
-
     val by = sessionId.toAccountId
-
     val q = quote {
       (for {
         am <- query[AccountMessages]
@@ -110,30 +104,12 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
         .sortBy({ case (_, am, _, _, _) => am.messageId})(Ord.asc)
         .drop(lift(offset))
         .take(lift(count))
-
     }
     run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value) }))
-
   }
-
-
-
-  def updateUnread(messageIds: List[MessageId], sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[AccountMessages]
-        .filter(_.accountId == lift(accountId))
-        .filter(m => liftQuery(messageIds).contains(m.messageId))
-        .update(_.unread -> false)
-    }
-    run(q).map(_ => Unit)
-  }
-
 
   def find(id: MessageId, sessionId: SessionId): Future[Option[Message]] = {
-
     val by = sessionId.toAccountId
-
     val q = quote {
       (for {
         am <- query[AccountMessages]
@@ -150,7 +126,20 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
       } yield (m, am, i, a, r))
     }
     run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value) }).headOption)
-
   }
+
+  def updateUnread(messageIds: List[MessageId], sessionId: SessionId): Future[Unit] = {
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[AccountMessages]
+        .filter(_.accountId == lift(accountId))
+        .filter(m => liftQuery(messageIds).contains(m.messageId))
+        .update(_.unread -> false)
+    }
+    run(q).map(_ => ())
+  }
+
+
+
 
 }

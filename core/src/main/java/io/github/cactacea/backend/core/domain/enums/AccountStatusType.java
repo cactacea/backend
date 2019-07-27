@@ -1,5 +1,12 @@
 package io.github.cactacea.backend.core.domain.enums;
 
+import io.github.cactacea.backend.core.domain.models.AccountStatus;
+import scala.collection.immutable.Seq;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public enum AccountStatusType {
     normally((byte)0),
     deleted((byte)1),
@@ -23,4 +30,11 @@ public enum AccountStatusType {
     public byte toValue() {
         return value;
     }
+
+    public static final List<AccountStatusType> all = Collections.unmodifiableList( new ArrayList<AccountStatusType>() {{
+        add(normally);
+        add(deleted);
+        add(terminated);
+    }} );
+
 }

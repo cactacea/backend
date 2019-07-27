@@ -12,7 +12,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Fe
 class FeedsService @Inject()(
                               databaseService: DatabaseService,
                               feedsRepository: FeedsRepository,
-                              reportsRepository: ReportsRepository,
                               queueService: QueueService
                             ) {
 
@@ -62,17 +61,13 @@ class FeedsService @Inject()(
     feedsRepository.find(accountId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedsRepository.find(since, offset, count, sessionId)
-  }
-
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {
     feedsRepository.find(feedId, sessionId)
   }
 
   def report(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     transaction {
-      reportsRepository.createFeedReport(feedId, reportType, reportContent, sessionId)
+      feedsRepository.report(feedId, reportType, reportContent, sessionId)
     }
   }
 

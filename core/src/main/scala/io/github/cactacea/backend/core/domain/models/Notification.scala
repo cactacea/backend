@@ -11,16 +11,12 @@ case class Notification (
                            message: String,
                            url: String,
                            notifiedAt: Long,
-                           next: Option[Long]
+                           next: Long
                          )
 
 object Notification {
 
-  def apply(n: Notifications, m: String, nextId: Long): Notification = {
-    apply(n , m, Some(nextId))
-  }
-
-  def apply(n: Notifications, message: String, nextId: Option[Long]): Notification = {
+  def apply(n: Notifications, message: String, nextId: Long): Notification = {
     new Notification(
       n.id,
       n.notificationType,
@@ -28,8 +24,7 @@ object Notification {
       message,
       n.url,
       n.notifiedAt,
-      nextId
-    )
+      nextId)
   }
 
 }

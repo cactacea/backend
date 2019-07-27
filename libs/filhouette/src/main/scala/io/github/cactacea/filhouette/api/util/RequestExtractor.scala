@@ -31,7 +31,7 @@ object RequestExtractor {
               if (json == null) {
                 None
               } else {
-                Some(json.asText())
+                Option(json.asText())
               }
             }
             case _ => None

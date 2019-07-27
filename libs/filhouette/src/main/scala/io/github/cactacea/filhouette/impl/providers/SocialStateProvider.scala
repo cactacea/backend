@@ -90,7 +90,7 @@ object SocialStateItem {
     def unapply(str: String): Option[ItemStructure] = {
       str.split('-').toList match {
         case List(id, data) =>
-          Some(ItemStructure(Base64.decode(id), Json.obj(Base64.decode(data))))
+          Option(ItemStructure(Base64.decode(id), Json.obj(Base64.decode(data))))
         case _ => None
       }
     }

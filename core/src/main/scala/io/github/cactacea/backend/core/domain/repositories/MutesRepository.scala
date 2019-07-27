@@ -16,26 +16,24 @@ class MutesRepository @Inject()(
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.checkSessionId(accountId, sessionId)
-      _ <- accountsValidator.exist(accountId, sessionId)
-      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- mutesValidator.notExist(accountId, sessionId)
+      _ <- accountsValidator.mustNotSame(accountId, sessionId)
+      _ <- accountsValidator.mustExist(accountId, sessionId)
+      _ <- mutesValidator.mustNotMuted(accountId, sessionId)
       _ <- mutesDAO.create(accountId, sessionId)
     } yield (())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.checkSessionId(accountId, sessionId)
-      _ <- accountsValidator.exist(accountId, sessionId)
-      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- mutesValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.mustNotSame(accountId, sessionId)
+      _ <- accountsValidator.mustExist(accountId, sessionId)
+      _ <- mutesValidator.mustMuted(accountId, sessionId)
       _ <- mutesDAO.delete(accountId, sessionId)
     } yield (())
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    mutesDAO.find(since, offset, count, sessionId)
+  def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
+    mutesDAO.find(accountName, since, offset, count, sessionId)
   }
 
 }

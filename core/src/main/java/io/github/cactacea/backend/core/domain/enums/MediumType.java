@@ -1,5 +1,9 @@
 package io.github.cactacea.backend.core.domain.enums;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public enum MediumType {
     image((byte)0),
     movie((byte)1);
@@ -22,5 +26,11 @@ public enum MediumType {
     public byte toValue() {
         return value;
     }
+
+    public static final List<MediumType> all = Collections.unmodifiableList(new ArrayList<MediumType>() {{
+        add(image);
+        add(movie);
+    }} );
+
 }
 

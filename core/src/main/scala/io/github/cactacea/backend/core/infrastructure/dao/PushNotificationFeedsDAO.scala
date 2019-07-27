@@ -76,7 +76,7 @@ class PushNotificationFeedsDAO @Inject()(
         .filter(m => liftQuery(accountIds).contains(m.accountId))
         .update(_.notified -> lift(notified))
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def update(feedId: FeedId, notified: Boolean): Future[Unit] = {
@@ -85,7 +85,7 @@ class PushNotificationFeedsDAO @Inject()(
         .filter(_.id == lift(feedId))
         .update(_.notified -> lift(notified))
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
 

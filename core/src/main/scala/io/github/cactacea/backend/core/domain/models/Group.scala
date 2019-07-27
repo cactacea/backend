@@ -20,48 +20,40 @@ case class Group(
 object Group {
 
   def apply(g: Groups): Group = {
-    Group(
-      id                = g.id,
-      name              = g.name,
-      message           = None,
-      invitationOnly    = g.invitationOnly,
-      privacyType       = g.privacyType,
-      authorityType     = g.authorityType,
-      accountCount      = g.accountCount,
-      organizedAt       = g.organizedAt,
-      lastPostedAt      = g.lastPostedAt,
-      next              = None
-    )
+    apply(g, None, None, None, None, None, None)
   }
 
   def apply(g: Groups, n: Long): Group = {
-    Group(
-      id                = g.id,
-      name              = g.name,
-      message           = None,
-      invitationOnly    = g.invitationOnly,
-      privacyType       = g.privacyType,
-      authorityType     = g.authorityType,
-      accountCount      = g.accountCount,
-      organizedAt       = g.organizedAt,
-      lastPostedAt      = g.lastPostedAt,
-      next              = Some(n)
-    )
+    apply(g, None, None, None, None, None, Option(n))
   }
 
-  def apply(g: Groups, am: AccountMessages, m: Messages, i: Option[Mediums], a: Accounts, r: Option[Relationships], n: Long): Group = {
-    val message = Message(m, am, i, a, r, None)
+  def apply(g: Groups, am: Option[AccountMessages], m: Option[Messages], i: Option[Mediums], a: Option[Accounts], r: Option[Relationships], n: Long): Group = {
+    apply(g, am, m, i, a, r, Option(n))
+  }
+
+  private def apply(g: Groups,
+                    am: Option[AccountMessages],
+                    m: Option[Messages],
+                    i: Option[Mediums],
+                    a: Option[Accounts],
+                    r: Option[Relationships], n: Option[Long]): Group = {
+
+    val message = ((am, m, a) match {
+      case (Some(am), Some(m), Some(a)) => Option(Message(m, am, i, a, r, m.id.value))
+      case _ => None
+    })
+
     Group(
       id                = g.id,
       name              = g.name,
-      message           = Some(message),
+      message           = message,
       invitationOnly    = g.invitationOnly,
       privacyType       = g.privacyType,
       authorityType     = g.authorityType,
       accountCount      = g.accountCount,
       organizedAt       = g.organizedAt,
       lastPostedAt      = g.lastPostedAt,
-      next              = Some(n)
+      next              = n
     )
   }
 

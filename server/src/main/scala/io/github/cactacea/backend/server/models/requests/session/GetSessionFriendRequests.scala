@@ -8,10 +8,10 @@ case class GetSessionFriendRequests(
                                      @ApiModelProperty(value = "Filters friend requests which started on since or later.")
                                      @QueryParam since: Option[Long],
 
-                                     @ApiModelProperty(value = "The offset of friend request. By default the value is 0.")
+                                     @ApiModelProperty(value = "The offset of friend friendRequest. By default the value is 0.")
                                      @QueryParam offset: Option[Int],
 
-                                     @ApiModelProperty(value = "Maximum number of friend request returned on one result page." +
+                                     @ApiModelProperty(value = "Maximum number of friend friendRequest returned on one result page." +
                                        " By default the value is 20 entries. The page size can never be larger than 50.")
                                      @QueryParam @Max(50) count: Option[Int],
 

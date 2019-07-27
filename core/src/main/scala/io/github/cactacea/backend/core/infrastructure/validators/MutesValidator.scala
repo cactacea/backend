@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class MutesValidator @Inject()(mutesDAO: MutesDAO) {
 
-  def notExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    mutesDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustNotMuted(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    mutesDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyMuted))
       case false =>
@@ -19,8 +19,8 @@ class MutesValidator @Inject()(mutesDAO: MutesDAO) {
     })
   }
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    mutesDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustMuted(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    mutesDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>

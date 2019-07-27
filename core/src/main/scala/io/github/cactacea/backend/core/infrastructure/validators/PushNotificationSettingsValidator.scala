@@ -10,7 +10,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotF
 
 class PushNotificationSettingsValidator @Inject()(pushNotificationSettingsDAO: PushNotificationSettingsDAO) {
 
-  def find(sessionId: SessionId): Future[PushNotificationSetting] = {
+  def mustFind(sessionId: SessionId): Future[PushNotificationSetting] = {
     pushNotificationSettingsDAO.find(sessionId).flatMap(_ match {
       case Some(s) =>
         Future.value(PushNotificationSetting(s))

@@ -11,7 +11,7 @@ class DefaultMobilePushService @Inject()(
                                           pushNotificationCommentsRepository: PushNotificationCommentsRepository,
                                           pushNotificationMessagesRepository: PushNotificationMessagesRepository,
                                           pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
-                                          pushNotificationGroupInvitationsRepository: PushNotificationGroupInvitationsRepository
+                                          pushNotificationInvitationsRepository: PushNotificationInvitationsRepository
 
                                         ) extends MobilePushService {
 
@@ -81,13 +81,13 @@ class DefaultMobilePushService @Inject()(
     })
   }
 
-  def sendGroupInvitation(id: GroupInvitationId): Future[Unit] = {
-    pushNotificationGroupInvitationsRepository.find(id).flatMap(_ match {
+  def sendInvitation(id: InvitationId): Future[Unit] = {
+    pushNotificationInvitationsRepository.find(id).flatMap(_ match {
       case Some(l) =>
         println("----- Push Notification ----") // scalastyle:ignore
         println(l) // scalastyle:ignore
         for {
-          _ <- pushNotificationGroupInvitationsRepository.update(id)
+          _ <- pushNotificationInvitationsRepository.update(id)
         } yield (())
 
       case None =>

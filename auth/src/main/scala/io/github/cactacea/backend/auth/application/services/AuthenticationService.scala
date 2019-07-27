@@ -74,7 +74,7 @@ class AuthenticationService @Inject()(
 
   def changePassword(password: String, sessionId: SessionId): Future[Unit] = {
     for {
-      a <- accountsValidator.find(sessionId)
+      a <- accountsValidator.mustFind(sessionId)
       _ <- db.transaction(authInfoRepository.update(LoginInfo(CredentialsProvider.ID, a.accountName), passwordHasherRegistry.current.hash(password)))
     } yield (())
   }

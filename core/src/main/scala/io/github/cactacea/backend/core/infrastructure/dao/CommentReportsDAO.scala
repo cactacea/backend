@@ -27,4 +27,14 @@ class CommentReportsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
+  def delete(commentId: CommentId): Future[Unit] = {
+    val q = quote {
+      query[CommentReports]
+        .filter(_.commentId == lift(commentId))
+        .delete
+    }
+    run(q).map(_ => ())
+  }
+
+
 }

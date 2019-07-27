@@ -12,11 +12,7 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def find(groupId: GroupId,
-           since: Option[Long],
-           offset: Int,
-           count: Int): Future[List[Account]] = {
-
+  def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int): Future[List[Account]] = {
     val q = quote {
       (for {
         ag <- query[AccountGroups]
@@ -35,7 +31,7 @@ class GroupAccountsDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def exist(groupId: GroupId, accountId: AccountId): Future[Boolean] = {
+  def exists(groupId: GroupId, accountId: AccountId): Future[Boolean] = {
     val q = quote {
       query[AccountGroups]
         .filter(_.groupId   == lift(groupId))

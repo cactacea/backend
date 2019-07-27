@@ -21,14 +21,14 @@ class AuthenticationsRepository @Inject()(
 
   def updateAccountName(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.notExist(providerKey, sessionId)
+      _ <- accountsValidator.mustNotExist(providerKey, sessionId)
       _ <- accountsDAO.updateAccountName(providerKey, sessionId)
       _ <- authenticationsDAO.updateProviderKey(providerId, providerKey, sessionId)
     } yield (())
   }
 
   def link(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
-    authenticationsDAO.link(providerId, providerKey, sessionId)
+    authenticationsDAO.updateAccountId(providerId, providerKey, sessionId)
   }
 
   def confirm(providerId: String, providerKey: String): Future[Unit] = {
@@ -37,11 +37,11 @@ class AuthenticationsRepository @Inject()(
 
 
   def findAccountId(providerId: String, providerKey: String): Future[AccountId] = {
-    authenticationsValidator.findAccountId(providerId, providerKey)
+    authenticationsValidator.mustFindAccountId(providerId, providerKey)
   }
 
-  def exist(providerId: String, providerKey: String): Future[Unit] = {
-    authenticationsValidator.exist(providerId, providerKey)
+  def exists(providerId: String, providerKey: String): Future[Unit] = {
+    authenticationsValidator.mustExists(providerId, providerKey)
   }
 
 }

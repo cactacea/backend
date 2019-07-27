@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
-import io.github.cactacea.backend.server.models.requests.account.{DeleteFollow, GetFollow, PostFollow}
+import io.github.cactacea.backend.server.models.requests.account.{DeleteFollow, GetFollows, PostFollow}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
@@ -24,15 +24,16 @@ class FollowsController @Inject()(
   prefix(apiPrefix) {
 
     scope(followerList).getWithDoc("/accounts/:id/follows") { o =>
-      o.summary("Get accounts list a account follows")
+      o.summary("Get accounts list an account follows")
         .tag(accountsTag)
         .operationId("findFollow")
-        .request[GetFollow]
+        .request[GetFollows]
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
-    } { request: GetFollow =>
+    } { request: GetFollows =>
       followsService.find(
         request.id,
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -41,7 +42,7 @@ class FollowsController @Inject()(
     }
 
     scope(relationships).postWithDoc("/accounts/:id/follow") { o =>
-      o.summary("Follow a account")
+      o.summary("Follow an account")
         .tag(accountsTag)
         .operationId("followAccount")
         .request[PostFollow]
@@ -56,7 +57,7 @@ class FollowsController @Inject()(
     }
 
     scope(relationships).deleteWithDoc("/accounts/:id/follow") { o =>
-      o.summary("UnFollow a account")
+      o.summary("UnFollow an account")
         .tag(accountsTag)
         .operationId("unfollowAccount")
         .request[DeleteFollow]

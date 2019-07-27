@@ -1,8 +1,12 @@
 package io.github.cactacea.backend.core.domain.enums;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public enum NotificationType {
     operator((byte)0),
-    groupInvitation((byte)1),
+    invitation((byte)1),
     friendRequest((byte)2),
     feed((byte)3),
     feedReply((byte)4),
@@ -26,4 +30,14 @@ public enum NotificationType {
     public byte toValue() {
         return value;
     }
+
+    public static final List<NotificationType> all = Collections.unmodifiableList(new ArrayList<NotificationType>() {{
+        add(operator);
+        add(invitation);
+        add(friendRequest);
+        add(feed);
+        add(feedReply);
+        add(commentReply);
+    }} );
+
 }
