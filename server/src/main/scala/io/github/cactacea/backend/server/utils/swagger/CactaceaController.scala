@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.server.utils.swagger
 
 import com.twitter.finatra.http.Controller
-import io.cactacea.finagger.{SwaggerController => FinaggerController}
 import io.github.cactacea.backend.auth.domain.models.User
 import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter
 import io.github.cactacea.filhouette.api.Authorization
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator
+import io.github.cactacea.finagger.SwaggerController
 
-trait CactaceaController extends FinaggerController {
+trait CactaceaController extends SwaggerController {
   self: Controller =>
 
   protected val successfulMessage = "Successful operation."

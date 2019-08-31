@@ -1,10 +1,10 @@
 package io.github.cactacea.backend.server
 
 import com.twitter.finatra.http.routing.HttpRouter
-import io.cactacea.finagger.DocsController
 import io.github.cactacea.backend.server.utils.modules.AuthenticationModule
 import io.github.cactacea.backend.server.utils.swagger.CactaceaSwaggerModule
 import io.github.cactacea.backend.server.utils.warmups.CactaceaQueueHandler
+import io.github.cactacea.finagger.DocsController
 
 class APIServer extends CactaceaServer {
 

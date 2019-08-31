@@ -1,4 +1,4 @@
-package io.cactacea.finagger.common
+package io.github.cactacea.finagger.common
 
 import java.util.UUID
 

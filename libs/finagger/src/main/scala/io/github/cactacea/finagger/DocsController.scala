@@ -1,16 +1,11 @@
-package io.cactacea.finagger
+package io.github.cactacea.finagger
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
-import com.twitter.finatra.http.response.Mustache
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.finagger.BuildInfo
 import io.swagger.models.Swagger
 import io.swagger.util.Json
-
-@Mustache("redoc")
-case class Redoc(modelPath: String)
 
 @Singleton
 class DocsController @Inject()(swagger: Swagger, @Flag("swagger.docs.endpoint") docPath: String) extends Controller {

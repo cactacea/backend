@@ -1,4 +1,4 @@
-package io.cactacea.finatra.swagger.converters
+package io.github.cactacea.finagger.converters
 
 import io.swagger.converter.{ModelConverter, ModelConverterContext}
 import io.swagger.models.properties.Property
@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation
 import java.lang.reflect.Type
 import java.util
 
-import io.cactacea.finagger.SimpleResolver
+import io.github.cactacea.finagger.SimpleResolver
 
 import scala.reflect.runtime.currentMirror
 import scala.reflect.runtime.universe._
