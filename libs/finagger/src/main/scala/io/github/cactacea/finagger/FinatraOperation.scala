@@ -1,4 +1,4 @@
-package io.cactacea.finagger
+package io.github.cactacea.finagger
 
 import com.twitter.finagle.http.Status
 import io.swagger.models._

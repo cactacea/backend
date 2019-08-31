@@ -1,4 +1,4 @@
-package io.cactacea.finatra.swagger.converters
+package io.github.cactacea.finagger.converters
 
 import io.swagger.models.properties.LongProperty
 import scala.concurrent.duration.Duration

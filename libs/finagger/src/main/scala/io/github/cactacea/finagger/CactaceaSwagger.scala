@@ -1,4 +1,4 @@
-package io.cactacea.finagger
+package io.github.cactacea.finagger
 
 import io.swagger.converter.{ModelConverter, ModelConverters}
 import io.swagger.models.Swagger

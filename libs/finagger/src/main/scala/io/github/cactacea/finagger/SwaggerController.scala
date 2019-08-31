@@ -1,4 +1,4 @@
-package io.cactacea.finagger
+package io.github.cactacea.finagger
 
 import com.twitter.finatra.http.Controller
 

@@ -1,4 +1,4 @@
-package io.cactacea.finagger
+package io.github.cactacea.finagger
 
 import java.lang.annotation.Annotation
 import java.lang.reflect
@@ -7,7 +7,7 @@ import java.lang.reflect.{Field, ParameterizedType}
 import com.google.inject.{Inject => GInject}
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.{FormParam, QueryParam, RouteParam, Header => HeaderParam}
-import io.cactacea.finatra.swagger.model._
+import io.github.cactacea.finagger.model._
 import io.swagger.annotations.ApiModelProperty
 import io.swagger.converter.ModelConverters
 import io.swagger.models._
@@ -242,7 +242,7 @@ class FinatraSwagger(swagger: Swagger) {
         else if (header.isDefined) {
           // Checking @Header and @ApiModelProperty(hidden=true) combination like 'user-agent'.
           if (hidden == false) {
-            Some(HeaderRequestParam(
+            Some(model.HeaderRequestParam(
               name = name,
               typ = fieldType,
               required = isRequired,
@@ -255,7 +255,7 @@ class FinatraSwagger(swagger: Swagger) {
           }
         }
         else if (form.isDefined) {
-          Some(FormRequestParam(
+          Some(model.FormRequestParam(
             symbol = symbol,
             name = name,
             typ = fieldType,
@@ -265,7 +265,7 @@ class FinatraSwagger(swagger: Swagger) {
           ))
         }
         else {
-          Some(BodyRequestParam(
+          Some(model.BodyRequestParam(
             symbol = symbol,
             name = name,
             typ = fieldType,

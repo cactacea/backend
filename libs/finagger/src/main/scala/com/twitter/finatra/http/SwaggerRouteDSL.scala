@@ -3,7 +3,7 @@ package com.twitter.finatra.http
 
 import com.twitter.finagle.http.RouteIndex
 import com.twitter.finatra.http.internal.routing.Route
-import io.cactacea.finagger.FinatraSwagger
+import io.github.cactacea.finagger.FinatraSwagger
 import io.swagger.models.{Operation, Swagger}
 
 private class SwaggerRouteDSLWapper(protected override val dsl: RouteDSL)(implicit protected val swagger: Swagger) extends SwaggerRouteDSL

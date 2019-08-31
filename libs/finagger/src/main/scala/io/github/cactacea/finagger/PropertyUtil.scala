@@ -1,4 +1,4 @@
-package io.cactacea.finagger
+package io.github.cactacea.finagger
 
 import io.swagger.models.properties.{ArrayProperty, Property, RefProperty}
 import io.swagger.models.{ArrayModel, Model, RefModel}

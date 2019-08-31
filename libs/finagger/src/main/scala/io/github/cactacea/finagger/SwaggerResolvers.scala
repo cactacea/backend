@@ -1,11 +1,11 @@
-package io.cactacea.finagger
+package io.github.cactacea.finagger
 
 import java.lang.annotation.Annotation
 import java.lang.reflect.Type
 import java.util
 
 import com.twitter.inject.domain.WrappedValue
-import io.cactacea.finagger.common._
+import io.github.cactacea.finagger.common._
 import io.swagger.converter.{ModelConverter, ModelConverterContext}
 import io.swagger.models.properties._
 import io.swagger.util.Json
