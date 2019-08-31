@@ -6,7 +6,7 @@ import io.github.cactacea.finachat.{ChatHandler => BaseChatHandler}
 class ChatHandler extends BaseChatHandler[ChatAuthInfo] {
 
   override def connect(authInfo: String): Future[Option[ChatAuthInfo]] = {
-    Future.value(Some(new ChatAuthInfo()))
+    Future.value(Option(new ChatAuthInfo()))
   }
 
   override def disconnect(authInfo: ChatAuthInfo): Future[Unit] = {

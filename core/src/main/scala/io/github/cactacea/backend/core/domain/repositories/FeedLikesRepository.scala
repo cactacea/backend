@@ -17,35 +17,34 @@ class FeedLikesRepository @Inject()(
 
   def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- feedsValidator.exist(feedId, sessionId)
-      _ <- feedLikesValidator.notExist(feedId, sessionId)
+      _ <- feedsValidator.mustExist(feedId, sessionId)
+      _ <- feedLikesValidator.mustNotLiked(feedId, sessionId)
       _ <- feedLikesDAO.create(feedId, sessionId)
     } yield (())
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- feedsValidator.exist(feedId, sessionId)
-      _ <- feedLikesValidator.exist(feedId, sessionId)
+      _ <- feedsValidator.mustExist(feedId, sessionId)
+      _ <- feedLikesValidator.mustLiked(feedId, sessionId)
       _ <- feedLikesDAO.delete(feedId, sessionId)
     } yield (())
   }
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
-      _ <- accountsValidator.exist(accountId, sessionId)
-      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
+      _ <- accountsValidator.mustExist(accountId, sessionId)
       r <- feedLikesDAO.find(accountId, since, offset, count, sessionId)
     } yield (r)
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedLikesDAO.find(since, offset, count, sessionId)
+    feedLikesDAO.find(sessionId.toAccountId, since, offset, count, sessionId)
   }
 
   def findAccounts(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     for {
-      _ <- feedsValidator.exist(feedId, sessionId)
+      _ <- feedsValidator.mustExist(feedId, sessionId)
       r <- feedLikesDAO.findAccounts(feedId, since, offset, count, sessionId)
     } yield (r)
   }

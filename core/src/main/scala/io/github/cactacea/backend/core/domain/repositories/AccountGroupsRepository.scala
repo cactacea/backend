@@ -18,6 +18,7 @@ class AccountGroupsRepository @Inject()(
 
   def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
+      _ <- accountGroupsValidator.mustJoined(sessionId.toAccountId, groupId)
       _ <- accountGroupsDAO.updateHidden(groupId, true, sessionId)
       _ <- accountMessagesDAO.delete(sessionId.toAccountId, groupId)
     } yield (())
@@ -25,8 +26,8 @@ class AccountGroupsRepository @Inject()(
 
   def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Group]] = {
     for {
-      _ <- accountsValidator.checkSessionId(accountId, sessionId)
-      _ <- accountsValidator.exist(accountId, sessionId)
+      _ <- accountsValidator.mustNotSame(accountId, sessionId)
+      _ <- accountsValidator.mustExist(accountId, sessionId)
       r <- accountGroupsDAO.find(accountId, since, offset, count, false, sessionId)
     } yield (r)
   }
@@ -36,33 +37,38 @@ class AccountGroupsRepository @Inject()(
   }
 
   def findOrCreate(accountId: AccountId, sessionId: SessionId): Future[Group] = {
-    val r = for {
-      _ <- accountsValidator.checkSessionId(accountId, sessionId)
-      r <- accountGroupsDAO.findByAccountId(accountId, sessionId)
+    for {
+      _ <- accountsValidator.mustNotSame(accountId, sessionId)
+      _ <- accountsValidator.mustExist(accountId, sessionId)
+      g <- accountGroupsDAO.findByAccountId(accountId, sessionId)
+      r <- createIfNeeded(g, accountId, sessionId)
     } yield (r)
-    r.flatMap(_ match {
+  }
+
+  private def createIfNeeded(group: Option[Group], accountId: AccountId, sessionId: SessionId): Future[Group] = {
+    group match {
       case None =>
         for {
           i <- groupsDAO.create(sessionId)
+          _ <- accountGroupsDAO.create(i, sessionId)
           _ <- accountGroupsDAO.create(accountId, i, sessionId)
-          _ <- accountGroupsDAO.create(sessionId.toAccountId, i, accountId.toSessionId)
-          g <- accountGroupsValidator.findByGroupId(i, sessionId)
+          g <- accountGroupsValidator.mustFindByAccountId(accountId, sessionId)
         } yield (g)
       case Some(g) =>
         Future.value(g)
-    })
+    }
   }
 
   def show(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountGroupsValidator.hidden(groupId, sessionId)
+      _ <- accountGroupsValidator.mustHidden(groupId, sessionId)
       _ <- accountGroupsDAO.updateHidden(groupId, false, sessionId)
     } yield (())
   }
 
   def hide(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountGroupsValidator.notHidden(groupId, sessionId)
+      _ <- accountGroupsValidator.mustNotHidden(groupId, sessionId)
       _ <- accountGroupsDAO.updateHidden(groupId, true, sessionId)
     } yield (())
   }

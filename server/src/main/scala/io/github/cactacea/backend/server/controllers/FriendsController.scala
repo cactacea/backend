@@ -23,7 +23,7 @@ class FriendsController @Inject()(
   prefix(apiPrefix) {
 
     scope(relationships).deleteWithDoc("/accounts/:id/friends") { o =>
-      o.summary("Remove friendship to a account")
+      o.summary("Remove friendship to an account")
         .tag(accountsTag)
         .operationId("unfriend")
         .request[DeleteFriend]

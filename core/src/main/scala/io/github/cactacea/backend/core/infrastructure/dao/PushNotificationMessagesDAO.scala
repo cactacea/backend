@@ -20,7 +20,7 @@ class PushNotificationMessagesDAO @Inject()(
     findMessage(id).flatMap(_ match {
       case Some(m) =>
         findDestinations(id).map({ d =>
-          val pt = PushNotificationType.groupInvitation
+          val pt = PushNotificationType.invitation
           val url = deepLinkService.getMessages(m.groupId, m.id)
           val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
             PushNotification(accountName, m.message, m.postedAt, url, destinations, pt)
@@ -75,7 +75,7 @@ class PushNotificationMessagesDAO @Inject()(
         .filter(_.id == lift(messageId))
         .update(_.notified -> true)
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def update(messageId: MessageId, accountIds: List[AccountId]): Future[Unit] = {
@@ -85,7 +85,7 @@ class PushNotificationMessagesDAO @Inject()(
         .filter(m => liftQuery(accountIds).contains(m.accountId))
         .update(_.notified -> true)
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
 }

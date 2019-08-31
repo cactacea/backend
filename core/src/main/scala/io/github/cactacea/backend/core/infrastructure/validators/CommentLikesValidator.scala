@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{CommentAlr
 @Singleton
 class CommentLikesValidator @Inject()(commentLikesDAO: CommentLikesDAO) {
 
-  def notExist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    commentLikesDAO.exist(commentId, sessionId).flatMap(_ match {
+  def mustNotLiked(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+    commentLikesDAO.own(commentId, sessionId).flatMap(_ match {
       case false =>
         Future.Unit
       case true =>
@@ -19,8 +19,8 @@ class CommentLikesValidator @Inject()(commentLikesDAO: CommentLikesDAO) {
     })
   }
 
-  def exist(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    commentLikesDAO.exist(commentId, sessionId).flatMap(_ match {
+  def mustLiked(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+    commentLikesDAO.own(commentId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>

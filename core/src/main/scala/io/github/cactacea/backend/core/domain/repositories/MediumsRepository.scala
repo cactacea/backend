@@ -27,7 +27,7 @@ class MediumsRepository @Inject()(
 
   def delete(mediumId: MediumId, sessionId: SessionId): Future[String] = {
     for {
-      m <- mediumsValidator.find(mediumId, sessionId)
+      m <- mediumsValidator.mustFind(mediumId, sessionId)
       _ <- mediumsDAO.delete(mediumId)
     } yield (m.key)
   }

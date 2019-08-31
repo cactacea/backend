@@ -13,7 +13,7 @@ trait DeepLinkService {
   def getRequests(): String
   def getRequest(id: FriendRequestId): String
   def getInvitations(): String
-  def getInvitation(id: GroupInvitationId): String
+  def getInvitation(id: InvitationId): String
   def getGroups(): String
   def getGroup(id: GroupId): String
   def getMessages(groupId: GroupId, id: MessageId): String

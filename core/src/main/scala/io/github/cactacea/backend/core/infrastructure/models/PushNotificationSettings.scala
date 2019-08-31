@@ -9,6 +9,6 @@ case class PushNotificationSettings(
                                      friendRequest: Boolean,
                                      message: Boolean,
                                      groupMessage: Boolean,
-                                     groupInvitation: Boolean,
+                                     invitation: Boolean,
                                      showMessage: Boolean
                                )

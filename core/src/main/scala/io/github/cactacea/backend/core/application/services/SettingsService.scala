@@ -23,7 +23,7 @@ class SettingsService @Inject()(
                                      friendRequest: Boolean,
                                      message: Boolean,
                                      groupMessage: Boolean,
-                                     groupInvitation: Boolean,
+                                     invitation: Boolean,
                                      showMessage: Boolean,
                                      sessionId: SessionId): Future[Unit] = {
     transaction {
@@ -33,7 +33,7 @@ class SettingsService @Inject()(
         friendRequest,
         message,
         groupMessage,
-        groupInvitation,
+        invitation,
         showMessage,
         sessionId)
     }

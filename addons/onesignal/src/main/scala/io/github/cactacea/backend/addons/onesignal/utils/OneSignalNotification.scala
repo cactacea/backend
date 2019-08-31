@@ -94,10 +94,10 @@ case class OneSignalNotification(
 object OneSignalNotification {
 
   def apply(appId: String, includePlayerIds: List[String], en: String, ja: String, url: String): OneSignalNotification = {
-    val contents = OneSignalNotificationContent(en = Some(en), ja = Some(ja))
+    val contents = OneSignalNotificationContent(en = Option(en), ja = Option(ja))
     OneSignalNotification(
       appId,
-      Some(includePlayerIds),
+      Option(includePlayerIds),
       None,
       None,
       None,
@@ -114,7 +114,7 @@ object OneSignalNotification {
       None,
       None,
       None,
-      Some(url),
+      Option(url),
       None,
       None,
       None,

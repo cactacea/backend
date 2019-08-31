@@ -12,7 +12,7 @@ class AuthenticationsValidator @Inject()(
                                           authenticationsDAO: AuthenticationsDAO
                            ) {
 
-  def findAccountId(providerId: String, providerKey: String): Future[AccountId] = {
+  def mustFindAccountId(providerId: String, providerKey: String): Future[AccountId] = {
     authenticationsDAO.find(providerId, providerKey).flatMap(_ match {
       case Some(a) =>
         a.accountId match {
@@ -26,8 +26,8 @@ class AuthenticationsValidator @Inject()(
     })
   }
 
-  def notExist(providerId: String, providerKey: String): Future[Unit] = {
-    authenticationsDAO.exist(providerId, providerKey).flatMap(_ match {
+  def mustNotExist(providerId: String, providerKey: String): Future[Unit] = {
+    authenticationsDAO.exists(providerId, providerKey).flatMap(_ match {
       case false =>
         Future.Unit
       case true =>
@@ -35,8 +35,8 @@ class AuthenticationsValidator @Inject()(
     })
   }
 
-  def exist(providerId: String, providerKey: String): Future[Unit] = {
-    authenticationsDAO.exist(providerId, providerKey).flatMap(_ match {
+  def mustExists(providerId: String, providerKey: String): Future[Unit] = {
+    authenticationsDAO.exists(providerId, providerKey).flatMap(_ match {
       case false =>
         Future.exception(CactaceaException(AccountNotFound))
       case true =>

@@ -1,5 +1,9 @@
 package io.github.cactacea.backend.core.domain.enums;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public enum GroupPrivacyType {
     everyone((byte)0),
     follows((byte)1),
@@ -24,5 +28,13 @@ public enum GroupPrivacyType {
     public byte toValue() {
         return value;
     }
+
+    public static final List<GroupPrivacyType> all = Collections.unmodifiableList(new ArrayList<GroupPrivacyType>() {{
+        add(everyone);
+        add(follows);
+        add(followers);
+        add(friends);
+    }} );
+
 }
 

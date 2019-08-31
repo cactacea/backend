@@ -1,136 +1,329 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
+import io.github.cactacea.backend.core.domain.enums.{GroupPrivacyType, MessageType}
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotJoined
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, AccountNotJoined, GroupAlreadyHidden, GroupNotHidden, InvalidAccountIdError}
 
 class AccountGroupsRepositorySpec extends RepositorySpec {
 
-  val accountGroupsRepository = injector.instance[AccountGroupsRepository]
-  val messagesRepository = injector.instance[MessagesRepository]
-  val groupsRepository = injector.instance[GroupsRepository]
+  feature("findOrCreate") {
+    scenario("should return a group") {
+      forOne(accountGen, accountGen) {
+        (s, a) =>
 
-  test("delete") {
-    val sessionUser = signUp("AccountGroupsRepositorySpec1", "session user password", "session user udid")
-    val groupId = execute(groupsRepository.create(Some("group name"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    execute(messagesRepository.createText(groupId, "message", sessionUser.id.toSessionId))
-    execute(accountGroupsRepository.delete(groupId, sessionUser.id.toSessionId))
-    val result1 = execute(accountGroupsRepository.find(None, 0, 20, false, sessionUser.id.toSessionId))
-    assert(result1.size == 0)
-    val result2 = execute(messagesRepository.find(groupId, None, 0, 20, true, sessionUser.id.toSessionId))
-    assert(result2.size == 0)
+          // preparing
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId = await(accountsDAO.create(a.accountName))
+
+          // result
+
+          // create a group
+          val result = await(accountGroupsRepository.findOrCreate(accountId, sessionId))
+          assert(result.message.isEmpty)
+          assert(result.accountCount == 2L)
+
+          // find a group
+          val result2 = await(accountGroupsRepository.findOrCreate(accountId, sessionId))
+          assert(result2.message.isEmpty)
+          assert(result2.accountCount == 2L)
+      }
+    }
+
+    scenario("should return exception if session id and account id is same.") {
+      forOne(accountGen) {
+        (s) =>
+
+          // preparing
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.findOrCreate(sessionId.toAccountId, sessionId))
+          }.error == InvalidAccountIdError)
+      }
+    }
+
+    scenario("should return exception if account is blocked.") {
+      forOne(accountGen, accountGen) {
+        (s, a) =>
+
+          // preparing
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId = await(accountsDAO.create(a.accountName))
+          await(blocksRepository.create(sessionId.toAccountId, accountId.toSessionId))
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.findOrCreate(accountId, sessionId))
+          }.error == AccountNotFound)
+
+      }
+    }
   }
 
-  test("find all user groups") {
-    val sessionUser = signUp("AccountGroupsRepositorySpec2", "session user password", "session user udid")
-    val user = signUp("AccountGroupsRepositorySpec2-2", "session user password", "session user udid")
-    val groupId1 = execute(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, user.id.toSessionId))
-    val groupId2 = execute(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.followers, GroupAuthorityType.member, user.id.toSessionId))
-    val groupId3 = execute(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.follows, GroupAuthorityType.member, user.id.toSessionId))
-    val groupId4 = execute(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.friends, GroupAuthorityType.member, user.id.toSessionId))
-    val groupId5 = execute(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, user.id.toSessionId))
-    val result = execute(accountGroupsRepository.find(user.id, None, 0, 20, sessionUser.id.toSessionId))
-    assert(result.size == 5)
-    assert(result(0).id == groupId5)
-    assert(result(1).id == groupId4)
-    assert(result(2).id == groupId3)
-    assert(result(3).id == groupId2)
-    assert(result(4).id == groupId1)
+  feature("delete") {
+    scenario("should hide a group") {
+      forOne(accountGen, groupGen, messageTextGen) {
+        (a, g, m) =>
+          // preparing
+          val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          val message = await(messagesRepository.createText(groupId, m, sessionId))
+
+          // result
+          val result1 = await(accountGroupsRepository.find(None, 0, 1, false, sessionId)).headOption
+          assert(result1.exists(_.id == groupId))
+          assert(result1.exists(_.message.exists(_.id == message.id)))
+
+          await(accountGroupsRepository.delete(groupId, sessionId))
+          val result2 = await(accountGroupsRepository.find(None, 0, 1, true, sessionId)).headOption
+          assert(result2.exists(_.id == groupId))
+          assert(result2.exists(_.message.isEmpty))
+      }
+    }
+
+    scenario("should return exception if do not join.") {
+      forOne(accountGen, accountGen, groupGen) {
+        (s, a, g) =>
+          // preparing
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId = await(accountsDAO.create(a.accountName))
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.delete(groupId, accountId.toSessionId))
+          }.error == AccountNotJoined)
+
+      }
+    }
   }
 
-  test("find session's user groups") {
-    val sessionUser = signUp("AccountGroupsRepositorySpec3", "session user password", "session user udid")
-    val groupId1 = execute(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId2 = execute(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId3 = execute(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.follows, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId4 = execute(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.friends, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId5 = execute(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val result = execute(accountGroupsRepository.find(None, 0, 20, false, sessionUser.id.toSessionId))
-    assert(result.size == 5)
-    assert(result(0).id == groupId5)
-    assert(result(1).id == groupId4)
-    assert(result(2).id == groupId3)
-    assert(result(3).id == groupId2)
-    assert(result(4).id == groupId1)
+  feature("find") {
+    scenario("should return an account`s groups") {
+      forOne(accountGen, accountGen, messageTextGen, group20ListGen) { (s, a1, m, g) =>
+
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val accountId1 = await(accountsDAO.create(a1.accountName))
+        val groups = g.map({g =>
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, GroupPrivacyType.everyone, g.authorityType, sessionId))
+          await(groupAccountsRepository.create(accountId1, groupId, sessionId))
+          await(messagesRepository.createText(groupId, m, sessionId))
+          g.copy(id = groupId)
+        }).reverse
+
+        // page1 found
+        val result1 = await(accountGroupsRepository.find(accountId1, None, 0, 10, sessionId))
+        assert(result1.size == 10)
+        result1.zipWithIndex.map { case (r, i) =>
+          assert(r.id == groups(i).id)
+          assert(r.message.exists(_.groupId == groups(i).id))
+          assert(r.message.exists(_.message.getOrElse("") == m))
+          assert(r.message.exists(_.messageType == MessageType.text))
+          assert(r.message.exists(_.accountCount == 2))
+          assert(r.message.exists(_.readAccountCount == 0))
+        }
+
+        // page2 found
+        val size1 = result1.size
+        val result2 = await(accountGroupsRepository.find(accountId1, result1.lastOption.flatMap(_.next), 0, 10, sessionId))
+        assert(result2.size == 10)
+        result2.zipWithIndex.map { case (r, i) =>
+          assert(r.id == groups(i + size1).id)
+          assert(r.message.exists(_.groupId == groups(i + size1).id))
+          assert(r.message.exists(_.message.exists(_ == m)))
+          assert(r.message.exists(_.messageType == MessageType.text))
+          assert(r.message.exists(_.accountCount == 2))
+          assert(r.message.exists(_.readAccountCount == 0))
+        }
+
+        // page3 not found
+        val result3 = await(accountGroupsRepository.find(accountId1, result2.lastOption.flatMap(_.next), 0, 10, sessionId))
+        assert(result3.size == 0)
+
+      }
+    }
+
+    scenario("should return error if session id and account id is same.") {
+      forOne(accountGen, groupGen) {
+        (s, g) =>
+          // preparing
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.find(sessionId.toAccountId, None, 0, 10, sessionId))
+          }.error == InvalidAccountIdError)
+
+      }
+    }
+
+    scenario("should return error when account is blocked.") {
+      forOne(accountGen, accountGen, groupGen) {
+        (s, a, g) =>
+          // preparing
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId = await(accountsDAO.create(a.accountName))
+          await(blocksRepository.create(sessionId.toAccountId, accountId.toSessionId))
+          await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.find(accountId, None, 0, 10, sessionId))
+          }.error == AccountNotFound)
+
+      }
+    }
   }
 
-  test("create one to one group") {
-    val sessionUser = signUp("AccountGroupsRepositorySpec4", "session user password", "session user udid")
-    val user = signUp("AccountGroupsRepositorySpec4-2", "session user password", "session user udid")
-    execute(accountGroupsRepository.findOrCreate(user.id, sessionUser.id.toSessionId))
-    val result1 = execute(accountGroupsRepository.find(None, 0, 20, false, sessionUser.id.toSessionId))
-    val result2 = execute(accountGroupsRepository.find(None, 0, 20, false, user.id.toSessionId))
-    assert(result1.size == 1)
-    assert(result2.size == 1)
-  }
+  feature("find session's groups") {
+    scenario("should return groups") {
+      forOne(accountGen, messageTextGen, group20ListGen) { (s, m, g) =>
 
-  test("find one to one group") {
-    val sessionUser = signUp("AccountGroupsRepositorySpec5", "session user password", "session user udid")
-    val user = signUp("AccountGroupsRepositorySpec4-3", "session user password", "session user udid")
-    val result3 = execute(accountGroupsRepository.findOrCreate(user.id, sessionUser.id.toSessionId))
-    val result4 = execute(accountGroupsRepository.findOrCreate(user.id, sessionUser.id.toSessionId))
-    assert(result3.id == result4.id)
-    val result1 = execute(accountGroupsRepository.find(None, 0, 20, false, sessionUser.id.toSessionId))
-    val result2 = execute(accountGroupsRepository.find(None, 0, 20, false, user.id.toSessionId))
-    assert(result1.size == 1)
-    assert(result2.size == 1)
-  }
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val groups = g.map({g =>
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, GroupPrivacyType.everyone, g.authorityType, sessionId))
+          await(messagesRepository.createText(groupId, m, sessionId))
+          g.copy(id = groupId)
+        }).reverse
 
-  test("show") {
-    val sessionUser = signUp("AccountGroupsRepositorySpec6", "session user password", "session user udid")
-    val groupId1 = execute(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId2 = execute(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId3 = execute(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.follows, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId4 = execute(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.friends, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId5 = execute(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    execute(accountGroupsRepository.hide(groupId1, sessionUser.id.toSessionId))
-    execute(accountGroupsRepository.hide(groupId3, sessionUser.id.toSessionId))
-    execute(accountGroupsRepository.hide(groupId5, sessionUser.id.toSessionId))
-    val result1 = execute(accountGroupsRepository.find(None, 0, 20, false, sessionUser.id.toSessionId))
-    assert(result1.size == 2)
-    execute(accountGroupsRepository.show(groupId3, sessionUser.id.toSessionId))
-    val result2 = execute(accountGroupsRepository.find(None, 0, 20, false, sessionUser.id.toSessionId))
-    assert(result2.size == 3)
-    assert(result2(0).id == groupId4)
-    assert(result2(1).id == groupId3)
-    assert(result2(2).id == groupId2)
-  }
+        // page1 found
+        val result1 = await(accountGroupsRepository.find(None, 0, 10, false, sessionId))
+        assert(result1.size == 10)
+        result1.zipWithIndex.map { case (r, i) =>
+          assert(r.id == groups(i).id)
+          assert(r.message.exists(_.groupId == groups(i).id))
+          assert(r.message.exists(_.message.getOrElse("") == m))
+          assert(r.message.exists(_.messageType == MessageType.text))
+          assert(r.message.exists(_.accountCount == 1))
+          assert(r.message.exists(_.readAccountCount == 0))
+        }
 
-  test("show no exist group") {
+        // page2 found
+        val size1 = result1.size
+        val result2 = await(accountGroupsRepository.find(result1.lastOption.flatMap(_.next), 0, 10, false, sessionId))
+        assert(result2.size == 10)
+        result2.zipWithIndex.map { case (r, i) =>
+          assert(r.id == groups(i + size1).id)
+          assert(r.message.exists(_.groupId == groups(i + size1).id))
+          assert(r.message.exists(_.message.exists(_ == m)))
+          assert(r.message.exists(_.messageType == MessageType.text))
+          assert(r.message.exists(_.accountCount == 1))
+          assert(r.message.exists(_.readAccountCount == 0))
+        }
 
-    val session = signUp("AccountGroupsRepositorySpec7", "password", "udid")
-    assert(intercept[CactaceaException] {
-      execute(accountGroupsRepository.show(GroupId(-1L), session.id.toSessionId))
-    }.error == AccountNotJoined)
+        // page3 not found
+        val result3 = await(accountGroupsRepository.find(result2.lastOption.flatMap(_.next), 0, 10, false, sessionId))
+        assert(result3.size == 0)
+
+      }
+    }
 
   }
 
-  test("hide") {
-    val sessionUser = signUp("AccountGroupsRepositorySpec8", "session user password", "session user udid")
-    val groupId1 = execute(groupsRepository.create(Some("group name 1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId2 = execute(groupsRepository.create(Some("group name 2"), true, GroupPrivacyType.followers, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId3 = execute(groupsRepository.create(Some("group name 3"), true, GroupPrivacyType.follows, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId4 = execute(groupsRepository.create(Some("group name 4"), true, GroupPrivacyType.friends, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    val groupId5 = execute(groupsRepository.create(Some("group name 5"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionUser.id.toSessionId))
-    execute(accountGroupsRepository.hide(groupId1, sessionUser.id.toSessionId))
-    execute(accountGroupsRepository.hide(groupId3, sessionUser.id.toSessionId))
-    execute(accountGroupsRepository.hide(groupId5, sessionUser.id.toSessionId))
-    val result = execute(accountGroupsRepository.find(None, 0, 20, false, sessionUser.id.toSessionId))
-    assert(result.size == 2)
-    assert(result(0).id == groupId4)
-    assert(result(1).id == groupId2)
+  feature("show") {
+    scenario("should show a group") {
+      forOne(accountGen, groupGen) {
+        (a, g) =>
+
+          // preparing
+          val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsRepository.delete(groupId, sessionId))
+          await(accountGroupsRepository.show(groupId, sessionId))
+
+          // result
+          val result = await(accountGroupsRepository.find(None, 0, 1, false, sessionId)).headOption
+          assert(result.exists(_.id == groupId))
+      }
+    }
+
+    scenario("should return exception if do not join.") {
+      forOne(accountGen, accountGen, groupGen) {
+        (s, a, g) =>
+          // preparing
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId = await(accountsDAO.create(a.accountName))
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.show(groupId, accountId.toSessionId))
+          }.error == AccountNotJoined)
+
+      }
+    }
+
+    scenario("should return exception if a group is already shown") {
+      forOne(accountGen, groupGen) {
+        (a, g) =>
+
+          // preparing
+          val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.show(groupId, sessionId))
+          }.error == GroupNotHidden)
+
+      }
+    }
   }
 
-  test("hide no exist group") {
+  feature("hide") {
+    scenario("should hide a group") {
+      forOne(accountGen, groupGen) {
+        (a, g) =>
 
-    val session = signUp("AccountGroupsRepositorySpec9", "password", "udid")
-    assert(intercept[CactaceaException] {
-      execute(accountGroupsRepository.hide(GroupId(-1L), session.id.toSessionId))
-    }.error == AccountNotJoined)
+          // preparing
+          val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsRepository.hide(groupId, sessionId))
 
+          // result
+          val result = await(accountGroupsRepository.find(None, 0, 1, true, sessionId)).headOption
+          assert(result.exists(_.id == groupId))
+      }
+    }
+
+    scenario("should return exception if do not join.") {
+      forOne(accountGen, accountGen, groupGen) {
+        (s, a, g) =>
+          // preparing
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId = await(accountsDAO.create(a.accountName))
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.hide(groupId, accountId.toSessionId))
+          }.error == AccountNotJoined)
+
+      }
+    }
+
+    scenario("should return exception if a group is already hidden") {
+      forOne(accountGen, groupGen) {
+        (a, g) =>
+
+          // preparing
+          val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsRepository.hide(groupId, sessionId))
+
+          // result
+          assert(intercept[CactaceaException] {
+            await(accountGroupsRepository.hide(groupId, sessionId))
+          }.error == GroupAlreadyHidden)
+
+      }
+
+    }
   }
+  
 
 
 }

@@ -4,23 +4,15 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MessageType}
-import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class MessagesDAO @Inject()(db: DatabaseService) {
+class MessagesDAO @Inject()(db: DatabaseService, groupsDAO: GroupsDAO) {
 
   import db._
 
-  def create(groupId: GroupId, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
-    for {
-      c <- findAccountCount(groupId)
-      id <- insert(groupId, c, messageType, sessionId)
-    } yield (id)
-  }
-
-  private def insert(groupId: GroupId, accountCount: Long, messageType: MessageType, sessionId: SessionId): Future[MessageId] = {
+  def create(groupId: GroupId, messageType: MessageType, accountCount: Long, sessionId: SessionId): Future[MessageId] = {
     val by = sessionId.toAccountId
     val postedAt = System.currentTimeMillis()
     val mt = messageType
@@ -30,7 +22,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.groupId             -> lift(groupId),
         _.messageType         -> lift(mt),
         _.accountCount        -> lift(accountCount),
-        _.readAccountCount    -> 0L,
+        _.readCount           -> 0L,
         _.contentWarning      -> false,
         _.contentStatus       -> lift(ContentStatusType.unchecked),
         _.notified            -> false,
@@ -40,40 +32,22 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], sessionId: SessionId): Future[MessageId] = {
+  def create(groupId: GroupId, message: String, accountCount: Long, sessionId: SessionId): Future[MessageId] = {
+    create(groupId, Option(message), None, accountCount, sessionId)
+  }
+
+  def create(groupId: GroupId, mediumId: MediumId, accountCount: Long, sessionId: SessionId): Future[MessageId] = {
+    create(groupId, None, Option(mediumId), accountCount, sessionId)
+  }
+
+  private def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], accountCount: Long, sessionId: SessionId): Future[MessageId] = {
     for {
-      c <- findAccountCount(groupId)
-      (id, postedAt) <- insert(groupId, message, c, mediumId, sessionId)
+      (id, postedAt) <- insertMessages(groupId, message, accountCount, mediumId, sessionId)
       _ <- updateLatestMessage(groupId, id, postedAt)
     } yield (id)
   }
 
-  private def findAccountCount(groupId: GroupId): Future[Long] = {
-    val q = quote {
-      query[AccountGroups]
-        .filter(_.groupId == lift(groupId))
-        .size
-    }
-    run(q)
-  }
-
-  private def updateLatestMessage(groupId: GroupId, messageId: MessageId, postedAt: Long): Future[Unit] = {
-    val messageIdOpt: Option[MessageId] = Some(messageId)
-    val lastPostedAtOpt: Option[Long] = Some(postedAt)
-    val r = quote {
-      query[Groups]
-        .filter(_.id == lift(groupId))
-        .update(
-          _.messageId     -> lift(messageIdOpt),
-          _.lastPostedAt  -> lift(lastPostedAtOpt)
-
-        )
-    }
-    run(r).map(_ => Unit)
-  }
-
-
-  private def insert(groupId: GroupId,
+  private def insertMessages(groupId: GroupId,
                      message: Option[String],
                      accountCount: Long,
                      mediumId: Option[MediumId],
@@ -93,7 +67,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
         _.messageType         -> lift(mt),
         _.message             -> lift(message),
         _.accountCount        -> lift(accountCount),
-        _.readAccountCount    -> 0L,
+        _.readCount           -> 0L,
         _.mediumId            -> lift(mediumId),
         _.contentWarning      -> false,
         _.contentStatus       -> lift(ContentStatusType.unchecked),
@@ -104,35 +78,28 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(id => (id, postedAt))
   }
 
-  def delete(groupId: GroupId): Future[Unit] = {
-    val r = quote {
-      query[Messages]
-        .filter(_.groupId == lift(groupId))
-        .delete
-    }
-    run(r).map(_ => Unit)
-  }
-
-
-  def find(id: MessageId): Future[Option[Message]] = {
-
-    val q = quote {
-        query[Messages].filter(_.id == lift(id))
-        .join(query[Accounts]).on({ case (m, a) => a.id == m.by })
-        .leftJoin(query[Mediums]).on({ case ((m, _), i) => m.mediumId.contains(i.id) })
-        .map({ case ((m, a), i) => (m, a, i) })
-    }
-    run(q).map(_.map({ case (m, a, i) => Message(m, i, a)}).headOption)
-
-  }
-
-  def updateReadAccountCount(messageIds: List[MessageId]): Future[Unit] = {
+  def updateReadCount(messageIds: List[MessageId]): Future[Unit] = {
     val q = quote {
       query[Messages]
         .filter(m => liftQuery(messageIds).contains(m.id))
-        .update(m => m.readAccountCount -> (m.readAccountCount + lift(1)))
+        .update(m => m.readCount -> (m.readCount + lift(1)))
     }
     run(q).map(_ == messageIds.size)
+  }
+
+  private def updateLatestMessage(groupId: GroupId, messageId: MessageId, postedAt: Long): Future[Unit] = {
+    val messageIdOpt = Option(messageId)
+    val lastPostedAtOpt = Option(postedAt)
+    val q = quote {
+      query[Groups]
+        .filter(_.id == lift(groupId))
+        .update(
+          _.messageId     -> lift(messageIdOpt),
+          _.lastPostedAt  -> lift(lastPostedAtOpt)
+
+        )
+    }
+    run(q).map(_ => ())
   }
 
 }

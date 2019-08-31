@@ -1,29 +1,43 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
-import io.github.cactacea.backend.core.helpers.RepositorySpec
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 
 class DevicesRepositorySpec extends RepositorySpec {
 
-  val devicesRepository = injector.instance[DevicesRepository]
+  feature("create") {
 
-  test("updateDeviceToken") {
+    scenario("should create a device") {
+      forAll(accountGen, deviceGen, deviceGen) { (a, d1, d2) =>
+        val sessionId = await(accountsRepository.create(a.accountName)).id.toSessionId
+        await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
+        await(devicesRepository.create(d2.udid, d2.pushToken, d2.deviceType, d2.userAgent, sessionId))
+        val result = await(findDevice(sessionId))
+        assert(result.size == 2)
+        assert(result.headOption.map(_.udid) == Option(d2.udid))
+        assert(result.headOption.map(_.userAgent) == Option(d2.userAgent))
+        assert(result.headOption.map(_.deviceType) == Option(d2.deviceType))
+        assert(result.lastOption.map(_.udid) == Option(d1.udid))
+        assert(result.lastOption.map(_.userAgent) == Option(d1.userAgent))
+        assert(result.lastOption.map(_.deviceType) == Option(d1.deviceType))
+      }
+    }
 
-    val displayName = "DevicesRepositorySpec1"
-    val password = "password"
-    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
-    val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
-    val account = signUp(displayName, password, udid)
+    scenario("should update a device") {
+      forAll(accountGen, deviceGen, deviceGen) { (a, d1, d2) =>
+        val sessionId = await(accountsRepository.create(a.accountName)).id.toSessionId
+        await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
+        await(devicesRepository.create(d1.udid, d2.pushToken, d2.deviceType, d2.userAgent, sessionId))
+        val result = await(findDevice(sessionId))
+        assert(result.size == 1)
+        assert(result.headOption.map(_.udid) == Option(d1.udid))
+        assert(result.headOption.map(_.userAgent) == Option(d1.userAgent))
+        assert(result.headOption.map(_.deviceType) == Option(d1.deviceType))
+        assert(result.headOption.map(_.pushToken) == Option(d2.pushToken))
+      }
 
-    execute(devicesRepository.update(udid, pushToken, account.id.toSessionId))
-
-    val devices = execute(devicesDAO.find(account.id.toSessionId))
-    assert(devices.size == 1)
-
-    val device = devices.head
-    assert(device.pushToken == pushToken)
+    }
 
   }
-
 
 }

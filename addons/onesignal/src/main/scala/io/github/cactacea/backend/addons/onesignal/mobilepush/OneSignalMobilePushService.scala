@@ -12,14 +12,14 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 class OneSignalMobilePushService @Inject()(
-                                  db: DatabaseService,
-                                  client: OneSignalClient,
-                                  messageService: MessageService,
-                                  pushNotificationFeedsRepository: PushNotificationFeedsRepository,
-                                  pushNotificationCommentsRepository: PushNotificationCommentsRepository,
-                                  pushNotificationMessagesRepository: PushNotificationMessagesRepository,
-                                  pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
-                                  pushNotificationGroupInvitationsRepository: PushNotificationGroupInvitationsRepository
+                                            db: DatabaseService,
+                                            client: OneSignalClient,
+                                            messageService: MessageService,
+                                            pushNotificationFeedsRepository: PushNotificationFeedsRepository,
+                                            pushNotificationCommentsRepository: PushNotificationCommentsRepository,
+                                            pushNotificationMessagesRepository: PushNotificationMessagesRepository,
+                                            pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
+                                            pushNotificationInvitationsRepository: PushNotificationInvitationsRepository
 
                                 ) extends MobilePushService {
 
@@ -97,16 +97,16 @@ class OneSignalMobilePushService @Inject()(
     })
   }
 
-  def sendGroupInvitation(id: GroupInvitationId): Future[Unit] = {
-    pushNotificationGroupInvitationsRepository.find(id).flatMap(_ match {
+  def sendInvitation(id: InvitationId): Future[Unit] = {
+    pushNotificationInvitationsRepository.find(id).flatMap(_ match {
       case Some(notifications) =>
         for {
           _ <- sendContentList(createContentList(notifications))
-          r <- db.transaction(pushNotificationGroupInvitationsRepository.update(id))
+          r <- db.transaction(pushNotificationInvitationsRepository.update(id))
         } yield (r)
       case None =>
         db.transaction {
-          pushNotificationGroupInvitationsRepository.update(id)
+          pushNotificationInvitationsRepository.update(id)
         }
     })
   }

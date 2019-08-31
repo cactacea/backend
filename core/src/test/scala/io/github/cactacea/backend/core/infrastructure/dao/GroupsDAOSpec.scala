@@ -1,297 +1,191 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.backend.core.helpers.DAOSpec
+import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
 class GroupsDAOSpec extends DAOSpec {
 
-  test("create") {
+  feature("create") {
 
-    val sessionAccount = createAccount("GroupsDAOSpec5")
+    scenario("should create one to one chat group") {
+      forAll(accountGen) { a =>
+        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+        val groupId = await(groupsDAO.create(sessionId))
+        assert(await(existsGroup(groupId)))
+      }
+    }
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true,  GroupPrivacyType.follows,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true,  GroupPrivacyType.friends,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), false, GroupPrivacyType.everyone,      GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId6 = execute(groupsDAO.create(Some("New Group Name6"), false, GroupPrivacyType.followers, GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId7 = execute(groupsDAO.create(Some("New Group Name7"), false, GroupPrivacyType.follows,   GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId8 = execute(groupsDAO.create(Some("New Group Name8"), false, GroupPrivacyType.friends,   GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-
-    assert(execute(groupsDAO.exist(groupId1)) == true)
-    assert(execute(groupsDAO.exist(groupId2)) == true)
-    assert(execute(groupsDAO.exist(groupId3)) == true)
-    assert(execute(groupsDAO.exist(groupId4)) == true)
-    assert(execute(groupsDAO.exist(groupId5)) == true)
-    assert(execute(groupsDAO.exist(groupId6)) == true)
-    assert(execute(groupsDAO.exist(groupId7)) == true)
-    assert(execute(groupsDAO.exist(groupId8)) == true)
-
-  }
-
-  test("delete") {
-
-    val sessionAccount = createAccount("GroupsDAOSpec6")
-
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true,  GroupPrivacyType.follows,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true,  GroupPrivacyType.friends,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), false, GroupPrivacyType.everyone,      GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId6 = execute(groupsDAO.create(Some("New Group Name6"), false, GroupPrivacyType.followers, GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId7 = execute(groupsDAO.create(Some("New Group Name7"), false, GroupPrivacyType.follows,   GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId8 = execute(groupsDAO.create(Some("New Group Name8"), false, GroupPrivacyType.friends,   GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-
-    execute(groupsDAO.delete(groupId1))
-    assert(execute(groupsDAO.exist(groupId1)) == false)
-    assert(execute(groupsDAO.exist(groupId2)) == true)
-    assert(execute(groupsDAO.exist(groupId3)) == true)
-    assert(execute(groupsDAO.exist(groupId4)) == true)
-    assert(execute(groupsDAO.exist(groupId5)) == true)
-    assert(execute(groupsDAO.exist(groupId6)) == true)
-    assert(execute(groupsDAO.exist(groupId7)) == true)
-    assert(execute(groupsDAO.exist(groupId8)) == true)
+    scenario("should create new group") {
+      forAll(accountGen, groupNameGen, booleanGen, groupPrivacyTypeGen, groupAuthorityTypeGen) {
+        (a, groupName, invitationOnly, privacyType, authorityType) =>
+          val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+          val groupId = await(groupsDAO.create(groupName, invitationOnly, privacyType, authorityType, sessionId))
+          val result = await(findGroup(groupId))
+          assert(result.flatMap(_.name) == groupName)
+          assert(result.map(_.invitationOnly) == Option(invitationOnly))
+          assert(result.map(_.privacyType) == Option(privacyType))
+          assert(result.map(_.authorityType) == Option(authorityType))
+      }
+    }
 
   }
 
-  test("createOneToOne") {
+  feature("delete") {
 
-    val sessionAccount = createAccount("GroupsDAOSpec7")
+    scenario("should delete a group") {
+      forOne(accountGen, groupNameGen, booleanGen, groupPrivacyTypeGen, groupAuthorityTypeGen) {
+        (a, groupName, invitationOnly, privacyType, authorityType) =>
+          val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+          val groupId1 = await(groupsDAO.create(groupName, invitationOnly, privacyType, authorityType, sessionId))
+          val groupId2 = await(groupsDAO.create(groupName, invitationOnly, privacyType, authorityType, sessionId))
+          val groupId3 = await(groupsDAO.create(groupName, invitationOnly, privacyType, authorityType, sessionId))
+          val groupId4 = await(groupsDAO.create(groupName, invitationOnly, privacyType, authorityType, sessionId))
+          await(groupsDAO.delete(groupId1))
+          await(groupsDAO.delete(groupId2))
+          await(groupsDAO.delete(groupId3))
+          await(groupsDAO.delete(groupId4))
+          assert(!await(existsGroup(groupId1)))
+          assert(!await(existsGroup(groupId2)))
+          assert(!await(existsGroup(groupId3)))
+          assert(!await(existsGroup(groupId4)))
+      }
+    }
 
-    val groupId1 = execute(groupsDAO.create(sessionAccount.id.toSessionId))
-    assert(execute(groupsDAO.exist(groupId1)) == true)
+    scenario("should delete all invitations if group deleted") {
+      forOne(accountGen, accountGen, everyoneGroupGen) { (s, a, g) =>
+        // preparing
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val accountId = await(accountsDAO.create(a.accountName))
+        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        await(invitationsDAO.create(accountId, groupId, sessionId))
+        await(groupsDAO.delete(groupId))
 
+        // result
+        assertFutureValue(existsGroup(groupId), false)
+        assertFutureValue(invitationsDAO.exists(accountId, groupId), false)
+      }
+    }
 
-  }
+    scenario("should delete all messages if group deleted") {
+      forOne(accountGen, accountGen, everyoneGroupGen, textMessageGen) { (s, a, g, m) =>
+        // preparing
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val accountId = await(accountsDAO.create(a.accountName))
+        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        await(accountGroupsDAO.create(groupId, sessionId))
+        await(accountGroupsDAO.create(groupId, accountId.toSessionId))
+        val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), 2, sessionId))
+        await(accountMessagesDAO.create(groupId, messageId, sessionId))
+        await(groupsDAO.delete(groupId))
 
-//  test("update Account count") {
-//
-//    val sessionAccount = createAccount("GroupsDAOSpec8")
-//
-//    val groupId1 = execute(groupsDAO.create(sessionAccount.id.toSessionId))
-//    execute(groupsDAO.updateAccountCount(groupId1, 1L))
-//
-//  }
-
-  test("find") {
-
-    val sessionAccount = createAccount("GroupsDAOSpec9")
-
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true,  GroupPrivacyType.follows,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true,  GroupPrivacyType.friends,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), false, GroupPrivacyType.everyone,      GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId6 = execute(groupsDAO.create(Some("New Group Name6"), false, GroupPrivacyType.followers, GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId7 = execute(groupsDAO.create(Some("New Group Name7"), false, GroupPrivacyType.follows,   GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId8 = execute(groupsDAO.create(Some("New Group Name8"), false, GroupPrivacyType.friends,   GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-
-    val group1 = execute(groupsDAO.find(groupId1, sessionAccount.id.toSessionId)).head
-    val group2 = execute(groupsDAO.find(groupId2, sessionAccount.id.toSessionId)).head
-    val group3 = execute(groupsDAO.find(groupId3, sessionAccount.id.toSessionId)).head
-    val group4 = execute(groupsDAO.find(groupId4, sessionAccount.id.toSessionId)).head
-    val group5 = execute(groupsDAO.find(groupId5, sessionAccount.id.toSessionId)).head
-    val group6 = execute(groupsDAO.find(groupId6, sessionAccount.id.toSessionId)).head
-    val group7 = execute(groupsDAO.find(groupId7, sessionAccount.id.toSessionId)).head
-    val group8 = execute(groupsDAO.find(groupId8, sessionAccount.id.toSessionId)).head
-
-    assert(group1.id == groupId1)
-    assert(group2.id == groupId2)
-    assert(group3.id == groupId3)
-    assert(group4.id == groupId4)
-    assert(group5.id == groupId5)
-    assert(group6.id == groupId6)
-    assert(group7.id == groupId7)
-    assert(group8.id == groupId8)
-
-    assert(group1.name == Some("New Group Name1"))
-    assert(group2.name == Some("New Group Name2"))
-    assert(group3.name == Some("New Group Name3"))
-    assert(group4.name == Some("New Group Name4"))
-    assert(group5.name == Some("New Group Name5"))
-    assert(group6.name == Some("New Group Name6"))
-    assert(group7.name == Some("New Group Name7"))
-    assert(group8.name == Some("New Group Name8"))
-
-    assert(group1.invitationOnly ==  true)
-    assert(group2.invitationOnly ==  true)
-    assert(group3.invitationOnly ==  true)
-    assert(group4.invitationOnly ==  true)
-    assert(group5.invitationOnly == false)
-    assert(group6.invitationOnly == false)
-    assert(group7.invitationOnly == false)
-    assert(group8.invitationOnly == false)
-
-    assert(group1.privacyType == GroupPrivacyType.everyone)
-    assert(group2.privacyType == GroupPrivacyType.followers)
-    assert(group3.privacyType == GroupPrivacyType.follows)
-    assert(group4.privacyType == GroupPrivacyType.friends)
-    assert(group5.privacyType == GroupPrivacyType.everyone)
-    assert(group6.privacyType == GroupPrivacyType.followers)
-    assert(group7.privacyType == GroupPrivacyType.follows)
-    assert(group8.privacyType == GroupPrivacyType.friends)
-
-    assert(group1.authorityType == GroupAuthorityType.member)
-    assert(group2.authorityType == GroupAuthorityType.member)
-    assert(group3.authorityType == GroupAuthorityType.member)
-    assert(group4.authorityType == GroupAuthorityType.member)
-    assert(group5.authorityType == GroupAuthorityType.owner)
-    assert(group6.authorityType == GroupAuthorityType.owner)
-    assert(group7.authorityType == GroupAuthorityType.owner)
-    assert(group8.authorityType == GroupAuthorityType.owner)
-
+        // result
+        assertFutureValue(existsMessage(messageId), false)
+        assertFutureValue(existsGroup(groupId), false)
+        val result1 = await(accountMessagesDAO.find(groupId, None, 0, 10, false, sessionId))
+        assert(result1.size == 0)
+        val result2 = await(accountMessagesDAO.find(groupId, None, 0, 10, false, accountId.toSessionId))
+        assert(result2.size == 0)
+      }
+    }
 
   }
 
-  test("find2") {
-
-    val sessionAccount = createAccount("GroupsDAOSpec10")
-    val groupId = execute(groupsDAO.create(Some("New Group Name1"), true, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    assert(execute(groupsDAO.find(groupId)).isDefined == true)
-
-  }
-
-  test("find all") {
-
-    val sessionAccount = createAccount("GroupsDAOSpec11")
-    val groupOwner = createAccount("GroupsDAOSpec12")
-    val blockingUser = createAccount("GroupsDAOSpec13")
-
-    execute(blocksDAO.create(sessionAccount.id, blockingUser.id.toSessionId))
-
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, groupOwner.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, groupOwner.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true,  GroupPrivacyType.follows,   GroupAuthorityType.member, groupOwner.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true,  GroupPrivacyType.friends,   GroupAuthorityType.member, groupOwner.id.toSessionId))
-    execute(groupsDAO.create(Some("New Group Name5"), false, GroupPrivacyType.everyone,      GroupAuthorityType.owner, blockingUser.id.toSessionId))
-    val groupId6 = execute(groupsDAO.create(Some("New Group Name6"), false, GroupPrivacyType.followers, GroupAuthorityType.owner, groupOwner.id.toSessionId))
-    val groupId7 = execute(groupsDAO.create(Some("New Group Name7"), false, GroupPrivacyType.follows,   GroupAuthorityType.owner, groupOwner.id.toSessionId))
-    val groupId8 = execute(groupsDAO.create(Some("New Group Name8"), false, GroupPrivacyType.friends,   GroupAuthorityType.owner, groupOwner.id.toSessionId))
-
-    val result1 = execute(groupsDAO.find(None, None, None, None, 0, 4, sessionAccount.id.toSessionId))
-    assert(result1.size == 4)
-    val group1 = result1(0)
-    val group2 = result1(1)
-    val group3 = result1(2)
-    val group4 = result1(3)
-
-    assert(group1.id == groupId8)
-    assert(group2.id == groupId7)
-    assert(group3.id == groupId6)
-    assert(group4.id == groupId4)
-
-    assert(group1.name == Some("New Group Name8"))
-    assert(group2.name == Some("New Group Name7"))
-    assert(group3.name == Some("New Group Name6"))
-    assert(group4.name == Some("New Group Name4"))
-
-    assert(group1.invitationOnly == false)
-    assert(group2.invitationOnly == false)
-    assert(group3.invitationOnly == false)
-    assert(group4.invitationOnly ==  true)
-
-    // TODO
-//    assert(group1.privacyType == GroupPrivacyType.friends)
-//    assert(group2.privacyType == GroupPrivacyType.follows)
-//    assert(group3.privacyType == GroupPrivacyType.followers)
-//    assert(group4.privacyType == GroupPrivacyType.friends)
-
-    assert(group1.authorityType == GroupAuthorityType.owner)
-    assert(group2.authorityType == GroupAuthorityType.owner)
-    assert(group3.authorityType == GroupAuthorityType.owner)
-    assert(group4.authorityType == GroupAuthorityType.member)
-
-    val result2 = execute(groupsDAO.find(None, None, None, Some(group4.id.value), 0, 3, sessionAccount.id.toSessionId))
-    assert(result2.size == 3)
-    val group5 = result2(0)
-    val group6 = result2(1)
-    val group7 = result2(2)
-    assert(group5.id == groupId3)
-    assert(group6.id == groupId2)
-    assert(group7.id == groupId1)
-
-    assert(group5.name == Some("New Group Name3"))
-    assert(group6.name == Some("New Group Name2"))
-    assert(group7.name == Some("New Group Name1"))
-
-    assert(group5.invitationOnly == true)
-    assert(group6.invitationOnly == true)
-    assert(group7.invitationOnly == true)
-
-//    assert(group5.privacyType == GroupPrivacyType.follows)
-//    assert(group6.privacyType == GroupPrivacyType.followers)
-//    assert(group7.privacyType == GroupPrivacyType.everyone)
-
-    assert(group5.authorityType == GroupAuthorityType.member)
-    assert(group6.authorityType == GroupAuthorityType.member)
-    assert(group7.authorityType == GroupAuthorityType.member)
+  feature("exists") {
+    scenario("should return a group exist or not") {
+      forOne(accountGen, accountGen, accountGen, accountGen) { (a1, a2, a3, a4) =>
+        val accountId1 = await(accountsDAO.create(a1.accountName))
+        val accountId2 = await(accountsDAO.create(a2.accountName))
+        val accountId3 = await(accountsDAO.create(a3.accountName))
+        val accountId4 = await(accountsDAO.create(a4.accountName))
+        val groupId = await(groupsDAO.create(accountId1.toSessionId))
+        await(blocksDAO.create(accountId3, accountId1.toSessionId))
+        await(blocksDAO.create(accountId1, accountId2.toSessionId))
+        await(blocksDAO.create(accountId2, accountId3.toSessionId))
+        assertFutureValue(groupsDAO.exists(groupId, accountId1.toSessionId), true)
+        assertFutureValue(groupsDAO.exists(groupId, accountId2.toSessionId), true)
+        assertFutureValue(groupsDAO.exists(groupId, accountId3.toSessionId), false)
+        assertFutureValue(groupsDAO.exists(groupId, accountId4.toSessionId), true)
+      }
+    }
 
   }
 
+  feature("find a group") {
+    scenario("should return a group") {
+      forAll(accountGen, accountGen, accountGen, groupGen) { (s, a1, a2, g) =>
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val accountId1 = await(accountsDAO.create(a1.accountName))
+        val accountId2 = await(accountsDAO.create(a2.accountName))
+        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+        await(accountGroupsDAO.create(accountId2, groupId, sessionId))
+        val result = await(groupsDAO.find(groupId, sessionId))
+        assert(result.isDefined)
+        assert(result.headOption.exists(_.id == groupId))
+        assert(result.headOption.exists(_.name == g.name))
+        assert(result.headOption.exists(_.invitationOnly == g.invitationOnly))
+        assert(result.headOption.exists(_.privacyType == g.privacyType))
+        assert(result.headOption.exists(_.authorityType == g.authorityType))
+        assert(result.headOption.exists(_.accountCount == 2L))
+      }
+    }
 
-  test("update") {
+    scenario("should not return if account being blocked") {
+      forAll(accountGen, accountGen, accountGen, groupGen) { (s, a1, a2, g) =>
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val accountId1 = await(accountsDAO.create(a1.accountName))
+        val accountId2 = await(accountsDAO.create(a2.accountName))
+        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+        await(blocksDAO.create(accountId2, sessionId))
+        val result = await(groupsDAO.find(groupId, accountId2.toSessionId))
+        assert(result.isEmpty)
+      }
+    }
 
-    val sessionAccount = createAccount("GroupsDAOSpec14")
+    }
 
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.friends,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), false, GroupPrivacyType.everyone,      GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-
-    execute(groupsDAO.update(groupId1, Some("New Group Name11"), false, GroupPrivacyType.followers, GroupAuthorityType.owner,  sessionAccount.id.toSessionId))
-    execute(groupsDAO.update(groupId2, Some("New Group Name21"),  true, GroupPrivacyType.follows,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-
-    val group1 = execute(groupsDAO.find(groupId1, sessionAccount.id.toSessionId)).head
-    val group2 = execute(groupsDAO.find(groupId2, sessionAccount.id.toSessionId)).head
-
-    assert(group1.id == groupId1)
-    assert(group2.id == groupId2)
-
-    assert(group1.name == Some("New Group Name11"))
-    assert(group2.name == Some("New Group Name21"))
-
-    assert(group1.invitationOnly == false)
-    assert(group2.invitationOnly == true)
-
-    assert(group1.privacyType == GroupPrivacyType.followers)
-    assert(group2.privacyType == GroupPrivacyType.follows)
-
-    assert(group1.authorityType == GroupAuthorityType.owner)
-    assert(group2.authorityType == GroupAuthorityType.member)
+  feature("findAccountCount") {
+    scenario("should return group account count") {
+      forAll(accountGen, accountGen, accountGen, groupGen) {
+        (s, a1, a2, g) =>
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val accountId2 = await(accountsDAO.create(a2.accountName))
+          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsDAO.create(groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          await(accountGroupsDAO.create(accountId2, groupId, sessionId))
+          val result1 = await(groupsDAO.findAccountCount(groupId))
+          assert(result1 == 3)
+          await(accountGroupsDAO.delete(accountId1, groupId))
+          await(accountGroupsDAO.delete(accountId2, groupId))
+          val result2 = await(groupsDAO.findAccountCount(groupId))
+          assert(result2 == 1)
+      }
+    }
   }
 
-//  test("updateLatestMessage") {
-//
-//    val sessionAccount = createAccount("GroupsDAOSpec15")
-//
-//    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,
-//      GroupAuthorityType.member, sessionAccount.id.toSessionId))
-//    val (messageId, postedAt) = execute(messagesDAO.create(groupId1, Some("test"), None, sessionAccount.id.toSessionId))
-//
-//    execute(groupsDAO.update(groupId1, messageId, postedAt, sessionAccount.id.toSessionId))
-//
-//  }
 
-  test("exist") {
+  feature("updateLatestMessage") (pending)
 
-    val sessionAccount = createAccount("GroupsDAOSpec16")
-
-    val groupId1 = execute(groupsDAO.create(Some("New Group Name1"), true,  GroupPrivacyType.everyone,      GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId2 = execute(groupsDAO.create(Some("New Group Name2"), true,  GroupPrivacyType.followers, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId3 = execute(groupsDAO.create(Some("New Group Name3"), true,  GroupPrivacyType.follows,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId4 = execute(groupsDAO.create(Some("New Group Name4"), true,  GroupPrivacyType.friends,   GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val groupId5 = execute(groupsDAO.create(Some("New Group Name5"), false, GroupPrivacyType.everyone,      GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId6 = execute(groupsDAO.create(Some("New Group Name6"), false, GroupPrivacyType.followers, GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId7 = execute(groupsDAO.create(Some("New Group Name7"), false, GroupPrivacyType.follows,   GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-    val groupId8 = execute(groupsDAO.create(Some("New Group Name8"), false, GroupPrivacyType.friends,   GroupAuthorityType.owner, sessionAccount.id.toSessionId))
-
-    assert(execute(groupsDAO.exist(groupId1)) == true)
-    assert(execute(groupsDAO.exist(groupId2)) == true)
-    assert(execute(groupsDAO.exist(groupId3)) == true)
-    assert(execute(groupsDAO.exist(groupId4)) == true)
-    assert(execute(groupsDAO.exist(groupId5)) == true)
-    assert(execute(groupsDAO.exist(groupId6)) == true)
-    assert(execute(groupsDAO.exist(groupId7)) == true)
-    assert(execute(groupsDAO.exist(groupId8)) == true)
-
+  feature("update") {
+    scenario("should update a group") {
+      forAll(accountGen, groupNameGen, booleanGen, groupPrivacyTypeGen, groupAuthorityTypeGen) {
+        (a, groupName, invitationOnly, privacyType, authorityType) =>
+          val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+          val groupId = await(groupsDAO.create(sessionId))
+          await(groupsDAO.update(groupId, groupName, invitationOnly, privacyType, authorityType, sessionId))
+          val result = await(findGroup(groupId))
+          assert(result.flatMap(_.name) == groupName)
+          assert(result.map(_.invitationOnly) == Option(invitationOnly))
+          assert(result.map(_.privacyType) == Option(privacyType))
+          assert(result.map(_.authorityType) == Option(authorityType))
+      }
+    }
   }
+
+
+
 
 }
+

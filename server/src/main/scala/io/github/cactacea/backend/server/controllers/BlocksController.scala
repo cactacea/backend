@@ -23,12 +23,12 @@ class BlocksController @Inject()(
   prefix(apiPrefix) {
 
     scope(basic).postWithDoc("/accounts/:id/blocks") { o =>
-      o.summary("Block a account")
+      o.summary("Block an account")
         .tag(accountsTag)
         .operationId("block")
         .request[PostBlock]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CanNotSpecifyMyself, AccountAlreadyBlocked))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(InvalidAccountIdError, AccountAlreadyBlocked))))
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
 
     } { request: PostBlock =>
@@ -39,12 +39,12 @@ class BlocksController @Inject()(
     }
 
     scope(basic).deleteWithDoc("/accounts/:id/blocks") { o =>
-      o.summary("Unblock a account")
+      o.summary("Unblock an account")
         .tag(accountsTag)
         .operationId("unblock")
         .request[DeleteBlock]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CanNotSpecifyMyself, AccountNotBlocked))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(InvalidAccountIdError, AccountNotBlocked))))
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
 
     } { request: DeleteBlock =>

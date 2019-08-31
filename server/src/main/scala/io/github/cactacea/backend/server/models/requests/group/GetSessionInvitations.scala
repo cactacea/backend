@@ -8,7 +8,7 @@ case class GetSessionInvitations(
                                   @ApiModelProperty(value = "Filters invitations which started on since or later.")
                                   @QueryParam since: Option[Long],
 
-                                  @ApiModelProperty(value = "The offset of group invitations. By default the value is 0.")
+                                  @ApiModelProperty(value = "The offset of invitations. By default the value is 0.")
                                   @QueryParam offset: Option[Int],
 
                                   @ApiModelProperty(value = "Maximum number of invitations returned on one result page." +

@@ -12,7 +12,13 @@ class UsersRepository @Inject()(
                                   ) extends IdentityService[User] {
 
   override def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
-    accountsDAO.find(loginInfo.providerId, loginInfo.providerKey).map(_.map(User(_)))
+    accountsDAO.find(loginInfo.providerId, loginInfo.providerKey)
+      .flatMap(_ match {
+        case Some(a) =>
+          Future.value(Option(User(a)))
+        case None =>
+          Future.None
+      })
   }
 
 }

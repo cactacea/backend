@@ -11,8 +11,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class AccountGroupsValidator @Inject()(accountGroupsDAO: AccountGroupsDAO) {
 
-  def findByGroupId(groupId: GroupId, sessionId: SessionId): Future[Group] = {
-    accountGroupsDAO.findByGroupId(groupId, sessionId).flatMap(_ match {
+  def mustFindByAccountId(accountId: AccountId, sessionId: SessionId): Future[Group] = {
+    accountGroupsDAO.findByAccountId(accountId, sessionId).flatMap(_ match {
       case Some(t) =>
         Future.value(t)
       case _ =>
@@ -20,8 +20,8 @@ class AccountGroupsValidator @Inject()(accountGroupsDAO: AccountGroupsDAO) {
     })
   }
 
-  def exist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
-    accountGroupsDAO.exist(groupId, accountId).flatMap(_ match {
+  def mustJoined(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+    accountGroupsDAO.exists(groupId, accountId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -29,8 +29,8 @@ class AccountGroupsValidator @Inject()(accountGroupsDAO: AccountGroupsDAO) {
     })
   }
 
-  def notExist(accountId: AccountId, groupId: GroupId): Future[Unit] = {
-    accountGroupsDAO.exist(groupId, accountId).flatMap(_ match {
+  def mustNotJoined(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+    accountGroupsDAO.exists(groupId, accountId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyJoined))
       case false =>
@@ -38,8 +38,8 @@ class AccountGroupsValidator @Inject()(accountGroupsDAO: AccountGroupsDAO) {
     })
   }
 
-  def hidden(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountGroupsDAO.findHidden(groupId, sessionId).flatMap(_ match {
+  def mustHidden(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    accountGroupsDAO.isHidden(groupId, sessionId).flatMap(_ match {
       case Some(true) =>
         Future.Unit
       case Some(false) =>
@@ -49,8 +49,8 @@ class AccountGroupsValidator @Inject()(accountGroupsDAO: AccountGroupsDAO) {
     })
   }
 
-  def notHidden(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountGroupsDAO.findHidden(groupId, sessionId).flatMap(_ match {
+  def mustNotHidden(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+    accountGroupsDAO.isHidden(groupId, sessionId).flatMap(_ match {
       case Some(true) =>
         Future.exception(CactaceaException(GroupAlreadyHidden))
       case Some(false) =>

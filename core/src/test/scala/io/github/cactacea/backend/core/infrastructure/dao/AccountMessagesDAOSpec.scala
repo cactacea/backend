@@ -1,168 +1,249 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.backend.core.helpers.DAOSpec
+import com.twitter.finagle.mysql.ServerError
+import io.github.cactacea.backend.core.helpers.specs.DAOSpec
+import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MessageId}
 import io.github.cactacea.backend.core.infrastructure.models.AccountMessages
 
 class AccountMessagesDAOSpec extends DAOSpec {
 
   import db._
 
-  test("create") {
+  feature("create") {
 
-    val sessionAccount = createAccount("AccountMessagesDAOSpec1")
-    val account1 = createAccount("AccountMessagesDAOSpec2")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone,
-      GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    execute(accountGroupsDAO.create(account1.id, groupId))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId))
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
+    scenario("should fan out to group members") {
+      forOne(accountGen, accountGen, accountGen, groupGen, messagesGen) {
+        (s, a1, a2, g, m) =>
+          // preparing
+          //  session account is owner
+          //  accountId1 is a member
+          //  accountId2 is not a member
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val accountId2 = await(accountsDAO.create(a2.accountName))
+          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
+          await(accountMessagesDAO.create(groupId, messageId, sessionId))
 
-  }
+          // session account is member, so return true
+          assert(existsAccountMessage(messageId, sessionId.toAccountId))
 
-  test("delete") {
+          // account1 is member, so return true
+          assert(existsAccountMessage(messageId, accountId1))
 
-    val sessionAccount = createAccount("AccountMessagesDAOSpec3")
-    val account1 = createAccount("AccountMessagesDAOSpec4")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone,
-      GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val messageId1 = execute(messagesDAO.create(groupId, Some("new message1"), None, sessionAccount.id.toSessionId))
-    val messageId2 = execute(messagesDAO.create(groupId, Some("new message2"), None, sessionAccount.id.toSessionId))
-    val messageId3 = execute(messagesDAO.create(groupId, Some("new message3"), None, sessionAccount.id.toSessionId))
-    val messageId4 = execute(messagesDAO.create(groupId, Some("new message4"), None, sessionAccount.id.toSessionId))
-    val messageId5 = execute(messagesDAO.create(groupId, Some("new message5"), None, sessionAccount.id.toSessionId))
+          // account2 is not member, so return false
+          assert(!existsAccountMessage(messageId, accountId2))
+      }
+    }
 
-    execute(accountGroupsDAO.create(account1.id, groupId))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId))
-    execute(accountMessagesDAO.create(groupId, messageId1, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId2, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId3, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId4, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId5, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.delete(sessionAccount.id, groupId))
+    scenario("should return an exception occurs if duplication") {
+      forOne(accountGen, accountGen, groupGen, messagesGen) {
+        (s, a1, g, m) =>
+          // preparing
+          //  session account is owner
+          //  accountId1 is a member
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
 
-    val result2 = execute(db.run(quote(query[AccountMessages].filter(_.groupId == lift(groupId)).filter(_.accountId == lift(sessionAccount.id)).size)))
-    assert(result2 == 0)
-
-  }
-
-
-  test("find older") {
-
-    val sessionAccount = createAccount("AccountMessagesDAOSpec5")
-    val account1 = createAccount("AccountMessagesDAOSpec6")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-
-    execute(accountGroupsDAO.create(account1.id, groupId))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId))
-
-    execute(messagesDAO.create(groupId, Some("new message1"), None, sessionAccount.id.toSessionId))
-    val messageId2 = execute(messagesDAO.create(groupId, Some("new message2"), None, sessionAccount.id.toSessionId))
-    val messageId3 = execute(messagesDAO.create(groupId, Some("new message3"), None, sessionAccount.id.toSessionId))
-    val messageId4 = execute(messagesDAO.create(groupId, Some("new message4"), None, sessionAccount.id.toSessionId))
-    val messageId5 = execute(messagesDAO.create(groupId, Some("new message5"), None, sessionAccount.id.toSessionId))
-    val messageId6 = execute(messagesDAO.create(groupId, Some("new message6"), None, sessionAccount.id.toSessionId))
-    val messageId7 = execute(messagesDAO.create(groupId, Some("new message7"), None, sessionAccount.id.toSessionId))
-    val messageId8 = execute(messagesDAO.create(groupId, Some("new message8"), None, sessionAccount.id.toSessionId))
-    val messageId9 = execute(messagesDAO.create(groupId, Some("new message9"), None, sessionAccount.id.toSessionId))
-
-    execute(accountMessagesDAO.create(groupId, messageId2, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId3, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId4, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId5, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId6, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId7, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId8, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId9, sessionAccount.id.toSessionId))
-
-    val result1 = execute(accountMessagesDAO.find(groupId, None, 0, 3, false, sessionAccount.id.toSessionId))
-    assert(result1.size == 3)
-    assert(result1(0).id == messageId9)
-    assert(result1(1).id == messageId8)
-    assert(result1(2).id == messageId7)
-
-    val result2 = execute(accountMessagesDAO.find(groupId, result1(2).next, 0, 3, false, sessionAccount.id.toSessionId))
-    assert(result2.size == 3)
-    assert(result2(0).id == messageId6)
-    assert(result2(1).id == messageId5)
-    assert(result2(2).id == messageId4)
-
-    val result3 = execute(accountMessagesDAO.find(groupId, result2(2).next, 0, 3, false, sessionAccount.id.toSessionId))
-    assert(result3.size == 2)
-    assert(result3(0).id == messageId3)
-    assert(result3(1).id == messageId2)
+          // exception occurs
+          await(accountMessagesDAO.create(groupId, messageId, sessionId))
+          assert(intercept[ServerError] {
+            await(accountMessagesDAO.create(groupId, messageId, sessionId))
+          }.code == 1062)
+      }
+    }
 
   }
 
-  test("find earlier") {
+  feature("delete") {
+    scenario("should delete an account messages") {
+      forOne(accountGen, accountGen, accountGen, groupGen, messagesGen) {
+        (s, a1, a2, g, m) =>
+          // preparing
+          //  session account is owner
+          //  accountId1 is a member
+          //  accountId2 is a member
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val accountId2 = await(accountsDAO.create(a2.accountName))
+          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          await(accountGroupsDAO.create(accountId2, groupId, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
+          await(accountMessagesDAO.create(groupId, messageId, sessionId))
 
-    val sessionAccount = createAccount("AccountMessagesDAOSpec7")
-    val account1 = createAccount("AccountMessagesDAOSpec8")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+          // session account is member, so return true
+          assert(existsAccountMessage(messageId, sessionId.toAccountId))
 
-    execute(accountGroupsDAO.create(account1.id, groupId))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId))
+          // account1 is member, so return true
+          assert(existsAccountMessage(messageId, accountId1))
 
-    val messageId1 = execute(messagesDAO.create(groupId, Some("new message1"), None, sessionAccount.id.toSessionId))
-    val messageId2 = execute(messagesDAO.create(groupId, Some("new message2"), None, sessionAccount.id.toSessionId))
-    val messageId3 = execute(messagesDAO.create(groupId, Some("new message3"), None, sessionAccount.id.toSessionId))
-    val messageId4 = execute(messagesDAO.create(groupId, Some("new message4"), None, sessionAccount.id.toSessionId))
-    val messageId5 = execute(messagesDAO.create(groupId, Some("new message5"), None, sessionAccount.id.toSessionId))
-    val messageId6 = execute(messagesDAO.create(groupId, Some("new message6"), None, sessionAccount.id.toSessionId))
-    val messageId7 = execute(messagesDAO.create(groupId, Some("new message7"), None, sessionAccount.id.toSessionId))
-    val messageId8 = execute(messagesDAO.create(groupId, Some("new message8"), None, sessionAccount.id.toSessionId))
-    execute(messagesDAO.create(groupId, Some("new message9"), None, sessionAccount.id.toSessionId))
+          // account2 is member, so return true
+          assert(existsAccountMessage(messageId, accountId2))
 
-    execute(accountMessagesDAO.create(groupId, messageId1, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId2, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId3, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId4, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId5, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId6, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId7, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId8, sessionAccount.id.toSessionId))
+          await(accountMessagesDAO.delete(accountId1, groupId))
+          await(accountMessagesDAO.delete(accountId2, groupId))
 
-    val result1 = execute(accountMessagesDAO.find(groupId, None, 0, 3, true, sessionAccount.id.toSessionId))
-    assert(result1.size == 3)
-    assert(result1(0).id == messageId1)
-    assert(result1(1).id == messageId2)
-    assert(result1(2).id == messageId3)
+          // session account messages will not be deleted, so return true
+          assert(existsAccountMessage(messageId, sessionId.toAccountId))
 
-    val result2 = execute(accountMessagesDAO.find(groupId, result1(2).next, 0, 3,  true, sessionAccount.id.toSessionId))
-    assert(result2.size == 3)
-    assert(result2(0).id == messageId4)
-    assert(result2(1).id == messageId5)
-    assert(result2(2).id == messageId6)
+          // account1 messages will be deleted, so return false
+          assert(!existsAccountMessage(messageId, accountId1))
 
-    val result3 = execute(accountMessagesDAO.find(groupId, result2(2).next, 0, 3,  true, sessionAccount.id.toSessionId))
-    assert(result3.size == 2)
-    assert(result3(0).id == messageId7)
-    assert(result3(1).id == messageId8)
+          // account2 messages will be deleted, so return false
+          assert(!existsAccountMessage(messageId, accountId2))
+      }
+    }
+  }
+
+  feature("find a message") {
+      forOne(accountGen, accountGen, accountGen, groupGen, mediumGen) {
+        (s, a1, a2, g, i) =>
+          // preparing
+          //  session account is owner
+          //  accountId1 is a member
+          //  accountId2 is not a member
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val accountId2 = await(accountsDAO.create(a2.accountName))
+          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          val mediumId = await(mediumsDAO.create(i.key, i.uri, i.thumbnailUrl, i.mediumType, i.width, i.height, i.size, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, mediumId, accountCount, sessionId))
+          await(accountMessagesDAO.create(groupId, messageId, sessionId))
+
+          // session account is member, so return a message
+          val result1 = await(accountMessagesDAO.find(messageId, sessionId))
+          assert(result1.isDefined)
+          assert(result1.exists(_.id == messageId))
+          assert(result1.exists(_.medium.exists(_.id == mediumId)))
+
+          // account1 is member, so return a message
+          val result2 = await(accountMessagesDAO.find(messageId, accountId1.toSessionId))
+          assert(result2.isDefined)
+          assert(result2.exists(_.medium.exists(_.id == mediumId)))
+
+          // account2 is not member, so no return
+          val result3 = await(accountMessagesDAO.find(messageId, accountId2.toSessionId))
+          assert(result3.isEmpty)
+      }
+  }
+
+  feature("find messages") {
+    scenario("should return account messages") {
+      forAll(accountGen, accountGen, groupGen, message20ListGen, booleanGen) { (s, a1, g, l, ascending) =>
+
+        // preparing
+        //  session account is owner
+        //  accountId1 is not a member
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val accountId1 = await(accountsDAO.create(a1.accountName))
+        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
+
+        val accountCount = await(groupsDAO.findAccountCount(groupId))
+
+        // create message
+        val messages = l.map({ case (m, i) =>
+          val mediumId = i.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId)))
+          val messageId = mediumId match {
+            case Some(id) =>
+              await(messagesDAO.create(groupId, id, accountCount, sessionId))
+            case None =>
+              await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
+          }
+          await(accountMessagesDAO.create(groupId, messageId, sessionId))
+          m.copy(id = messageId, mediumId = mediumId)
+        })
+
+        // sorting
+        val createdMessages = if (ascending) {
+          messages
+        } else {
+          messages.reverse
+        }
+
+        // should return first page
+        val result1 = await(accountMessagesDAO.find(groupId, None, 0, 10, ascending, sessionId))
+        assert(result1.size == 10)
+        result1.zipWithIndex.map({ case (m, i) =>
+          assert(m.id == createdMessages(i).id)
+          assert(m.medium.map(_.id) == createdMessages(i).mediumId)
+        })
+
+        // should return next page
+        val size2 = result1.size
+        val result2 = await(accountMessagesDAO.find(groupId, result1.lastOption.map(_.next), 0, 10, ascending, sessionId))
+        assert(result2.size == 10)
+        result2.zipWithIndex.map({ case (m, i) =>
+          assert(m.id == createdMessages(i + size2).id)
+          assert(m.medium.map(_.id) == createdMessages(i + size2).mediumId)
+        })
+
+        // should not return
+        val result3 = await(accountMessagesDAO.find(groupId, result2.lastOption.map(_.next), 0, 10, ascending, sessionId))
+        assert(result3.size == 0)
+
+
+        // should not return by no member account
+        val result4 = await(accountMessagesDAO.find(groupId, None, 0, 10, ascending, accountId1.toSessionId))
+        assert(result4.size == 0)
+
+      }
+    }
 
   }
 
+  feature("updateUnread") {
+    scenario("should update unread to true") {
+      forOne(accountGen, accountGen, groupGen, messagesGen) {
+        (s, a1, g, m) =>
 
-  test("updateUnreadStatus") {
+          // preparing
+          //  session account is owner
+          //  accountId1 is a member
+          //  accountId2 is not a member
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
+          await(accountMessagesDAO.create(groupId, messageId, sessionId))
 
-    val sessionAccount = createAccount("AccountMessagesDAOSpec9")
-    val account1 = createAccount("AccountMessagesDAOSpec10")
+          // account1 read a message
+          await(accountMessagesDAO.updateUnread(List(messageId), accountId1.toSessionId))
 
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+          // session account is member, so return a message
+          val result1 = await(accountMessagesDAO.find(messageId, sessionId))
+          assert(result1.isDefined)
+          assert(result1.exists(_.id == messageId))
+          assert(result1.exists(_.unread))
 
-    execute(accountGroupsDAO.create(account1.id, groupId))
-    execute(accountGroupsDAO.create(sessionAccount.id, groupId))
+          // account1 is member, so return a message
+          val result2 = await(accountMessagesDAO.find(messageId, accountId1.toSessionId))
+          assert(result2.isDefined)
+          assert(result2.exists(_.id == messageId))
+          assert(result2.exists(!_.unread))
 
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
-    execute(accountMessagesDAO.updateUnread(List(messageId), sessionAccount.id.toSessionId))
+      }
 
-    val result2 = execute(db.run(quote(query[AccountMessages].filter(_.accountId == lift(sessionAccount.id)).filter(_.messageId == lift(messageId)))))
-    assert(result2.size == 1)
-    val userMessage = result2(0)
-    assert(userMessage.unread == false)
-
+    }
   }
+
 
 
 }

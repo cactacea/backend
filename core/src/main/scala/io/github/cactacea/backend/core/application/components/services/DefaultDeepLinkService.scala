@@ -43,7 +43,7 @@ class DefaultDeepLinkService @Inject()(@Flag("scheme") scheme: String) extends D
     s"${scheme}://invitations"
   }
 
-  def getInvitation(id: GroupInvitationId): String = {
+  def getInvitation(id: InvitationId): String = {
     s"${scheme}://invitations/${id}"
   }
 

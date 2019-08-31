@@ -32,8 +32,8 @@ class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extend
     Future.Unit
   }
 
-  def enqueueGroupInvitation(groupInvitationId: GroupInvitationId): Future[Unit] = {
-    queue.put(GroupInvitationQueue(groupInvitationId))
+  def enqueueInvitation(invitationId: InvitationId): Future[Unit] = {
+    queue.put(InvitationQueue(invitationId))
     Future.Unit
   }
 
@@ -55,7 +55,7 @@ class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extend
           case q: FeedQueue =>            mobilePushService.sendFeed(q.id)
           case q: CommentQueue =>         mobilePushService.sendComment(q.id)
           case q: MessageQueue =>         mobilePushService.sendMessage(q.id)
-          case q: GroupInvitationQueue => mobilePushService.sendGroupInvitation(q.id)
+          case q: InvitationQueue => mobilePushService.sendInvitation(q.id)
           case q: FriendRequestQueue =>   mobilePushService.sendFriendRequest(q.id)
 
         }
@@ -68,7 +68,7 @@ class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extend
   private case class FeedQueue(id: FeedId) extends Queue
   private case class CommentQueue(id: CommentId) extends Queue
   private case class MessageQueue(id: MessageId) extends Queue
-  private case class GroupInvitationQueue(id: GroupInvitationId) extends Queue
+  private case class InvitationQueue(id: InvitationId) extends Queue
   private case class FriendRequestQueue(id: FriendRequestId) extends Queue
 
 

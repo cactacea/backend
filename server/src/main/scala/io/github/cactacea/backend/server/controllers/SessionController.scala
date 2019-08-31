@@ -5,14 +5,13 @@ import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.auth.application.services.AuthenticationService
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.enums.FriendsSortType
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.account.GetAccountName
 import io.github.cactacea.backend.server.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
 import io.github.cactacea.backend.server.models.requests.group.{GetSessionGroups, GetSessionInvitations}
-import io.github.cactacea.backend.server.models.requests.session.{GetSessionBlocks, GetSessionFollowers, GetSessionFollows, GetSessionFriendRequests, GetSessionFriends, GetSessionMutes, PutSessionAccountName, PutSessionPassword, PutSessionProfile, PutSessionProfileImage}
+import io.github.cactacea.backend.server.models.requests.session._
 import io.github.cactacea.backend.server.models.requests.sessions.DeleteSignOut
 import io.github.cactacea.backend.server.models.responses.AccountNameNotExists
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
@@ -34,7 +33,7 @@ class SessionController @Inject()(
                                    followsService: FollowsService,
                                    followersService: FollowersService,
                                    friendsService: FriendsService,
-                                   invitationService: GroupInvitationsService,
+                                   invitationService: InvitationsService,
                                    mutesService: MutesService,
                                    friendRequestsService: FriendRequestsService,
                                    blocksService: BlocksService
@@ -75,7 +74,7 @@ class SessionController @Inject()(
         .request[GetAccountName]
         .responseWith[AccountNameNotExists](Status.Ok.code, successfulMessage)
     } { request: GetAccountName =>
-      accountsService.notExist(
+      accountsService.isRegistered(
         request.accountName
       ).map(r => response.ok(AccountNameNotExists(request.accountName, r)))
     }
@@ -160,6 +159,7 @@ class SessionController @Inject()(
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionBlocks =>
       blocksService.find(
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -168,16 +168,18 @@ class SessionController @Inject()(
     }
 
     scope(feeds).getWithDoc("/session/feeds") { o =>
-      o.summary("Get feeds list session account posted")
-        .tag(sessionTag)
+      o.summary("Find session feeds")
+        .tag(feedsTag)
         .operationId("findSessionFeeds")
         .request[GetSessionFeeds]
         .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
     } { request: GetSessionFeeds =>
       feedsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
+        request.feedPrivacyType,
         CactaceaContext.sessionId
       )
     }
@@ -205,6 +207,7 @@ class SessionController @Inject()(
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollows =>
       followsService.find(
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -220,6 +223,7 @@ class SessionController @Inject()(
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollowers =>
       followersService.find(
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -235,10 +239,10 @@ class SessionController @Inject()(
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     }  { request: GetSessionFriends =>
       friendsService.find(
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        request.sortType.getOrElse(FriendsSortType.friendsAt),
         CactaceaContext.sessionId
       )
     }
@@ -279,9 +283,9 @@ class SessionController @Inject()(
     scope(invitations).getWithDoc("/session/invitations") { o =>
       o.summary("Get invitations list session account received")
         .tag(sessionTag)
-        .operationId("findGroupInvitations")
+        .operationId("findInvitations")
         .request[GetSessionInvitations]
-        .responseWith[Array[GroupInvitation]](Status.Ok.code, successfulMessage)
+        .responseWith[Array[Invitation]](Status.Ok.code, successfulMessage)
     } { request: GetSessionInvitations =>
       invitationService.find(
         request.since,
@@ -299,6 +303,7 @@ class SessionController @Inject()(
         .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
     } { request: GetSessionMutes =>
       mutesService.find(
+        request.accountName,
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),

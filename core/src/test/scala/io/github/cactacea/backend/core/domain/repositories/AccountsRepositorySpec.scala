@@ -1,290 +1,657 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, MediumType}
-import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, PushNotificationSettingsDAO}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId}
+import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ActiveStatusType}
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
+import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, AccountTerminated, MediumNotFound, SessionTimeout}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import org.joda.time.DateTime
 
 class AccountsRepositorySpec extends RepositorySpec {
 
-  val blocksRepository = injector.instance[BlocksRepository]
-  val mediumRepository = injector.instance[MediumsRepository]
-//  val devicesDAO = injector.instance[DevicesDAO]
-  var notificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
-  val accountsDAO = injector.instance[AccountsDAO]
+  feature("create") {
+    scenario("should create an account") {
+      forAll(accountGen) { (a) =>
+        val result = await(accountsRepository.create(a.accountName))
+        assert(result.accountName == a.accountName)
+        assert(result.displayName == a.accountName)
+        assert(result.feedCount == 0)
+        assert(result.followCount == 0)
+        assert(result.followerCount == 0)
+        assert(result.friendCount == 0)
+        assert(!result.isFollower)
+        assert(!result.isFriend)
+        assert(!result.blocked)
+        assert(!result.muted)
+        assert(!result.follow)
+        assert(!result.friendRequestInProgress)
+        assert(result.bio.isEmpty)
+        assert(result.birthday.isEmpty)
+        assert(result.location.isEmpty)
+        assert(result.profileImageUrl.isEmpty)
+        assert(result.accountStatus == AccountStatusType.normally)
 
-  test("find") {
+        val result2 = await(pushNotificationSettingsRepository.find(result.id.toSessionId))
+        assert(result2.feed)
+        assert(result2.comment)
+        assert(result2.friendRequest)
+        assert(result2.message)
+        assert(result2.groupMessage)
+        assert(result2.invitation)
+        assert(result2.showMessage)
 
-    val accountName = "SessionsRepositorySpec2"
-    val displayName = "SessionsRepositorySpec2"
-//    val password = "password"
-//    val udid = "0123456789012345678901234567890123456789"
-//    val userAgent = Some("userAgent")
-    val result = execute(accountsRepository.create(accountName))
-    val account = execute(accountsRepository.find(result.id.toSessionId))
+      }
+    }
+    scenario("should return exception if account name is already exist") {
+      forOne(accountGen) { (a) =>
+        await(accountsRepository.create(a.accountName))
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.create(a.accountName))
+        }.error == AccountAlreadyExist)
+      }
+    }
+  }
 
-    assert(account.displayName == displayName)
+
+
+  feature("create and update display name") {
+    scenario("should create an account") {
+      forOne(accountGen) { (a) =>
+        val result = await(accountsRepository.create(a.accountName, Option(a.displayName)))
+        assert(result.accountName == a.accountName)
+        assert(result.displayName == a.displayName)
+        assert(result.feedCount == 0)
+        assert(result.followCount == 0)
+        assert(result.followerCount == 0)
+        assert(result.friendCount == 0)
+        assert(!result.isFollower)
+        assert(!result.isFriend)
+        assert(!result.blocked)
+        assert(!result.muted)
+        assert(!result.follow)
+        assert(!result.friendRequestInProgress)
+        assert(result.bio.isEmpty)
+        assert(result.birthday.isEmpty)
+        assert(result.location.isEmpty)
+        assert(result.accountStatus == AccountStatusType.normally)
+      }
+    }
+
+    scenario("should return exception if account name is already exist") {
+      forOne(accountGen) { (a) =>
+        await(accountsRepository.create(a.accountName, Option(a.displayName)))
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.create(a.accountName, Option(a.displayName)))
+        }.error == AccountAlreadyExist)
+      }
+    }
+  }
+
+  feature("find(session id)") {
+    scenario("should return account") {
+      forOne(accountGen, accountGen, accountGen, accountGen, feedGen) { (s, a1, a2, a3, f) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+        val follow = await(accountsRepository.create(a1.accountName))
+        val follower = await(accountsRepository.create(a2.accountName))
+        val friend = await(accountsRepository.create(a3.accountName))
+        await(accountsRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
+        await(followsRepository.create(follow.id, sessionId))
+        await(followsRepository.create(sessionId.toAccountId, follower.id.toSessionId))
+        val requestId = await(friendRequestsRepository.create(friend.id, sessionId))
+        await(friendRequestsRepository.accept(requestId, friend.id.toSessionId))
+        await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+
+        // result
+        val result = await(accountsRepository.find(sessionId))
+        assert(result.accountName == s.accountName)
+        assert(result.displayName == s.displayName)
+        assert(result.bio == s.bio)
+        assert(result.birthday == s.birthday)
+        assert(result.location == s.location)
+        assert(result.web == s.web)
+        assert(result.feedCount == 1)
+        assert(result.followCount == 1)
+        assert(result.followerCount == 1)
+        assert(result.friendCount == 1)
+        assert(!result.isFollower)
+        assert(!result.isFriend)
+        assert(!result.blocked)
+        assert(!result.muted)
+        assert(!result.follow)
+        assert(!result.friendRequestInProgress)
+        assert(result.accountStatus == AccountStatusType.normally)
+
+      }
+
+    }
+
+    scenario("should return exception if account is not exist"){
+      assert(intercept[CactaceaException] {
+        await(accountsRepository.find(SessionId(0L)))
+      }.error == SessionNotAuthorized)
+    }
 
   }
 
-  //  test("invalid password signIn ") {
-  //
-  //    val accountName = "SessionsRepositorySpec3"
-  //    val password = "password"
-  //    val udid = "0123456789012345678901234567890123456789"
-  //    val userAgent = Some("userAgent")
-  //
-  //    execute(sessionsRepository.signUp(accountName, password, udid,  DeviceType.ios, userAgent))
-  //
-  //    assert(intercept[CactaceaException] {
-  //      execute(sessionsRepository.signIn(accountName, "invalid password", udid,  DeviceType.ios, userAgent))
-  //    }.error == InvalidAccountNameOrPassword)
-  //
-  //  }
+  feature("find(account id, session id)") {
 
-  test("signOut") {
-    val accountName = "SessionsRepositorySpec4"
-    //    val password = "password"
-    val udid = "0123456789012345678901234567890123456789"
-//    val userAgent = Some("userAgent")
-    val session = execute(accountsRepository.create(accountName))
-    execute(accountsRepository.signOut(udid, session.id.toSessionId))
+    scenario("should return account by follow account") {
+      forOne(accountGen, accountGen, accountGen, accountGen, feedGen) { (s, a1, a2, a3, f) =>
 
-  }
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+        val follow = await(accountsRepository.create(a1.accountName))
+        val follower = await(accountsRepository.create(a2.accountName))
+        val friend = await(accountsRepository.create(a3.accountName))
+        await(accountsRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
+        await(followsRepository.create(follow.id, sessionId))
+        await(followsRepository.create(sessionId.toAccountId, follower.id.toSessionId))
+        val requestId = await(friendRequestsRepository.create(friend.id, sessionId))
+        await(friendRequestsRepository.accept(requestId, friend.id.toSessionId))
+        await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
-  test("create") {
+        // result
+        val result = await(accountsRepository.find(sessionId.toAccountId, follow.id.toSessionId))
+        assert(result.accountName == s.accountName)
+        assert(result.displayName == s.displayName)
+        assert(result.bio == s.bio)
+        assert(result.birthday == s.birthday)
+        assert(result.location == s.location)
+        assert(result.web == s.web)
+        assert(result.feedCount == 1)
+        assert(result.followCount == 1)
+        assert(result.followerCount == 1)
+        assert(result.friendCount == 1)
+        assert(result.isFollower)
+        assert(!result.isFriend)
+        assert(!result.blocked)
+        assert(!result.muted)
+        assert(!result.follow)
+        assert(!result.friendRequestInProgress)
+        assert(result.accountStatus == AccountStatusType.normally)
 
-    val accountName = "SessionsRepositorySpec1"
-    val displayName = "SessionsRepositorySpec1"
-    //    val password = "password"
-//    val udid = "0123456789012345678901234567890123456789"
-//    val userAgent = Some("userAgent")
-    val account = execute(accountsRepository.create(accountName))
+      }
+    }
 
-    // result user
-    assert(account.accountName == accountName)
-    assert(account.displayName == displayName)
+    scenario("should return account by follower account") {
+      forOne(accountGen, accountGen, accountGen, accountGen, feedGen) { (s, a1, a2, a3, f) =>
 
-//    // result device
-//    val devices = execute(devicesDAO.exist(account.id.toSessionId, udid))
-//    assert(devices == true)
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+        val follow = await(accountsRepository.create(a1.accountName))
+        val follower = await(accountsRepository.create(a2.accountName))
+        val friend = await(accountsRepository.create(a3.accountName))
+        await(accountsRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
+        await(followsRepository.create(follow.id, sessionId))
+        await(followsRepository.create(sessionId.toAccountId, follower.id.toSessionId))
+        val requestId = await(friendRequestsRepository.create(friend.id, sessionId))
+        await(friendRequestsRepository.accept(requestId, friend.id.toSessionId))
+        await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
-    // result notificationSettings
-    val notificationSettings = execute(notificationSettingsDAO.find(account.id.toSessionId))
-    assert(notificationSettings.isDefined == true)
+        // result
+        val result = await(accountsRepository.find(sessionId.toAccountId, follower.id.toSessionId))
+        assert(result.accountName == s.accountName)
+        assert(result.displayName == s.displayName)
+        assert(result.bio == s.bio)
+        assert(result.birthday == s.birthday)
+        assert(result.location == s.location)
+        assert(result.web == s.web)
+        assert(result.feedCount == 1)
+        assert(result.followCount == 1)
+        assert(result.followerCount == 1)
+        assert(result.friendCount == 1)
+        assert(!result.isFollower)
+        assert(!result.isFriend)
+        assert(!result.blocked)
+        assert(!result.muted)
+        assert(result.follow)
+        assert(!result.friendRequestInProgress)
+        assert(result.accountStatus == AccountStatusType.normally)
 
-    // result users
-    val users = execute(accountsDAO.find(account.id.toSessionId))
-    assert(users.isDefined == true)
+      }
+    }
 
-  }
+    scenario("should return account by follower and mute account") {
+      forOne(accountGen, accountGen, accountGen, accountGen, feedGen) { (s, a1, a2, a3, f) =>
 
-  test("find accounts") {
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+        val follow = await(accountsRepository.create(a1.accountName))
+        val follower = await(accountsRepository.create(a2.accountName))
+        val friend = await(accountsRepository.create(a3.accountName))
+        await(accountsRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
+        await(followsRepository.create(follow.id, sessionId))
+        await(followsRepository.create(sessionId.toAccountId, follower.id.toSessionId))
+        val requestId = await(friendRequestsRepository.create(friend.id, sessionId))
+        await(friendRequestsRepository.accept(requestId, friend.id.toSessionId))
+        await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        await(mutesRepository.create(sessionId.toAccountId, follower.id.toSessionId))
 
+        // result
+        val result = await(accountsRepository.find(sessionId.toAccountId, follower.id.toSessionId))
+        assert(result.accountName == s.accountName)
+        assert(result.displayName == s.displayName)
+        assert(result.bio == s.bio)
+        assert(result.birthday == s.birthday)
+        assert(result.location == s.location)
+        assert(result.web == s.web)
+        assert(result.feedCount == 1)
+        assert(result.followCount == 1)
+        assert(result.followerCount == 1)
+        assert(result.friendCount == 1)
+        assert(!result.isFollower)
+        assert(!result.isFriend)
+        assert(!result.blocked)
+        assert(result.muted)
+        assert(result.follow)
+        assert(!result.friendRequestInProgress)
+        assert(result.accountStatus == AccountStatusType.normally)
 
-    val session = signUp("aaa_test_account_05", "password", "udid")
-    val account1 = signUp("aaa_test_account_06", "password1", "udid")
-    val blockedAccount1 = signUp("aaa_test_account_07", "password1", "udid")
-    val account2 = signUp("aaa_test_account_08", "password2", "udid")
-    val blockedAccount2 = signUp("aaa_test_account_09", "password1", "udid")
-    val account3 = signUp("aaa_test_account_10", "password3", "udid")
-    val blockedAccount3 = signUp("aaa_test_account_11", "password1", "udid")
-    val account4 = signUp("aaa_test_account_12", "password4", "udid")
-    val blockedAccount4 = signUp("aaa_test_account_13", "password1", "udid")
-    val account5 = signUp("aaa_test_account_14", "password5", "udid")
-    val blockedAccount5 = signUp("aaa_test_account_15", "password1", "udid")
+      }
+    }
 
-    execute(blocksRepository.create(blockedAccount1.id, session.id.toSessionId))
-    execute(blocksRepository.create(blockedAccount2.id, session.id.toSessionId))
-    execute(blocksRepository.create(blockedAccount3.id, session.id.toSessionId))
-    execute(blocksRepository.create(blockedAccount4.id, session.id.toSessionId))
-    execute(blocksRepository.create(blockedAccount5.id, session.id.toSessionId))
-
-    // Find All
-    val accounts1 = execute(accountsRepository.find(None, None, 0, 3, session.id.toSessionId))
-    assert(accounts1.size == 3)
-    assert(accounts1(0).accountName ==account1.accountName)
-    assert(accounts1(1).accountName ==account2.accountName)
-    assert(accounts1(2).accountName ==account3.accountName)
-
-    val accounts2 = execute(accountsRepository.find(None, accounts1(2).next, 0, 3, session.id.toSessionId))
-    assert(accounts2.size == 3)
-    assert(accounts2(0).accountName ==account4.accountName)
-    assert(accounts2(1).accountName ==account5.accountName)
-
-    val AccountsRepositorySpec1 = signUp("bbb_test_account_01", "password1", "udid")
-    val AccountsRepositorySpec2 = signUp("bbb_test_account_02", "password1", "udid")
-    val AccountsRepositorySpec3 = signUp("bbb_test_account_03", "password1", "udid")
-    val AccountsRepositorySpec4 = signUp("bbb_test_account_04", "password1", "udid")
-
-    // Find By account name
-    val accounts3 = execute(accountsRepository.find(Some("bbb_test_account_0"), None, 0, 3, session.id.toSessionId))
-    assert(accounts3.size == 3)
-    assert(accounts3(0).accountName ==AccountsRepositorySpec1.accountName)
-    assert(accounts3(1).accountName ==AccountsRepositorySpec2.accountName)
-    assert(accounts3(2).accountName ==AccountsRepositorySpec3.accountName)
-
-    val accounts4 = execute(accountsRepository.find(Some("bbb_test_account_0"), accounts3(2).next, 0, 3, session.id.toSessionId))
-    assert(accounts4.size == 1)
-    assert(accounts4(0).accountName ==AccountsRepositorySpec4.accountName)
-
-  }
-
-  test("find a account") {
-
-    val session = signUp("aaa_test_account_16", "password", "udid")
-    val account = signUp("aaa_test_account_17", "password", "udid")
-    val blockingUser = signUp("aaa_test_account_18", "password", "udid")
-
-    execute(blocksRepository.create(session.id, blockingUser.id.toSessionId))
-
-    val result1 = execute(accountsRepository.find(account.id, session.id.toSessionId))
-    assert(result1.id == account.id)
-
-    assert(intercept[CactaceaException] {
-      execute(accountsRepository.find(blockingUser.id, session.id.toSessionId))
-    }.error == AccountNotFound)
-
-  }
-
-  test("find no exist account") {
-
-    val session = signUp("aaa_test_account_19", "password", "udid")
-
-    assert(intercept[CactaceaException] {
-      execute(accountsRepository.find(AccountId(0L), session.id.toSessionId))
-    }.error == AccountNotFound)
-
-  }
-
-  test("find session") {
-
-    val session = signUp("aaa_test_account_20", "password", "udid")
-
-    val result = execute(accountsRepository.find(session.id.toSessionId))
-    assert(result.id == session.id)
+    scenario("should return exception if account is not exist") {
+      forOne(accountGen) { (a) =>
+        val session = await(accountsRepository.create(a.accountName, Option(a.displayName)))
+        val sessionId = session.id.toSessionId
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.find(AccountId(0L), sessionId))
+        }.error == AccountNotFound)
+      }
+    }
 
   }
 
-  test("find no exist session") {
+  feature("updateAccountStatus") {
+    scenario("should update account status") {
+      forAll(accountGen, accountStatusGen) { (s, a) =>
 
-    assert(intercept[CactaceaException] {
-      execute(accountsRepository.find(AccountId(0L).toSessionId))
-    }.error == AccountNotFound)
+        // preparing
+        val session = await(accountsRepository.create(s.accountName))
+        val sessionId = session.id.toSessionId
+        await(accountsRepository.updateAccountStatus(a, sessionId))
+
+        // result
+        val result = await(accountsRepository.find(sessionId))
+        assert(result.accountStatus == a)
+
+      }
+    }
+  }
+
+
+
+
+  feature("find(provider id, provider key)") {
+    scenario("should return account") {
+      forOne(accountGen, authenticationGen) { (s, u1) =>
+
+        // preparing
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        await(authenticationsDAO.create(u1.providerId, u1.providerKey, u1.password, u1.hasher))
+        await(authenticationsDAO.updateAccountId(u1.providerId, u1.providerKey, sessionId))
+
+        // result
+        val result = await(accountsRepository.find(u1.providerId, u1.providerKey))
+        assert(result.accountName == s.accountName)
+        assert(result.displayName == s.accountName)
+        assert(result.feedCount == 0)
+        assert(result.followCount == 0)
+        assert(result.followerCount == 0)
+        assert(result.friendCount == 0)
+        assert(!result.isFollower)
+        assert(!result.isFriend)
+        assert(!result.blocked)
+        assert(!result.muted)
+        assert(!result.follow)
+        assert(!result.friendRequestInProgress)
+        assert(result.bio.isEmpty)
+        assert(result.birthday.isEmpty)
+        assert(result.location.isEmpty)
+        assert(result.profileImageUrl.isEmpty)
+        assert(result.accountStatus == AccountStatusType.normally)
+
+
+      }
+    }
+
+    scenario("should return exception if account is not exist") {
+      forOne(accountGen, authenticationGen) { (s, u1) =>
+
+        // preparing
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.find(u1.providerId, u1.providerKey))
+        }.error == AccountNotFound)
+
+      }
+    }
+
+    scenario("should return exception if account is terminated") {
+      forOne(accountGen, authenticationGen) { (s, u1) =>
+
+        // preparing
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        await(authenticationsDAO.create(u1.providerId, u1.providerKey, u1.password, u1.hasher))
+        await(authenticationsDAO.updateAccountId(u1.providerId, u1.providerKey, sessionId))
+        await(accountsDAO.updateAccountStatus(AccountStatusType.terminated, sessionId))
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.find(u1.providerId, u1.providerKey))
+        }.error == AccountTerminated)
+
+      }
+    }
+
+    scenario("should return exception if account is deleted") {
+      forOne(accountGen, authenticationGen) { (s, u1) =>
+
+        // preparing
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        await(authenticationsDAO.create(u1.providerId, u1.providerKey, u1.password, u1.hasher))
+        await(authenticationsDAO.updateAccountId(u1.providerId, u1.providerKey, sessionId))
+        await(accountsDAO.updateAccountStatus(AccountStatusType.deleted, sessionId))
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.find(u1.providerId, u1.providerKey))
+        }.error == AccountTerminated)
+
+      }
+    }
 
   }
 
-//  test("update session name") {
-//
-//    val session = signUp("aaa_test_account_21", "password", "udid")
-//
-//    execute(accountsRepository.updateAccountName("new account name", session.id.toSessionId))
-//    val result = execute(accountsRepository.find(session.id.toSessionId))
-//    assert(result.id == session.id)
-//    assert(result.accountName == "new account name")
-//
-//  }
+  feature("findActiveStatus") {
 
-  test("update other account's name") {
+    scenario("should return account active status") {
+      forOne(accountGen, accountGen, deviceGen, deviceGen) { (s, a1, d1, d2) =>
 
-    val session = signUp("aaa_test_account_22", "password", "udid")
-    val account = signUp("account", "password", "udid")
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        val accountId = await(accountsRepository.create(a1.accountName)).id
+        assertFutureValue(accountsRepository.findActiveStatus(accountId, sessionId).map(_.status), ActiveStatusType.inactive)
+        await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, accountId.toSessionId))
+        await(devicesRepository.create(d2.udid, d2.pushToken, d2.deviceType, d2.userAgent, accountId.toSessionId))
+        assertFutureValue(accountsRepository.findActiveStatus(accountId, sessionId).map(_.status), ActiveStatusType.active)
+        await(accountsRepository.signOut(d1.udid, accountId.toSessionId))
+        assertFutureValue(accountsRepository.findActiveStatus(accountId, sessionId).map(_.status), ActiveStatusType.active)
+        await(accountsRepository.signOut(d2.udid, accountId.toSessionId))
+        assertFutureValue(accountsRepository.findActiveStatus(accountId, sessionId).map(_.status), ActiveStatusType.inactive)
+      }
+    }
 
-    execute(accountsRepository.updateDisplayName(account.id, Some("new account name"), session.id.toSessionId))
-    val result = execute(accountsRepository.find(account.id, session.id.toSessionId))
-    assert(result.id == account.id)
-    assert(result.displayName =="new account name")
+    scenario("should return exception if an account not exist") {
+      forOne(accountGen) { (s) =>
+
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.findActiveStatus(AccountId(-1), sessionId))
+        }.error == AccountNotFound)
+
+      }
+    }
+  }
+
+
+
+
+
+  feature("isRegistered") {
+    scenario("should return account name already registered or not") {
+      forOne(accountGen) { (a) =>
+        assertFutureValue(accountsRepository.isRegistered(a.accountName), false)
+        await(accountsRepository.create(a.accountName))
+        assertFutureValue(accountsRepository.isRegistered(a.accountName), true)
+      }
+
+    }
 
   }
 
-  test("update profile image with exist medium") {
+  feature("find") {
+    scenario("should return session account") {
+      forOne(accountGen) { (s) =>
 
-    val session = signUp("aaa_test_account_23", "session password", "udid")
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
 
-    val key = "key"
-    val uri = "http://cactacea.io/test.jpeg"
-    val id = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    execute(accountsRepository.updateProfileImage(Some(id), session.id.toSessionId))
-    // TODO : Check
+        val result = await(accountsRepository.find(sessionId, DateTime.now().getMillis))
+        assert(result.id == sessionId.toAccountId)
+
+      }
+    }
+
+    scenario("should return exception if expired") {
+      forOne(accountGen, deviceGen) { (s, d1) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+        await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
+        await(accountsRepository.signOut(d1.udid, sessionId))
+
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.find(sessionId, System.currentTimeMillis()))
+        }.error == SessionTimeout)
+
+      }
+    }
+
+    scenario("should return exception if account is terminated") {
+      forOne(accountGen, authenticationGen) { (s, u1) =>
+
+        // preparing
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        await(authenticationsDAO.create(u1.providerId, u1.providerKey, u1.password, u1.hasher))
+        await(authenticationsDAO.updateAccountId(u1.providerId, u1.providerKey, sessionId))
+        await(accountsDAO.updateAccountStatus(AccountStatusType.terminated, sessionId))
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.find(sessionId, System.currentTimeMillis()))
+        }.error == AccountTerminated)
+
+      }
+    }
+
+    scenario("should return exception if account is deleted") {
+      forOne(accountGen, authenticationGen) { (s, u1) =>
+
+        // preparing
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        await(authenticationsDAO.create(u1.providerId, u1.providerKey, u1.password, u1.hasher))
+        await(authenticationsDAO.updateAccountId(u1.providerId, u1.providerKey, sessionId))
+        await(accountsDAO.updateAccountStatus(AccountStatusType.deleted, sessionId))
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.find(sessionId, System.currentTimeMillis()))
+        }.error == AccountTerminated)
+
+      }
+    }
+  }
+
+  feature("find account list by name") {
+    scenario("should return account list") {
+      forAll(sortedNameGen, sortedAccountGen, sortedAccountGen, sortedAccountGen, sortedAccountGen, sortedAccountGen)
+      { (h, s, a1, a2, a3, a4) =>
+
+        // preparing
+        //  account2 block session account
+        //  session account block account3
+        val sessionId = await(accountsRepository.create(h + s.accountName)).id.toSessionId
+        val accountId1 = await(accountsRepository.create(h + a1.accountName)).id
+        val accountId2 = await(accountsRepository.create(h + a2.accountName)).id
+        val accountId3 = await(accountsRepository.create(h + a3.accountName)).id
+        await(accountsRepository.create(h + a4.accountName))
+        await(blocksRepository.create(sessionId.toAccountId, accountId2.toSessionId))
+        await(blocksRepository.create(accountId3, sessionId))
+
+        // return account1 found
+        // return account2 not found
+        // return account3 not found
+        // return account4 found
+        val result1 = await(accountsRepository.find(Option(h), None, 0, 1, sessionId))
+        assert(result1.size == 1)
+        assert(result1(0).id == accountId1)
+
+        val result2 = await(accountsRepository.find(Option(h), result1.lastOption.map(_.next), 0, 1, sessionId))
+        assert(result2.size == 1)
+        assert(result2(0).id == accountId3)
+
+
+      }
+    }
+  }
+  feature("updateDisplayName") {
+    scenario("should update display name") {
+      forAll(accountGen, accountGen, uniqueDisplayNameOptGen) { (s, a1, d) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+        val account = await(accountsRepository.create(a1.accountName, Option(a1.displayName)))
+        await(accountsRepository.updateDisplayName(account.id, d, sessionId))
+
+        // result
+        val result = await(accountsRepository.find(account.id, sessionId))
+        assert(result.displayName == d.getOrElse(a1.displayName))
+      }
+    }
+
+    scenario("should return exception if account is not exist"){
+      forAll(accountGen, uniqueDisplayNameOptGen) { (s, d) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.updateDisplayName(AccountId(0L), d, sessionId))
+        }.error == AccountNotFound)
+      }
+    }
+
+    scenario("should return exception if account and session are same."){
+      forAll(accountGen, uniqueDisplayNameOptGen) { (s, d) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.updateDisplayName(sessionId.toAccountId, d, sessionId))
+        }.error == InvalidAccountIdError)
+
+      }
+    }
 
   }
 
-  test("delete profile image") {
+  feature("updateProfile") {
+    scenario("should update profile") {
+      forOne(accountGen) { (s) =>
 
-    val session = signUp("aaa_test_account_24", "session password", "udid")
-    execute(accountsRepository.updateProfileImage(None, session.id.toSessionId))
-    // TODO : Check
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+        await(accountsRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
+
+        // result
+        val result = await(accountsRepository.find(sessionId))
+        assert(result.accountName == s.accountName)
+        assert(result.displayName == s.displayName)
+        assert(result.bio == s.bio)
+        assert(result.birthday == s.birthday)
+        assert(result.location == s.location)
+        assert(result.web == s.web)
+
+      }
+    }
+  }
+
+  feature("updateProfileImage") {
+    scenario("should update profile image") {
+      forAll(accountGen, mediumOptGen) { (a, m) =>
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        val medium = m.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId)))
+        await(accountsRepository.updateProfileImage(medium, sessionId))
+
+        val result = await(accountsRepository.find(sessionId))
+        assert(result.accountName == a.accountName)
+        assert(result.profileImageUrl == m.map(_.uri))
+      }
+    }
+
+    scenario("should return exception if a medium is not exist") {
+      forOne(accountGen) { (a) =>
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+
+        assert(intercept[CactaceaException] {
+          await(accountsRepository.updateProfileImage(Option(MediumId(0)), sessionId))
+        }.error == MediumNotFound)
+
+      }
+    }
+  }
+
+  feature("report") {
+
+    scenario("should report an account") {
+      forAll(accountGen, accountGen, accountReportGen) { (a1, a2, r) =>
+        val sessionId = await(accountsRepository.create(a1.accountName)).id.toSessionId
+        val accountId = await(accountsRepository.create(a2.accountName)).id
+        await(accountsRepository.report(accountId, r.reportType, r.reportContent, sessionId))
+        val result = await(findAccountReport(accountId, sessionId))
+        assert(result.exists(_.by == sessionId.toAccountId))
+        assert(result.exists(_.accountId == accountId))
+        assert(result.exists(_.reportType == r.reportType))
+        assert(result.exists(_.reportContent == r.reportContent))
+      }
+    }
+
+    scenario("should not return an exception if duplicate") {
+      forAll(accountGen, accountGen, accountReportGen) { (a1, a2, r) =>
+        val sessionId = await(accountsDAO.create(a1.accountName)).toSessionId
+        val accountId = await(accountsDAO.create(a2.accountName))
+        await(accountReportsDAO.create(accountId, r.reportType, r.reportContent, sessionId))
+        await(accountReportsDAO.create(accountId, r.reportType, r.reportContent, sessionId))
+      }
+    }
+
 
   }
 
-  test("update profile image with no exist medium") {
+  feature("signOut") {
 
-    val session = signUp("aaa_test_account_25", "session password", "udid")
+    scenario("should update last signed in") {
+      forOne(accountGen, deviceGen) { (s, d1) =>
 
-    assert(intercept[CactaceaException] {
-      execute(accountsRepository.updateProfileImage(Some(MediumId(0L)), session.id.toSessionId))
-    }.error == MediumNotFound)
+        // preparing
+        val session = await(accountsRepository.create(s.accountName, Option(s.displayName)))
+        val sessionId = session.id.toSessionId
+        await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
+        await(accountsRepository.signOut(d1.udid, sessionId))
 
+        val result = await(accountsRepository.find(sessionId))
+        assert(result.signedOutAt.isDefined)
+
+      }
+    }
   }
 
-  test("update no exist other account'name") {
-
-    val session = signUp("aaa_test_account_26", "password", "udid")
-
-    assert(intercept[CactaceaException] {
-      execute(accountsRepository.updateDisplayName(AccountId(0L), Some("new account name"), session.id.toSessionId))
-    }.error == AccountNotFound)
-
-  }
-
-  test("exist account name") {
-
-    signUp("aaa_test_account_27", "password", "udid")
-
-    val notExistAccountNameResult = execute(accountsRepository.notExist("aaa_test_account_05 2"))
-    assert(notExistAccountNameResult == true)
-
-    val notExistAccountNameResult2 = execute(accountsRepository.notExist("aaa_test_account_05"))
-    assert(notExistAccountNameResult2 == false)
-
-  }
-
-//  test("update password") {
-//
-//    val session = signUp("aaa_test_account_28", "password", "udid")
-//    execute(accountsRepository.updatePassword("password", "new password", session.id.toSessionId))
-//
-//    val session2 = signIn("aaa_test_account_28", "new password", "udid")
-//    assert(session2.id == session.id)
-//    assert(session2.accountName == "aaa_test_account_28")
-//
-//  }
-
-  test("checkAccountStatus") {
-
-    val accountName = "SessionsRepositorySpec5"
-//    val password = "password"
-    val udid = "0123456789012345678901234567890123456789"
-//    val userAgent = Some("userAgent")
-    val session = execute(accountsRepository.create(accountName))
-
-    val expired = System.currentTimeMillis()
-    execute(accountsRepository.find(session.id.toSessionId, expired))
-
-    // Session Timeout
-    execute(accountsRepository.signOut(udid, session.id.toSessionId))
-    assert(intercept[CactaceaException] {
-      execute(accountsRepository.find(session.id.toSessionId, expired))
-    }.error == SessionTimeout)
-
-    // Terminated user
-    execute(accountsRepository.updateAccountStatus(AccountStatusType.terminated, session.id.toSessionId))
-    assert(intercept[CactaceaException] {
-      execute(accountsRepository.find(session.id.toSessionId, expired))
-    }.error == AccountTerminated)
-
-  }
 
 }

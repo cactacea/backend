@@ -15,7 +15,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
   def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- insertCommentLikes(commentId, sessionId)
-      _ <- updateLikeCount(commentId)
+      _ <- updateLikeCount(1L, commentId)
     } yield (())
   }
 
@@ -27,27 +27,16 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
         .insert(
           _.commentId   -> lift(commentId),
           _.by          -> lift(by),
-          _.likedAt    -> lift(likedAt)
+          _.likedAt     -> lift(likedAt)
         ).returning(_.id)
     }
     run(q)
   }
 
-  private def updateLikeCount(commentId: CommentId): Future[Unit] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-        .update(
-          a => a.likeCount -> (a.likeCount + 1)
-        )
-    }
-    run(q).map(_ => Unit)
-  }
-
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- deleteCommentLikes(commentId, sessionId)
-      _ <- updateUnlikeCount(commentId)
+      _ <- updateLikeCount(-1L, commentId)
     } yield (())
   }
 
@@ -59,21 +48,10 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
         .filter(_.commentId == lift(commentId))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  private def updateUnlikeCount(commentId: CommentId): Future[Unit] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-        .update(
-          a => a.likeCount -> (a.likeCount - 1)
-        )
-    }
-    run(q).map(_ => Unit)
-  }
-
-  def exist(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  def own(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[CommentLikes]
@@ -84,11 +62,11 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(commentId: CommentId,
-           since: Option[Long],
-           offset: Int,
-           count: Int,
-           sessionId: SessionId): Future[List[Account]] = {
+  def findAccounts(commentId: CommentId,
+                   since: Option[Long],
+                   offset: Int,
+                   count: Int,
+                   sessionId: SessionId): Future[List[Account]] = {
 
     val by = sessionId.toAccountId
 
@@ -97,9 +75,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
         cl <- query[CommentLikes]
           .filter(_.commentId == lift(commentId))
           .filter(cl => lift(since).forall(cl.id  < _))
-          .filter(cl => query[Blocks].filter(b =>
-            (b.accountId == lift(by) && b.by == cl.by) || (b.accountId == cl.by && b.by == lift(by))
-          ).isEmpty)
+          .filter(cl => query[Blocks].filter(b => b.accountId == lift(by) && b.by == cl.by).isEmpty)
         a <- query[Accounts]
           .join(_.id == cl.by)
         r <- query[Relationships]
@@ -111,7 +87,17 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
 
+  }
 
+  private def updateLikeCount(plus: Long, commentId: CommentId): Future[Unit] = {
+    val q = quote {
+      query[Comments]
+        .filter(_.id == lift(commentId))
+        .update(
+          a => a.likeCount -> (a.likeCount + lift(plus))
+        )
+    }
+    run(q).map(_ => ())
   }
 
 

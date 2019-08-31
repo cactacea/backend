@@ -1,7 +1,11 @@
 package io.github.cactacea.backend.core.domain.enums;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public enum GroupAuthorityType {
-    owner((byte)0),
+    organizer((byte)0),
     member((byte)1);
 
     private byte value;
@@ -22,4 +26,10 @@ public enum GroupAuthorityType {
     public byte toValue() {
         return value;
     }
+
+    public static final List<GroupAuthorityType> all = Collections.unmodifiableList(new ArrayList<GroupAuthorityType>() {{
+        add(organizer);
+        add(member);
+    }} );
+
 }

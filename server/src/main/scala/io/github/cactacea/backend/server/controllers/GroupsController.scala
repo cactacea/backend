@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Group
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.server.models.requests.group.{DeleteGroup, DeleteHideGroup, GetGroup, GetGroupAccounts, GetGroups, PostGroup, PostGroupReport, PostHideGroup, PostJoinGroup, PostLeaveGroup, PutGroup}
+import io.github.cactacea.backend.server.models.requests.group.{DeleteGroup, DeleteHideGroup, GetGroup, GetGroupAccounts, PostGroup, PostGroupReport, PostHideGroup, PostJoinGroup, PostLeaveGroup, PutGroup}
 import io.github.cactacea.backend.server.models.responses.GroupCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
@@ -25,24 +25,6 @@ class GroupsController @Inject()(
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
-
-    scope(groups).getWithDoc("/groups") { o =>
-      o.summary("Search groups")
-        .tag(groupsTag)
-        .operationId("searchGroups")
-        .request[GetGroups]
-        .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-    } { request: GetGroups =>
-      groupsService.find(
-        request.groupName,
-        request.invitationOnly,
-        request.groupPrivacyType,
-        request.since,
-        request.offset.getOrElse(0),
-        request.count.getOrElse(20),
-        CactaceaContext.sessionId
-      )
-    }
 
     scope(groups).getWithDoc("/groups/:id") { o =>
       o.summary("Get basic information about a group")

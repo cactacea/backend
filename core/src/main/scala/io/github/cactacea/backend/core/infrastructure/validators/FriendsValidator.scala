@@ -10,20 +10,20 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class FriendsValidator @Inject()(friendsDAO: FriendsDAO) {
 
-  def notExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    friendsDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    friendsDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
-        Future.exception(CactaceaException(AccountAlreadyFriend))
-      case false =>
         Future.Unit
+      case false =>
+        Future.exception(CactaceaException(AccountNotFriend))
     })
   }
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    friendsDAO.exist(accountId, sessionId).flatMap(_ match {
-      case false =>
-        Future.exception(CactaceaException(AccountNotFriend))
+  def mustNotFriend(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    friendsDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
+        Future.exception(CactaceaException(AccountAlreadyFriend))
+      case false =>
         Future.Unit
     })
   }

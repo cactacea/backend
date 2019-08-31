@@ -14,7 +14,7 @@ object Scope {
   final object messages extends Scope(1 << 7, "messages"                   , "to post and delete messages on a user's behalf") // scalastyle:ignore
   final object followerList extends Scope(1 << 8, "follower_list"          , "to read the list of followers and followed-by users") // scalastyle:ignore
   final object relationships extends Scope(1 << 9, "relationships"         , "to follows and unfollow accounts on a user’s behalf") // scalastyle:ignore
-  final object requests extends Scope(1 << 10, "requests"     , "to create and delete friend request on a user’s behalf") // scalastyle:ignore
+  final object requests extends Scope(1 << 10, "requests"     , "to create and delete friend friendRequest on a user’s behalf") // scalastyle:ignore
   final object media extends Scope(1 << 11, "media"                        , "to create and delete media on a user’s behalf") // scalastyle:ignore
   final object reports extends Scope(1 << 12, "reports"                    , "to report account, feed, group and comment on a user’s behalf") // scalastyle:ignore
 

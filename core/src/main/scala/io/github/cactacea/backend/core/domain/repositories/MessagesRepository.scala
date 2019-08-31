@@ -13,6 +13,7 @@ class MessagesRepository @Inject()(
                                     accountGroupsValidator: AccountGroupsValidator,
                                     accountMessagesDAO: AccountMessagesDAO,
                                     accountMessagesValidator: AccountMessagesValidator,
+                                    groupsDAO: GroupsDAO,
                                     groupsValidator: GroupsValidator,
                                     mediumsValidator: MediumsValidator,
                                     messagesDAO:  MessagesDAO
@@ -20,33 +21,35 @@ class MessagesRepository @Inject()(
 
   def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
     for {
-      _  <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
-      i  <- messagesDAO.create(groupId, Some(message), None, sessionId)
-      _  <- accountMessagesDAO.create(groupId, i, sessionId)
-      _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesValidator.find(i, sessionId)
+      _ <- accountGroupsValidator.mustJoined(sessionId.toAccountId, groupId)
+      c <- groupsDAO.findAccountCount(groupId)
+      i <- messagesDAO.create(groupId, message, c, sessionId)
+      _ <- accountMessagesDAO.create(groupId, i, sessionId)
+      _ <- accountGroupsDAO.updateUnreadCount(groupId)
+      m <- accountMessagesValidator.mustFind(i, sessionId)
     } yield (m)
   }
 
   def createMedium(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
     for {
-      _  <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
-      _  <- mediumsValidator.exist(mediumId, sessionId)
-      i <- messagesDAO.create(groupId, None, Some(mediumId), sessionId)
-      _  <- accountMessagesDAO.create(groupId, i, sessionId)
-      _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesValidator.find(i, sessionId)
+      _ <- accountGroupsValidator.mustJoined(sessionId.toAccountId, groupId)
+      _ <- mediumsValidator.mustOwn(mediumId, sessionId)
+      c <- groupsDAO.findAccountCount(groupId)
+      i <- messagesDAO.create(groupId, mediumId, c, sessionId)
+      _ <- accountMessagesDAO.create(groupId, i, sessionId)
+      _ <- accountGroupsDAO.updateUnreadCount(groupId)
+      m <- accountMessagesValidator.mustFind(i, sessionId)
     } yield (m)
   }
 
-  def updateReadStatus(messages: List[Message], sessionId: SessionId): Future[Unit] = {
+  private def updateReadStatus(messages: List[Message], sessionId: SessionId): Future[Unit] = {
     val m = messages.filter(_.unread)
     if (m.size == 0) {
       Future.Unit
     } else {
       val ids = m.map(_.id)
       for {
-        _ <- messagesDAO.updateReadAccountCount(ids)
+        _ <- messagesDAO.updateReadCount(ids)
         _ <- accountMessagesDAO.updateUnread(ids, sessionId)
       } yield (())
     }
@@ -63,13 +66,11 @@ class MessagesRepository @Inject()(
            ascending: Boolean,
            sessionId: SessionId): Future[List[Message]] = {
     for {
-      _ <- groupsValidator.exist(groupId, sessionId)
-      _ <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
+      _ <- accountGroupsValidator.mustJoined(sessionId.toAccountId, groupId)
       r <- accountMessagesDAO.find(groupId, since, offset, count, ascending, sessionId)
+      _ <- updateReadStatus(r, sessionId)
     } yield (r)
 
   }
-
-
 
 }

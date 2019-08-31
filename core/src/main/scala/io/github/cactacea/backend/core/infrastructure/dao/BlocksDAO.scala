@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.domain.models.Account
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Blocks, Relationships}
@@ -24,7 +23,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
           _.blockedAt     -> lift(blockedAt)
         ).returning(_.id)
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
@@ -35,10 +34,10 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .filter(_.by          == lift(by))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def own(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Blocks]
@@ -49,18 +48,16 @@ class BlocksDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
-
+  def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     val by = sessionId.toAccountId
-    val status = AccountStatusType.normally
-
     val q = quote {
       (for {
         b <- query[Blocks]
           .filter(_.by == lift(by))
           .filter(b => (lift(since).forall(b.id < _)))
         a <- query[Accounts]
-          .join(a => a.id == b.accountId && a.accountStatus == lift(status))
+          .join(_.id == b.accountId)
+          .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
         r <- query[Relationships]
           .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r, b))
@@ -68,8 +65,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q).map(_.map({case (a, r, b) => Account(a, r, b, b.id.value)}))
-
+    run(q).map(_.map({case (a, r, b) => Account(a, r, b)}))
   }
 
 }

@@ -13,92 +13,74 @@ class DevicesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def find(sessionId: SessionId): Future[List[Devices]] = {
+  def create(udid: String, pushToken: Option[String], deviceType: DeviceType, userAgent: Option[String], sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
-    val q = quote {
-      query[Devices]
-        .filter(_.accountId == lift(accountId))
-    }
-    run(q)
-  }
-
-  def exist(sessionId: SessionId, udid: String): Future[Boolean] = {
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[Devices]
-        .filter(_.udid == lift(udid))
-        .filter(_.accountId == lift(accountId))
-        .nonEmpty
-    }
-    run(q)
-  }
-
-  def create(udid: String, deviceType: DeviceType, info: Option[String], sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
+    val registeredAt = System.currentTimeMillis()
     val q = quote {
       query[Devices].insert(
         _.accountId     -> lift(accountId),
         _.udid          -> lift(udid),
         _.deviceType    -> lift(deviceType),
+        _.pushToken     -> lift(pushToken),
         _.activeStatus  -> lift(ActiveStatusType.active),
-        _.userAgent     -> lift(info)
+        _.userAgent     -> lift(userAgent),
+        _.registeredAt  -> lift(registeredAt)
       ).onConflictIgnore
     }
     run(q).map(_ => ())
   }
 
+  def update(udid: String, pushToken: Option[String], sessionId: SessionId): Future[Unit] = {
+    val accountId = sessionId.toAccountId
+    val q = quote {
+      query[Devices]
+        .filter(_.accountId   == lift(accountId))
+        .filter(_.udid        == lift(udid))
+        .update(
+          _.activeStatus    -> lift(ActiveStatusType.active),
+          _.pushToken       -> lift(pushToken)
+        )
+    }
+    run(q).map(_ => ())
+  }
+
+
   def delete(udid: String, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
-    val r = quote {
+    val q = quote {
       query[Devices]
         .filter(_.accountId   == lift(accountId))
         .filter(_.udid        == lift(udid))
         .delete
     }
-    run(r).map(_ => ())
+    run(q).map(_ => ())
   }
 
-  def update(udid: String, deviceStatus: ActiveStatusType, sessionId: SessionId): Future[Unit] = {
+  def exists(udid: String, sessionId: SessionId): Future[Boolean] = {
     val accountId = sessionId.toAccountId
-    val r = quote {
+    val q = quote {
       query[Devices]
         .filter(_.accountId   == lift(accountId))
         .filter(_.udid        == lift(udid))
-        .update(
-          _.activeStatus   -> lift(deviceStatus)
-        )
+        .nonEmpty
     }
-    run(r).map(_ => ())
+    run(q)
   }
-
-  def update(udid: String, pushToken: Option[String], sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
-    val r = quote {
-      query[Devices]
-        .filter(_.accountId   == lift(accountId))
-        .filter(_.udid        == lift(udid))
-        .update(
-          _.pushToken   -> lift(pushToken)
-        )
-    }
-    run(r).map(_ => ())
-  }
-
 
   def findActiveStatus(accountId: AccountId): Future[AccountStatus] = {
     val q = quote {
       query[Devices]
         .filter(_.accountId == lift(accountId))
-        .map(_.activeStatus)
+        .filter(_.activeStatus == lift(ActiveStatusType.active))
+        .take(1)
+        .size
     }
-    run(q).flatMap(_.headOption match {
-      case Some(s) =>
-        Future.value(AccountStatus(accountId, s))
-      case None =>
+    run(q).flatMap(_ match {
+      case 0 =>
         Future.value(AccountStatus(accountId, ActiveStatusType.inactive))
+      case _ =>
+        Future.value(AccountStatus(accountId, ActiveStatusType.active))
     })
   }
-
-
 
 }

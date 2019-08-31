@@ -1,64 +1,65 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType}
-import io.github.cactacea.backend.core.helpers.DAOSpec
+import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
 class GroupAccountsDAOSpec extends DAOSpec {
 
+  feature("find") {
+    scenario("should return groups") {
+      forOne(accountGen, accounts20ListGen, groupGen) { (s, l, g) =>
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val accountIds = l.map({ a =>
+          val accountId = await(accountsDAO.create(a.accountName))
+          await(accountGroupsDAO.create(accountId, groupId, sessionId))
+          accountId
+        }).reverse
+
+        // page1 found
+        val result1 = await(groupAccountsDAO.find(groupId, None, 0, 10))
+        assert(result1.size == 10)
+        result1.zipWithIndex.map { case (a, i) =>
+            assert(a.id == accountIds(i))
+        }
+
+        // page2 found
+        val size1 = result1.size
+        val result2 = await(groupAccountsDAO.find(groupId, result1.lastOption.map(_.next), 0, 10))
+        assert(result2.size == 10)
+        result2.zipWithIndex.map { case (a, i) =>
+          assert(a.id == accountIds(i + size1))
+        }
+
+        // page3 not found
+        val result3 = await(groupAccountsDAO.find(groupId, result2.lastOption.map(_.next), 0, 10))
+        assert(result3.size == 0)
 
 
-
-  test("find all") {
-
-    val sessionAccount = createAccount("GroupAccountsDAOSpec1")
-    val member1 = createAccount("GroupAccountsDAOSpec2")
-    val member2 = createAccount("GroupAccountsDAOSpec3")
-    val member3 = createAccount("GroupAccountsDAOSpec4")
-    val member4 = createAccount("GroupAccountsDAOSpec5")
-    val member5 = createAccount("GroupAccountsDAOSpec6")
-
-    val groupId = execute(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    execute(accountGroupsDAO.create(member1.id, groupId))
-    execute(accountGroupsDAO.create(member2.id, groupId))
-    val accountGroupId3 = execute(accountGroupsDAO.create(member3.id, groupId))
-    val accountGroupId4 = execute(accountGroupsDAO.create(member4.id, groupId))
-    val accountGroupId5 = execute(accountGroupsDAO.create(member5.id, groupId))
-
-    val result1 = execute(groupAccountsDAO.find(groupId, None, 0, 3))
-    assert(result1.size == 3)
-    val next1 = result1(0)
-    val next2 = result1(1)
-    val next3 = result1(2)
-    assert(next1.next == Some(accountGroupId5.value))
-    assert(next2.next == Some(accountGroupId4.value))
-    assert(next3.next == Some(accountGroupId3.value))
-
-    val result2 = execute(groupAccountsDAO.find(groupId, next3.next, 0, 3))
-    assert(result2.size == 2)
+      }
+    }
 
   }
 
-  test("delete") {
+  feature("exists") {
+    scenario("should return join or not") {
+      forOne(accountGen, accountGen, accountGen, groupGen) { (s, a1, a2, g) =>
+        // preparing
+        //  session account creates a group
+        //  account1 joins to the group
+        //  account2 dose not join to the group
+        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+        val accountId1 = await(accountsDAO.create(a1.accountName))
+        val accountId2 = await(accountsDAO.create(a2.accountName))
+        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        await(accountGroupsDAO.create(accountId1, groupId, sessionId))
 
-    val sessionAccount = createAccount("GroupAccountsDAOSpec7")
-    val member1 = createAccount("GroupAccountsDAOSpec8")
-    val member2 = createAccount("GroupAccountsDAOSpec9")
-    val member3 = createAccount("GroupAccountsDAOSpec10")
-    val member4 = createAccount("GroupAccountsDAOSpec11")
-    val member5 = createAccount("GroupAccountsDAOSpec12")
-
-    val accountIds = List(member1.id, member2.id, member3.id, member4.id, member5.id)
-    val groupId = execute(groupsDAO.create(Some("New Group"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    execute(accountGroupsDAO.create(accountIds, groupId))
-
-    execute(accountGroupsDAO.delete(member1.id, groupId))
-    execute(accountGroupsDAO.delete(member3.id, groupId))
-    execute(accountGroupsDAO.delete(member5.id, groupId))
-
-    val result1 = execute(groupAccountsDAO.find(groupId, None, 0, 3)) //, sessionAccount.id.toSessionId))
-    assert(result1.size == 2)
-
-
+        // return account1 joined
+        // return account2 not joined
+        assertFutureValue(groupAccountsDAO.exists(groupId, accountId1), true)
+        assertFutureValue(groupAccountsDAO.exists(groupId, accountId2), false)
+      }
+    }
   }
 
 }
+

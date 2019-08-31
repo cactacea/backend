@@ -12,14 +12,6 @@ class AccountReportsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def find(accountId: AccountId): Future[List[AccountReports]] = {
-    val q = quote {
-      query[AccountReports]
-        .filter(_.accountId == lift(accountId))
-    }
-    run(q)
-  }
-
   def create(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[AccountReportId] = {
     val reportedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId

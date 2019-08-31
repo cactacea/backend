@@ -14,7 +14,7 @@ class PasswordsRepository @Inject()(authenticationsValidator: AuthenticationsVal
 
   override def add(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
     for {
-      _ <- authenticationsValidator.notExist(loginInfo.providerId, loginInfo.providerKey)
+      _ <- authenticationsValidator.mustNotExist(loginInfo.providerId, loginInfo.providerKey)
       a <- authenticationsDAO.create(loginInfo.providerId, loginInfo.providerKey, authInfo.password, authInfo.hasher).map(_ => authInfo)
     } yield (a)
   }

@@ -47,10 +47,10 @@ trait Encoders {
   implicit val friendRequestIdEncode: MappedEncoding[Long, FriendRequestId] = MappedEncoding[Long, FriendRequestId] (long => FriendRequestId(long))
   implicit val groupIdDecode: MappedEncoding[GroupId, Long] = MappedEncoding[GroupId, Long] (id => id.onlyValue)
   implicit val groupIdEncode: MappedEncoding[Long, GroupId] = MappedEncoding[Long, GroupId] (long => GroupId(long))
-  implicit val groupInvitationIdDecode: MappedEncoding[GroupInvitationId, Long] = MappedEncoding[GroupInvitationId, Long] (id => id.onlyValue)
-  implicit val groupInvitationIdEncode: MappedEncoding[Long, GroupInvitationId] = MappedEncoding[Long, GroupInvitationId] (long => GroupInvitationId(long))
   implicit val groupReportIdDecode: MappedEncoding[GroupReportId, Long] = MappedEncoding[GroupReportId, Long] (id => id.onlyValue)
   implicit val groupReportIdEncode: MappedEncoding[Long, GroupReportId] = MappedEncoding[Long, GroupReportId] (long => GroupReportId(long))
+  implicit val invitationIdDecode: MappedEncoding[InvitationId, Long] = MappedEncoding[InvitationId, Long] (id => id.onlyValue)
+  implicit val invitationIdEncode: MappedEncoding[Long, InvitationId] = MappedEncoding[Long, InvitationId] (long => InvitationId(long))
   implicit val mediumIdDecode: MappedEncoding[MediumId, Long] = MappedEncoding[MediumId, Long] (id => id.onlyValue)
   implicit val mediumIdEncode: MappedEncoding[Long, MediumId] = MappedEncoding[Long, MediumId] (long => MediumId(long))
   implicit val messageIdDecode: MappedEncoding[MessageId, Long] = MappedEncoding[MessageId, Long] (id => id.onlyValue)
@@ -66,17 +66,9 @@ trait Encoders {
   implicit val accountStatusEncode: MappedEncoding[Byte, AccountStatusType] = MappedEncoding[Byte, AccountStatusType] (long => AccountStatusType.forName(long))
   implicit val feedPrivacyTypeDecode: MappedEncoding[FeedPrivacyType, Byte] = MappedEncoding[FeedPrivacyType, Byte] (enumValue => enumValue.toValue)
   implicit val feedPrivacyTypeEncode: MappedEncoding[Byte, FeedPrivacyType] = MappedEncoding[Byte, FeedPrivacyType] (long => FeedPrivacyType.forName(long))
-  implicit val friendRequestStatusTypeDecode: MappedEncoding[FriendRequestStatusType, Byte]
-  = MappedEncoding[FriendRequestStatusType, Byte] (enumValue => enumValue.toValue)
-  implicit val friendRequestStatusTypeEncode: MappedEncoding[Byte, FriendRequestStatusType]
-  = MappedEncoding[Byte, FriendRequestStatusType] (long => FriendRequestStatusType.forName(long))
   implicit val groupAuthorityTypeDecode: MappedEncoding[GroupAuthorityType, Byte] = MappedEncoding[GroupAuthorityType, Byte] (enumValue => enumValue.toValue)
   implicit val groupAuthorityTypeEncode: MappedEncoding[Byte, GroupAuthorityType]
   = MappedEncoding[Byte, GroupAuthorityType] (long => GroupAuthorityType.forName(long))
-  implicit val groupInvitationStatusTypeDecode: MappedEncoding[GroupInvitationStatusType, Byte]
-  = MappedEncoding[GroupInvitationStatusType, Byte] (enumValue => enumValue.toValue)
-  implicit val groupInvitationStatusTypeEncode: MappedEncoding[Byte, GroupInvitationStatusType]
-  = MappedEncoding[Byte, GroupInvitationStatusType] (long => GroupInvitationStatusType.forName(long))
   implicit val groupPrivacyTypeDecode: MappedEncoding[GroupPrivacyType, Byte] = MappedEncoding[GroupPrivacyType, Byte] (enumValue => enumValue.toValue)
   implicit val groupPrivacyTypeEncode: MappedEncoding[Byte, GroupPrivacyType] = MappedEncoding[Byte, GroupPrivacyType] (long => GroupPrivacyType.forName(long))
   implicit val mediumTypeDecode: MappedEncoding[MediumType, Byte] = MappedEncoding[MediumType, Byte] (enumValue => enumValue.toValue)

@@ -5,14 +5,13 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.{Account, AccountStatus}
-import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository, ReportsRepository}
+import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MediumId, SessionId}
 
 class AccountsService @Inject()(
                                  accountsRepository: AccountsRepository,
                                  authenticationsRepository: AuthenticationsRepository,
-                                 databaseService: DatabaseService,
-                                 reportsRepository: ReportsRepository
+                                 databaseService: DatabaseService
                                ) {
 
   import databaseService._
@@ -25,8 +24,8 @@ class AccountsService @Inject()(
     accountsRepository.find(accountId, sessionId)
   }
 
-  def notExist(accountName: String): Future[Boolean] = {
-    accountsRepository.notExist(accountName)
+  def isRegistered(accountName: String): Future[Boolean] = {
+    accountsRepository.isRegistered(accountName)
   }
 
   def find(displayName: Option[String],
@@ -86,7 +85,7 @@ class AccountsService @Inject()(
 
   def report(accountId: AccountId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     transaction {
-      reportsRepository.createAccountReport(accountId, reportType, reportContent, sessionId)
+      accountsRepository.report(accountId, reportType, reportContent, sessionId)
     }
   }
 

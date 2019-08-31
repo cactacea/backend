@@ -21,7 +21,7 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
         _.confirm     -> false
       )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def update(providerId: String, providerKey: String, password: String, hasher: String): Future[Unit] = {
@@ -34,7 +34,7 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
           _.hasher    -> lift(hasher)
         )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def updateConfirm(providerId: String, providerKey: String, confirm: Boolean): Future[Unit] = {
@@ -46,7 +46,7 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
           _.confirm    -> lift(confirm)
         )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def updateProviderKey(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
@@ -59,10 +59,10 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
           _.providerKey    -> lift(providerKey)
         )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  def link(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
+  def updateAccountId(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
     val accountId = sessionId.toAccountId
     val q = quote {
       query[Authentications]
@@ -72,10 +72,10 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
           _.accountId    -> lift(Option(accountId))
         )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  def exist(providerId: String, providerKey: String): Future[Boolean] = {
+  def exists(providerId: String, providerKey: String): Future[Boolean] = {
     val q = quote {
       query[Authentications]
         .filter(_.providerId == lift(providerId))
@@ -111,7 +111,7 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
         .filter(_.providerKey == lift(providerKey))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
 }

@@ -24,7 +24,7 @@ class MutesController @Inject()(
   prefix(apiPrefix) {
 
     scope(basic).postWithDoc("/accounts/:id/mutes") { o =>
-      o.summary("Mute a account")
+      o.summary("Mute an account")
         .tag(accountsTag)
         .operationId("muteAccount")
         .request[PostMute]
@@ -39,7 +39,7 @@ class MutesController @Inject()(
     }
 
     scope(basic).deleteWithDoc("/accounts/:id/mutes") { o =>
-      o.summary("Unmute a account")
+      o.summary("Unmute an account")
         .tag(accountsTag)
         .operationId("unmuteAccount")
         .request[DeleteMute]

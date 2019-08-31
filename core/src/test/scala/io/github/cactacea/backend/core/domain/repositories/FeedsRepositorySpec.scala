@@ -1,222 +1,363 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, MediumType, ReportType}
-import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, FeedNotFound, MediumNotFound}
+import java.util.Locale
+
+import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, MediumId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AuthorityNotFound, MediumNotFound}
 
 class FeedsRepositorySpec extends RepositorySpec {
 
-  val feedsRepository = injector.instance[FeedsRepository]
-  val mediumRepository = injector.instance[MediumsRepository]
-  var reportsRepository = injector.instance[ReportsRepository]
+  feature("create") {
+    scenario("should create a feed") {
+      forOne(accountGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
-  test("create") {
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
+        val tags = f.tags.map(_.split(' ').toList)
+        val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
-    val session = signUp("FeedsRepositorySpec1", "session password", "udid")
+        // result
+        val result1 = await(feedsRepository.find(feedId, sessionId))
+        assert(result1.message == f.message)
+        assert(result1.warning == f.contentWarning)
+        assert(result1.mediums.map(_.id) == ids.getOrElse(List[MediumId]()))
+        assert(result1.tags == tags)
 
-    val tags = Some(List("tag1", "tag2", "tag3"))
-    val key = "key"
-    val uri = "http://cactacea.io/test.jpeg"
-    val id = execute(mediumRepository.create(key, uri, Some(uri), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums = Some(List(id))
-    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feed = execute(feedsRepository.find(feedId, session.id.toSessionId))
-    assert(feed.message == "feed message")
-    assert(feed.tags == tags)
-    assert(feed.mediums.map(_.map(_.id)) == Some(List(id)))
-    assert(feed.mediums.get.head.id == id)
-    assert(feed.mediums.get.head.uri == uri)
-    assert(feed.mediums.get.head.width == 120)
-    assert(feed.mediums.get.head.height == 120)
-    assert(feed.mediums.get.head.size == 58L)
+        tags.map(_.foreach({ name =>
+          assertFutureValue(existsFeedTag(feedId, name), true)
+        }))
 
+        ids.map(_.foreach({ mediumId =>
+          assertFutureValue(existsFeedMedium(feedId, mediumId), true)
+        }))
 
-  }
+      }
+    }
 
-  test("create with no exist medium") {
+    scenario("should create an account feed and a notification") {
+      forOne(accountGen, accountGen, followerFeedGen) { (s, a, f) =>
 
-    val session = signUp("FeedsRepositorySpec2", "session password", "udid")
+        // preparing
+        val session = await(accountsRepository.create(s.accountName))
+        val sessionId = session.id.toSessionId
+        val account = await(accountsRepository.create(a.accountName))
+        val accountId = account.id
+        await(followsRepository.create(sessionId.toAccountId, accountId.toSessionId))
+        val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
-    val tags = Some(List("tag1", "tag2", "tag3"))
-    val mediums = Some(List(MediumId(0L)))
+        // result
+        val result1 = await(feedsRepository.find(None, 0, 10, None, accountId.toSessionId))
+        assert(result1.size == 1)
+        assert(result1.headOption.exists(_.id == feedId))
 
-    assert(intercept[CactaceaException] {
-      execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    }.error == MediumNotFound)
+        val result = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), accountId.toSessionId))
+        assert(result.size == 1)
+        assert(result.headOption.exists(_.contentId.exists(_ == feedId.value)))
+        assert(result.headOption.exists(_.notificationType == NotificationType.feed))
+      }
+    }
 
-  }
+    scenario("should return exception if medium not exist") {
+      forOne(accountGen, everyoneFeedGen) { (a, f) =>
 
-  test("update") {
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
 
-    val session = signUp("FeedsRepositorySpec3", "session password", "udid")
+        // result
+        assert(intercept[CactaceaException] {
+          await(feedsRepository.create(f.message, Option(List(MediumId(0L))), None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        }.error == MediumNotFound)
 
-    val tags = Some(List("tag1", "tag2", "tag3"))
-    val id1 = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums = Some(List(id1))
-    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-
-    val tags2 = Some(List("tag4", "tag5", "tag6"))
-    val id2 = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums2 = Some(List(id2))
-    execute(feedsRepository.update(feedId, "feed message 2", mediums2, tags2, FeedPrivacyType.followers, true, None, session.id.toSessionId))
-    // TODO : Check
-
-  }
-
-  test("update no exist feed") {
-
-    val session = signUp("FeedsRepositorySpec4", "session password", "udid")
-
-    val tags = Some(List("tag1", "tag2", "tag3"))
-    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums = Some(List(id))
-    execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-
-    assert(intercept[CactaceaException] {
-      execute(feedsRepository.update(FeedId(0L), "feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    }.error == FeedNotFound)
-
-  }
-
-  test("update with no exist medium") {
-
-    val session = signUp("FeedsRepositorySpec5", "session password", "udid")
-
-    val tags = Some(List("tag1", "tag2", "tag3"))
-    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums = Some(List(id))
-    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-
-    assert(intercept[CactaceaException] {
-      execute(feedsRepository.update(feedId, "feed message", Some(List(MediumId(0L))), tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    }.error == MediumNotFound)
-
-  }
-
-  test("delete") {
-
-    val session = signUp("FeedsRepositorySpec6", "session password", "udid")
-    val user = signUp("FeedsRepositorySpec6-2", "user password", "user udid")
-
-    val tags = Some(List("tag1", "tag2", "tag3"))
-    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums = Some(List(id))
-    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val reportContent = Some("report content")
-    execute(reportsRepository.createFeedReport(feedId, ReportType.inappropriate, reportContent, user.id.toSessionId))
-    execute(feedsRepository.delete(feedId, session.id.toSessionId))
-    // TODO : Check
-
-  }
-
-  test("delete no exist feed") {
-
-    val session = signUp("FeedsRepositorySpec7", "session password", "udid")
-
-    assert(intercept[CactaceaException] {
-      execute(feedsRepository.delete(FeedId(0L), session.id.toSessionId))
-    }.error == FeedNotFound)
-
-  }
-
-  test("find feeds by a user") {
-
-    val session = signUp("FeedsRepositorySpec8", "session password", "udid")
-
-    val tags = Some(List("tag1", "tag2", "tag3"))
-    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, session.id.toSessionId))
-    val mediums = Some(List(id))
-    val feedId = execute(feedsRepository.create("feed message", mediums, tags, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val result = execute(feedsRepository.find(feedId, session.id.toSessionId))
-    assert(result.id == feedId)
-
-  }
-
-  test("find all a account's feeds") {
-
-    val session = signUp("FeedsRepositorySpec9", "session password", "udid")
-    val user = signUp("FeedsRepositorySpec9-2", "user password", "udid")
-    val feedId1 = execute(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId2 = execute(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId3 = execute(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId4 = execute(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId5 = execute(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-
-    val result1 = execute(feedsRepository.find(session.id, None, 0, 3, user.id.toSessionId))
-    assert(result1.size == 3)
-    val feed1 = result1(0)
-    val feed2 = result1(1)
-    val feed3 = result1(2)
-    assert(feed1.id == feedId5)
-    assert(feed2.id == feedId4)
-    assert(feed3.id == feedId3)
-
-    val result2 = execute(feedsRepository.find(session.id, feed3.next, 0, 3, user.id.toSessionId))
-    assert(result2.size == 2)
-    val feed4 = result2(0)
-    val feed5 = result2(1)
-    assert(feed4.id == feedId2)
-    assert(feed5.id == feedId1)
-
-  }
-
-  test("find all no exist account's feeds") {
-
-    val session = signUp("FeedsRepositorySpec10", "session password", "udid")
-
-    assert(intercept[CactaceaException] {
-      execute(feedsRepository.find(AccountId(0L), None, 0, 3, session.id.toSessionId))
-    }.error == AccountNotFound)
-
+      }
+    }
   }
 
 
-  test("find session's feeds") {
+  feature("update") {
+    scenario("should update a feed") {
 
-    val session = signUp("FeedsRepositorySpec11", "session password", "udid")
-    val feedId1 = execute(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId2 = execute(feedsRepository.create("feed message 2", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId3 = execute(feedsRepository.create("feed message 3", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId4 = execute(feedsRepository.create("feed message 4", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val feedId5 = execute(feedsRepository.create("feed message 5", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
+      forOne(accountGen, everyoneFeedGen, everyoneFeedGen, medium5ListOptGen, medium5ListOptGen) { (a, f, f2, l, l2) =>
+        val sessionId = await(accountsRepository.create(a.accountName)).id.toSessionId
+        val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
+        val tags = f.tags.map(_.split(' ').toList)
+        val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
-    val result1 = execute(feedsRepository.find(None, 0, 3, session.id.toSessionId))
-    assert(result1.size == 3)
-    val feed1 = result1(0)
-    val feed2 = result1(1)
-    val feed3 = result1(2)
-    assert(feed1.id == feedId5)
-    assert(feed2.id == feedId4)
-    assert(feed3.id == feedId3)
 
-    val result2 = execute(feedsRepository.find(feed3.next, 0, 3, session.id.toSessionId))
-    assert(result2.size == 2)
-    val feed4 = result2(0)
-    val feed5 = result2(1)
-    assert(feed4.id == feedId2)
-    assert(feed5.id == feedId1)
+        val ids2 = l2.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
+        val tags2 = f2.tags.map(_.split(' ').toList)
+        await(feedsRepository.update(feedId, f2.message, ids2, tags2, f2.privacyType, f2.contentWarning, f2.expiration, sessionId))
 
+        // result
+        val result1 = await(feedsRepository.find(feedId, sessionId))
+        assert(result1.message == f2.message)
+        assert(result1.warning == f2.contentWarning)
+        assert(result1.mediums.map(_.id) == ids2.getOrElse(List[MediumId]()))
+        assert(result1.tags == tags2)
+
+      }
+    }
+
+    scenario("should return exception if medium not exist") {
+      forOne(accountGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
+        val tags = f.tags.map(_.split(' ').toList)
+        val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(feedsRepository.update(feedId, f.message, Option(List(MediumId(0))), tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        }.error == MediumNotFound)
+
+      }
+    }
+
+    scenario("should return exception if feed not exist") {
+      forOne(accountGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
+        val tags = f.tags.map(_.split(' ').toList)
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(feedsRepository.update(FeedId(0), f.message, None, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        }.error == AuthorityNotFound)
+
+      }
+    }
   }
 
-  test("find a feed") {
+  feature("delete") {
+    scenario("should delete a feed") {
+      forOne(accountGen, everyoneFeedGen) { (a, f) =>
 
-    val session = signUp("FeedsRepositorySpec12", "session password", "udid")
-    val feedId = execute(feedsRepository.create("feed message 1", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val result = execute(feedsRepository.find(feedId, session.id.toSessionId))
-    assert(result.id == feedId)
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
+        // result
+        assertFutureValue(feedsDAO.own(feedId, sessionId), true)
+        await(feedsRepository.delete(feedId, sessionId))
+        assertFutureValue(feedsDAO.own(feedId, sessionId), false)
+
+      }
+    }
+
+    scenario("should delete comments on a feed") {
+      forOne(accountGen, everyoneFeedGen, commentGen) { (a, f, c) =>
+
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+
+        // result
+        assertFutureValue(feedsDAO.own(feedId, sessionId), true)
+        assertFutureValue(commentsDAO.own(commentId, sessionId), true)
+        await(feedsRepository.delete(feedId, sessionId))
+        assertFutureValue(feedsDAO.own(feedId, sessionId), false)
+        assertFutureValue(commentsDAO.own(commentId, sessionId), false)
+
+      }
+    }
+
+    scenario("should delete likes on a feed") {
+      forOne(accountGen, accountGen, everyoneFeedGen) { (s, a, f) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName))
+        val sessionId = session.id.toSessionId
+        val account = await(accountsRepository.create(a.accountName))
+        val accountId = account.id
+        val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        await(feedLikesRepository.create(feedId, accountId.toSessionId))
+
+        // result
+        assertFutureValue(feedsDAO.own(feedId, sessionId), true)
+        assertFutureValue(feedLikesDAO.own(feedId, accountId.toSessionId), true)
+        await(feedsRepository.delete(feedId, sessionId))
+        assertFutureValue(feedsDAO.own(feedId, sessionId), false)
+        assertFutureValue(feedLikesDAO.own(feedId, accountId.toSessionId), false)
+
+      }
+    }
+
+    scenario("should delete reports on a feed") {
+      forOne(accountGen, everyoneFeedGen, feedReportGen) { (a, f, r) =>
+
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        await(feedsRepository.report(feedId, r.reportType, r.reportContent, sessionId))
+
+        // result
+        assertFutureValue(feedsDAO.own(feedId, sessionId), true)
+        assertFutureValue(existsFeedReport(feedId, sessionId), true)
+        await(feedsRepository.delete(feedId, sessionId))
+        assertFutureValue(feedsDAO.own(feedId, sessionId), false)
+        assertFutureValue(existsFeedReport(feedId, sessionId), false)
+
+      }
+    }
+
+
+    scenario("should delete reports on comments on a feed") {
+      forOne(accountGen, everyoneFeedGen, commentGen, commentReportGen) { (a, f, c, r) =>
+
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+        await(commentsRepository.report(commentId, r.reportType, r.reportContent, sessionId))
+
+        // result
+        assertFutureValue(feedsDAO.own(feedId, sessionId), true)
+        assertFutureValue(commentsDAO.own(commentId, sessionId), true)
+        assertFutureValue(existsCommentReport(commentId, sessionId), true)
+        await(feedsRepository.delete(feedId, sessionId))
+        assertFutureValue(feedsDAO.own(feedId, sessionId), false)
+        assertFutureValue(commentsDAO.own(commentId, sessionId), false)
+        assertFutureValue(existsCommentReport(commentId, sessionId), false)
+
+      }
+    }
+
+    scenario("should delete likes on comments on a feed") {
+      forOne(accountGen, accountGen, everyoneFeedGen, commentGen) { (s, a, f, c) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName))
+        val sessionId = session.id.toSessionId
+        val account = await(accountsRepository.create(a.accountName))
+        val accountId = account.id
+        val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+        await(commentLikesRepository.create(commentId, accountId.toSessionId))
+
+        // result
+        assertFutureValue(feedsDAO.own(feedId, sessionId), true)
+        assertFutureValue(commentsDAO.own(commentId, sessionId), true)
+        assertFutureValue(commentLikesDAO.own(commentId, accountId.toSessionId), true)
+        await(feedsRepository.delete(feedId, sessionId))
+        assertFutureValue(feedsDAO.own(feedId, sessionId), false)
+        assertFutureValue(commentsDAO.own(commentId, sessionId), false)
+        assertFutureValue(commentLikesDAO.own(commentId, accountId.toSessionId), false)
+
+      }
+    }
+
+    scenario("should delete tags and meidums on a feed") {
+      forOne(accountGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+
+        // preparing
+        val session = await(accountsRepository.create(a.accountName))
+        val sessionId = session.id.toSessionId
+        val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
+        val tags = f.tags.map(_.split(' ').toList)
+        val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
+
+        // result
+        await(feedsRepository.find(feedId, sessionId))
+        assertFutureValue(feedsDAO.own(feedId, sessionId), true)
+        tags.map(_.foreach({ name =>
+          assertFutureValue(existsFeedTag(feedId, name), true)
+        }))
+
+        ids.map(_.foreach({ mediumId =>
+          assertFutureValue(existsFeedMedium(feedId, mediumId), true)
+        }))
+
+        await(feedsRepository.delete(feedId, sessionId))
+
+        assertFutureValue(feedsDAO.own(feedId, sessionId), false)
+        tags.map(_.foreach({ name =>
+          assertFutureValue(existsFeedTag(feedId, name), false)
+        }))
+
+        ids.map(_.foreach({ mediumId =>
+          assertFutureValue(existsFeedMedium(feedId, mediumId), false)
+        }))
+
+      }
+    }
+
+    scenario("should delete an account feeds") {
+      forOne(accountGen, accountGen, followerFeedGen) { (s, a, f) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName))
+        val sessionId = session.id.toSessionId
+        val account = await(accountsRepository.create(a.accountName))
+        val accountId = account.id
+        await(followsRepository.create(sessionId.toAccountId, accountId.toSessionId))
+        val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+
+        // result
+        assert(existsAccountFeeds(feedId, accountId))
+        await(feedsRepository.delete(feedId, sessionId))
+        assert(!existsAccountFeeds(feedId, accountId))
+
+      }
+    }
+
+    scenario("should return exception if feed not exist") {
+      forOne(accountGen) { (s) =>
+
+        // preparing
+        val session = await(accountsRepository.create(s.accountName))
+        val sessionId = session.id.toSessionId
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(feedsRepository.delete(FeedId(0), sessionId))
+        }.error == AuthorityNotFound)
+
+      }
+
+    }
   }
 
-  test("find no exist feed") {
 
-    val session = signUp("FeedsRepositorySpec13", "session password", "udid")
-    assert(intercept[CactaceaException] {
-      execute(feedsRepository.find(FeedId(0L), session.id.toSessionId))
-    }.error == FeedNotFound)
-
-  }
+//  feature("find feeds an account posted") {
+//
+//    scenario("should return feed list account posted") {
+//
+//    }
+//
+//    scenario("should return exception if an account not exist") {
+//
+//    }
+//  }
+//
+//  feature("find feeds session account posted") {
+//    scenario("should return feed list session account posted") {
+//
+//    }
+//  }
+//
+//  feature("find a feed") {
+//    scenario("should return a feed") {
+//
+//    }
+//    scenario("should return exception if a feed not exist") {}
+//
+//  }
 
 }

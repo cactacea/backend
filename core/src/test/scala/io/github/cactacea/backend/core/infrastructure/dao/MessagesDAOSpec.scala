@@ -1,63 +1,113 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.{GroupAuthorityType, GroupPrivacyType, MediumType}
-import io.github.cactacea.backend.core.helpers.DAOSpec
-import io.github.cactacea.backend.core.infrastructure.models.Messages
+import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, MessageType}
+import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
 class MessagesDAOSpec extends DAOSpec {
 
-  import db._
 
-  test("create") {
+  feature("create") {
 
-    val sessionAccount = createAccount("MediumsDAOSpec4")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
+    scenario("should create a text message") {
+      forOne(accountGen, accountGen, groupGen, textMessageGen) {
+        (s, a1, g, m) =>
+          // preparing
+          //  session account is owner
+          //  accountId1 is a member
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
+          val result = await(findMessage(messageId))
+          assert(result.exists(_.id == messageId))
+          assert(result.exists(_.messageType == MessageType.text))
+          assert(result.exists(_.message.getOrElse("") == m.message.getOrElse("")))
+          assert(result.exists(!_.contentWarning))
+          assert(result.exists(_.accountCount == accountCount))
+          assert(result.exists(_.contentStatus == ContentStatusType.unchecked))
+          assert(result.exists(_.groupId == groupId))
+          assert(result.exists(_.mediumId.isEmpty))
+          assert(result.exists(_.readCount == 0))
+      }
+    }
 
-    val result = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
-    assert(result.size == 1)
-    val message = result(0)
-    assert(message.id == messageId)
-    assert(message.message == Some("new message"))
-    assert(message.accountCount == 0L)
-    assert(message.contentWarning == false)
-    assert(message.notified == false)
+    scenario("should create a medium message") {
+      forOne(accountGen, accountGen, mediumGen) {
+        (s, a1, i) =>
 
-    val mediumId2 = execute(mediumsDAO.create("key1", "http://example.com/test1.jpeg", Some("http://example.com/test1.jpeg"), MediumType.image, 1, 4, 100L, sessionAccount.id.toSessionId))
-    execute(messagesDAO.create(groupId, None, Some(mediumId2), sessionAccount.id.toSessionId))
+          // preparing
+          //   session create a group
+          //   account1 join the group
+          //   session create a message
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val groupId = await(groupsDAO.create(sessionId))
+          await(accountGroupsDAO.create(groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          val mediumId = await(mediumsDAO.create(i.key, i.uri, i.thumbnailUrl, i.mediumType, i.width, i.height, i.size, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, mediumId, accountCount, sessionId))
+          val result = await(findMessage(messageId))
+          assert(result.exists(_.message.isEmpty))
+          assert(result.exists(_.messageType == MessageType.medium))
+          assert(result.exists(_.accountCount == 2))
+          assert(result.exists(_.readCount == 0))
+          assert(result.exists(_.mediumId.exists(_ == mediumId)))
+      }
+    }
 
-    // TODO
-//    val result2 = execute(messagesDAO.find(messageId))
-//    assert(result2.isDefined)
+
+    scenario("should create a system message") {
+      forOne(accountGen, accountGen) {
+        (s, a1) =>
+
+          // preparing
+          //   session create a group
+          //   account1 join the group
+          //   session create a message
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val accountId1 = await(accountsDAO.create(a1.accountName))
+          val groupId = await(groupsDAO.create(sessionId))
+          await(accountGroupsDAO.create(groupId, sessionId))
+          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, MessageType.joined, accountCount, sessionId))
+          val result = await(findMessage(messageId))
+          assert(result.exists(_.message.isEmpty))
+          assert(result.exists(_.mediumId.isEmpty))
+          assert(result.exists(_.messageType == MessageType.joined))
+          assert(result.exists(_.accountCount == 2))
+          assert(result.exists(_.readCount == 0))
+      }
+    }
+
 
   }
 
-  test("delete") {
+  feature("updateReadCount") {
+    scenario("should should update read count") {
+      forOne(accountGen, groupGen, messagesGen) {
+        (s, g, m) =>
+          // preparing
+          //  session account is owner
+          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
+          val accountCount = await(groupsDAO.findAccountCount(groupId))
+          val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
+          await(messagesDAO.updateReadCount(List(messageId)))
+          val result = await(findMessage(messageId))
+          assert(result.exists(_.id == messageId))
+          assert(result.exists(_.accountCount == 1))
+          assert(result.exists(_.readCount == 1))
+      }
 
-    val sessionAccount = createAccount("MediumsDAOSpec5")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
-
-    execute(messagesDAO.delete(groupId))
-    val result = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
-    assert(result.size == 0)
+    }
   }
-
-  test("updateReadStatus") {
-
-    val sessionAccount = createAccount("MediumsDAOSpec6")
-    val groupId = execute(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
-    val messageId = execute(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
-
-    // TODO : check
-    execute(messagesDAO.updateReadAccountCount(List(messageId)))
-
-    val result2 = execute(db.run(quote(query[Messages].filter(_.groupId == lift(groupId)))))
-    assert(result2.size == 1)
-    val message = result2(0)
-    assert(message.readAccountCount == 1)
-
-  }
-
 
 }
+
+

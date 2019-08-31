@@ -1,104 +1,148 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
-import io.github.cactacea.backend.core.helpers.RepositorySpec
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyMuted, AccountNotFound, AccountNotMuted, InvalidAccountIdError}
 
 class MutesRepositorySpec extends RepositorySpec {
 
-  val mutesRepository = injector.instance[MutesRepository]
-  val blocksRepository = injector.instance[BlocksRepository]
+  feature("create") {
 
-  test("mute a user") {
+    scenario("should mute an block") {
+      forAll(accountGen, accountGen, accountGen) { (a1, a2, a3) =>
+        val accountId1 = await(accountsRepository.create(a1.accountName)).id
+        val accountId2 = await(accountsRepository.create(a2.accountName)).id
+        val accountId3 = await(accountsRepository.create(a3.accountName)).id
+        await(mutesRepository.create(accountId1, accountId2.toSessionId))
+        await(mutesRepository.create(accountId2, accountId3.toSessionId))
+        await(mutesRepository.create(accountId3, accountId1.toSessionId))
+        assertFutureValue(mutesDAO.own(accountId3, accountId1.toSessionId), true)
+        assertFutureValue(mutesDAO.own(accountId1, accountId2.toSessionId), true)
+        assertFutureValue(mutesDAO.own(accountId2, accountId3.toSessionId), true)
+      }
+    }
 
-    val sessionUser = signUp("MutesRepositorySpec1", "session user password", "session user udid")
-    val user = signUp("MutesRepositorySpec2", "muted user password", "muted user udid")
-    execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
-    val results = execute(mutesRepository.find(None, 0, 2, sessionUser.id.toSessionId))
-    assert(results.size == 1)
-    val result = results(0)
-    assert(user.id == result.id)
+    scenario("should return exception if id is not same") {
+      forOne(accountGen) { (s) =>
+        val accountId2 = await(accountsRepository.create(s.accountName)).id
+        // exception occurs
+        assert(intercept[CactaceaException] {
+          await(mutesRepository.create(accountId2, accountId2.toSessionId))
+        }.error == InvalidAccountIdError)
+      }
+    }
 
-  }
+    scenario("should return exception if account not exist") {
+      forOne(accountGen) { (s) =>
+        val accountId2 = await(accountsRepository.create(s.accountName)).id
+        // exception occurs
+        assert(intercept[CactaceaException] {
+          await(mutesRepository.create(AccountId(0), accountId2.toSessionId))
+        }.error == AccountNotFound)
+      }
+    }
 
-  test("mute a blocked user") {
-
-    val sessionUser = signUp("MutesRepositorySpec3", "session user password", "session user udid")
-    val blockingUser = signUp("MutesRepositorySpec4", "blocked user password", "blocked user udid")
-
-    execute(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
-
-    assert(intercept[CactaceaException] {
-      execute(mutesRepository.create(sessionUser.id, blockingUser.id.toSessionId))
-    }.error == AccountNotFound)
-
-  }
-
-  test("mute a muted user") {
-
-    val sessionUser = signUp("MutesRepositorySpec5", "session user password", "session user udid")
-    val user = signUp("MutesRepositorySpec6", "mute password", "mute udid")
-
-    execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
-
-    assert(intercept[CactaceaException] {
-      execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
-    }.error == AccountAlreadyMuted)
-
-  }
-
-  test("mute a session user") {
-
-    val sessionUser = signUp("MutesRepositorySpec7", "session user password", "session user udid")
-
-    assert(intercept[CactaceaException] {
-      execute(mutesRepository.create(sessionUser.id, sessionUser.id.toSessionId))
-    }.error == CanNotSpecifyMyself)
-
-  }
-
-  test("delete mute") {
-
-    val sessionUser = signUp("MutesRepositorySpec8", "session user password", "session user udid")
-    val user = signUp("MutesRepositorySpec9", "user password", "user udid")
-
-    execute(mutesRepository.create(user.id, sessionUser.id.toSessionId))
-    execute(mutesRepository.delete(user.id, sessionUser.id.toSessionId))
-
-    // TODO : Check
-  }
-
-  test("delete no exist account mute") {
-
-    val sessionUser = signUp("MutesRepositorySpec10", "session user password", "session user udid")
-
-    assert(intercept[CactaceaException] {
-      execute(mutesRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
-    }.error == AccountNotFound)
+    scenario("should return exception if account already muted") {
+      forOne(accountGen, accountGen) { (a1, a2) =>
+        val accountId1 = await(accountsRepository.create(a1.accountName)).id
+        val accountId2 = await(accountsRepository.create(a2.accountName)).id
+        await(mutesRepository.create(accountId1, accountId2.toSessionId))
+        // exception occurs
+        assert(intercept[CactaceaException] {
+          await(mutesRepository.create(accountId1, accountId2.toSessionId))
+        }.error == AccountAlreadyMuted)
+      }
+    }
 
   }
 
-  test("delete mute no muted user") {
+  feature("delete") {
+    scenario("should unmute an account") {
+      forAll(accountGen, accountGen, accountGen) { (a1, a2, a3) =>
+        val accountId1 = await(accountsRepository.create(a1.accountName)).id
+        val accountId2 = await(accountsRepository.create(a2.accountName)).id
+        val accountId3 = await(accountsRepository.create(a3.accountName)).id
+        await(mutesRepository.create(accountId2, accountId1.toSessionId))
+        await(mutesRepository.create(accountId3, accountId1.toSessionId))
+        await(mutesRepository.delete(accountId2, accountId1.toSessionId))
+        await(mutesRepository.delete(accountId3, accountId1.toSessionId))
+        assertFutureValue(mutesDAO.own(accountId2, accountId1.toSessionId), false)
+        assertFutureValue(mutesDAO.own(accountId3, accountId1.toSessionId), false)
+      }
+    }
 
-    val sessionUser = signUp("MutesRepositorySpec11", "session user password", "session user udid")
-    val user = signUp("MutesRepositorySpec12", "user password", "user udid")
+    scenario("should return exception if id is not same") {
+      forOne(accountGen) { (s) =>
+        val accountId2 = await(accountsRepository.create(s.accountName)).id
+        // exception occurs
+        assert(intercept[CactaceaException] {
+          await(mutesRepository.delete(accountId2, accountId2.toSessionId))
+        }.error == InvalidAccountIdError)
+      }
+    }
 
-    assert(intercept[CactaceaException] {
-      execute(mutesRepository.delete(user.id, sessionUser.id.toSessionId))
-    }.error == AccountNotMuted)
+    scenario("should return exception if account not exist") {
+      forOne(accountGen) { (s) =>
+        val accountId2 = await(accountsRepository.create(s.accountName)).id
+        // exception occurs
+        assert(intercept[CactaceaException] {
+          await(mutesRepository.delete(AccountId(0), accountId2.toSessionId))
+        }.error == AccountNotFound)
+      }
+    }
+
+    scenario("should return exception if account not muted") {
+      forOne(accountGen, accountGen) { (a1, a2) =>
+        val accountId1 = await(accountsRepository.create(a1.accountName)).id
+        val accountId2 = await(accountsRepository.create(a2.accountName)).id
+        // exception occurs
+        assert(intercept[CactaceaException] {
+          await(mutesRepository.delete(accountId1, accountId2.toSessionId))
+        }.error == AccountNotMuted)
+      }
+    }
 
   }
 
-  test("delete mute session user") {
+  feature("find") {
+    scenario("should return mute list in order of creation") {
+      forAll(sortedNameGen, accountGen, sortedAccountGen, sortedAccountGen, sortedAccountGen, accountGen)
+      { (h, s, a1, a2, a3, a4) =>
 
-    val sessionUser = signUp("MutesRepositorySpec13", "session user password", "session user udid")
+        // preparing
+        //   session account mute account1
+        //   session account mute account2
+        //   session account mute account3
+        //   session account mute account4
+        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+        val accountId1 = await(accountsRepository.create(h + a1.accountName)).id
+        val accountId2 = await(accountsRepository.create(h + a2.accountName)).id
+        val accountId3 = await(accountsRepository.create(h + a3.accountName)).id
+        val accountId4 = await(accountsRepository.create(a4.accountName)).id
+        await(mutesRepository.create(accountId1, sessionId))
+        await(mutesRepository.create(accountId2, sessionId))
+        await(mutesRepository.create(accountId3, sessionId))
+        await(mutesRepository.create(accountId4, sessionId))
 
-    assert(intercept[CactaceaException] {
-      execute(mutesRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
-    }.error == CanNotSpecifyMyself)
+        // return account1 found
+        // return account2 found
+        // return account3 found
+        // return account4 not found because of account name not matched
+        val result1 = await(mutesRepository.find(Option(h), None, 0, 2, sessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == accountId3)
+        assert(result1(1).id == accountId2)
 
+        val result2 = await(mutesRepository.find(Option(h), result1.lastOption.map(_.next), 0, 2, sessionId))
+        assert(result2.size == 1)
+        assert(result2(0).id == accountId1)
+      }
+    }
   }
+
+  
 
 }
+

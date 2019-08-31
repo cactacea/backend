@@ -8,11 +8,18 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, Se
 import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Mutes, Relationships}
 
 @Singleton
-class MutesDAO @Inject()(db: DatabaseService) {
+class MutesDAO @Inject()(db: DatabaseService, relationshipsDAO: RelationshipsDAO) {
 
   import db._
 
   def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    for {
+      r <- createMutes(accountId, sessionId)
+      _ <- relationshipsDAO.createMute(accountId, sessionId)
+    } yield (r)
+  }
+
+  private def createMutes(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val mutedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
@@ -23,10 +30,17 @@ class MutesDAO @Inject()(db: DatabaseService) {
           _.mutedAt         -> lift(mutedAt)
         )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    for {
+      r <- deleteMutes(accountId, sessionId)
+      _ <- relationshipsDAO.deleteMute(accountId, sessionId)
+    } yield (r)
+  }
+
+  private def deleteMutes(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Mutes]
@@ -34,10 +48,10 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .filter(_.by          == lift(by))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
+  def own(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {
       query[Mutes]
@@ -48,10 +62,8 @@ class MutesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
-
+  def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
     val by = sessionId.toAccountId
-
     val q = quote {
       (for {
         m <- query[Mutes]
@@ -59,6 +71,7 @@ class MutesDAO @Inject()(db: DatabaseService) {
           .filter(m => lift(since).forall(m.id < _))
         a <- query[Accounts]
             .join(_.id == m.accountId)
+            .filter(a => lift(accountName.map(_ + "%")).forall(a.accountName like _))
         r <- query[Relationships]
             .leftJoin(r => r.accountId == a.id && r.by == lift(by))
       } yield (a, r, m.id))
@@ -67,7 +80,6 @@ class MutesDAO @Inject()(db: DatabaseService) {
         .take(lift(count))
     }
     run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
-
   }
 
 

@@ -1,26 +1,39 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.ReportType
-import io.github.cactacea.backend.core.helpers.DAOSpec
+import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.AccountReports
 
 class AccountReportsDAOSpec extends DAOSpec {
 
   import db._
 
-  test("create") {
+  feature("create") {
+    scenario("should report an account") {
+      forAll(accountGen, accountGen, accountReportGen) { (a1, a2, r) =>
+        val sessionId = await(accountsDAO.create(a1.accountName)).toSessionId
+        val accountId = await(accountsDAO.create(a2.accountName))
+        val id = await(accountReportsDAO.create(accountId, r.reportType, r.reportContent, sessionId))
+        val result = await(db.run(query[AccountReports].filter(_.id == lift(id)))).head
+        assert(result.id == id)
+        assert(result.by == sessionId.toAccountId)
+        assert(result.accountId == accountId)
+        assert(result.reportType == r.reportType)
+        assert(result.reportContent == r.reportContent)
+      }
+    }
 
-    val sessionAccount = createAccount("AccountReportsDAOSpec1")
-    val reportedUser = createAccount("AccountReportsDAOSpec2")
-    val reportContent = Some("report content")
-
-    val userReportId = execute(userReportsDAO.create(reportedUser.id, ReportType.spam, reportContent, sessionAccount.id.toSessionId))
-
-    val result = execute(db.run(query[AccountReports].filter(_.id == lift(userReportId)))).head
-    assert(result.id == userReportId)
-    assert(result.by == sessionAccount.id)
-    assert(result.accountId == reportedUser.id)
-    assert(result.reportType == ReportType.spam)
+    scenario("should not return an exception if duplicate") {
+      forAll(accountGen, accountGen, accountReportGen) { (a1, a2, r) =>
+        val sessionId = await(accountsDAO.create(a1.accountName)).toSessionId
+        val accountId = await(accountsDAO.create(a2.accountName))
+        await(accountReportsDAO.create(accountId, r.reportType, r.reportContent, sessionId))
+        await(accountReportsDAO.create(accountId, r.reportType, r.reportContent, sessionId))
+        val result = await(db.run(query[AccountReports]
+          .filter(_.accountId == lift(accountId))
+          .filter(_.by == lift(sessionId.toAccountId)))).size
+        assert(result == 2)
+      }
+    }
   }
 
 }

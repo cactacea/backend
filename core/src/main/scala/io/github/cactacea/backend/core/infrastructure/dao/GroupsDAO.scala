@@ -17,7 +17,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
     val organizedAt = System.currentTimeMillis()
     val name: Option[String] = None
     val by = sessionId.toAccountId
-    val r = quote {
+    val q = quote {
       query[Groups].insert(
         _.name              -> lift(name),
         _.invitationOnly    -> true,
@@ -29,22 +29,22 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         _.organizedAt       -> lift(organizedAt)
       ).returning(_.id)
     }
-    run(r)
+    run(q)
   }
 
 
   def create(name: Option[String],
-             byInvitationOnly: Boolean,
+             invitationOnly: Boolean,
              privacyType: GroupPrivacyType,
              authority: GroupAuthorityType,
              sessionId: SessionId): Future[GroupId] = {
 
     val organizedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
-    val r = quote {
+    val q = quote {
       query[Groups].insert(
         _.name                -> lift(name),
-        _.invitationOnly      -> lift(byInvitationOnly),
+        _.invitationOnly      -> lift(invitationOnly),
         _.authorityType       -> lift(authority),
         _.privacyType         -> lift(privacyType),
         _.directMessage       -> false,
@@ -53,16 +53,58 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         _.organizedAt         -> lift(organizedAt)
       ).returning(_.id)
     }
-    run(r)
+    run(q)
   }
 
   def delete(groupId: GroupId): Future[Unit] = {
-    val r = quote {
+    val q = quote {
       query[Groups]
         .filter(_.id == lift(groupId))
         .delete
     }
-    run(r).map(_ => Unit)
+    run(q).map(_ => ())
+  }
+
+  def exists(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[Groups]
+        .filter(_.id == lift(groupId))
+        .filter(g => query[Blocks].filter(b => b.accountId == lift(by) && b.by == g.by).isEmpty)
+        .nonEmpty
+    }
+    run(q)
+  }
+
+  def isOrganizer(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[Groups]
+        .filter(_.id == lift(groupId))
+        .filter(_.by == lift(by))
+        .filter(_.accountCount > 1)
+        .nonEmpty
+    }
+    run(q)
+  }
+
+  def find(groupId: GroupId, sessionId: SessionId): Future[Option[Group]] = {
+    val by = sessionId.toAccountId
+    val q = quote {
+      query[Groups]
+        .filter(_.id == lift(groupId))
+        .filter(g => query[Blocks].filter(b => b.accountId == lift(by) && b.by == g.by).isEmpty)
+    }
+    run(q).map(_.headOption.map(Group(_)))
+  }
+
+  def findAccountCount(id: GroupId): Future[Long] = {
+    val q = quote {
+      query[Groups]
+        .filter(_.id == lift(id))
+        .map(_.accountCount)
+    }
+    run(q).map(_.headOption.getOrElse(0L))
   }
 
   def update(groupId: GroupId,
@@ -73,7 +115,7 @@ class GroupsDAO @Inject()(db: DatabaseService) {
              sessionId: SessionId): Future[Unit] = {
 
     val by = sessionId.toAccountId
-    val r = quote {
+    val q = quote {
       query[Groups]
         .filter(_.id == lift(groupId))
         .filter(_.by == lift(by))
@@ -84,77 +126,8 @@ class GroupsDAO @Inject()(db: DatabaseService) {
         _.authorityType       -> lift(authority)
       )
     }
-    run(r).map(_ => Unit)
+    run(q).map(_ => ())
   }
-
-  def find(name: Option[String],
-           invitationOnly: Option[Boolean],
-           privacyType: Option[GroupPrivacyType],
-           since: Option[Long],
-           offset: Int,
-           count: Int,
-           sessionId: SessionId): Future[List[Group]] = {
-
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[Groups]
-        .filter(g => g.directMessage == false)
-        .filter(g => lift(since).forall(g.id < _))
-        .filter(g => lift(name.map(_ + "%")).forall(n => g.name.exists(_ like n)))
-        .filter(g => lift(invitationOnly).forall(g.invitationOnly ==  _))
-        .filter(g => lift(privacyType).forall(g.privacyType == _))
-        .filter(g => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == g.by) || (b.accountId == g.by && b.by == lift(by))
-        ).isEmpty)
-        .sortBy(_.id)(Ord.desc)
-        .drop(lift(offset))
-        .take(lift(count))
-    }
-    run(q).map(_.map(g => Group(g, g.id.value)))
-  }
-
-  def find(groupId: GroupId): Future[Option[Group]] = {
-    val q = quote {
-      query[Groups]
-          .filter(_.id == lift(groupId))
-    }
-    run(q).map(_.headOption.map(Group(_)))
-  }
-
-  def find(groupId: GroupId, sessionId: SessionId): Future[Option[Group]] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[Groups]
-        .filter(_.id == lift(groupId))
-        .filter(g => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == g.by) || (b.accountId == g.by && b.by == lift(by))
-        ).isEmpty)
-    }
-    run(q).map(_.headOption.map(Group(_)))
-  }
-
-  def exist(groupId: GroupId): Future[Boolean] = {
-    val q = quote(
-      query[Groups]
-        .filter(_.id == lift(groupId))
-        .nonEmpty
-    )
-    run(q)
-  }
-
-  def exist(groupId: GroupId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[Groups]
-        .filter(_.id == lift(groupId))
-        .filter(g => query[Blocks].filter(b =>
-          (b.accountId == lift(by) && b.by == g.by) || (b.accountId == g.by && b.by == lift(by))
-        ).isEmpty)
-        .nonEmpty
-    }
-    run(q)
-  }
-
 
 }
 

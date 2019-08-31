@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class BlocksValidator @Inject()(blocksDAO: BlocksDAO) {
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    blocksDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustBlocked(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    blocksDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -19,8 +19,8 @@ class BlocksValidator @Inject()(blocksDAO: BlocksDAO) {
     })
   }
 
-  def notExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    blocksDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustNotBlocked(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+    blocksDAO.own(accountId, sessionId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyBlocked))
       case false =>

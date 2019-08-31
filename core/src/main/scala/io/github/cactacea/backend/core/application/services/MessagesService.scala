@@ -44,7 +44,6 @@ class MessagesService @Inject()(
     transaction {
       for {
         m <- messagesRepository.find(groupId, since, offset, count, ascending, sessionId)
-        _ <- messagesRepository.updateReadStatus(m, sessionId)
       } yield (m)
     }
   }

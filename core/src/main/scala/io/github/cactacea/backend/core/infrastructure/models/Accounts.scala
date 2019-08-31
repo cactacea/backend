@@ -21,17 +21,4 @@ case class Accounts(
                      signedOutAt: Option[Long]
                  ) {
 
-
-  def isNormally: Boolean = {
-    this.accountStatus == AccountStatusType.normally
-  }
-
-  def isTerminated: Boolean = {
-    this.accountStatus == AccountStatusType.terminated
-  }
-
-  def isExpired(expiredDate: Long): Boolean = {
-    this.signedOutAt.map(_ > expiredDate).getOrElse(false)
-  }
-
 }

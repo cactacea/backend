@@ -10,6 +10,9 @@ case class GetFollowers (
                           @ApiModelProperty(value = "Account Identifier.", required = true)
                           @RouteParam id: AccountId,
 
+                          @ApiModelProperty(value = "Filters accounts whose account name start of.")
+                          @QueryParam @Size(min = 0, max = 1000) accountName: Option[String],
+
                           @ApiModelProperty(value = "Filters followers which started on since or later.")
                           @QueryParam since: Option[Long],
 

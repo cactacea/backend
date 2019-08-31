@@ -116,7 +116,7 @@ class EmailAuthenticationService @Inject()(
 
   def changePassword(password: String, sessionId: SessionId): Future[Unit] = {
     for {
-      a <- accountsValidator.find(sessionId)
+      a <- accountsValidator.mustFind(sessionId)
       _ <- db.transaction(authInfoRepository.update(LoginInfo(EmailsProvider.ID, a.accountName), passwordHasherRegistry.current.hash(password)))
     } yield (())
   }
@@ -139,7 +139,7 @@ class EmailAuthenticationService @Inject()(
     transaction {
       for {
         l <- tokensRepository.verify(token, TokenType.resetPassword)
-        _ <- authenticationsRepository.exist(l.providerId, l.providerKey)
+        _ <- authenticationsRepository.exists(l.providerId, l.providerKey)
         _ <- authInfoRepository.update(l, passwordHasherRegistry.current.hash(password))
       } yield (())
     }
