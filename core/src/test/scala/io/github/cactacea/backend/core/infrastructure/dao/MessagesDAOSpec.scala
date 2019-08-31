@@ -9,18 +9,18 @@ class MessagesDAOSpec extends DAOSpec {
   feature("create") {
 
     scenario("should create a text message") {
-      forOne(accountGen, accountGen, groupGen, textMessageGen) {
+      forOne(accountGen, accountGen, channelGen, textMessageGen) {
         (s, a1, g, m) =>
           // preparing
           //  session account is owner
           //  accountId1 is a member
           val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
           val accountId1 = await(accountsDAO.create(a1.accountName))
-          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
-          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
-          val accountCount = await(groupsDAO.findAccountCount(groupId))
-          val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
+          val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountChannelsDAO.create(sessionId.toAccountId, channelId, sessionId))
+          await(accountChannelsDAO.create(accountId1, channelId, sessionId))
+          val accountCount = await(channelsDAO.findAccountCount(channelId))
+          val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), accountCount, sessionId))
           val result = await(findMessage(messageId))
           assert(result.exists(_.id == messageId))
           assert(result.exists(_.messageType == MessageType.text))
@@ -28,7 +28,7 @@ class MessagesDAOSpec extends DAOSpec {
           assert(result.exists(!_.contentWarning))
           assert(result.exists(_.accountCount == accountCount))
           assert(result.exists(_.contentStatus == ContentStatusType.unchecked))
-          assert(result.exists(_.groupId == groupId))
+          assert(result.exists(_.channelId == channelId))
           assert(result.exists(_.mediumId.isEmpty))
           assert(result.exists(_.readCount == 0))
       }
@@ -39,17 +39,17 @@ class MessagesDAOSpec extends DAOSpec {
         (s, a1, i) =>
 
           // preparing
-          //   session create a group
-          //   account1 join the group
+          //   session create a channel
+          //   account1 join the channel
           //   session create a message
           val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
           val accountId1 = await(accountsDAO.create(a1.accountName))
-          val groupId = await(groupsDAO.create(sessionId))
-          await(accountGroupsDAO.create(groupId, sessionId))
-          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
+          val channelId = await(channelsDAO.create(sessionId))
+          await(accountChannelsDAO.create(channelId, sessionId))
+          await(accountChannelsDAO.create(accountId1, channelId, sessionId))
           val mediumId = await(mediumsDAO.create(i.key, i.uri, i.thumbnailUrl, i.mediumType, i.width, i.height, i.size, sessionId))
-          val accountCount = await(groupsDAO.findAccountCount(groupId))
-          val messageId = await(messagesDAO.create(groupId, mediumId, accountCount, sessionId))
+          val accountCount = await(channelsDAO.findAccountCount(channelId))
+          val messageId = await(messagesDAO.create(channelId, mediumId, accountCount, sessionId))
           val result = await(findMessage(messageId))
           assert(result.exists(_.message.isEmpty))
           assert(result.exists(_.messageType == MessageType.medium))
@@ -65,16 +65,16 @@ class MessagesDAOSpec extends DAOSpec {
         (s, a1) =>
 
           // preparing
-          //   session create a group
-          //   account1 join the group
+          //   session create a channel
+          //   account1 join the channel
           //   session create a message
           val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
           val accountId1 = await(accountsDAO.create(a1.accountName))
-          val groupId = await(groupsDAO.create(sessionId))
-          await(accountGroupsDAO.create(groupId, sessionId))
-          await(accountGroupsDAO.create(accountId1, groupId, sessionId))
-          val accountCount = await(groupsDAO.findAccountCount(groupId))
-          val messageId = await(messagesDAO.create(groupId, MessageType.joined, accountCount, sessionId))
+          val channelId = await(channelsDAO.create(sessionId))
+          await(accountChannelsDAO.create(channelId, sessionId))
+          await(accountChannelsDAO.create(accountId1, channelId, sessionId))
+          val accountCount = await(channelsDAO.findAccountCount(channelId))
+          val messageId = await(messagesDAO.create(channelId, MessageType.joined, accountCount, sessionId))
           val result = await(findMessage(messageId))
           assert(result.exists(_.message.isEmpty))
           assert(result.exists(_.mediumId.isEmpty))
@@ -89,15 +89,15 @@ class MessagesDAOSpec extends DAOSpec {
 
   feature("updateReadCount") {
     scenario("should should update read count") {
-      forOne(accountGen, groupGen, messagesGen) {
+      forOne(accountGen, channelGen, messageGen) {
         (s, g, m) =>
           // preparing
           //  session account is owner
           val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(accountGroupsDAO.create(sessionId.toAccountId, groupId, sessionId))
-          val accountCount = await(groupsDAO.findAccountCount(groupId))
-          val messageId = await(messagesDAO.create(groupId, m.message.getOrElse(""), accountCount, sessionId))
+          val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          await(accountChannelsDAO.create(sessionId.toAccountId, channelId, sessionId))
+          val accountCount = await(channelsDAO.findAccountCount(channelId))
+          val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), accountCount, sessionId))
           await(messagesDAO.updateReadCount(List(messageId)))
           val result = await(findMessage(messageId))
           assert(result.exists(_.id == messageId))

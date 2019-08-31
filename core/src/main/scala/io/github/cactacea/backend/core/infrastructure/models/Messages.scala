@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 case class Messages(
                      id: MessageId,
                      by: AccountId,
-                     groupId: GroupId,
+                     channelId: ChannelId,
                      messageType: MessageType,
                      message: Option[String],
                      mediumId: Option[MediumId],

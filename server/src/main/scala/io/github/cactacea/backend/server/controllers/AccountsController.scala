@@ -6,10 +6,10 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, GroupNotFound}
-import io.github.cactacea.backend.server.models.requests.account.{GetAccount, GetAccountStatus, GetAccounts, GetFollowers, GetFriends, GetLikes, PostAccountJoinGroup, PostAccountLeaveGroup, PostAccountReport, PutAccountDisplayName}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountNotFound, ChannelNotFound}
+import io.github.cactacea.backend.server.models.requests.account.{GetAccount, GetAccountStatus, GetAccounts, GetFollowers, GetFriends, GetLikes, PostAccountJoinChannel, PostAccountLeaveChannel, PostAccountReport, PutAccountDisplayName}
 import io.github.cactacea.backend.server.models.requests.feed.GetAccountFeeds
-import io.github.cactacea.backend.server.models.requests.group.{GetAccountGroup, GetAccountGroups}
+import io.github.cactacea.backend.server.models.requests.channel.{GetAccountChannel, GetAccountChannels}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
@@ -23,8 +23,8 @@ class AccountsController @Inject()(
                                     feedLikesService: FeedLikesService,
                                     followersService: FollowersService,
                                     friendsService: FriendsService,
-                                    groupAccountsService: GroupAccountsService,
-                                    accountGroupsService: AccountGroupsService,
+                                    channelAccountsService: ChannelAccountsService,
+                                    accountChannelsService: AccountChannelsService,
                                     s: Swagger
                                   ) extends CactaceaController {
 
@@ -164,62 +164,62 @@ class AccountsController @Inject()(
     }
 
 
-    scope(groups).postWithDoc("/accounts/:accountId/groups/:groupId/join") { o =>
-      o.summary("Join an account in a group")
+    scope(channels).postWithDoc("/accounts/:accountId/channels/:channelId/join") { o =>
+      o.summary("Join an account in a channel")
         .tag(accountsTag)
         .operationId("joinAccount")
-        .request[PostAccountJoinGroup]
+        .request[PostAccountJoinChannel]
         .responseWith(Status.Ok.code, Status.NoContent.reason)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound, AccountNotFound))))
-    } { request: PostAccountJoinGroup =>
-      groupAccountsService.create(
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound, AccountNotFound))))
+    } { request: PostAccountJoinChannel =>
+      channelAccountsService.create(
         request.accountId,
-        request.groupId,
+        request.channelId,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
-    scope(groups).postWithDoc("/accounts/:accountId/groups/:groupId/leave") { o =>
-      o.summary("Leave an account from a group")
+    scope(channels).postWithDoc("/accounts/:accountId/channels/:channelId/leave") { o =>
+      o.summary("Leave an account from a channel")
         .tag(accountsTag)
         .operationId("leaveAccount")
-        .request[PostAccountJoinGroup]
+        .request[PostAccountJoinChannel]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
-    } { request: PostAccountLeaveGroup =>
-      groupAccountsService.delete(
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, ChannelNotFound))))
+    } { request: PostAccountLeaveChannel =>
+      channelAccountsService.delete(
         request.accountId,
-        request.groupId,
+        request.channelId,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
 
-    scope(groups).getWithDoc("/accounts/:id/group") { o =>
-      o.summary("Get a direct message group to an account")
+    scope(channels).getWithDoc("/accounts/:id/channel") { o =>
+      o.summary("Get a direct message channel to an account")
         .tag(accountsTag)
-        .operationId("findAccountGroup")
-        .request[GetAccountGroup]
-        .responseWith[Group](Status.Ok.code, successfulMessage)
+        .operationId("findAccountChannel")
+        .request[GetAccountChannel]
+        .responseWith[Channel](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
 
-    } { request: GetAccountGroup =>
-      accountGroupsService.find(
+    } { request: GetAccountChannel =>
+      accountChannelsService.find(
         request.id,
         CactaceaContext.sessionId
       )
     }
 
-    scope(groups).getWithDoc("/accounts/:id/groups") { o =>
-      o.summary("Get groups list an account groupJoined")
+    scope(channels).getWithDoc("/accounts/:id/channels") { o =>
+      o.summary("Get channels list an account channelJoined")
         .tag(accountsTag)
-        .operationId("findAccountGroups")
-        .request[GetAccountGroups]
-        .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
+        .operationId("findAccountChannels")
+        .request[GetAccountChannels]
+        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
 
-    } { request: GetAccountGroups =>
-      accountGroupsService.find(
+    } { request: GetAccountChannels =>
+      accountChannelsService.find(
         request.id,
         request.since,
         request.offset.getOrElse(0),

@@ -53,15 +53,6 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  private def deleteFeedLikes(feedId: FeedId): Future[Unit] = {
-    val q = quote {
-      query[FeedLikes]
-        .filter(_.feedId == lift(feedId))
-        .delete
-    }
-    run(q).map(_ => ())
-  }
-
   def own(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.toAccountId
     val q = quote {

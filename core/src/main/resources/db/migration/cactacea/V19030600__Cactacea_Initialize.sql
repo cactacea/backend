@@ -145,9 +145,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`groups`
+-- Table `${schema}`.`channels`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`groups` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`channels` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(1000) NULL DEFAULT NULL,
   `privacy_type` TINYINT(4) NOT NULL,
@@ -160,9 +160,9 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`groups` (
   `last_posted_at` BIGINT(20) NULL DEFAULT NULL,
   `organized_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_groups_messages1_idx` (`message_id` ASC),
-  INDEX `fk_groups_accounts1_idx` (`by` ASC),
-  CONSTRAINT `fk_groups_accounts1`
+  INDEX `fk_channels_messages1_idx` (`message_id` ASC),
+  INDEX `fk_channels_accounts1_idx` (`by` ASC),
+  CONSTRAINT `fk_channels_accounts1`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`accounts` (`id`))
 ENGINE = InnoDB
@@ -171,32 +171,32 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`account_groups`
+-- Table `${schema}`.`account_channels`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`account_groups` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`account_channels` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `account_id` BIGINT(20) NOT NULL,
-  `group_id` BIGINT(20) NOT NULL,
+  `channel_id` BIGINT(20) NOT NULL,
   `unread_count` BIGINT(20) NOT NULL,
   `hidden` TINYINT(4) NOT NULL,
   `mute` TINYINT(4) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `joined_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_account_groups_groups1_idx` (`group_id` ASC),
-  INDEX `fk_account_groups_accounts1` (`account_id` ASC),
-  INDEX `fk_account_groups_accounts2_idx` (`by` ASC),
-  INDEX `i_account_groups1` (`account_id` ASC, `group_id` ASC, `hidden` ASC, `mute` ASC, `by` ASC),
-  UNIQUE INDEX `ui_account_groups1_idx` (`account_id` ASC, `group_id` ASC),
-  CONSTRAINT `fk_account_groups_accounts1`
+  INDEX `fk_account_channels_channels1_idx` (`channel_id` ASC),
+  INDEX `fk_account_channels_accounts1` (`account_id` ASC),
+  INDEX `fk_account_channels_accounts2_idx` (`by` ASC),
+  INDEX `i_account_channels1` (`account_id` ASC, `channel_id` ASC, `hidden` ASC, `mute` ASC, `by` ASC),
+  UNIQUE INDEX `ui_account_channels1_idx` (`account_id` ASC, `channel_id` ASC),
+  CONSTRAINT `fk_account_channels_accounts1`
     FOREIGN KEY (`account_id`)
     REFERENCES `${schema}`.`accounts` (`id`),
-  CONSTRAINT `fk_account_groups_accounts2`
+  CONSTRAINT `fk_account_channels_accounts2`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`accounts` (`id`),
-  CONSTRAINT `fk_account_groups_groups1`
-    FOREIGN KEY (`group_id`)
-    REFERENCES `${schema}`.`groups` (`id`)
+  CONSTRAINT `fk_account_channels_channels1`
+    FOREIGN KEY (`channel_id`)
+    REFERENCES `${schema}`.`channels` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -209,7 +209,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `${schema}`.`messages` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `by` BIGINT(20) NOT NULL,
-  `group_id` BIGINT(20) NOT NULL,
+  `channel_id` BIGINT(20) NOT NULL,
   `message_type` TINYINT(4) NOT NULL,
   `message` VARCHAR(1000) NULL DEFAULT NULL,
   `medium_id` BIGINT(20) NULL DEFAULT NULL,
@@ -222,13 +222,13 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`messages` (
   `content_status` TINYINT(4) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_messages_accounts2_idx` (`by` ASC),
-  INDEX `fk_messages_groups1_idx` (`group_id` ASC),
+  INDEX `fk_messages_channels1_idx` (`channel_id` ASC),
   CONSTRAINT `fk_messages_accounts2`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`accounts` (`id`),
-  CONSTRAINT `fk_messages_groups1`
-    FOREIGN KEY (`group_id`)
-    REFERENCES `${schema}`.`groups` (`id`)
+  CONSTRAINT `fk_messages_channels1`
+    FOREIGN KEY (`channel_id`)
+    REFERENCES `${schema}`.`channels` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -240,7 +240,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`account_messages` (
   `account_id` BIGINT(20) NOT NULL,
-  `group_id` BIGINT(20) NOT NULL,
+  `channel_id` BIGINT(20) NOT NULL,
   `message_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `unread` TINYINT(4) NOT NULL,
@@ -248,15 +248,15 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`account_messages` (
   `posted_at` BIGINT(20) NOT NULL,
   INDEX `fk_message_reads_messages1_idx` (`message_id` ASC),
   INDEX `fk_account_message_accounts1_idx` (`account_id` ASC),
-  INDEX `fk_account_message_groups1_idx` (`group_id` ASC),
+  INDEX `fk_account_message_channels1_idx` (`channel_id` ASC),
   INDEX `fk_account_messages_accounts1_idx` (`by` ASC),
-  UNIQUE INDEX `ui_account_messages1_idx` (`account_id` ASC, `group_id` ASC, `message_id` ASC),
+  UNIQUE INDEX `ui_account_messages1_idx` (`account_id` ASC, `channel_id` ASC, `message_id` ASC),
   CONSTRAINT `fk_account_message_accounts1`
     FOREIGN KEY (`account_id`)
     REFERENCES `${schema}`.`accounts` (`id`),
-  CONSTRAINT `fk_account_message_groups1`
-    FOREIGN KEY (`group_id`)
-    REFERENCES `${schema}`.`groups` (`id`)
+  CONSTRAINT `fk_account_message_channels1`
+    FOREIGN KEY (`channel_id`)
+    REFERENCES `${schema}`.`channels` (`id`)
     ON DELETE CASCADE,
   CONSTRAINT `fk_account_message_messages1`
     FOREIGN KEY (`message_id`)
@@ -672,14 +672,14 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`invitations` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `group_id` BIGINT(20) NOT NULL,
+  `channel_id` BIGINT(20) NOT NULL,
   `account_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `notified` TINYINT(4) NOT NULL,
   `invited_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `ui_invitations1_idx` (`group_id` ASC, `account_id` ASC),
-  INDEX `fk_invitations_groups1_idx` (`group_id` ASC),
+  UNIQUE INDEX `ui_invitations1_idx` (`channel_id` ASC, `account_id` ASC),
+  INDEX `fk_invitations_channels1_idx` (`channel_id` ASC),
   INDEX `fk_invitations_accounts1_idx` (`account_id` ASC),
   INDEX `fk_invitations_accounts2_idx` (`by` ASC),
   CONSTRAINT `fk_invitations_accounts1`
@@ -688,9 +688,9 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`invitations` (
   CONSTRAINT `fk_invitations_accounts2`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`accounts` (`id`),
-  CONSTRAINT `fk_invitations_groups1`
-    FOREIGN KEY (`group_id`)
-    REFERENCES `${schema}`.`groups` (`id`)
+  CONSTRAINT `fk_invitations_channels1`
+    FOREIGN KEY (`channel_id`)
+    REFERENCES `${schema}`.`channels` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -698,21 +698,21 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`group_reports`
+-- Table `${schema}`.`channel_reports`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`group_reports` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`channel_reports` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `group_id` BIGINT(20) NOT NULL,
+  `channel_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `report_type` TINYINT(4) NOT NULL,
   `report_content` VARCHAR(1000) NULL DEFAULT NULL,
   `reported_at` BIGINT(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   INDEX `fk_association_reports_accounts1_idx` (`by` ASC),
-  INDEX `fk_group_reports_groups1_idx` (`group_id` ASC),
-  CONSTRAINT `fk_group_reports_groups1`
-    FOREIGN KEY (`group_id`)
-    REFERENCES `${schema}`.`groups` (`id`)
+  INDEX `fk_channel_reports_channels1_idx` (`channel_id` ASC),
+  CONSTRAINT `fk_channel_reports_channels1`
+    FOREIGN KEY (`channel_id`)
+    REFERENCES `${schema}`.`channels` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -778,7 +778,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`push_notification_settings` (
   `invitation` TINYINT(4) NOT NULL,
   `feed` TINYINT(4) NOT NULL,
   `comment` TINYINT(4) NOT NULL,
-  `group_message` TINYINT(4) NOT NULL,
+  `channel_message` TINYINT(4) NOT NULL,
   `message` TINYINT(4) NOT NULL,
   `show_message` TINYINT(4) NOT NULL,
   `friend_request` TINYINT(4) NOT NULL,

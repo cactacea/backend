@@ -16,10 +16,10 @@ trait AccountsControllerSpec extends FeatureTest {
   test("GET /accounts/:id/likes") (pending)
   test("GET /accounts/:id/followers") (pending)
   test("GET /accounts/:id/friends") (pending)
-  test("POST /accounts/:accountId/groups/:groupId/join") (pending)
-  test("POST /accounts/:accountId/groups/:groupId/leave") (pending)
+  test("POST /accounts/:accountId/channels/:channelId/join") (pending)
+  test("POST /accounts/:accountId/channels/:channelId/leave") (pending)
   test("GET /accounts/:id/group") (pending)
-  test("GET /accounts/:id/groups") (pending)
+  test("GET /accounts/:id/channels") (pending)
   test("POST /accounts/:id/reports") (pending)
 
 }

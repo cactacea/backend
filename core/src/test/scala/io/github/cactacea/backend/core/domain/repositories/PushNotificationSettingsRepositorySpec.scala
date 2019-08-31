@@ -15,7 +15,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
         assert(result.comment == b(1))
         assert(result.friendRequest == b(2))
         assert(result.message == b(3))
-        assert(result.groupMessage == b(4))
+        assert(result.channelMessage == b(4))
         assert(result.invitation == b(5))
         assert(result.showMessage == b(6))
       }

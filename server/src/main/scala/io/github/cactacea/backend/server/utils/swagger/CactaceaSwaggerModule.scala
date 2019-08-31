@@ -1,7 +1,6 @@
 package io.github.cactacea.backend.server.utils.swagger
 
 import com.google.inject.Provides
-import io.cactacea.finagger
 import io.github.cactacea.backend.CactaceaBuildInfo
 import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.finagger.{CactaceaSwagger, SwaggerModule}
@@ -28,7 +27,7 @@ object CactaceaSwaggerModule extends SwaggerModule {
     swaggerDefine.addTag(new Tag().name("Blocks").description("Manage blocks"))
     swaggerDefine.addTag(new Tag().name("Comments").description("Manage comments"))
     swaggerDefine.addTag(new Tag().name("Feeds").description("Manage feeds"))
-    swaggerDefine.addTag(new Tag().name("Groups").description("Manage groups"))
+    swaggerDefine.addTag(new Tag().name("Channels").description("Manage channels"))
     swaggerDefine.addTag(new Tag().name("Invitations").description("Manage invitations"))
     swaggerDefine.addTag(new Tag().name("Mediums").description("Manage media"))
     swaggerDefine.addTag(new Tag().name("Messages").description("Manage messages"))

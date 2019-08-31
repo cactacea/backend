@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.AccountStatusType
 import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
-import io.github.cactacea.backend.core.infrastructure.models.{AccountGroups, Accounts, Blocks, Relationships}
+import io.github.cactacea.backend.core.infrastructure.models.{AccountChannels, Accounts, Blocks, Relationships}
 
 case class Account(id: AccountId,
                    accountName: String,
@@ -47,7 +47,7 @@ object Account {
     apply(a, None, None, a.id.value, None)
   }
 
-  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountGroups], next: Long, b: Option[Blocks]): Account = {
+  private def apply(a: Accounts, r: Option[Relationships], ag: Option[AccountChannels], next: Long, b: Option[Blocks]): Account = {
     Account(
       a.id,
       a.accountName,

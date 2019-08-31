@@ -5,39 +5,38 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, AccountMessagesValidator, GroupsValidator, MediumsValidator}
+import io.github.cactacea.backend.core.infrastructure.validators._
 
 
 class MessagesRepository @Inject()(
-                                    accountGroupsDAO: AccountGroupsDAO,
-                                    accountGroupsValidator: AccountGroupsValidator,
+                                    accountChannelsDAO: AccountChannelsDAO,
+                                    accountChannelsValidator: AccountChannelsValidator,
                                     accountMessagesDAO: AccountMessagesDAO,
                                     accountMessagesValidator: AccountMessagesValidator,
-                                    groupsDAO: GroupsDAO,
-                                    groupsValidator: GroupsValidator,
+                                    channelsDAO: ChannelsDAO,
                                     mediumsValidator: MediumsValidator,
                                     messagesDAO:  MessagesDAO
                                   ) {
 
-  def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
+  def createText(channelId: ChannelId, message: String, sessionId: SessionId): Future[Message] = {
     for {
-      _ <- accountGroupsValidator.mustJoined(sessionId.toAccountId, groupId)
-      c <- groupsDAO.findAccountCount(groupId)
-      i <- messagesDAO.create(groupId, message, c, sessionId)
-      _ <- accountMessagesDAO.create(groupId, i, sessionId)
-      _ <- accountGroupsDAO.updateUnreadCount(groupId)
+      _ <- accountChannelsValidator.mustJoined(sessionId.toAccountId, channelId)
+      c <- channelsDAO.findAccountCount(channelId)
+      i <- messagesDAO.create(channelId, message, c, sessionId)
+      _ <- accountMessagesDAO.create(channelId, i, sessionId)
+      _ <- accountChannelsDAO.updateUnreadCount(channelId)
       m <- accountMessagesValidator.mustFind(i, sessionId)
     } yield (m)
   }
 
-  def createMedium(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
+  def createMedium(channelId: ChannelId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
     for {
-      _ <- accountGroupsValidator.mustJoined(sessionId.toAccountId, groupId)
+      _ <- accountChannelsValidator.mustJoined(sessionId.toAccountId, channelId)
       _ <- mediumsValidator.mustOwn(mediumId, sessionId)
-      c <- groupsDAO.findAccountCount(groupId)
-      i <- messagesDAO.create(groupId, mediumId, c, sessionId)
-      _ <- accountMessagesDAO.create(groupId, i, sessionId)
-      _ <- accountGroupsDAO.updateUnreadCount(groupId)
+      c <- channelsDAO.findAccountCount(channelId)
+      i <- messagesDAO.create(channelId, mediumId, c, sessionId)
+      _ <- accountMessagesDAO.create(channelId, i, sessionId)
+      _ <- accountChannelsDAO.updateUnreadCount(channelId)
       m <- accountMessagesValidator.mustFind(i, sessionId)
     } yield (m)
   }
@@ -55,19 +54,19 @@ class MessagesRepository @Inject()(
     }
   }
 
-  def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountMessagesDAO.delete(sessionId.toAccountId, groupId)
+  def delete(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+    accountMessagesDAO.delete(sessionId.toAccountId, channelId)
   }
 
-  def find(groupId: GroupId,
+  def find(channelId: ChannelId,
            since: Option[Long],
            offset: Int,
            count: Int,
            ascending: Boolean,
            sessionId: SessionId): Future[List[Message]] = {
     for {
-      _ <- accountGroupsValidator.mustJoined(sessionId.toAccountId, groupId)
-      r <- accountMessagesDAO.find(groupId, since, offset, count, ascending, sessionId)
+      _ <- accountChannelsValidator.mustJoined(sessionId.toAccountId, channelId)
+      r <- accountMessagesDAO.find(channelId, since, offset, count, ascending, sessionId)
       _ <- updateReadStatus(r, sessionId)
     } yield (r)
 

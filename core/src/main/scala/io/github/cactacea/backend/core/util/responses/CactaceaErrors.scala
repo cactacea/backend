@@ -62,7 +62,7 @@ object CactaceaErrors {
   final val m40003 = "Operation not allowed."
   final val m40004 = "File upload error occurred."
   final val m40005 = "Authority not found."
-  final val m40006 = "Group is invitation only."
+  final val m40006 = "Channel is invitation only."
   final val m40007 = "Organizer can not leave."
   final val m40008 = "API Key is invalid."
   final val m40009 = "Account name already used."
@@ -83,14 +83,14 @@ object CactaceaErrors {
   final val m40027 = "Account not friend."
   final val m40028 = "Account already invited."
   final val m40029 = "Account already requested."
-  final val m40030 = "Account already groupJoined."
-  final val m40031 = "Account not groupJoined."
+  final val m40030 = "Account already channelJoined."
+  final val m40031 = "Account not channelJoined."
   final val m40032 = "Comment already liked."
   final val m40033 = "Comment not liked."
   final val m40034 = "Feed already liked."
   final val m40035 = "Feed not liked."
-  final val m40036 = "Group already hidden."
-  final val m40037 = "Group not hidden."
+  final val m40036 = "Channel already hidden."
+  final val m40037 = "Channel not hidden."
   final val m40038 = "Token already expired."
   final val m40039 = "Invalid token error."
 
@@ -99,7 +99,7 @@ object CactaceaErrors {
   final val m40402 = "Medium not found."
   final val m40403 = "Feed not found."
   final val m40404 = "Request not found."
-  final val m40405 = "Group not found."
+  final val m40405 = "Channel not found."
   final val m40406 = "Invitation not found."
   final val m40407 = "Message not found."
 
@@ -138,7 +138,7 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40005)  override val message: String = m40005
   }
 
-  final object InvitationGroupFound extends BadRequest {
+  final object InvitationChannelFound extends BadRequest {
     @ApiModelProperty(example = c40006)  override val code: Int =       c40006.toInt
     @ApiModelProperty(example = m40006)  override val message: String = m40006
   }
@@ -268,12 +268,12 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40035)  override val message: String = m40035
   }
 
-  final object GroupAlreadyHidden extends BadRequest {
+  final object ChannelAlreadyHidden extends BadRequest {
     @ApiModelProperty(example = c40036)  override val code: Int =       c40036.toInt
     @ApiModelProperty(example = m40036)  override val message: String = m40036
   }
 
-  final object GroupNotHidden extends BadRequest {
+  final object ChannelNotHidden extends BadRequest {
     @ApiModelProperty(example = c40037)  override val code: Int =       c40037.toInt
     @ApiModelProperty(example = m40037)  override val message: String = m40037
   }
@@ -316,7 +316,7 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40404)  override val message: String = m40404
   }
 
-  final object GroupNotFound extends NotFound {
+  final object ChannelNotFound extends NotFound {
     @ApiModelProperty(example = c40405)  override val code: Int =       c40405.toInt
     @ApiModelProperty(example = m40405)  override val message: String = m40405
   }

@@ -19,7 +19,7 @@ trait CactaceaController extends SwaggerController {
   protected val commentLikesTag = "CommentLikes"
   protected val feedsTag = "Feeds"
   protected val feedsLikeTag = "FeedLikes"
-  protected val groupsTag = "Groups"
+  protected val channelsTag = "Channels"
   protected val invitationsTag = "Invitations"
   protected val sessionTag = "Session"
   protected val mediumsTag = "Mediums"

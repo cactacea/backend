@@ -21,7 +21,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
         _.comment             -> lift(true),
         _.friendRequest       -> lift(true),
         _.message             -> lift(true),
-        _.groupMessage        -> lift(true),
+        _.channelMessage        -> lift(true),
         _.invitation     -> lift(true),
         _.showMessage         -> lift(true)
       )
@@ -33,7 +33,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
              comment:Boolean,
              friendRequest: Boolean,
              message: Boolean,
-             groupMessage: Boolean,
+             channelMessage: Boolean,
              invitation: Boolean,
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
@@ -47,7 +47,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
           _.comment         -> lift(comment),
           _.friendRequest   -> lift(friendRequest),
           _.message         -> lift(message),
-          _.groupMessage    -> lift(groupMessage),
+          _.channelMessage    -> lift(channelMessage),
           _.invitation      -> lift(invitation),
           _.showMessage     -> lift(showMessage)
         )

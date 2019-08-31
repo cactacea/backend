@@ -19,7 +19,7 @@ case class PutFeed(
                     @ApiModelProperty(value = "Tags of feed.")
                     @Size(min = 0, max = 1000) tags : Option[Array[String]],
 
-                    @ApiModelProperty(value = "Group privacy type.", required = true)
+                    @ApiModelProperty(value = "Channel privacy type.", required = true)
                     privacyType : FeedPrivacyType,
 
                     @ApiModelProperty(value = "Content warning.", required = true)

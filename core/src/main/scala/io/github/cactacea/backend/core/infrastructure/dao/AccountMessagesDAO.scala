@@ -12,30 +12,30 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(groupId: GroupId, messageId: MessageId, sessionId: SessionId): Future[Unit] = {
+  def create(channelId: ChannelId, messageId: MessageId, sessionId: SessionId): Future[Unit] = {
     val postedAt = System.currentTimeMillis()
     val by = sessionId.toAccountId
     val q = quote {
       infix"""
-         insert into account_messages (account_id, group_id, message_id, `by`, unread, notified, posted_at)
-         select account_id, group_id, ${lift(messageId)} as message_id, ${lift(by)} as `by`, true as unread, false as notified, ${lift(postedAt)} posted_at
-         from account_groups where group_id = ${lift(groupId)}
+         insert into account_messages (account_id, channel_id, message_id, `by`, unread, notified, posted_at)
+         select account_id, channel_id, ${lift(messageId)} as message_id, ${lift(by)} as `by`, true as unread, false as notified, ${lift(postedAt)} posted_at
+         from account_channels where channel_id = ${lift(channelId)}
           """.as[Action[Long]]
     }
     run(q).map(_ => ())
   }
 
-  def delete(accountId: AccountId, groupId: GroupId): Future[Unit] = {
+  def delete(accountId: AccountId, channelId: ChannelId): Future[Unit] = {
     val q = quote {
       query[AccountMessages]
-        .filter(_.groupId == lift(groupId))
+        .filter(_.channelId == lift(channelId))
         .filter(_.accountId == lift(accountId))
         .delete
     }
     run(q).map(_ => ())
   }
 
-  def find(groupId: GroupId,
+  def find(channelId: ChannelId,
            since: Option[Long],
            offset: Int,
            count: Int,
@@ -43,25 +43,25 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
            sessionId: SessionId): Future[List[Message]] = {
 
     if (ascending) {
-      findOlder(groupId, since, offset, count, sessionId)
+      findOlder(channelId, since, offset, count, sessionId)
     } else {
-      findEarlier(groupId, since, offset, count, sessionId)
+      findEarlier(channelId, since, offset, count, sessionId)
     }
 
   }
 
-  private def findEarlier(groupId: GroupId,
-                  since: Option[Long],
-                  offset: Int,
-                  count: Int,
-                  sessionId: SessionId): Future[List[Message]] = {
+  private def findEarlier(channelId: ChannelId,
+                          since: Option[Long],
+                          offset: Int,
+                          count: Int,
+                          sessionId: SessionId): Future[List[Message]] = {
 
     val by = sessionId.toAccountId
     val q = quote {
       (for {
         am <- query[AccountMessages]
           .filter(_.accountId == lift(by))
-          .filter(_.groupId == lift(groupId) )
+          .filter(_.channelId == lift(channelId) )
           .filter(am => lift(since).forall(am.messageId < _))
         m <- query[Messages]
           .join(_.id == am.messageId)
@@ -80,17 +80,17 @@ class AccountMessagesDAO @Inject()(db: DatabaseService) {
 
   }
 
-  private def findOlder(groupId: GroupId,
-                since: Option[Long],
-                offset: Int,
-                count: Int,
-                sessionId: SessionId): Future[List[Message]] = {
+  private def findOlder(channelId: ChannelId,
+                        since: Option[Long],
+                        offset: Int,
+                        count: Int,
+                        sessionId: SessionId): Future[List[Message]] = {
     val by = sessionId.toAccountId
     val q = quote {
       (for {
         am <- query[AccountMessages]
           .filter(_.accountId == lift(by))
-          .filter(_.groupId == lift(groupId) )
+          .filter(_.channelId == lift(channelId) )
           .filter(am => lift(since).forall(am.messageId > _))
         m <- query[Messages]
           .join(_.id == am.messageId)

@@ -159,17 +159,6 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  private def updateCommentCount(feedId: FeedId): Future[Unit] = {
-    val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
-        .update(
-          a => a.commentCount -> 0L
-        )
-    }
-    run(q).map(_ => ())
-  }
-
   def findOwner(commentId: CommentId): Future[Option[AccountId]] = {
     val q = quote {
       query[Comments]

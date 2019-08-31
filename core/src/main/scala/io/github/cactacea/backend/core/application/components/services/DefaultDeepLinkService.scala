@@ -47,16 +47,16 @@ class DefaultDeepLinkService @Inject()(@Flag("scheme") scheme: String) extends D
     s"${scheme}://invitations/${id}"
   }
 
-  def getGroups(): String = {
-    s"${scheme}://groups"
+  def getChannels(): String = {
+    s"${scheme}://channels"
   }
 
-  def getGroup(id: GroupId): String = {
-    s"${scheme}://groups/${id}"
+  def getChannel(id: ChannelId): String = {
+    s"${scheme}://channels/${id}"
   }
 
-  def getMessages(groupId: GroupId, messageId: MessageId): String = {
-    s"${scheme}://groups/${groupId}/messages/${messageId}"
+  def getMessages(channelId: ChannelId, messageId: MessageId): String = {
+    s"${scheme}://channels/${channelId}/messages/${messageId}"
   }
 
   def getNotification(id: NotificationId): String = {

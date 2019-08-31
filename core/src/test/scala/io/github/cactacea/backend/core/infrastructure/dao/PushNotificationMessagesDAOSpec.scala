@@ -12,15 +12,15 @@ class PushNotificationMessagesDAOSpec extends DAOSpec {
 //    val account2 = createAccount("AccountMessagesDAOSpec13")
 //    val account3 = createAccount("AccountMessagesDAOSpec14")
 //
-//    val groupId = await(groupsDAO.create(Some("new group name"), false, GroupPrivacyType.everyone, GroupAuthorityType.member, sessionAccount.id.toSessionId))
+//    val channelId = await(channelsDAO.create(Some("new channel name"), false, ChannelPrivacyType.everyone, ChannelAuthorityType.member, sessionAccount.id.toSessionId))
 //
-//    await(accountGroupsDAO.create(account1.id, groupId))
-//    await(accountGroupsDAO.create(account2.id, groupId))
-//    await(accountGroupsDAO.create(account3.id, groupId))
-//    await(accountGroupsDAO.create(sessionAccount.id, groupId))
+//    await(accountChannelsDAO.create(account1.id, channelId))
+//    await(accountChannelsDAO.create(account2.id, channelId))
+//    await(accountChannelsDAO.create(account3.id, channelId))
+//    await(accountChannelsDAO.create(sessionAccount.id, channelId))
 //
-//    val messageId = await(messagesDAO.create(groupId, Some("new message"), None, sessionAccount.id.toSessionId))
-//    await(accountMessagesDAO.create(groupId, messageId, sessionAccount.id.toSessionId))
+//    val messageId = await(messagesDAO.create(channelId, Some("new message"), None, sessionAccount.id.toSessionId))
+//    await(accountMessagesDAO.create(channelId, messageId, sessionAccount.id.toSessionId))
 //
 //    val ids = List(
 //      sessionAccount.id,

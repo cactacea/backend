@@ -1,5 +1,5 @@
 operator = 運営からのお知らせがあります。
-group_invitation = {0}さんからグループへ招待が届きました。
+channel_invitation = {0}さんからグループへ招待が届きました。
 friend_request = {0}さんからフレンド申請が届きました。
 feed =  {0}さんがフィードを投稿しました。
 feed_reply =  {0}さんがコメントを残しました。

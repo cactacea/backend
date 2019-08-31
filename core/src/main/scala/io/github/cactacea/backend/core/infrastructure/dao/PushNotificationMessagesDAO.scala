@@ -21,7 +21,7 @@ class PushNotificationMessagesDAO @Inject()(
       case Some(m) =>
         findDestinations(id).map({ d =>
           val pt = PushNotificationType.invitation
-          val url = deepLinkService.getMessages(m.groupId, m.id)
+          val url = deepLinkService.getMessages(m.channelId, m.id)
           val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
             PushNotification(accountName, m.message, m.postedAt, url, destinations, pt)
           }).toList
@@ -46,8 +46,8 @@ class PushNotificationMessagesDAO @Inject()(
       for {
         am <- query[AccountMessages]
           .filter(am => am.messageId == lift(id) && am.notified == false)
-        g <- query[Groups]
-          .join(_.id == am.groupId)
+        g <- query[Channels]
+          .join(_.id == am.channelId)
         a <- query[Accounts]
           .join(_.id == am.by)
         d <- query[Devices]
@@ -55,7 +55,7 @@ class PushNotificationMessagesDAO @Inject()(
           .filter(_.pushToken.isDefined)
         _ <- query[PushNotificationSettings]
           .join(_.accountId == am.accountId)
-          .filter(p => ((p.message == true && g.directMessage == true) || (p.groupMessage == true && g.directMessage == false)))
+          .filter(p => ((p.message == true && g.directMessage == true) || (p.channelMessage == true && g.directMessage == false)))
         r <- query[Relationships]
           .leftJoin(r => r.accountId == am.by && r.by == am.accountId)
       } yield {

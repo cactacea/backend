@@ -1,5 +1,5 @@
 operator = Notification from the administrative office.
-group_invitation = {0}'ve invitation you to a group.
+channel_invitation = {0}'ve invitation you to a channel.
 friend_request = {0}'ve sent a friend request.
 feed = {0} posted a feed.
 feed_reply = {0} posted a comment.

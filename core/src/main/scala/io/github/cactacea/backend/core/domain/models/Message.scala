@@ -1,12 +1,12 @@
 package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType, MessageType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, MessageId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, MessageId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 case class Message(
                     id: MessageId,
-                    groupId: GroupId,
+                    channelId: ChannelId,
                     messageType: MessageType,
                     message: Option[String],
                     medium: Option[Medium],
@@ -28,7 +28,7 @@ object Message {
       case true =>
         Message(
           id                = m.id,
-          groupId           = m.groupId,
+          channelId           = m.channelId,
           messageType       = m.messageType,
           message           = None,
           medium            = None,
@@ -44,7 +44,7 @@ object Message {
       case false =>
         Message(
           id                = m.id,
-          groupId           = m.groupId,
+          channelId           = m.channelId,
           messageType       = m.messageType,
           message           = m.message,
           medium            = i.map(Medium(_)),

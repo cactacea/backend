@@ -14,9 +14,9 @@ trait DeepLinkService {
   def getRequest(id: FriendRequestId): String
   def getInvitations(): String
   def getInvitation(id: InvitationId): String
-  def getGroups(): String
-  def getGroup(id: GroupId): String
-  def getMessages(groupId: GroupId, id: MessageId): String
+  def getChannels(): String
+  def getChannel(id: ChannelId): String
+  def getMessages(channelId: ChannelId, id: MessageId): String
   def getNotification(id: NotificationId): String
 
 }

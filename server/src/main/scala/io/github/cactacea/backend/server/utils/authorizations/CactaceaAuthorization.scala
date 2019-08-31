@@ -25,7 +25,7 @@ object CactaceaAuthorization {
   val feedLikes: Authorization[User, JWTAuthenticator] = CactaceaAuthorization(Scope.feedLikes)
   val comments: Authorization[User, JWTAuthenticator] = CactaceaAuthorization(Scope.comments)
   val commentLikes: Authorization[User, JWTAuthenticator] = CactaceaAuthorization(Scope.commentLikes)
-  val groups: Authorization[User, JWTAuthenticator] = CactaceaAuthorization(Scope.groups)
+  val channels: Authorization[User, JWTAuthenticator] = CactaceaAuthorization(Scope.channels)
   val invitations: Authorization[User, JWTAuthenticator] = CactaceaAuthorization(Scope.invitations)
   val messages: Authorization[User, JWTAuthenticator] = CactaceaAuthorization(Scope.messages)
   val followerList: Authorization[User, JWTAuthenticator] = CactaceaAuthorization(Scope.followerList)

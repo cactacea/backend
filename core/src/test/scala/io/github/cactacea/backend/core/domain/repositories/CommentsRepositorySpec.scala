@@ -77,9 +77,8 @@ class CommentsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should delete comment reports") {
-      forOne(accountGen, accountGen, feedGen, commentGen, commentReportGen) { (s, a, f, c, r) =>
+      forOne(accountGen, feedGen, commentGen, commentReportGen) { (s, f, c, r) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val accountId = await(accountsRepository.create(a.accountName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
         await(commentsRepository.report(commentId, r.reportType, r.reportContent, sessionId))

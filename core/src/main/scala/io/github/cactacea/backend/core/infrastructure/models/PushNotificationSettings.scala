@@ -8,7 +8,7 @@ case class PushNotificationSettings(
                                      comment: Boolean,
                                      friendRequest: Boolean,
                                      message: Boolean,
-                                     groupMessage: Boolean,
+                                     channelMessage: Boolean,
                                      invitation: Boolean,
                                      showMessage: Boolean
                                )

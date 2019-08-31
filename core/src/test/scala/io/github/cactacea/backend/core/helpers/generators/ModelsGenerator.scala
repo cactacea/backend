@@ -4,7 +4,7 @@ import java.net.InetAddress
 import java.time.Instant
 import java.util.UUID
 
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, GroupAuthorityType, GroupPrivacyType, MessageType}
+import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ChannelAuthorityType, ChannelPrivacyType, MessageType}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 import org.joda.time.DateTime
@@ -40,7 +40,7 @@ trait ModelsGenerator extends StatusGenerator with Generator {
 
   // string generator
   lazy val commentMessageGen: Gen[String] = Gen.listOfN(1000, Gen.alphaChar).map(_.mkString)
-  lazy val groupNameGen: Gen[Option[String]] = Gen.option(Gen.listOfN(1000, Gen.alphaChar).map(_.mkString))
+  lazy val channelNameGen: Gen[Option[String]] = Gen.option(Gen.listOfN(1000, Gen.alphaChar).map(_.mkString))
   lazy val messageTextGen: Gen[String] = Gen.listOfN(1000, Gen.alphaChar).map(_.mkString)
   lazy val mediumKeyGen: Gen[String] = Gen.listOfN(1000, Gen.alphaChar).map(_.mkString)
   lazy val feedMessageTextGen: Gen[String] = Gen.listOfN(1000, Gen.alphaChar).map(_.mkString)
@@ -56,10 +56,10 @@ trait ModelsGenerator extends StatusGenerator with Generator {
   lazy val feed20ListGen = Gen.listOfN(20, feedGen)
   lazy val medium5ListOptGen: Gen[Option[List[Mediums]]] = Gen.option(medium5ListGen)
   lazy val feedTag5ListOptGen: Gen[Option[String]] = Gen.option(Gen.listOfN(5, feedTagGen).map(_.mkString(" ")))
-  lazy val group20ListGen: Gen[List[Groups]] = Gen.listOfN(20, groupGen)
+  lazy val channel20ListGen: Gen[List[Channels]] = Gen.listOfN(20, channelGen)
   lazy val medium5ListGen: Gen[List[Mediums]] = Gen.listOfN(5, mediumGen)
   lazy val message20ListGen: Gen[List[(Messages, Option[Mediums])]] = for {
-    m <- messagesGen
+    m <- messageGen
     i <- mediumOptGen
     l <- Gen.listOfN(20, (m, i))
   } yield (l)
@@ -117,96 +117,96 @@ trait ModelsGenerator extends StatusGenerator with Generator {
   } yield Devices(deviceId, accountId, udid, deviceType, activeStatus, pushToken, userAgent, registeredAt)
 
 
-  lazy val groupGen: Gen[Groups] = for {
-    groupId <- Gen.const(GroupId(0L))
-    name <- groupNameGen
-    privacyType <- groupPrivacyTypeGen
+  lazy val channelGen: Gen[Channels] = for {
+    channelId <- Gen.const(ChannelId(0L))
+    name <- channelNameGen
+    privacyType <- channelPrivacyTypeGen
     invitationOnly <- booleanGen
-    groupAuthorityType <- groupAuthorityTypeGen
+    channelAuthorityType <- channelAuthorityTypeGen
     accountId <- Gen.const(AccountId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Groups(groupId, name, privacyType, invitationOnly, false, groupAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
 
-  lazy val organizerGroupGen: Gen[Groups] = for {
-    groupId <- Gen.const(GroupId(0L))
-    name <- groupNameGen
-    privacyType <- Gen.const(GroupPrivacyType.everyone)
+  lazy val organizerChannelGen: Gen[Channels] = for {
+    channelId <- Gen.const(ChannelId(0L))
+    name <- channelNameGen
+    privacyType <- Gen.const(ChannelPrivacyType.everyone)
     invitationOnly <- booleanGen
-    groupAuthorityType <- Gen.const(GroupAuthorityType.organizer)
+    channelAuthorityType <- Gen.const(ChannelAuthorityType.organizer)
     accountId <- Gen.const(AccountId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Groups(groupId, name, privacyType, invitationOnly, false, groupAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
 
-  lazy val memberGroupGen: Gen[Groups] = for {
-    groupId <- Gen.const(GroupId(0L))
-    name <- groupNameGen
-    privacyType <- Gen.const(GroupPrivacyType.everyone)
+  lazy val memberChannelGen: Gen[Channels] = for {
+    channelId <- Gen.const(ChannelId(0L))
+    name <- channelNameGen
+    privacyType <- Gen.const(ChannelPrivacyType.everyone)
     invitationOnly <- booleanGen
-    groupAuthorityType <- Gen.const(GroupAuthorityType.member)
+    channelAuthorityType <- Gen.const(ChannelAuthorityType.member)
     accountId <- Gen.const(AccountId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Groups(groupId, name, privacyType, invitationOnly, false, groupAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
 
-  lazy val everyoneGroupGen: Gen[Groups] = for {
-    groupId <- Gen.const(GroupId(0L))
-    name <- groupNameGen
-    privacyType <- Gen.const(GroupPrivacyType.everyone)
+  lazy val everyoneChannelGen: Gen[Channels] = for {
+    channelId <- Gen.const(ChannelId(0L))
+    name <- channelNameGen
+    privacyType <- Gen.const(ChannelPrivacyType.everyone)
     invitationOnly <- Gen.const(false)
-    groupAuthorityType <- groupAuthorityTypeGen
+    channelAuthorityType <- channelAuthorityTypeGen
     accountId <- Gen.const(AccountId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Groups(groupId, name, privacyType, invitationOnly, false, groupAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
 
-  lazy val followGroupGen: Gen[Groups] = for {
-    groupId <- Gen.const(GroupId(0L))
-    name <- groupNameGen
-    privacyType <- Gen.const(GroupPrivacyType.follows)
+  lazy val followChannelGen: Gen[Channels] = for {
+    channelId <- Gen.const(ChannelId(0L))
+    name <- channelNameGen
+    privacyType <- Gen.const(ChannelPrivacyType.follows)
     invitationOnly <- booleanGen
-    groupAuthorityType <- groupAuthorityTypeGen
+    channelAuthorityType <- channelAuthorityTypeGen
     accountId <- Gen.const(AccountId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Groups(groupId, name, privacyType, invitationOnly, false, groupAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
 
-  lazy val followerGroupGen: Gen[Groups] = for {
-    groupId <- Gen.const(GroupId(0L))
-    name <- groupNameGen
-    privacyType <- Gen.const(GroupPrivacyType.followers)
+  lazy val followerChannelGen: Gen[Channels] = for {
+    channelId <- Gen.const(ChannelId(0L))
+    name <- channelNameGen
+    privacyType <- Gen.const(ChannelPrivacyType.followers)
     invitationOnly <- booleanGen
-    groupAuthorityType <- groupAuthorityTypeGen
+    channelAuthorityType <- channelAuthorityTypeGen
     accountId <- Gen.const(AccountId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Groups(groupId, name, privacyType, invitationOnly, false, groupAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
 
-  lazy val friendGroupGen: Gen[Groups] = for {
-    groupId <- Gen.const(GroupId(0L))
-    name <- groupNameGen
-    privacyType <- Gen.const(GroupPrivacyType.friends)
+  lazy val friendChannelGen: Gen[Channels] = for {
+    channelId <- Gen.const(ChannelId(0L))
+    name <- channelNameGen
+    privacyType <- Gen.const(ChannelPrivacyType.friends)
     invitationOnly <- booleanGen
-    groupAuthorityType <- groupAuthorityTypeGen
+    channelAuthorityType <- channelAuthorityTypeGen
     accountId <- Gen.const(AccountId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Groups(groupId, name, privacyType, invitationOnly, false, groupAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
 
   lazy val textMessageGen: Gen[Messages] = for {
     messageId <- Gen.const(MessageId(0L))
     accountId <- Gen.const(AccountId(0L))
-    groupId <- Gen.const(GroupId(0L))
+    channelId <- Gen.const(ChannelId(0L))
     message <- messageTextOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     postedAt <- currentTimeMillisGen
-  } yield (Messages(messageId, accountId, groupId, MessageType.text, message, None, None, 0L, 0L, contentWarning, contentStatus, false, postedAt))
+  } yield (Messages(messageId, accountId, channelId, MessageType.text, message, None, None, 0L, 0L, contentWarning, contentStatus, false, postedAt))
 
-  lazy val messagesGen: Gen[Messages] = for {
+  lazy val messageGen: Gen[Messages] = for {
     messageId <- Gen.const(MessageId(0L))
     accountId <- Gen.const(AccountId(0L))
-    groupId <- Gen.const(GroupId(0L))
+    channelId <- Gen.const(ChannelId(0L))
     message <- messageTextOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     postedAt <- currentTimeMillisGen
     messageType = message.fold(MessageType.text)(_ => MessageType.medium)
-  } yield (Messages(messageId, accountId, groupId, messageType, message, None, None, 0L, 0L, contentWarning, contentStatus, false, postedAt))
+  } yield (Messages(messageId, accountId, channelId, messageType, message, None, None, 0L, 0L, contentWarning, contentStatus, false, postedAt))
 
   lazy val mediumGen: Gen[Mediums] = for {
     key <- mediumKeyGen
@@ -312,11 +312,11 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     reportedAt <- currentTimeMillisGen
   } yield FeedReports(FeedReportId(0L), FeedId(0L), AccountId(0L), reportType, reportContent, reportedAt)
 
-  lazy val groupReportGen: Gen[GroupReports] = for {
+  lazy val channelReportGen: Gen[ChannelReports] = for {
     reportType <- reportTypeGen
     reportContent <- reportContentOptGen
     reportedAt <- currentTimeMillisGen
-  } yield GroupReports(GroupReportId(0L), GroupId(0L), AccountId(0L), reportType, reportContent, reportedAt)
+  } yield ChannelReports(ChannelReportId(0L), ChannelId(0L), AccountId(0L), reportType, reportContent, reportedAt)
 
   lazy val authenticationGen: Gen[Authentications] = for {
     providerId <- Gen.listOfN(30, Gen.alphaChar).map(_.mkString)

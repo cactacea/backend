@@ -1,10 +1,10 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, MessageId, AccountId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, MessageId, AccountId}
 
 case class AccountMessages(
                             accountId: AccountId,
-                            groupId: GroupId,
+                            channelId: ChannelId,
                             messageId: MessageId,
                             by: AccountId,
                             unread: Boolean,

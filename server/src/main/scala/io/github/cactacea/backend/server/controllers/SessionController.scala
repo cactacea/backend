@@ -10,7 +10,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.account.GetAccountName
 import io.github.cactacea.backend.server.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
-import io.github.cactacea.backend.server.models.requests.group.{GetSessionGroups, GetSessionInvitations}
+import io.github.cactacea.backend.server.models.requests.channel.{GetSessionChannels, GetSessionInvitations}
 import io.github.cactacea.backend.server.models.requests.session._
 import io.github.cactacea.backend.server.models.requests.sessions.DeleteSignOut
 import io.github.cactacea.backend.server.models.responses.AccountNameNotExists
@@ -27,7 +27,7 @@ class SessionController @Inject()(
                                    s: Swagger,
                                    accountAuthenticationService: AuthenticationService,
                                    accountsService: AccountsService,
-                                   accountGroupsService: AccountGroupsService,
+                                   accountChannelsService: AccountChannelsService,
                                    feedsService: FeedsService,
                                    feedLikesService: FeedLikesService,
                                    followsService: FollowsService,
@@ -247,14 +247,14 @@ class SessionController @Inject()(
       )
     }
 
-    scope(groups).getWithDoc("/session/groups") { o =>
-      o.summary("Get groups list session account groupJoined")
+    scope(channels).getWithDoc("/session/channels") { o =>
+      o.summary("Get channels list session account channelJoined")
         .tag(sessionTag)
-        .operationId("findSessionGroups")
-        .request[GetSessionGroups]
-        .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
-    } { request: GetSessionGroups =>
-      accountGroupsService.find(
+        .operationId("findSessionChannels")
+        .request[GetSessionChannels]
+        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
+    } { request: GetSessionChannels =>
+      accountChannelsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
@@ -263,15 +263,15 @@ class SessionController @Inject()(
       )
     }
 
-    scope(groups).getWithDoc("/session/hides") { o =>
-      o.summary("Get hidden groups list session account groupJoined")
+    scope(channels).getWithDoc("/session/hides") { o =>
+      o.summary("Get hidden channels list session account channelJoined")
         .tag(sessionTag)
-        .operationId("findHiddenGroups")
-        .request[GetSessionGroups]
-        .responseWith[Array[Group]](Status.Ok.code, successfulMessage)
+        .operationId("findHiddenChannels")
+        .request[GetSessionChannels]
+        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
 
-    } { request: GetSessionGroups =>
-      accountGroupsService.find(
+    } { request: GetSessionChannels =>
+      accountChannelsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),

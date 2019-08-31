@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import io.github.cactacea.backend.core.domain.enums.MessageType
 import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, GroupId, InvitationId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, ChannelId, InvitationId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
@@ -11,189 +11,189 @@ class InvitationsRepositorySpec extends RepositorySpec {
   feature("create") {
 
     scenario("should create a invitation") {
-      forOne(accountGen, accountGen, everyoneGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, everyoneChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val id = await(invitationsRepository.create(accountId, groupId, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val id = await(invitationsRepository.create(accountId, channelId, sessionId))
         val result = await(invitationsDAO.find(accountId, id))
         assert(result.isDefined)
       }
     }
 
     scenario("should return exception if already requested") {
-      forOne(accountGen, accountGen, everyoneGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, everyoneChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
-        await(invitationsRepository.create(accountId, groupId, sessionId))
+        await(invitationsRepository.create(accountId, channelId, sessionId))
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(accountId, groupId, sessionId))
+          await(invitationsRepository.create(accountId, channelId, sessionId))
         }.error == AccountAlreadyInvited)
       }
     }
 
     scenario("should return exception if id is same") {
-      forOne(accountGen, everyoneGroupGen) { (s, g) =>
+      forOne(accountGen, everyoneChannelGen) { (s, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(sessionId.toAccountId, groupId, sessionId))
+          await(invitationsRepository.create(sessionId.toAccountId, channelId, sessionId))
         }.error == InvalidAccountIdError)
       }
     }
 
     scenario("should return exception if account not exist") {
-      forOne(accountGen, everyoneGroupGen) { (s, g) =>
+      forOne(accountGen, everyoneChannelGen) { (s, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(AccountId(0), groupId, sessionId))
+          await(invitationsRepository.create(AccountId(0), channelId, sessionId))
         }.error == AccountNotFound)
       }
     }
 
-    scenario("should return exception if group not exist") {
+    scenario("should return exception if channel not exist") {
       forOne(accountGen, accountGen) { (s, a) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(accountId, GroupId(0), sessionId))
-        }.error == GroupNotFound)
+          await(invitationsRepository.create(accountId, ChannelId(0), sessionId))
+        }.error == ChannelNotFound)
 
       }
     }
 
     scenario("should create a invitation if friend") {
-      forOne(accountGen, accountGen, friendGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, friendChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
         val requestId = await(friendRequestsRepository.create(accountId, sessionId))
         await(friendRequestsRepository.accept(requestId, accountId.toSessionId))
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsRepository.create(accountId, groupId, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsRepository.create(accountId, channelId, sessionId))
         assert(await(invitationsDAO.find(accountId, invitationId)).isDefined)
         await(invitationsRepository.accept(invitationId, accountId.toSessionId))
-        assertFutureValue(accountGroupsDAO.exists(groupId, accountId), true)
+        assertFutureValue(accountChannelsDAO.exists(channelId, accountId), true)
       }
     }
 
     scenario("should create a invitation if follower") {
-      forOne(accountGen, accountGen, followerGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, followerChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
         await(followsRepository.create(sessionId.toAccountId, accountId.toSessionId))
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsRepository.create(accountId, groupId, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsRepository.create(accountId, channelId, sessionId))
         assert(await(invitationsDAO.find(accountId, invitationId)).isDefined)
         await(invitationsRepository.accept(invitationId, accountId.toSessionId))
-        assertFutureValue(accountGroupsDAO.exists(groupId, accountId), true)
+        assertFutureValue(accountChannelsDAO.exists(channelId, accountId), true)
       }
     }
 
     scenario("should create a invitation if follow") {
-      forOne(accountGen, accountGen, followGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, followChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
         await(followsRepository.create(accountId, sessionId))
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsRepository.create(accountId, groupId, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsRepository.create(accountId, channelId, sessionId))
         assert(await(invitationsDAO.find(accountId, invitationId)).isDefined)
         await(invitationsRepository.accept(invitationId, accountId.toSessionId))
-        assertFutureValue(accountGroupsDAO.exists(groupId, accountId), true)
+        assertFutureValue(accountChannelsDAO.exists(channelId, accountId), true)
       }
     }
 
 
 
     scenario("should return exception if invite not friend account") {
-      forOne(accountGen, accountGen, friendGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, friendChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(accountId, groupId, sessionId))
+          await(invitationsRepository.create(accountId, channelId, sessionId))
         }.error == AuthorityNotFound)
       }
     }
 
     scenario("should return exception if invite not follower account") {
-      forOne(accountGen, accountGen, followerGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, followerChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(accountId, groupId, sessionId))
+          await(invitationsRepository.create(accountId, channelId, sessionId))
         }.error == AuthorityNotFound)
       }
     }
 
     scenario("should return exception if invite not follow account") {
-      forOne(accountGen, accountGen, followGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, followChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(accountId, groupId, sessionId))
+          await(invitationsRepository.create(accountId, channelId, sessionId))
         }.error == AuthorityNotFound)
       }
     }
 
     scenario("should return exception if member authority not exist") {
-      forOne(accountGen, accountGen, accountGen, memberGroupGen) { (s, a1, a2, g) =>
+      forOne(accountGen, accountGen, accountGen, memberChannelGen) { (s, a1, a2, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId1 = await(accountsRepository.create(a1.accountName)).id
         val accountId2 = await(accountsRepository.create(a2.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(accountId1, groupId, accountId2.toSessionId))
+          await(invitationsRepository.create(accountId1, channelId, accountId2.toSessionId))
         }.error == AccountNotJoined)
       }
     }
 
     scenario("should return exception if organizer authority not exist") {
-      forOne(accountGen, accountGen, accountGen, organizerGroupGen) { (s, a1, a2, g) =>
+      forOne(accountGen, accountGen, accountGen, organizerChannelGen) { (s, a1, a2, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId1 = await(accountsRepository.create(a1.accountName)).id
         val accountId2 = await(accountsRepository.create(a2.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsRepository.create(accountId2, groupId, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsRepository.create(accountId2, channelId, sessionId))
         await(invitationsRepository.accept(invitationId, accountId2.toSessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(accountId1, groupId, accountId2.toSessionId))
+          await(invitationsRepository.create(accountId1, channelId, accountId2.toSessionId))
         }.error == AuthorityNotFound)
       }
     }
 
 
-    scenario("should return exception if group is direct message") {
-      forOne(accountGen, accountGen, accountGen, followerGroupGen) { (s, a1, a2, g) =>
+    scenario("should return exception if channel is direct message") {
+      forOne(accountGen, accountGen, accountGen) { (s, a1, a2) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId1 = await(accountsRepository.create(a1.accountName)).id
         val accountId2 = await(accountsRepository.create(a2.accountName)).id
-        val groupId = await(accountGroupsRepository.findOrCreate(accountId1, sessionId)).id
+        val channelId = await(accountChannelsRepository.findOrCreate(accountId1, sessionId)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.create(accountId2, groupId, sessionId))
+          await(invitationsRepository.create(accountId2, channelId, sessionId))
         }.error == AuthorityNotFound)
       }
     }
@@ -208,50 +208,50 @@ class InvitationsRepositorySpec extends RepositorySpec {
     scenario("authority type is organizer") (pending)
 
     scenario("should delete a invitation") {
-      forOne(accountGen, accountGen, everyoneGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, everyoneChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsRepository.create(accountId, groupId, sessionId))
-        await(invitationsRepository.delete(accountId, groupId, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsRepository.create(accountId, channelId, sessionId))
+        await(invitationsRepository.delete(accountId, channelId, sessionId))
         val result = await(invitationsDAO.find(accountId, invitationId))
         assert(result.isEmpty)
       }
     }
 
     scenario("should return exception if id is same") {
-      forOne(accountGen, everyoneGroupGen) { (s, g) =>
+      forOne(accountGen, everyoneChannelGen) { (s, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.delete(sessionId.toAccountId, groupId, sessionId))
+          await(invitationsRepository.delete(sessionId.toAccountId, channelId, sessionId))
         }.error == InvalidAccountIdError)
       }
     }
 
     scenario("should return exception if account not exist") {
-      forOne(accountGen, everyoneGroupGen) { (s, g) =>
+      forOne(accountGen, everyoneChannelGen) { (s, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.delete(AccountId(0), groupId, sessionId))
+          await(invitationsRepository.delete(AccountId(0), channelId, sessionId))
         }.error == AccountNotFound)
       }
     }
 
-    scenario("should return exception if group not exist") {
+    scenario("should return exception if channel not exist") {
       forOne(accountGen, accountGen) { (s, a) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(invitationsRepository.delete(accountId, GroupId(0), sessionId))
-        }.error == GroupNotFound)
+          await(invitationsRepository.delete(accountId, ChannelId(0), sessionId))
+        }.error == ChannelNotFound)
 
       }
     }
@@ -259,12 +259,12 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
   feature("find") {
     scenario("should return received invitations") {
-      forOne(accountGen, accounts20ListGen, everyoneGroupGen) { (s, l, g) =>
+      forOne(accountGen, accounts20ListGen, everyoneChannelGen) { (s, l, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val creates = l.map({a =>
           val accountId = await(accountsRepository.create(a.accountName)).id
-          val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, accountId.toSessionId))
-          val id = await(invitationsRepository.create(sessionId.toAccountId, groupId, accountId.toSessionId))
+          val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, accountId.toSessionId))
+          val id = await(invitationsRepository.create(sessionId.toAccountId, channelId, accountId.toSessionId))
           (id, a.copy(id = accountId))
         }).reverse
 
@@ -292,17 +292,17 @@ class InvitationsRepositorySpec extends RepositorySpec {
   feature("accept") {
 
     scenario("should accept a invitation") {
-      forOne(accountGen, accountGen, everyoneGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, everyoneChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsRepository.create(accountId, groupId, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsRepository.create(accountId, channelId, sessionId))
         await(invitationsRepository.accept(invitationId, accountId.toSessionId))
 
         // result
-        assertFutureValue(accountGroupsDAO.exists(groupId, accountId), true)
-        assertFutureValue(invitationsDAO.exists(accountId, groupId), false)
-        val messages = await(messagesRepository.find(groupId, None, 0, 10, false, sessionId))
+        assertFutureValue(accountChannelsDAO.exists(channelId, accountId), true)
+        assertFutureValue(invitationsDAO.exists(accountId, channelId), false)
+        val messages = await(messagesRepository.find(channelId, None, 0, 10, false, sessionId))
         assert(messages.headOption.exists(_.messageType == MessageType.joined))
       }
     }
@@ -323,16 +323,16 @@ class InvitationsRepositorySpec extends RepositorySpec {
   feature("reject") {
 
     scenario("should delete a friend friendRequest") {
-      forOne(accountGen, accountGen, everyoneGroupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, everyoneChannelGen) { (s, a, g) =>
         val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
         val accountId = await(accountsRepository.create(a.accountName)).id
-        val groupId = await(groupsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsRepository.create(accountId, groupId, sessionId))
+        val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsRepository.create(accountId, channelId, sessionId))
         await(invitationsRepository.reject(invitationId, accountId.toSessionId))
 
         // result
-        assertFutureValue(accountGroupsDAO.exists(groupId, accountId), false)
-        assertFutureValue(invitationsDAO.exists(accountId, groupId), false)
+        assertFutureValue(accountChannelsDAO.exists(channelId, accountId), false)
+        assertFutureValue(invitationsDAO.exists(accountId, channelId), false)
       }
     }
 

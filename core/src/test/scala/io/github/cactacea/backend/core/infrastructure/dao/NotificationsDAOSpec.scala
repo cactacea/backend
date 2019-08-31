@@ -13,13 +13,13 @@ class NotificationsDAOSpec extends DAOSpec {
 
   feature("createInvitation") {
     scenario("should create a invitation notification") {
-      forOne(accountGen, accountGen, groupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
 
         // preparing
         val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
         val accountId = await(accountsDAO.create(a.accountName))
-        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsDAO.create(accountId, groupId, sessionId))
+        val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsDAO.create(accountId, channelId, sessionId))
         val notificationId = await(notificationsDAO.create(invitationId, accountId, sessionId))
         val link = deepLinkService.getInvitation(invitationId)
 
@@ -130,13 +130,13 @@ class NotificationsDAOSpec extends DAOSpec {
     }
 
     scenario("should return an exception occurs if duplicated") {
-      forOne(accountGen, accountGen, groupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
 
         // preparing
         val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
         val accountId = await(accountsDAO.create(a.accountName))
-        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsDAO.create(accountId, groupId, sessionId))
+        val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsDAO.create(accountId, channelId, sessionId))
         await(notificationsDAO.create(invitationId, accountId, sessionId))
 
         // exception occurs
@@ -151,13 +151,13 @@ class NotificationsDAOSpec extends DAOSpec {
 
   feature("updateReadStatus") {
     scenario("should update read status") {
-      forOne(accountGen, accountGen, groupGen) { (s, a, g) =>
+      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
 
         // preparing
         val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
         val accountId = await(accountsDAO.create(a.accountName))
-        val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val invitationId = await(invitationsDAO.create(accountId, groupId, sessionId))
+        val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+        val invitationId = await(invitationsDAO.create(accountId, channelId, sessionId))
         val notificationId = await(notificationsDAO.create(invitationId, accountId, sessionId))
         await(notificationsDAO.updateReadStatus(List(notificationId), accountId.toSessionId))
 
@@ -171,14 +171,14 @@ class NotificationsDAOSpec extends DAOSpec {
 
   feature("find") {
     scenario("should return notification account received") {
-      forOne(accountGen, accountGen, group20ListGen) { (s, a, l) =>
+      forOne(accountGen, accountGen, channel20ListGen) { (s, a, l) =>
 
         // preparing
         val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
         val accountId = await(accountsDAO.create(a.accountName))
         val notificationIds = l.map({ g =>
-          val groupId = await(groupsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          val invitationId = await(invitationsDAO.create(accountId, groupId, sessionId))
+          val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
+          val invitationId = await(invitationsDAO.create(accountId, channelId, sessionId))
           await(notificationsDAO.create(invitationId, accountId, sessionId))
         }).reverse
 

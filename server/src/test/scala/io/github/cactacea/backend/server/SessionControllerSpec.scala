@@ -19,7 +19,7 @@ trait SessionControllerSpec extends FeatureTest {
   test("GET /session/follows") (pending)
   test("GET /session/followers") (pending)
   test("GET /session/friends") (pending)
-  test("GET /session/groups") (pending)
+  test("GET /session/channels") (pending)
   test("GET /session/hides") (pending)
   test("GET /session/invitations") (pending)
   test("GET /session/mutes") (pending)

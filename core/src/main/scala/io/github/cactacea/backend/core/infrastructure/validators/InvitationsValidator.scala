@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlr
 @Singleton
 class InvitationsValidator @Inject()(invitationsDAO: InvitationsDAO) {
 
-  def mustNotInvited(accountId: AccountId, groupId: GroupId): Future[Unit] = {
-    invitationsDAO.exists(accountId, groupId).flatMap(_ match {
+  def mustNotInvited(accountId: AccountId, channelId: ChannelId): Future[Unit] = {
+    invitationsDAO.exists(accountId, channelId).flatMap(_ match {
       case true =>
         Future.exception(CactaceaException(AccountAlreadyInvited))
       case false =>
@@ -19,8 +19,8 @@ class InvitationsValidator @Inject()(invitationsDAO: InvitationsDAO) {
     })
   }
 
-  def mustHasAuthority(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    invitationsDAO.own(accountId, groupId, sessionId).flatMap(_ match {
+  def mustHasAuthority(accountId: AccountId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+    invitationsDAO.own(accountId, channelId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
@@ -28,7 +28,7 @@ class InvitationsValidator @Inject()(invitationsDAO: InvitationsDAO) {
     })
   }
 
-  def mustFind(accountId: AccountId, invitationId: InvitationId): Future[(GroupId, AccountId)] = {
+  def mustFind(accountId: AccountId, invitationId: InvitationId): Future[(ChannelId, AccountId)] = {
     invitationsDAO.find(accountId, invitationId).flatMap(_ match {
       case Some(gi) =>
         Future.value(gi)

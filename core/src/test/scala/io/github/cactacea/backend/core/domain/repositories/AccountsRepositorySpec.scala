@@ -36,7 +36,7 @@ class AccountsRepositorySpec extends RepositorySpec {
         assert(result2.comment)
         assert(result2.friendRequest)
         assert(result2.message)
-        assert(result2.groupMessage)
+        assert(result2.channelMessage)
         assert(result2.invitation)
         assert(result2.showMessage)
 
@@ -322,10 +322,7 @@ class AccountsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return exception if account is not exist") {
-      forOne(accountGen, authenticationGen) { (s, u1) =>
-
-        // preparing
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+      forOne(authenticationGen) { (u1) =>
 
         // result
         assert(intercept[CactaceaException] {
