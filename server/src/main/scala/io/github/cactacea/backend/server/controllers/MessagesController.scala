@@ -50,7 +50,7 @@ class MessagesController @Inject()(
         .request[PostText]
         .responseWith[Message](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(MediumNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotJoined))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserNotJoined))))
     } { request: PostText =>
 
       messagesService.createText(
@@ -67,7 +67,7 @@ class MessagesController @Inject()(
         .request[PostMedium]
         .responseWith[Message](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(MediumNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotJoined))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserNotJoined))))
     } { request: PostMedium =>
 
       messagesService.createMedium(

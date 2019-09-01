@@ -12,20 +12,20 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
 
   import db._
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
+  def create(userId: UserId, sessionId: SessionId): Future[FriendRequestId] = {
     for {
-      _ <- relationshipsDAO.createRequestInProgress(accountId, sessionId)
-      r <- createFriendsRequest(accountId, sessionId)
+      _ <- relationshipsDAO.createRequestInProgress(userId, sessionId)
+      r <- createFriendsRequest(userId, sessionId)
     } yield (r)
   }
 
-  private def createFriendsRequest(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
+  private def createFriendsRequest(userId: UserId, sessionId: SessionId): Future[FriendRequestId] = {
     val requestedAt = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[FriendRequests]
         .insert(
-          _.accountId       -> lift(accountId),
+          _.userId       -> lift(userId),
           _.by              -> lift(by),
           _.notified        -> false,
           _.requestedAt     -> lift(requestedAt)
@@ -34,40 +34,40 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
     run(q)
   }
 
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- relationshipsDAO.deleteRequestInProgress(accountId, sessionId)
-      r <- deleteFriendRequests(accountId, sessionId)
+      _ <- relationshipsDAO.deleteRequestInProgress(userId, sessionId)
+      r <- deleteFriendRequests(userId, sessionId)
     } yield (r)
   }
 
-  private def deleteFriendRequests(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
+  private def deleteFriendRequests(userId: UserId, sessionId: SessionId): Future[Unit] = {
+    val by = sessionId.userId
     val q = quote {
       query[FriendRequests]
-        .filter(_.accountId     == lift(accountId))
+        .filter(_.userId     == lift(userId))
         .filter(_.by            == lift(by))
         .delete
     }
     run(q).map(_ => ())
   }
 
-  def own(accountId: AccountId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+  def own(userId: UserId, sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.userId
     val q = quote {
       query[FriendRequests]
-        .filter(_.accountId   == lift(accountId))
+        .filter(_.userId   == lift(userId))
         .filter(_.by          == lift(by))
         .nonEmpty
     }
     run(q)
   }
 
-  def find(id: FriendRequestId, accountId: AccountId): Future[Option[AccountId]] = {
+  def find(id: FriendRequestId, userId: UserId): Future[Option[UserId]] = {
     val q = quote {
       query[FriendRequests]
         .filter(_.id          == lift(id))
-        .filter(_.accountId   == lift(accountId))
+        .filter(_.userId   == lift(userId))
         .map(_.by)
     }
     run(q).map(_.headOption)
@@ -93,17 +93,17 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
                                    count: Int,
                                    sessionId: SessionId): Future[List[FriendRequest]] = {
 
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
 
     val q = quote {
       (for {
         f <- query[FriendRequests]
-          .filter(_.accountId == lift(by))
+          .filter(_.userId == lift(by))
           .filter(f => lift(since).forall(f.id < _))
-        a <- query[Accounts]
+        a <- query[Users]
           .filter(_.id == f.by)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+          .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (f, a, r))
         .sortBy({ case (f, _, _) => f.id})(Ord.desc)
         .drop(lift(offset))
@@ -118,17 +118,17 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
                                count: Int,
                                sessionId: SessionId): Future[List[FriendRequest]] = {
 
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
 
     val q = quote {
       (for {
         f <- query[FriendRequests]
           .filter(_.by == lift(by))
           .filter(f => lift(since).forall(f.id < _))
-        a <- query[Accounts]
-          .filter(_.id == f.accountId)
+        a <- query[Users]
+          .filter(_.id == f.userId)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+          .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (f, a, r))
         .sortBy({ case (f, _, _) => f.id})(Ord.desc)
         .drop(lift(offset))

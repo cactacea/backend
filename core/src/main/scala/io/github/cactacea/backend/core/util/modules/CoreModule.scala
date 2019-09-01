@@ -2,13 +2,13 @@ package io.github.cactacea.backend.core.util.modules
 
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.repositories.{AccountChannelRepository, AccountsRepository, AuthenticationsRepository, BlocksRepository, CommentLikesRepository, CommentsRepository, DevicesRepository, FeedLikesRepository, FeedsRepository, FollowersRepository, FollowsRepository, FriendRequestsRepository, FriendsRepository, ChannelAccountsRepository, InvitationsRepository, ChannelsRepository, MediumsRepository, MessagesRepository, MutesRepository, NotificationsRepository, PushNotificationCommentsRepository, PushNotificationFeedsRepository, PushNotificationFriendRequestsRepository, PushNotificationInvitationsRepository, PushNotificationMessagesRepository, PushNotificationSettingsRepository}
+import io.github.cactacea.backend.core.domain.repositories.{UserChannelRepository, UsersRepository, AuthenticationsRepository, BlocksRepository, CommentLikesRepository, CommentsRepository, DevicesRepository, FeedLikesRepository, FeedsRepository, FollowersRepository, FollowsRepository, FriendRequestsRepository, FriendsRepository, ChannelUsersRepository, InvitationsRepository, ChannelsRepository, MediumsRepository, MessagesRepository, MutesRepository, NotificationsRepository, PushNotificationCommentsRepository, PushNotificationFeedsRepository, PushNotificationFriendRequestsRepository, PushNotificationInvitationsRepository, PushNotificationMessagesRepository, PushNotificationSettingsRepository}
 
 object CoreModule extends TwitterModule {
 
   def configureRepository(): Unit = {
-    bindSingleton[AccountChannelRepository]
-    bindSingleton[AccountsRepository]
+    bindSingleton[UserChannelRepository]
+    bindSingleton[UsersRepository]
     bindSingleton[AuthenticationsRepository]
     bindSingleton[BlocksRepository]
     bindSingleton[CommentLikesRepository]
@@ -20,7 +20,7 @@ object CoreModule extends TwitterModule {
     bindSingleton[FollowsRepository]
     bindSingleton[FriendRequestsRepository]
     bindSingleton[FriendsRepository]
-    bindSingleton[ChannelAccountsRepository]
+    bindSingleton[ChannelUsersRepository]
     bindSingleton[InvitationsRepository]
     bindSingleton[ChannelsRepository]
     bindSingleton[MediumsRepository]
@@ -36,8 +36,8 @@ object CoreModule extends TwitterModule {
   }
 
   def configureService(): Unit = {
-    bindSingleton[AccountChannelsService]
-    bindSingleton[AccountsService]
+    bindSingleton[UserChannelsService]
+    bindSingleton[UsersService]
     bindSingleton[BlocksService]
     bindSingleton[CommentLikesService]
     bindSingleton[CommentsService]
@@ -48,7 +48,7 @@ object CoreModule extends TwitterModule {
     bindSingleton[FollowsService]
     bindSingleton[FriendRequestsService]
     bindSingleton[FriendsService]
-    bindSingleton[ChannelAccountsService]
+    bindSingleton[ChannelUsersService]
     bindSingleton[InvitationsService]
     bindSingleton[ChannelsService]
     bindSingleton[MediumsService]

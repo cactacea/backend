@@ -16,29 +16,29 @@ class InvitationsService @Inject()(
 
   import databaseService._
 
-  def create(accountIds: List[AccountId], channelId: ChannelId, sessionId: SessionId): Future[List[InvitationId]] = {
+  def create(userIds: List[UserId], channelId: ChannelId, sessionId: SessionId): Future[List[InvitationId]] = {
     transaction {
-      Future.traverseSequentially(accountIds) { accountId =>
+      Future.traverseSequentially(userIds) { userId =>
         for {
-          i <- invitationsRepository.create(accountId, channelId, sessionId)
+          i <- invitationsRepository.create(userId, channelId, sessionId)
           _ <- queueService.enqueueInvitation(i)
         } yield (i)
       }.map(_.toList)
     }
   }
 
-  def create(accountId: AccountId, channelId: ChannelId, sessionId: SessionId): Future[InvitationId] = {
+  def create(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[InvitationId] = {
     transaction {
       for {
-        i <- invitationsRepository.create(accountId, channelId, sessionId)
+        i <- invitationsRepository.create(userId, channelId, sessionId)
         _ <- queueService.enqueueInvitation(i)
       } yield (i)
     }
   }
 
-  def delete(accountId: AccountId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     transaction {
-      invitationsRepository.delete(accountId, channelId, sessionId)
+      invitationsRepository.delete(userId, channelId, sessionId)
     }
   }
 

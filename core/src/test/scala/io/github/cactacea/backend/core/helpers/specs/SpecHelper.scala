@@ -6,8 +6,8 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.models.Channel
 import io.github.cactacea.backend.core.helpers.generators.ModelsGenerator
 import io.github.cactacea.backend.core.helpers.tests.IntegrationFeatureTest
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, CommentId, FeedId, FriendRequestId, ChannelId, MediumId, MessageId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.models.{AccountFeeds, AccountChannels, AccountMessages, AccountReports, CommentReports, Devices, FeedMediums, FeedReports, FeedTags, FriendRequests, Channels, Invitations, Messages}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, CommentId, FeedId, FriendRequestId, ChannelId, MediumId, MessageId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.models.{UserFeeds, UserChannels, UserMessages, UserReports, CommentReports, Devices, FeedMediums, FeedReports, FeedTags, FriendRequests, Channels, Invitations, Messages}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
@@ -22,28 +22,28 @@ trait SpecHelper extends IntegrationFeatureTest
 
   import db._
 
-  def existsAccountFeeds(feedId: FeedId, accountId: AccountId): Boolean = {
-    await(db.run(quote(query[AccountFeeds].filter(_.feedId == lift(feedId)).filter(_.accountId == lift(accountId)).nonEmpty)))
+  def existsUserFeeds(feedId: FeedId, userId: UserId): Boolean = {
+    await(db.run(quote(query[UserFeeds].filter(_.feedId == lift(feedId)).filter(_.userId == lift(userId)).nonEmpty)))
   }
 
-  def findAccountChannel(channelId: ChannelId, accountId: AccountId): Option[AccountChannels] = {
+  def findUserChannel(channelId: ChannelId, userId: UserId): Option[UserChannels] = {
     await(
-      db.run(quote(query[AccountChannels]
+      db.run(quote(query[UserChannels]
         .filter(_.channelId == lift(channelId))
-        .filter(_.accountId == lift(accountId))
+        .filter(_.userId == lift(userId))
       )).map(_.headOption)
     )
   }
 
-  def existsAccountMessage(messageId: MessageId, accountId: AccountId): Boolean = {
-    await(db.run(quote(query[AccountMessages].filter(_.messageId == lift(messageId)).filter(_.accountId == lift(accountId)).nonEmpty)))
+  def existsUserMessage(messageId: MessageId, userId: UserId): Boolean = {
+    await(db.run(quote(query[UserMessages].filter(_.messageId == lift(messageId)).filter(_.userId == lift(userId)).nonEmpty)))
   }
 
   def findDevice(sessionId: SessionId): Future[List[Devices]] = {
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
       query[Devices]
-        .filter(_.accountId == lift(accountId))
+        .filter(_.userId == lift(userId))
         .sortBy(_.registeredAt)(Ord.desc)
     }
     db.run(q)
@@ -118,7 +118,7 @@ trait SpecHelper extends IntegrationFeatureTest
   }
 
   def existsFeedReport(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[FeedReports]
         .filter(_.feedId == lift(feedId))
@@ -129,7 +129,7 @@ trait SpecHelper extends IntegrationFeatureTest
   }
 
   def existsCommentReport(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[CommentReports]
         .filter(_.commentId == lift(commentId))
@@ -139,16 +139,16 @@ trait SpecHelper extends IntegrationFeatureTest
     db.run(q)
   }
 
-  def findAccountReport(accountId: AccountId, sessionId: SessionId): Future[Option[AccountReports]] = {
-    val by = sessionId.toAccountId
-    db.run(query[AccountReports]
-      .filter(_.accountId == lift(accountId))
+  def findUserReport(userId: UserId, sessionId: SessionId): Future[Option[UserReports]] = {
+    val by = sessionId.userId
+    db.run(query[UserReports]
+      .filter(_.userId == lift(userId))
       .filter(_.by == lift(by))
     ).map(_.headOption)
   }
 
   def findCommentReport(commentId: CommentId, sessionId: SessionId): Future[Option[CommentReports]] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     db.run(query[CommentReports]
       .filter(_.commentId == lift(commentId))
       .filter(_.by == lift(by))

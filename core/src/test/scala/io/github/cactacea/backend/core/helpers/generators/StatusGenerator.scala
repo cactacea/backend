@@ -7,7 +7,7 @@ import scala.collection.JavaConverters._
 
 trait StatusGenerator {
 
-  val accountStatusGen: Gen[AccountStatusType] = Gen.oneOf(AccountStatusType.all.asScala)
+  val userStatusGen: Gen[UserStatusType] = Gen.oneOf(UserStatusType.all.asScala)
   val activeStatusGen: Gen[ActiveStatusType] = Gen.oneOf(ActiveStatusType.all.asScala)
   val contentStatusGen: Gen[ContentStatusType] = Gen.oneOf(ContentStatusType.all.asScala)
   val deviceTypeGen: Gen[DeviceType] = Gen.oneOf(DeviceType.all.asScala)

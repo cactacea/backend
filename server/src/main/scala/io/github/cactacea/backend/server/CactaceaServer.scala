@@ -24,7 +24,7 @@ class CactaceaServer extends BaseServer {
       .filter[LoggingMDCFilter[Request, Response]]
       .filter[TraceIdMDCFilter[Request, Response]]
       .filter[CommonFilters]
-      .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, AccountsController]
+      .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, UsersController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, BlocksController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, CommentsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, CommentLikesController]

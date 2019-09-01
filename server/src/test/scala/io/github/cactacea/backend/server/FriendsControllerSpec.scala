@@ -7,6 +7,6 @@ import com.twitter.inject.server.FeatureTest
 trait FriendsControllerSpec extends FeatureTest {
   self: CactaceaServerSpec =>
 
-  test("DELETE /accounts/:id/friends") (pending)
+  test("DELETE /users/:id/friends") (pending)
 
 }

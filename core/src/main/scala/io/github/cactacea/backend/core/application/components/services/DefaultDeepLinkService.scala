@@ -7,12 +7,12 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 class DefaultDeepLinkService @Inject()(@Flag("scheme") scheme: String) extends DeepLinkService {
 
-  def getAccounts(): String = {
-    s"${scheme}://accounts"
+  def getUsers(): String = {
+    s"${scheme}://users"
   }
 
-  def getAccount(id: AccountId): String = {
-    s"${scheme}://accounts/:id"
+  def getUser(id: UserId): String = {
+    s"${scheme}://users/:id"
   }
 
   def getFeeds(): String = {

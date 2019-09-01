@@ -14,15 +14,15 @@ class CommentsRepositorySpec extends RepositorySpec {
   feature("create") {
 
     scenario("should create a comment") {
-      forOne(accountGen, accountGen, accountGen, feedGen, commentGen) { (s, a1, a2, f, c) =>
+      forOne(userGen, userGen, userGen, feedGen, commentGen) { (s, a1, a2, f, c) =>
 
         // preparing
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val accountId1 = await(accountsRepository.create(a1.accountName)).id
-        val accountId2 = await(accountsRepository.create(a2.accountName)).id
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId2 = await(usersRepository.create(a2.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-        val commentId1 = await(commentsRepository.create(feedId, c.message, None, accountId1.toSessionId))
-        val commentId2 = await(commentsRepository.create(feedId, c.message, Option(commentId1), accountId2.toSessionId))
+        val commentId1 = await(commentsRepository.create(feedId, c.message, None, userId1.sessionId))
+        val commentId2 = await(commentsRepository.create(feedId, c.message, Option(commentId1), userId2.sessionId))
 
         // result
         val result = await(commentsRepository.find(commentId1, sessionId))
@@ -34,7 +34,7 @@ class CommentsRepositorySpec extends RepositorySpec {
         assert(result2.headOption.exists(_.contentId.exists(_ == commentId1.value)))
         assert(result2.headOption.exists(_.notificationType == NotificationType.feedReply))
 
-        val result3 = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), accountId1.toSessionId))
+        val result3 = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), userId1.sessionId))
         assert(result3.headOption.exists(_.contentId.exists(_ == commentId2.value)))
         assert(result3.headOption.exists(_.notificationType == NotificationType.commentReply))
 
@@ -44,8 +44,8 @@ class CommentsRepositorySpec extends RepositorySpec {
 
   feature("delete") {
     scenario("should delete a comment") {
-      forOne(accountGen, feedGen, commentGen) { (s, f, c) =>
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+      forOne(userGen, feedGen, commentGen) { (s, f, c) =>
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
         await(commentsRepository.delete(commentId, sessionId))
@@ -54,8 +54,8 @@ class CommentsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return exception if a feed not exist") {
-      forOne(accountGen) { (s) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+      forOne(userGen) { (s) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
         assert(intercept[CactaceaException] {
           await(commentsRepository.delete(CommentId(0), sessionId))
         }.error == CommentNotFound)
@@ -64,21 +64,21 @@ class CommentsRepositorySpec extends RepositorySpec {
 
 
     scenario("should delete comment likes") {
-      forOne(accountGen, accountGen, feedGen, commentGen) { (s, a, f, c) =>
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val accountId = await(accountsRepository.create(a.accountName)).id
+      forOne(userGen, userGen, feedGen, commentGen) { (s, a, f, c) =>
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val userId = await(usersRepository.create(a.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
-        await(commentLikesRepository.create(commentId, accountId.toSessionId))
+        await(commentLikesRepository.create(commentId, userId.sessionId))
         await(commentsRepository.delete(commentId, sessionId))
         assertFutureValue(commentsDAO.own(commentId, sessionId), false)
-        assertFutureValue(commentLikesDAO.own(commentId, accountId.toSessionId), false)
+        assertFutureValue(commentLikesDAO.own(commentId, userId.sessionId), false)
       }
     }
 
     scenario("should delete comment reports") {
-      forOne(accountGen, feedGen, commentGen, commentReportGen) { (s, f, c, r) =>
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+      forOne(userGen, feedGen, commentGen, commentReportGen) { (s, f, c, r) =>
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
         await(commentsRepository.report(commentId, r.reportType, r.reportContent, sessionId))
@@ -93,10 +93,10 @@ class CommentsRepositorySpec extends RepositorySpec {
   feature("find comments") {
 
     scenario("should return comment list") {
-      forOne(accountGen, feedGen, comment20ListGen) {
+      forOne(userGen, feedGen, comment20ListGen) {
         (s, f, c) =>
           // preparing
-          val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
           val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
           val comments = c.map({ c =>
             val id = await(commentsRepository.create(feedId, c.message, None, sessionId))
@@ -116,8 +116,8 @@ class CommentsRepositorySpec extends RepositorySpec {
   feature("find a comment") {
 
     scenario("should return exception if a feed not exist") {
-      forOne(accountGen) { (s) =>
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+      forOne(userGen) { (s) =>
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
         assert(intercept[CactaceaException] {
           await(commentsRepository.find(CommentId(0), sessionId))
         }.error == CommentNotFound)

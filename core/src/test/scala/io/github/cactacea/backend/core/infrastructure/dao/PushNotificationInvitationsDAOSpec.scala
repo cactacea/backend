@@ -8,13 +8,13 @@ class PushNotificationInvitationsDAOSpec extends DAOSpec {
   feature("update") (pending)
 //  {
 //
-//    val sessionAccount = createAccount("ChannelInvitationsDAOSpec56")
-//    createAccount("ChannelInvitationsDAOSpec57")
-//    val owner1 = createAccount("ChannelInvitationsDAOSpec58")
-//    val owner2 = createAccount("ChannelInvitationsDAOSpec59")
-//    val owner3 = createAccount("ChannelInvitationsDAOSpec60")
-//    val owner4 = createAccount("ChannelInvitationsDAOSpec61")
-//    val owner5 = createAccount("ChannelInvitationsDAOSpec62")
+//    val sessionUser = createUser("ChannelInvitationsDAOSpec56")
+//    createUser("ChannelInvitationsDAOSpec57")
+//    val owner1 = createUser("ChannelInvitationsDAOSpec58")
+//    val owner2 = createUser("ChannelInvitationsDAOSpec59")
+//    val owner3 = createUser("ChannelInvitationsDAOSpec60")
+//    val owner4 = createUser("ChannelInvitationsDAOSpec61")
+//    val owner5 = createUser("ChannelInvitationsDAOSpec62")
 //
 //    val channelId1 = await(channelsDAO.create(Some("New Channel Name1"), true, ChannelPrivacyType.everyone, ChannelAuthorityType.owner, owner1.id.toSessionId))
 //    val channelId2 = await(channelsDAO.create(Some("New Channel Name2"), true, ChannelPrivacyType.everyone, ChannelAuthorityType.owner, owner2.id.toSessionId))
@@ -22,11 +22,11 @@ class PushNotificationInvitationsDAOSpec extends DAOSpec {
 //    val channelId4 = await(channelsDAO.create(Some("New Channel Name4"), true, ChannelPrivacyType.everyone, ChannelAuthorityType.owner, owner4.id.toSessionId))
 //    val channelId5 = await(channelsDAO.create(Some("New Channel Name5"), true, ChannelPrivacyType.everyone, ChannelAuthorityType.owner, owner5.id.toSessionId))
 //
-//    val channelInvitationId1 = await(channelInvitationsDAO.create(sessionAccount.id, channelId1, owner1.id.toSessionId))
-//    val channelInvitationId2 = await(channelInvitationsDAO.create(sessionAccount.id, channelId2, owner2.id.toSessionId))
-//    val channelInvitationId3 = await(channelInvitationsDAO.create(sessionAccount.id, channelId3, owner3.id.toSessionId))
-//    val channelInvitationId4 = await(channelInvitationsDAO.create(sessionAccount.id, channelId4, owner4.id.toSessionId))
-//    val channelInvitationId5 = await(channelInvitationsDAO.create(sessionAccount.id, channelId5, owner5.id.toSessionId))
+//    val channelInvitationId1 = await(channelInvitationsDAO.create(sessionUser.id, channelId1, owner1.id.toSessionId))
+//    val channelInvitationId2 = await(channelInvitationsDAO.create(sessionUser.id, channelId2, owner2.id.toSessionId))
+//    val channelInvitationId3 = await(channelInvitationsDAO.create(sessionUser.id, channelId3, owner3.id.toSessionId))
+//    val channelInvitationId4 = await(channelInvitationsDAO.create(sessionUser.id, channelId4, owner4.id.toSessionId))
+//    val channelInvitationId5 = await(channelInvitationsDAO.create(sessionUser.id, channelId5, owner5.id.toSessionId))
 //
 //    await(pushNotificationChannelInvitationsDAO.update(channelInvitationId1))
 //    await(pushNotificationChannelInvitationsDAO.update(channelInvitationId3))

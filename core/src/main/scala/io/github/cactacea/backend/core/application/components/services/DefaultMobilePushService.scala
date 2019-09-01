@@ -22,7 +22,7 @@ class DefaultMobilePushService @Inject()(
         println(l) // scalastyle:ignore
         for {
           _ <- pushNotificationFeedsRepository.update(id)
-          _ <- pushNotificationFeedsRepository.update(id, l.map(_.destinations.map(_.accountId)).flatten)
+          _ <- pushNotificationFeedsRepository.update(id, l.map(_.destinations.map(_.userId)).flatten)
         } yield (())
 
       case None =>
@@ -39,7 +39,7 @@ class DefaultMobilePushService @Inject()(
         println(l) // scalastyle:ignore
         for {
           _ <- pushNotificationMessagesRepository.update(id)
-          _ <- pushNotificationMessagesRepository.update(id, l.map(_.destinations.map(_.accountId)).flatten)
+          _ <- pushNotificationMessagesRepository.update(id, l.map(_.destinations.map(_.userId)).flatten)
         } yield (())
 
       case None =>

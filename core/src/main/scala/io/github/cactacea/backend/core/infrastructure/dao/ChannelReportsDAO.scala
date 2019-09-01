@@ -14,7 +14,7 @@ class ChannelReportsDAO @Inject()(db: DatabaseService) {
 
   def create(channelId: ChannelId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[ChannelReportId] = {
     val reportedAt = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[ChannelReports].insert(
         _.channelId       -> lift(channelId),

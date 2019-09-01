@@ -2,15 +2,15 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, AuthenticationsDAO}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.dao.{UsersDAO, AuthenticationsDAO}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.Authentications
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, AuthenticationsValidator}
+import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, AuthenticationsValidator}
 
 
 class AuthenticationsRepository @Inject()(
-                                           accountsDAO: AccountsDAO,
-                                           accountsValidator: AccountsValidator,
+                                           usersDAO: UsersDAO,
+                                           usersValidator: UsersValidator,
                                            authenticationsDAO: AuthenticationsDAO,
                                            authenticationsValidator: AuthenticationsValidator
                                   ) {
@@ -19,16 +19,16 @@ class AuthenticationsRepository @Inject()(
     authenticationsDAO.find(providerId, providerKey)
   }
 
-  def updateAccountName(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
+  def updateUserName(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.mustNotExist(providerKey, sessionId)
-      _ <- accountsDAO.updateAccountName(providerKey, sessionId)
+      _ <- usersValidator.mustNotExist(providerKey, sessionId)
+      _ <- usersDAO.updateUserName(providerKey, sessionId)
       _ <- authenticationsDAO.updateProviderKey(providerId, providerKey, sessionId)
     } yield (())
   }
 
   def link(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
-    authenticationsDAO.updateAccountId(providerId, providerKey, sessionId)
+    authenticationsDAO.updateUserId(providerId, providerKey, sessionId)
   }
 
   def confirm(providerId: String, providerKey: String): Future[Unit] = {
@@ -36,8 +36,8 @@ class AuthenticationsRepository @Inject()(
   }
 
 
-  def findAccountId(providerId: String, providerKey: String): Future[AccountId] = {
-    authenticationsValidator.mustFindAccountId(providerId, providerKey)
+  def findUserId(providerId: String, providerKey: String): Future[UserId] = {
+    authenticationsValidator.mustFindUserId(providerId, providerKey)
   }
 
   def exists(providerId: String, providerKey: String): Future[Unit] = {

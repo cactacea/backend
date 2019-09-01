@@ -13,63 +13,63 @@ class CommentLikesRepositorySpec extends RepositorySpec {
   feature("create") {
     scenario("should create a comment liked") {
 
-      forOne(accountGen, accountGen, accountGen, accountGen, feedGen, commentGen) { (s, a1, a2, a3, f, c) =>
+      forOne(userGen, userGen, userGen, userGen, feedGen, commentGen) { (s, a1, a2, a3, f, c) =>
         // preparing
-        //  session account creates a feed
-        //  session account create a comment
-        //  account1 like a comment
-        //  account2 like a comment
-        //  account3 like a comment
-        //  account1 block account2
-        //  account2 block account3
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val accountId1 = await(accountsRepository.create(a1.accountName)).id
-        val accountId2 = await(accountsRepository.create(a2.accountName)).id
-        val accountId3 = await(accountsRepository.create(a3.accountName)).id
-        await(blocksRepository.create(accountId2, accountId1.toSessionId))
-        await(blocksRepository.create(accountId1, accountId2.toSessionId))
+        //  session user creates a feed
+        //  session user create a comment
+        //  user1 like a comment
+        //  user2 like a comment
+        //  user3 like a comment
+        //  user1 block user2
+        //  user2 block user3
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId2 = await(usersRepository.create(a2.userName)).id
+        val userId3 = await(usersRepository.create(a3.userName)).id
+        await(blocksRepository.create(userId2, userId1.sessionId))
+        await(blocksRepository.create(userId1, userId2.sessionId))
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
-        await(commentLikesRepository.create(commentId, accountId1.toSessionId))
-        await(commentLikesRepository.create(commentId, accountId2.toSessionId))
-        await(commentLikesRepository.create(commentId, accountId3.toSessionId))
+        await(commentLikesRepository.create(commentId, userId1.sessionId))
+        await(commentLikesRepository.create(commentId, userId2.sessionId))
+        await(commentLikesRepository.create(commentId, userId3.sessionId))
 
         // should like count 3
         val result1 = await(commentsRepository.find(commentId, sessionId))
         assert(result1.likeCount == 3)
 
-        // should like count 2 because account1 blocked account2
-        val result2 = await(commentsRepository.find(commentId, accountId1.toSessionId))
+        // should like count 2 because user1 blocked user2
+        val result2 = await(commentsRepository.find(commentId, userId1.sessionId))
         assert(result2.likeCount == 2)
 
-        // should like count 2 because account2 blocked account1
-        val result3 = await(commentsRepository.find(commentId, accountId2.toSessionId))
+        // should like count 2 because user2 blocked user1
+        val result3 = await(commentsRepository.find(commentId, userId2.sessionId))
         assert(result3.likeCount == 2)
       }
 
     }
 
     scenario("should return exception if a comment already liked") {
-      forOne(accountGen, accountGen, feedGen, commentGen) { (s, a1, f, c) =>
+      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
         // preparing
-        //  session account creates a feed
-        //  session account create a comment
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val accountId1 = await(accountsRepository.create(a1.accountName)).id
+        //  session user creates a feed
+        //  session user create a comment
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val userId1 = await(usersRepository.create(a1.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
 
         // exception occurs
-        await(commentLikesRepository.create(commentId, accountId1.toSessionId))
+        await(commentLikesRepository.create(commentId, userId1.sessionId))
         assert(intercept[CactaceaException] {
-          await(commentLikesRepository.create(commentId, accountId1.toSessionId))
+          await(commentLikesRepository.create(commentId, userId1.sessionId))
         }.error == CommentAlreadyLiked)
       }
     }
 
     scenario("should return exception if a comment not exist") {
-      forOne(accountGen) { (s) =>
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+      forOne(userGen) { (s) =>
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
         assert(intercept[CactaceaException] {
           await(commentLikesRepository.create(CommentId(0), sessionId))
         }.error == CommentNotFound)
@@ -83,27 +83,27 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
     scenario("should delete a comment liked") {
 
-      forOne(accountGen, accountGen, accountGen, accountGen, feedGen, commentGen) {
+      forOne(userGen, userGen, userGen, userGen, feedGen, commentGen) {
         (s, a1, a2, a3, f, c) =>
           // preparing
-          //  session account creates a feed
-          //  session account create a comment
-          //  account1 like a comment
-          //  account2 like a comment
-          //  account3 like a comment
-          val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-          val accountId1 = await(accountsRepository.create(a1.accountName)).id
-          val accountId2 = await(accountsRepository.create(a2.accountName)).id
-          val accountId3 = await(accountsRepository.create(a3.accountName)).id
+          //  session user creates a feed
+          //  session user create a comment
+          //  user1 like a comment
+          //  user2 like a comment
+          //  user3 like a comment
+          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val userId1 = await(usersRepository.create(a1.userName)).id
+          val userId2 = await(usersRepository.create(a2.userName)).id
+          val userId3 = await(usersRepository.create(a3.userName)).id
           val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
           val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
-          await(commentLikesRepository.create(commentId, accountId1.toSessionId))
-          await(commentLikesRepository.create(commentId, accountId2.toSessionId))
-          await(commentLikesRepository.create(commentId, accountId3.toSessionId))
+          await(commentLikesRepository.create(commentId, userId1.sessionId))
+          await(commentLikesRepository.create(commentId, userId2.sessionId))
+          await(commentLikesRepository.create(commentId, userId3.sessionId))
 
-          await(commentLikesRepository.delete(commentId, accountId1.toSessionId))
-          await(commentLikesRepository.delete(commentId, accountId2.toSessionId))
-          await(commentLikesRepository.delete(commentId, accountId3.toSessionId))
+          await(commentLikesRepository.delete(commentId, userId1.sessionId))
+          await(commentLikesRepository.delete(commentId, userId2.sessionId))
+          await(commentLikesRepository.delete(commentId, userId3.sessionId))
 
           assertFutureValue(commentLikesDAO.own(commentId, sessionId), false)
 
@@ -111,25 +111,25 @@ class CommentLikesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return exception if a comment not liked") {
-      forOne(accountGen, accountGen, feedGen, commentGen) { (s, a1, f, c) =>
+      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
         // preparing
-        //  session account creates a feed
-        //  session account create a comment
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-        val accountId1 = await(accountsRepository.create(a1.accountName)).id
+        //  session user creates a feed
+        //  session user create a comment
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val userId1 = await(usersRepository.create(a1.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
-          await(commentLikesRepository.delete(commentId, accountId1.toSessionId))
+          await(commentLikesRepository.delete(commentId, userId1.sessionId))
         }.error == CommentNotLiked)
       }
     }
 
     scenario("should return exception if a comment not exist") {
-      forOne(accountGen) { (s) =>
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+      forOne(userGen) { (s) =>
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
         assert(intercept[CactaceaException] {
           await(commentLikesRepository.delete(CommentId(0), sessionId))
         }.error == CommentNotFound)
@@ -140,70 +140,70 @@ class CommentLikesRepositorySpec extends RepositorySpec {
   }
 
 
-  feature("findAccounts") {
+  feature("findUsers") {
 
-    scenario("should return account list who liked a comment") {
-      forOne(accountGen, accountGen, accountGen, accountGen, accountGen, accountGen, feedGen, commentGen) {
+    scenario("should return user list who liked a comment") {
+      forOne(userGen, userGen, userGen, userGen, userGen, userGen, feedGen, commentGen) {
         (s, a1, a2, a3, a4, a5, f, c) =>
 
           // preparing
-          //  session account creates a feed
-          //  session account create a comment
-          //  account1 like a comment
-          //  account2 like a comment
-          //  account3 like a comment
-          //  account4 like a comment
-          //  account5 like a comment
-          //  account4 block account5
-          //  account5 block account4
-          val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
-          val accountId1 = await(accountsRepository.create(a1.accountName)).id
-          val accountId2 = await(accountsRepository.create(a2.accountName)).id
-          val accountId3 = await(accountsRepository.create(a3.accountName)).id
-          val accountId4 = await(accountsRepository.create(a4.accountName)).id
-          val accountId5 = await(accountsRepository.create(a5.accountName)).id
-          await(blocksRepository.create(accountId4, accountId5.toSessionId))
-          await(blocksRepository.create(accountId5, accountId4.toSessionId))
+          //  session user creates a feed
+          //  session user create a comment
+          //  user1 like a comment
+          //  user2 like a comment
+          //  user3 like a comment
+          //  user4 like a comment
+          //  user5 like a comment
+          //  user4 block user5
+          //  user5 block user4
+          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val userId1 = await(usersRepository.create(a1.userName)).id
+          val userId2 = await(usersRepository.create(a2.userName)).id
+          val userId3 = await(usersRepository.create(a3.userName)).id
+          val userId4 = await(usersRepository.create(a4.userName)).id
+          val userId5 = await(usersRepository.create(a5.userName)).id
+          await(blocksRepository.create(userId4, userId5.sessionId))
+          await(blocksRepository.create(userId5, userId4.sessionId))
 
           val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
           val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
-          await(commentLikesRepository.create(commentId, accountId1.toSessionId))
-          await(commentLikesRepository.create(commentId, accountId2.toSessionId))
-          await(commentLikesRepository.create(commentId, accountId3.toSessionId))
-          await(commentLikesRepository.create(commentId, accountId4.toSessionId))
-          await(commentLikesRepository.create(commentId, accountId5.toSessionId))
+          await(commentLikesRepository.create(commentId, userId1.sessionId))
+          await(commentLikesRepository.create(commentId, userId2.sessionId))
+          await(commentLikesRepository.create(commentId, userId3.sessionId))
+          await(commentLikesRepository.create(commentId, userId4.sessionId))
+          await(commentLikesRepository.create(commentId, userId5.sessionId))
 
-          // should return account list
-          val result1 = await(commentLikesRepository.findAccounts(commentId, None, 0, 3, sessionId))
-          assert(result1(0).id == accountId5)
-          assert(result1(1).id == accountId4)
-          assert(result1(2).id == accountId3)
+          // should return user list
+          val result1 = await(commentLikesRepository.findUsers(commentId, None, 0, 3, sessionId))
+          assert(result1(0).id == userId5)
+          assert(result1(1).id == userId4)
+          assert(result1(2).id == userId3)
 
           // should return next page
-          val result2 = await(commentLikesRepository.findAccounts(commentId, result1.lastOption.map(_.next), 0, 3, sessionId))
-          assert(result2(0).id == accountId2)
-          assert(result2(1).id == accountId1)
+          val result2 = await(commentLikesRepository.findUsers(commentId, result1.lastOption.map(_.next), 0, 3, sessionId))
+          assert(result2(0).id == userId2)
+          assert(result2(1).id == userId1)
 
-          // should not return when account blocked
-          val result3 = await(commentLikesRepository.findAccounts(commentId, None, 0, 3, accountId4.toSessionId))
-          assert(result3(0).id == accountId4)
-          assert(result3(1).id == accountId3)
-          assert(result3(2).id == accountId2)
+          // should not return when user blocked
+          val result3 = await(commentLikesRepository.findUsers(commentId, None, 0, 3, userId4.sessionId))
+          assert(result3(0).id == userId4)
+          assert(result3(1).id == userId3)
+          assert(result3(2).id == userId2)
 
-          // should not return when account is blocked
-          val result4 = await(commentLikesRepository.findAccounts(commentId, None, 0, 3, accountId5.toSessionId))
-          assert(result4(0).id == accountId5)
-          assert(result4(1).id == accountId3)
-          assert(result4(2).id == accountId2)
+          // should not return when user is blocked
+          val result4 = await(commentLikesRepository.findUsers(commentId, None, 0, 3, userId5.sessionId))
+          assert(result4(0).id == userId5)
+          assert(result4(1).id == userId3)
+          assert(result4(2).id == userId2)
 
       }
     }
 
     scenario("should return exception if a comment not exist") {
-      forOne(accountGen) { (s) =>
-        val sessionId = await(accountsRepository.create(s.accountName)).id.toSessionId
+      forOne(userGen) { (s) =>
+        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
         assert(intercept[CactaceaException] {
-          await(commentLikesRepository.findAccounts(CommentId(0), None, 0, 3, sessionId))
+          await(commentLikesRepository.findUsers(CommentId(0), None, 0, 3, sessionId))
         }.error == CommentNotFound)
       }
     }

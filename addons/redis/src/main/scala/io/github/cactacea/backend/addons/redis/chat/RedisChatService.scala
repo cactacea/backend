@@ -7,9 +7,9 @@ import io.github.cactacea.finachat.{PublishService, Response}
 
 class RedisChatService extends ChatService {
 
-  override def publish(groupId: ChannelId, message: AnyRef): Future[Unit] = {
+  override def publish(channelId: ChannelId, message: AnyRef): Future[Unit] = {
     val response = Response.messageArrived(Some(message))
-    PublishService.publish(groupId.toString(), response).flatMap(_ => Future.Done)
+    PublishService.publish(channelId.toString(), response).flatMap(_ => Future.Done)
   }
 
 }

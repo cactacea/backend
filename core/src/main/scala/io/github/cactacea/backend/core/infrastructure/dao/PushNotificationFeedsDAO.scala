@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.application.components.interfaces.DeepLin
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.PushNotificationType
 import io.github.cactacea.backend.core.domain.models.{Destination, PushNotification}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
@@ -21,8 +21,8 @@ class PushNotificationFeedsDAO @Inject()(
       case Some(f) =>
         findDestinations(id).map({ d =>
           val url = deepLinkService.getFeed(id)
-          val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
-            PushNotification(accountName, None, f.postedAt, url, destinations, PushNotificationType.feed)
+          val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
+            PushNotification(userName, None, f.postedAt, url, destinations, PushNotificationType.feed)
           }).toList
           Some(r)
         })
@@ -44,23 +44,23 @@ class PushNotificationFeedsDAO @Inject()(
   private def findDestinations(id: FeedId): Future[List[Destination]] = {
     val q = quote {
       for {
-        af <- query[AccountFeeds]
+        af <- query[UserFeeds]
           .filter(_.feedId == lift(id))
           .filter(_.notified == false)
-        a <- query[Accounts]
+        a <- query[Users]
           .join(_.id == af.by)
         d <- query[Devices]
-          .join(_.accountId == af.accountId)
+          .join(_.userId == af.userId)
           .filter(_.pushToken.isDefined)
         _ <- query[PushNotificationSettings]
-          .join(_.accountId == af.accountId)
+          .join(_.userId == af.userId)
           .filter(_.feed == true)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == af.by && r.by == af.accountId)
+          .leftJoin(r => r.userId == af.by && r.by == af.userId)
 
       } yield {
         Destination(
-          af.accountId,
+          af.userId,
           d.pushToken.getOrElse(""),
           r.flatMap(_.displayName).getOrElse(a.displayName),
           af.by)
@@ -69,11 +69,11 @@ class PushNotificationFeedsDAO @Inject()(
     run(q)
   }
 
-  def update(feedId: FeedId, accountIds: List[AccountId], notified: Boolean = true): Future[Unit] = {
+  def update(feedId: FeedId, userIds: List[UserId], notified: Boolean = true): Future[Unit] = {
     val q = quote {
-      query[AccountFeeds]
+      query[UserFeeds]
         .filter(_.feedId == lift(feedId))
-        .filter(m => liftQuery(accountIds).contains(m.accountId))
+        .filter(m => liftQuery(userIds).contains(m.userId))
         .update(_.notified -> lift(notified))
     }
     run(q).map(_ => ())

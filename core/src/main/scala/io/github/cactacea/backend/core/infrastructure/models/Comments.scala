@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
 import io.github.cactacea.backend.core.domain.enums.ContentStatusType
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, CommentId, FeedId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, CommentId, FeedId}
 
 case class Comments(
                      id: CommentId,
@@ -9,7 +9,7 @@ case class Comments(
                      feedId: FeedId,
                      replyId: Option[CommentId],
                      likeCount: Long,
-                     by: AccountId,
+                     by: UserId,
                      contentWarning: Boolean,
                      contentStatus: ContentStatusType,
                      notified: Boolean,

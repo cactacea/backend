@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.FriendRequestsService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.server.models.requests.account.{DeleteFriendRequest, PostAcceptFriendRequest, PostFriendRequest, PostRejectFriendRequest}
+import io.github.cactacea.backend.server.models.requests.user.{DeleteFriendRequest, PostAcceptFriendRequest, PostFriendRequest, PostRejectFriendRequest}
 import io.github.cactacea.backend.server.models.responses.FriendRequestCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
@@ -24,14 +24,14 @@ class FriendRequestsController @Inject()(
 
   prefix(apiPrefix) {
 
-    scope(relationships).postWithDoc("/accounts/:id/requests") { o =>
-      o.summary("Create a friend friendRequest to an account")
-        .tag(accountsTag)
+    scope(relationships).postWithDoc("/users/:id/requests") { o =>
+      o.summary("Create a friend friendRequest to an user")
+        .tag(usersTag)
         .operationId("friendRequest")
         .request[PostFriendRequest]
         .responseWith[FriendRequestCreated](Status.Created.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyRequested))))
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserAlreadyRequested))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
 
     } { request: PostFriendRequest =>
       friendRequestsService.create(
@@ -40,13 +40,13 @@ class FriendRequestsController @Inject()(
       ).map(FriendRequestCreated(_)).map(response.created(_))
     }
 
-    scope(relationships).deleteWithDoc("/accounts/:id/requests") { o =>
-      o.summary("Remove a friend friendRequest to an account")
-        .tag(accountsTag)
+    scope(relationships).deleteWithDoc("/users/:id/requests") { o =>
+      o.summary("Remove a friend friendRequest to an user")
+        .tag(usersTag)
         .operationId("unrequest")
         .request[DeleteFriendRequest]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, FriendRequestNotFound))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound, FriendRequestNotFound))))
 
     } { request: DeleteFriendRequest =>
       friendRequestsService.delete(

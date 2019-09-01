@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.backend.core.domain.models.{Account, Feed}
+import io.github.cactacea.backend.core.domain.models.{User, Feed}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models.{FeedLikes, _}
 
@@ -23,7 +23,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
 
   private def createFeedLikes(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     val likedAt = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[FeedLikes]
         .insert(
@@ -43,7 +43,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
   }
 
   private def deleteFeedLikes(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[FeedLikes]
         .filter(_.feedId == lift(feedId))
@@ -54,7 +54,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
   }
 
   def own(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[FeedLikes]
         .filter(_.feedId == lift(feedId))
@@ -64,46 +64,46 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def findAccounts(feedId: FeedId,
-                   since: Option[Long],
-                   offset: Int,
-                   count: Int,
-                   sessionId: SessionId): Future[List[Account]] = {
-    val by = sessionId.toAccountId
+  def findUsers(feedId: FeedId,
+                since: Option[Long],
+                offset: Int,
+                count: Int,
+                sessionId: SessionId): Future[List[User]] = {
+    val by = sessionId.userId
     val q = quote {
       (for {
         fl <- query[FeedLikes]
           .filter(_.feedId == lift(feedId))
           .filter(fl => lift(since).forall(fl.id < _))
-          .filter(fl => query[Blocks].filter(b => b.accountId == lift(by) && b.by == fl.by).isEmpty)
-        a <- query[Accounts]
+          .filter(fl => query[Blocks].filter(b => b.userId == lift(by) && b.by == fl.by).isEmpty)
+        a <- query[Users]
           .join(_.id == fl.by)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+          .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (a, r, fl.id))
         .sortBy({ case (_, _, id) => id })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q).map(_.map({ case (a, r, id) => Account(a, r, id.value) }))
+    run(q).map(_.map({ case (a, r, id) => User(a, r, id.value) }))
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = { // scalastyle:ignore
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = { // scalastyle:ignore
     val e = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       (for {
         fl <- query[FeedLikes]
-          .filter(_.by == lift(accountId))
+          .filter(_.by == lift(userId))
           .filter(fl => lift(since).forall(fl.id < _))
         (f, flb, fcb) <- query[Feeds]
           .join(_.id == fl.feedId)
           .filter(f => f.expiration.forall(_ > lift(e)))
-          .filter(f => query[Blocks].filter(b => b.accountId == lift(by) && b.by == f.by).isEmpty)
+          .filter(f => query[Blocks].filter(b => b.userId == lift(by) && b.by == f.by).isEmpty)
           .filter(f => (
             f.by == lift(by)) || (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships]
-              .filter(_.accountId == f.by)
+              .filter(_.userId == f.by)
               .filter(_.by == lift(by))
               .filter(r =>
                 ((r.follow || r.isFriend) && (f.privacyType == lift(FeedPrivacyType.followers))) ||
@@ -113,21 +113,21 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
             (f,
               query[FeedLikes]
                 .filter(_.feedId == f.id)
-                .filter(fl => query[Blocks].filter(b => b.accountId == lift(by) && b.by == fl.by).nonEmpty).size,
+                .filter(fl => query[Blocks].filter(b => b.userId == lift(by) && b.by == fl.by).nonEmpty).size,
               query[Comments]
                 .filter(_.feedId == f.id)
-                .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).nonEmpty).size))
+                .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty).size))
         l <- query[FeedLikes].leftJoin(fl => fl.feedId == f.id && fl.by == lift(by))
         i1 <- query[Mediums].leftJoin(_.id == f.mediumId1)
         i2 <- query[Mediums].leftJoin(_.id == f.mediumId2)
         i3 <- query[Mediums].leftJoin(_.id == f.mediumId3)
         i4 <- query[Mediums].leftJoin(_.id == f.mediumId4)
         i5 <- query[Mediums].leftJoin(_.id == f.mediumId5)
-        a <- query[Accounts]
+        a <- query[Users]
           .join(_.id == f.by)
-          .filter(a => query[Blocks].filter(b => (b.accountId == lift(by) && b.by == a.id)).isEmpty)
+          .filter(a => query[Blocks].filter(b => (b.userId == lift(by) && b.by == a.id)).isEmpty)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == f.by && r.by == lift(by))
+          .leftJoin(r => r.userId == f.by && r.by == lift(by))
       } yield (fl, l, f, i1, i2, i3, i4, i5, a, r, flb, fcb))
         .sortBy(_._1.feedId)(Ord.desc)
         .drop(lift(offset))

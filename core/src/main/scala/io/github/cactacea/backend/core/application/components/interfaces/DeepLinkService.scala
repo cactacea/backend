@@ -4,8 +4,8 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 trait DeepLinkService {
 
-  def getAccounts(): String
-  def getAccount(id: AccountId): String
+  def getUsers(): String
+  def getUser(id: UserId): String
   def getFeeds(): String
   def getFeed(id: FeedId): String
   def getComments(id: FeedId): String

@@ -9,10 +9,10 @@ import io.github.cactacea.backend.core.infrastructure.validators._
 
 
 class MessagesRepository @Inject()(
-                                    accountChannelsDAO: AccountChannelsDAO,
-                                    accountChannelsValidator: AccountChannelsValidator,
-                                    accountMessagesDAO: AccountMessagesDAO,
-                                    accountMessagesValidator: AccountMessagesValidator,
+                                    userChannelsDAO: UserChannelsDAO,
+                                    userChannelsValidator: UserChannelsValidator,
+                                    userMessagesDAO: UserMessagesDAO,
+                                    userMessagesValidator: UserMessagesValidator,
                                     channelsDAO: ChannelsDAO,
                                     mediumsValidator: MediumsValidator,
                                     messagesDAO:  MessagesDAO
@@ -20,24 +20,24 @@ class MessagesRepository @Inject()(
 
   def createText(channelId: ChannelId, message: String, sessionId: SessionId): Future[Message] = {
     for {
-      _ <- accountChannelsValidator.mustJoined(sessionId.toAccountId, channelId)
-      c <- channelsDAO.findAccountCount(channelId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
+      c <- channelsDAO.findUserCount(channelId)
       i <- messagesDAO.create(channelId, message, c, sessionId)
-      _ <- accountMessagesDAO.create(channelId, i, sessionId)
-      _ <- accountChannelsDAO.updateUnreadCount(channelId)
-      m <- accountMessagesValidator.mustFind(i, sessionId)
+      _ <- userMessagesDAO.create(channelId, i, sessionId)
+      _ <- userChannelsDAO.updateUnreadCount(channelId)
+      m <- userMessagesValidator.mustFind(i, sessionId)
     } yield (m)
   }
 
   def createMedium(channelId: ChannelId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
     for {
-      _ <- accountChannelsValidator.mustJoined(sessionId.toAccountId, channelId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
       _ <- mediumsValidator.mustOwn(mediumId, sessionId)
-      c <- channelsDAO.findAccountCount(channelId)
+      c <- channelsDAO.findUserCount(channelId)
       i <- messagesDAO.create(channelId, mediumId, c, sessionId)
-      _ <- accountMessagesDAO.create(channelId, i, sessionId)
-      _ <- accountChannelsDAO.updateUnreadCount(channelId)
-      m <- accountMessagesValidator.mustFind(i, sessionId)
+      _ <- userMessagesDAO.create(channelId, i, sessionId)
+      _ <- userChannelsDAO.updateUnreadCount(channelId)
+      m <- userMessagesValidator.mustFind(i, sessionId)
     } yield (m)
   }
 
@@ -49,13 +49,13 @@ class MessagesRepository @Inject()(
       val ids = m.map(_.id)
       for {
         _ <- messagesDAO.updateReadCount(ids)
-        _ <- accountMessagesDAO.updateUnread(ids, sessionId)
+        _ <- userMessagesDAO.updateUnread(ids, sessionId)
       } yield (())
     }
   }
 
   def delete(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
-    accountMessagesDAO.delete(sessionId.toAccountId, channelId)
+    userMessagesDAO.delete(sessionId.userId, channelId)
   }
 
   def find(channelId: ChannelId,
@@ -65,8 +65,8 @@ class MessagesRepository @Inject()(
            ascending: Boolean,
            sessionId: SessionId): Future[List[Message]] = {
     for {
-      _ <- accountChannelsValidator.mustJoined(sessionId.toAccountId, channelId)
-      r <- accountMessagesDAO.find(channelId, since, offset, count, ascending, sessionId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
+      r <- userMessagesDAO.find(channelId, since, offset, count, ascending, sessionId)
       _ <- updateReadStatus(r, sessionId)
     } yield (r)
 

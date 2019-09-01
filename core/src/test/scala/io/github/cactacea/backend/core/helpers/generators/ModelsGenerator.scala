@@ -66,11 +66,11 @@ trait ModelsGenerator extends StatusGenerator with Generator {
   lazy val boolean7ListGen: Gen[List[Boolean]] = Gen.listOfN(7, booleanGen)
 
   //
-  lazy val uniqueAccountNameGen: Gen[String] = for {
-    accountFirstName <- Gen.listOfN(15, Gen.alphaChar).map(_.mkString)
-    accountLastName <- Gen.listOfN(15, Gen.alphaChar).map(_.mkString)
-    accountName <- uniqueGen.map(no => s"${accountFirstName}_${accountLastName}_${no}")
-  } yield (accountName)
+  lazy val uniqueUserNameGen: Gen[String] = for {
+    userFirstName <- Gen.listOfN(15, Gen.alphaChar).map(_.mkString)
+    userLastName <- Gen.listOfN(15, Gen.alphaChar).map(_.mkString)
+    userName <- uniqueGen.map(no => s"${userFirstName}_${userLastName}_${no}")
+  } yield (userName)
 
   lazy val uniqueDisplayNameGen: Gen[String] = for {
     displayFirstName <- Gen.listOfN(15, Gen.alphaChar).map(_.mkString)
@@ -81,40 +81,40 @@ trait ModelsGenerator extends StatusGenerator with Generator {
   lazy val uniqueDisplayNameOptGen: Gen[Option[String]] = Gen.option(uniqueDisplayNameGen)
 
   // model generator
-  lazy val accountGen: Gen[Accounts] = for {
-    accountName <- uniqueAccountNameGen
+  lazy val userGen: Gen[Users] = for {
+    userName <- uniqueUserNameGen
     displayName <- uniqueDisplayNameGen
     url <- Gen.option(urlGen)
     birthday <- Gen.option(currentTimeMillisGen)
     location <- Gen.option(Gen.alphaStr)
     bio <- Gen.option(Gen.alphaStr)
-    accountStatus <- accountStatusGen
-  } yield Accounts(AccountId(0L), accountName, displayName, None, None, 0L, 0L, 0L, 0L, url, birthday, location, bio, accountStatus, None)
+    userStatus <- userStatusGen
+  } yield Users(UserId(0L), userName, displayName, None, None, 0L, 0L, 0L, 0L, url, birthday, location, bio, userStatus, None)
 
-  lazy val accounts20ListGen: Gen[List[Accounts]] = for {
-    l <- Gen.listOfN(20, accountGen)
+  lazy val users20ListGen: Gen[List[Users]] = for {
+    l <- Gen.listOfN(20, userGen)
   } yield (l)
 
-  lazy val sortedAccountGen: Gen[Accounts] = for {
-    accountName <- currentTimeNanoMillisGen.map(no => s"_${no}")
+  lazy val sortedUserGen: Gen[Users] = for {
+    userName <- currentTimeNanoMillisGen.map(no => s"_${no}")
     displayName <- currentTimeNanoMillisGen.map(no => s"_${no}")
     url <- Gen.option(urlGen)
     birthday <- Gen.option(currentTimeMillisGen)
     location <- Gen.option(Gen.alphaStr)
     bio <- Gen.option(Gen.alphaStr)
-    accountStatus <- accountStatusGen
-  } yield Accounts(AccountId(0L), accountName, displayName, None, None, 0L, 0L, 0L, 0L, url, birthday, location, bio, accountStatus, None)
+    userStatus <- userStatusGen
+  } yield Users(UserId(0L), userName, displayName, None, None, 0L, 0L, 0L, 0L, url, birthday, location, bio, userStatus, None)
 
   lazy val deviceGen: Gen[Devices] = for {
     deviceId <- Gen.const(DeviceId(0L))
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     udid <- Gen.delay(UUID.randomUUID().toString)
     deviceType <- deviceTypeGen
     activeStatus <- activeStatusGen
     pushToken <- pushTokenGen
     userAgent <- Gen.option(Gen.alphaNumStr)
     registeredAt <- currentTimeMillisGen
-  } yield Devices(deviceId, accountId, udid, deviceType, activeStatus, pushToken, userAgent, registeredAt)
+  } yield Devices(deviceId, userId, udid, deviceType, activeStatus, pushToken, userAgent, registeredAt)
 
 
   lazy val channelGen: Gen[Channels] = for {
@@ -123,9 +123,9 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     privacyType <- channelPrivacyTypeGen
     invitationOnly <- booleanGen
     channelAuthorityType <- channelAuthorityTypeGen
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, userId, None, organizedAt))
 
   lazy val organizerChannelGen: Gen[Channels] = for {
     channelId <- Gen.const(ChannelId(0L))
@@ -133,9 +133,9 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     privacyType <- Gen.const(ChannelPrivacyType.everyone)
     invitationOnly <- booleanGen
     channelAuthorityType <- Gen.const(ChannelAuthorityType.organizer)
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, userId, None, organizedAt))
 
   lazy val memberChannelGen: Gen[Channels] = for {
     channelId <- Gen.const(ChannelId(0L))
@@ -143,9 +143,9 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     privacyType <- Gen.const(ChannelPrivacyType.everyone)
     invitationOnly <- booleanGen
     channelAuthorityType <- Gen.const(ChannelAuthorityType.member)
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, userId, None, organizedAt))
 
   lazy val everyoneChannelGen: Gen[Channels] = for {
     channelId <- Gen.const(ChannelId(0L))
@@ -153,9 +153,9 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     privacyType <- Gen.const(ChannelPrivacyType.everyone)
     invitationOnly <- Gen.const(false)
     channelAuthorityType <- channelAuthorityTypeGen
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, userId, None, organizedAt))
 
   lazy val followChannelGen: Gen[Channels] = for {
     channelId <- Gen.const(ChannelId(0L))
@@ -163,9 +163,9 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     privacyType <- Gen.const(ChannelPrivacyType.follows)
     invitationOnly <- booleanGen
     channelAuthorityType <- channelAuthorityTypeGen
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, userId, None, organizedAt))
 
   lazy val followerChannelGen: Gen[Channels] = for {
     channelId <- Gen.const(ChannelId(0L))
@@ -173,9 +173,9 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     privacyType <- Gen.const(ChannelPrivacyType.followers)
     invitationOnly <- booleanGen
     channelAuthorityType <- channelAuthorityTypeGen
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, userId, None, organizedAt))
 
   lazy val friendChannelGen: Gen[Channels] = for {
     channelId <- Gen.const(ChannelId(0L))
@@ -183,30 +183,30 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     privacyType <- Gen.const(ChannelPrivacyType.friends)
     invitationOnly <- booleanGen
     channelAuthorityType <- channelAuthorityTypeGen
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     organizedAt <- currentTimeMillisGen
-  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, accountId, None, organizedAt))
+  } yield (Channels(channelId, name, privacyType, invitationOnly, false, channelAuthorityType, 0L, None, userId, None, organizedAt))
 
   lazy val textMessageGen: Gen[Messages] = for {
     messageId <- Gen.const(MessageId(0L))
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     channelId <- Gen.const(ChannelId(0L))
     message <- messageTextOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     postedAt <- currentTimeMillisGen
-  } yield (Messages(messageId, accountId, channelId, MessageType.text, message, None, None, 0L, 0L, contentWarning, contentStatus, false, postedAt))
+  } yield (Messages(messageId, userId, channelId, MessageType.text, message, None, None, 0L, 0L, contentWarning, contentStatus, false, postedAt))
 
   lazy val messageGen: Gen[Messages] = for {
     messageId <- Gen.const(MessageId(0L))
-    accountId <- Gen.const(AccountId(0L))
+    userId <- Gen.const(UserId(0L))
     channelId <- Gen.const(ChannelId(0L))
     message <- messageTextOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     postedAt <- currentTimeMillisGen
     messageType = message.fold(MessageType.text)(_ => MessageType.medium)
-  } yield (Messages(messageId, accountId, channelId, messageType, message, None, None, 0L, 0L, contentWarning, contentStatus, false, postedAt))
+  } yield (Messages(messageId, userId, channelId, messageType, message, None, None, 0L, 0L, contentWarning, contentStatus, false, postedAt))
 
   lazy val mediumGen: Gen[Mediums] = for {
     key <- mediumKeyGen
@@ -219,7 +219,7 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     contentStatus <- contentStatusGen
     contentWarning <- booleanGen
     mediumType <- mediumTypeGen
-  } yield Mediums(MediumId(0L), s"${key}_${no}", url, width, height, size, Option(thumnailUrl), mediumType, AccountId(0L), contentWarning, contentStatus)
+  } yield Mediums(MediumId(0L), s"${key}_${no}", url, width, height, size, Option(thumnailUrl), mediumType, UserId(0L), contentWarning, contentStatus)
 
   lazy val mediumOptGen = Gen.option(mediumGen)
 
@@ -230,7 +230,7 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, privacyType, 0L, 0L, AccountId(0L), contentWarning, contentStatus, None, false, postedAt)
+  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, privacyType, 0L, 0L, UserId(0L), contentWarning, contentStatus, None, false, postedAt)
 
   lazy val notExpiredFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
@@ -240,7 +240,7 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, privacyType, 0L, 0L, AccountId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, privacyType, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
   lazy val expiredFeedsGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
@@ -249,7 +249,7 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     contentStatus <- contentStatusGen
     expiration <- passDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.everyone, 0L, 0L, AccountId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.everyone, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
   lazy val everyoneFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
@@ -258,7 +258,7 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.everyone, 0L, 0L, AccountId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.everyone, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
   lazy val followerFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
@@ -267,7 +267,7 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.followers, 0L, 0L, AccountId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.followers, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
   lazy val selfFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
@@ -276,7 +276,7 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.self, 0L, 0L, AccountId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.self, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
   lazy val friendFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
@@ -285,38 +285,38 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.friends, 0L, 0L, AccountId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.friends, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
   lazy val commentGen: Gen[Comments] = for {
     message <- commentMessageGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     postedAt <- currentTimeMillisGen
-  } yield Comments(CommentId(0L), message, FeedId(0L), None, 0L, AccountId(0L), contentWarning, contentStatus, false, postedAt)
+  } yield Comments(CommentId(0L), message, FeedId(0L), None, 0L, UserId(0L), contentWarning, contentStatus, false, postedAt)
 
-  lazy val accountReportGen: Gen[AccountReports] = for {
+  lazy val userReportGen: Gen[UserReports] = for {
     reportType <- reportTypeGen
     reportContent <- reportContentOptGen
     reportedAt <- currentTimeMillisGen
-  } yield AccountReports(AccountReportId(0L), AccountId(0L), AccountId(0L), reportType, reportContent, reportedAt)
+  } yield UserReports(UserReportId(0L), UserId(0L), UserId(0L), reportType, reportContent, reportedAt)
 
   lazy val commentReportGen: Gen[CommentReports] = for {
     reportType <- reportTypeGen
     reportContent <- reportContentOptGen
     reportedAt <- currentTimeMillisGen
-  } yield CommentReports(CommentReportId(0L), CommentId(0L), AccountId(0L), reportType, reportContent, reportedAt)
+  } yield CommentReports(CommentReportId(0L), CommentId(0L), UserId(0L), reportType, reportContent, reportedAt)
 
   lazy val feedReportGen: Gen[FeedReports] = for {
     reportType <- reportTypeGen
     reportContent <- reportContentOptGen
     reportedAt <- currentTimeMillisGen
-  } yield FeedReports(FeedReportId(0L), FeedId(0L), AccountId(0L), reportType, reportContent, reportedAt)
+  } yield FeedReports(FeedReportId(0L), FeedId(0L), UserId(0L), reportType, reportContent, reportedAt)
 
   lazy val channelReportGen: Gen[ChannelReports] = for {
     reportType <- reportTypeGen
     reportContent <- reportContentOptGen
     reportedAt <- currentTimeMillisGen
-  } yield ChannelReports(ChannelReportId(0L), ChannelId(0L), AccountId(0L), reportType, reportContent, reportedAt)
+  } yield ChannelReports(ChannelReportId(0L), ChannelId(0L), UserId(0L), reportType, reportContent, reportedAt)
 
   lazy val authenticationGen: Gen[Authentications] = for {
     providerId <- Gen.listOfN(30, Gen.alphaChar).map(_.mkString)
@@ -324,8 +324,8 @@ trait ModelsGenerator extends StatusGenerator with Generator {
     password <- passwordGen
     hasher <-  hasherGen
     confirm <- booleanGen
-    accountId <- Gen.option(AccountId(0L))
-  } yield (Authentications(providerId, providerKey, password, hasher, confirm, accountId))
+    userId <- Gen.option(UserId(0L))
+  } yield (Authentications(providerId, providerKey, password, hasher, confirm, userId))
 
 
   lazy val clientGen = for {

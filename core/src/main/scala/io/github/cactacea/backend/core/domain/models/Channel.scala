@@ -11,7 +11,7 @@ case class Channel(
                   invitationOnly: Boolean,
                   privacyType: ChannelPrivacyType,
                   authorityType: ChannelAuthorityType,
-                  accountCount: Long,
+                  userCount: Long,
                   lastPostedAt: Option[Long],
                   organizedAt: Long,
                   next: Option[Long]
@@ -27,16 +27,16 @@ object Channel {
     apply(g, None, None, None, None, None, Option(n))
   }
 
-  def apply(g: Channels, am: Option[AccountMessages], m: Option[Messages],
-            i: Option[Mediums], a: Option[Accounts], r: Option[Relationships], n: Long): Channel = {
+  def apply(g: Channels, am: Option[UserMessages], m: Option[Messages],
+            i: Option[Mediums], a: Option[Users], r: Option[Relationships], n: Long): Channel = {
     apply(g, am, m, i, a, r, Option(n))
   }
 
   private def apply(g: Channels,
-                    am: Option[AccountMessages],
+                    am: Option[UserMessages],
                     m: Option[Messages],
                     i: Option[Mediums],
-                    a: Option[Accounts],
+                    a: Option[Users],
                     r: Option[Relationships], n: Option[Long]): Channel = {
 
     val message = ((am, m, a) match {
@@ -51,7 +51,7 @@ object Channel {
       invitationOnly    = g.invitationOnly,
       privacyType       = g.privacyType,
       authorityType     = g.authorityType,
-      accountCount      = g.accountCount,
+      userCount      = g.userCount,
       organizedAt       = g.organizedAt,
       lastPostedAt      = g.lastPostedAt,
       next              = n

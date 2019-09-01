@@ -10,12 +10,12 @@ import io.github.cactacea.backend.core.infrastructure.validators._
 
 
 class ChannelsRepository @Inject()(
-                                  accountChannelsValidator: AccountChannelsValidator,
-                                  channelsValidator: ChannelsValidator,
-                                  channelAuthorityValidator: ChannelAuthorityValidator,
-                                  accountChannelsDAO: AccountChannelsDAO,
-                                  channelsDAO: ChannelsDAO,
-                                  channelReportsDAO: ChannelReportsDAO
+                                    userChannelsValidator: UserChannelsValidator,
+                                    channelsValidator: ChannelsValidator,
+                                    channelAuthorityValidator: ChannelAuthorityValidator,
+                                    userChannelsDAO: UserChannelsDAO,
+                                    channelsDAO: ChannelsDAO,
+                                    channelReportsDAO: ChannelReportsDAO
                                 ) {
 
   def create(name: Option[String],
@@ -25,7 +25,7 @@ class ChannelsRepository @Inject()(
              sessionId: SessionId): Future[ChannelId] = {
     for {
       id <- channelsDAO.create(name, byInvitationOnly, privacyType, authority, sessionId)
-      _ <- accountChannelsDAO.create(sessionId.toAccountId, id, sessionId)
+      _ <- userChannelsDAO.create(sessionId.userId, id, sessionId)
     } yield (id)
   }
 
@@ -37,7 +37,7 @@ class ChannelsRepository @Inject()(
              sessionId: SessionId): Future[Unit] = {
 
     for {
-      _ <- accountChannelsValidator.mustJoined(sessionId.toAccountId, channelId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
       _ <- channelAuthorityValidator.hasUpdateAuthority(channelId, sessionId)
       _ <- channelsDAO.update(channelId, name, byInvitationOnly, privacyType, authority, sessionId)
     } yield (())

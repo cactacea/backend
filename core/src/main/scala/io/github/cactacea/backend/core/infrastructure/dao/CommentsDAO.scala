@@ -21,7 +21,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
   }
 
   private def createComments(feedId: FeedId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val postedAt = System.currentTimeMillis()
     val q = quote {
       query[Comments]
@@ -48,7 +48,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
   }
 
   private def deleteComments(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
@@ -59,30 +59,30 @@ class CommentsDAO @Inject()(db: DatabaseService) {
   }
 
   def exists(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
-        .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
+        .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).isEmpty)
         .nonEmpty
     }
     run(q)
   }
 
   def exists(feedId: FeedId, commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
         .filter(_.feedId == lift(feedId))
-        .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
+        .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).isEmpty)
         .nonEmpty
     }
     run(q)
   }
 
   def own(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
@@ -93,23 +93,23 @@ class CommentsDAO @Inject()(db: DatabaseService) {
   }
 
   def find(commentId: CommentId, sessionId: SessionId): Future[Option[Comment]] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       for {
         (c, b) <- query[Comments]
           .filter(c => c.id == lift(commentId))
-          .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
+          .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).isEmpty)
           .map(c =>
             (c,
               query[CommentLikes]
                 .filter(_.commentId == c.id)
-                .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).nonEmpty).size
+                .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty).size
             )
           )
-        a <- query[Accounts]
+        a <- query[Users]
           .join(_.id == c.by)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+          .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (c, a, r, b)
     }
     run(q).map(_.map({ case (c, a, r, b) =>
@@ -118,26 +118,26 @@ class CommentsDAO @Inject()(db: DatabaseService) {
   }
 
   def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       (for {
         (c, b) <- query[Comments]
           .filter(c => c.feedId == lift(feedId))
           .filter(c => lift(since).forall(c.id  < _))
-          .filter(c => query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).isEmpty)
+          .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).isEmpty)
             .map(c =>
               (c,
                 query[CommentLikes]
                   .filter(_.commentId == c.id)
                   .filter(c =>
-                    query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).nonEmpty
+                    query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty
                   ).size
               )
             )
-        a <- query[Accounts]
+        a <- query[Users]
           .join(_.id == c.by)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+          .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (c, a, r, b))
         .sortBy({ case (c, _, _, _) => c.id})(Ord.desc)
         .drop(lift(offset))
@@ -159,7 +159,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  def findOwner(commentId: CommentId): Future[Option[AccountId]] = {
+  def findOwner(commentId: CommentId): Future[Option[UserId]] = {
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))

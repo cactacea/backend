@@ -1,11 +1,11 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
 import io.github.cactacea.backend.core.domain.enums.{ActiveStatusType, DeviceType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, DeviceId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, DeviceId}
 
 case class Devices(
                     id: DeviceId,
-                    accountId: AccountId,
+                    userId: UserId,
                     udid: String,
                     deviceType: DeviceType,
                     activeStatus: ActiveStatusType,

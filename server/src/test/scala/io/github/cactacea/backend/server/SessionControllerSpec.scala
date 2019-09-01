@@ -9,7 +9,7 @@ trait SessionControllerSpec extends FeatureTest {
 
   test("GET /session") (pending)
   test("DELETE /session") (pending)
-  test("PUT /session/account_name") (pending)
+  test("PUT /session/user_name") (pending)
   test("PUT /session/password") (pending)
   test("PUT /session/profile") (pending)
   test("POST /session/profile_image") (pending)

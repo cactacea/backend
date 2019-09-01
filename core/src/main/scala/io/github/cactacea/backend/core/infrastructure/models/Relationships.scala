@@ -1,11 +1,11 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId}
 
 case class Relationships(
-                          accountId: AccountId,
+                          userId: UserId,
                           displayName: Option[String],
-                          by: AccountId,
+                          by: UserId,
                           follow: Boolean,
                           isFollower: Boolean,
                           muting: Boolean,

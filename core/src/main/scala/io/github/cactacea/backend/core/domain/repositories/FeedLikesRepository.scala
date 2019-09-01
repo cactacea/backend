@@ -2,14 +2,14 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.models.{Account, Feed}
+import io.github.cactacea.backend.core.domain.models.{User, Feed}
 import io.github.cactacea.backend.core.infrastructure.dao.FeedLikesDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FeedLikesValidator, FeedsValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, FeedLikesValidator, FeedsValidator}
 
 
 class FeedLikesRepository @Inject()(
-                                     accountsValidator: AccountsValidator,
+                                     usersValidator: UsersValidator,
                                      feedsValidator: FeedsValidator,
                                      feedLikesValidator: FeedLikesValidator,
                                      feedLikesDAO: FeedLikesDAO
@@ -31,21 +31,21 @@ class FeedLikesRepository @Inject()(
     } yield (())
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
-      _ <- accountsValidator.mustExist(accountId, sessionId)
-      r <- feedLikesDAO.find(accountId, since, offset, count, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      r <- feedLikesDAO.find(userId, since, offset, count, sessionId)
     } yield (r)
   }
 
   def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedLikesDAO.find(sessionId.toAccountId, since, offset, count, sessionId)
+    feedLikesDAO.find(sessionId.userId, since, offset, count, sessionId)
   }
 
-  def findAccounts(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
     for {
       _ <- feedsValidator.mustExist(feedId, sessionId)
-      r <- feedLikesDAO.findAccounts(feedId, since, offset, count, sessionId)
+      r <- feedLikesDAO.findUsers(feedId, since, offset, count, sessionId)
     } yield (r)
   }
 

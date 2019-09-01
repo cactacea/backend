@@ -7,8 +7,8 @@ import com.twitter.inject.server.FeatureTest
 trait FollowsControllerSpec extends FeatureTest {
   self: CactaceaServerSpec =>
 
-  test("GET /accounts/:id/follows") (pending)
-  test("POST /accounts/:id/follows") (pending)
-  test("DELETE /accounts/:id/follows") (pending)
+  test("GET /users/:id/follows") (pending)
+  test("POST /users/:id/follows") (pending)
+  test("DELETE /users/:id/follows") (pending)
 
 }

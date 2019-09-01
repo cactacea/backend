@@ -6,14 +6,14 @@ class FeedsServiceSpec extends ServiceSpec {
 
   feature("create a message feed") {
 
-//    val session = signUp("account name", "account password", "ffc1ded6f4570d557ad65f986684fc10c7f8d51f")
+//    val session = signUp("user name", "user password", "ffc1ded6f4570d557ad65f986684fc10c7f8d51f")
 //    val id = execute(feedsService.create("a message feed", None, Some(List("tag1, tag2, tag3, tag4")), FeedPrivacyType.everyone, false, None, session.id.toSessionId))
 //    val feed = execute(feedsService.find(id, session.id.toSessionId))
 //
 //    assert(feed.id == id)
 //    assert(feed.message == "a message feed")
 //    assert(feed.tags == Some(List("tag1, tag2, tag3, tag4")))
-//    assert(feed.account.map(_.accountName) == Some("account name"))
+//    assert(feed.user.map(_.userName) == Some("user name"))
 //    assert(feed.contentWarning == false)
 //    assert(feed.commentCount == 0)
 

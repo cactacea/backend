@@ -7,26 +7,26 @@ class InvitationsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create a invitation") {
-      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, channelGen) { (s, a, g) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val id = await(invitationsDAO.create(accountId, channelId, sessionId))
-        val result = await(invitationsDAO.find(accountId, id))
+        val id = await(invitationsDAO.create(userId, channelId, sessionId))
+        val result = await(invitationsDAO.find(userId, id))
         assert(result.isDefined)
       }
     }
 
     scenario("should return an exception occurs when duplication") {
-      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, channelGen) { (s, a, g) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
-        await(invitationsDAO.create(accountId, channelId, sessionId))
+        await(invitationsDAO.create(userId, channelId, sessionId))
         assert(intercept[ServerError] {
-          await(invitationsDAO.create(accountId, channelId, sessionId))
+          await(invitationsDAO.create(userId, channelId, sessionId))
         }.code == 1062)
       }
     }
@@ -36,24 +36,24 @@ class InvitationsDAOSpec extends DAOSpec {
 
   feature("delete - delete a channel invitations") {
     scenario("should delete a invitation") {
-      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, channelGen) { (s, a, g) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val id = await(invitationsDAO.create(accountId, channelId, sessionId))
-        await(invitationsDAO.delete(accountId, channelId, sessionId))
-        val result = await(invitationsDAO.find(accountId, id))
+        val id = await(invitationsDAO.create(userId, channelId, sessionId))
+        await(invitationsDAO.delete(userId, channelId, sessionId))
+        val result = await(invitationsDAO.find(userId, id))
         assert(result.isEmpty)
       }
     }
     scenario("should delete a session invitation") {
-      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, channelGen) { (s, a, g) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val id = await(invitationsDAO.create(accountId, channelId, sessionId))
-        await(invitationsDAO.delete(id, accountId.toSessionId))
-        val result = await(invitationsDAO.find(accountId, id))
+        val id = await(invitationsDAO.create(userId, channelId, sessionId))
+        await(invitationsDAO.delete(id, userId.sessionId))
+        val result = await(invitationsDAO.find(userId, id))
         assert(result.isEmpty)
       }
     }
@@ -61,16 +61,16 @@ class InvitationsDAOSpec extends DAOSpec {
 
   feature("exists") {
     scenario("should return a channel exist or not") {
-      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, channelGen) { (s, a, g) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
-        val result2 = await(invitationsDAO.exists(accountId, channelId))
+        val result2 = await(invitationsDAO.exists(userId, channelId))
         assert(!result2)
 
-        await(invitationsDAO.create(accountId, channelId, sessionId))
-        val result1 = await(invitationsDAO.exists(accountId, channelId))
+        await(invitationsDAO.create(userId, channelId, sessionId))
+        val result1 = await(invitationsDAO.exists(userId, channelId))
         assert(result1)
       }
     }
@@ -78,41 +78,41 @@ class InvitationsDAOSpec extends DAOSpec {
 
   feature("find") {
 
-    scenario("should return channelId accountId") {
-      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
+    scenario("should return channelId userId") {
+      forOne(userGen, userGen, channelGen) { (s, a, g) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        val id = await(invitationsDAO.create(accountId, channelId, sessionId))
-        val result = await(invitationsDAO.find(accountId, id))
+        val id = await(invitationsDAO.create(userId, channelId, sessionId))
+        val result = await(invitationsDAO.find(userId, id))
         assert(result.isDefined)
         assert(result.exists(_._1 == channelId))
-        assert(result.exists(_._2 == accountId))
+        assert(result.exists(_._2 == userId))
       }
     }
 
     scenario("should return received invitations") {
-      forOne(accountGen, accounts20ListGen, channelGen) { (s, l, g) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+      forOne(userGen, users20ListGen, channelGen) { (s, l, g) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
         val creates = l.map({a =>
-          val accountId = await(accountsDAO.create(a.accountName))
+          val userId = await(usersDAO.create(a.userName))
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          val id = await(invitationsDAO.create(sessionId.toAccountId, channelId, accountId.toSessionId))
-          (id, a.copy(id = accountId))
+          val id = await(invitationsDAO.create(sessionId.userId, channelId, userId.sessionId))
+          (id, a.copy(id = userId))
         }).reverse
 
         val result1 = await(invitationsDAO.find(None, 0, 10, sessionId))
         assert(result1.size == 10)
         result1.zipWithIndex.map { case (r, i) =>
           assert(r.id == creates(i)._1)
-          assert(r.account.id == creates(i)._2.id)
+          assert(r.user.id == creates(i)._2.id)
         }
 
         val result2 = await(invitationsDAO.find(result1.lastOption.map(_.next), 0, 10, sessionId))
         assert(result2.size == 10)
         result2.zipWithIndex.map { case (r, i) =>
           assert(r.id == creates(i + result1.size)._1)
-          assert(r.account.id == creates(i + result1.size)._2.id)
+          assert(r.user.id == creates(i + result1.size)._2.id)
         }
 
         val result3 = await(invitationsDAO.find(result2.lastOption.map(_.next), 0, 10, sessionId))
@@ -125,19 +125,19 @@ class InvitationsDAOSpec extends DAOSpec {
 
   feature("own") {
     scenario("should return owner or not") {
-      forOne(accountGen, accountGen, channelGen) { (s, a, g) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, channelGen) { (s, a, g) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
-        val result1 = await(invitationsDAO.own(accountId, channelId, sessionId))
+        val result1 = await(invitationsDAO.own(userId, channelId, sessionId))
         assert(!result1)
 
-        await(invitationsDAO.create(accountId, channelId, sessionId))
-        val result2 = await(invitationsDAO.own(accountId, channelId, sessionId))
+        await(invitationsDAO.create(userId, channelId, sessionId))
+        val result2 = await(invitationsDAO.own(userId, channelId, sessionId))
         assert(result2)
 
-        val result3 = await(invitationsDAO.own(sessionId.toAccountId, channelId, accountId.toSessionId))
+        val result3 = await(invitationsDAO.own(sessionId.userId, channelId, userId.sessionId))
         assert(!result3)
 
       }

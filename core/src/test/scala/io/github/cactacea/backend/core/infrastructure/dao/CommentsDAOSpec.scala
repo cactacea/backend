@@ -8,35 +8,35 @@ class CommentsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create a comment") {
-      forAll(accountGen, accountGen, accountGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
+      forAll(userGen, userGen, userGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
 
         // preparing
-        //  account1 create a feed
-        //  account2 create a comment
-        //  account1 create a comment
-        //  account2 create a comment
-        //  account1 create a comment
-        //  account2 create a comment
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, accountId1.toSessionId))
-        val commentId1 = await(commentsDAO.create(feedId, c(0).message, None, accountId2.toSessionId))
-        val commentId2 = await(commentsDAO.create(feedId, c(1).message, None, accountId1.toSessionId))
-        val commentId3 = await(commentsDAO.create(feedId, c(2).message, None, accountId2.toSessionId))
-        val commentId4 = await(commentsDAO.create(feedId, c(3).message, None, accountId1.toSessionId))
-        val commentId5 = await(commentsDAO.create(feedId, c(4).message, None, accountId2.toSessionId))
+        //  user1 create a feed
+        //  user2 create a comment
+        //  user1 create a comment
+        //  user2 create a comment
+        //  user1 create a comment
+        //  user2 create a comment
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, userId1.sessionId))
+        val commentId1 = await(commentsDAO.create(feedId, c(0).message, None, userId2.sessionId))
+        val commentId2 = await(commentsDAO.create(feedId, c(1).message, None, userId1.sessionId))
+        val commentId3 = await(commentsDAO.create(feedId, c(2).message, None, userId2.sessionId))
+        val commentId4 = await(commentsDAO.create(feedId, c(3).message, None, userId1.sessionId))
+        val commentId5 = await(commentsDAO.create(feedId, c(4).message, None, userId2.sessionId))
 
         // return comment1 exist
         // return comment2 exist
         // return comment3 exist
         // return comment4 exist
         // return comment5 exist
-        assert(await(commentsDAO.own(commentId1, accountId2.toSessionId)))
-        assert(await(commentsDAO.own(commentId2, accountId1.toSessionId)))
-        assert(await(commentsDAO.own(commentId3, accountId2.toSessionId)))
-        assert(await(commentsDAO.own(commentId4, accountId1.toSessionId)))
-        assert(await(commentsDAO.own(commentId5, accountId2.toSessionId)))
+        assert(await(commentsDAO.own(commentId1, userId2.sessionId)))
+        assert(await(commentsDAO.own(commentId2, userId1.sessionId)))
+        assert(await(commentsDAO.own(commentId3, userId2.sessionId)))
+        assert(await(commentsDAO.own(commentId4, userId1.sessionId)))
+        assert(await(commentsDAO.own(commentId5, userId2.sessionId)))
 
         // return comment count 5
         val feed = await(feedsDAO.find(feedId, sessionId))
@@ -47,78 +47,78 @@ class CommentsDAOSpec extends DAOSpec {
 
   feature("delete") {
     scenario("should delete a comment") {
-      forOne(accountGen, accountGen, accountGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
+      forOne(userGen, userGen, userGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
 
         // preparing
-        //  account1 create a feed
-        //  account2 create and delete a comment
-        //  account1 create and delete a comment
-        //  account2 create and delete a comment
-        //  account1 create and delete a comment
-        //  account2 create and delete a comment
-        await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, accountId1.toSessionId))
-        val commentId1 = await(commentsDAO.create(feedId, c(0).message, None, accountId2.toSessionId))
-        val commentId2 = await(commentsDAO.create(feedId, c(1).message, None, accountId1.toSessionId))
-        val commentId3 = await(commentsDAO.create(feedId, c(2).message, None, accountId2.toSessionId))
-        val commentId4 = await(commentsDAO.create(feedId, c(3).message, None, accountId1.toSessionId))
-        val commentId5 = await(commentsDAO.create(feedId, c(4).message, None, accountId2.toSessionId))
-        await(commentsDAO.delete(feedId, commentId1, accountId2.toSessionId))
-        await(commentsDAO.delete(feedId, commentId2, accountId1.toSessionId))
-        await(commentsDAO.delete(feedId, commentId3, accountId2.toSessionId))
-        await(commentsDAO.delete(feedId, commentId4, accountId1.toSessionId))
-        await(commentsDAO.delete(feedId, commentId5, accountId2.toSessionId))
+        //  user1 create a feed
+        //  user2 create and delete a comment
+        //  user1 create and delete a comment
+        //  user2 create and delete a comment
+        //  user1 create and delete a comment
+        //  user2 create and delete a comment
+        await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, userId1.sessionId))
+        val commentId1 = await(commentsDAO.create(feedId, c(0).message, None, userId2.sessionId))
+        val commentId2 = await(commentsDAO.create(feedId, c(1).message, None, userId1.sessionId))
+        val commentId3 = await(commentsDAO.create(feedId, c(2).message, None, userId2.sessionId))
+        val commentId4 = await(commentsDAO.create(feedId, c(3).message, None, userId1.sessionId))
+        val commentId5 = await(commentsDAO.create(feedId, c(4).message, None, userId2.sessionId))
+        await(commentsDAO.delete(feedId, commentId1, userId2.sessionId))
+        await(commentsDAO.delete(feedId, commentId2, userId1.sessionId))
+        await(commentsDAO.delete(feedId, commentId3, userId2.sessionId))
+        await(commentsDAO.delete(feedId, commentId4, userId1.sessionId))
+        await(commentsDAO.delete(feedId, commentId5, userId2.sessionId))
 
         // return false because of deleted
         // return false because of deleted
         // return false because of deleted
         // return false because of deleted
         // return false because of deleted
-        assert(!await(commentsDAO.own(commentId1, accountId2.toSessionId)))
-        assert(!await(commentsDAO.own(commentId2, accountId1.toSessionId)))
-        assert(!await(commentsDAO.own(commentId3, accountId2.toSessionId)))
-        assert(!await(commentsDAO.own(commentId4, accountId1.toSessionId)))
-        assert(!await(commentsDAO.own(commentId5, accountId2.toSessionId)))
+        assert(!await(commentsDAO.own(commentId1, userId2.sessionId)))
+        assert(!await(commentsDAO.own(commentId2, userId1.sessionId)))
+        assert(!await(commentsDAO.own(commentId3, userId2.sessionId)))
+        assert(!await(commentsDAO.own(commentId4, userId1.sessionId)))
+        assert(!await(commentsDAO.own(commentId5, userId2.sessionId)))
 
         // return comment count 0
-        val feed = await(feedsDAO.find(feedId, accountId1.toSessionId))
+        val feed = await(feedsDAO.find(feedId, userId1.sessionId))
         assert(feed.exists(_.commentCount == 0L))
       }
     }
 
     scenario("should delete all comments") {
-      forOne(accountGen, accountGen, accountGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
+      forOne(userGen, userGen, userGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
 
         // preparing
-        //  account1 create a feed
-        //  account2 create and delete a comment
-        //  account1 create and delete a comment
-        //  account2 create and delete a comment
-        //  account1 create and delete a comment
-        //  account2 create and delete a comment
-        await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, accountId1.toSessionId))
-        val commentId1 = await(commentsDAO.create(feedId, c(0).message, None, accountId2.toSessionId))
-        val commentId2 = await(commentsDAO.create(feedId, c(1).message, None, accountId1.toSessionId))
-        val commentId3 = await(commentsDAO.create(feedId, c(2).message, None, accountId2.toSessionId))
-        val commentId4 = await(commentsDAO.create(feedId, c(3).message, None, accountId1.toSessionId))
-        val commentId5 = await(commentsDAO.create(feedId, c(4).message, None, accountId2.toSessionId))
-        await(feedsDAO.delete(feedId, accountId1.toSessionId))
+        //  user1 create a feed
+        //  user2 create and delete a comment
+        //  user1 create and delete a comment
+        //  user2 create and delete a comment
+        //  user1 create and delete a comment
+        //  user2 create and delete a comment
+        await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, userId1.sessionId))
+        val commentId1 = await(commentsDAO.create(feedId, c(0).message, None, userId2.sessionId))
+        val commentId2 = await(commentsDAO.create(feedId, c(1).message, None, userId1.sessionId))
+        val commentId3 = await(commentsDAO.create(feedId, c(2).message, None, userId2.sessionId))
+        val commentId4 = await(commentsDAO.create(feedId, c(3).message, None, userId1.sessionId))
+        val commentId5 = await(commentsDAO.create(feedId, c(4).message, None, userId2.sessionId))
+        await(feedsDAO.delete(feedId, userId1.sessionId))
 
         // return false because of deleted
         // return false because of deleted
         // return false because of deleted
         // return false because of deleted
         // return false because of deleted
-        assert(!await(commentsDAO.own(commentId1, accountId2.toSessionId)))
-        assert(!await(commentsDAO.own(commentId2, accountId1.toSessionId)))
-        assert(!await(commentsDAO.own(commentId3, accountId2.toSessionId)))
-        assert(!await(commentsDAO.own(commentId4, accountId1.toSessionId)))
-        assert(!await(commentsDAO.own(commentId5, accountId2.toSessionId)))
+        assert(!await(commentsDAO.own(commentId1, userId2.sessionId)))
+        assert(!await(commentsDAO.own(commentId2, userId1.sessionId)))
+        assert(!await(commentsDAO.own(commentId3, userId2.sessionId)))
+        assert(!await(commentsDAO.own(commentId4, userId1.sessionId)))
+        assert(!await(commentsDAO.own(commentId5, userId2.sessionId)))
 
       }
     }
@@ -128,23 +128,23 @@ class CommentsDAOSpec extends DAOSpec {
   feature("exists") {
 
     scenario("should return a comment exist or not") {
-      forOne(accountGen, accountGen, feedGen, commentGen) { (s, a1, f, c) =>
+      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
 
         // preparing
-        //  session account block account1
+        //  session user block user1
         //  session create a feed
         //  session create a comment on the feed
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        await(blocksDAO.create(accountId1, sessionId))
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        await(blocksDAO.create(userId1, sessionId))
         val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
 
-        // return exist by session account
-        // return not exist by account1 because account1 be blocked by session account
+        // return exist by session user
+        // return not exist by user1 because user1 be blocked by session user
         // return no exist comment
         assert(await(commentsDAO.exists(commentId, sessionId)))
-        assert(!await(commentsDAO.exists(commentId, accountId1.toSessionId)))
+        assert(!await(commentsDAO.exists(commentId, userId1.sessionId)))
         assert(!await(commentsDAO.exists(CommentId(0L), sessionId)))
 
         // return no exist because a comment is deleted
@@ -154,23 +154,23 @@ class CommentsDAOSpec extends DAOSpec {
     }
 
     scenario("should return a feed comment exist or not") {
-      forOne(accountGen, accountGen, feedGen, commentGen) { (s, a1, f, c) =>
+      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
 
         // preparing
-        //  session account block account1
+        //  session user block user1
         //  session create a feed
         //  session create a comment on the feed
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        await(blocksDAO.create(accountId1, sessionId))
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        await(blocksDAO.create(userId1, sessionId))
         val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
 
-        // return exist by session account
-        // return not exist by account1 because account1 be blocked by session account
+        // return exist by session user
+        // return not exist by user1 because user1 be blocked by session user
         // return no exist comment
         assert(await(commentsDAO.exists(feedId, commentId, sessionId)))
-        assert(!await(commentsDAO.exists(feedId, commentId, accountId1.toSessionId)))
+        assert(!await(commentsDAO.exists(feedId, commentId, userId1.sessionId)))
         assert(!await(commentsDAO.exists(feedId, CommentId(0L), sessionId)))
 
         // return no exist because a comment is deleted
@@ -183,21 +183,21 @@ class CommentsDAOSpec extends DAOSpec {
 
   feature("own") {
     scenario("should return owner or not") {
-      forOne(accountGen, accountGen, feedGen, commentGen) { (a1, a2, f, c) =>
+      forOne(userGen, userGen, feedGen, commentGen) { (a1, a2, f, c) =>
 
         // preparing
-        //  session account block account1
+        //  session user block user1
         //  session create a feed
         //  session create a comment on the feed
-        val sessionId = await(accountsDAO.create(a1.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a2.accountName))
+        val sessionId = await(usersDAO.create(a1.userName)).sessionId
+        val userId = await(usersDAO.create(a2.userName))
         val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
 
         // return true because of owner
         // return false because of not owner
         assert(await(commentsDAO.own(commentId, sessionId)))
-        assert(!await(commentsDAO.own(commentId, accountId.toSessionId)))
+        assert(!await(commentsDAO.own(commentId, userId.sessionId)))
 
         // return false because of deleted
         await(commentsDAO.delete(feedId, commentId, sessionId))
@@ -208,44 +208,44 @@ class CommentsDAOSpec extends DAOSpec {
 
   feature("findOwner") {
     scenario("should return owner") {
-      forOne(accountGen, feedGen, commentGen) { (a1, f, c) =>
+      forOne(userGen, feedGen, commentGen) { (a1, f, c) =>
 
         // preparing
-        val sessionId = await(accountsDAO.create(a1.accountName)).toSessionId
+        val sessionId = await(usersDAO.create(a1.userName)).sessionId
         val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
 
-        assertFutureValue(commentsDAO.findOwner(commentId), Option(sessionId.toAccountId))
+        assertFutureValue(commentsDAO.findOwner(commentId), Option(sessionId.userId))
       }
     }
   }
 
   feature("find by commentId") {
     scenario("should return a comment") {
-      forOne(accountGen, accountGen, accountGen, accountGen, feedGen, commentGen) { (s, a1, a2, a3, f, c) =>
+      forOne(userGen, userGen, userGen, userGen, feedGen, commentGen) { (s, a1, a2, a3, f, c) =>
 
         // preparing
-        //  session account create a feed
-        //  session account create a comment
-        //  session account block account1
-        //  session account2 block session account
-        //  account1 like a comment
-        //  account2 like a comment
-        //  account3 like a comment
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
+        //  session user create a feed
+        //  session user create a comment
+        //  session user block user1
+        //  session user2 block session user
+        //  user1 like a comment
+        //  user2 like a comment
+        //  user3 like a comment
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
         val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
 
-        await(blocksDAO.create(accountId1, sessionId))
-        await(blocksDAO.create(sessionId.toAccountId, accountId2.toSessionId))
-        await(blocksDAO.create(accountId3, accountId1.toSessionId))
+        await(blocksDAO.create(userId1, sessionId))
+        await(blocksDAO.create(sessionId.userId, userId2.sessionId))
+        await(blocksDAO.create(userId3, userId1.sessionId))
 
-        await(commentLikesDAO.create(commentId, accountId1.toSessionId))
-        await(commentLikesDAO.create(commentId, accountId2.toSessionId))
-        await(commentLikesDAO.create(commentId, accountId3.toSessionId))
+        await(commentLikesDAO.create(commentId, userId1.sessionId))
+        await(commentLikesDAO.create(commentId, userId2.sessionId))
+        await(commentLikesDAO.create(commentId, userId3.sessionId))
 
         // should return a comment and like count
         val result1 = await(commentsDAO.find(commentId, sessionId))
@@ -254,19 +254,19 @@ class CommentsDAOSpec extends DAOSpec {
         assert(result1.map(_.message) == Option(c.message))
         assert(result1.map(_.likeCount) == Option(2L))
 
-        // should not return when account is blocked
-        val result2 = await(commentsDAO.find(commentId, accountId1.toSessionId))
+        // should not return when user is blocked
+        val result2 = await(commentsDAO.find(commentId, userId1.sessionId))
         assert(result2.isEmpty)
 
-        // should return when account blocked
-        val result3 = await(commentsDAO.find(commentId, accountId2.toSessionId))
+        // should return when user blocked
+        val result3 = await(commentsDAO.find(commentId, userId2.sessionId))
         assert(result3.isDefined)
         assert(result3.map(_.id) == Option(commentId))
         assert(result3.map(_.message) == Option(c.message))
         assert(result3.map(_.likeCount) == Option(3L))
 
-        // should return like count but ignore blocked and be blocked account like count
-        val result4 = await(commentsDAO.find(commentId, accountId3.toSessionId))
+        // should return like count but ignore blocked and be blocked user like count
+        val result4 = await(commentsDAO.find(commentId, userId3.sessionId))
         assert(result4.isDefined)
         assert(result4.map(_.id) == Option(commentId))
         assert(result4.map(_.message) == Option(c.message))
@@ -279,22 +279,22 @@ class CommentsDAOSpec extends DAOSpec {
   feature("find") {
 
     scenario("should return comment list") {
-      forOne(accountGen, accountGen, accountGen, feedGen, comment20ListGen) {
+      forOne(userGen, userGen, userGen, feedGen, comment20ListGen) {
         (s, a1, a2, f, c) =>
 
           // preparing
-          //  session account creates a feed
-          //  session account create a comment
-          //  account1 like a comment
-          //  account2 like a comment
-          //  account3 like a comment
-          //  account1 block account2
-          //  account2 block account3
-          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-          val accountId1 = await(accountsDAO.create(a1.accountName))
-          val accountId2 = await(accountsDAO.create(a2.accountName))
-          await(blocksDAO.create(accountId2, sessionId))
-          await(blocksDAO.create(sessionId.toAccountId, accountId1.toSessionId))
+          //  session user creates a feed
+          //  session user create a comment
+          //  user1 like a comment
+          //  user2 like a comment
+          //  user3 like a comment
+          //  user1 block user2
+          //  user2 block user3
+          val sessionId = await(usersDAO.create(s.userName)).sessionId
+          val userId1 = await(usersDAO.create(a1.userName))
+          val userId2 = await(usersDAO.create(a2.userName))
+          await(blocksDAO.create(userId2, sessionId))
+          await(blocksDAO.create(sessionId.userId, userId1.sessionId))
           val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
           val comments = c.map({c =>
             val id = await(commentsDAO.create(feedId, c.message, None, sessionId))
@@ -314,39 +314,39 @@ class CommentsDAOSpec extends DAOSpec {
             assert(c.id == comments(i + size2).id)
           })
 
-          // should not return when account blocked
-          assert(await(commentsDAO.find(feedId, None, 0, 10, accountId1.toSessionId)).nonEmpty)
+          // should not return when user blocked
+          assert(await(commentsDAO.find(feedId, None, 0, 10, userId1.sessionId)).nonEmpty)
 
-          // should not return when account is blocked
-          assert(await(commentsDAO.find(feedId, None, 0, 10, accountId2.toSessionId)).isEmpty)
+          // should not return when user is blocked
+          assert(await(commentsDAO.find(feedId, None, 0, 10, userId2.sessionId)).isEmpty)
 
       }
     }
 
 
     scenario("should return like count") {
-      forOne(accountGen, accountGen, accountGen, accountGen, feedGen, comment20ListGen) {
+      forOne(userGen, userGen, userGen, userGen, feedGen, comment20ListGen) {
         (s, a1, a2, a3, f, c) =>
           // preparing
-          //  session account creates a feed
-          //  session account create a comment
-          //  account1 like a comment
-          //  account2 like a comment
-          //  account3 like a comment
-          //  account1 block account2
-          //  account2 block account3
-          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-          val accountId1 = await(accountsDAO.create(a1.accountName))
-          val accountId2 = await(accountsDAO.create(a2.accountName))
-          val accountId3 = await(accountsDAO.create(a3.accountName))
-          await(blocksDAO.create(accountId2, accountId1.toSessionId))
-          await(blocksDAO.create(accountId1, accountId2.toSessionId))
+          //  session user creates a feed
+          //  session user create a comment
+          //  user1 like a comment
+          //  user2 like a comment
+          //  user3 like a comment
+          //  user1 block user2
+          //  user2 block user3
+          val sessionId = await(usersDAO.create(s.userName)).sessionId
+          val userId1 = await(usersDAO.create(a1.userName))
+          val userId2 = await(usersDAO.create(a2.userName))
+          val userId3 = await(usersDAO.create(a3.userName))
+          await(blocksDAO.create(userId2, userId1.sessionId))
+          await(blocksDAO.create(userId1, userId2.sessionId))
           val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
           val comments = c.map({c =>
             val id = await(commentsDAO.create(feedId, c.message, None, sessionId))
-            await(commentLikesDAO.create(id, accountId1.toSessionId))
-            await(commentLikesDAO.create(id, accountId2.toSessionId))
-            await(commentLikesDAO.create(id, accountId3.toSessionId))
+            await(commentLikesDAO.create(id, userId1.sessionId))
+            await(commentLikesDAO.create(id, userId2.sessionId))
+            await(commentLikesDAO.create(id, userId3.sessionId))
             c.copy(id = id)
           }).reverse
 
@@ -357,15 +357,15 @@ class CommentsDAOSpec extends DAOSpec {
             assert(c.likeCount == 3)
           })
 
-          // should like count 2 because account1 blocked account2
-          val result2 = await(commentsDAO.find(feedId, None, 0, 10, accountId1.toSessionId))
+          // should like count 2 because user1 blocked user2
+          val result2 = await(commentsDAO.find(feedId, None, 0, 10, userId1.sessionId))
           result2.zipWithIndex.foreach({ case (c, i) =>
             assert(c.id == comments(i).id)
             assert(c.likeCount == 2)
           })
 
-          // should like count 2 because account2 blocked account1
-          val result3 = await(commentsDAO.find(feedId, None, 0, 10, accountId2.toSessionId))
+          // should like count 2 because user2 blocked user1
+          val result3 = await(commentsDAO.find(feedId, None, 0, 10, userId2.sessionId))
           result3.zipWithIndex.foreach({ case (c, i) =>
             assert(c.id == comments(i).id)
             assert(c.likeCount == 2)

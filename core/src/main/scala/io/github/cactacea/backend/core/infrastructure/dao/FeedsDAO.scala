@@ -35,7 +35,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
              expiration: Option[Long],
              sessionId: SessionId): Future[FeedId] = {
 
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val postedAt = System.currentTimeMillis()
     val t = tags.map(_.mkString(" "))
     val i1 = mediumIds.flatMap(_.lift(0))
@@ -76,7 +76,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
              expiration: Option[Long],
              sessionId: SessionId): Future[Unit] = {
 
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val privacy = privacyType
     val t = tags.map(_.mkString(" "))
     val i1 = mediumIds.flatMap(_.lift(0))
@@ -113,7 +113,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   }
 
   private def deleteFeeds(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Feeds]
         .filter(_.by == lift(by))
@@ -126,7 +126,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
 
   def own(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
@@ -138,18 +138,18 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
   def exists(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
     val e = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))
         .filter(f => f.expiration.forall(_ > lift(e)))
         .filter(f =>
-          query[Blocks].filter(b => (b.accountId == lift(by) && b.by == f.by)).isEmpty)
+          query[Blocks].filter(b => (b.userId == lift(by) && b.by == f.by)).isEmpty)
         .filter({ f =>
           (f.by == lift(by)) ||
           (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships]
-              .filter(_.accountId == f.by)
+              .filter(_.userId == f.by)
               .filter(_.by == lift(by))
               .filter(r =>
               ((r.follow || r.isFriend) && (f.privacyType == lift(FeedPrivacyType.followers))) ||
@@ -161,19 +161,19 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {  // scalastyle:ignore
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {  // scalastyle:ignore
     val e = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       (for {
         (f, flb, fcb) <- query[Feeds]
-          .filter(f => f.by == lift(accountId))
+          .filter(f => f.by == lift(userId))
           .filter(f => f.expiration.forall(_ > lift(e)))
           .filter(f => lift(since).forall(f.id < _))
           .filter(f => (
               f.by == lift(by)) || (f.privacyType == lift(FeedPrivacyType.everyone)) ||
               (query[Relationships]
-                .filter(_.accountId == f.by)
+                .filter(_.userId == f.by)
                 .filter(_.by == lift(by))
                 .filter(r =>
                   ((r.follow || r.isFriend) && (f.privacyType == lift(FeedPrivacyType.followers))) ||
@@ -184,12 +184,12 @@ class FeedsDAO @Inject()(db: DatabaseService) {
               query[FeedLikes]
                 .filter(_.feedId == f.id)
                 .filter(fl =>
-                  query[Blocks].filter(b => b.accountId == lift(by) && b.by == fl.by).nonEmpty
+                  query[Blocks].filter(b => b.userId == lift(by) && b.by == fl.by).nonEmpty
                 ).size,
               query[Comments]
                 .filter(_.feedId == f.id)
                 .filter(c =>
-                  query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).nonEmpty
+                  query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty
                 ).size))
         l <- query[FeedLikes].leftJoin(fl => fl.feedId == f.id && fl.by == lift(by))
         i1 <- query[Mediums].leftJoin(_.id == f.mediumId1)
@@ -197,10 +197,10 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         i3 <- query[Mediums].leftJoin(_.id == f.mediumId3)
         i4 <- query[Mediums].leftJoin(_.id == f.mediumId4)
         i5 <- query[Mediums].leftJoin(_.id == f.mediumId5)
-        a <- query[Accounts]
+        a <- query[Users]
           .join(a => a.id == f.by)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+          .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (f, l, i1, i2, i3, i4, i5, a, r, flb, fcb))
         .sortBy(_._1.id)(Ord.desc)
         .drop(lift(offset))
@@ -214,18 +214,18 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Option[Feed]] = {  // scalastyle:ignore
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val e = System.currentTimeMillis()
     val q = quote {
       (for {
         (f, flb, fcb) <- query[Feeds]
           .filter(f => f.id == lift(feedId))
           .filter(f => f.expiration.forall(_ > lift(e)))
-          .filter(f => query[Blocks].filter(b => (b.accountId == lift(by) && b.by == f.by)).isEmpty)
+          .filter(f => query[Blocks].filter(b => (b.userId == lift(by) && b.by == f.by)).isEmpty)
           .filter(f => (
             f.by == lift(by)) || (f.privacyType == lift(FeedPrivacyType.everyone)) ||
             (query[Relationships]
-              .filter(_.accountId == f.by)
+              .filter(_.userId == f.by)
               .filter(_.by == lift(by))
               .filter(r =>
                 ((r.follow || r.isFriend) && (f.privacyType == lift(FeedPrivacyType.followers))) ||
@@ -235,12 +235,12 @@ class FeedsDAO @Inject()(db: DatabaseService) {
             (f, query[FeedLikes]
               .filter(_.feedId == f.id)
               .filter(fl =>
-                query[Blocks].filter(b => b.accountId == lift(by) && b.by == fl.by).nonEmpty
+                query[Blocks].filter(b => b.userId == lift(by) && b.by == fl.by).nonEmpty
               ).size,
               query[Comments]
                 .filter(_.feedId == f.id)
                 .filter(c =>
-                  query[Blocks].filter(b => b.accountId == lift(by) && b.by == c.by).nonEmpty
+                  query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty
                 ).size))
         l <- query[FeedLikes].leftJoin(fl => fl.feedId == f.id && fl.by == lift(by))
         i1 <- query[Mediums].leftJoin(_.id == f.mediumId1)
@@ -248,10 +248,10 @@ class FeedsDAO @Inject()(db: DatabaseService) {
         i3 <- query[Mediums].leftJoin(_.id == f.mediumId3)
         i4 <- query[Mediums].leftJoin(_.id == f.mediumId4)
         i5 <- query[Mediums].leftJoin(_.id == f.mediumId5)
-        a <- query[Accounts]
+        a <- query[Users]
           .join(_.id == f.by)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+          .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (f, l, i1, i2, i3, i4, i5, a, r, flb, fcb))
     }
     run(q).map(_.headOption.map({ case (f, l, i1, i2, i3, i4, i5, a, r, flb, fcb) =>
@@ -261,10 +261,10 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   }
 
   private def updateFeedCount(plus: Long, sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
-      query[Accounts]
-        .filter(_.id == lift(accountId))
+      query[Users]
+        .filter(_.id == lift(userId))
         .update(
           a => a.feedCount -> (a.feedCount + lift(plus))
         )
@@ -272,7 +272,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  def findOwner(feedId: FeedId): Future[Option[AccountId]] = {
+  def findOwner(feedId: FeedId): Future[Option[UserId]] = {
     val q = quote {
       query[Feeds]
         .filter(_.id == lift(feedId))

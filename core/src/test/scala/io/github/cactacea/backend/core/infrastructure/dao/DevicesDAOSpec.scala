@@ -7,8 +7,8 @@ class DevicesDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create a device") {
-      forAll(accountGen, deviceGen, deviceGen) { (a, d1, d2) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forAll(userGen, deviceGen, deviceGen) { (a, d1, d2) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         await(devicesDAO.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
         await(devicesDAO.create(d2.udid, d2.pushToken, d2.deviceType, d2.userAgent, sessionId))
         val result = await(findDevice(sessionId))
@@ -25,8 +25,8 @@ class DevicesDAOSpec extends DAOSpec {
 
   feature("delete") {
     scenario("should delete a device") {
-      forAll(accountGen, deviceGen, deviceGen) { (a, d1, d2) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forAll(userGen, deviceGen, deviceGen) { (a, d1, d2) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         await(devicesDAO.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
         await(devicesDAO.create(d2.udid, d2.pushToken, d2.deviceType, d2.userAgent, sessionId))
         await(devicesDAO.delete(d1.udid, sessionId))
@@ -41,8 +41,8 @@ class DevicesDAOSpec extends DAOSpec {
 
   feature("update") {
     scenario("should update device info") {
-      forOne(accountGen, deviceGen, deviceGen) { (s, d1, d2) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+      forOne(userGen, deviceGen, deviceGen) { (s, d1, d2) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
         await(devicesDAO.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
         await(devicesDAO.update(d1.udid, d2.pushToken, sessionId))
         val result = await(findDevice(sessionId)).headOption
@@ -54,17 +54,17 @@ class DevicesDAOSpec extends DAOSpec {
 
   feature("findActiveStatus") {
     scenario("should find active status") {
-      forOne(accountGen, deviceGen, deviceGen) { (s, d1, d2) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+      forOne(userGen, deviceGen, deviceGen) { (s, d1, d2) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
         await(devicesDAO.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
         await(devicesDAO.create(d2.udid, d2.pushToken, d2.deviceType, d2.userAgent, sessionId))
-        val result1 = await(devicesDAO.findActiveStatus(sessionId.toAccountId))
+        val result1 = await(devicesDAO.findActiveStatus(sessionId.userId))
         assert(result1.status == ActiveStatusType.active)
         await(devicesDAO.delete(d1.udid, sessionId))
-        val result2 = await(devicesDAO.findActiveStatus(sessionId.toAccountId))
+        val result2 = await(devicesDAO.findActiveStatus(sessionId.userId))
         assert(result2.status == ActiveStatusType.active)
         await(devicesDAO.delete(d2.udid, sessionId))
-        val result3 = await(devicesDAO.findActiveStatus(sessionId.toAccountId))
+        val result3 = await(devicesDAO.findActiveStatus(sessionId.userId))
         assert(result3.status == ActiveStatusType.inactive)
       }
     }

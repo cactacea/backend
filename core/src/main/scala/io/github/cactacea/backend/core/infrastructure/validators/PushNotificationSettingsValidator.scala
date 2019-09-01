@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
 import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationSettingsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotFound
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.UserNotFound
 
 class PushNotificationSettingsValidator @Inject()(pushNotificationSettingsDAO: PushNotificationSettingsDAO) {
 
@@ -15,7 +15,7 @@ class PushNotificationSettingsValidator @Inject()(pushNotificationSettingsDAO: P
       case Some(s) =>
         Future.value(PushNotificationSetting(s))
       case None =>
-        Future.exception(CactaceaException(AccountNotFound))
+        Future.exception(CactaceaException(UserNotFound))
     })
   }
 }

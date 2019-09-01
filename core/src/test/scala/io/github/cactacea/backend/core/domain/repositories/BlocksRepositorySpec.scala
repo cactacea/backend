@@ -2,29 +2,29 @@ package io.github.cactacea.backend.core.domain.repositories
 
 
 import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyBlocked, AccountNotBlocked, AccountNotFound, InvalidAccountIdError}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{UserAlreadyBlocked, UserNotBlocked, UserNotFound, InvalidUserIdError}
 
 class BlocksRepositorySpec extends RepositorySpec {
 
   feature("find") {
-    scenario("should return blocked account list") {
-      forOne(accountGen, accounts20ListGen) { (s, l) =>
+    scenario("should return blocked user list") {
+      forOne(userGen, users20ListGen) { (s, l) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val accounts = l.map({ a1 =>
-          val a = await(accountsRepository.create(a1.accountName))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val users = l.map({ a1 =>
+          val a = await(usersRepository.create(a1.userName))
           await(blocksRepository.create(a.id, sessionId))
           a
         }).reverse
 
         // result
-        val result = await(blocksRepository.find(None, None, 0, accounts.size, sessionId))
+        val result = await(blocksRepository.find(None, None, 0, users.size, sessionId))
         result.zipWithIndex.map({ case (a, i) =>
-          assert(a.id == accounts(i).id)
+          assert(a.id == users(i).id)
         })
 
       }
@@ -32,146 +32,146 @@ class BlocksRepositorySpec extends RepositorySpec {
   }
 
   feature("create") {
-    scenario("should block an account") {
-      forOne(accountGen, accountGen) { (s, a1) =>
+    scenario("should block an user") {
+      forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account1 = await(accountsRepository.create(a1.accountName))
-        val accountId1 = account1.id
-        await(blocksRepository.create(accountId1, sessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user1 = await(usersRepository.create(a1.userName))
+        val userId1 = user1.id
+        await(blocksRepository.create(userId1, sessionId))
 
         // result
-        assertFutureValue(blocksDAO.own(accountId1, sessionId), true)
+        assertFutureValue(blocksDAO.own(userId1, sessionId), true)
 
       }
     }
 
     scenario("should delete follow and being followed") {
-      forOne(accountGen, accountGen) { (s, a1) =>
+      forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account1 = await(accountsRepository.create(a1.accountName))
-        val accountId1 = account1.id
-        await(followsRepository.create(accountId1, sessionId))
-        await(followsRepository.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(blocksRepository.create(accountId1, sessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user1 = await(usersRepository.create(a1.userName))
+        val userId1 = user1.id
+        await(followsRepository.create(userId1, sessionId))
+        await(followsRepository.create(sessionId.userId, userId1.sessionId))
+        await(blocksRepository.create(userId1, sessionId))
 
         // result
-        assertFutureValue(blocksDAO.own(accountId1, sessionId), true)
-        assertFutureValue(followsDAO.own(accountId1, sessionId), false)
-        assertFutureValue(followsDAO.own(sessionId.toAccountId, accountId1.toSessionId), false)
+        assertFutureValue(blocksDAO.own(userId1, sessionId), true)
+        assertFutureValue(followsDAO.own(userId1, sessionId), false)
+        assertFutureValue(followsDAO.own(sessionId.userId, userId1.sessionId), false)
 
       }
     }
 
     scenario("should delete friend") {
-      forOne(accountGen, accountGen) { (s, a1) =>
+      forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account1 = await(accountsRepository.create(a1.accountName))
-        val accountId1 = account1.id
-        val requestId = await(friendRequestsRepository.create(accountId1, sessionId))
-        await(friendRequestsRepository.accept(requestId, accountId1.toSessionId))
-        await(blocksRepository.create(accountId1, sessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user1 = await(usersRepository.create(a1.userName))
+        val userId1 = user1.id
+        val requestId = await(friendRequestsRepository.create(userId1, sessionId))
+        await(friendRequestsRepository.accept(requestId, userId1.sessionId))
+        await(blocksRepository.create(userId1, sessionId))
 
         // result
-        assertFutureValue(blocksDAO.own(accountId1, sessionId), true)
-        assertFutureValue(friendsDAO.own(accountId1, sessionId), false)
-        assertFutureValue(friendsDAO.own(sessionId.toAccountId, accountId1.toSessionId), false)
+        assertFutureValue(blocksDAO.own(userId1, sessionId), true)
+        assertFutureValue(friendsDAO.own(userId1, sessionId), false)
+        assertFutureValue(friendsDAO.own(sessionId.userId, userId1.sessionId), false)
 
       }
     }
 
     scenario("should delete mutes") {
-      forOne(accountGen, accountGen) { (s, a1) =>
+      forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account1 = await(accountsRepository.create(a1.accountName))
-        val accountId1 = account1.id
-        await(mutesRepository.create(accountId1, sessionId))
-        await(mutesRepository.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(blocksRepository.create(accountId1, sessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user1 = await(usersRepository.create(a1.userName))
+        val userId1 = user1.id
+        await(mutesRepository.create(userId1, sessionId))
+        await(mutesRepository.create(sessionId.userId, userId1.sessionId))
+        await(blocksRepository.create(userId1, sessionId))
 
         // result
-        assertFutureValue(blocksDAO.own(accountId1, sessionId), true)
-        assertFutureValue(mutesDAO.own(accountId1, sessionId), false)
-        assertFutureValue(mutesDAO.own(sessionId.toAccountId, accountId1.toSessionId), false)
+        assertFutureValue(blocksDAO.own(userId1, sessionId), true)
+        assertFutureValue(mutesDAO.own(userId1, sessionId), false)
+        assertFutureValue(mutesDAO.own(sessionId.userId, userId1.sessionId), false)
 
       }
     }
 
     scenario("should delete friend requests each other") {
-      forOne(accountGen, accountGen) { (s, a1) =>
+      forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account1 = await(accountsRepository.create(a1.accountName))
-        val accountId1 = account1.id
-        await(friendRequestsRepository.create(accountId1, sessionId))
-        await(friendRequestsRepository.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(blocksRepository.create(accountId1, sessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user1 = await(usersRepository.create(a1.userName))
+        val userId1 = user1.id
+        await(friendRequestsRepository.create(userId1, sessionId))
+        await(friendRequestsRepository.create(sessionId.userId, userId1.sessionId))
+        await(blocksRepository.create(userId1, sessionId))
 
         // result
-        assertFutureValue(blocksDAO.own(accountId1, sessionId), true)
-        assertFutureValue(friendRequestsDAO.own(accountId1, sessionId), false)
-        assertFutureValue(friendRequestsDAO.own(sessionId.toAccountId, accountId1.toSessionId), false)
+        assertFutureValue(blocksDAO.own(userId1, sessionId), true)
+        assertFutureValue(friendRequestsDAO.own(userId1, sessionId), false)
+        assertFutureValue(friendRequestsDAO.own(sessionId.userId, userId1.sessionId), false)
 
       }
     }
 
     scenario("should return exception if id is same") {
-      forOne(accountGen) { (s) =>
+      forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
-          await(blocksRepository.create(sessionId.toAccountId, sessionId))
-        }.error == InvalidAccountIdError)
+          await(blocksRepository.create(sessionId.userId, sessionId))
+        }.error == InvalidUserIdError)
 
       }
     }
 
-    scenario("should return exception if account is not exist") {
-      forOne(accountGen) { (s) =>
+    scenario("should return exception if user is not exist") {
+      forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
-          await(blocksRepository.create(AccountId(0), sessionId))
-        }.error == AccountNotFound)
+          await(blocksRepository.create(UserId(0), sessionId))
+        }.error == UserNotFound)
 
       }
     }
 
-    scenario("should return exception if account already blocked") {
-      forOne(accountGen, accountGen) { (s, a1) =>
+    scenario("should return exception if user already blocked") {
+      forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account1 = await(accountsRepository.create(a1.accountName))
-        val accountId1 = account1.id
-        await(blocksRepository.create(accountId1, sessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user1 = await(usersRepository.create(a1.userName))
+        val userId1 = user1.id
+        await(blocksRepository.create(userId1, sessionId))
 
         // result
         assert(intercept[CactaceaException] {
-          await(blocksRepository.create(accountId1, sessionId))
-        }.error == AccountAlreadyBlocked)
+          await(blocksRepository.create(userId1, sessionId))
+        }.error == UserAlreadyBlocked)
 
       }
     }
@@ -180,66 +180,66 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   feature("delete") {
 
-    scenario("should unblock an account") {
-      forOne(accountGen, accountGen) { (s, a1) =>
+    scenario("should unblock an user") {
+      forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account1 = await(accountsRepository.create(a1.accountName))
-        val accountId1 = account1.id
-        await(blocksRepository.create(accountId1, sessionId))
-        await(blocksRepository.delete(accountId1, sessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user1 = await(usersRepository.create(a1.userName))
+        val userId1 = user1.id
+        await(blocksRepository.create(userId1, sessionId))
+        await(blocksRepository.delete(userId1, sessionId))
 
         // result
-        assertFutureValue(blocksDAO.own(accountId1, sessionId), false)
+        assertFutureValue(blocksDAO.own(userId1, sessionId), false)
 
       }
     }
 
     scenario("should return exception if id is same") {
-      forOne(accountGen) { (s) =>
+      forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
-          await(blocksRepository.delete(sessionId.toAccountId, sessionId))
-        }.error == InvalidAccountIdError)
+          await(blocksRepository.delete(sessionId.userId, sessionId))
+        }.error == InvalidUserIdError)
 
       }
     }
 
-    scenario("should return exception if account is not exist") {
-      forOne(accountGen) { (s) =>
+    scenario("should return exception if user is not exist") {
+      forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
-          await(blocksRepository.delete(AccountId(0), sessionId))
-        }.error == AccountNotFound)
+          await(blocksRepository.delete(UserId(0), sessionId))
+        }.error == UserNotFound)
 
       }
     }
 
-    scenario("should return exception if account already blocked") {
-      forOne(accountGen, accountGen) { (s, a1) =>
+    scenario("should return exception if user already blocked") {
+      forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account1 = await(accountsRepository.create(a1.accountName))
-        val accountId1 = account1.id
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user1 = await(usersRepository.create(a1.userName))
+        val userId1 = user1.id
 
         // result
         assert(intercept[CactaceaException] {
-          await(blocksRepository.delete(accountId1, sessionId))
-        }.error == AccountNotBlocked)
+          await(blocksRepository.delete(userId1, sessionId))
+        }.error == UserNotBlocked)
 
       }
     }

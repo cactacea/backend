@@ -7,8 +7,8 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create notification settings") {
-      forOne(accountGen) { (a) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forOne(userGen) { (a) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         await(pushNotificationSettingsDAO.create(sessionId))
         val result = await(pushNotificationSettingDAO.find(sessionId))
         assert(result.exists(_.comment))
@@ -17,13 +17,13 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
         assert(result.exists(_.channelMessage))
         assert(result.exists(_.invitation))
         assert(result.exists(_.showMessage))
-        assert(result.exists(_.accountId == sessionId.toAccountId))
+        assert(result.exists(_.userId == sessionId.userId))
       }
     }
 
     scenario("should return an exception occurs if duplicated") {
-      forOne(accountGen) { (a) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forOne(userGen) { (a) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         await(pushNotificationSettingsDAO.create(sessionId))
 
         // exception occurs
@@ -34,8 +34,8 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     }
 
     scenario("should update notification settings") {
-      forAll(accountGen, boolean7ListGen) { (a, b) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forAll(userGen, boolean7ListGen) { (a, b) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         await(pushNotificationSettingsDAO.create(sessionId))
         await(pushNotificationSettingsDAO.update(b(0), b(1), b(2), b(3), b(4), b(5), b(6), sessionId))
         val result = await(pushNotificationSettingDAO.find(sessionId))
@@ -46,7 +46,7 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
         assert(result.exists(_.channelMessage == b(4)))
         assert(result.exists(_.invitation == b(5)))
         assert(result.exists(_.showMessage == b(6)))
-        assert(result.exists(_.accountId == sessionId.toAccountId))
+        assert(result.exists(_.userId == sessionId.userId))
       }
     }
 

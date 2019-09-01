@@ -50,11 +50,11 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
   }
 
   def updateProviderKey(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
       query[Authentications]
         .filter(_.providerId == lift(providerId))
-        .filter(_.accountId == lift(accountId))
+        .filter(_.userId == lift(userId))
         .update(
           _.providerKey    -> lift(providerKey)
         )
@@ -62,14 +62,14 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  def updateAccountId(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
-    val accountId = sessionId.toAccountId
+  def updateUserId(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
+    val userId = sessionId.userId
     val q = quote {
       query[Authentications]
         .filter(_.providerId == lift(providerId))
         .filter(_.providerKey == lift(providerKey))
         .update(
-          _.accountId    -> lift(Option(accountId))
+          _.userId    -> lift(Option(userId))
         )
     }
     run(q).map(_ => ())

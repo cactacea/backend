@@ -8,8 +8,8 @@ class DevicesRepositorySpec extends RepositorySpec {
   feature("create") {
 
     scenario("should create a device") {
-      forAll(accountGen, deviceGen, deviceGen) { (a, d1, d2) =>
-        val sessionId = await(accountsRepository.create(a.accountName)).id.toSessionId
+      forAll(userGen, deviceGen, deviceGen) { (a, d1, d2) =>
+        val sessionId = await(usersRepository.create(a.userName)).id.sessionId
         await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
         await(devicesRepository.create(d2.udid, d2.pushToken, d2.deviceType, d2.userAgent, sessionId))
         val result = await(findDevice(sessionId))
@@ -24,8 +24,8 @@ class DevicesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should update a device") {
-      forAll(accountGen, deviceGen, deviceGen) { (a, d1, d2) =>
-        val sessionId = await(accountsRepository.create(a.accountName)).id.toSessionId
+      forAll(userGen, deviceGen, deviceGen) { (a, d1, d2) =>
+        val sessionId = await(usersRepository.create(a.userName)).id.sessionId
         await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
         await(devicesRepository.create(d1.udid, d2.pushToken, d2.deviceType, d2.userAgent, sessionId))
         val result = await(findDevice(sessionId))

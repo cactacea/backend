@@ -5,13 +5,13 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 case class Messages(
                      id: MessageId,
-                     by: AccountId,
+                     by: UserId,
                      channelId: ChannelId,
                      messageType: MessageType,
                      message: Option[String],
                      mediumId: Option[MediumId],
                      stampId: Option[StampId],
-                     accountCount: Long,
+                     userCount: Long,
                      readCount: Long,
                      contentWarning: Boolean,
                      contentStatus: ContentStatusType,

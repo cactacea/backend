@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty
 
 case class GetSessionFriends(
                               @ApiModelProperty(value = "Filters friends which started on")
-                              @QueryParam accountName: Option[String],
+                              @QueryParam userName: Option[String],
 
                               @ApiModelProperty(value = "Filters friends which started on since or later.")
                               @QueryParam since: Option[Long],

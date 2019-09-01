@@ -16,7 +16,7 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
   def create(sessionId: SessionId): Future[ChannelId] = {
     val organizedAt = System.currentTimeMillis()
     val name: Option[String] = None
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Channels].insert(
         _.name              -> lift(name),
@@ -24,7 +24,7 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
         _.authorityType     -> lift(ChannelAuthorityType.member),
         _.privacyType       -> lift(ChannelPrivacyType.everyone),
         _.directMessage     -> true,
-        _.accountCount      -> 0L,
+        _.userCount      -> 0L,
         _.by                -> lift(by),
         _.organizedAt       -> lift(organizedAt)
       ).returning(_.id)
@@ -40,7 +40,7 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
              sessionId: SessionId): Future[ChannelId] = {
 
     val organizedAt = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Channels].insert(
         _.name                -> lift(name),
@@ -48,7 +48,7 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
         _.authorityType       -> lift(authority),
         _.privacyType         -> lift(privacyType),
         _.directMessage       -> false,
-        _.accountCount        -> 0L,
+        _.userCount        -> 0L,
         _.by                  -> lift(by),
         _.organizedAt         -> lift(organizedAt)
       ).returning(_.id)
@@ -66,43 +66,43 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
   }
 
   def exists(channelId: ChannelId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Channels]
         .filter(_.id == lift(channelId))
-        .filter(g => query[Blocks].filter(b => b.accountId == lift(by) && b.by == g.by).isEmpty)
+        .filter(g => query[Blocks].filter(b => b.userId == lift(by) && b.by == g.by).isEmpty)
         .nonEmpty
     }
     run(q)
   }
 
   def isOrganizer(channelId: ChannelId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Channels]
         .filter(_.id == lift(channelId))
         .filter(_.by == lift(by))
-        .filter(_.accountCount > 1)
+        .filter(_.userCount > 1)
         .nonEmpty
     }
     run(q)
   }
 
   def find(channelId: ChannelId, sessionId: SessionId): Future[Option[Channel]] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Channels]
         .filter(_.id == lift(channelId))
-        .filter(g => query[Blocks].filter(b => b.accountId == lift(by) && b.by == g.by).isEmpty)
+        .filter(g => query[Blocks].filter(b => b.userId == lift(by) && b.by == g.by).isEmpty)
     }
     run(q).map(_.headOption.map(Channel(_)))
   }
 
-  def findAccountCount(id: ChannelId): Future[Long] = {
+  def findUserCount(id: ChannelId): Future[Long] = {
     val q = quote {
       query[Channels]
         .filter(_.id == lift(id))
-        .map(_.accountCount)
+        .map(_.userCount)
     }
     run(q).map(_.headOption.getOrElse(0L))
   }
@@ -114,7 +114,7 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
              authority: ChannelAuthorityType,
              sessionId: SessionId): Future[Unit] = {
 
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Channels]
         .filter(_.id == lift(channelId))

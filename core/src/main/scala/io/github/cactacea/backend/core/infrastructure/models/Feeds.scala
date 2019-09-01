@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
 import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, FeedPrivacyType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, MediumId}
 
 case class Feeds(
                   id: FeedId,
@@ -15,7 +15,7 @@ case class Feeds(
                   privacyType: FeedPrivacyType,
                   likeCount: Long,
                   commentCount: Long,
-                  by: AccountId,
+                  by: UserId,
                   contentWarning: Boolean,
                   contentStatus: ContentStatusType,
                   expiration: Option[Long],

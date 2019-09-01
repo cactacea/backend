@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Channel
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.server.models.requests.channel.{DeleteChannel, DeleteHideChannel, GetChannel, GetChannelAccounts, PostChannel, PostChannelReport, PostHideChannel, PostJoinChannel, PostLeaveChannel, PutChannel}
+import io.github.cactacea.backend.server.models.requests.channel.{DeleteChannel, DeleteHideChannel, GetChannel, GetChannelUsers, PostChannel, PostChannelReport, PostHideChannel, PostJoinChannel, PostLeaveChannel, PutChannel}
 import io.github.cactacea.backend.server.models.responses.ChannelCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
@@ -18,8 +18,8 @@ import io.swagger.models.Swagger
 class ChannelsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     channelsService: ChannelsService,
-                                    channelAccountsService: ChannelAccountsService,
-                                    accountChannelsService: AccountChannelsService,
+                                    channelUsersService: ChannelUsersService,
+                                    userChannelsService: UserChannelsService,
                                     s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
@@ -82,9 +82,9 @@ class ChannelsController @Inject()(
         .request[PostJoinChannel]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyJoined, AuthorityNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserAlreadyJoined, AuthorityNotFound))))
     } { request: PostJoinChannel =>
-      channelAccountsService.create(
+      channelUsersService.create(
         request.id,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
@@ -97,23 +97,23 @@ class ChannelsController @Inject()(
         .request[PostLeaveChannel]
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyJoined, AuthorityNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserAlreadyJoined, AuthorityNotFound))))
     } { request: PostLeaveChannel =>
-      channelAccountsService.delete(
+      channelUsersService.delete(
         request.id,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
-    scope(channels).getWithDoc("/channels/:id/accounts") { o =>
-      o.summary("Get accounts list of a channel")
+    scope(channels).getWithDoc("/channels/:id/users") { o =>
+      o.summary("Get users list of a channel")
         .tag(channelsTag)
-        .operationId("findChannelAccounts")
-        .request[GetChannelAccounts]
+        .operationId("findChannelUsers")
+        .request[GetChannelUsers]
         .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
-    } { request: GetChannelAccounts =>
-      channelAccountsService.find(
+    } { request: GetChannelUsers =>
+      channelUsersService.find(
         request.id,
         request.since,
         request.offset.getOrElse(0),
@@ -130,7 +130,7 @@ class ChannelsController @Inject()(
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
     } { request: DeleteChannel =>
-      accountChannelsService.delete(
+      userChannelsService.delete(
         request.id,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
@@ -144,7 +144,7 @@ class ChannelsController @Inject()(
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
     } { request: PostHideChannel =>
-      accountChannelsService.hide(
+      userChannelsService.hide(
         request.id,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
@@ -158,7 +158,7 @@ class ChannelsController @Inject()(
         .responseWith(Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
     } { request: DeleteHideChannel =>
-      accountChannelsService.show(
+      userChannelsService.show(
         request.id,
         CactaceaContext.sessionId
       ).map(_ => response.ok)

@@ -23,7 +23,7 @@ class OneSignalMobilePushService @Inject()(
 
                                 ) extends MobilePushService {
 
-  val numberOfGrouped = 100
+  val numberOfChannels = 100
 
   def sendFeed(id: FeedId): Future[Unit] = {
     pushNotificationFeedsRepository.find(id).flatMap(_ match {
@@ -113,23 +113,23 @@ class OneSignalMobilePushService @Inject()(
 
 
 
-  private def createContentList(notifications: List[PushNotification]): List[(OneSignalNotification, List[AccountId])] = {
+  private def createContentList(notifications: List[PushNotification]): List[(OneSignalNotification, List[UserId])] = {
     notifications.flatMap({ notification =>
       val displayName = notification.displayName
       val message = notification.message
       val en = messageService.getPushNotificationMessage(notification.notificationType, Seq(Locale.US), displayName, message)
       val jp = messageService.getPushNotificationMessage(notification.notificationType, Seq(Locale.JAPAN), displayName, message)
       val url = notification.url
-      notification.destinations.grouped(numberOfGrouped).map({ groupedDestinations =>
-        val accessTokens = groupedDestinations.map(_.accountToken)
-        val accountIds =  groupedDestinations.map(_.accountId)
+      notification.destinations.grouped(numberOfChannels).map({ channelsDestinations =>
+        val accessTokens = channelsDestinations.map(_.userToken)
+        val accountIds =  channelsDestinations.map(_.userId)
         val content = OneSignalNotification(OneSignalConfig.onesignal.appId, accessTokens, en, jp, url)
         (content, accountIds)
       })
     })
   }
 
-  private def sendContentList(l: List[(OneSignalNotification, List[AccountId])]): Future[List[List[AccountId]]] = {
+  private def sendContentList(l: List[(OneSignalNotification, List[UserId])]): Future[List[List[UserId]]] = {
     val result = Future.traverseSequentially(l) { case (content, accountIds) =>
       client.createNotification(content).flatMap(response =>
         if (response.statusCode >= 200 && response.statusCode <= 299) {

@@ -13,7 +13,7 @@ trait ChannelsControllerSpec extends FeatureTest {
   test("PUT /channels/:id") (pending)
   test("POST /channels/:id/join") (pending)
   test("POST /channels/:id/leave") (pending)
-  test("GET /channels/:id/accounts") (pending)
+  test("GET /channels/:id/users") (pending)
   test("DELETE /channels/:id") (pending)
   test("POST /channels/:id/hides") (pending)
   test("DELETE /channels/:id/hides") (pending)

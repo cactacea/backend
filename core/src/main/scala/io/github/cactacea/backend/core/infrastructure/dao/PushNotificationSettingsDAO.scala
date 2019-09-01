@@ -13,10 +13,10 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
 
   def create(sessionId: SessionId): Future[Unit] = {
 
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
       query[PushNotificationSettings].insert(
-        _.accountId           -> lift(accountId),
+        _.userId           -> lift(userId),
         _.feed                -> lift(true),
         _.comment             -> lift(true),
         _.friendRequest       -> lift(true),
@@ -38,10 +38,10 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
 
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
       query[PushNotificationSettings]
-        .filter(_.accountId == lift(accountId))
+        .filter(_.userId == lift(userId))
         .update(
           _.feed            -> lift(feed),
           _.comment         -> lift(comment),
@@ -56,10 +56,10 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
   }
 
   def find(sessionId: SessionId): Future[Option[PushNotificationSettings]] = {
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
       query[PushNotificationSettings]
-        .filter(_.accountId == lift(accountId))
+        .filter(_.userId == lift(userId))
     }
     run(q).map(_.headOption)
   }

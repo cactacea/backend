@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.models
 
-import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType}
+import io.github.cactacea.backend.core.domain.enums.{UserStatusType, ContentStatusType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
 import io.github.cactacea.backend.core.infrastructure.models.{Feeds, _}
 
@@ -9,7 +9,7 @@ case class Feed(
                  message: String,
                  mediums: List[Medium],
                  tags: Option[List[String]],
-                 account: Option[Account],
+                 user: Option[User],
                  likeCount: Long,
                  commentCount: Long,
                  liked: Boolean,
@@ -21,8 +21,8 @@ case class Feed(
 
 object Feed {
 
-  def apply(f: Feeds, l: Option[FeedLikes], m: List[Mediums], a: Accounts, r: Option[Relationships], next: Long): Feed = {
-    val rejected = (f.contentStatus == ContentStatusType.rejected) || (a.accountStatus != AccountStatusType.normally)
+  def apply(f: Feeds, l: Option[FeedLikes], m: List[Mediums], a: Users, r: Option[Relationships], next: Long): Feed = {
+    val rejected = (f.contentStatus == ContentStatusType.rejected) || (a.userStatus != UserStatusType.normally)
     rejected match {
       case true => {
         Feed(
@@ -30,7 +30,7 @@ object Feed {
           message         = "",
           mediums         = List[Medium](),
           tags            = None,
-          account         = None,
+          user         = None,
           likeCount       = 0L,
           commentCount    = 0L,
           liked           = false,
@@ -47,7 +47,7 @@ object Feed {
           message         = f.message,
           mediums         = images,
           tags            = f.tags.map(_.split(' ').toList),
-          account         = Option(Account(a, r)),
+          user         = Option(User(a, r)),
           likeCount       = f.likeCount,
           commentCount    = f.commentCount,
           liked           = l.isDefined,

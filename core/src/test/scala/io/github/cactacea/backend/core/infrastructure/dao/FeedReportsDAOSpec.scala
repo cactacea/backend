@@ -8,20 +8,20 @@ class FeedReportsDAOSpec extends DAOSpec {
   import db._
 
   feature("create") {
-    forAll(accountGen, accountGen, feedGen, feedReportGen, feedReportGen) { (a1, a2, f, r1, r2) =>
-      val accountId1 = await(accountsDAO.create(a1.accountName))
-      val accountId2 = await(accountsDAO.create(a2.accountName))
-      val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, accountId1.toSessionId))
-      await(feedReportsDAO.create(feedId, r1.reportType, r1.reportContent, accountId1.toSessionId))
-      await(feedReportsDAO.create(feedId, r2.reportType, r2.reportContent, accountId2.toSessionId))
+    forAll(userGen, userGen, feedGen, feedReportGen, feedReportGen) { (a1, a2, f, r1, r2) =>
+      val userId1 = await(usersDAO.create(a1.userName))
+      val userId2 = await(usersDAO.create(a2.userName))
+      val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, userId1.sessionId))
+      await(feedReportsDAO.create(feedId, r1.reportType, r1.reportContent, userId1.sessionId))
+      await(feedReportsDAO.create(feedId, r2.reportType, r2.reportContent, userId2.sessionId))
       val result = await(db.run(query[FeedReports].filter(_.feedId == lift(feedId)).sortBy(_.id)))
       assert(result.size == 2)
       assert(result(0).feedId == feedId)
-      assert(result(0).by == accountId1)
+      assert(result(0).by == userId1)
       assert(result(0).reportType == r1.reportType)
       assert(result(0).reportContent == r1.reportContent)
       assert(result(1).feedId == feedId)
-      assert(result(1).by == accountId2)
+      assert(result(1).by == userId2)
       assert(result(1).reportType == r2.reportType)
       assert(result(1).reportContent == r2.reportContent)
     }
@@ -30,18 +30,18 @@ class FeedReportsDAOSpec extends DAOSpec {
   feature("delete") {
 
     scenario("should delete a feed reports") {
-      forAll(accountGen, accountGen, feedGen, feedReportGen, feedReportGen) { (a1, a2, f, r1, r2) =>
+      forAll(userGen, userGen, feedGen, feedReportGen, feedReportGen) { (a1, a2, f, r1, r2) =>
 
         // preparing
-        //  session account create a feed
-        //  session account create a feed
-        val sessionId = await(accountsDAO.create(a1.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a2.accountName))
+        //  session user create a feed
+        //  session user create a feed
+        val sessionId = await(usersDAO.create(a1.userName)).sessionId
+        val userId = await(usersDAO.create(a2.userName))
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
-        // create some reports each account
+        // create some reports each user
         await(feedReportsDAO.create(feedId, r1.reportType, r1.reportContent, sessionId))
-        await(feedReportsDAO.create(feedId, r2.reportType, r2.reportContent, accountId.toSessionId))
+        await(feedReportsDAO.create(feedId, r2.reportType, r2.reportContent, userId.sessionId))
 
         // delete the feed
         await(feedReportsDAO.delete(feedId))

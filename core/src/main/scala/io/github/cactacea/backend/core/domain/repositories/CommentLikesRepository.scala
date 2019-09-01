@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{CommentLikesValidator, CommentsValidator}
@@ -30,10 +30,10 @@ class CommentLikesRepository @Inject()(
     } yield (())
   }
 
-  def findAccounts(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Account]] = {
+  def findUsers(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
     for {
       _ <- commentsValidator.mustExist(commentId, sessionId)
-      r <- commentLikesDAO.findAccounts(commentId, since, offset, count, sessionId)
+      r <- commentLikesDAO.findUsers(commentId, since, offset, count, sessionId)
     } yield (r)
   }
 

@@ -12,16 +12,16 @@ trait Helpers extends FeatureTest
   with FeedsHelper
   with CommonHelper
   with MediumsHelper
-  with AccountsHelper
+  with UsersHelper
   with FollowsHelper
   with SessionHelper
   with SessionsHelper {
 
   self: APIServerSpec =>
 
-  def createAccount(accountName: String, password: String): Authentication = {
-    val authentication = signUp(accountName, password)
-    val mediums = uploadMedium("profile", accountName + ".jpg", authentication.accessToken)
+  def createUser(userName: String, password: String): Authentication = {
+    val authentication = signUp(userName, password)
+    val mediums = uploadMedium("profile", userName + ".jpg", authentication.accessToken)
     mediums.headOption.foreach(medium =>
       updateProfileImage(medium.id, authentication.accessToken)
     )
@@ -40,7 +40,7 @@ trait Helpers extends FeatureTest
 
 
   def createFollow(target: Authentication, by: Authentication): Response = {
-    follow(target.account.id, by.accessToken)
+    follow(target.user.id, by.accessToken)
   }
 
   def cleanUp(): Unit = {

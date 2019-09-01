@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
 import io.github.cactacea.backend.core.domain.enums.{ChannelPrivacyType, ChannelAuthorityType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, ChannelId, MessageId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, ChannelId, MessageId}
 
 case class Channels(
                      id: ChannelId,
@@ -10,9 +10,9 @@ case class Channels(
                      invitationOnly: Boolean,
                      directMessage: Boolean,
                      authorityType: ChannelAuthorityType,
-                     accountCount: Long,
+                     userCount: Long,
                      messageId: Option[MessageId],
-                     by: AccountId,
+                     by: UserId,
                      lastPostedAt: Option[Long],
                      organizedAt: Long
                   )

@@ -8,12 +8,12 @@ case class PostChannel(
                        @ApiModelProperty(value = "Channel name.", required = true)
                        @Size(min = 1, max = 1000) name: String,
 
-                       @ApiModelProperty(value = "Only invited accounts can join in.", required = true)
+                       @ApiModelProperty(value = "Only invited users can join in.", required = true)
                        byInvitationOnly: Boolean,
 
-                       @ApiModelProperty(value = "Which accounts can join in.", required = true)
+                       @ApiModelProperty(value = "Which users can join in.", required = true)
                        privacyType: ChannelPrivacyType,
 
-                       @ApiModelProperty(value = "Which accounts can manage a channel.", required = true)
+                       @ApiModelProperty(value = "Which users can manage a channel.", required = true)
                        authorityType: ChannelAuthorityType
                      )

@@ -9,10 +9,10 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.validators._
 
 class InvitationsRepository @Inject()(
-                                       accountChannelsDAO: AccountChannelsDAO,
-                                       accountChannelsValidator: AccountChannelsValidator,
-                                       accountsValidator: AccountsValidator,
-                                       accountMessagesDAO: AccountMessagesDAO,
+                                       userChannelsDAO: UserChannelsDAO,
+                                       userChannelsValidator: UserChannelsValidator,
+                                       usersValidator: UsersValidator,
+                                       userMessagesDAO: UserMessagesDAO,
                                        channelsDAO: ChannelsDAO,
                                        channelsValidator: ChannelsValidator,
                                        channelAuthorityValidator: ChannelAuthorityValidator,
@@ -22,27 +22,27 @@ class InvitationsRepository @Inject()(
                                        messagesDAO: MessagesDAO
                                           ) {
 
-  def create(accountId: AccountId, channelId: ChannelId, sessionId: SessionId): Future[InvitationId] = {
+  def create(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[InvitationId] = {
     for {
-      _ <- accountsValidator.mustNotSame(accountId, sessionId)
-      _ <- accountsValidator.mustExist(accountId, sessionId)
+      _ <- usersValidator.mustNotSame(userId, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
       _ <- channelsValidator.mustExist(channelId, sessionId)
-      _ <- accountChannelsValidator.mustNotJoined(accountId, channelId)
-      _ <- accountChannelsValidator.mustJoined(sessionId.toAccountId, channelId)
-      _ <- invitationsValidator.mustNotInvited(accountId, channelId)
-      _ <- channelAuthorityValidator.hasInviteAuthority(accountId, channelId, sessionId)
-      i <- invitationsDAO.create(accountId, channelId, sessionId)
-      _ <- notificationsDAO.create(i, accountId, sessionId)
+      _ <- userChannelsValidator.mustNotJoined(userId, channelId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
+      _ <- invitationsValidator.mustNotInvited(userId, channelId)
+      _ <- channelAuthorityValidator.hasInviteAuthority(userId, channelId, sessionId)
+      i <- invitationsDAO.create(userId, channelId, sessionId)
+      _ <- notificationsDAO.create(i, userId, sessionId)
     } yield (i)
   }
 
-  def delete(accountId: AccountId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.mustNotSame(accountId, sessionId)
-      _ <- accountsValidator.mustExist(accountId, sessionId)
+      _ <- usersValidator.mustNotSame(userId, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
       _ <- channelsValidator.mustExist(channelId, sessionId)
-      _ <- invitationsValidator.mustHasAuthority(accountId, channelId, sessionId)
-      _ <- invitationsDAO.delete(accountId, channelId, sessionId)
+      _ <- invitationsValidator.mustHasAuthority(userId, channelId, sessionId)
+      _ <- invitationsDAO.delete(userId, channelId, sessionId)
     } yield (())
   }
 
@@ -52,19 +52,19 @@ class InvitationsRepository @Inject()(
 
   def accept(invitationId: InvitationId, sessionId: SessionId): Future[Unit] = {
     for {
-      (g, a) <- invitationsValidator.mustFind(sessionId.toAccountId, invitationId)
-      _ <- accountChannelsValidator.mustNotJoined(a, g)
-      _ <- accountChannelsDAO.create(a, g, a.toSessionId)
-      c <- channelsDAO.findAccountCount(g)
-      m <- messagesDAO.create(g, MessageType.joined, c, a.toSessionId)
-      _ <- accountMessagesDAO.create(g, m, sessionId)
+      (g, a) <- invitationsValidator.mustFind(sessionId.userId, invitationId)
+      _ <- userChannelsValidator.mustNotJoined(a, g)
+      _ <- userChannelsDAO.create(a, g, a.sessionId)
+      c <- channelsDAO.findUserCount(g)
+      m <- messagesDAO.create(g, MessageType.joined, c, a.sessionId)
+      _ <- userMessagesDAO.create(g, m, sessionId)
       _ <- invitationsDAO.delete(invitationId, sessionId)
     } yield (())
   }
 
   def reject(invitationId: InvitationId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- invitationsValidator.mustFind(sessionId.toAccountId, invitationId)
+      _ <- invitationsValidator.mustFind(sessionId.userId, invitationId)
       _ <- invitationsDAO.delete(invitationId, sessionId)
     } yield (())
   }

@@ -9,8 +9,8 @@ class FeedTagsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create feed tabs") {
-      forAll(accountGen, feedGen) { (a, f) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forAll(userGen, feedGen) { (a, f) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsDAO.create(f.message, None, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
         await(feedTagsDAO.create(feedId, tags))
@@ -22,8 +22,8 @@ class FeedTagsDAOSpec extends DAOSpec {
 
   feature("delete") {
     scenario("should delete feed tags") {
-      forAll(accountGen, feedGen) { (a, f) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forAll(userGen, feedGen) { (a, f) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsDAO.create(f.message, None, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
         await(feedTagsDAO.create(feedId, tags))

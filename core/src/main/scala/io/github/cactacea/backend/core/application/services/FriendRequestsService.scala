@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.application.components.interfaces.QueueSe
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.domain.repositories.FriendRequestsRepository
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FriendRequestId, SessionId}
 
 class FriendRequestsService @Inject()(
                                        databaseService: DatabaseService,
@@ -16,18 +16,18 @@ class FriendRequestsService @Inject()(
 
   import databaseService._
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
+  def create(userId: UserId, sessionId: SessionId): Future[FriendRequestId] = {
     transaction {
       for {
-        i <- friendRequestsRepository.create(accountId, sessionId)
+        i <- friendRequestsRepository.create(userId, sessionId)
         _ <- queueService.enqueueFriendRequest(i)
       } yield (i)
     }
   }
 
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, sessionId: SessionId): Future[Unit] = {
     transaction {
-      friendRequestsRepository.delete(accountId, sessionId)
+      friendRequestsRepository.delete(userId, sessionId)
     }
   }
 

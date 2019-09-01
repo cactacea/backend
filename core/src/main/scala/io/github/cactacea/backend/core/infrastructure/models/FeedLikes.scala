@@ -1,10 +1,10 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, FeedLikeId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, FeedLikeId}
 
 case class FeedLikes(
                       id: FeedLikeId,
                       feedId: FeedId,
-                      by: AccountId,
+                      by: UserId,
                       likedAt: Long
                     )

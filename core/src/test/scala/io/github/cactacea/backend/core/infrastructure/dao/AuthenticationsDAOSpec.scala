@@ -11,7 +11,7 @@ class AuthenticationsDAOSpec extends DAOSpec {
         val result = await(authenticationsDAO.find(u.providerId, u.providerKey))
         assert(result.headOption.exists(_.providerId == u.providerId))
         assert(result.headOption.exists(_.providerKey == u.providerKey))
-        assert(result.headOption.exists(_.accountId.isEmpty))
+        assert(result.headOption.exists(_.userId.isEmpty))
         assert(result.headOption.exists(_.password == u.password))
         assert(result.headOption.exists(_.hasher == u.hasher))
         assert(result.headOption.exists(!_.confirm))
@@ -27,7 +27,7 @@ class AuthenticationsDAOSpec extends DAOSpec {
         val result = await(authenticationsDAO.find(u1.providerId, u1.providerKey))
         assert(result.headOption.exists(_.providerId == u1.providerId))
         assert(result.headOption.exists(_.providerKey == u1.providerKey))
-        assert(result.headOption.exists(_.accountId.isEmpty))
+        assert(result.headOption.exists(_.userId.isEmpty))
         assert(result.headOption.exists(_.password == u2.password))
         assert(result.headOption.exists(_.hasher == u2.hasher))
         assert(result.headOption.exists(!_.confirm))
@@ -50,15 +50,15 @@ class AuthenticationsDAOSpec extends DAOSpec {
       }
     }
 
-    scenario("should update account id") {
-      forOne(accountGen, authenticationGen) { (s, u1) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+    scenario("should update user id") {
+      forOne(userGen, authenticationGen) { (s, u1) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
         await(authenticationsDAO.create(u1.providerId, u1.providerKey, u1.password, u1.hasher))
-        await(authenticationsDAO.updateAccountId(u1.providerId, u1.providerKey, sessionId))
+        await(authenticationsDAO.updateUserId(u1.providerId, u1.providerKey, sessionId))
         val result = await(authenticationsDAO.find(u1.providerId, u1.providerKey))
         assert(result.headOption.exists(_.providerId == u1.providerId))
         assert(result.headOption.exists(_.providerKey == u1.providerKey))
-        assert(result.headOption.exists(_.accountId.exists(_ == sessionId.toAccountId)))
+        assert(result.headOption.exists(_.userId.exists(_ == sessionId.userId)))
         assert(result.headOption.exists(_.password == u1.password))
         assert(result.headOption.exists(_.hasher == u1.hasher))
         assert(result.headOption.exists(!_.confirm))
@@ -66,15 +66,15 @@ class AuthenticationsDAOSpec extends DAOSpec {
     }
 
     scenario("should update provider key") {
-      forOne(accountGen, authenticationGen, authenticationGen) { (s, u1, u2) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+      forOne(userGen, authenticationGen, authenticationGen) { (s, u1, u2) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
         await(authenticationsDAO.create(u1.providerId, u1.providerKey, u1.password, u1.hasher))
-        await(authenticationsDAO.updateAccountId(u1.providerId, u1.providerKey, sessionId))
+        await(authenticationsDAO.updateUserId(u1.providerId, u1.providerKey, sessionId))
         await(authenticationsDAO.updateProviderKey(u1.providerId, u2.providerKey, sessionId))
         val result = await(authenticationsDAO.find(u1.providerId, u2.providerKey))
         assert(result.headOption.exists(_.providerId == u1.providerId))
         assert(result.headOption.exists(_.providerKey == u2.providerKey))
-        assert(result.headOption.exists(_.accountId.exists(_ == sessionId.toAccountId)))
+        assert(result.headOption.exists(_.userId.exists(_ == sessionId.userId)))
         assert(result.headOption.exists(_.password == u1.password))
         assert(result.headOption.exists(_.hasher == u1.hasher))
         assert(result.headOption.exists(!_.confirm))
@@ -103,7 +103,7 @@ class AuthenticationsDAOSpec extends DAOSpec {
         val result1 = await(authenticationsDAO.find(u1.providerId, u1.providerKey))
         assert(result1.headOption.exists(_.providerId == u1.providerId))
         assert(result1.headOption.exists(_.providerKey == u1.providerKey))
-        assert(result1.headOption.exists(_.accountId.isEmpty))
+        assert(result1.headOption.exists(_.userId.isEmpty))
         assert(result1.headOption.exists(_.password == u1.password))
         assert(result1.headOption.exists(_.hasher == u1.hasher))
         assert(result1.headOption.exists(!_.confirm))
@@ -111,7 +111,7 @@ class AuthenticationsDAOSpec extends DAOSpec {
         val result2 = await(authenticationsDAO.find(u2.providerId, u2.providerKey))
         assert(result2.headOption.exists(_.providerId == u2.providerId))
         assert(result2.headOption.exists(_.providerKey == u2.providerKey))
-        assert(result2.headOption.exists(_.accountId.isEmpty))
+        assert(result2.headOption.exists(_.userId.isEmpty))
         assert(result2.headOption.exists(_.password == u2.password))
         assert(result2.headOption.exists(_.hasher == u2.hasher))
         assert(result2.headOption.exists(!_.confirm))
@@ -127,7 +127,7 @@ class AuthenticationsDAOSpec extends DAOSpec {
         val result1 = await(authenticationsDAO.find(u1.providerId, u1.providerKey, true))
         assert(result1.headOption.exists(_.providerId == u1.providerId))
         assert(result1.headOption.exists(_.providerKey == u1.providerKey))
-        assert(result1.headOption.exists(_.accountId.isEmpty))
+        assert(result1.headOption.exists(_.userId.isEmpty))
         assert(result1.headOption.exists(_.password == u1.password))
         assert(result1.headOption.exists(_.hasher == u1.hasher))
         assert(result1.headOption.exists(_.confirm))
@@ -151,7 +151,7 @@ class AuthenticationsDAOSpec extends DAOSpec {
         val result1 = await(authenticationsDAO.find(u1.providerId, u1.providerKey))
         assert(result1.headOption.exists(_.providerId == u1.providerId))
         assert(result1.headOption.exists(_.providerKey == u1.providerKey))
-        assert(result1.headOption.exists(_.accountId.isEmpty))
+        assert(result1.headOption.exists(_.userId.isEmpty))
         assert(result1.headOption.exists(_.password == u1.password))
         assert(result1.headOption.exists(_.hasher == u1.hasher))
         assert(result1.headOption.exists(!_.confirm))

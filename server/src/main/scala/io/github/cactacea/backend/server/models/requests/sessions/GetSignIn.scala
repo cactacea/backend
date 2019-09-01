@@ -5,10 +5,10 @@ import com.twitter.finatra.request.QueryParam
 import io.swagger.annotations.ApiModelProperty
 
 case class GetSignIn(
-                      @ApiModelProperty(value = "Account name.", required = true)
-                      @QueryParam accountName: String,
+                      @ApiModelProperty(value = "User name.", required = true)
+                      @QueryParam userName: String,
 
-                      @ApiModelProperty(value = "Account password.", required = true)
+                      @ApiModelProperty(value = "User password.", required = true)
                       @QueryParam password: String,
 
                       @ApiModelProperty(hidden = true)

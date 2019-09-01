@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{ChannelAuthorityType, ChannelPrivacyType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, ChannelId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, ChannelId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.{Channels, Relationships}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
@@ -17,17 +17,17 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
   def hasFindMembersAuthority(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
       g <- findChannel(channelId)
-      r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
+      r <- findRelationship(sessionId.userId, g.by.sessionId)
       _ <- mustHaveJoinAuthority(g, r, sessionId)
     } yield (())
   }
 
-  def hasAddMembersAuthority(accountId: AccountId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def hasAddMembersAuthority(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
       g <- findChannel(channelId)
-      r <- findRelationship(accountId, g.by.toSessionId)
+      r <- findRelationship(userId, g.by.sessionId)
       _ <- mustNotDirectMessageChannel(g.directMessage)
-      _ <- mustHaveJoinAuthority(g, r, accountId.toSessionId)
+      _ <- mustHaveJoinAuthority(g, r, userId.sessionId)
       _ <- mustHaveInviteAuthority(g, sessionId)
     } yield (())
   }
@@ -52,19 +52,19 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
   def hasJoinAuthority(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
       g <- findChannel(channelId)
-      r <- findRelationship(sessionId.toAccountId, g.by.toSessionId)
+      r <- findRelationship(sessionId.userId, g.by.sessionId)
       _ <- mustNotDirectMessageChannel(g.directMessage)
       _ <- mustNotInvitationOnlyChannel(g.invitationOnly)
       _ <- mustHaveJoinAuthority(g, r, sessionId)
     } yield (())
   }
 
-  def hasInviteAuthority(accountId: AccountId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def hasInviteAuthority(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
       g <- findChannel(channelId)
-      r <- findRelationship(accountId, g.by.toSessionId)
+      r <- findRelationship(userId, g.by.sessionId)
       _ <- mustNotDirectMessageChannel(g.directMessage)
-      _ <- mustHaveJoinAuthority(g, r, accountId.toSessionId)
+      _ <- mustHaveJoinAuthority(g, r, userId.sessionId)
       _ <- mustHaveInviteAuthority(g, sessionId)
     } yield (())
   }
@@ -81,12 +81,12 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
     })
   }
 
-  private def findRelationship(accountId: AccountId, sessionId: SessionId): Future[Option[Relationships]] = {
-    val by = sessionId.toAccountId
+  private def findRelationship(userId: UserId, sessionId: SessionId): Future[Option[Relationships]] = {
+    val by = sessionId.userId
     val q = quote {
       for {
         r <- query[Relationships]
-          .filter(_.accountId == lift(accountId))
+          .filter(_.userId == lift(userId))
           .filter(_.by     == lift(by))
       } yield (r)
     }
@@ -97,7 +97,7 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
     val follow = r.fold(false)(_.follow)
     val follower = r.fold(false)(_.isFollower)
     val friend = r.fold(false)(_.isFriend)
-    if (g.by.toSessionId == sessionId) {
+    if (g.by.sessionId == sessionId) {
       Future.Unit
     } else if (g.privacyType == ChannelPrivacyType.follows && (follow || friend)) {
       Future.Unit
@@ -113,7 +113,7 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
   }
 
   private def mustHaveInviteAuthority(g: Channels, sessionId: SessionId): Future[Unit] = {
-    if (sessionId.toAccountId == g.by) {
+    if (sessionId.userId == g.by) {
       Future.Unit
     } else if (g.authorityType == ChannelAuthorityType.organizer) {
       Future.exception(CactaceaException(AuthorityNotFound))
