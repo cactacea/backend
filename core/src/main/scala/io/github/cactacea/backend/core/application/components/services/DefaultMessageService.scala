@@ -18,7 +18,7 @@ class DefaultMessageService extends MessageService {
       case PushNotificationType.message => "message"
       case PushNotificationType.`nonDisplay` => "message_no_displayed"
       case PushNotificationType.image => "message_image"
-      case PushNotificationType.`invitation` => "group_invitation"
+      case PushNotificationType.`invitation` => "channel_invitation"
       case PushNotificationType.`request` => "friend_request"
       case PushNotificationType.feed => "feed"
       case PushNotificationType.feedReply => "feed_reply"
@@ -31,7 +31,7 @@ class DefaultMessageService extends MessageService {
   def getNotificationMessage(notificationType: NotificationType, locales: Seq[Locale], args : Any*): String = {
     val message = notificationType match {
       case NotificationType.operator => "operator"
-      case NotificationType.`invitation` => "group_invitation"
+      case NotificationType.`invitation` => "channel_invitation"
       case NotificationType.`friendRequest` => "friend_request"
       case NotificationType.feed => "feed"
       case NotificationType.feedReply => "feed_reply"

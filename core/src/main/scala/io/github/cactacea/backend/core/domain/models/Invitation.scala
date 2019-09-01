@@ -1,25 +1,25 @@
 package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId
-import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Invitations, _}
+import io.github.cactacea.backend.core.infrastructure.models.{Users, Invitations, _}
 
 case class Invitation(
-                            id: InvitationId,
-                            group: Group,
-                            account: Account,
-                            invitedAt: Long,
-                            next: Long
+                       id: InvitationId,
+                       channel: Channel,
+                       user: User,
+                       invitedAt: Long,
+                       next: Long
                    )
 
 object Invitation {
 
-  def apply(gi: Invitations, a: Accounts, r: Option[Relationships], g: Groups, next: Long): Invitation = {
-    val account = Account(a, r)
-    val group = Group(g)
+  def apply(gi: Invitations, a: Users, r: Option[Relationships], g: Channels, next: Long): Invitation = {
+    val user = User(a, r)
+    val channel = Channel(g)
     Invitation(
       id                = gi.id,
-      group             = group,
-      account           = account,
+      channel             = channel,
+      user           = user,
       invitedAt         = gi.invitedAt,
       next              = next
     )

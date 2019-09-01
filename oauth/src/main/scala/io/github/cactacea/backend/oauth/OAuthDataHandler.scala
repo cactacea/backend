@@ -5,13 +5,13 @@ import java.util.Date
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.oauth2.{AccessToken, AuthInfo, DataHandler, InvalidScope}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.infrastructure.dao.{AccountsDAO, ClientsDAO}
-import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
+import io.github.cactacea.backend.core.infrastructure.dao.{UsersDAO, ClientsDAO}
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 import io.github.cactacea.filhouette.api.util.Credentials
 import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 
 @Singleton
-class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
+class OAuthDataHandler @Inject()(accountsDAO: UsersDAO,
                                  clientsDAO: ClientsDAO,
                                  credentialsProvider: CredentialsProvider
                             ) extends DataHandler[OAuthUser] {
@@ -21,7 +21,7 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
   override def findAuthInfoByCode(code: String): Future[Option[AuthInfo[OAuthUser]]] = {
     val token = for {
       t <- OAuthTokenGenerator.parse(TokenType.code, code)
-      i <- createAuthInfo(t.accountId, t.clientId, t.redirectUri, t.issuedAt, t.scope)
+      i <- createAuthInfo(t.userId, t.clientId, t.redirectUri, t.issuedAt, t.scope)
     } yield (i)
     Future.value(token)
   }
@@ -31,7 +31,7 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
   override def findAuthInfoByRefreshToken(refreshToken: String): Future[Option[AuthInfo[OAuthUser]]] = {
     val token = for {
       t <- OAuthTokenGenerator.parse(TokenType.refreshToken, refreshToken)
-      i <- createAuthInfo(t.accountId, t.clientId, t.redirectUri, t.issuedAt, t.scope)
+      i <- createAuthInfo(t.userId, t.clientId, t.redirectUri, t.issuedAt, t.scope)
     } yield (i)
     Future.value(token)
   }
@@ -41,7 +41,7 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
     for {
       c <- clientsDAO.find(clientId, clientSecret)
       _ <- validateScope(scope, c.flatMap(_.scope))
-    } yield (Option(OAuthUser(AccountId(0), new Date())))
+    } yield (Option(OAuthUser(UserId(0), new Date())))
   }
 
 
@@ -65,14 +65,14 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
     val refreshExpiresIn = 60L * 60 * 24 * 365
     val token = OAuthTokenGenerator.generate(
       TokenType.token,
-      authInfo.user.accountId,
+      authInfo.user.userId,
       authInfo.clientId,
       authInfo.scope,
       authInfo.redirectUri,
       tokenExpiresIn)
     val refreshToken = OAuthTokenGenerator.generate(
       TokenType.refreshToken,
-      authInfo.user.accountId,
+      authInfo.user.userId,
       authInfo.clientId,
       authInfo.scope,
       authInfo.redirectUri,
@@ -92,7 +92,7 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
     val tokenExpiresIn = 60L * 60
     val token = OAuthTokenGenerator.generate(
       TokenType.token,
-      authInfo.user.accountId,
+      authInfo.user.userId,
       authInfo.clientId,
       authInfo.scope,
       authInfo.redirectUri,
@@ -111,18 +111,18 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
   // Authorize flow #2
   override def findAuthInfoByAccessToken(accessToken: AccessToken): Future[Option[AuthInfo[OAuthUser]]] = {
     val authInfo = OAuthTokenGenerator.parse(TokenType.token, accessToken.token)
-      .flatMap(t => createAuthInfo(t.accountId, t.clientId, t.redirectUri, t.issuedAt, t.scope))
+      .flatMap(t => createAuthInfo(t.userId, t.clientId, t.redirectUri, t.issuedAt, t.scope))
     Future.value(authInfo)
   }
 
   // OK
-  private def createAuthInfo(accountId: AccountId,
+  private def createAuthInfo(userId: UserId,
                              clientId: String,
                              redirectUri: Option[String],
                              issuedAt: Date,
                              scope: Option[String]): Option[AuthInfo[OAuthUser]] = {
 
-    Option(AuthInfo(OAuthUser(accountId, issuedAt), clientId, scope, redirectUri))
+    Option(AuthInfo(OAuthUser(userId, issuedAt), clientId, scope, redirectUri))
   }
 
   // OK
@@ -146,7 +146,7 @@ class OAuthDataHandler @Inject()(accountsDAO: AccountsDAO,
     val tokenExpiresIn = 60L * 60
     val token = OAuthTokenGenerator.generate(
       TokenType.code,
-      AccountId(0L),
+      UserId(0L),
       clientId,
       scope,
       redirectUri,

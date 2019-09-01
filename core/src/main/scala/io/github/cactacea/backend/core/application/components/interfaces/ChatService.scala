@@ -1,10 +1,10 @@
 package io.github.cactacea.backend.core.application.components.interfaces
 
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.infrastructure.identifiers.GroupId
+import io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId
 
 trait ChatService {
 
-  def publish(groupId: GroupId, message: AnyRef): Future[Unit]
+  def publish(channelId: ChannelId, message: AnyRef): Future[Unit]
 
 }

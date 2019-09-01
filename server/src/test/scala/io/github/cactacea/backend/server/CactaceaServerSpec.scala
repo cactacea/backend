@@ -11,7 +11,7 @@ import io.github.cactacea.backend.server.utils.modules.AuthenticationModule
 
 @Singleton
 class CactaceaServerSpec extends FeatureTest
-  with AccountsControllerSpec
+  with UsersControllerSpec
   with BlocksControllerSpec
   with CommentLikesControllerSpec
   with CommentsControllerSpec
@@ -19,7 +19,7 @@ class CactaceaServerSpec extends FeatureTest
   with FeedsControllerSpec
   with FollowsControllerSpec
   with FriendsControllerSpec
-  with GroupsControllerSpec
+  with ChannelsControllerSpec
   with InvitationsControllerSpec
   with MessagesControllerSpec
   with MutesControllerSpec

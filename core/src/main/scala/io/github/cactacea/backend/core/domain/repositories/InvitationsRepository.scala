@@ -6,44 +6,43 @@ import io.github.cactacea.backend.core.domain.enums.MessageType
 import io.github.cactacea.backend.core.domain.models.Invitation
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, AccountsValidator, GroupAuthorityValidator, GroupsValidator, InvitationsValidator}
-
+import io.github.cactacea.backend.core.infrastructure.validators._
 
 class InvitationsRepository @Inject()(
-                                       accountGroupsDAO: AccountGroupsDAO,
-                                       accountGroupsValidator: AccountGroupsValidator,
-                                       accountsValidator: AccountsValidator,
-                                       accountMessagesDAO: AccountMessagesDAO,
-                                       groupsDAO: GroupsDAO,
-                                       groupsValidator: GroupsValidator,
-                                       groupAuthorityValidator: GroupAuthorityValidator,
+                                       userChannelsDAO: UserChannelsDAO,
+                                       userChannelsValidator: UserChannelsValidator,
+                                       usersValidator: UsersValidator,
+                                       userMessagesDAO: UserMessagesDAO,
+                                       channelsDAO: ChannelsDAO,
+                                       channelsValidator: ChannelsValidator,
+                                       channelAuthorityValidator: ChannelAuthorityValidator,
                                        invitationsDAO: InvitationsDAO,
                                        invitationsValidator: InvitationsValidator,
                                        notificationsDAO: NotificationsDAO,
                                        messagesDAO: MessagesDAO
                                           ) {
 
-  def create(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[InvitationId] = {
+  def create(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[InvitationId] = {
     for {
-      _ <- accountsValidator.mustNotSame(accountId, sessionId)
-      _ <- accountsValidator.mustExist(accountId, sessionId)
-      _ <- groupsValidator.mustExist(groupId, sessionId)
-      _ <- accountGroupsValidator.mustNotJoined(accountId, groupId)
-      _ <- accountGroupsValidator.mustJoined(sessionId.toAccountId, groupId)
-      _ <- invitationsValidator.mustNotInvited(accountId, groupId)
-      _ <- groupAuthorityValidator.hasInviteAuthority(accountId, groupId, sessionId)
-      i <- invitationsDAO.create(accountId, groupId, sessionId)
-      _ <- notificationsDAO.create(i, accountId, sessionId)
+      _ <- usersValidator.mustNotSame(userId, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      _ <- channelsValidator.mustExist(channelId, sessionId)
+      _ <- userChannelsValidator.mustNotJoined(userId, channelId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
+      _ <- invitationsValidator.mustNotInvited(userId, channelId)
+      _ <- channelAuthorityValidator.hasInviteAuthority(userId, channelId, sessionId)
+      i <- invitationsDAO.create(userId, channelId, sessionId)
+      _ <- notificationsDAO.create(i, userId, sessionId)
     } yield (i)
   }
 
-  def delete(accountId: AccountId, groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.mustNotSame(accountId, sessionId)
-      _ <- accountsValidator.mustExist(accountId, sessionId)
-      _ <- groupsValidator.mustExist(groupId, sessionId)
-      _ <- invitationsValidator.mustHasAuthority(accountId, groupId, sessionId)
-      _ <- invitationsDAO.delete(accountId, groupId, sessionId)
+      _ <- usersValidator.mustNotSame(userId, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      _ <- channelsValidator.mustExist(channelId, sessionId)
+      _ <- invitationsValidator.mustHasAuthority(userId, channelId, sessionId)
+      _ <- invitationsDAO.delete(userId, channelId, sessionId)
     } yield (())
   }
 
@@ -53,19 +52,19 @@ class InvitationsRepository @Inject()(
 
   def accept(invitationId: InvitationId, sessionId: SessionId): Future[Unit] = {
     for {
-      (g, a) <- invitationsValidator.mustFind(sessionId.toAccountId, invitationId)
-      _ <- accountGroupsValidator.mustNotJoined(a, g)
-      _ <- accountGroupsDAO.create(a, g, a.toSessionId)
-      c <- groupsDAO.findAccountCount(g)
-      m <- messagesDAO.create(g, MessageType.joined, c, a.toSessionId)
-      _ <- accountMessagesDAO.create(g, m, sessionId)
+      (g, a) <- invitationsValidator.mustFind(sessionId.userId, invitationId)
+      _ <- userChannelsValidator.mustNotJoined(a, g)
+      _ <- userChannelsDAO.create(a, g, a.sessionId)
+      c <- channelsDAO.findUserCount(g)
+      m <- messagesDAO.create(g, MessageType.joined, c, a.sessionId)
+      _ <- userMessagesDAO.create(g, m, sessionId)
       _ <- invitationsDAO.delete(invitationId, sessionId)
     } yield (())
   }
 
   def reject(invitationId: InvitationId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- invitationsValidator.mustFind(sessionId.toAccountId, invitationId)
+      _ <- invitationsValidator.mustFind(sessionId.userId, invitationId)
       _ <- invitationsDAO.delete(invitationId, sessionId)
     } yield (())
   }

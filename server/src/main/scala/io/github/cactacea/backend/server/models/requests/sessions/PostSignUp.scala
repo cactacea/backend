@@ -6,10 +6,10 @@ import io.github.cactacea.backend.server.utils.validators.CactaceaValidations
 import io.swagger.annotations.ApiModelProperty
 
 case class PostSignUp(
-                       @ApiModelProperty(value = "Account name.", required = true)
-                       @Size(min = 2, max = 30) accountName: String,
+                       @ApiModelProperty(value = "User name.", required = true)
+                       @Size(min = 2, max = 30) userName: String,
 
-                       @ApiModelProperty(value = "Account password.", required = true)
+                       @ApiModelProperty(value = "User password.", required = true)
                        @Size(min = 8, max = 255) password: String,
 
                        @ApiModelProperty(hidden = true)
@@ -18,7 +18,7 @@ case class PostSignUp(
                      ) {
 
   @MethodValidation
-  def accountNameCheck: ValidationResult = CactaceaValidations.validateAccountName(accountName)
+  def userNameCheck: ValidationResult = CactaceaValidations.validateUserName(userName)
 
   @MethodValidation
   def passwordCheck: ValidationResult = CactaceaValidations.validatePassword(password)

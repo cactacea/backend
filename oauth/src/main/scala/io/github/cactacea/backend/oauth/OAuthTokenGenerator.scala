@@ -2,13 +2,13 @@ package io.github.cactacea.backend.oauth
 
 import java.util.Date
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 import io.github.cactacea.backend.core.util.configs.Config
 import io.jsonwebtoken.{JwtException, Jwts, SignatureAlgorithm}
 
 object OAuthTokenGenerator {
 
-  def generate(tokenType: TokenType, accountId: AccountId, clientId: String, scope: Option[String], redirectUri: Option[String], expiration: Long): String = {
+  def generate(tokenType: TokenType, userId: UserId, clientId: String, scope: Option[String], redirectUri: Option[String], expiration: Long): String = {
     val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
     Jwts.builder()
       .setIssuer(Config.auth.token.issuer)
@@ -19,7 +19,7 @@ object OAuthTokenGenerator {
       .setHeaderParam("scope", scope.getOrElse(""))
       .setHeaderParam("redirect_uri", redirectUri.getOrElse(""))
       .setHeaderParam("expiration", expiration)
-      .setAudience(accountId.value.toString)
+      .setAudience(userId.value.toString)
       .signWith(signatureAlgorithm, Config.auth.token.signingKey)
       .compact()
   }
@@ -39,7 +39,7 @@ object OAuthTokenGenerator {
       if (header.getAlgorithm().equals(signatureAlgorithm.getValue)
         && body.getSubject.equals(tokenType.toValue)
         && body.getIssuer.equals(Config.auth.token.issuer)) {
-        Option(OAuthToken(AccountId(audience), issuedAt, Option(expiration), clientId, Option(redirectUri) ,Option(scope)))
+        Option(OAuthToken(UserId(audience), issuedAt, Option(expiration), clientId, Option(redirectUri) ,Option(scope)))
       } else {
         None
       }

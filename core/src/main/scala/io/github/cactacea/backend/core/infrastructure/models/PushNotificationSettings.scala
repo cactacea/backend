@@ -1,14 +1,14 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 
 case class PushNotificationSettings(
-                                     accountId: AccountId,
+                                     userId: UserId,
                                      feed: Boolean,
                                      comment: Boolean,
                                      friendRequest: Boolean,
                                      message: Boolean,
-                                     groupMessage: Boolean,
+                                     channelMessage: Boolean,
                                      invitation: Boolean,
                                      showMessage: Boolean
                                )

@@ -1,15 +1,15 @@
 package io.github.cactacea.backend.core.domain.models
 
-import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType}
+import io.github.cactacea.backend.core.domain.enums.{UserStatusType, ContentStatusType}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId}
-import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Comments, Relationships}
+import io.github.cactacea.backend.core.infrastructure.models.{Users, Comments, Relationships}
 
 case class Comment(
                     id: CommentId,
                     replyId: Option[CommentId],
                     feedId: FeedId,
                     message: String,
-                    account: Account,
+                    user: User,
                     likeCount: Long,
                     warning: Boolean,
                     rejected: Boolean,
@@ -18,8 +18,8 @@ case class Comment(
 
 object Comment {
 
-  def apply(c: Comments, a: Accounts, r: Option[Relationships]): Comment = {
-    val rejected = (c.contentStatus == ContentStatusType.rejected) || (a.accountStatus != AccountStatusType.normally)
+  def apply(c: Comments, a: Users, r: Option[Relationships]): Comment = {
+    val rejected = (c.contentStatus == ContentStatusType.rejected) || (a.userStatus != UserStatusType.normally)
     rejected match {
       case true =>
         Comment(
@@ -27,7 +27,7 @@ object Comment {
           replyId         = c.replyId,
           feedId          = c.feedId,
           message         = "",
-          account         = Account(a, r),
+          user         = User(a, r),
           likeCount       = 0L,
           warning         = false,
           rejected        = rejected,
@@ -40,7 +40,7 @@ object Comment {
           replyId         = c.replyId,
           feedId          = c.feedId,
           message         = c.message,
-          account         = Account(a, r),
+          user         = User(a, r),
           likeCount       = c.likeCount,
           warning         = c.contentWarning,
           rejected        = rejected,

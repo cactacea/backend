@@ -7,10 +7,10 @@ class MediumsRepositorySpec extends RepositorySpec {
 
 
   feature("create") {
-    forAll(accountGen, mediumGen) { (a, m) =>
+    forAll(userGen, mediumGen) { (a, m) =>
 
       // preparing
-      val sessionId = await(accountsRepository.create(a.accountName)).id.toSessionId
+      val sessionId = await(usersRepository.create(a.userName)).id.sessionId
       val mediumId = await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))
 
       // result
@@ -26,10 +26,10 @@ class MediumsRepositorySpec extends RepositorySpec {
   }
 
   feature("delete") {
-    forAll(accountGen, mediumGen) { (a, m) =>
+    forAll(userGen, mediumGen) { (a, m) =>
 
       // preparing
-      val sessionId = await(accountsRepository.create(a.accountName)).id.toSessionId
+      val sessionId = await(usersRepository.create(a.userName)).id.sessionId
       val mediumId = await(mediumsRepository.create(
         m.key,
         m.uri,

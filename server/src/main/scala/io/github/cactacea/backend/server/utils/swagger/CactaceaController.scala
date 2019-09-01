@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.server.utils.swagger
 
 import com.twitter.finatra.http.Controller
-import io.github.cactacea.backend.auth.domain.models.User
+import io.github.cactacea.backend.auth.domain.models.Auth
 import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter
 import io.github.cactacea.filhouette.api.Authorization
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator
@@ -13,13 +13,13 @@ trait CactaceaController extends SwaggerController {
   protected val successfulMessage = "Successful operation."
   protected val validationErrorMessage = "Validation error occurred."
 
-  protected val accountsTag = "Accounts"
+  protected val usersTag = "Users"
   protected val blocksTag = "Blocks"
   protected val commentsTag = "Comments"
   protected val commentLikesTag = "CommentLikes"
   protected val feedsTag = "Feeds"
   protected val feedsLikeTag = "FeedLikes"
-  protected val groupsTag = "Groups"
+  protected val channelsTag = "Channels"
   protected val invitationsTag = "Invitations"
   protected val sessionTag = "Session"
   protected val mediumsTag = "Mediums"
@@ -27,5 +27,5 @@ trait CactaceaController extends SwaggerController {
   protected val friendRequestsTag = "FriendRequests"
   protected val sessionsTag = "Sessions"
 
-  def scope(auth: Authorization[User, JWTAuthenticator]) = filter(new CactaceaAuthenticationFilter(auth))
+  def scope(auth: Authorization[Auth, JWTAuthenticator]) = filter(new CactaceaAuthenticationFilter(auth))
 }

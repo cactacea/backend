@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.MutesService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
-import io.github.cactacea.backend.server.models.requests.account.{DeleteMute, PostMute}
+import io.github.cactacea.backend.server.models.requests.user.{DeleteMute, PostMute}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
@@ -23,14 +23,14 @@ class MutesController @Inject()(
 
   prefix(apiPrefix) {
 
-    scope(basic).postWithDoc("/accounts/:id/mutes") { o =>
-      o.summary("Mute an account")
-        .tag(accountsTag)
-        .operationId("muteAccount")
+    scope(basic).postWithDoc("/users/:id/mutes") { o =>
+      o.summary("Mute an user")
+        .tag(usersTag)
+        .operationId("muteUser")
         .request[PostMute]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyBlocked))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserAlreadyBlocked))))
     } { request: PostMute =>
       mutesService.create(
         request.id,
@@ -38,14 +38,14 @@ class MutesController @Inject()(
       ).map(_ => response.ok)
     }
 
-    scope(basic).deleteWithDoc("/accounts/:id/mutes") { o =>
-      o.summary("Unmute an account")
-        .tag(accountsTag)
-        .operationId("unmuteAccount")
+    scope(basic).deleteWithDoc("/users/:id/mutes") { o =>
+      o.summary("Unmute an user")
+        .tag(usersTag)
+        .operationId("unmuteUser")
         .request[DeleteMute]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotBlocked))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserNotBlocked))))
     } { request: DeleteMute =>
       mutesService.delete(
         request.id,

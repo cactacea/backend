@@ -265,7 +265,7 @@ class APIServerSpec extends FeatureTest with Helpers {
 //      "alliance between his clan and the neighbouring Imagawa clan. He was raised at their court and given the " +
 //      "education suitable for a nobleman.", yasuhiro_nakasone)
 //
-//    createComment(ieyasu_tokugawa_feed.id, "In 1567 Ieyasu, whose father's death had groupLeft him as leader of" +
+//    createComment(ieyasu_tokugawa_feed.id, "In 1567 Ieyasu, whose father's death had channelLeft him as leader of" +
 //      " the Matsudaira, allied with Oda Nobunaga, a powerful neighbour.", yasuo_fukuda)
 //
 //    createComment(ieyasu_tokugawa_feed.id, "It was at this time that he changed his name from Matsudaira to" +

@@ -33,11 +33,11 @@ class ServiceSpec extends IntegrationFeatureTest
 //  }
 //
 //  private val db = injector.instance[DatabaseService]
-//  private val accountsRepository = injector.instance[AccountsRepository]
+//  private val usersRepository = injector.instance[UsersRepository]
 //  val feedsService = injector.instance[FeedsService]
 //
-//  def signUp(accountName: String, password: String, udid: String) = {
-//    execute(accountsRepository.create(accountName)) //, udid, DeviceType.ios, Some("user-agent")))
+//  def signUp(userName: String, password: String, udid: String) = {
+//    execute(usersRepository.create(userName)) //, udid, DeviceType.ios, Some("user-agent")))
 //  }
 
 

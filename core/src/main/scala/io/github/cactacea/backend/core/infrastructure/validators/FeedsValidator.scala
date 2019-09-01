@@ -29,7 +29,7 @@ class FeedsValidator @Inject()(feedsDAO: FeedsDAO, commentsDAO: CommentsDAO) {
     })
   }
 
-  def mustFindOwner(feedId: FeedId, commentId: Option[CommentId]): Future[AccountId] = {
+  def mustFindOwner(feedId: FeedId, commentId: Option[CommentId]): Future[UserId] = {
     commentId match {
       case Some(id) =>
         commentsDAO.findOwner(id).flatMap(_ match {

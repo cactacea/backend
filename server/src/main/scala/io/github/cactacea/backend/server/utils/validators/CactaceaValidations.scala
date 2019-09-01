@@ -14,10 +14,10 @@ object CactaceaValidations {
     )
   }
 
-  def validateAccountName(accountName: String): ValidationResult = {
+  def validateUserName(userName: String): ValidationResult = {
     validate(
-      Some(accountName),
-      "Account name must be alphabet, numeric, period and underscore and its length between 2 to 30.",
+      Some(userName),
+      "User name must be alphabet, numeric, period and underscore and its length between 2 to 30.",
       """^[A-Za-z0-9._]+$""".r
     )
   }

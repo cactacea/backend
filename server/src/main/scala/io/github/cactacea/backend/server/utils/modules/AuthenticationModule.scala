@@ -2,8 +2,8 @@ package io.github.cactacea.backend.server.utils.modules
 
 import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.TwitterModule
-import io.github.cactacea.backend.auth.domain.models.User
-import io.github.cactacea.backend.auth.domain.repositories.{PasswordsRepository, SocialsRepository, UsersRepository}
+import io.github.cactacea.backend.auth.domain.models.Auth
+import io.github.cactacea.backend.auth.domain.repositories.{PasswordsRepository, SocialsRepository, AuthRepository}
 import io.github.cactacea.backend.auth.utils.providers.EmailsProvider
 import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.backend.server.utils.providers.OAuth2RequestProvider
@@ -31,7 +31,7 @@ object AuthenticationModule extends TwitterModule {
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[Clock].toInstance(Clock())
-    bindSingleton[IdentityService[User]].to[UsersRepository]
+    bindSingleton[IdentityService[Auth]].to[AuthRepository]
     bindSingleton[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordsRepository]
     bindSingleton[DelegableAuthInfoDAO[OAuth2Info]].to[SocialsRepository]
   }
@@ -142,10 +142,10 @@ object AuthenticationModule extends TwitterModule {
   @Provides
   @Singleton
   def provideSecuredActionBuilder(
-                                   identityService: IdentityService[User],
+                                   identityService: IdentityService[Auth],
                                    authenticatorService: JWTAuthenticatorService,
                                    oauth2RequestProvider: OAuth2RequestProvider
-                                 ): SecuredActionBuilder[User, JWTAuthenticator] = {
+                                 ): SecuredActionBuilder[Auth, JWTAuthenticator] = {
     val securedErrorHandler = new DefaultSecuredErrorHandler()
     val securedRequestHandler = new DefaultSecuredRequestHandler(securedErrorHandler)
     val securedAction = new DefaultSecuredAction(securedRequestHandler)

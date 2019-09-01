@@ -31,7 +31,7 @@ class MessagesController @Inject()(
         .operationId("findMessages")
         .request[GetMessages]
         .responseWith[Array[Message]](Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
     } { request: GetMessages =>
       messagesService.find(
         request.id,
@@ -44,41 +44,41 @@ class MessagesController @Inject()(
     }
 
     scope(messages).postWithDoc("/messages/text") { o =>
-      o.summary("Send a text to a group")
+      o.summary("Send a text to a channel")
         .tag(messagesTag)
         .operationId("postText")
         .request[PostText]
         .responseWith[Message](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(MediumNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotJoined))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserNotJoined))))
     } { request: PostText =>
 
       messagesService.createText(
-        request.groupId,
+        request.channelId,
         request.message,
         CactaceaContext.sessionId
       ).map(response.created(_))
     }
 
     scope(messages).postWithDoc("/messages/medium") { o =>
-      o.summary("Send a medium to a group")
+      o.summary("Send a medium to a channel")
         .tag(messagesTag)
         .operationId("postMedium")
         .request[PostMedium]
         .responseWith[Message](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(MediumNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountNotJoined))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserNotJoined))))
     } { request: PostMedium =>
 
       messagesService.createMedium(
-        request.groupId,
+        request.channelId,
         request.mediumId,
         CactaceaContext.sessionId
       ).map(response.created(_))
     }
 
     scope(messages).deleteWithDoc("/messages") { o =>
-      o.summary("Delete messages form a group")
+      o.summary("Delete messages form a channel")
         .tag(messagesTag)
         .operationId("deleteMessage")
         .request[DeleteMessages]

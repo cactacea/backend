@@ -6,8 +6,8 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.InvitationsService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.server.models.requests.account.{DeleteInvitation, PostInvitations}
-import io.github.cactacea.backend.server.models.requests.group.{PostAcceptInvitation, PostRejectInvitation}
+import io.github.cactacea.backend.server.models.requests.user.{DeleteInvitation, PostInvitations}
+import io.github.cactacea.backend.server.models.requests.channel.{PostAcceptInvitation, PostRejectInvitation}
 import io.github.cactacea.backend.server.models.responses.InvitationCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
@@ -30,10 +30,10 @@ class InvitationsController @Inject()(
         .operationId("createInvitations")
         .request[PostInvitations]
         .responseWith[InvitationCreated](Status.Created.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
     } { request: PostInvitations =>
       invitationService.create(
-        request.accountIds.toList,
+        request.userIds.toList,
         request.id,
         CactaceaContext.sessionId
       ).map(_.map(InvitationCreated(_))).map(response.created(_))
@@ -41,15 +41,15 @@ class InvitationsController @Inject()(
 
     scope(invitations).deleteWithDoc("/invitations") { o =>
       o.summary("Delete a invitation ")
-        .tag(accountsTag)
+        .tag(usersTag)
         .operationId("deleteInvitation")
         .request[DeleteInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound, GroupNotFound))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound, ChannelNotFound))))
     }  { request: DeleteInvitation =>
       invitationService.delete(
-        request.accountId,
-        request.groupId,
+        request.userId,
+        request.channelId,
         CactaceaContext.sessionId
       ).map(response.ok)
     }
@@ -60,8 +60,8 @@ class InvitationsController @Inject()(
         .operationId("acceptInvitation")
         .request[PostAcceptInvitation]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(GroupNotFound))))
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(AccountAlreadyJoined, AuthorityNotFound))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserAlreadyJoined, AuthorityNotFound))))
     } { request: PostAcceptInvitation =>
       invitationService.accept(
         request.id,

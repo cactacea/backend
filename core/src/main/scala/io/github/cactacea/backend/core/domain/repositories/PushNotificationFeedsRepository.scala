@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.PushNotification
 import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationFeedsDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId}
 
 
 class PushNotificationFeedsRepository @Inject()(pushNotificationFeedsDAO: PushNotificationFeedsDAO) {
@@ -17,8 +17,8 @@ class PushNotificationFeedsRepository @Inject()(pushNotificationFeedsDAO: PushNo
     pushNotificationFeedsDAO.update(feedId, true)
   }
 
-  def update(feedId: FeedId, accountIds: List[AccountId]): Future[Unit] = {
-    pushNotificationFeedsDAO.update(feedId, accountIds, true)
+  def update(feedId: FeedId, userIds: List[UserId]): Future[Unit] = {
+    pushNotificationFeedsDAO.update(feedId, userIds, true)
   }
 
 }

@@ -3,9 +3,9 @@ package io.github.cactacea.backend.core.application.services
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.domain.repositories.MutesRepository
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, SessionId}
 
 class MutesService @Inject()(
                               databaseService: DatabaseService,
@@ -13,20 +13,20 @@ class MutesService @Inject()(
                             ) {
 
   import databaseService._
-  def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def create(userId: UserId, sessionId: SessionId): Future[Unit] = {
     transaction {
-      mutesRepository.create(accountId, sessionId)
+      mutesRepository.create(userId, sessionId)
     }
   }
 
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, sessionId: SessionId): Future[Unit] = {
     transaction {
-      mutesRepository.delete(accountId, sessionId)
+      mutesRepository.delete(userId, sessionId)
     }
   }
 
-  def find(accountName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    mutesRepository.find(accountName, since, offset, count, sessionId)
+  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
+    mutesRepository.find(userName, since, offset, count, sessionId)
   }
 
 }

@@ -5,7 +5,7 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository}
+import io.github.cactacea.backend.core.domain.repositories.{UsersRepository, AuthenticationsRepository}
 import io.github.cactacea.filhouette.api.exceptions.ProviderException
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService
@@ -13,13 +13,13 @@ import io.github.cactacea.filhouette.impl.providers.{CommonSocialProfileBuilder,
 
 @Singleton
 class SocialAuthenticationService @Inject()(
-                                              db: DatabaseService,
-                                              response: ResponseBuilder,
-                                              accountsRepository: AccountsRepository,
-                                              authInfoRepository: AuthInfoRepository,
-                                              authenticationsRepository: AuthenticationsRepository,
-                                              authenticatorService: JWTAuthenticatorService,
-                                              socialProviderRegistry: SocialProviderRegistry
+                                             db: DatabaseService,
+                                             response: ResponseBuilder,
+                                             usersRepository: UsersRepository,
+                                             authInfoRepository: AuthInfoRepository,
+                                             authenticationsRepository: AuthenticationsRepository,
+                                             authenticatorService: JWTAuthenticatorService,
+                                             socialProviderRegistry: SocialProviderRegistry
                                ) {
 
   import db._
@@ -46,7 +46,7 @@ class SocialAuthenticationService @Inject()(
   }
 
 
-  def signUp(provider: String, accountName: String)(implicit request: Request): Future[Response] = {
+  def signUp(provider: String, userName: String)(implicit request: Request): Future[Response] = {
     transaction {
       (socialProviderRegistry.get[SocialProvider](provider) match {
         case Some(p: SocialProvider with CommonSocialProfileBuilder) =>
@@ -56,10 +56,10 @@ class SocialAuthenticationService @Inject()(
             case Right(authInfo) => {
               for {
                 profile <- p.retrieveProfile(authInfo)
-                a <- accountsRepository.create(accountName, profile.fullName)
+                a <- usersRepository.create(userName, profile.fullName)
                 _ <- authInfoRepository.add(profile.loginInfo, authInfo)
                 _ <- authenticationsRepository.confirm(profile.loginInfo.providerId, profile.loginInfo.providerKey)
-                _ <- authenticationsRepository.link(profile.loginInfo.providerId, profile.loginInfo.providerKey, a.id.toSessionId)
+                _ <- authenticationsRepository.link(profile.loginInfo.providerId, profile.loginInfo.providerKey, a.id.sessionId)
                 s <- authenticatorService.create(profile.loginInfo)
                 c <- authenticatorService.init(s)
                 r <- authenticatorService.embed(c, response.ok)

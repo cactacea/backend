@@ -8,27 +8,27 @@ class MutesDAOSpec extends DAOSpec {
   feature("create") {
 
     scenario("should mute an block") {
-      forAll(accountGen, accountGen, accountGen) { (a1, a2, a3) =>
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(mutesDAO.create(accountId1, accountId2.toSessionId))
-        await(mutesDAO.create(accountId2, accountId3.toSessionId))
-        await(mutesDAO.create(accountId3, accountId1.toSessionId))
-        assertFutureValue(mutesDAO.own(accountId3, accountId1.toSessionId), true)
-        assertFutureValue(mutesDAO.own(accountId1, accountId2.toSessionId), true)
-        assertFutureValue(mutesDAO.own(accountId2, accountId3.toSessionId), true)
+      forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(mutesDAO.create(userId1, userId2.sessionId))
+        await(mutesDAO.create(userId2, userId3.sessionId))
+        await(mutesDAO.create(userId3, userId1.sessionId))
+        assertFutureValue(mutesDAO.own(userId3, userId1.sessionId), true)
+        assertFutureValue(mutesDAO.own(userId1, userId2.sessionId), true)
+        assertFutureValue(mutesDAO.own(userId2, userId3.sessionId), true)
       }
     }
 
     scenario("should return an exception occurs when create duplicate block") {
-      forOne(accountGen, accountGen) { (a1, a2) =>
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        await(mutesDAO.create(accountId1, accountId2.toSessionId))
+      forOne(userGen, userGen) { (a1, a2) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        await(mutesDAO.create(userId1, userId2.sessionId))
         // exception occurs
         assert(intercept[ServerError] {
-          await(mutesDAO.create(accountId1, accountId2.toSessionId))
+          await(mutesDAO.create(userId1, userId2.sessionId))
         }.code == 1062)
       }
     }
@@ -36,75 +36,75 @@ class MutesDAOSpec extends DAOSpec {
   }
 
   feature("delete") {
-    scenario("should unmute an account") {
-      forAll(accountGen, accountGen, accountGen) { (a1, a2, a3) =>
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(mutesDAO.create(accountId2, accountId1.toSessionId))
-        await(mutesDAO.create(accountId3, accountId1.toSessionId))
-        await(mutesDAO.create(accountId1, accountId2.toSessionId))
-        await(mutesDAO.delete(accountId3, accountId1.toSessionId))
-        await(mutesDAO.delete(accountId1, accountId2.toSessionId))
-        await(mutesDAO.delete(accountId2, accountId3.toSessionId))
-        assertFutureValue(mutesDAO.own(accountId3, accountId1.toSessionId), false)
-        assertFutureValue(mutesDAO.own(accountId1, accountId2.toSessionId), false)
-        assertFutureValue(mutesDAO.own(accountId2, accountId3.toSessionId), false)
+    scenario("should unmute an user") {
+      forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(mutesDAO.create(userId2, userId1.sessionId))
+        await(mutesDAO.create(userId3, userId1.sessionId))
+        await(mutesDAO.create(userId1, userId2.sessionId))
+        await(mutesDAO.delete(userId3, userId1.sessionId))
+        await(mutesDAO.delete(userId1, userId2.sessionId))
+        await(mutesDAO.delete(userId2, userId3.sessionId))
+        assertFutureValue(mutesDAO.own(userId3, userId1.sessionId), false)
+        assertFutureValue(mutesDAO.own(userId1, userId2.sessionId), false)
+        assertFutureValue(mutesDAO.own(userId2, userId3.sessionId), false)
       }
     }
   }
 
   feature("own") {
     scenario("should return blocked or not") {
-      forAll(accountGen, accountGen, accountGen) { (a1, a2, a3) =>
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(mutesDAO.create(accountId1, accountId2.toSessionId))
-        await(mutesDAO.create(accountId2, accountId3.toSessionId))
-        await(mutesDAO.create(accountId3, accountId1.toSessionId))
-        assertFutureValue(mutesDAO.own(accountId2, accountId1.toSessionId), false)
-        assertFutureValue(mutesDAO.own(accountId3, accountId1.toSessionId), true)
-        assertFutureValue(mutesDAO.own(accountId1, accountId2.toSessionId), true)
-        assertFutureValue(mutesDAO.own(accountId3, accountId2.toSessionId), false)
-        assertFutureValue(mutesDAO.own(accountId1, accountId3.toSessionId), false)
-        assertFutureValue(mutesDAO.own(accountId2, accountId3.toSessionId), true)
+      forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(mutesDAO.create(userId1, userId2.sessionId))
+        await(mutesDAO.create(userId2, userId3.sessionId))
+        await(mutesDAO.create(userId3, userId1.sessionId))
+        assertFutureValue(mutesDAO.own(userId2, userId1.sessionId), false)
+        assertFutureValue(mutesDAO.own(userId3, userId1.sessionId), true)
+        assertFutureValue(mutesDAO.own(userId1, userId2.sessionId), true)
+        assertFutureValue(mutesDAO.own(userId3, userId2.sessionId), false)
+        assertFutureValue(mutesDAO.own(userId1, userId3.sessionId), false)
+        assertFutureValue(mutesDAO.own(userId2, userId3.sessionId), true)
       }
     }
   }
 
   feature("find") {
     scenario("should return mute list in order of creation") {
-      forAll(sortedNameGen, accountGen, sortedAccountGen, sortedAccountGen, sortedAccountGen, accountGen)
+      forAll(sortedNameGen, userGen, sortedUserGen, sortedUserGen, sortedUserGen, userGen)
       { (h, s, a1, a2, a3, a4) =>
 
         // preparing
-        //   session account mute account1
-        //   session account mute account2
-        //   session account mute account3
-        //   session account mute account4
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(h + a1.accountName))
-        val accountId2 = await(accountsDAO.create(h + a2.accountName))
-        val accountId3 = await(accountsDAO.create(h + a3.accountName))
-        val accountId4 = await(accountsDAO.create(a4.accountName))
-        await(mutesDAO.create(accountId1, sessionId))
-        await(mutesDAO.create(accountId2, sessionId))
-        await(mutesDAO.create(accountId3, sessionId))
-        await(mutesDAO.create(accountId4, sessionId))
+        //   session user mute user1
+        //   session user mute user2
+        //   session user mute user3
+        //   session user mute user4
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(h + a1.userName))
+        val userId2 = await(usersDAO.create(h + a2.userName))
+        val userId3 = await(usersDAO.create(h + a3.userName))
+        val userId4 = await(usersDAO.create(a4.userName))
+        await(mutesDAO.create(userId1, sessionId))
+        await(mutesDAO.create(userId2, sessionId))
+        await(mutesDAO.create(userId3, sessionId))
+        await(mutesDAO.create(userId4, sessionId))
 
-        // return account1 found
-        // return account2 found
-        // return account3 found
-        // return account4 not found because of account name not matched
+        // return user1 found
+        // return user2 found
+        // return user3 found
+        // return user4 not found because of user name not matched
         val result1 = await(mutesDAO.find(Option(h), None, 0, 2, sessionId))
         assert(result1.size == 2)
-        assert(result1(0).id == accountId3)
-        assert(result1(1).id == accountId2)
+        assert(result1(0).id == userId3)
+        assert(result1(1).id == userId2)
 
         val result2 = await(mutesDAO.find(Option(h), result1.lastOption.map(_.next), 0, 2, sessionId))
         assert(result2.size == 1)
-        assert(result2(0).id == accountId1)
+        assert(result2(0).id == userId1)
       }
     }
   }

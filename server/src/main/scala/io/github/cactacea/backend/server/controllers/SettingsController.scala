@@ -48,7 +48,7 @@ class SettingsController @Inject()(
         request.comment,
         request.friendRequest,
         request.message,
-        request.groupMessage,
+        request.channelMessage,
         request.invitation,
         request.showMessage,
         CactaceaContext.sessionId
@@ -67,7 +67,6 @@ class SettingsController @Inject()(
         request.pushToken,
         CactaceaContext.deviceType,
         request.userAgent,
-        request.status,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
     }

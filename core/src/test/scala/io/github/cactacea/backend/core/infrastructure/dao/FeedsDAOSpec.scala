@@ -10,8 +10,8 @@ class FeedsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create a feed and increase feed count") {
-      forAll(accountGen, feedGen, medium5ListOptGen) { (a, f, l) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forAll(userGen, feedGen, medium5ListOptGen) { (a, f, l) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         val ids = l.map(_.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsDAO.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -28,7 +28,7 @@ class FeedsDAOSpec extends DAOSpec {
         assert(result1.mediumId5 == ids.map(i => i(4)))
         assert(result1.tags == f.tags)
 
-        val result2 = await(accountsDAO.find(sessionId))
+        val result2 = await(usersDAO.find(sessionId))
         assert(result2.exists(_.feedCount == 1))
       }
     }
@@ -36,8 +36,8 @@ class FeedsDAOSpec extends DAOSpec {
 
   feature("update") {
     scenario("should update a feed") {
-      forAll(accountGen, feedGen, feedGen, medium5ListOptGen, medium5ListOptGen) { (a, f, f2, l, l2) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forAll(userGen, feedGen, feedGen, medium5ListOptGen, medium5ListOptGen) { (a, f, f2, l, l2) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         val ids = l.map(_.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsDAO.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -65,13 +65,13 @@ class FeedsDAOSpec extends DAOSpec {
 
   feature("delete") {
     scenario("should delete a feed and decrease feed count") {
-      forAll(accountGen, feedGen) { (a, f) =>
-        val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+      forAll(userGen, feedGen) { (a, f) =>
+        val sessionId = await(usersDAO.create(a.userName)).sessionId
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
-        val result1 = await(accountsDAO.find(sessionId))
+        val result1 = await(usersDAO.find(sessionId))
         assert(result1.exists(_.feedCount == 1))
         await(feedsDAO.delete(feedId, sessionId))
-        val result2 = await(accountsDAO.find(sessionId))
+        val result2 = await(usersDAO.find(sessionId))
         assert(result2.exists(_.feedCount == 0))
       }
     }
@@ -79,13 +79,13 @@ class FeedsDAOSpec extends DAOSpec {
 
   feature("own") {
     scenario("should return own or not") {
-      forOne(accountGen, accountGen, expiredFeedsGen) { (s, a, f) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, expiredFeedsGen) { (s, a, f) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a.userName))
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val result1 = await(feedsDAO.own(feedId, sessionId))
         assert(result1)
-        val result2 = await(feedsDAO.own(feedId, accountId1.toSessionId))
+        val result2 = await(feedsDAO.own(feedId, userId1.sessionId))
         assert(!result2)
       }
     }
@@ -93,28 +93,28 @@ class FeedsDAOSpec extends DAOSpec {
 
   feature("findOwner") {
     scenario("should return owner or not") {
-      forOne(accountGen, accountGen, expiredFeedsGen) { (s, a, f) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, expiredFeedsGen) { (s, a, f) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        await(usersDAO.create(a.userName))
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val result1 = await(feedsDAO.findOwner(feedId))
-        assert(result1.exists(_ == sessionId.toAccountId))
+        assert(result1.exists(_ == sessionId.userId))
       }
     }
   }
 
   feature("exists") {
 
-    scenario("should not return when account is blocked") {
-      forOne(accountGen, accountGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a.accountName))
-        val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, accountId1.toSessionId)))
-        ids.map(i => await(mediumsDAO.find(i, accountId1.toSessionId))).flatten
+    scenario("should not return when user is blocked") {
+      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a.userName))
+        val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, userId1.sessionId)))
+        ids.map(i => await(mediumsDAO.find(i, userId1.sessionId))).flatten
 
-        // account1 blocked session account
-        await(blocksDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        val feedId = await(feedsDAO.create(f.message, Option(ids), None, f.privacyType, f.contentWarning, f.expiration, accountId1.toSessionId))
+        // user1 blocked session user
+        await(blocksDAO.create(sessionId.userId, userId1.sessionId))
+        val feedId = await(feedsDAO.create(f.message, Option(ids), None, f.privacyType, f.contentWarning, f.expiration, userId1.sessionId))
 
         val result = await(feedsDAO.exists(feedId, sessionId))
         assert(!result)
@@ -123,98 +123,98 @@ class FeedsDAOSpec extends DAOSpec {
 
 
     scenario("should not return privacy type is self") {
-      forOne(accountGen, accountGen, accountGen, accountGen, selfFeedGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, selfFeedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a friend and a followers
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a friend and a followers
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, None, sessionId))
 
         // followers return false
-        val result1 = await(feedsDAO.exists(feedId, accountId1.toSessionId))
+        val result1 = await(feedsDAO.exists(feedId, userId1.sessionId))
         assert(!result1)
 
         // friends return false
-        val result2 = await(feedsDAO.exists(feedId, accountId2.toSessionId))
+        val result2 = await(feedsDAO.exists(feedId, userId2.sessionId))
         assert(!result2)
 
-        // account3 return false
-        val result3 = await(feedsDAO.exists(feedId, accountId3.toSessionId))
+        // user3 return false
+        val result3 = await(feedsDAO.exists(feedId, userId3.sessionId))
         assert(!result3)
 
       }
     }
-    scenario("should not return feeds if privacy type is followers and an account is not followers") {
-      forOne(accountGen, accountGen, accountGen, accountGen, followerFeedGen) { (s, a1, a2, a3, f) =>
+    scenario("should not return feeds if privacy type is followers and an user is not followers") {
+      forOne(userGen, userGen, userGen, userGen, followerFeedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a friend and a followers
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a friend and a followers
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, None, sessionId))
 
         // followers return true
-        val result1 = await(feedsDAO.exists(feedId, accountId1.toSessionId))
+        val result1 = await(feedsDAO.exists(feedId, userId1.sessionId))
         assert(result1)
 
         // friends return true
-        val result2 = await(feedsDAO.exists(feedId, accountId2.toSessionId))
+        val result2 = await(feedsDAO.exists(feedId, userId2.sessionId))
         assert(result2)
 
-        // account3 return false
-        val result3 = await(feedsDAO.exists(feedId, accountId3.toSessionId))
+        // user3 return false
+        val result3 = await(feedsDAO.exists(feedId, userId3.sessionId))
         assert(!result3)
 
       }
     }
 
-    scenario("should not return feeds if privacy type is friends and an account is not friend") {
-      forOne(accountGen, accountGen, accountGen, accountGen, friendFeedGen) { (s, a1, a2, a3, f) =>
+    scenario("should not return feeds if privacy type is friends and an user is not friend") {
+      forOne(userGen, userGen, userGen, userGen, friendFeedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a friend and a followers
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a friend and a followers
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, None, sessionId))
 
         // followers return false
-        val result1 = await(feedsDAO.exists(feedId, accountId1.toSessionId))
+        val result1 = await(feedsDAO.exists(feedId, userId1.sessionId))
         assert(!result1)
 
         // friends return true
-        val result2 = await(feedsDAO.exists(feedId, accountId2.toSessionId))
+        val result2 = await(feedsDAO.exists(feedId, userId2.sessionId))
         assert(result2)
 
-        // account3 return false
-        val result3 = await(feedsDAO.exists(feedId, accountId3.toSessionId))
+        // user3 return false
+        val result3 = await(feedsDAO.exists(feedId, userId3.sessionId))
         assert(!result3)
 
 
@@ -222,8 +222,8 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should not return expired feeds") {
-      forOne(accountGen, expiredFeedsGen) { (s, f) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+      forOne(userGen, expiredFeedsGen) { (s, f) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
         val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val result = await(feedsDAO.exists(feedId, sessionId))
         assert(!result)
@@ -238,13 +238,13 @@ class FeedsDAOSpec extends DAOSpec {
   feature("find feeds") {
 
     scenario("should return medium1-5") {
-      forOne(accountGen, accountGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
-        val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, accountId.toSessionId)))
-        val mediums = ids.map(i => await(mediumsDAO.find(i, accountId.toSessionId))).flatten
-        val feedId = await(feedsDAO.create(f.message, Option(ids), None, f.privacyType, f.contentWarning, f.expiration, accountId.toSessionId))
-        val result = await(feedsDAO.find(accountId, None, 0, 5, sessionId))
+      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
+        val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, userId.sessionId)))
+        val mediums = ids.map(i => await(mediumsDAO.find(i, userId.sessionId))).flatten
+        val feedId = await(feedsDAO.create(f.message, Option(ids), None, f.privacyType, f.contentWarning, f.expiration, userId.sessionId))
+        val result = await(feedsDAO.find(userId, None, 0, 5, sessionId))
 
         assert(result.size == 1)
         assert(result.headOption.exists(_.id == feedId))
@@ -269,10 +269,10 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should return next page") {
-      forOne(accountGen, accountGen, feed20ListGen) { (s, a1, f) =>
+      forOne(userGen, userGen, feed20ListGen) { (s, a1, f) =>
 
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
 
         val createdFeeds = f.map({ f =>
           val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, None, sessionId))
@@ -280,7 +280,7 @@ class FeedsDAOSpec extends DAOSpec {
         }).reverse
 
         // page1 found
-        val result1 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId1.toSessionId))
+        val result1 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId1.sessionId))
         assert(result1.size == 10)
         result1.zipWithIndex.map { case (r, i) =>
           assert(r.id == createdFeeds(i).id)
@@ -289,7 +289,7 @@ class FeedsDAOSpec extends DAOSpec {
 
         // page2 found
         val size1 = result1.size
-        val result2 = await(feedsDAO.find(sessionId.toAccountId, result1.lastOption.map(_.next), 0, 10, accountId1.toSessionId))
+        val result2 = await(feedsDAO.find(sessionId.userId, result1.lastOption.map(_.next), 0, 10, userId1.sessionId))
         assert(result2.size == 10)
         result2.zipWithIndex.map { case (r, i) =>
           assert(r.id == createdFeeds(i + size1).id)
@@ -297,27 +297,27 @@ class FeedsDAOSpec extends DAOSpec {
         }
 
         // page3 not found
-        val result3 = await(feedsDAO.find(sessionId.toAccountId, result2.lastOption.map(_.next), 0, 10, accountId1.toSessionId))
+        val result3 = await(feedsDAO.find(sessionId.userId, result2.lastOption.map(_.next), 0, 10, userId1.sessionId))
         assert(result3.size == 0)
 
       }
     }
 
     scenario("should not return privacy type is self") {
-      forOne(accountGen, accountGen, accountGen, accountGen, feed20ListGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a follower and a friend
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a follower and a friend
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         f.foreach({ f =>
           val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.self, f.contentWarning, None, sessionId))
@@ -326,36 +326,36 @@ class FeedsDAOSpec extends DAOSpec {
 
 
         // follower
-        val result1 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId1.toSessionId))
+        val result1 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId1.sessionId))
         assert(result1.size == 0)
 
         // friend
-        val result2 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId2.toSessionId))
+        val result2 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId2.sessionId))
         assert(result2.size == 0)
 
         // not follower and not friend
-        val result3 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId3.toSessionId))
+        val result3 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId3.sessionId))
         assert(result3.size == 0)
 
 
       }
     }
 
-    scenario("should not return feeds if privacy type is followers and an account is not a follower and a friend") {
-      forOne(accountGen, accountGen, accountGen, accountGen, feed20ListGen) { (s, a1, a2, a3, f) =>
+    scenario("should not return feeds if privacy type is followers and an user is not a follower and a friend") {
+      forOne(userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a follower and a friend
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a follower and a friend
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         val createdFeeds = f.map({ f =>
           val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.followers, f.contentWarning, None, sessionId))
@@ -364,7 +364,7 @@ class FeedsDAOSpec extends DAOSpec {
 
 
         // follower
-        val result1 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId1.toSessionId))
+        val result1 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId1.sessionId))
         assert(result1.size == 10)
         result1.zipWithIndex.map { case (r, i) =>
           assert(r.id == createdFeeds(i).id)
@@ -372,7 +372,7 @@ class FeedsDAOSpec extends DAOSpec {
         }
 
         // friend
-        val result2 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId2.toSessionId))
+        val result2 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId2.sessionId))
         assert(result2.size == 10)
         result2.zipWithIndex.map { case (r, i) =>
           assert(r.id == createdFeeds(i).id)
@@ -380,28 +380,28 @@ class FeedsDAOSpec extends DAOSpec {
         }
 
         // not follower and not friend
-        val result3 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId3.toSessionId))
+        val result3 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId3.sessionId))
         assert(result3.size == 0)
 
 
       }
     }
 
-    scenario("should not return feeds when privacy type is friends and an account is not a friend") {
-      forOne(accountGen, accountGen, accountGen, accountGen, feed20ListGen) { (s, a1, a2, a3, f) =>
+    scenario("should not return feeds when privacy type is friends and an user is not a friend") {
+      forOne(userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a follower and a friend
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a follower and a friend
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         val createdFeeds = f.map({ f =>
           val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.friends, f.contentWarning, None, sessionId))
@@ -410,11 +410,11 @@ class FeedsDAOSpec extends DAOSpec {
 
 
         // follower
-        val result1 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId1.toSessionId))
+        val result1 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId1.sessionId))
         assert(result1.size == 0)
 
         // friend
-        val result2 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId2.toSessionId))
+        val result2 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId2.sessionId))
         assert(result2.size == 10)
         result2.zipWithIndex.map { case (r, i) =>
           assert(r.id == createdFeeds(i).id)
@@ -422,7 +422,7 @@ class FeedsDAOSpec extends DAOSpec {
         }
 
         // not follower and not friend
-        val result3 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId3.toSessionId))
+        val result3 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId3.sessionId))
         assert(result3.size == 0)
 
 
@@ -430,70 +430,70 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should return like count, comment count and liked or not") {
-      forOne(accountGen,accountGen,accountGen,accountGen,accountGen,everyoneFeedGen,commentMessageGen) {
+      forOne(userGen,userGen,userGen,userGen,userGen,everyoneFeedGen,commentMessageGen) {
         (s, a1, a2, a3, a4, f, c) =>
 
           // preparing
-          //  account1 is friend.
-          //  account2 is friend.
-          //  account4 is friend.
-          //  account1 liked a feed
-          //  account2 liked a feed
-          //  account3 liked a feed
-          //  account1 blocked account2
-          //  account3 blocked account1
-          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-          val accountId1 = await(accountsDAO.create(a1.accountName))
-          val accountId2 = await(accountsDAO.create(a2.accountName))
-          val accountId3 = await(accountsDAO.create(a3.accountName))
-          val accountId4 = await(accountsDAO.create(a4.accountName))
+          //  user1 is friend.
+          //  user2 is friend.
+          //  user4 is friend.
+          //  user1 liked a feed
+          //  user2 liked a feed
+          //  user3 liked a feed
+          //  user1 blocked user2
+          //  user3 blocked user1
+          val sessionId = await(usersDAO.create(s.userName)).sessionId
+          val userId1 = await(usersDAO.create(a1.userName))
+          val userId2 = await(usersDAO.create(a2.userName))
+          val userId3 = await(usersDAO.create(a3.userName))
+          val userId4 = await(usersDAO.create(a4.userName))
 
-          // account1 is friend
-          await(friendsDAO.create(accountId1, sessionId))
-          await(friendsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
+          // user1 is friend
+          await(friendsDAO.create(userId1, sessionId))
+          await(friendsDAO.create(sessionId.userId, userId1.sessionId))
 
-          // account2 is friend
-          await(friendsDAO.create(accountId2, sessionId))
-          await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+          // user2 is friend
+          await(friendsDAO.create(userId2, sessionId))
+          await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
-          // account4 is friend
-          await(friendsDAO.create(accountId4, sessionId))
-          await(friendsDAO.create(sessionId.toAccountId, accountId4.toSessionId))
+          // user4 is friend
+          await(friendsDAO.create(userId4, sessionId))
+          await(friendsDAO.create(sessionId.userId, userId4.sessionId))
 
           // create and fan out a feed
           val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, None, sessionId))
 
           // like a feed
-          await(feedLikesDAO.create(feedId, accountId1.toSessionId))
-          await(feedLikesDAO.create(feedId, accountId2.toSessionId))
-          await(feedLikesDAO.create(feedId, accountId3.toSessionId))
+          await(feedLikesDAO.create(feedId, userId1.sessionId))
+          await(feedLikesDAO.create(feedId, userId2.sessionId))
+          await(feedLikesDAO.create(feedId, userId3.sessionId))
 
           // comment a feed
           await(commentsDAO.create(feedId, c, None, sessionId))
-          await(commentsDAO.create(feedId, c, None, accountId1.toSessionId))
-          await(commentsDAO.create(feedId, c, None, accountId2.toSessionId))
-          await(commentsDAO.create(feedId, c, None, accountId3.toSessionId))
+          await(commentsDAO.create(feedId, c, None, userId1.sessionId))
+          await(commentsDAO.create(feedId, c, None, userId2.sessionId))
+          await(commentsDAO.create(feedId, c, None, userId3.sessionId))
 
-          // block account
-          await(blocksDAO.create(accountId2, accountId1.toSessionId))
-          await(blocksDAO.create(accountId1, accountId3.toSessionId))
+          // block user
+          await(blocksDAO.create(userId2, userId1.sessionId))
+          await(blocksDAO.create(userId1, userId3.sessionId))
 
-          // find by account1 and should return like count is 2
-          val result1 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId1.toSessionId))
+          // find by user1 and should return like count is 2
+          val result1 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId1.sessionId))
           assert(result1(0).id == feedId)
           assert(result1(0).likeCount == 2)
           assert(result1(0).commentCount == 3)
           assert(result1(0).liked)
 
-          // find by account2 and should return like count is 2
-          val result2 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId2.toSessionId))
+          // find by user2 and should return like count is 2
+          val result2 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId2.sessionId))
           assert(result2(0).id == feedId)
           assert(result2(0).likeCount == 2)
           assert(result2(0).commentCount == 3)
           assert(result2(0).liked)
 
-          // find by account2 and should return like count is 3
-          val result3 = await(feedsDAO.find(sessionId.toAccountId, None, 0, 10, accountId4.toSessionId))
+          // find by user2 and should return like count is 3
+          val result3 = await(feedsDAO.find(sessionId.userId, None, 0, 10, userId4.sessionId))
           assert(result3(0).id == feedId)
           assert(result3(0).likeCount == 3)
           assert(result3(0).commentCount == 4)
@@ -502,11 +502,11 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should not return expired feeds") {
-      forOne(accountGen, accountGen, expiredFeedsGen) { (s, a, f) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a.accountName))
+      forOne(userGen, userGen, expiredFeedsGen) { (s, a, f) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a.userName))
         await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
-        val result = await(feedsDAO.find(accountId1, None, 0, 5, sessionId))
+        val result = await(feedsDAO.find(userId1, None, 0, 5, sessionId))
         assert(result.size == 0)
       }
     }
@@ -516,12 +516,12 @@ class FeedsDAOSpec extends DAOSpec {
   feature("find a feed") {
 
     scenario("should return medium1-5") {
-      forOne(accountGen, accountGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId = await(accountsDAO.create(a.accountName))
-        val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, accountId.toSessionId)))
-        val mediums = ids.map(i => await(mediumsDAO.find(i, accountId.toSessionId))).flatten
-        val feedId = await(feedsDAO.create(f.message, Option(ids), None, f.privacyType, f.contentWarning, f.expiration, accountId.toSessionId))
+      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId = await(usersDAO.create(a.userName))
+        val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, userId.sessionId)))
+        val mediums = ids.map(i => await(mediumsDAO.find(i, userId.sessionId))).flatten
+        val feedId = await(feedsDAO.create(f.message, Option(ids), None, f.privacyType, f.contentWarning, f.expiration, userId.sessionId))
         val result = await(feedsDAO.find(feedId, sessionId))
 
         assert(result.isDefined)
@@ -546,171 +546,171 @@ class FeedsDAOSpec extends DAOSpec {
       }
     }
 
-    scenario("should not return when account blocked") {
-      forOne(accountGen, accountGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a.accountName))
+    scenario("should not return when user blocked") {
+      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a.userName))
         val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId)))
         ids.map(i => await(mediumsDAO.find(i, sessionId))).flatten
 
-        // session account blocked account1
-        await(blocksDAO.create(accountId1, sessionId))
+        // session user blocked user1
+        await(blocksDAO.create(userId1, sessionId))
         val feedId = await(feedsDAO.create(f.message, Option(ids), None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
-        val result = await(feedsDAO.find(feedId, accountId1.toSessionId))
+        val result = await(feedsDAO.find(feedId, userId1.sessionId))
         assert(result.isEmpty)
       }
     }
 
     scenario("should not return privacy type is self") {
-      forOne(accountGen, accountGen, accountGen, accountGen, selfFeedGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, selfFeedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a friend and a followers
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a friend and a followers
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, None, sessionId))
 
         // followers not return a feed
-        val result1 = await(feedsDAO.find(feedId, accountId1.toSessionId))
+        val result1 = await(feedsDAO.find(feedId, userId1.sessionId))
         assert(result1.isEmpty)
 
         // friends not return  a feed
-        val result2 = await(feedsDAO.find(feedId, accountId2.toSessionId))
+        val result2 = await(feedsDAO.find(feedId, userId2.sessionId))
         assert(result2.isEmpty)
 
-        // account3 not return  a feed
-        val result3 = await(feedsDAO.find(feedId, accountId3.toSessionId))
+        // user3 not return  a feed
+        val result3 = await(feedsDAO.find(feedId, userId3.sessionId))
         assert(result3.isEmpty)
 
       }
     }
-    scenario("should not return feeds if privacy type is followers and an account is not a follower and a friend") {
-      forOne(accountGen, accountGen, accountGen, accountGen, followerFeedGen) { (s, a1, a2, a3, f) =>
+    scenario("should not return feeds if privacy type is followers and an user is not a follower and a friend") {
+      forOne(userGen, userGen, userGen, userGen, followerFeedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a friend and a followers
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a friend and a followers
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, None, sessionId))
 
         // followers return a feed
-        val result1 = await(feedsDAO.find(feedId, accountId1.toSessionId))
+        val result1 = await(feedsDAO.find(feedId, userId1.sessionId))
         assert(result1.isDefined)
 
         // friends return  a feed
-        val result2 = await(feedsDAO.find(feedId, accountId2.toSessionId))
+        val result2 = await(feedsDAO.find(feedId, userId2.sessionId))
         assert(result2.isDefined)
 
-        // account3 not return  a feed
-        val result3 = await(feedsDAO.find(feedId, accountId3.toSessionId))
+        // user3 not return  a feed
+        val result3 = await(feedsDAO.find(feedId, userId3.sessionId))
         assert(result3.isEmpty)
 
       }
     }
 
-    scenario("should not return feeds when privacy type is friends and an account is not a friend") {
-      forOne(accountGen, accountGen, accountGen, accountGen, friendFeedGen) { (s, a1, a2, a3, f) =>
+    scenario("should not return feeds when privacy type is friends and an user is not a friend") {
+      forOne(userGen, userGen, userGen, userGen, friendFeedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        //  account1 is a follower.
-        //  account2 is a friend.
-        //  account3 is not a friend and a followers
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-        val accountId1 = await(accountsDAO.create(a1.accountName))
-        val accountId2 = await(accountsDAO.create(a2.accountName))
-        val accountId3 = await(accountsDAO.create(a3.accountName))
-        await(followsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(followersDAO.create(sessionId.toAccountId, accountId1.toSessionId))
-        await(friendsDAO.create(accountId2, sessionId))
-        await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+        //  user1 is a follower.
+        //  user2 is a friend.
+        //  user3 is not a friend and a followers
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(sessionId.userId, userId1.sessionId))
+        await(followersDAO.create(sessionId.userId, userId1.sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, None, sessionId))
 
         // followers not return a feed
-        val result1 = await(feedsDAO.find(feedId, accountId1.toSessionId))
+        val result1 = await(feedsDAO.find(feedId, userId1.sessionId))
         assert(result1.isEmpty)
 
         // friends return a feed
-        val result2 = await(feedsDAO.find(feedId, accountId2.toSessionId))
+        val result2 = await(feedsDAO.find(feedId, userId2.sessionId))
         assert(result2.isDefined)
 
-        // account3 not return  a feed
-        val result3 = await(feedsDAO.find(feedId, accountId3.toSessionId))
+        // user3 not return  a feed
+        val result3 = await(feedsDAO.find(feedId, userId3.sessionId))
         assert(result3.isEmpty)
 
       }
     }
 
     scenario("should return like count, comment count and liked or not") {
-      forOne(accountGen,accountGen,accountGen,accountGen,accountGen,everyoneFeedGen,commentMessageGen) {
+      forOne(userGen,userGen,userGen,userGen,userGen,everyoneFeedGen,commentMessageGen) {
         (s, a1, a2, a3, a4, f, c) =>
 
           // preparing
-          //  account1 is friend.
-          //  account2 is friend.
-          //  account4 is friend.
-          //  account1 liked a feed
-          //  account2 liked a feed
-          //  account3 liked a feed
-          //  account1 blocked account2
-          //  account3 blocked account1
-          val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
-          val accountId1 = await(accountsDAO.create(a1.accountName))
-          val accountId2 = await(accountsDAO.create(a2.accountName))
-          val accountId3 = await(accountsDAO.create(a3.accountName))
-          val accountId4 = await(accountsDAO.create(a4.accountName))
+          //  user1 is friend.
+          //  user2 is friend.
+          //  user4 is friend.
+          //  user1 liked a feed
+          //  user2 liked a feed
+          //  user3 liked a feed
+          //  user1 blocked user2
+          //  user3 blocked user1
+          val sessionId = await(usersDAO.create(s.userName)).sessionId
+          val userId1 = await(usersDAO.create(a1.userName))
+          val userId2 = await(usersDAO.create(a2.userName))
+          val userId3 = await(usersDAO.create(a3.userName))
+          val userId4 = await(usersDAO.create(a4.userName))
 
-          // account1 is friend
-          await(friendsDAO.create(accountId1, sessionId))
-          await(friendsDAO.create(sessionId.toAccountId, accountId1.toSessionId))
+          // user1 is friend
+          await(friendsDAO.create(userId1, sessionId))
+          await(friendsDAO.create(sessionId.userId, userId1.sessionId))
 
-          // account2 is friend
-          await(friendsDAO.create(accountId2, sessionId))
-          await(friendsDAO.create(sessionId.toAccountId, accountId2.toSessionId))
+          // user2 is friend
+          await(friendsDAO.create(userId2, sessionId))
+          await(friendsDAO.create(sessionId.userId, userId2.sessionId))
 
-          // account4 is friend
-          await(friendsDAO.create(accountId4, sessionId))
-          await(friendsDAO.create(sessionId.toAccountId, accountId4.toSessionId))
+          // user4 is friend
+          await(friendsDAO.create(userId4, sessionId))
+          await(friendsDAO.create(sessionId.userId, userId4.sessionId))
 
           // create and fan out a feed
           val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, None, sessionId))
 
           // like a feed
-          await(feedLikesDAO.create(feedId, accountId1.toSessionId))
-          await(feedLikesDAO.create(feedId, accountId2.toSessionId))
-          await(feedLikesDAO.create(feedId, accountId3.toSessionId))
+          await(feedLikesDAO.create(feedId, userId1.sessionId))
+          await(feedLikesDAO.create(feedId, userId2.sessionId))
+          await(feedLikesDAO.create(feedId, userId3.sessionId))
 
           // comment a feed
           await(commentsDAO.create(feedId, c, None, sessionId))
-          await(commentsDAO.create(feedId, c, None, accountId1.toSessionId))
-          await(commentsDAO.create(feedId, c, None, accountId2.toSessionId))
-          await(commentsDAO.create(feedId, c, None, accountId3.toSessionId))
+          await(commentsDAO.create(feedId, c, None, userId1.sessionId))
+          await(commentsDAO.create(feedId, c, None, userId2.sessionId))
+          await(commentsDAO.create(feedId, c, None, userId3.sessionId))
 
-          // block account
-          await(blocksDAO.create(accountId2, accountId1.toSessionId))
-          await(blocksDAO.create(accountId1, accountId3.toSessionId))
+          // block user
+          await(blocksDAO.create(userId2, userId1.sessionId))
+          await(blocksDAO.create(userId1, userId3.sessionId))
 
-          // find by account1 and should return like count is 2
-          val result1 = await(feedsDAO.find(feedId, accountId1.toSessionId))
+          // find by user1 and should return like count is 2
+          val result1 = await(feedsDAO.find(feedId, userId1.sessionId))
           assert(result1.isDefined)
           assert(result1.exists(_.id == feedId))
           assert(result1.exists(_.likeCount == 2))
@@ -718,16 +718,16 @@ class FeedsDAOSpec extends DAOSpec {
           assert(result1.exists(_.liked))
 
 
-          // find by account2 and should return like count is 2
-          val result2 = await(feedsDAO.find(feedId, accountId2.toSessionId))
+          // find by user2 and should return like count is 2
+          val result2 = await(feedsDAO.find(feedId, userId2.sessionId))
           assert(result2.isDefined)
           assert(result2.exists(_.id == feedId))
           assert(result2.exists(_.likeCount == 2))
           assert(result2.exists(_.commentCount == 3))
           assert(result2.exists(_.liked))
 
-          // find by account2 and should return like count is 3
-          val result3 = await(feedsDAO.find(feedId, accountId4.toSessionId))
+          // find by user2 and should return like count is 3
+          val result3 = await(feedsDAO.find(feedId, userId4.sessionId))
           assert(result3.isDefined)
           assert(result3.exists(_.id == feedId))
           assert(result3.exists(_.likeCount == 3))
@@ -738,8 +738,8 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should not return expired feeds") {
-      forOne(accountGen, expiredFeedsGen) { (s, f) =>
-        val sessionId = await(accountsDAO.create(s.accountName)).toSessionId
+      forOne(userGen, expiredFeedsGen) { (s, f) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
         val feedId = await(feedsDAO.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val result = await(feedsDAO.find(feedId, sessionId))
         assert(result.isEmpty)

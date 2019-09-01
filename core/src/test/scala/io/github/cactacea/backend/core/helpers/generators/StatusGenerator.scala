@@ -7,14 +7,14 @@ import scala.collection.JavaConverters._
 
 trait StatusGenerator {
 
-  val accountStatusGen: Gen[AccountStatusType] = Gen.oneOf(AccountStatusType.all.asScala)
+  val userStatusGen: Gen[UserStatusType] = Gen.oneOf(UserStatusType.all.asScala)
   val activeStatusGen: Gen[ActiveStatusType] = Gen.oneOf(ActiveStatusType.all.asScala)
   val contentStatusGen: Gen[ContentStatusType] = Gen.oneOf(ContentStatusType.all.asScala)
   val deviceTypeGen: Gen[DeviceType] = Gen.oneOf(DeviceType.all.asScala)
   val feedPrivacyTypeGen: Gen[FeedPrivacyType] = Gen.oneOf(FeedPrivacyType.all.asScala)
   val feedPrivacyTypeOptGen: Gen[Option[FeedPrivacyType]]  = Gen.option(feedPrivacyTypeGen)
-  val groupAuthorityTypeGen: Gen[GroupAuthorityType] = Gen.oneOf(GroupAuthorityType.all.asScala)
-  val groupPrivacyTypeGen: Gen[GroupPrivacyType] = Gen.oneOf(GroupPrivacyType.all.asScala)
+  val channelAuthorityTypeGen: Gen[ChannelAuthorityType] = Gen.oneOf(ChannelAuthorityType.all.asScala)
+  val channelPrivacyTypeGen: Gen[ChannelPrivacyType] = Gen.oneOf(ChannelPrivacyType.all.asScala)
   val mediumTypeGen: Gen[MediumType] = Gen.oneOf(MediumType.all.asScala)
   val messageTypeGen: Gen[MessageType] = Gen.oneOf(MessageType.all.asScala)
   val notificationTypeGen: Gen[NotificationType] = Gen.oneOf(NotificationType.all.asScala)

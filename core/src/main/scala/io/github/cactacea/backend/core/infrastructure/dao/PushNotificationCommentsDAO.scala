@@ -28,8 +28,8 @@ class PushNotificationCommentsDAO @Inject()(
             case true => deepLinkService.getComments(c.feedId)
             case false => deepLinkService.getComment(c.feedId, c.id)
           }
-          val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
-            PushNotification(accountName, None, c.postedAt, url, destinations, pt)
+          val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
+            PushNotification(userName, None, c.postedAt, url, destinations, pt)
           }).toList
           Some(r)
         })
@@ -56,15 +56,15 @@ class PushNotificationCommentsDAO @Inject()(
         f <- query[Feeds]
           .join(_.id == c.feedId)
         _ <- query[PushNotificationSettings]
-          .join(_.accountId == f.by)
+          .join(_.userId == f.by)
           .filter(_.comment == true)
-        a <- query[Accounts]
+        a <- query[Users]
           .join(_.id == f.by)
         d <- query[Devices]
-          .join(_.accountId == f.by)
+          .join(_.userId == f.by)
           .filter(_.pushToken.isDefined)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == c.by && r.by == f.by)
+          .leftJoin(r => r.userId == c.by && r.by == f.by)
       } yield
         {
         Destination(

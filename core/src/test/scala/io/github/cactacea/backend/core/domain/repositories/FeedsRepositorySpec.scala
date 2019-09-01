@@ -13,11 +13,11 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   feature("create") {
     scenario("should create a feed") {
-      forOne(accountGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+      forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -40,23 +40,23 @@ class FeedsRepositorySpec extends RepositorySpec {
       }
     }
 
-    scenario("should create an account feed and a notification") {
-      forOne(accountGen, accountGen, followerFeedGen) { (s, a, f) =>
+    scenario("should create an user feed and a notification") {
+      forOne(userGen, userGen, followerFeedGen) { (s, a, f) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account = await(accountsRepository.create(a.accountName))
-        val accountId = account.id
-        await(followsRepository.create(sessionId.toAccountId, accountId.toSessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user = await(usersRepository.create(a.userName))
+        val userId = user.id
+        await(followsRepository.create(sessionId.userId, userId.sessionId))
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
-        val result1 = await(feedsRepository.find(None, 0, 10, None, accountId.toSessionId))
+        val result1 = await(feedsRepository.find(None, 0, 10, None, userId.sessionId))
         assert(result1.size == 1)
         assert(result1.headOption.exists(_.id == feedId))
 
-        val result = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), accountId.toSessionId))
+        val result = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), userId.sessionId))
         assert(result.size == 1)
         assert(result.headOption.exists(_.contentId.exists(_ == feedId.value)))
         assert(result.headOption.exists(_.notificationType == NotificationType.feed))
@@ -64,11 +64,11 @@ class FeedsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return exception if medium not exist") {
-      forOne(accountGen, everyoneFeedGen) { (a, f) =>
+      forOne(userGen, everyoneFeedGen) { (a, f) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
@@ -83,8 +83,8 @@ class FeedsRepositorySpec extends RepositorySpec {
   feature("update") {
     scenario("should update a feed") {
 
-      forOne(accountGen, everyoneFeedGen, everyoneFeedGen, medium5ListOptGen, medium5ListOptGen) { (a, f, f2, l, l2) =>
-        val sessionId = await(accountsRepository.create(a.accountName)).id.toSessionId
+      forOne(userGen, everyoneFeedGen, everyoneFeedGen, medium5ListOptGen, medium5ListOptGen) { (a, f, f2, l, l2) =>
+        val sessionId = await(usersRepository.create(a.userName)).id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -105,11 +105,11 @@ class FeedsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return exception if medium not exist") {
-      forOne(accountGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+      forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -123,11 +123,11 @@ class FeedsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return exception if feed not exist") {
-      forOne(accountGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+      forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
         l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
 
@@ -142,11 +142,11 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   feature("delete") {
     scenario("should delete a feed") {
-      forOne(accountGen, everyoneFeedGen) { (a, f) =>
+      forOne(userGen, everyoneFeedGen) { (a, f) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
@@ -158,11 +158,11 @@ class FeedsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should delete comments on a feed") {
-      forOne(accountGen, everyoneFeedGen, commentGen) { (a, f, c) =>
+      forOne(userGen, everyoneFeedGen, commentGen) { (a, f, c) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
 
@@ -177,32 +177,32 @@ class FeedsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should delete likes on a feed") {
-      forOne(accountGen, accountGen, everyoneFeedGen) { (s, a, f) =>
+      forOne(userGen, userGen, everyoneFeedGen) { (s, a, f) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account = await(accountsRepository.create(a.accountName))
-        val accountId = account.id
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user = await(usersRepository.create(a.userName))
+        val userId = user.id
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
-        await(feedLikesRepository.create(feedId, accountId.toSessionId))
+        await(feedLikesRepository.create(feedId, userId.sessionId))
 
         // result
         assertFutureValue(feedsDAO.own(feedId, sessionId), true)
-        assertFutureValue(feedLikesDAO.own(feedId, accountId.toSessionId), true)
+        assertFutureValue(feedLikesDAO.own(feedId, userId.sessionId), true)
         await(feedsRepository.delete(feedId, sessionId))
         assertFutureValue(feedsDAO.own(feedId, sessionId), false)
-        assertFutureValue(feedLikesDAO.own(feedId, accountId.toSessionId), false)
+        assertFutureValue(feedLikesDAO.own(feedId, userId.sessionId), false)
 
       }
     }
 
     scenario("should delete reports on a feed") {
-      forOne(accountGen, everyoneFeedGen, feedReportGen) { (a, f, r) =>
+      forOne(userGen, everyoneFeedGen, feedReportGen) { (a, f, r) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         await(feedsRepository.report(feedId, r.reportType, r.reportContent, sessionId))
 
@@ -218,11 +218,11 @@ class FeedsRepositorySpec extends RepositorySpec {
 
 
     scenario("should delete reports on comments on a feed") {
-      forOne(accountGen, everyoneFeedGen, commentGen, commentReportGen) { (a, f, c, r) =>
+      forOne(userGen, everyoneFeedGen, commentGen, commentReportGen) { (a, f, c, r) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
         await(commentsRepository.report(commentId, r.reportType, r.reportContent, sessionId))
@@ -240,35 +240,35 @@ class FeedsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should delete likes on comments on a feed") {
-      forOne(accountGen, accountGen, everyoneFeedGen, commentGen) { (s, a, f, c) =>
+      forOne(userGen, userGen, everyoneFeedGen, commentGen) { (s, a, f, c) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account = await(accountsRepository.create(a.accountName))
-        val accountId = account.id
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user = await(usersRepository.create(a.userName))
+        val userId = user.id
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
-        await(commentLikesRepository.create(commentId, accountId.toSessionId))
+        await(commentLikesRepository.create(commentId, userId.sessionId))
 
         // result
         assertFutureValue(feedsDAO.own(feedId, sessionId), true)
         assertFutureValue(commentsDAO.own(commentId, sessionId), true)
-        assertFutureValue(commentLikesDAO.own(commentId, accountId.toSessionId), true)
+        assertFutureValue(commentLikesDAO.own(commentId, userId.sessionId), true)
         await(feedsRepository.delete(feedId, sessionId))
         assertFutureValue(feedsDAO.own(feedId, sessionId), false)
         assertFutureValue(commentsDAO.own(commentId, sessionId), false)
-        assertFutureValue(commentLikesDAO.own(commentId, accountId.toSessionId), false)
+        assertFutureValue(commentLikesDAO.own(commentId, userId.sessionId), false)
 
       }
     }
 
     scenario("should delete tags and meidums on a feed") {
-      forOne(accountGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+      forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
         // preparing
-        val session = await(accountsRepository.create(a.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(a.userName))
+        val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -298,31 +298,31 @@ class FeedsRepositorySpec extends RepositorySpec {
       }
     }
 
-    scenario("should delete an account feeds") {
-      forOne(accountGen, accountGen, followerFeedGen) { (s, a, f) =>
+    scenario("should delete an user feeds") {
+      forOne(userGen, userGen, followerFeedGen) { (s, a, f) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
-        val account = await(accountsRepository.create(a.accountName))
-        val accountId = account.id
-        await(followsRepository.create(sessionId.toAccountId, accountId.toSessionId))
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
+        val user = await(usersRepository.create(a.userName))
+        val userId = user.id
+        await(followsRepository.create(sessionId.userId, userId.sessionId))
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
-        assert(existsAccountFeeds(feedId, accountId))
+        assert(existsUserFeeds(feedId, userId))
         await(feedsRepository.delete(feedId, sessionId))
-        assert(!existsAccountFeeds(feedId, accountId))
+        assert(!existsUserFeeds(feedId, userId))
 
       }
     }
 
     scenario("should return exception if feed not exist") {
-      forOne(accountGen) { (s) =>
+      forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(accountsRepository.create(s.accountName))
-        val sessionId = session.id.toSessionId
+        val session = await(usersRepository.create(s.userName))
+        val sessionId = session.id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
@@ -335,19 +335,19 @@ class FeedsRepositorySpec extends RepositorySpec {
   }
 
 
-//  feature("find feeds an account posted") {
+//  feature("find feeds an user posted") {
 //
-//    scenario("should return feed list account posted") {
+//    scenario("should return feed list user posted") {
 //
 //    }
 //
-//    scenario("should return exception if an account not exist") {
+//    scenario("should return exception if an user not exist") {
 //
 //    }
 //  }
 //
-//  feature("find feeds session account posted") {
-//    scenario("should return feed list session account posted") {
+//  feature("find feeds session user posted") {
+//    scenario("should return feed list session user posted") {
 //
 //    }
 //  }

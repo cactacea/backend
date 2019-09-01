@@ -8,7 +8,7 @@ trait BlocksControllerSpec extends FeatureTest {
   self: CactaceaServerSpec =>
 
   test("GET /session/blocks") (pending)
-  test("POST /accounts/:id/blocks") (pending)
-  test("DELETE /accounts/:id/blocks") (pending)
+  test("POST /users/:id/blocks") (pending)
+  test("DELETE /users/:id/blocks") (pending)
 
 }

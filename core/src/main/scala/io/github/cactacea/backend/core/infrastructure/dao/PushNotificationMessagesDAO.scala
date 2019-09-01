@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.application.components.interfaces.DeepLin
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.PushNotificationType
 import io.github.cactacea.backend.core.domain.models.{Destination, PushNotification}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, MessageId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, MessageId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
@@ -21,9 +21,9 @@ class PushNotificationMessagesDAO @Inject()(
       case Some(m) =>
         findDestinations(id).map({ d =>
           val pt = PushNotificationType.invitation
-          val url = deepLinkService.getMessages(m.groupId, m.id)
-          val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
-            PushNotification(accountName, m.message, m.postedAt, url, destinations, pt)
+          val url = deepLinkService.getMessages(m.channelId, m.id)
+          val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
+            PushNotification(userName, m.message, m.postedAt, url, destinations, pt)
           }).toList
           Some(r)
         })
@@ -44,23 +44,23 @@ class PushNotificationMessagesDAO @Inject()(
   def findDestinations(id: MessageId): Future[List[Destination]] = {
     val q = quote {
       for {
-        am <- query[AccountMessages]
+        am <- query[UserMessages]
           .filter(am => am.messageId == lift(id) && am.notified == false)
-        g <- query[Groups]
-          .join(_.id == am.groupId)
-        a <- query[Accounts]
+        g <- query[Channels]
+          .join(_.id == am.channelId)
+        a <- query[Users]
           .join(_.id == am.by)
         d <- query[Devices]
-          .join(_.accountId == am.accountId)
+          .join(_.userId == am.userId)
           .filter(_.pushToken.isDefined)
         _ <- query[PushNotificationSettings]
-          .join(_.accountId == am.accountId)
-          .filter(p => ((p.message == true && g.directMessage == true) || (p.groupMessage == true && g.directMessage == false)))
+          .join(_.userId == am.userId)
+          .filter(p => ((p.message == true && g.directMessage == true) || (p.channelMessage == true && g.directMessage == false)))
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == am.by && r.by == am.accountId)
+          .leftJoin(r => r.userId == am.by && r.by == am.userId)
       } yield {
         Destination(
-          am.accountId,
+          am.userId,
           d.pushToken.getOrElse(""),
           r.flatMap(_.displayName).getOrElse(a.displayName),
           am.by)
@@ -78,11 +78,11 @@ class PushNotificationMessagesDAO @Inject()(
     run(q).map(_ => ())
   }
 
-  def update(messageId: MessageId, accountIds: List[AccountId]): Future[Unit] = {
+  def update(messageId: MessageId, userIds: List[UserId]): Future[Unit] = {
     val q = quote {
-      query[AccountMessages]
+      query[UserMessages]
         .filter(_.messageId == lift(messageId))
-        .filter(m => liftQuery(accountIds).contains(m.accountId))
+        .filter(m => liftQuery(userIds).contains(m.userId))
         .update(_.notified -> true)
     }
     run(q).map(_ => ())

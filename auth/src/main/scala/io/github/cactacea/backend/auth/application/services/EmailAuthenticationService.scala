@@ -11,9 +11,9 @@ import io.github.cactacea.backend.auth.enums.TokenType
 import io.github.cactacea.backend.auth.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.utils.providers.EmailsProvider
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.repositories.{AccountsRepository, AuthenticationsRepository}
+import io.github.cactacea.backend.core.domain.repositories.{UsersRepository, AuthenticationsRepository}
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.backend.core.infrastructure.validators.AccountsValidator
+import io.github.cactacea.backend.core.infrastructure.validators.UsersValidator
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
 import io.github.cactacea.filhouette.api.util.{Credentials, PasswordHasherRegistry}
@@ -24,8 +24,8 @@ import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 class EmailAuthenticationService @Inject()(
                                             db: DatabaseService,
                                             response: ResponseBuilder,
-                                            accountsValidator: AccountsValidator,
-                                            accountsRepository: AccountsRepository,
+                                            usersValidator: UsersValidator,
+                                            usersRepository: UsersRepository,
                                             authenticationsRepository: AuthenticationsRepository,
                                             authInfoRepository: AuthInfoRepository,
                                             tokensRepository: TokensRepository,
@@ -75,13 +75,13 @@ class EmailAuthenticationService @Inject()(
     }
   }
 
-  def signUp(accountName: String, token: String)(implicit request: Request): Future[Response] = {
+  def signUp(userName: String, token: String)(implicit request: Request): Future[Response] = {
     transaction {
       for {
         l <- tokensRepository.verify(token, TokenType.signUp)
-        _ <- authenticationsRepository.findAccountId(l.providerId, l.providerKey)
-        a <- accountsRepository.create(accountName)
-        _ <- authenticationsRepository.link(l.providerId, l.providerKey, a.id.toSessionId)
+        _ <- authenticationsRepository.findUserId(l.providerId, l.providerKey)
+        a <- usersRepository.create(userName)
+        _ <- authenticationsRepository.link(l.providerId, l.providerKey, a.id.sessionId)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
         r <- authenticatorService.embed(c, response.ok)
@@ -89,13 +89,13 @@ class EmailAuthenticationService @Inject()(
     }
   }
 
-  def signUp(accountName: String, password: String, token: String)(implicit request: Request): Future[Response] = {
+  def signUp(userName: String, password: String, token: String)(implicit request: Request): Future[Response] = {
     transaction {
       for {
         l <- tokensRepository.verify(token, TokenType.signUp)
         _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
-        a <- accountsRepository.create(accountName)
-        _ <- authenticationsRepository.link(l.providerId, l.providerKey, a.id.toSessionId)
+        a <- usersRepository.create(userName)
+        _ <- authenticationsRepository.link(l.providerId, l.providerKey, a.id.sessionId)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
         r <- authenticatorService.embed(c, response.ok)
@@ -116,8 +116,8 @@ class EmailAuthenticationService @Inject()(
 
   def changePassword(password: String, sessionId: SessionId): Future[Unit] = {
     for {
-      a <- accountsValidator.mustFind(sessionId)
-      _ <- db.transaction(authInfoRepository.update(LoginInfo(EmailsProvider.ID, a.accountName), passwordHasherRegistry.current.hash(password)))
+      a <- usersValidator.mustFind(sessionId)
+      _ <- db.transaction(authInfoRepository.update(LoginInfo(EmailsProvider.ID, a.displayName), passwordHasherRegistry.current.hash(password)))
     } yield (())
   }
 

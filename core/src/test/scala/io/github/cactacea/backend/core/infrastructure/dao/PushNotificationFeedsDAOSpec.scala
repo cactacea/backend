@@ -7,15 +7,15 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
   feature("find") (pending)
 //  {
 //
-//    val sessionAccount1 = createAccount("PushNotificationsDAOSPec5")
-//    val sessionAccount2 = createAccount("PushNotificationsDAOSPec6")
-//    val sessionAccount3 = createAccount("PushNotificationsDAOSPec7")
-//    val sessionAccount4 = createAccount("PushNotificationsDAOSPec8")
-//    val sessionAccount5 = createAccount("PushNotificationsDAOSPec9")
-//    val sessionAccount6 = createAccount("PushNotificationsDAOSPec10")
-//    val medium1 = createMedium(sessionAccount1.id)
-//    val medium2 = createMedium(sessionAccount1.id)
-//    val medium3 = createMedium(sessionAccount1.id)
+//    val sessionUser1 = createUser("PushNotificationsDAOSPec5")
+//    val sessionUser2 = createUser("PushNotificationsDAOSPec6")
+//    val sessionUser3 = createUser("PushNotificationsDAOSPec7")
+//    val sessionUser4 = createUser("PushNotificationsDAOSPec8")
+//    val sessionUser5 = createUser("PushNotificationsDAOSPec9")
+//    val sessionUser6 = createUser("PushNotificationsDAOSPec10")
+//    val medium1 = createMedium(sessionUser1.id)
+//    val medium2 = createMedium(sessionUser1.id)
+//    val medium3 = createMedium(sessionUser1.id)
 //    val message = "message"
 //    val mediums = List(medium1.id, medium2.id, medium3.id)
 //    val tags = List("tag1", "tag2", "tag3")
@@ -23,65 +23,65 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
 //    val contentWarning = true
 //
 //    // create feed
-//    val feedId = await(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
+//    val feedId = await(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionUser2.id.toSessionId))
 //
 //    // create follows
-//    await(followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId))
-//    await(followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId))
-//    await(followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId))
-//    await(followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId))
-//    await(followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId))
+//    await(followersDAO.create(sessionUser2.id, sessionUser1.id.toSessionId))
+//    await(followersDAO.create(sessionUser2.id, sessionUser3.id.toSessionId))
+//    await(followersDAO.create(sessionUser2.id, sessionUser4.id.toSessionId))
+//    await(followersDAO.create(sessionUser2.id, sessionUser5.id.toSessionId))
+//    await(followersDAO.create(sessionUser2.id, sessionUser6.id.toSessionId))
 //
-//    // create account feeds
-//    await(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId))
+//    // create user feeds
+//    await(userFeedsDAO.create(feedId, sessionUser2.id.toSessionId))
 //
 //    val displayName = Some("Invitation Sender Name")
 //    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
 //    val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 //
-//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount1.id.toSessionId))
-//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount3.id.toSessionId))
-//    await(pushNotificationSettingDAO.create(false,false, false, false, false, false, false, sessionAccount4.id.toSessionId))
-//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount5.id.toSessionId))
-//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionAccount6.id.toSessionId))
+//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser1.id.toSessionId))
+//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser3.id.toSessionId))
+//    await(pushNotificationSettingDAO.create(false,false, false, false, false, false, false, sessionUser4.id.toSessionId))
+//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser5.id.toSessionId))
+//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser6.id.toSessionId))
 //
-//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount1.id.toSessionId))
-//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount3.id.toSessionId))
-//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount4.id.toSessionId))
-//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount5.id.toSessionId))
-//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionAccount6.id.toSessionId))
+//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionUser1.id.toSessionId))
+//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionUser3.id.toSessionId))
+//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionUser4.id.toSessionId))
+//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionUser5.id.toSessionId))
+//    await(devicesDAO.create(udid, DeviceType.ios, None, sessionUser6.id.toSessionId))
 //
-//    await(devicesDAO.update(udid, pushToken, sessionAccount1.id.toSessionId))
-//    await(devicesDAO.update(udid, pushToken, sessionAccount3.id.toSessionId))
-//    await(devicesDAO.update(udid, pushToken, sessionAccount4.id.toSessionId))
-//    await(devicesDAO.update(udid, pushToken, sessionAccount5.id.toSessionId))
-//    await(devicesDAO.update(udid, pushToken, sessionAccount6.id.toSessionId))
-//    await(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount1.id.toSessionId))
-//    await(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount3.id.toSessionId))
-//    await(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount4.id.toSessionId))
-//    await(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount5.id.toSessionId))
-//    await(accountsDAO.updateDisplayName(sessionAccount2.id, displayName, sessionAccount6.id.toSessionId))
+//    await(devicesDAO.update(udid, pushToken, sessionUser1.id.toSessionId))
+//    await(devicesDAO.update(udid, pushToken, sessionUser3.id.toSessionId))
+//    await(devicesDAO.update(udid, pushToken, sessionUser4.id.toSessionId))
+//    await(devicesDAO.update(udid, pushToken, sessionUser5.id.toSessionId))
+//    await(devicesDAO.update(udid, pushToken, sessionUser6.id.toSessionId))
+//    await(usersDAO.updateDisplayName(sessionUser2.id, displayName, sessionUser1.id.toSessionId))
+//    await(usersDAO.updateDisplayName(sessionUser2.id, displayName, sessionUser3.id.toSessionId))
+//    await(usersDAO.updateDisplayName(sessionUser2.id, displayName, sessionUser4.id.toSessionId))
+//    await(usersDAO.updateDisplayName(sessionUser2.id, displayName, sessionUser5.id.toSessionId))
+//    await(usersDAO.updateDisplayName(sessionUser2.id, displayName, sessionUser6.id.toSessionId))
 //
-//    // find account feed tokens
+//    // find user feed tokens
 //    val result = await(pushNotificationFeedsDAO.find(feedId))
 //
 //    assert(result.get.head.destinations.size == 4)
 //
 //  }
 
-  feature("update account notified") (pending)
+  feature("update user notified") (pending)
 
 //  {
 //
-//    val sessionAccount1 = createAccount("AccountFeedsDAOSpec6")
-//    val sessionAccount2 = createAccount("AccountFeedsDAOSpec7")
-//    val sessionAccount3 = createAccount("AccountFeedsDAOSpec8")
-//    val sessionAccount4 = createAccount("AccountFeedsDAOSpec9")
-//    val sessionAccount5 = createAccount("AccountFeedsDAOSpec10")
-//    val sessionAccount6 = createAccount("AccountFeedsDAOSpec11")
-//    val medium1 = createMedium(sessionAccount1.id)
-//    val medium2 = createMedium(sessionAccount1.id)
-//    val medium3 = createMedium(sessionAccount1.id)
+//    val sessionUser1 = createUser("UserFeedsDAOSpec6")
+//    val sessionUser2 = createUser("UserFeedsDAOSpec7")
+//    val sessionUser3 = createUser("UserFeedsDAOSpec8")
+//    val sessionUser4 = createUser("UserFeedsDAOSpec9")
+//    val sessionUser5 = createUser("UserFeedsDAOSpec10")
+//    val sessionUser6 = createUser("UserFeedsDAOSpec11")
+//    val medium1 = createMedium(sessionUser1.id)
+//    val medium2 = createMedium(sessionUser1.id)
+//    val medium3 = createMedium(sessionUser1.id)
 //    val message = "message"
 //    val mediums = List(medium1.id, medium2.id, medium3.id)
 //    val tags = List("tag1", "tag2", "tag3")
@@ -89,35 +89,35 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
 //    val contentWarning = true
 //
 //    // create feed
-//    val feedId = await(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionAccount2.id.toSessionId))
+//    val feedId = await(feedsDAO.create(message, Some(mediums), Some(tags), privacyType, contentWarning, None, sessionUser2.id.toSessionId))
 //
 //    // create follows
 //    await(
 //      for {
-//        _ <- followersDAO.create(sessionAccount2.id, sessionAccount1.id.toSessionId)
-//        _ <- followersDAO.create(sessionAccount2.id, sessionAccount3.id.toSessionId)
-//        _ <- followersDAO.create(sessionAccount2.id, sessionAccount4.id.toSessionId)
-//        _ <- followersDAO.create(sessionAccount2.id, sessionAccount5.id.toSessionId)
-//        _ <- followersDAO.create(sessionAccount2.id, sessionAccount6.id.toSessionId)
+//        _ <- followersDAO.create(sessionUser2.id, sessionUser1.id.toSessionId)
+//        _ <- followersDAO.create(sessionUser2.id, sessionUser3.id.toSessionId)
+//        _ <- followersDAO.create(sessionUser2.id, sessionUser4.id.toSessionId)
+//        _ <- followersDAO.create(sessionUser2.id, sessionUser5.id.toSessionId)
+//        _ <- followersDAO.create(sessionUser2.id, sessionUser6.id.toSessionId)
 //      } yield (())
 //    )
 //
-//    // create account feeds
-//    await(accountFeedsDAO.create(feedId, sessionAccount2.id.toSessionId))
+//    // create user feeds
+//    await(userFeedsDAO.create(feedId, sessionUser2.id.toSessionId))
 //
 //    val ids =  List(
-//      sessionAccount1.id,
-//      sessionAccount3.id,
-//      sessionAccount4.id,
-//      sessionAccount5.id,
-//      sessionAccount6.id
+//      sessionUser1.id,
+//      sessionUser3.id,
+//      sessionUser4.id,
+//      sessionUser5.id,
+//      sessionUser6.id
 //    )
 //
 //    // update notified
 //    await(pushNotificationFeedsDAO.update(feedId, ids, true))
 //
 //    //
-//    val q = quote { query[AccountFeeds].filter(_.feedId == lift(feedId)).filter(_.notified == true).size}
+//    val q = quote { query[UserFeeds].filter(_.feedId == lift(feedId)).filter(_.notified == true).size}
 //    val result = await(db.run(q))
 //    assert(result == ids.size)
 //
@@ -128,11 +128,11 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
   feature("update notified") (pending)
 //  {
 //
-//    val sessionAccount = createAccount("FeedsDAOSpec23")
+//    val sessionUser = createUser("FeedsDAOSpec23")
 //
-//    val medium1 = createMedium(sessionAccount.id)
-//    val medium2 = createMedium(sessionAccount.id)
-//    createMedium(sessionAccount.id)
+//    val medium1 = createMedium(sessionUser.id)
+//    val medium2 = createMedium(sessionUser.id)
+//    createMedium(sessionUser.id)
 //
 //    val message1 = "message1"
 //    val message2 = "message2"
@@ -157,9 +157,9 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
 //    val contentWarning3 = false
 //
 //    // create feeds
-//    val feedId1 = await(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionAccount.id.toSessionId))
-//    val feedId2 = await(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionAccount.id.toSessionId))
-//    val feedId3 = await(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionAccount.id.toSessionId))
+//    val feedId1 = await(feedsDAO.create(message1, Some(mediums1), Some(tags1), privacyType1, contentWarning1, None, sessionUser.id.toSessionId))
+//    val feedId2 = await(feedsDAO.create(message2, Some(mediums2), Some(tags2), privacyType2, contentWarning2, None, sessionUser.id.toSessionId))
+//    val feedId3 = await(feedsDAO.create(message3, Some(mediums3), Some(tags3), privacyType3, contentWarning3, None, sessionUser.id.toSessionId))
 //
 //    await(
 //      for {

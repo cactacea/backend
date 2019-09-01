@@ -2,6 +2,6 @@ package io.github.cactacea.backend.oauth
 
 import java.util.Date
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 
-case class OAuthUser(accountId: AccountId, issuedAt: Date)
+case class OAuthUser(userId: UserId, issuedAt: Date)

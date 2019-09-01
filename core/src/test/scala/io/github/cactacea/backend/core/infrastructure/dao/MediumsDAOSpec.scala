@@ -5,8 +5,8 @@ import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 class MediumsDAOSpec extends DAOSpec {
 
   feature("create and exist(mediumId: sessionId)") {
-    forAll(accountGen, mediumGen) { (a, m) =>
-      val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+    forAll(userGen, mediumGen) { (a, m) =>
+      val sessionId = await(usersDAO.create(a.userName)).sessionId
       val mediumId = await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))
       val result = await(mediumsDAO.find(mediumId, sessionId))
       assert(result.map(_.key) == Option(m.key))
@@ -20,8 +20,8 @@ class MediumsDAOSpec extends DAOSpec {
   }
 
   feature("delete and exist(mediumId: sessionId)") {
-    forAll(accountGen, mediumGen) { (a, m) =>
-      val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+    forAll(userGen, mediumGen) { (a, m) =>
+      val sessionId = await(usersDAO.create(a.userName)).sessionId
       val mediumId = await(mediumsDAO.create(
         m.key,
         m.uri,
@@ -39,8 +39,8 @@ class MediumsDAOSpec extends DAOSpec {
 
 
   feature("exist(mediumIds: sessionId)") {
-    forAll(accountGen, medium5ListGen) { (a, m) =>
-      val sessionId = await(accountsDAO.create(a.accountName)).toSessionId
+    forAll(userGen, medium5ListGen) { (a, m) =>
+      val sessionId = await(usersDAO.create(a.userName)).sessionId
       val mediumIds = m.map({ m =>
         await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))
       })

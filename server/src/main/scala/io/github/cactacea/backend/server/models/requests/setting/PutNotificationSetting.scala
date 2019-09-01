@@ -15,8 +15,8 @@ case class PutNotificationSetting(
                                    @ApiModelProperty(value = "Notice new message arrived.", required = true)
                                    message: Boolean,
 
-                                   @ApiModelProperty(value = "Notice new group message arrived.", required = true)
-                                   groupMessage: Boolean,
+                                   @ApiModelProperty(value = "Notice new channel message arrived.", required = true)
+                                   channelMessage: Boolean,
 
                                    @ApiModelProperty(value = "Notice new invitation arrived.", required = true)
                                    invitation: Boolean,

@@ -5,13 +5,13 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.dao._
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FeedsValidator, MediumsValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, FeedsValidator, MediumsValidator}
 
 
 class FeedsRepository @Inject()(
-                                 accountsValidator: AccountsValidator,
-                                 accountFeedsDAO: AccountFeedsDAO,
+                                 usersValidator: UsersValidator,
+                                 userFeedsDAO: UserFeedsDAO,
                                  feedsDAO: FeedsDAO,
                                  feedTagsDAO: FeedTagsDAO,
                                  feedMediumsDAO: FeedMediumsDAO,
@@ -35,7 +35,7 @@ class FeedsRepository @Inject()(
       i <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
       _ <- feedTagsDAO.create(i, tags)
       _ <- feedMediumsDAO.create(i, mediumIds)
-      _ <- accountFeedsDAO.create(i, sessionId)
+      _ <- userFeedsDAO.create(i, sessionId)
       _ <- notificationsDAO.create(i, sessionId)
     } yield (i)
   }
@@ -68,15 +68,15 @@ class FeedsRepository @Inject()(
     } yield (())
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
-      _ <- accountsValidator.mustExist(accountId, sessionId)
-      r <- feedsDAO.find(accountId, since, offset, count, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      r <- feedsDAO.find(userId, since, offset, count, sessionId)
     } yield (r)
   }
 
   def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
-    accountFeedsDAO.find(since, offset, count, privacyType, sessionId)
+    userFeedsDAO.find(since, offset, count, privacyType, sessionId)
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {

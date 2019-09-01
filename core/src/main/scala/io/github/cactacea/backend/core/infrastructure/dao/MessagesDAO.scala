@@ -8,20 +8,20 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class MessagesDAO @Inject()(db: DatabaseService, groupsDAO: GroupsDAO) {
+class MessagesDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(groupId: GroupId, messageType: MessageType, accountCount: Long, sessionId: SessionId): Future[MessageId] = {
-    val by = sessionId.toAccountId
+  def create(channelId: ChannelId, messageType: MessageType, userCount: Long, sessionId: SessionId): Future[MessageId] = {
+    val by = sessionId.userId
     val postedAt = System.currentTimeMillis()
     val mt = messageType
     val q = quote {
       query[Messages].insert(
         _.by                  -> lift(by),
-        _.groupId             -> lift(groupId),
+        _.channelId             -> lift(channelId),
         _.messageType         -> lift(mt),
-        _.accountCount        -> lift(accountCount),
+        _.userCount        -> lift(userCount),
         _.readCount           -> 0L,
         _.contentWarning      -> false,
         _.contentStatus       -> lift(ContentStatusType.unchecked),
@@ -32,28 +32,28 @@ class MessagesDAO @Inject()(db: DatabaseService, groupsDAO: GroupsDAO) {
     run(q)
   }
 
-  def create(groupId: GroupId, message: String, accountCount: Long, sessionId: SessionId): Future[MessageId] = {
-    create(groupId, Option(message), None, accountCount, sessionId)
+  def create(channelId: ChannelId, message: String, userCount: Long, sessionId: SessionId): Future[MessageId] = {
+    create(channelId, Option(message), None, userCount, sessionId)
   }
 
-  def create(groupId: GroupId, mediumId: MediumId, accountCount: Long, sessionId: SessionId): Future[MessageId] = {
-    create(groupId, None, Option(mediumId), accountCount, sessionId)
+  def create(channelId: ChannelId, mediumId: MediumId, userCount: Long, sessionId: SessionId): Future[MessageId] = {
+    create(channelId, None, Option(mediumId), userCount, sessionId)
   }
 
-  private def create(groupId: GroupId, message: Option[String], mediumId: Option[MediumId], accountCount: Long, sessionId: SessionId): Future[MessageId] = {
+  private def create(channelId: ChannelId, message: Option[String], mediumId: Option[MediumId], userCount: Long, sessionId: SessionId): Future[MessageId] = {
     for {
-      (id, postedAt) <- insertMessages(groupId, message, accountCount, mediumId, sessionId)
-      _ <- updateLatestMessage(groupId, id, postedAt)
+      (id, postedAt) <- insertMessages(channelId, message, userCount, mediumId, sessionId)
+      _ <- updateLatestMessage(channelId, id, postedAt)
     } yield (id)
   }
 
-  private def insertMessages(groupId: GroupId,
-                     message: Option[String],
-                     accountCount: Long,
-                     mediumId: Option[MediumId],
-                     sessionId: SessionId): Future[(MessageId, Long)] = {
+  private def insertMessages(channelId: ChannelId,
+                             message: Option[String],
+                             userCount: Long,
+                             mediumId: Option[MediumId],
+                             sessionId: SessionId): Future[(MessageId, Long)] = {
 
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val postedAt = System.currentTimeMillis()
     val mt = if (message.isDefined) {
       MessageType.text
@@ -63,10 +63,10 @@ class MessagesDAO @Inject()(db: DatabaseService, groupsDAO: GroupsDAO) {
     val q = quote {
       query[Messages].insert(
         _.by                  -> lift(by),
-        _.groupId             -> lift(groupId),
+        _.channelId             -> lift(channelId),
         _.messageType         -> lift(mt),
         _.message             -> lift(message),
-        _.accountCount        -> lift(accountCount),
+        _.userCount        -> lift(userCount),
         _.readCount           -> 0L,
         _.mediumId            -> lift(mediumId),
         _.contentWarning      -> false,
@@ -87,12 +87,12 @@ class MessagesDAO @Inject()(db: DatabaseService, groupsDAO: GroupsDAO) {
     run(q).map(_ == messageIds.size)
   }
 
-  private def updateLatestMessage(groupId: GroupId, messageId: MessageId, postedAt: Long): Future[Unit] = {
+  private def updateLatestMessage(channelId: ChannelId, messageId: MessageId, postedAt: Long): Future[Unit] = {
     val messageIdOpt = Option(messageId)
     val lastPostedAtOpt = Option(postedAt)
     val q = quote {
-      query[Groups]
-        .filter(_.id == lift(groupId))
+      query[Channels]
+        .filter(_.id == lift(channelId))
         .update(
           _.messageId     -> lift(messageIdOpt),
           _.lastPostedAt  -> lift(lastPostedAtOpt)

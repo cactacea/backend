@@ -22,8 +22,8 @@ class PushNotificationInvitationsDAO @Inject()(
         findDestinations(id).map({ d =>
           val pt = PushNotificationType.invitation
           val url = deepLinkService.getInvitation(id)
-          val r = d.groupBy(_.accountName).map({ case (accountName, destinations) =>
-            PushNotification(accountName, None, f.invitedAt, url, destinations, pt)
+          val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
+            PushNotification(userName, None, f.invitedAt, url, destinations, pt)
           }).toList
           Option(r)
         })
@@ -47,19 +47,19 @@ class PushNotificationInvitationsDAO @Inject()(
         g <- query[Invitations]
           .filter(_.id == lift(id))
           .filter(_.notified == lift(false))
-        a <- query[Accounts]
+        a <- query[Users]
           .join(_.id == g.by)
         d <- query[Devices]
-          .join(_.accountId == g.accountId)
+          .join(_.userId == g.userId)
           .filter(_.pushToken.isDefined)
         _ <- query[PushNotificationSettings]
-          .join(_.accountId == g.accountId)
+          .join(_.userId == g.userId)
           .filter(_.invitation == lift(true))
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == g.by && r.by == g.accountId)
+          .leftJoin(r => r.userId == g.by && r.by == g.userId)
       } yield {
         Destination(
-          g.accountId,
+          g.userId,
           d.pushToken.getOrElse(""),
           r.flatMap(_.displayName).getOrElse(a.displayName),
           g.by)

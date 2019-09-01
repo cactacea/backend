@@ -1,19 +1,19 @@
 package io.github.cactacea.backend.core.domain.models
 
-import io.github.cactacea.backend.core.domain.enums.{AccountStatusType, ContentStatusType, MessageType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{GroupId, MessageId}
+import io.github.cactacea.backend.core.domain.enums.{UserStatusType, ContentStatusType, MessageType}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, MessageId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 case class Message(
                     id: MessageId,
-                    groupId: GroupId,
+                    channelId: ChannelId,
                     messageType: MessageType,
                     message: Option[String],
                     medium: Option[Medium],
-                    account: Account,
+                    user: User,
                     unread: Boolean,
-                    accountCount: Long,
-                    readAccountCount: Long,
+                    userCount: Long,
+                    readUserCount: Long,
                     warning: Boolean,
                     rejected: Boolean,
                     postedAt: Long,
@@ -22,20 +22,20 @@ case class Message(
 
 object Message {
 
-  def apply(m: Messages, am: AccountMessages, i: Option[Mediums], a: Accounts, r: Option[Relationships], next: Long): Message = {
-    val rejected = (m.contentStatus == ContentStatusType.rejected) || (a.accountStatus != AccountStatusType.normally)
+  def apply(m: Messages, am: UserMessages, i: Option[Mediums], a: Users, r: Option[Relationships], next: Long): Message = {
+    val rejected = (m.contentStatus == ContentStatusType.rejected) || (a.userStatus != UserStatusType.normally)
     rejected match {
       case true =>
         Message(
           id                = m.id,
-          groupId           = m.groupId,
+          channelId           = m.channelId,
           messageType       = m.messageType,
           message           = None,
           medium            = None,
-          account           = Account(a, r),
+          user           = User(a, r),
           unread            = false,
-          accountCount      = 0L,
-          readAccountCount  = 0L,
+          userCount      = 0L,
+          readUserCount  = 0L,
           warning           = false,
           rejected          = rejected,
           postedAt          = m.postedAt,
@@ -44,14 +44,14 @@ object Message {
       case false =>
         Message(
           id                = m.id,
-          groupId           = m.groupId,
+          channelId           = m.channelId,
           messageType       = m.messageType,
           message           = m.message,
           medium            = i.map(Medium(_)),
-          account           = Account(a, r),
+          user           = User(a, r),
           unread            = am.unread,
-          accountCount      = m.accountCount,
-          readAccountCount  = m.readCount,
+          userCount      = m.userCount,
+          readUserCount  = m.readCount,
           warning           = m.contentWarning,
           rejected          = rejected,
           postedAt          = m.postedAt,
