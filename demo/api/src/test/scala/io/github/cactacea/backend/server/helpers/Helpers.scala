@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.server.helpers
 
+import java.nio.file.{Files, Paths}
 import com.twitter.finagle.http.Response
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
@@ -45,7 +46,6 @@ trait Helpers extends FeatureTest
 
   def cleanUp(): Unit = {
     val localPath = storageService.localPath
-    import java.nio.file.{Files, Paths}
     val path = Paths.get(localPath)
     if (Files.exists(path)) {
       val files = Files.list(path)

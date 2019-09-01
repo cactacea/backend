@@ -31,13 +31,17 @@ public enum MessageType {
         return value;
     }
 
-    public static final List<MessageType> all = Collections.unmodifiableList(new ArrayList<MessageType>() {{
-        add(text);
-        add(medium);
-        add(stamp);
-        add(invited);
-        add(joined);
-        add(left);
-    }} );
+    public static final List<MessageType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<MessageType>() {{
+            add(text);
+            add(medium);
+            add(stamp);
+            add(invited);
+            add(joined);
+            add(left);
+        }} );
+    }
 
 }

@@ -27,9 +27,13 @@ public enum ChannelAuthorityType {
         return value;
     }
 
-    public static final List<ChannelAuthorityType> all = Collections.unmodifiableList(new ArrayList<ChannelAuthorityType>() {{
-        add(organizer);
-        add(member);
-    }} );
+    public static final List<ChannelAuthorityType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ChannelAuthorityType>() {{
+            add(organizer);
+            add(member);
+        }} );
+    }
 
 }

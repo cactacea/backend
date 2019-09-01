@@ -28,10 +28,14 @@ public enum ReportType {
         return value;
     }
 
-    public static final List<ReportType> all = Collections.unmodifiableList(new ArrayList<ReportType>() {{
-        add(none);
-        add(spam);
-        add(inappropriate);
-    }} );
+    public static final List<ReportType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ReportType>() {{
+            add(none);
+            add(spam);
+            add(inappropriate);
+        }} );
+    }
 
 }

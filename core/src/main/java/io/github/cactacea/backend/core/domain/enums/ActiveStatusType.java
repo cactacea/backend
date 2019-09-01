@@ -27,9 +27,13 @@ public enum ActiveStatusType {
         return value;
     }
 
-    public static final List<ActiveStatusType> all = Collections.unmodifiableList(new ArrayList<ActiveStatusType>() {{
-        add(active);
-        add(inactive);
-    }} );
+    public static final List<ActiveStatusType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ActiveStatusType>() {{
+            add(active);
+            add(inactive);
+        }} );
+    }
 
 }

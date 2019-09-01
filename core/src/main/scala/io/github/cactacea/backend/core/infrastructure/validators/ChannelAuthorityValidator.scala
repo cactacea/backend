@@ -97,18 +97,23 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
     val follow = r.fold(false)(_.follow)
     val follower = r.fold(false)(_.isFollower)
     val friend = r.fold(false)(_.isFriend)
+
+
     if (g.by.sessionId == sessionId) {
       Future.Unit
-    } else if (g.privacyType == ChannelPrivacyType.follows && (follow || friend)) {
-      Future.Unit
-    } else if (g.privacyType == ChannelPrivacyType.followers && (follower || friend)) {
-      Future.Unit
-    } else if (g.privacyType == ChannelPrivacyType.friends && friend) {
-      Future.Unit
-    } else if (g.privacyType == ChannelPrivacyType.everyone) {
-      Future.Unit
     } else {
-      Future.exception(CactaceaException(AuthorityNotFound))
+      g.privacyType match {
+        case ChannelPrivacyType.follows if (follow || friend) =>
+          Future.Unit
+        case ChannelPrivacyType.followers if (follower || friend) =>
+          Future.Unit
+        case ChannelPrivacyType.friends if friend =>
+          Future.Unit
+        case ChannelPrivacyType.everyone =>
+          Future.Unit
+        case _ =>
+          Future.exception(CactaceaException(AuthorityNotFound))
+      }
     }
   }
 

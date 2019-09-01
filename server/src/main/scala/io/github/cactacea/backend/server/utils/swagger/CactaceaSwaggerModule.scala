@@ -6,6 +6,8 @@ import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.finagger.{CactaceaSwagger, SwaggerModule}
 import io.swagger.models._
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In}
+import io.swagger.models.ModelImpl
+import io.swagger.models.properties.{LongProperty, StringProperty}
 
 object CactaceaSwaggerModule extends SwaggerModule {
 
@@ -53,8 +55,6 @@ object CactaceaSwaggerModule extends SwaggerModule {
   }
 
   def errorResponseScheme(name: String): ModelImpl = {
-    import io.swagger.models.ModelImpl
-    import io.swagger.models.properties.{LongProperty, StringProperty}
 
     val code = new LongProperty().description("code")
     val message = new StringProperty().description("message")

@@ -28,10 +28,14 @@ public enum ContentStatusType {
         return value;
     }
 
-    public static final List<ContentStatusType> all = Collections.unmodifiableList(new ArrayList<ContentStatusType>() {{
-        add(unchecked);
-        add(accepted);
-        add(rejected);
-    }} );
+    public static final List<ContentStatusType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ContentStatusType>() {{
+            add(unchecked);
+            add(accepted);
+            add(rejected);
+        }} );
+    }
 
 }

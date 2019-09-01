@@ -78,7 +78,7 @@ class UserFeedsDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
             .leftJoin(r => r.userId == f.by && r.by == lift(by))
       } yield (af, f, l, i1, i2, i3, i4, i5, a, r, flb, fcb))
-        .sortBy(_._1.feedId)(Ord.desc)
+        .sortBy({ case (af, _, _, _, _, _, _, _, _, _, _, _) => af.feedId })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }

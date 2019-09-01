@@ -31,13 +31,17 @@ public enum NotificationType {
         return value;
     }
 
-    public static final List<NotificationType> all = Collections.unmodifiableList(new ArrayList<NotificationType>() {{
-        add(operator);
-        add(invitation);
-        add(friendRequest);
-        add(feed);
-        add(feedReply);
-        add(commentReply);
-    }} );
+    public static final List<NotificationType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<NotificationType>() {{
+            add(operator);
+            add(invitation);
+            add(friendRequest);
+            add(feed);
+            add(feedReply);
+            add(commentReply);
+        }} );
+    }
 
 }

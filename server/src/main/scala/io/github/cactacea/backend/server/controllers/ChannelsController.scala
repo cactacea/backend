@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Channel
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.server.models.requests.channel.{DeleteChannel, DeleteHideChannel, GetChannel, GetChannelUsers, PostChannel, PostChannelReport, PostHideChannel, PostJoinChannel, PostLeaveChannel, PutChannel}
+import io.github.cactacea.backend.server.models.requests.channel._
 import io.github.cactacea.backend.server.models.responses.ChannelCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
