@@ -33,15 +33,19 @@ public enum PushNotificationType {
         return value;
     }
 
-    public static final List<PushNotificationType> all = Collections.unmodifiableList(new ArrayList<PushNotificationType>() {{
-        add(message);
-        add(nonDisplay);
-        add(image);
-        add(invitation);
-        add(request);
-        add(feed);
-        add(feedReply);
-        add(commentReply);
-    }} );
+    public static final List<PushNotificationType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<PushNotificationType>() {{
+            add(message);
+            add(nonDisplay);
+            add(image);
+            add(invitation);
+            add(request);
+            add(feed);
+            add(feedReply);
+            add(commentReply);
+        }} );
+    }
 
 }

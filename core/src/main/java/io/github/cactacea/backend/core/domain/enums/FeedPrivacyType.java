@@ -29,11 +29,15 @@ public enum FeedPrivacyType {
         return value;
     }
 
-    public static final List<FeedPrivacyType> all = Collections.unmodifiableList(new ArrayList<FeedPrivacyType>() {{
-        add(everyone);
-        add(followers);
-        add(friends);
-        add(self);
-    }} );
+    public static final List<FeedPrivacyType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<FeedPrivacyType>() {{
+            add(everyone);
+            add(followers);
+            add(friends);
+            add(self);
+        }} );
+    }
 
 }

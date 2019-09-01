@@ -28,10 +28,14 @@ public enum DeviceType {
         return value;
     }
 
-    public static final List<DeviceType> all = Collections.unmodifiableList(new ArrayList<DeviceType>() {{
-        add(ios);
-        add(android);
-        add(web);
-    }} );
+    public static final List<DeviceType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<DeviceType>() {{
+            add(ios);
+            add(android);
+            add(web);
+        }} );
+    }
 
 }

@@ -29,12 +29,16 @@ public enum ChannelPrivacyType {
         return value;
     }
 
-    public static final List<ChannelPrivacyType> all = Collections.unmodifiableList(new ArrayList<ChannelPrivacyType>() {{
-        add(everyone);
-        add(follows);
-        add(followers);
-        add(friends);
-    }} );
+    public static final List<ChannelPrivacyType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ChannelPrivacyType>() {{
+            add(everyone);
+            add(follows);
+            add(followers);
+            add(friends);
+        }} );
+    }
 
 }
 

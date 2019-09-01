@@ -11,15 +11,17 @@ trait CommonHelper {
       "Version/11.0 Mobile/15E148 Safari/604.1"
 
   def headers(): Map[String, String] = {
+    val (_, s) = Config.auth.keys.all.head
     Map(
-      Config.auth.headerNames.apiKey -> Config.auth.keys.all.head._2,
+      Config.auth.headerNames.apiKey -> s,
       "User-Agent" -> agent
     )
   }
 
   def headers(accessToken: String): Map[String, String] = {
+    val (_, s) = Config.auth.keys.all.head
     Map(
-      Config.auth.headerNames.apiKey -> Config.auth.keys.all.head._2,
+      Config.auth.headerNames.apiKey -> s,
       Config.auth.headerNames.authorizationKey -> accessToken,
       "User-Agent" -> agent,
     )

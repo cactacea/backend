@@ -27,10 +27,14 @@ public enum MediumType {
         return value;
     }
 
-    public static final List<MediumType> all = Collections.unmodifiableList(new ArrayList<MediumType>() {{
-        add(image);
-        add(movie);
-    }} );
+    public static final List<MediumType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<MediumType>() {{
+            add(image);
+            add(movie);
+        }});
+    }
 
 }
 

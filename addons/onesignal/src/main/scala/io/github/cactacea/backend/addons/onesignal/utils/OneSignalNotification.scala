@@ -93,6 +93,7 @@ case class OneSignalNotification(
 
 object OneSignalNotification {
 
+  // scalastyle:ignore
   def apply(appId: String, includePlayerIds: List[String], en: String, ja: String, url: String): OneSignalNotification = {
     val contents = OneSignalNotificationContent(en = Option(en), ja = Option(ja))
     OneSignalNotification(

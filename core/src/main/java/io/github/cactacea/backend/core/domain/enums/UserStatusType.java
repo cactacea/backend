@@ -28,10 +28,14 @@ public enum UserStatusType {
         return value;
     }
 
-    public static final List<UserStatusType> all = Collections.unmodifiableList(new ArrayList<UserStatusType>() {{
-        add(normally);
-        add(deleted);
-        add(terminated);
-    }} );
+    public static final List<UserStatusType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<UserStatusType>() {{
+            add(normally);
+            add(deleted);
+            add(terminated);
+        }} );
+    }
 
 }

@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.core.application.components.services
 
+import java.util.concurrent.LinkedBlockingQueue
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.{MobilePushService, QueueService}
@@ -7,8 +8,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 
 class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extends QueueService {
-
-  import java.util.concurrent.LinkedBlockingQueue
 
   private val queue = new LinkedBlockingQueue[Queue]()
   private val receiver = new Receiver(queue, mobilePushService)
