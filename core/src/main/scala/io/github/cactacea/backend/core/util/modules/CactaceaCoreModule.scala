@@ -4,7 +4,7 @@ import com.twitter.inject.TwitterModule
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.repositories.{UserChannelRepository, UsersRepository, AuthenticationsRepository, BlocksRepository, CommentLikesRepository, CommentsRepository, DevicesRepository, FeedLikesRepository, FeedsRepository, FollowersRepository, FollowsRepository, FriendRequestsRepository, FriendsRepository, ChannelUsersRepository, InvitationsRepository, ChannelsRepository, MediumsRepository, MessagesRepository, MutesRepository, NotificationsRepository, PushNotificationCommentsRepository, PushNotificationFeedsRepository, PushNotificationFriendRequestsRepository, PushNotificationInvitationsRepository, PushNotificationMessagesRepository, PushNotificationSettingsRepository}
 
-object CoreModule extends TwitterModule {
+object CactaceaCoreModule extends TwitterModule {
 
   def configureRepository(): Unit = {
     bindSingleton[UserChannelRepository]

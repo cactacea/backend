@@ -6,7 +6,7 @@ import com.twitter.finatra.http.internal.routing.Route
 import io.github.cactacea.finagger.FinatraSwagger
 import io.swagger.models.{Operation, Swagger}
 
-private class SwaggerRouteDSLWapper(protected override val dsl: RouteDSL)(implicit protected val swagger: Swagger) extends SwaggerRouteDSL
+private class SwaggerRouteDSLWrapper(protected override val dsl: RouteDSL)(implicit protected val swagger: Swagger) extends SwaggerRouteDSL
 
 trait SwaggerRouteDSL extends RouteDSL {
   self =>
@@ -91,5 +91,5 @@ trait SwaggerRouteDSL extends RouteDSL {
  * To work around the accessibility of RouteDSL, this class is in "com.twitter.finatra.http" package
  */
 object SwaggerRouteDSL {
-  implicit def convertToSwaggerRouteDSL(dsl: RouteDSL)(implicit swagger: Swagger): SwaggerRouteDSL = new SwaggerRouteDSLWapper(dsl)(swagger)
+  implicit def convertToSwaggerRouteDSL(dsl: RouteDSL)(implicit swagger: Swagger): SwaggerRouteDSL = new SwaggerRouteDSLWrapper(dsl)(swagger)
 }

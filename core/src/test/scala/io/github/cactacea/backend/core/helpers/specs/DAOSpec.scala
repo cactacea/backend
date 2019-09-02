@@ -6,7 +6,7 @@ import io.github.cactacea.backend.core.application.components.modules.{DatabaseM
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.infrastructure.dao.{AuthenticationsDAO, _}
 
-class DAOSpec extends SpecHelper {
+class DAOSpec extends SpecHelper with UtilHelper {
 
   override val injector =
     TestInjector(

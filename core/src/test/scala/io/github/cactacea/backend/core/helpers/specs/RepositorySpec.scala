@@ -5,15 +5,15 @@ import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.dao._
-import io.github.cactacea.backend.core.util.modules.CoreModule
+import io.github.cactacea.backend.core.util.modules.CactaceaCoreModule
 
-class RepositorySpec extends SpecHelper {
+class RepositorySpec extends SpecHelper with UtilHelper {
 
   override val injector =
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        CoreModule,
+        CactaceaCoreModule,
         DefaultChatModule,
         DefaultMessageModule,
         DefaultQueueModule,

@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.auth.application.services.AuthenticationService
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{UserTerminated, InvalidUserNameOrPassword}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{UserTerminated, UserNameOrPasswordNotMatched}
 import io.github.cactacea.backend.server.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
@@ -44,7 +44,7 @@ class SessionsController @Inject()(
         .request[GetSignIn]
         .responseWith[User](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason,
-          Some(CactaceaErrors(Seq(InvalidUserNameOrPassword, UserTerminated))))
+          Some(CactaceaErrors(Seq(UserNameOrPasswordNotMatched, UserTerminated))))
 
     } { request: GetSignIn =>
       implicit val r = request.request
