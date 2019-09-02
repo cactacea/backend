@@ -5,7 +5,7 @@ import com.twitter.util.logging.Logging
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.helpers.generators.ModelsGenerator
 import io.github.cactacea.backend.core.helpers.tests.IntegrationFeatureTest
-import io.github.cactacea.backend.core.util.modules.CoreModule
+import io.github.cactacea.backend.core.util.modules.CactaceaCoreModule
 import org.scalatest.BeforeAndAfter
 
 class ServiceSpec extends IntegrationFeatureTest
@@ -17,7 +17,7 @@ class ServiceSpec extends IntegrationFeatureTest
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        CoreModule,
+        CactaceaCoreModule,
         DefaultChatModule,
         DefaultMessageModule,
         DefaultQueueModule,

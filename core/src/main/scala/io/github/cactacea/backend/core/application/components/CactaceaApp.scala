@@ -3,9 +3,9 @@ package io.github.cactacea.backend.core.application.components
 import com.twitter.inject.TwitterModule
 import com.twitter.inject.app.App
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.modules.CoreModule
+import io.github.cactacea.backend.core.util.modules.CactaceaCoreModule
 
-trait BaseModules extends App {
+trait CactaceaApp extends App {
 
   protected  def databaseModule: TwitterModule = DatabaseModule
 
@@ -15,7 +15,7 @@ trait BaseModules extends App {
   def mobilePushModule: TwitterModule = DefaultMobilePushModule
   def storageModule: TwitterModule = DefaultStorageModule
   def deepLinkModule: TwitterModule = DefaultDeepLinkModule
-  def serviceModule: TwitterModule = CoreModule
+  def serviceModule: TwitterModule = CactaceaCoreModule
 
   addFrameworkModule(chatModule)
   addFrameworkModule(messageModule)

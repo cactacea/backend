@@ -1,29 +1,62 @@
-package io.github.cactacea.backend.server
+package com.twitter.finatra.http.benchmarks
 
+import com.twitter.finagle.Service
 import com.twitter.finagle.http.{Request, Response}
-import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
+import com.twitter.finatra.http.filters.HttpResponseFilter
+import com.twitter.finatra.http.modules._
 import com.twitter.finatra.http.routing.HttpRouter
+import com.twitter.finatra.json.FinatraObjectMapper
+import com.twitter.inject.Injector
+import com.twitter.inject.app.TestInjector
+import com.twitter.inject.internal.modules.LibraryModule
 import io.github.cactacea.backend.auth.application.components.modules.DefaultMailModule
+import io.github.cactacea.backend.core.application.components.modules._
+import io.github.cactacea.backend.core.util.modules.CactaceaCoreModule
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper}
 import io.github.cactacea.backend.server.utils.modules.{CactaceaAPIPrefixModule, CactaceaAuthenticationModule}
-import io.github.cactacea.backend.server.utils.warmups.{CactaceaDatabaseMigrationHandler, CactaceaQueueHandler}
 import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
+import org.openjdk.jmh.annotations.{Scope, State}
 
-class CactaceaServer extends BaseServer {
+/**
+  * ./sbt 'project benchmarks' 'jmh:run ControllerBenchmark'
+  */
+@State(Scope.Thread)
+abstract class ControllerBenchmark extends StdBenchAnnotations {
 
-  override val disableAdminHttpServer = false
-  override val defaultHttpPort = ":9000"
-  override val defaultAdminPort = 9001
-  override val defaultHttpServerName = "Backend Server"
+  val injector: Injector =
+    TestInjector(
+      modules = Seq(
+        new LibraryModule("finatra"),
+        ExceptionManagerModule,
+        MessageBodyModule,
+        MustacheModule,
+        DocRootModule,
+        NullStatsReceiverModule
+      ) ++
+        Seq(
+          DatabaseModule,
+          CactaceaAPIPrefixModule,
+          CactaceaAuthenticationModule,
+          CactaceaCoreModule,
+          DefaultJacksonModule,
+          DefaultChatModule,
+          DefaultDeepLinkModule,
+          DefaultMessageModule,
+          DefaultMobilePushModule,
+          DefaultQueueModule,
+          DefaultStorageModule,
+          DefaultMailModule
+        )
 
-  override def configureHttp(router: HttpRouter): Unit = {
-    super.configureHttp(router)
-    router
-      .filter[LoggingMDCFilter[Request, Response]]
-      .filter[TraceIdMDCFilter[Request, Response]]
-      .filter[CommonFilters]
+    ).create
+
+  val httpRouter: HttpRouter = injector.instance[HttpRouter]
+
+  val httpService: Service[Request, Response] =
+    httpRouter
+      .filter[HttpResponseFilter[Request]]
       .exceptionMapper[InvalidPasswordExceptionMapper]
       .exceptionMapper[IdentityNotFoundExceptionMapper]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, UsersController]
@@ -44,17 +77,16 @@ class CactaceaServer extends BaseServer {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]
       .add[CactaceaAPIKeyFilter, CorsFilter, SessionsController]
-      .add[ResourcesController]
-      .add[HealthController]
+      .services
+      .externalService
+
+  val mapper: FinatraObjectMapper = injector.instance[FinatraObjectMapper]
+
+
+  def beforeAll(): Unit = {
+
   }
 
-  addFrameworkModule(CactaceaAPIPrefixModule)
-  addFrameworkModule(CactaceaAuthenticationModule)
-  addFrameworkModule(DefaultMailModule)
-
-  override def warmup() {
-    handle[CactaceaDatabaseMigrationHandler]()
-    handle[CactaceaQueueHandler]()
-  }
-
+  beforeAll()
 }
+
