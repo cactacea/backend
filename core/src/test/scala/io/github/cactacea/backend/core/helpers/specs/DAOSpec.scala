@@ -4,7 +4,7 @@ import com.twitter.inject.app.TestInjector
 import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.modules.{DatabaseModule, DefaultDeepLinkModule, DefaultMessageModule}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.infrastructure.dao.{AuthenticationsDAO, _}
+import io.github.cactacea.backend.core.infrastructure.dao._
 
 class DAOSpec extends SpecHelper with UtilHelper {
 
@@ -24,7 +24,7 @@ class DAOSpec extends SpecHelper with UtilHelper {
   val userChannelsDAO = injector.instance[UserChannelsDAO]
   val userMessagesDAO = injector.instance[UserMessagesDAO]
   val userReportsDAO = injector.instance[UserReportsDAO]
-  val authenticationsDAO = injector.instance[AuthenticationsDAO]
+  val userAuthenticationsDAO = injector.instance[UserAuthenticationsDAO]
   val blocksDAO = injector.instance[BlocksDAO]
   val commentsDAO = injector.instance[CommentsDAO]
   val commentLikesDAO = injector.instance[CommentLikesDAO]

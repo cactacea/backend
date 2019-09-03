@@ -12,9 +12,9 @@ class FollowsRepositorySpec extends RepositorySpec {
 
     scenario("should follow an user") {
       forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, userId2.sessionId))
         await(followsRepository.create(userId2, userId3.sessionId))
         await(followsRepository.create(userId3, userId1.sessionId))
@@ -32,7 +32,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if id is same") {
       forOne(userGen) { (a1) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
         // exception occurs
         assert(intercept[CactaceaException] {
           await(followsRepository.create(userId1, userId1.sessionId))
@@ -42,7 +42,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if user not exist") {
       forOne(userGen) { (a1) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
         // exception occurs
         assert(intercept[CactaceaException] {
           await(followsRepository.create(UserId(0), userId1.sessionId))
@@ -52,8 +52,8 @@ class FollowsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if user already followed") {
       forOne(userGen, userGen) { (a1, a2) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         await(followsRepository.create(userId1, userId2.sessionId))
         // exception occurs
         assert(intercept[CactaceaException] {
@@ -68,9 +68,9 @@ class FollowsRepositorySpec extends RepositorySpec {
   feature("delete") {
     scenario("should unfollow an user") {
       forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, userId2.sessionId))
         await(followsRepository.create(userId2, userId3.sessionId))
         await(followsRepository.create(userId3, userId1.sessionId))
@@ -91,7 +91,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if id is same") {
       forOne(userGen) { (a1) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
         // exception occurs
         assert(intercept[CactaceaException] {
           await(followsRepository.delete(userId1, userId1.sessionId))
@@ -101,7 +101,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if user not exist") {
       forOne(userGen) { (a1) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
         // exception occurs
         assert(intercept[CactaceaException] {
           await(followsRepository.delete(UserId(0), userId1.sessionId))
@@ -111,8 +111,8 @@ class FollowsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if user not followed") {
       forOne(userGen, userGen) { (a1, a2) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         // exception occurs
         assert(intercept[CactaceaException] {
           await(followsRepository.delete(userId1, userId2.sessionId))
@@ -133,11 +133,11 @@ class FollowsRepositorySpec extends RepositorySpec {
         //   session user follow user2
         //   session user follow user3
         //   session user follow user4
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(h + a1.userName)).id
-        val userId2 = await(usersRepository.create(h + a2.userName)).id
-        val userId3 = await(usersRepository.create(h + a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(h + a1.userName)).id
+        val userId2 = await(createUser(h + a2.userName)).id
+        val userId3 = await(createUser(h + a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
         await(followsRepository.create(userId1, sessionId))
         await(followsRepository.create(userId2, sessionId))
         await(followsRepository.create(userId3, sessionId))
@@ -167,11 +167,11 @@ class FollowsRepositorySpec extends RepositorySpec {
         //   session user follow user2
         //   session user follow user3
         //   session user follow user4
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(h + a1.userName)).id
-        val userId2 = await(usersRepository.create(h + a2.userName)).id
-        val userId3 = await(usersRepository.create(h + a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(h + a1.userName)).id
+        val userId2 = await(createUser(h + a2.userName)).id
+        val userId3 = await(createUser(h + a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
         await(followsRepository.create(userId1, sessionId))
         await(followsRepository.create(userId2, sessionId))
         await(followsRepository.create(userId3, sessionId))
@@ -196,7 +196,7 @@ class FollowsRepositorySpec extends RepositorySpec {
 
   scenario("should return exception if an user not exist") {
       forOne(userGen) { (a1) =>
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
         // exception occurs
         assert(intercept[CactaceaException] {
           await(followsRepository.find(UserId(0), None, None, 0, 2, userId1.sessionId))

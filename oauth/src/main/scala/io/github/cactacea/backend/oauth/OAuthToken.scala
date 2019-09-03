@@ -2,10 +2,8 @@ package io.github.cactacea.backend.oauth
 
 import java.util.Date
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
-
 case class OAuthToken(
-                       userId: UserId,
+                       userName: String,
                        issuedAt: Date,
                        expiresIn: Option[Long],
                        clientId: String,

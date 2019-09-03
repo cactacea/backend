@@ -17,11 +17,11 @@ class FollowersRepositorySpec extends RepositorySpec {
         //   session user follower user2
         //   session user follower user3
         //   session user follower user4
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(h + a1.userName)).id
-        val userId2 = await(usersRepository.create(h + a2.userName)).id
-        val userId3 = await(usersRepository.create(h + a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(h + a1.userName)).id
+        val userId2 = await(createUser(h + a2.userName)).id
+        val userId3 = await(createUser(h + a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
         await(followsRepository.create(sessionId.userId, userId1.sessionId))
         await(followsRepository.create(sessionId.userId, userId2.sessionId))
         await(followsRepository.create(sessionId.userId, userId3.sessionId))
@@ -51,11 +51,11 @@ class FollowersRepositorySpec extends RepositorySpec {
         //   session user follower user2
         //   session user follower user3
         //   session user follower user4
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(h + a1.userName)).id
-        val userId2 = await(usersRepository.create(h + a2.userName)).id
-        val userId3 = await(usersRepository.create(h + a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(h + a1.userName)).id
+        val userId2 = await(createUser(h + a2.userName)).id
+        val userId3 = await(createUser(h + a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
         await(followsRepository.create(sessionId.userId, userId1.sessionId))
         await(followsRepository.create(sessionId.userId, userId2.sessionId))
         await(followsRepository.create(sessionId.userId, userId3.sessionId))

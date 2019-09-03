@@ -10,13 +10,13 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   feature("find") {
     scenario("should return blocked user list") {
-      forOne(userGen, users20ListGen) { (s, l) =>
+      forOne(userGen, user20ListGen) { (s, l) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
         val users = l.map({ a1 =>
-          val a = await(usersRepository.create(a1.userName))
+          val a = await(createUser(a1.userName))
           await(blocksRepository.create(a.id, sessionId))
           a
         }).reverse
@@ -36,9 +36,9 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
         await(blocksRepository.create(userId1, sessionId))
 
@@ -52,9 +52,9 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
         await(followsRepository.create(userId1, sessionId))
         await(followsRepository.create(sessionId.userId, userId1.sessionId))
@@ -72,9 +72,9 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
         val requestId = await(friendRequestsRepository.create(userId1, sessionId))
         await(friendRequestsRepository.accept(requestId, userId1.sessionId))
@@ -92,9 +92,9 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
         await(mutesRepository.create(userId1, sessionId))
         await(mutesRepository.create(sessionId.userId, userId1.sessionId))
@@ -112,9 +112,9 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
         await(friendRequestsRepository.create(userId1, sessionId))
         await(friendRequestsRepository.create(sessionId.userId, userId1.sessionId))
@@ -132,7 +132,7 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -147,7 +147,7 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -162,9 +162,9 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
         await(blocksRepository.create(userId1, sessionId))
 
@@ -184,9 +184,9 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
         await(blocksRepository.create(userId1, sessionId))
         await(blocksRepository.delete(userId1, sessionId))
@@ -201,7 +201,7 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -216,7 +216,7 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -231,9 +231,9 @@ class BlocksRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
 
         // result

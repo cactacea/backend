@@ -9,13 +9,15 @@ import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.Injector
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.internal.modules.LibraryModule
-import io.github.cactacea.backend.auth.application.components.modules.DefaultMailModule
+import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
+import io.github.cactacea.backend.auth.core.utils.moduels.JWTAuthenticationModule
+import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.modules.CactaceaCoreModule
+import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper}
-import io.github.cactacea.backend.server.utils.modules.{CactaceaAPIPrefixModule, CactaceaAuthenticationModule}
+import io.github.cactacea.backend.server.utils.modules.APIPrefixModule
 import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
 import org.openjdk.jmh.annotations.{Scope, State}
 
@@ -37,9 +39,9 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
       ) ++
         Seq(
           DatabaseModule,
-          CactaceaAPIPrefixModule,
-          CactaceaAuthenticationModule,
-          CactaceaCoreModule,
+          APIPrefixModule,
+          JWTAuthenticationModule,
+          DefaultCoreModule,
           DefaultJacksonModule,
           DefaultChatModule,
           DefaultDeepLinkModule,
@@ -76,7 +78,9 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FriendRequestsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, SessionsController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationPasswordController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationSessionController]
       .services
       .externalService
 

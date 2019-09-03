@@ -3,11 +3,13 @@ package io.github.cactacea.backend.server
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
-import io.github.cactacea.backend.auth.application.components.modules.DefaultMailModule
+import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
+import io.github.cactacea.backend.auth.core.utils.moduels.JWTAuthenticationModule
+import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper}
-import io.github.cactacea.backend.server.utils.modules.{CactaceaAPIPrefixModule, CactaceaAuthenticationModule}
+import io.github.cactacea.backend.server.utils.modules.APIPrefixModule
 import io.github.cactacea.backend.server.utils.warmups.{CactaceaDatabaseMigrationHandler, CactaceaQueueHandler}
 import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
 
@@ -43,13 +45,15 @@ class CactaceaServer extends BaseServer {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FriendRequestsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, SessionsController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationPasswordController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationSessionController]
       .add[ResourcesController]
       .add[HealthController]
   }
 
-  addFrameworkModule(CactaceaAPIPrefixModule)
-  addFrameworkModule(CactaceaAuthenticationModule)
+  addFrameworkModule(APIPrefixModule)
+  addFrameworkModule(JWTAuthenticationModule)
   addFrameworkModule(DefaultMailModule)
 
   override def warmup() {

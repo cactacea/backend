@@ -2,65 +2,41 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.{UserStatusType, ReportType}
+import io.github.cactacea.backend.core.domain.enums.{ReportType, UserStatusType}
 import io.github.cactacea.backend.core.domain.models.{User, UserStatus}
-import io.github.cactacea.backend.core.infrastructure.dao.{UserReportsDAO, UsersDAO, DevicesDAO, PushNotificationSettingsDAO}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, MediumId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, MediumsValidator}
+import io.github.cactacea.backend.core.infrastructure.dao.{DevicesDAO, PushNotificationSettingsDAO, UserAuthenticationsDAO, UserReportsDAO, UsersDAO}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId, UserId}
+import io.github.cactacea.backend.core.infrastructure.validators.{MediumsValidator, UsersValidator}
 
 
 class UsersRepository @Inject()(
-                                 usersDAO: UsersDAO,
                                  usersValidator: UsersValidator,
                                  devicesDAO: DevicesDAO,
+                                 usersDAO: UsersDAO,
+                                 userAuthenticationsDAO: UserAuthenticationsDAO,
                                  userReportsDAO: UserReportsDAO,
                                  mediumsValidator: MediumsValidator,
                                  notificationSettingsDAO: PushNotificationSettingsDAO
-
                                   ) {
 
-  def create(userName: String): Future[User] = {
-    for {
-      _ <- usersValidator.mustNotExist(userName)
-      i <- usersDAO.create(userName)
-      _ <- notificationSettingsDAO.create(i.sessionId)
-      a <- usersValidator.mustFind(i.sessionId)
-    } yield (a)
-  }
-
-  def create(userName: String, displayName: Option[String]): Future[User] = {
+  def create(providerId: String, providerKey: String, userName: String, displayName: Option[String]): Future[User] = {
     for {
       _ <- usersValidator.mustNotExist(userName)
       i <- usersDAO.create(userName, displayName.getOrElse(userName))
+      _ <- userAuthenticationsDAO.create(i, providerId, providerKey)
       _ <- notificationSettingsDAO.create(i.sessionId)
       a <- usersValidator.mustFind(i.sessionId)
     } yield (a)
   }
 
-  def find(sessionId: SessionId): Future[User] = {
-    usersValidator.mustFind(sessionId)
-  }
+  def updateProfile(displayName: String,
+                    web: Option[String],
+                    birthday: Option[Long],
+                    location: Option[String],
+                    bio: Option[String],
+                    sessionId: SessionId): Future[Unit] = {
 
-  // for reset password
-  def find(providerId: String, providerKey: String): Future[User] = {
-    usersValidator.mustFind(providerId, providerKey)
-  }
-
-
-  def find(userId: UserId, sessionId: SessionId): Future[User] = {
-    usersValidator.mustFind(userId, sessionId)
-  }
-
-  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
-    usersDAO.find(userName, since, offset, count, sessionId)
-  }
-
-  def isRegistered(userName: String): Future[Boolean] = {
-    usersDAO.exists(userName)
-  }
-
-  def find(sessionId: SessionId, expiresIn: Long): Future[User] = {
-    usersValidator.mustFind(sessionId, expiresIn)
+    usersDAO.updateProfile(displayName, web, birthday, location, bio, sessionId)
   }
 
   def updateUserStatus(userStatus: UserStatusType, sessionId: SessionId): Future[Unit] = {
@@ -75,16 +51,6 @@ class UsersRepository @Inject()(
     } yield (())
   }
 
-  def updateProfile(displayName: String,
-                    web: Option[String],
-                    birthday: Option[Long],
-                    location: Option[String],
-                    bio: Option[String],
-                    sessionId: SessionId): Future[Unit] = {
-
-    usersDAO.updateProfile(displayName, web, birthday, location, bio, sessionId)
-  }
-
   def updateProfileImage(profileImage: Option[MediumId], sessionId: SessionId): Future[Unit] = {
     profileImage
       .fold(usersDAO.updateProfileImageUrl(None, None, sessionId).map(_ => ())) { id =>
@@ -95,11 +61,31 @@ class UsersRepository @Inject()(
       }
   }
 
+  def find(sessionId: SessionId): Future[User] = {
+    usersValidator.mustFind(sessionId)
+  }
+
+  def find(userId: UserId, sessionId: SessionId): Future[User] = {
+    usersValidator.mustFind(userId, sessionId)
+  }
+
+  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
+    usersDAO.find(userName, since, offset, count, sessionId)
+  }
+
+  def find(providerId: String, providerKey: String, expiresIn: Long): Future[Option[User]] = {
+    usersValidator.mustFind(providerId, providerKey, expiresIn)
+  }
+
   def findActiveStatus(userId: UserId, sessionId: SessionId): Future[UserStatus] = {
     for {
       _ <- usersValidator.mustExist(userId, sessionId)
       r <- devicesDAO.findActiveStatus(userId)
     } yield (r)
+  }
+
+  def isRegistered(userName: String): Future[Boolean] = {
+    usersDAO.exists(userName)
   }
 
 

@@ -1,9 +1,9 @@
 package io.github.cactacea.backend.server.helpers
 
 import com.twitter.finagle.http.Request
+import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
 import io.github.cactacea.backend.core.helpers.generators.{StatusGenerator, ValueGenerator}
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.server.models.requests.sessions.PostSignUp
 import org.scalacheck.Gen
 
 trait RequestGenerator extends ValueGenerator with StatusGenerator {

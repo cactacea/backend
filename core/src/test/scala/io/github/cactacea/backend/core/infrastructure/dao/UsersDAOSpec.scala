@@ -243,10 +243,9 @@ class UsersDAOSpec extends DAOSpec {
 
   feature("find an authentication") {
     scenario("should return an user") {
-      forAll(userGen, authenticationGen, authenticationGen) { (s, a1, a2) =>
+      forAll(userGen, userAuthenticationGen, userAuthenticationGen) { (s, a1, a2) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
-        await(authenticationsDAO.create(a1.providerId, a1.providerKey, a1.password, a1.hasher))
-        await(authenticationsDAO.updateUserId(a1.providerId, a1.providerKey, sessionId))
+        await(userAuthenticationsDAO.create(sessionId.userId, a1.providerId, a1.providerKey))
         val result1 = await(usersDAO.find(a1.providerId, a1.providerKey))
         val result2 = await(usersDAO.find(a2.providerId, a2.providerKey))
         assert(result1.isDefined)

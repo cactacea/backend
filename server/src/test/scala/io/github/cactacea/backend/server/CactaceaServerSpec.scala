@@ -5,11 +5,12 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
+import io.github.cactacea.backend.auth.core.utils.moduels.JWTAuthenticationModule
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.helpers.generators.{Generator, ModelsGenerator, StatusGenerator}
-import io.github.cactacea.backend.core.util.modules.CactaceaCoreModule
+import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.helpers.RequestGenerator
-import io.github.cactacea.backend.server.utils.modules.{CactaceaAPIPrefixModule, CactaceaAuthenticationModule}
+import io.github.cactacea.backend.server.utils.modules.APIPrefixModule
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 @Singleton
@@ -45,9 +46,9 @@ class CactaceaServerSpec extends FeatureTest
     TestInjector(
       modules = Seq(
           DatabaseModule,
-          CactaceaAuthenticationModule,
-          CactaceaAPIPrefixModule,
-          CactaceaCoreModule,
+          JWTAuthenticationModule,
+          APIPrefixModule,
+          DefaultCoreModule,
           DefaultChatModule,
           DefaultDeepLinkModule,
           DefaultJacksonModule,

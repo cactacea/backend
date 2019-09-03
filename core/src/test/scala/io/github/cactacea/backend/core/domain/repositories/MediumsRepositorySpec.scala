@@ -10,7 +10,7 @@ class MediumsRepositorySpec extends RepositorySpec {
     forAll(userGen, mediumGen) { (a, m) =>
 
       // preparing
-      val sessionId = await(usersRepository.create(a.userName)).id.sessionId
+      val sessionId = await(createUser(a.userName)).id.sessionId
       val mediumId = await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))
 
       // result
@@ -29,7 +29,7 @@ class MediumsRepositorySpec extends RepositorySpec {
     forAll(userGen, mediumGen) { (a, m) =>
 
       // preparing
-      val sessionId = await(usersRepository.create(a.userName)).id.sessionId
+      val sessionId = await(createUser(a.userName)).id.sessionId
       val mediumId = await(mediumsRepository.create(
         m.key,
         m.uri,

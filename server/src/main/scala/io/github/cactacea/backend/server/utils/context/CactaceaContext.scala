@@ -20,25 +20,25 @@ object CactaceaContext {
   private[this] val localUser = new Local[User]
   def user: User = localUser() match {
     case Some(user) => user
-    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
+    case None => throw new CactaceaException(CactaceaErrors.UserNotRegistered)
   }
   def setUser(user: User): Unit = localUser.update(user)
   def clearId(): Unit = localUser.clear()
 
   def sessionId: SessionId = localUser() match {
     case Some(a) => a.id.sessionId
-    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
+    case None => throw new CactaceaException(CactaceaErrors.UserNotRegistered)
   }
 
   def userName: String = localUser() match {
     case Some(a) => a.userName
-    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
+    case None => throw new CactaceaException(CactaceaErrors.UserNotRegistered)
   }
 
   private[this] val localDeviceType = new Local[DeviceType]
   def deviceType: DeviceType = localDeviceType() match {
     case Some(deviceType) => deviceType
-    case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
+    case None => throw new CactaceaException(CactaceaErrors.APIKeyIsInValid)
   }
   def setDeviceType(deviceType: DeviceType): Unit = localDeviceType.update(deviceType)
   def clearDeviceType(): Unit = localDeviceType.clear()

@@ -5,16 +5,19 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.{User, UserStatus}
-import io.github.cactacea.backend.core.domain.repositories.{UsersRepository, AuthenticationsRepository}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, MediumId, SessionId}
+import io.github.cactacea.backend.core.domain.repositories.{UsersRepository}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId, UserId}
 
 class UsersService @Inject()(
                                  usersRepository: UsersRepository,
-                                 authenticationsRepository: AuthenticationsRepository,
                                  databaseService: DatabaseService
                                ) {
 
   import databaseService._
+
+  def create(providerId: String, providerKey: String, userName: String, displayName: Option[String]): Future[User] = {
+    usersRepository.create(providerId, providerKey, userName, displayName)
+  }
 
   def find(sessionId: SessionId): Future[User] = {
     usersRepository.find(sessionId)
@@ -58,12 +61,6 @@ class UsersService @Inject()(
   def updateProfileImage(profileImage: MediumId, sessionId: SessionId): Future[Unit] = {
     transaction {
       usersRepository.updateProfileImage(Some(profileImage), sessionId)
-    }
-  }
-
-  def changeUserName(providerId: String, providerKey: String, sessionId: SessionId): Future[Unit] = {
-    transaction {
-      authenticationsRepository.updateUserName(providerId, providerKey, sessionId)
     }
   }
 

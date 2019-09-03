@@ -23,15 +23,6 @@ class UsersValidator @Inject()(
     })
   }
 
-  def mustNotExist(userName: String, sessionId: SessionId): Future[Unit] = {
-    usersDAO.exists(userName, sessionId).flatMap(_ match {
-      case false =>
-        Future.Unit
-      case true =>
-        Future.exception(CactaceaException(UserAlreadyExist))
-    })
-  }
-
   def mustExist(userId: UserId): Future[Unit] = {
     usersDAO.exists(userId).flatMap(_ match {
       case true =>
@@ -80,8 +71,8 @@ class UsersValidator @Inject()(
   }
 
   // for signIn
-  def mustFind(sessionId: SessionId, expiresIn: Long): Future[User] = {
-    usersDAO.find(sessionId).flatMap( _ match {
+  def mustFind(providerId: String, providerKey: String, expiresIn: Long): Future[Option[User]] = {
+    usersDAO.find(providerId, providerKey).flatMap( _ match {
       case Some(a) =>
         if (a.userStatus == UserStatusType.terminated) {
           Future.exception(CactaceaException(UserTerminated))
@@ -90,10 +81,10 @@ class UsersValidator @Inject()(
         } else if (a.signedOutAt.map(_ < expiresIn).getOrElse(false)) {
           Future.exception(CactaceaException(SessionTimeout))
         } else {
-          Future.value(a)
+          Future.value(Option(a))
         }
       case None =>
-        Future.exception(CactaceaException(SessionNotAuthorized))
+        Future.None
     })
   }
 

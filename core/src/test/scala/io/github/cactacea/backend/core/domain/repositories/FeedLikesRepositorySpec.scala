@@ -20,10 +20,10 @@ class FeedLikesRepositorySpec extends RepositorySpec {
         //  user3 like a feed
         //  user1 block user2
         //  user2 block user3
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(blocksRepository.create(userId2, userId1.sessionId))
         await(blocksRepository.create(userId1, userId2.sessionId))
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
@@ -49,7 +49,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
       forOne(userGen) { (a1) =>
 
         // preparing
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
@@ -62,8 +62,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, feedGen) { (s, a1, f) =>
         // preparing
         //  session user create a feed
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
 
         // exception occurs
@@ -85,10 +85,10 @@ class FeedLikesRepositorySpec extends RepositorySpec {
           //  user1 like a feed
           //  user2 like a feed
           //  user3 like a feed
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId1 = await(usersRepository.create(a1.userName)).id
-          val userId2 = await(usersRepository.create(a2.userName)).id
-          val userId3 = await(usersRepository.create(a3.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId1 = await(createUser(a1.userName)).id
+          val userId2 = await(createUser(a2.userName)).id
+          val userId3 = await(createUser(a3.userName)).id
           val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
           await(feedLikesRepository.create(feedId, userId1.sessionId))
           await(feedLikesRepository.create(feedId, userId2.sessionId))
@@ -112,7 +112,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
       forOne(userGen) { (a1) =>
 
         // preparing
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
@@ -125,8 +125,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, feedGen) { (s, a1, f) =>
         // preparing
         //  session user create a feed
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
 
         // exception occurs
@@ -148,11 +148,11 @@ class FeedLikesRepositorySpec extends RepositorySpec {
         //  user2 is a friend.
         //  user3 is not a follower and a friend
         //  user4 is a follower.
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
         await(followsRepository.create(sessionId.userId, userId1.sessionId))
         await(followsRepository.create(sessionId.userId, userId4.sessionId))
         val requestId = await(friendRequestsRepository.create(userId2, sessionId))
@@ -192,7 +192,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
       forOne(userGen) { (a1) =>
 
         // preparing
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val userId1 = await(createUser(a1.userName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
@@ -210,8 +210,8 @@ class FeedLikesRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, feed20ListGen) { (s, a1, f) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
 
         val createdFeeds = f.map({ f =>
           val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, None, sessionId))
@@ -248,12 +248,12 @@ class FeedLikesRepositorySpec extends RepositorySpec {
           //  user5 like a feed
           //  user4 block user5
           //  user5 block user4
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId1 = await(usersRepository.create(a1.userName)).id
-          val userId2 = await(usersRepository.create(a2.userName)).id
-          val userId3 = await(usersRepository.create(a3.userName)).id
-          val userId4 = await(usersRepository.create(a4.userName)).id
-          val userId5 = await(usersRepository.create(a5.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId1 = await(createUser(a1.userName)).id
+          val userId2 = await(createUser(a2.userName)).id
+          val userId3 = await(createUser(a3.userName)).id
+          val userId4 = await(createUser(a4.userName)).id
+          val userId5 = await(createUser(a5.userName)).id
           await(blocksRepository.create(userId4, userId5.sessionId))
           await(blocksRepository.create(userId5, userId4.sessionId))
 
@@ -294,7 +294,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
 
         // exception occurs
         assert(intercept[CactaceaException] {

@@ -14,7 +14,7 @@ class ChannelsRepositorySpec extends RepositorySpec {
         (a, g) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // result
@@ -45,7 +45,7 @@ class ChannelsRepositorySpec extends RepositorySpec {
     scenario("should update a channel if organizer") {
       forOne(userGen, channelGen, channelGen) {
         (a, g1, g2) =>
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g1.name, g1.invitationOnly, g1.privacyType, g1.authorityType, sessionId))
           await(channelsRepository.update(channelId, g2.name, g2.invitationOnly, g2.privacyType, g2.authorityType, sessionId))
           val result = await(channelsRepository.find(channelId, sessionId))
@@ -62,8 +62,8 @@ class ChannelsRepositorySpec extends RepositorySpec {
     scenario("should return exception if channel is direct message channel") {
       forOne(userGen, userGen, channelGen) {
         (s, a, g) =>
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
           val channelId = await(userChannelsRepository.findOrCreate(userId, sessionId)).id
 
           // result
@@ -79,8 +79,8 @@ class ChannelsRepositorySpec extends RepositorySpec {
         (s, a, g1, g2) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
           val channelId = await(channelsRepository.create(g1.name, g1.invitationOnly, g1.privacyType, g2.authorityType, sessionId))
           await(userChannelsDAO.create(userId, channelId, sessionId))
 
@@ -97,8 +97,8 @@ class ChannelsRepositorySpec extends RepositorySpec {
         (s, a, g1, g2) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
           val channelId = await(channelsRepository.create(g1.name, g1.invitationOnly, g1.privacyType, g1.authorityType, sessionId))
 
           // result
@@ -117,7 +117,7 @@ class ChannelsRepositorySpec extends RepositorySpec {
         (a, g) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // result
@@ -138,7 +138,7 @@ class ChannelsRepositorySpec extends RepositorySpec {
         (a) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = ChannelId(0L)
 
           // result

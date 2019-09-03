@@ -61,7 +61,7 @@ trait Cactacea400Errors {
   final val m40008 = "API Key is invalid."
   final val m40009 = "User name already used."
   final val m40010 = "Can not specify myself."
-  final val m40011 = "Username or password not matched."
+  final val m40011 = "User not registered."
   final val m40012 = "Invalid User name or password."
   final val m40013 = "File size limit exceeded error."
   final val m40014 = "Upload media not found."
@@ -125,10 +125,10 @@ trait Cactacea400Errors {
     @ApiModelProperty(example = m40010)  override val message: String = m40010
   }
 
-//  final object PasswordNotMatched extends BadRequest {
-//    @ApiModelProperty(example = c40011)  override val code: Int =       c40011.toInt
-//    @ApiModelProperty(example = m40011)  override val message: String = m40011
-//  }
+  final object UserNotRegistered extends BadRequest {
+    @ApiModelProperty(example = c40011)  override val code: Int =       c40011.toInt
+    @ApiModelProperty(example = m40011)  override val message: String = m40011
+  }
 
   final object UserNameOrPasswordNotMatched extends BadRequest {
     @ApiModelProperty(example = c40012)  override val code: Int =       c40012.toInt

@@ -12,8 +12,8 @@ class FriendsRepositorySpec extends RepositorySpec {
 
     scenario("should delete a friend") {
       forAll(userGen, userGen) { (a1, a2) =>
-        val sessionId = await(usersRepository.create(a1.userName)).id.sessionId
-        val userId = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(a1.userName)).id.sessionId
+        val userId = await(createUser(a2.userName)).id
         val requestId = await(friendRequestsRepository.create(userId, sessionId))
         await(friendRequestsRepository.accept(requestId, userId.sessionId))
 
@@ -34,7 +34,7 @@ class FriendsRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -49,7 +49,7 @@ class FriendsRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -73,11 +73,11 @@ class FriendsRepositorySpec extends RepositorySpec {
         //   session user follow user2
         //   session user follow user3
         //   session user follow user4
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(h + a1.userName)).id
-        val userId2 = await(usersRepository.create(h + a2.userName)).id
-        val userId3 = await(usersRepository.create(h + a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(h + a1.userName)).id
+        val userId2 = await(createUser(h + a2.userName)).id
+        val userId3 = await(createUser(h + a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
         val requestId1 = await(friendRequestsRepository.create(userId1, sessionId))
         val requestId2 = await(friendRequestsRepository.create(userId2, sessionId))
         val requestId3 = await(friendRequestsRepository.create(userId3, sessionId))
@@ -111,11 +111,11 @@ class FriendsRepositorySpec extends RepositorySpec {
         //   session user follow user2
         //   session user follow user3
         //   session user follow user4
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(h + a1.userName)).id
-        val userId2 = await(usersRepository.create(h + a2.userName)).id
-        val userId3 = await(usersRepository.create(h + a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(h + a1.userName)).id
+        val userId2 = await(createUser(h + a2.userName)).id
+        val userId3 = await(createUser(h + a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
         val requestId1 = await(friendRequestsRepository.create(userId1, sessionId))
         val requestId2 = await(friendRequestsRepository.create(userId2, sessionId))
         val requestId3 = await(friendRequestsRepository.create(userId3, sessionId))
@@ -146,7 +146,7 @@ class FriendsRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -161,7 +161,7 @@ class FriendsRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result

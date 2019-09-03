@@ -77,6 +77,15 @@ case class SecuredRequestHandlerBuilder[I <: Identity, A <: Authenticator](
   }
 
   /**
+    * Creates a secured action handler builder with an authorization in place.
+    *
+    * @return A secured action handler builder with an authorization in place.
+    */
+  def apply(): SecuredRequestHandlerBuilder[I, A] = {
+    SecuredRequestHandlerBuilder[I, A](identityService, authenticatorService, requestProviders, errorHandler, None)
+  }
+
+  /**
     * Invokes the block.
     *
     * @param block   The block of code to invoke.
@@ -210,6 +219,15 @@ case class SecuredActionBuilder[I <: Identity, A <: Authenticator ](requestHandl
     */
   def apply(authorization: Authorization[I, A]): SecuredActionBuilder[I, A] = {
     SecuredActionBuilder[I, A](requestHandler(authorization))
+  }
+
+  /**
+    * Creates a secured action builder with an authorization in place.
+    *
+    * @return A secured action builder.
+    */
+  def apply(): SecuredActionBuilder[I, A] = {
+    SecuredActionBuilder[I, A](requestHandler())
   }
 
   /**

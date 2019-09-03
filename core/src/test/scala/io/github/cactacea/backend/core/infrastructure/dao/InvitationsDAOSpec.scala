@@ -92,7 +92,7 @@ class InvitationsDAOSpec extends DAOSpec {
     }
 
     scenario("should return received invitations") {
-      forOne(userGen, users20ListGen, channelGen) { (s, l, g) =>
+      forOne(userGen, user20ListGen, channelGen) { (s, l, g) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val creates = l.map({a =>
           val userId = await(usersDAO.create(a.userName))

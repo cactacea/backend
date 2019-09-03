@@ -16,7 +16,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
@@ -44,9 +44,9 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, followerFeedGen) { (s, a, f) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user = await(usersRepository.create(a.userName))
+        val user = await(createUser(a.userName))
         val userId = user.id
         await(followsRepository.create(sessionId.userId, userId.sessionId))
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -67,7 +67,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen) { (a, f) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -84,7 +84,7 @@ class FeedsRepositorySpec extends RepositorySpec {
     scenario("should update a feed") {
 
       forOne(userGen, everyoneFeedGen, everyoneFeedGen, medium5ListOptGen, medium5ListOptGen) { (a, f, f2, l, l2) =>
-        val sessionId = await(usersRepository.create(a.userName)).id.sessionId
+        val sessionId = await(createUser(a.userName)).id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -108,7 +108,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
@@ -126,7 +126,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
@@ -145,7 +145,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen) { (a, f) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
@@ -161,7 +161,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen, commentGen) { (a, f, c) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
@@ -180,9 +180,9 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, everyoneFeedGen) { (s, a, f) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user = await(usersRepository.create(a.userName))
+        val user = await(createUser(a.userName))
         val userId = user.id
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         await(feedLikesRepository.create(feedId, userId.sessionId))
@@ -201,7 +201,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen, feedReportGen) { (a, f, r) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         await(feedsRepository.report(feedId, r.reportType, r.reportContent, sessionId))
@@ -221,7 +221,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen, commentGen, commentReportGen) { (a, f, c, r) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
@@ -243,9 +243,9 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, everyoneFeedGen, commentGen) { (s, a, f, c) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user = await(usersRepository.create(a.userName))
+        val user = await(createUser(a.userName))
         val userId = user.id
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
@@ -267,7 +267,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
 
         // preparing
-        val session = await(usersRepository.create(a.userName))
+        val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val tags = f.tags.map(_.split(' ').toList)
@@ -302,9 +302,9 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, followerFeedGen) { (s, a, f) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user = await(usersRepository.create(a.userName))
+        val user = await(createUser(a.userName))
         val userId = user.id
         await(followsRepository.create(sessionId.userId, userId.sessionId))
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -321,7 +321,7 @@ class FeedsRepositorySpec extends RepositorySpec {
       forOne(userGen) { (s) =>
 
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result

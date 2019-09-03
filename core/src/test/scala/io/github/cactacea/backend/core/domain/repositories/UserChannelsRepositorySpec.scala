@@ -13,8 +13,8 @@ class UserChannelsRepositorySpec extends RepositorySpec {
         (s, a) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
 
           // result
 
@@ -35,7 +35,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
         (s) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
 
           // result
           assert(intercept[CactaceaException] {
@@ -49,8 +49,8 @@ class UserChannelsRepositorySpec extends RepositorySpec {
         (s, a) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
           await(blocksRepository.create(sessionId.userId, userId.sessionId))
 
           // result
@@ -67,7 +67,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
       forOne(userGen, channelGen, messageTextGen) {
         (a, g, m) =>
           // preparing
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           val message = await(messagesRepository.createText(channelId, m, sessionId))
 
@@ -87,8 +87,8 @@ class UserChannelsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, channelGen) {
         (s, a, g) =>
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // result
@@ -104,8 +104,8 @@ class UserChannelsRepositorySpec extends RepositorySpec {
     scenario("should return an user`s channels") {
       forOne(userGen, userGen, messageTextGen, channel20ListGen) { (s, a1, m, g) =>
 
-        val sessionId = await(usersDAO.create(s.userName)).sessionId
-        val userId1 = await(usersDAO.create(a1.userName))
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val channels = g.map({g =>
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, ChannelPrivacyType.everyone, g.authorityType, sessionId))
           await(channelUsersRepository.create(userId1, channelId, sessionId))
@@ -149,7 +149,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
       forOne(userGen, channelGen) {
         (s, g) =>
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
           await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // result
@@ -164,8 +164,8 @@ class UserChannelsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, channelGen) {
         (s, a, g) =>
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
           await(blocksRepository.create(sessionId.userId, userId.sessionId))
           await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
@@ -182,7 +182,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
     scenario("should return channels") {
       forOne(userGen, messageTextGen, channel20ListGen) { (s, m, g) =>
 
-        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val channels = g.map({g =>
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, ChannelPrivacyType.everyone, g.authorityType, sessionId))
           await(messagesRepository.createText(channelId, m, sessionId))
@@ -229,7 +229,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
         (a, g) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           await(userChannelsRepository.delete(channelId, sessionId))
           await(userChannelsRepository.show(channelId, sessionId))
@@ -244,8 +244,8 @@ class UserChannelsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, channelGen) {
         (s, a, g) =>
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // result
@@ -261,7 +261,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
         (a, g) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // result
@@ -279,7 +279,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
         (a, g) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           await(userChannelsRepository.hide(channelId, sessionId))
 
@@ -293,8 +293,8 @@ class UserChannelsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, channelGen) {
         (s, a, g) =>
           // preparing
-          val sessionId = await(usersDAO.create(s.userName)).sessionId
-          val userId = await(usersDAO.create(a.userName))
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // result
@@ -310,7 +310,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
         (a, g) =>
 
           // preparing
-          val sessionId = await(usersDAO.create(a.userName)).sessionId
+          val sessionId = await(createUser(a.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           await(userChannelsRepository.hide(channelId, sessionId))
 

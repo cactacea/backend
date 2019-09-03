@@ -5,7 +5,7 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.models.Channel
 import io.github.cactacea.backend.core.helpers.tests.IntegrationFeatureTest
 import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, CommentId, FeedId, FriendRequestId, MediumId, MessageId, SessionId, UserId}
-import io.github.cactacea.backend.core.infrastructure.models.{Channels, CommentReports, Devices, FeedMediums, FeedReports, FeedTags, FriendRequests, Invitations, Messages, UserChannels, UserFeeds, UserMessages, UserReports}
+import io.github.cactacea.backend.core.infrastructure.models.{Channels, CommentReports, Devices, FeedMediums, FeedReports, FeedTags, FriendRequests, Invitations, Messages, UserAuthentications, UserChannels, UserFeeds, UserMessages, UserReports}
 
 trait UtilHelper extends IntegrationFeatureTest {
 
@@ -144,6 +144,15 @@ trait UtilHelper extends IntegrationFeatureTest {
       .filter(_.commentId == lift(commentId))
       .filter(_.by == lift(by))
     ).map(_.headOption)
+  }
+
+  def findUserAuthentication(providerId: String, providerKey: String): Future[Option[UserAuthentications]] = {
+    val q = quote {
+      query[UserAuthentications]
+        .filter(_.providerId == lift(providerId))
+        .filter(_.providerKey == lift(providerKey))
+    }
+    db.run(q).map(_.headOption)
   }
 
 }

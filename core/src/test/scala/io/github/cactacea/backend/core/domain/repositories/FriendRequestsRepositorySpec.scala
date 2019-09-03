@@ -15,8 +15,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val friendRequestId = await(friendRequestsRepository.create(userId1, sessionId))
 
         // result
@@ -34,7 +34,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should return exception if id is same") {
       forOne(userGen) { (s) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
@@ -46,7 +46,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should return exception if user not exist") {
       forOne(userGen) { (s) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
@@ -58,8 +58,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should return exception if already requested") {
       forOne(userGen, userGen) { (s, a1) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         await(friendRequestsRepository.create(userId1, sessionId))
 
         // result
@@ -78,8 +78,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val friendRequestId = await(friendRequestsRepository.create(userId1, sessionId))
 
         // result
@@ -94,7 +94,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should return exception if id is same") {
       forOne(userGen) { (s) =>
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
 
         // result
@@ -107,7 +107,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should return exception if user not exist") {
       forOne(userGen) { (s) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
@@ -119,9 +119,9 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should return exception if not requested") {
       forOne(userGen, userGen) { (s, a1) =>
         // preparing
-        val session = await(usersRepository.create(s.userName))
+        val session = await(createUser(s.userName))
         val sessionId = session.id.sessionId
-        val user1 = await(usersRepository.create(a1.userName))
+        val user1 = await(createUser(a1.userName))
         val userId1 = user1.id
 
         // result
@@ -138,12 +138,12 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
     scenario("should return received friendRequest") {
       forOne(userGen, userGen, userGen, userGen, userGen, userGen) { (s, a1, a2, a3, a4, a5) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
-        val userId5 = await(usersRepository.create(a5.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
+        val userId5 = await(createUser(a5.userName)).id
         val id1 = await(friendRequestsRepository.create(sessionId.userId, userId1.sessionId))
         val id2 = await(friendRequestsRepository.create(sessionId.userId, userId2.sessionId))
         val id3 = await(friendRequestsRepository.create(sessionId.userId, userId3.sessionId))
@@ -168,12 +168,12 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
     scenario("should return friendRequest user send") {
       forOne(userGen, userGen, userGen, userGen, userGen, userGen) { (s, a1, a2, a3, a4, a5) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
-        val userId4 = await(usersRepository.create(a4.userName)).id
-        val userId5 = await(usersRepository.create(a5.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
+        val userId5 = await(createUser(a5.userName)).id
         val id1 = await(friendRequestsRepository.create(userId1, sessionId))
         val id2 = await(friendRequestsRepository.create(userId2, sessionId))
         val id3 = await(friendRequestsRepository.create(userId3, sessionId))
@@ -202,8 +202,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should delete a friendRequest") {
       forOne(userGen, userGen) { (s, a1) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val friendRequestId = await(friendRequestsRepository.create(userId1, sessionId))
         await(friendRequestsRepository.accept(friendRequestId, userId1.sessionId))
 
@@ -217,7 +217,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should return exception if friendRequest not exist") {
       forOne(userGen) { (s) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
 
         // result
         assert(intercept[CactaceaException] {
@@ -232,8 +232,8 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should delete a friend friendRequest") {
       forOne(userGen, userGen) { (s, a1) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val friendRequestId = await(friendRequestsRepository.create(userId1, sessionId))
         await(friendRequestsRepository.reject(friendRequestId, userId1.sessionId))
 
@@ -244,7 +244,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
     scenario("should return exception if friendRequest not exist") {
       forOne(userGen) { (s) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
 
         // result
         assert(intercept[CactaceaException] {

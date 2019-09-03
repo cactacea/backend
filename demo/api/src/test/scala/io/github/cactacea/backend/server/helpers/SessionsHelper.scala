@@ -4,9 +4,9 @@ import java.util.UUID
 
 import com.twitter.finagle.http.Request
 import com.twitter.inject.server.FeatureTest
+import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.server.models.requests.sessions.PostSignUp
 import io.github.cactacea.backend.server.{APIServerSpec, Authentication}
 
 trait SessionsHelper extends FeatureTest with CommonHelper {

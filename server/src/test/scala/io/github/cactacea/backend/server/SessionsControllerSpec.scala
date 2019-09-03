@@ -5,7 +5,7 @@ import com.twitter.finagle.http
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.httpclient.RequestBuilder
 import com.twitter.inject.server.FeatureTest
-import io.github.cactacea.backend.server.models.requests.sessions.PostSignUp
+import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
 
 @Singleton
 trait SessionsControllerSpec extends FeatureTest {

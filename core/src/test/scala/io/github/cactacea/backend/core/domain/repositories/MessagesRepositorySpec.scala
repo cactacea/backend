@@ -17,8 +17,8 @@ class MessagesRepositorySpec extends RepositorySpec {
           // preparing
           //  session user is owner
           //  userId1 is a member
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId1 = await(usersRepository.create(a1.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId1 = await(createUser(a1.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           await(channelUsersRepository.create(userId1, channelId, sessionId))
           val result = await(messagesRepository.createText(channelId, m.message.getOrElse(""), sessionId))
@@ -34,12 +34,12 @@ class MessagesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should create a user message") {
-      forOne(userGen, users20ListGen, everyoneChannelGen, textMessageGen) {
+      forOne(userGen, user20ListGen, everyoneChannelGen, textMessageGen) {
         (s, l, g, m) =>
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           val userIds = l.map({ a =>
-            val userId = await(usersRepository.create(a.userName)).id
+            val userId = await(createUser(a.userName)).id
             await(channelUsersRepository.create(userId, channelId, sessionId))
             userId
           })
@@ -59,8 +59,8 @@ class MessagesRepositorySpec extends RepositorySpec {
           // preparing
           //  session user is owner
           //  userId1 is a not member
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId1 = await(usersRepository.create(a1.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId1 = await(createUser(a1.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // should return exception by no member user
@@ -82,8 +82,8 @@ class MessagesRepositorySpec extends RepositorySpec {
           //   session create a channel
           //   user1 join the channel
           //   session create a message
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId1 = await(usersRepository.create(a1.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId1 = await(createUser(a1.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           await(channelUsersRepository.create(userId1, channelId, sessionId))
           val mediumId = await(mediumsRepository.create(i.key, i.uri, i.thumbnailUrl, i.mediumType, i.width, i.height, i.size, sessionId))
@@ -97,12 +97,12 @@ class MessagesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should create a user message") {
-      forOne(userGen, users20ListGen, everyoneChannelGen, mediumGen) {
+      forOne(userGen, user20ListGen, everyoneChannelGen, mediumGen) {
         (s, l, g, i) =>
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           val userIds = l.map({ a =>
-            val userId = await(usersRepository.create(a.userName)).id
+            val userId = await(createUser(a.userName)).id
             await(channelUsersRepository.create(userId, channelId, sessionId))
             userId
           })
@@ -124,8 +124,8 @@ class MessagesRepositorySpec extends RepositorySpec {
           // preparing
           //  session user is owner
           //  userId1 is a not member
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId1 = await(usersRepository.create(a1.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId1 = await(createUser(a1.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // should return exception by no member user
@@ -145,8 +145,8 @@ class MessagesRepositorySpec extends RepositorySpec {
           // preparing
           //  session user is owner
           //  userId1 is a not member
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId = await(usersRepository.create(a1.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a1.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           await(channelUsersRepository.create(userId, channelId, sessionId))
 
@@ -166,7 +166,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     scenario("should delete an user message") {
       forOne(userGen, channelGen, messageGen) {
         (s, g, m) =>
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           val messageId = await(messagesRepository.createText(channelId, m.message.getOrElse(""), sessionId)).id
           await(messagesRepository.delete(channelId, sessionId))
@@ -184,8 +184,8 @@ class MessagesRepositorySpec extends RepositorySpec {
         // preparing
         //  session user is owner
         //  userId is not a member
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a1.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(userId, channelId, sessionId))
 
@@ -240,12 +240,12 @@ class MessagesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should update unread count") {
-      forOne(userGen, users20ListGen, everyoneChannelGen, mediumGen) {
+      forOne(userGen, user20ListGen, everyoneChannelGen, mediumGen) {
         (s, l, g, i) =>
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           val userIds = l.map({ a =>
-            val userId = await(usersRepository.create(a.userName)).id
+            val userId = await(createUser(a.userName)).id
             await(channelUsersRepository.create(userId, channelId, sessionId))
             userId
           })
@@ -264,12 +264,12 @@ class MessagesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should update unread status") {
-      forOne(userGen, users20ListGen, everyoneChannelGen, mediumGen) {
+      forOne(userGen, user20ListGen, everyoneChannelGen, mediumGen) {
         (s, l, g, i) =>
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
           val userIds = l.map({ a =>
-            val userId = await(usersRepository.create(a.userName)).id
+            val userId = await(createUser(a.userName)).id
             await(channelUsersRepository.create(userId, channelId, sessionId))
             userId
           })
@@ -294,7 +294,7 @@ class MessagesRepositorySpec extends RepositorySpec {
         (s) =>
           // preparing
           //  session user is owner
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
 
           // should return exception by no member user
           assert(intercept[CactaceaException] {
@@ -310,8 +310,8 @@ class MessagesRepositorySpec extends RepositorySpec {
           // preparing
           //  session user is owner
           //  userId1 is a not member
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId = await(usersRepository.create(a1.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId = await(createUser(a1.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
           // should return exception by no member user

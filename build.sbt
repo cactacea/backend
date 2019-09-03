@@ -38,7 +38,7 @@ lazy val oauth = (project in file("oauth"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .dependsOn(core, auth, utils, filhouette)
+  .dependsOn(core, utils, filhouette)
 
 
 lazy val auth = (project in file("auth"))
@@ -48,7 +48,7 @@ lazy val auth = (project in file("auth"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .dependsOn(core, utils, filhouette)
+  .dependsOn(core % "test->test", utils, oauth, finagger, filhouette)
 
 
 lazy val core = (project in file("core"))
@@ -417,3 +417,4 @@ val migrationSettings = Seq(
 )
 
 addCommandAlias("flywayTest", ";flywayClean ;flywayMigrate ;test")
+addCommandAlias("benchmark", ";project benchmarks ;jmh:clean ;jmh:run -i 3 -wi 3 -f1 -t1; project root")

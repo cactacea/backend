@@ -15,9 +15,9 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should add an user to everyone channel") {
       forOne(userGen, userGen, userGen, everyoneChannelGen) { (s, a1, a2, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(channelId, userId1.sessionId))
         await(channelUsersRepository.create(channelId, userId2.sessionId))
@@ -38,10 +38,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(sessionId.userId, userId1.sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -65,10 +65,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -92,10 +92,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -117,8 +117,8 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
 
     scenario("should create a join message") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(channelId, userId.sessionId))
 
@@ -132,8 +132,8 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a1, g) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(channelId, userId1.sessionId))
 
@@ -150,10 +150,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -186,9 +186,9 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, userGen, everyoneChannelGen) { (s, a1, a2, g) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(userId1, channelId, sessionId))
         await(channelUsersRepository.create(userId2, channelId, sessionId))
@@ -209,10 +209,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(sessionId.userId, userId1.sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -236,10 +236,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -263,10 +263,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -288,8 +288,8 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
 
     scenario("should create a join message") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(userId, channelId, sessionId))
 
@@ -301,7 +301,7 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if user not exist") {
       forOne(userGen, everyoneChannelGen) { (s, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // result
@@ -315,8 +315,8 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a1, g) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(channelId, userId1.sessionId))
 
@@ -331,9 +331,9 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, userGen, organizerChannelGen) { (s, a1, a2, g) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, true, ChannelPrivacyType.everyone, g.authorityType, sessionId))
         await(channelUsersRepository.create(userId1, channelId, sessionId))
 
@@ -354,9 +354,9 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should delete an user channel") {
       forOne(userGen, userGen, userGen, everyoneChannelGen) { (s, a1, a2, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(channelId, userId1.sessionId))
         await(channelUsersRepository.create(channelId, userId2.sessionId))
@@ -376,9 +376,9 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should delete a channel if user less count equal 0") {
       forOne(userGen, userGen, userGen, everyoneChannelGen) { (s, a1, a2, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
         await(invitationsRepository.create(userId1, channelId, sessionId))
         await(invitationsRepository.create(userId2, channelId, sessionId))
@@ -400,8 +400,8 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should exception if session user not joined") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a1, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
 
         // result
@@ -415,8 +415,8 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should exception if organizer and member user not only one") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a1, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(userId1, channelId, sessionId))
 
@@ -436,9 +436,9 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should delete an user channel") {
       forOne(userGen, userGen, userGen, everyoneChannelGen) { (s, a1, a2, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
         await(channelUsersRepository.create(channelId, userId1.sessionId))
         await(channelUsersRepository.create(channelId, userId2.sessionId))
@@ -458,9 +458,9 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should delete a channel if user less count equal 0") {
       forOne(userGen, userGen, userGen, everyoneChannelGen) { (s, a1, a2, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, ChannelAuthorityType.member, sessionId))
         await(invitationsRepository.create(userId1, channelId, sessionId))
         await(invitationsRepository.create(userId2, channelId, sessionId))
@@ -482,8 +482,8 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should exception if session user not joined") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a1, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
 
         // result
@@ -497,8 +497,8 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     scenario("should exception if organizer and member user not only one") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a1, g) =>
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a1.userName)).id
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, ChannelAuthorityType.member, sessionId))
         await(channelUsersRepository.create(userId, channelId, sessionId))
 
@@ -514,9 +514,9 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, userGen, organizerChannelGen) { (s, a1, a2, g) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, true, ChannelPrivacyType.everyone, g.authorityType, sessionId))
         await(channelUsersRepository.create(userId1, channelId, sessionId))
         await(channelUsersRepository.create(userId2, channelId, sessionId))
@@ -533,11 +533,11 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
   feature("find") {
     
     scenario("should return user list") {
-      forOne(userGen, users20ListGen, everyoneChannelGen) { (s, l, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+      forOne(userGen, user20ListGen, everyoneChannelGen) { (s, l, g) =>
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val userIds = l.map({ a =>
-          val userId = await(usersRepository.create(a.userName)).id
+          val userId = await(createUser(a.userName)).id
           await(channelUsersRepository.create(userId, channelId, sessionId))
           userId
         }).reverse
@@ -574,10 +574,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(sessionId.userId, userId1.sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -601,10 +601,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))
@@ -628,10 +628,10 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         //   user1 is follow user
         //   user3 is friend user
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(followsRepository.create(userId1, sessionId))
         val requestId = await(friendRequestsRepository.create(userId3, sessionId))
         await(friendRequestsRepository.accept(requestId, userId3.sessionId))

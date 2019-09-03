@@ -12,8 +12,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should create a invitation") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val id = await(invitationsRepository.create(userId, channelId, sessionId))
         val result = await(invitationsDAO.find(userId, id))
@@ -23,8 +23,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if already requested") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -37,7 +37,7 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if id is same") {
       forOne(userGen, everyoneChannelGen) { (s, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -49,7 +49,7 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if user not exist") {
       forOne(userGen, everyoneChannelGen) { (s, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -61,8 +61,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if channel not exist") {
       forOne(userGen, userGen) { (s, a) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
@@ -74,8 +74,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should create a invitation if friend") {
       forOne(userGen, userGen, friendChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val requestId = await(friendRequestsRepository.create(userId, sessionId))
         await(friendRequestsRepository.accept(requestId, userId.sessionId))
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
@@ -88,8 +88,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should create a invitation if follower") {
       forOne(userGen, userGen, followerChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         await(followsRepository.create(sessionId.userId, userId.sessionId))
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val invitationId = await(invitationsRepository.create(userId, channelId, sessionId))
@@ -101,8 +101,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should create a invitation if follow") {
       forOne(userGen, userGen, followChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         await(followsRepository.create(userId, sessionId))
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val invitationId = await(invitationsRepository.create(userId, channelId, sessionId))
@@ -116,8 +116,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if invite not friend user") {
       forOne(userGen, userGen, friendChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -129,8 +129,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if invite not follower user") {
       forOne(userGen, userGen, followerChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -142,8 +142,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if invite not follow user") {
       forOne(userGen, userGen, followChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -155,9 +155,9 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if member authority not exist") {
       forOne(userGen, userGen, userGen, memberChannelGen) { (s, a1, a2, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -169,9 +169,9 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if organizer authority not exist") {
       forOne(userGen, userGen, userGen, organizerChannelGen) { (s, a1, a2, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val invitationId = await(invitationsRepository.create(userId2, channelId, sessionId))
         await(invitationsRepository.accept(invitationId, userId2.sessionId))
@@ -186,9 +186,9 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if channel is direct message") {
       forOne(userGen, userGen, userGen) { (s, a1, a2) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val channelId = await(userChannelsRepository.findOrCreate(userId1, sessionId)).id
 
         // exception occurs
@@ -204,13 +204,10 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
   feature("delete") {
 
-    scenario("authority type is member") (pending)
-    scenario("authority type is organizer") (pending)
-
     scenario("should delete a invitation") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val invitationId = await(invitationsRepository.create(userId, channelId, sessionId))
         await(invitationsRepository.delete(userId, channelId, sessionId))
@@ -221,7 +218,7 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if id is same") {
       forOne(userGen, everyoneChannelGen) { (s, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -233,7 +230,7 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if user not exist") {
       forOne(userGen, everyoneChannelGen) { (s, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
@@ -245,8 +242,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if channel not exist") {
       forOne(userGen, userGen) { (s, a) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
@@ -259,10 +256,10 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
   feature("find") {
     scenario("should return received invitations") {
-      forOne(userGen, users20ListGen, everyoneChannelGen) { (s, l, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+      forOne(userGen, user20ListGen, everyoneChannelGen) { (s, l, g) =>
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val creates = l.map({a =>
-          val userId = await(usersRepository.create(a.userName)).id
+          val userId = await(createUser(a.userName)).id
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, userId.sessionId))
           val id = await(invitationsRepository.create(sessionId.userId, channelId, userId.sessionId))
           (id, a.copy(id = userId))
@@ -293,8 +290,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should accept a invitation") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val invitationId = await(invitationsRepository.create(userId, channelId, sessionId))
         await(invitationsRepository.accept(invitationId, userId.sessionId))
@@ -309,7 +306,7 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if an invitation not exist") {
       forOne(userGen) { (a) =>
-        val userId = await(usersRepository.create(a.userName)).id
+        val userId = await(createUser(a.userName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {
@@ -324,8 +321,8 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should delete a friend friendRequest") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a, g) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val invitationId = await(invitationsRepository.create(userId, channelId, sessionId))
         await(invitationsRepository.reject(invitationId, userId.sessionId))
@@ -338,7 +335,7 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if friendRequest not exist") {
       forOne(userGen) { (a) =>
-        val userId = await(usersRepository.create(a.userName)).id
+        val userId = await(createUser(a.userName)).id
 
         // exception occurs
         assert(intercept[CactaceaException] {

@@ -5,7 +5,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums._
 import io.github.cactacea.backend.core.domain.models.User
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId, UserId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
@@ -171,7 +171,7 @@ class UsersDAO @Inject()(db: DatabaseService) {
   def find(providerId: String, providerKey: String): Future[Option[User]] = {
     val q = quote {
       for {
-        au <- query[Authentications]
+        au <- query[UserAuthentications]
           .filter(_.providerId == lift(providerId))
           .filter(_.providerKey == lift(providerKey))
         a <- query[Users]

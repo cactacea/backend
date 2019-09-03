@@ -1,16 +1,11 @@
 package io.github.cactacea.backend.core.helpers.generators
 
-import java.net.InetAddress
-import java.time.Instant
 import java.util.UUID
 
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ChannelAuthorityType, ChannelPrivacyType, MessageType}
+import io.github.cactacea.backend.core.domain.enums.{ChannelAuthorityType, ChannelPrivacyType, FeedPrivacyType, MessageType}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
-import org.joda.time.DateTime
 import org.scalacheck.Gen
-
-import scala.util.hashing.MurmurHash3
 
 trait ModelsGenerator extends StatusGenerator with ValueGenerator {
 
@@ -39,7 +34,11 @@ trait ModelsGenerator extends StatusGenerator with ValueGenerator {
     userStatus <- userStatusGen
   } yield Users(UserId(0L), userName, displayName, None, None, 0L, 0L, 0L, 0L, url, birthday, location, bio, userStatus, None)
 
-  lazy val users20ListGen: Gen[List[Users]] = for {
+  lazy val userAuthentication20ListGen: Gen[List[UserAuthentications]] = for {
+    l <- Gen.listOfN(20, userAuthenticationGen)
+  } yield (l)
+
+  lazy val user20ListGen: Gen[List[Users]] = for {
     l <- Gen.listOfN(20, userGen)
   } yield (l)
 
@@ -266,15 +265,10 @@ trait ModelsGenerator extends StatusGenerator with ValueGenerator {
     reportedAt <- currentTimeMillisGen
   } yield ChannelReports(ChannelReportId(0L), ChannelId(0L), UserId(0L), reportType, reportContent, reportedAt)
 
-  lazy val authenticationGen: Gen[Authentications] = for {
+  lazy val userAuthenticationGen: Gen[UserAuthentications] = for {
     providerId <- Gen.listOfN(30, Gen.alphaChar).map(_.mkString)
-    providerKey <- uniqueGen.map(no => s"provider_key_${no}")
-    password <- passwordGen
-    hasher <-  hasherGen
-    confirm <- booleanGen
-    userId <- Gen.option(UserId(0L))
-  } yield (Authentications(providerId, providerKey, password, hasher, confirm, userId))
-
+    providerKey <- uniqueUserNameGen
+  } yield (UserAuthentications(UserId(0L), providerId, providerKey))
 
   lazy val clientGen = for {
     clientId <- clientIdGen

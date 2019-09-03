@@ -6,7 +6,7 @@ class ChannelUsersDAOSpec extends DAOSpec {
 
   feature("find") {
     scenario("should return channels") {
-      forOne(userGen, users20ListGen, channelGen) { (s, l, g) =>
+      forOne(userGen, user20ListGen, channelGen) { (s, l, g) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val userIds = l.map({ a =>

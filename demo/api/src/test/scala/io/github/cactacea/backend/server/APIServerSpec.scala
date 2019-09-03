@@ -9,10 +9,10 @@ import com.twitter.inject.TwitterModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.modules.CactaceaCoreModule
+import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.helpers.{DemoStorageModule, DemoStorageService, Helpers}
-import io.github.cactacea.backend.server.utils.modules.CactaceaAuthenticationModule
 import io.github.cactacea.backend.CactaceaBuildInfo
+import io.github.cactacea.backend.auth.core.utils.moduels.JWTAuthenticationModule
 
 @Singleton
 class APIServerSpec extends FeatureTest with Helpers {
@@ -36,8 +36,8 @@ class APIServerSpec extends FeatureTest with Helpers {
     TestInjector(
       modules = Seq(
           DatabaseModule,
-          CactaceaAuthenticationModule,
-          CactaceaCoreModule,
+          JWTAuthenticationModule,
+          DefaultCoreModule,
           DefaultChatModule,
           DefaultDeepLinkModule,
           DefaultJacksonModule,

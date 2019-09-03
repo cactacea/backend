@@ -2,13 +2,12 @@ package io.github.cactacea.backend.oauth
 
 import java.util.Date
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 import io.github.cactacea.backend.core.util.configs.Config
 import io.jsonwebtoken.{JwtException, Jwts, SignatureAlgorithm}
 
 object OAuthTokenGenerator {
 
-  def generate(tokenType: TokenType, userId: UserId, clientId: String, scope: Option[String], redirectUri: Option[String], expiration: Long): String = {
+  def generate(tokenType: TokenType, userName: String, clientId: String, scope: Option[String], redirectUri: Option[String], expiration: Long): String = {
     val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
     Jwts.builder()
       .setIssuer(Config.auth.token.issuer)
@@ -19,7 +18,7 @@ object OAuthTokenGenerator {
       .setHeaderParam("scope", scope.getOrElse(""))
       .setHeaderParam("redirect_uri", redirectUri.getOrElse(""))
       .setHeaderParam("expiration", expiration)
-      .setAudience(userId.value.toString)
+      .setAudience(userName)
       .signWith(signatureAlgorithm, Config.auth.token.signingKey)
       .compact()
   }
@@ -35,11 +34,11 @@ object OAuthTokenGenerator {
       val expiration = header.getOrDefault("expiration", "0").asInstanceOf[Long]
       val scope = header.getOrDefault("scope", "").asInstanceOf[String]
       val redirectUri = header.getOrDefault("redirect_uri", "").asInstanceOf[String]
-      val audience = body.getAudience().toLong
+      val audience = body.getAudience()
       if (header.getAlgorithm().equals(signatureAlgorithm.getValue)
         && body.getSubject.equals(tokenType.toValue)
         && body.getIssuer.equals(Config.auth.token.issuer)) {
-        Option(OAuthToken(UserId(audience), issuedAt, Option(expiration), clientId, Option(redirectUri) ,Option(scope)))
+        Option(OAuthToken(audience, issuedAt, Option(expiration), clientId, Option(redirectUri) ,Option(scope)))
       } else {
         None
       }

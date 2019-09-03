@@ -22,10 +22,10 @@ class CommentLikesRepositorySpec extends RepositorySpec {
         //  user3 like a comment
         //  user1 block user2
         //  user2 block user3
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
-        val userId3 = await(usersRepository.create(a3.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val userId3 = await(createUser(a3.userName)).id
         await(blocksRepository.create(userId2, userId1.sessionId))
         await(blocksRepository.create(userId1, userId2.sessionId))
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
@@ -54,8 +54,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
         // preparing
         //  session user creates a feed
         //  session user create a comment
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
 
@@ -69,7 +69,7 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if a comment not exist") {
       forOne(userGen) { (s) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         assert(intercept[CactaceaException] {
           await(commentLikesRepository.create(CommentId(0), sessionId))
         }.error == CommentNotFound)
@@ -91,10 +91,10 @@ class CommentLikesRepositorySpec extends RepositorySpec {
           //  user1 like a comment
           //  user2 like a comment
           //  user3 like a comment
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId1 = await(usersRepository.create(a1.userName)).id
-          val userId2 = await(usersRepository.create(a2.userName)).id
-          val userId3 = await(usersRepository.create(a3.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId1 = await(createUser(a1.userName)).id
+          val userId2 = await(createUser(a2.userName)).id
+          val userId3 = await(createUser(a3.userName)).id
           val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
           val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
           await(commentLikesRepository.create(commentId, userId1.sessionId))
@@ -115,8 +115,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
         // preparing
         //  session user creates a feed
         //  session user create a comment
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
 
@@ -129,7 +129,7 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if a comment not exist") {
       forOne(userGen) { (s) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         assert(intercept[CactaceaException] {
           await(commentLikesRepository.delete(CommentId(0), sessionId))
         }.error == CommentNotFound)
@@ -156,12 +156,12 @@ class CommentLikesRepositorySpec extends RepositorySpec {
           //  user5 like a comment
           //  user4 block user5
           //  user5 block user4
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-          val userId1 = await(usersRepository.create(a1.userName)).id
-          val userId2 = await(usersRepository.create(a2.userName)).id
-          val userId3 = await(usersRepository.create(a3.userName)).id
-          val userId4 = await(usersRepository.create(a4.userName)).id
-          val userId5 = await(usersRepository.create(a5.userName)).id
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val userId1 = await(createUser(a1.userName)).id
+          val userId2 = await(createUser(a2.userName)).id
+          val userId3 = await(createUser(a3.userName)).id
+          val userId4 = await(createUser(a4.userName)).id
+          val userId5 = await(createUser(a5.userName)).id
           await(blocksRepository.create(userId4, userId5.sessionId))
           await(blocksRepository.create(userId5, userId4.sessionId))
 
@@ -201,7 +201,7 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if a comment not exist") {
       forOne(userGen) { (s) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         assert(intercept[CactaceaException] {
           await(commentLikesRepository.findUsers(CommentId(0), None, 0, 3, sessionId))
         }.error == CommentNotFound)

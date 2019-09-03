@@ -17,9 +17,9 @@ class CommentsRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, userGen, feedGen, commentGen) { (s, a1, a2, f, c) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId1 = await(usersRepository.create(a1.userName)).id
-        val userId2 = await(usersRepository.create(a2.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId1 = await(commentsRepository.create(feedId, c.message, None, userId1.sessionId))
         val commentId2 = await(commentsRepository.create(feedId, c.message, Option(commentId1), userId2.sessionId))
@@ -45,7 +45,7 @@ class CommentsRepositorySpec extends RepositorySpec {
   feature("delete") {
     scenario("should delete a comment") {
       forOne(userGen, feedGen, commentGen) { (s, f, c) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
         await(commentsRepository.delete(commentId, sessionId))
@@ -65,8 +65,8 @@ class CommentsRepositorySpec extends RepositorySpec {
 
     scenario("should delete comment likes") {
       forOne(userGen, userGen, feedGen, commentGen) { (s, a, f, c) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
-        val userId = await(usersRepository.create(a.userName)).id
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
         await(commentLikesRepository.create(commentId, userId.sessionId))
@@ -78,7 +78,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
     scenario("should delete comment reports") {
       forOne(userGen, feedGen, commentGen, commentReportGen) { (s, f, c, r) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
         val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
         await(commentsRepository.report(commentId, r.reportType, r.reportContent, sessionId))
@@ -96,7 +96,7 @@ class CommentsRepositorySpec extends RepositorySpec {
       forOne(userGen, feedGen, comment20ListGen) {
         (s, f, c) =>
           // preparing
-          val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+          val sessionId = await(createUser(s.userName)).id.sessionId
           val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
           val comments = c.map({ c =>
             val id = await(commentsRepository.create(feedId, c.message, None, sessionId))
@@ -117,7 +117,7 @@ class CommentsRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if a feed not exist") {
       forOne(userGen) { (s) =>
-        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+        val sessionId = await(createUser(s.userName)).id.sessionId
         assert(intercept[CactaceaException] {
           await(commentsRepository.find(CommentId(0), sessionId))
         }.error == CommentNotFound)

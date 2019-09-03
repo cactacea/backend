@@ -3,21 +3,19 @@ package io.github.cactacea.backend.server.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.auth.application.services.AuthenticationService
+import io.github.cactacea.backend.auth.server.utils.contexts.AuthContext
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.server.models.requests.user.GetUserName
-import io.github.cactacea.backend.server.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
 import io.github.cactacea.backend.server.models.requests.channel.{GetSessionChannels, GetSessionInvitations}
-import io.github.cactacea.backend.server.models.requests.session._
-import io.github.cactacea.backend.server.models.requests.sessions.DeleteSignOut
+import io.github.cactacea.backend.server.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
+import io.github.cactacea.backend.server.models.requests.session.{DeleteSignOut, _}
+import io.github.cactacea.backend.server.models.requests.user.GetUserName
 import io.github.cactacea.backend.server.models.responses.UserNameNotExists
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
-import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 import io.swagger.models.Swagger
 
 
@@ -25,7 +23,6 @@ import io.swagger.models.Swagger
 class SessionController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    s: Swagger,
-                                   userAuthenticationService: AuthenticationService,
                                    usersService: UsersService,
                                    userChannelsService: UserChannelsService,
                                    feedsService: FeedsService,
@@ -43,8 +40,22 @@ class SessionController @Inject()(
 
   prefix(apiPrefix) {
 
+    scope(basic).postWithDoc("/session") { o =>
+      o.summary("Register user")
+        .tag(sessionTag)
+        .operationId("registerSession")
+        .responseWith[User](Status.Ok.code, successfulMessage)
+    } { request: PutSession =>
+      usersService.create(
+        AuthContext.auth.providerId,
+        AuthContext.auth.providerKey,
+        request.userName,
+        request.displayName
+      )
+    }
+
     scope(basic).getWithDoc("/session") { o =>
-      o.summary("Get basic information about session user")
+      o.summary("Get user information")
         .tag(sessionTag)
         .operationId("findSession")
         .responseWith[User](Status.Ok.code, successfulMessage)
@@ -53,7 +64,6 @@ class SessionController @Inject()(
         CactaceaContext.sessionId
       )
     }
-
 
     scope(basic).deleteWithDoc("/session") { o =>
       o.summary("Sign out")
@@ -67,7 +77,7 @@ class SessionController @Inject()(
       ).map(_ => response.ok)
     }
 
-    scope(basic).getWithDoc("/session/user_name/:userName") { o =>
+    scope(basic).getWithDoc("/session/username/:userName") { o =>
       o.summary("Confirm user name exist")
         .tag(sessionTag)
         .operationId("existUserName")
@@ -78,36 +88,6 @@ class SessionController @Inject()(
         request.userName
       ).map(r => response.ok(UserNameNotExists(request.userName, r)))
     }
-
-    scope(basic).putWithDoc("/session/user_name") { o =>
-      o.summary("Update the user name")
-        .tag(sessionTag)
-        .operationId("updateUserName")
-        .request[PutSessionUserName]
-        .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserAlreadyExist))))
-    } { request: PutSessionUserName =>
-      usersService.changeUserName(
-        CredentialsProvider.ID,
-        request.name,
-        CactaceaContext.sessionId
-      ).map(_ => response.ok)
-    }
-
-
-    scope(basic).putWithDoc("/session/password") { o =>
-      o.summary("Update the password")
-        .tag(sessionTag)
-        .operationId("updatePassword")
-        .request[PutSessionPassword]
-        .responseWith(Status.Ok.code, successfulMessage)
-    } { request: PutSessionPassword =>
-      userAuthenticationService.changePassword(
-        request.password,
-        CactaceaContext.sessionId
-      ).map(_ => response.ok)
-    }
-
 
     scope(basic).putWithDoc("/session/profile") { o =>
       o.summary("Update the profile")
