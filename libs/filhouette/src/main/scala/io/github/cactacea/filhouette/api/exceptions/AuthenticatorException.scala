@@ -22,5 +22,5 @@ package io.github.cactacea.filhouette.api.exceptions
 /**
  * An exception for all authenticator related errors.
  */
-class AuthenticatorException(msg: String, cause: Throwable)
+class AuthenticatorException(msg: String, cause: Throwable = null)
   extends FilhouetteException(msg, cause)

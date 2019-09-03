@@ -23,5 +23,5 @@ import io.github.cactacea.filhouette.api.exceptions.ProviderException
  * @param msg The exception message.
  * @param cause The exception cause.
  */
-class UnexpectedResponseException(msg: String, cause: Throwable)
+class UnexpectedResponseException(msg: String, cause: Throwable = null)
   extends ProviderException(msg, cause)

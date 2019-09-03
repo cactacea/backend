@@ -25,5 +25,5 @@ package io.github.cactacea.filhouette.api.exceptions
  * @param msg The exception message.
  * @param cause The exception cause.
  */
-class AuthenticatorUpdateException(msg: String, cause: Throwable)
+class AuthenticatorUpdateException(msg: String, cause: Throwable = null)
   extends AuthenticatorException(msg, cause)
