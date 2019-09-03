@@ -9,7 +9,7 @@ trait InvitationsControllerSpec extends FeatureTest {
 
   test("POST /invitations/:id/accept") (pending)
   test("POST /invitations/:id/reject") (pending)
-  test("POST /groups/:id/invitations") (pending)
-  test("POST /accounts/:accountId/groups/:groupId/invitations") (pending)
+  test("POST /channels/:id/invitations") (pending)
+  test("POST /users/:userId/channels/:channelId/invitations") (pending)
 
 }

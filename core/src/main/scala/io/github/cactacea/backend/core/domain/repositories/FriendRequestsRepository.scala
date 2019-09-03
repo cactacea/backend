@@ -2,42 +2,37 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
 import io.github.cactacea.backend.core.domain.models.FriendRequest
-import io.github.cactacea.backend.core.infrastructure.dao.{FriendRequestsDAO, FriendRequestsStatusDAO, NotificationsDAO}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FriendRequestsValidator}
+import io.github.cactacea.backend.core.infrastructure.dao.{FriendRequestsDAO, FriendsDAO, NotificationsDAO}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FriendRequestId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, FriendRequestsValidator, FriendsValidator}
 
 
 class FriendRequestsRepository @Inject()(
-                                          accountsValidator: AccountsValidator,
+                                          usersValidator: UsersValidator,
+                                          friendsValidator: FriendsValidator,
                                           friendRequestsDAO: FriendRequestsDAO,
-                                          friendRequestsStatusDAO: FriendRequestsStatusDAO,
+                                          friendsDAO: FriendsDAO,
                                           friendRequestsValidator: FriendRequestsValidator,
-                                          friendsRepository: FriendsRepository,
                                           notificationsDAO: NotificationsDAO
                                         ) {
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[FriendRequestId] = {
+  def create(userId: UserId, sessionId: SessionId): Future[FriendRequestId] = {
     for {
-      _ <- accountsValidator.checkSessionId(accountId, sessionId)
-      _ <- accountsValidator.exist(accountId, sessionId)
-      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- friendRequestsValidator.notExist(accountId, sessionId)
-      _ <- friendRequestsStatusDAO.create(accountId, sessionId)
-      i <- friendRequestsDAO.create(accountId, sessionId)
-      _ <- notificationsDAO.createNotification(i, accountId, sessionId)
+      _ <- usersValidator.mustNotSame(userId, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      _ <- friendRequestsValidator.mustNotRequested(userId, sessionId)
+      i <- friendRequestsDAO.create(userId, sessionId)
+      _ <- notificationsDAO.create(i, userId, sessionId)
     } yield (i)
   }
 
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.checkSessionId(accountId, sessionId)
-      _ <- accountsValidator.exist(accountId, sessionId)
-      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- friendRequestsValidator.exist(accountId, sessionId)
-      _ <- friendRequestsStatusDAO.delete(accountId, sessionId)
-      _ <- friendRequestsDAO.delete(accountId, sessionId)
+      _ <- usersValidator.mustNotSame(userId, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      _ <- friendRequestsValidator.mustRequested(userId, sessionId)
+      _ <- friendRequestsDAO.delete(userId, sessionId)
     } yield (())
   }
 
@@ -47,18 +42,20 @@ class FriendRequestsRepository @Inject()(
 
   def accept(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     for {
-      f <- friendRequestsValidator.find(friendRequestId, sessionId)
-      _ <- friendsRepository.create(sessionId.toAccountId, f.toSessionId)
-      _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.toSessionId)
-      _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.accepted, sessionId)
+      f <- friendRequestsValidator.mustFind(friendRequestId, sessionId)
+      _ <- usersValidator.mustNotSame(sessionId.userId, f.sessionId)
+      _ <- usersValidator.mustExist(sessionId.userId, f.sessionId)
+      _ <- friendsValidator.mustNotFriend(sessionId.userId, f.sessionId)
+      _ <- friendsDAO.create(sessionId.userId, f.sessionId)
+      _ <- friendsDAO.create(f, sessionId)
+      _ <- friendRequestsDAO.delete(sessionId.userId, f.sessionId)
     } yield (())
   }
 
   def reject(friendRequestId: FriendRequestId, sessionId: SessionId): Future[Unit] = {
     for {
-      f <- friendRequestsValidator.find(friendRequestId, sessionId)
-      _ <- friendRequestsStatusDAO.delete(sessionId.toAccountId, f.toSessionId)
-      _ <- friendRequestsDAO.update(friendRequestId, FriendRequestStatusType.rejected, sessionId).map(_ => true)
+      f <- friendRequestsValidator.mustFind(friendRequestId, sessionId)
+      _ <- friendRequestsDAO.delete(sessionId.userId, f.sessionId)
     } yield (())
   }
 

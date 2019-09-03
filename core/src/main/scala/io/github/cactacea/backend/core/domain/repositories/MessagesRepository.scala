@@ -5,71 +5,71 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountGroupsValidator, AccountMessagesValidator, GroupsValidator, MediumsValidator}
+import io.github.cactacea.backend.core.infrastructure.validators._
 
 
 class MessagesRepository @Inject()(
-                                    accountGroupsDAO: AccountGroupsDAO,
-                                    accountGroupsValidator: AccountGroupsValidator,
-                                    accountMessagesDAO: AccountMessagesDAO,
-                                    accountMessagesValidator: AccountMessagesValidator,
-                                    groupsValidator: GroupsValidator,
+                                    userChannelsDAO: UserChannelsDAO,
+                                    userChannelsValidator: UserChannelsValidator,
+                                    userMessagesDAO: UserMessagesDAO,
+                                    userMessagesValidator: UserMessagesValidator,
+                                    channelsDAO: ChannelsDAO,
                                     mediumsValidator: MediumsValidator,
                                     messagesDAO:  MessagesDAO
                                   ) {
 
-  def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
+  def createText(channelId: ChannelId, message: String, sessionId: SessionId): Future[Message] = {
     for {
-      _  <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
-      i  <- messagesDAO.create(groupId, Some(message), None, sessionId)
-      _  <- accountMessagesDAO.create(groupId, i, sessionId)
-      _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesValidator.find(i, sessionId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
+      c <- channelsDAO.findUserCount(channelId)
+      i <- messagesDAO.create(channelId, message, c, sessionId)
+      _ <- userMessagesDAO.create(channelId, i, sessionId)
+      _ <- userChannelsDAO.updateUnreadCount(channelId)
+      m <- userMessagesValidator.mustFind(i, sessionId)
     } yield (m)
   }
 
-  def createMedium(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
+  def createMedium(channelId: ChannelId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
     for {
-      _  <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
-      _  <- mediumsValidator.exist(mediumId, sessionId)
-      i <- messagesDAO.create(groupId, None, Some(mediumId), sessionId)
-      _  <- accountMessagesDAO.create(groupId, i, sessionId)
-      _  <- accountGroupsDAO.updateUnreadCount(groupId)
-      m <- accountMessagesValidator.find(i, sessionId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
+      _ <- mediumsValidator.mustOwn(mediumId, sessionId)
+      c <- channelsDAO.findUserCount(channelId)
+      i <- messagesDAO.create(channelId, mediumId, c, sessionId)
+      _ <- userMessagesDAO.create(channelId, i, sessionId)
+      _ <- userChannelsDAO.updateUnreadCount(channelId)
+      m <- userMessagesValidator.mustFind(i, sessionId)
     } yield (m)
   }
 
-  def updateReadStatus(messages: List[Message], sessionId: SessionId): Future[Unit] = {
+  private def updateReadStatus(messages: List[Message], sessionId: SessionId): Future[Unit] = {
     val m = messages.filter(_.unread)
     if (m.size == 0) {
       Future.Unit
     } else {
       val ids = m.map(_.id)
       for {
-        _ <- messagesDAO.updateReadAccountCount(ids)
-        _ <- accountMessagesDAO.updateUnread(ids, sessionId)
+        _ <- messagesDAO.updateReadCount(ids)
+        _ <- userMessagesDAO.updateUnread(ids, sessionId)
       } yield (())
     }
   }
 
-  def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
-    accountMessagesDAO.delete(sessionId.toAccountId, groupId)
+  def delete(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+    userMessagesDAO.delete(sessionId.userId, channelId)
   }
 
-  def find(groupId: GroupId,
+  def find(channelId: ChannelId,
            since: Option[Long],
            offset: Int,
            count: Int,
            ascending: Boolean,
            sessionId: SessionId): Future[List[Message]] = {
     for {
-      _ <- groupsValidator.exist(groupId, sessionId)
-      _ <- accountGroupsValidator.exist(sessionId.toAccountId, groupId)
-      r <- accountMessagesDAO.find(groupId, since, offset, count, ascending, sessionId)
+      _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
+      r <- userMessagesDAO.find(channelId, since, offset, count, ascending, sessionId)
+      _ <- updateReadStatus(r, sessionId)
     } yield (r)
 
   }
-
-
 
 }

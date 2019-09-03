@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.CommentLikesService
-import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.comment.{DeleteCommentLike, GetCommentLikes, PostCommentLike}
@@ -24,14 +24,14 @@ class CommentLikesController @Inject()(
   prefix(apiPrefix) {
 
     scope(comments).getWithDoc("/comments/:id/likes") { o =>
-      o.summary("Get accounts list who liked on a comment")
+      o.summary("Get users list who liked on a comment")
         .tag(commentLikesTag)
-        .operationId("findAccountsLikedComment")
+        .operationId("findUsersLikedComment")
         .request[GetCommentLikes]
-        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Array(CommentNotFound))))
     } { request: GetCommentLikes =>
-      commentLikesService.findAccounts(
+      commentLikesService.findUsers(
         request.id,
         request.since,
         request.offset.getOrElse(0),

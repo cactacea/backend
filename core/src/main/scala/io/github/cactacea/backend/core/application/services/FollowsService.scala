@@ -3,9 +3,9 @@ package io.github.cactacea.backend.core.application.services
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.domain.repositories.FollowsRepository
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, SessionId}
 
 class FollowsService @Inject()(
                                 databaseService: DatabaseService,
@@ -14,24 +14,24 @@ class FollowsService @Inject()(
 
   import databaseService._
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def create(userId: UserId, sessionId: SessionId): Future[Unit] = {
     transaction {
-      followsRepository.create(accountId, sessionId)
+      followsRepository.create(userId, sessionId)
     }
   }
 
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, sessionId: SessionId): Future[Unit] = {
     transaction {
-      followsRepository.delete(accountId, sessionId)
+      followsRepository.delete(userId, sessionId)
     }
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    followsRepository.find(accountId, since, offset, count, sessionId)
+  def find(userId: UserId, userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
+    followsRepository.find(userId, userName, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    followsRepository.find(since, offset, count, sessionId)
+  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
+    followsRepository.find(userName, since, offset, count, sessionId)
   }
 
 }

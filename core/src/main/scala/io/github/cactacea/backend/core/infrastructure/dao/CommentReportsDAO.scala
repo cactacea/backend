@@ -14,7 +14,7 @@ class CommentReportsDAO @Inject()(db: DatabaseService) {
 
   def create(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[CommentReportId] = {
     val reportedAt = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[CommentReports].insert(
         _.commentId     -> lift(commentId),
@@ -26,5 +26,15 @@ class CommentReportsDAO @Inject()(db: DatabaseService) {
     }
     run(q)
   }
+
+  def delete(commentId: CommentId): Future[Unit] = {
+    val q = quote {
+      query[CommentReports]
+        .filter(_.commentId == lift(commentId))
+        .delete
+    }
+    run(q).map(_ => ())
+  }
+
 
 }

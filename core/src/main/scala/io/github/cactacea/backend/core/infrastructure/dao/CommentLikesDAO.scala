@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, CommentLikeId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
@@ -15,66 +15,44 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
   def create(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- insertCommentLikes(commentId, sessionId)
-      _ <- updateLikeCount(commentId)
+      _ <- updateLikeCount(1L, commentId)
     } yield (())
   }
 
   private def insertCommentLikes(commentId: CommentId, sessionId: SessionId): Future[CommentLikeId] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val likedAt = System.currentTimeMillis()
     val q = quote {
       query[CommentLikes]
         .insert(
           _.commentId   -> lift(commentId),
           _.by          -> lift(by),
-          _.likedAt    -> lift(likedAt)
+          _.likedAt     -> lift(likedAt)
         ).returning(_.id)
     }
     run(q)
   }
 
-  private def updateLikeCount(commentId: CommentId): Future[Unit] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-        .update(
-          a => a.likeCount -> (a.likeCount + 1)
-        )
-    }
-    run(q).map(_ => Unit)
-  }
-
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
       _ <- deleteCommentLikes(commentId, sessionId)
-      _ <- updateUnlikeCount(commentId)
+      _ <- updateLikeCount(-1L, commentId)
     } yield (())
   }
 
   private def deleteCommentLikes(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[CommentLikes]
         .filter(_.by        == lift(by))
         .filter(_.commentId == lift(commentId))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  private def updateUnlikeCount(commentId: CommentId): Future[Unit] = {
-    val q = quote {
-      query[Comments]
-        .filter(_.id == lift(commentId))
-        .update(
-          a => a.likeCount -> (a.likeCount - 1)
-        )
-    }
-    run(q).map(_ => Unit)
-  }
-
-  def exist(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+  def own(commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.userId
     val q = quote {
       query[CommentLikes]
         .filter(_.commentId == lift(commentId))
@@ -84,34 +62,42 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(commentId: CommentId,
-           since: Option[Long],
-           offset: Int,
-           count: Int,
-           sessionId: SessionId): Future[List[Account]] = {
+  def findUsers(commentId: CommentId,
+                since: Option[Long],
+                offset: Int,
+                count: Int,
+                sessionId: SessionId): Future[List[User]] = {
 
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
 
     val q = quote {
       (for {
         cl <- query[CommentLikes]
           .filter(_.commentId == lift(commentId))
           .filter(cl => lift(since).forall(cl.id  < _))
-          .filter(cl => query[Blocks].filter(b =>
-            (b.accountId == lift(by) && b.by == cl.by) || (b.accountId == cl.by && b.by == lift(by))
-          ).isEmpty)
-        a <- query[Accounts]
+          .filter(cl => query[Blocks].filter(b => b.userId == lift(by) && b.by == cl.by).isEmpty)
+        a <- query[Users]
           .join(_.id == cl.by)
         r <- query[Relationships]
-          .leftJoin(r => r.accountId == a.id && r.by == lift(by))
+          .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (a, r, cl.id))
         .sortBy({ case (_, _, id) => id})(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
-    run(q).map(_.map({case (a, r, id) => Account(a, r, id.value)}))
+    run(q).map(_.map({case (a, r, id) => User(a, r, id.value)}))
 
+  }
 
+  private def updateLikeCount(plus: Long, commentId: CommentId): Future[Unit] = {
+    val q = quote {
+      query[Comments]
+        .filter(_.id == lift(commentId))
+        .update(
+          a => a.likeCount -> (a.likeCount + lift(plus))
+        )
+    }
+    run(q).map(_ => ())
   }
 
 

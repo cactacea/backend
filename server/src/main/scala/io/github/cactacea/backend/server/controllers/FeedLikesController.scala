@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.feed.{DeleteFeedLike, GetFeedLikes, PostFeedLike}
@@ -25,14 +25,14 @@ class FeedLikesController @Inject()(
   prefix(apiPrefix) {
 
     scope(feeds).getWithDoc("/feeds/:id/likes") { o =>
-      o.summary("Get accounts list who set a like to a feed")
+      o.summary("Get users list who set a like to a feed")
         .tag(feedsLikeTag)
-        .operationId("findAccountsLikedFeed")
+        .operationId("findUsersLikedFeed")
         .request[GetFeedLikes]
-        .responseWith[Array[Account]](Status.Ok.code, successfulMessage)
+        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
     } { request: GetFeedLikes =>
-      feedLikesService.findAccounts(
+      feedLikesService.findUsers(
         request.id,
         request.since,
         request.offset.getOrElse(0),

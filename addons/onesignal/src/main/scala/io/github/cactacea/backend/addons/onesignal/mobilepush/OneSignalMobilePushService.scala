@@ -12,18 +12,18 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 class OneSignalMobilePushService @Inject()(
-                                  db: DatabaseService,
-                                  client: OneSignalClient,
-                                  messageService: MessageService,
-                                  pushNotificationFeedsRepository: PushNotificationFeedsRepository,
-                                  pushNotificationCommentsRepository: PushNotificationCommentsRepository,
-                                  pushNotificationMessagesRepository: PushNotificationMessagesRepository,
-                                  pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
-                                  pushNotificationGroupInvitationsRepository: PushNotificationGroupInvitationsRepository
+                                            db: DatabaseService,
+                                            client: OneSignalClient,
+                                            messageService: MessageService,
+                                            pushNotificationFeedsRepository: PushNotificationFeedsRepository,
+                                            pushNotificationCommentsRepository: PushNotificationCommentsRepository,
+                                            pushNotificationMessagesRepository: PushNotificationMessagesRepository,
+                                            pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
+                                            pushNotificationInvitationsRepository: PushNotificationInvitationsRepository
 
                                 ) extends MobilePushService {
 
-  val numberOfGrouped = 100
+  val numberOfChannels = 100
 
   def sendFeed(id: FeedId): Future[Unit] = {
     pushNotificationFeedsRepository.find(id).flatMap(_ match {
@@ -97,39 +97,39 @@ class OneSignalMobilePushService @Inject()(
     })
   }
 
-  def sendGroupInvitation(id: GroupInvitationId): Future[Unit] = {
-    pushNotificationGroupInvitationsRepository.find(id).flatMap(_ match {
+  def sendInvitation(id: InvitationId): Future[Unit] = {
+    pushNotificationInvitationsRepository.find(id).flatMap(_ match {
       case Some(notifications) =>
         for {
           _ <- sendContentList(createContentList(notifications))
-          r <- db.transaction(pushNotificationGroupInvitationsRepository.update(id))
+          r <- db.transaction(pushNotificationInvitationsRepository.update(id))
         } yield (r)
       case None =>
         db.transaction {
-          pushNotificationGroupInvitationsRepository.update(id)
+          pushNotificationInvitationsRepository.update(id)
         }
     })
   }
 
 
 
-  private def createContentList(notifications: List[PushNotification]): List[(OneSignalNotification, List[AccountId])] = {
+  private def createContentList(notifications: List[PushNotification]): List[(OneSignalNotification, List[UserId])] = {
     notifications.flatMap({ notification =>
       val displayName = notification.displayName
       val message = notification.message
       val en = messageService.getPushNotificationMessage(notification.notificationType, Seq(Locale.US), displayName, message)
       val jp = messageService.getPushNotificationMessage(notification.notificationType, Seq(Locale.JAPAN), displayName, message)
       val url = notification.url
-      notification.destinations.grouped(numberOfGrouped).map({ groupedDestinations =>
-        val accessTokens = groupedDestinations.map(_.accountToken)
-        val accountIds =  groupedDestinations.map(_.accountId)
+      notification.destinations.grouped(numberOfChannels).map({ channelsDestinations =>
+        val accessTokens = channelsDestinations.map(_.userToken)
+        val accountIds =  channelsDestinations.map(_.userId)
         val content = OneSignalNotification(OneSignalConfig.onesignal.appId, accessTokens, en, jp, url)
         (content, accountIds)
       })
     })
   }
 
-  private def sendContentList(l: List[(OneSignalNotification, List[AccountId])]): Future[List[List[AccountId]]] = {
+  private def sendContentList(l: List[(OneSignalNotification, List[UserId])]): Future[List[List[UserId]]] = {
     val result = Future.traverseSequentially(l) { case (content, accountIds) =>
       client.createNotification(content).flatMap(response =>
         if (response.statusCode >= 200 && response.statusCode <= 299) {

@@ -9,10 +9,10 @@ import com.twitter.inject.TwitterModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.modules.CoreModule
+import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.helpers.{DemoStorageModule, DemoStorageService, Helpers}
-import io.github.cactacea.backend.server.utils.modules.AuthenticationModule
 import io.github.cactacea.backend.CactaceaBuildInfo
+import io.github.cactacea.backend.auth.core.utils.moduels.JWTAuthenticationModule
 
 @Singleton
 class APIServerSpec extends FeatureTest with Helpers {
@@ -28,7 +28,6 @@ class APIServerSpec extends FeatureTest with Helpers {
 
       override def storageModule: TwitterModule = DemoStorageModule
 
-      addFrameworkModule(AuthenticationModule)
 
     }
   )
@@ -37,8 +36,8 @@ class APIServerSpec extends FeatureTest with Helpers {
     TestInjector(
       modules = Seq(
           DatabaseModule,
-          AuthenticationModule,
-          CoreModule,
+          JWTAuthenticationModule,
+          DefaultCoreModule,
           DefaultChatModule,
           DefaultDeepLinkModule,
           DefaultJacksonModule,
@@ -265,7 +264,7 @@ class APIServerSpec extends FeatureTest with Helpers {
 //      "alliance between his clan and the neighbouring Imagawa clan. He was raised at their court and given the " +
 //      "education suitable for a nobleman.", yasuhiro_nakasone)
 //
-//    createComment(ieyasu_tokugawa_feed.id, "In 1567 Ieyasu, whose father's death had groupLeft him as leader of" +
+//    createComment(ieyasu_tokugawa_feed.id, "In 1567 Ieyasu, whose father's death had channelLeft him as leader of" +
 //      " the Matsudaira, allied with Oda Nobunaga, a powerful neighbour.", yasuo_fukuda)
 //
 //    createComment(ieyasu_tokugawa_feed.id, "It was at this time that he changed his name from Matsudaira to" +

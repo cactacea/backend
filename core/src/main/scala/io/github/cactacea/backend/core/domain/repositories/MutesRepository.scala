@@ -2,40 +2,38 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.models.Account
+import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.dao.MutesDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, MutesValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, MutesValidator}
 
 
 class MutesRepository @Inject()(
-                                 accountsValidator: AccountsValidator,
+                                 usersValidator: UsersValidator,
                                  mutesDAO: MutesDAO,
                                  mutesValidator: MutesValidator
                                ) {
 
-  def create(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def create(userId: UserId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.checkSessionId(accountId, sessionId)
-      _ <- accountsValidator.exist(accountId, sessionId)
-      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- mutesValidator.notExist(accountId, sessionId)
-      _ <- mutesDAO.create(accountId, sessionId)
+      _ <- usersValidator.mustNotSame(userId, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      _ <- mutesValidator.mustNotMuted(userId, sessionId)
+      _ <- mutesDAO.create(userId, sessionId)
     } yield (())
   }
 
-  def delete(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
+  def delete(userId: UserId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- accountsValidator.checkSessionId(accountId, sessionId)
-      _ <- accountsValidator.exist(accountId, sessionId)
-      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
-      _ <- mutesValidator.exist(accountId, sessionId)
-      _ <- mutesDAO.delete(accountId, sessionId)
+      _ <- usersValidator.mustNotSame(userId, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      _ <- mutesValidator.mustMuted(userId, sessionId)
+      _ <- mutesDAO.delete(userId, sessionId)
     } yield (())
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[Account]]= {
-    mutesDAO.find(since, offset, count, sessionId)
+  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
+    mutesDAO.find(userName, since, offset, count, sessionId)
   }
 
 }

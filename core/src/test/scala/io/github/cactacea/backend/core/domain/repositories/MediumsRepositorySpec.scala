@@ -1,21 +1,49 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
-import io.github.cactacea.backend.core.domain.enums.MediumType
-import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.dao.MediumsDAO
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 
 class MediumsRepositorySpec extends RepositorySpec {
 
-  val mediumRepository = injector.instance[MediumsRepository]
-  val mediumsDAO = injector.instance[MediumsDAO]
 
-  test("create") {
+  feature("create") {
+    forAll(userGen, mediumGen) { (a, m) =>
 
-    val sessionUser = signUp("MediumsRepositorySpec1", "session user password", "session user udid")
-    val id = execute(mediumRepository.create("key", "http://cactacea.io/test.jpeg", Some("http://cactacea.io/test.jpeg"), MediumType.image, 120, 120, 58L, sessionUser.id.toSessionId))
-    assert(execute(mediumsDAO.exist(id, sessionUser.id.toSessionId)) == true)
+      // preparing
+      val sessionId = await(createUser(a.userName)).id.sessionId
+      val mediumId = await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))
 
+      // result
+      val result = await(mediumsDAO.find(mediumId, sessionId))
+      assert(result.map(_.key) == Option(m.key))
+      assert(result.map(_.uri) == Option(m.uri))
+      assert(result.map(_.thumbnailUrl) == Option(m.thumbnailUrl))
+      assert(result.map(_.mediumType) == Option(m.mediumType))
+      assert(result.map(_.width) == Option(m.width))
+      assert(result.map(_.height) == Option(m.height))
+      assert(result.map(_.size) == Option(m.size))
+    }
   }
 
+  feature("delete") {
+    forAll(userGen, mediumGen) { (a, m) =>
+
+      // preparing
+      val sessionId = await(createUser(a.userName)).id.sessionId
+      val mediumId = await(mediumsRepository.create(
+        m.key,
+        m.uri,
+        m.thumbnailUrl,
+        m.mediumType,
+        m.width,
+        m.height,
+        m.size,
+        sessionId))
+
+      // result
+      assert(await(mediumsDAO.own(mediumId, sessionId)))
+      await(mediumsRepository.delete(mediumId, sessionId))
+      assert(!await(mediumsDAO.own(mediumId, sessionId)))
+    }
+  }
 }

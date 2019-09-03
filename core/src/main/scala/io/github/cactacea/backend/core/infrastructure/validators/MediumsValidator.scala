@@ -6,12 +6,12 @@ import io.github.cactacea.backend.core.infrastructure.dao.MediumsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.models.Mediums
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.MediumNotFound
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AuthorityNotFound, MediumNotFound}
 
 @Singleton
 class MediumsValidator @Inject()(mediumsDAO: MediumsDAO) {
 
-  def find(mediumId: MediumId, sessionId: SessionId): Future[Mediums] = {
+  def mustFind(mediumId: MediumId, sessionId: SessionId): Future[Mediums] = {
     mediumsDAO.find(mediumId, sessionId).flatMap(_ match {
       case Some(t) =>
         Future.value(t)
@@ -20,10 +20,10 @@ class MediumsValidator @Inject()(mediumsDAO: MediumsDAO) {
     })
   }
 
-  def exist(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
+  def mustExist(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
     mediumIdsOpt match {
       case Some(mediumIds) =>
-        mediumsDAO.exist(mediumIds, sessionId).flatMap(_ match {
+        mediumsDAO.exists(mediumIds, sessionId).flatMap(_ match {
           case true =>
             Future.Unit
           case false =>
@@ -34,12 +34,12 @@ class MediumsValidator @Inject()(mediumsDAO: MediumsDAO) {
     }
   }
 
-  def exist(mediumId: MediumId, sessionId: SessionId): Future[Unit] = {
-    mediumsDAO.exist(mediumId, sessionId).flatMap(_ match {
+  def mustOwn(mediumId: MediumId, sessionId: SessionId): Future[Unit] = {
+    mediumsDAO.own(mediumId, sessionId).flatMap(_ match {
       case true =>
         Future.Unit
       case false =>
-        Future.exception(CactaceaException(MediumNotFound))
+        Future.exception(CactaceaException(AuthorityNotFound))
     })
   }
 

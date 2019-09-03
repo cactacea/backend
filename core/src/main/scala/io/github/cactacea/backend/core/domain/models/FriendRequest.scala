@@ -1,27 +1,24 @@
 package io.github.cactacea.backend.core.domain.models
 
-import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
-import io.github.cactacea.backend.core.infrastructure.identifiers.{FriendRequestId}
-import io.github.cactacea.backend.core.infrastructure.models.{Accounts, FriendRequests, Relationships}
+import io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId
+import io.github.cactacea.backend.core.infrastructure.models.{Users, FriendRequests, Relationships}
 
 case class FriendRequest (
                            id: FriendRequestId,
-                           account: Account,
-                           requestStatus: FriendRequestStatusType,
+                           user: User,
                            requestedAt: Long,
-                           next: Option[Long]
+                           next: Long
                          )
 
 object FriendRequest {
 
-  def apply(f: FriendRequests, a: Accounts, r: Option[Relationships], n: Long): FriendRequest = {
-    val account = Account(a, r)
+  def apply(f: FriendRequests, a: Users, r: Option[Relationships], n: Long): FriendRequest = {
+    val user = User(a, r)
     FriendRequest(
       id            = f.id,
-      account       = account,
-      requestStatus = f.requestStatus,
+      user       = user,
       requestedAt   = f.requestedAt,
-      next          = Some(n)
+      next          = n
     )
   }
 

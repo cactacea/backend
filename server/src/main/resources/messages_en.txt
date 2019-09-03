@@ -1,10 +1,10 @@
-mail.welcome.subject=Welcome to MyWeb! Please confirm your account
+mail.welcome.subject=Welcome to MyWeb! Please confirm your user
 mail.welcome.hello=Welcome {0}!
 mail.welcome.prelink=Thanks for signing up for this web page! Please verify your email address by clicking the link below.
 mail.welcome.postlink=Note that this link will expire in 24 hours if it''s not activated.
 
 mail.forgotpwd.subject=Reset your MyWeb password
-mail.forgotpwd.prelink=Someone (hopefully you) has requested a password reset for your MyWeb account. Follow the link below to set a new password:
+mail.forgotpwd.prelink=Someone (hopefully you) has requested a password reset for your MyWeb user. Follow the link below to set a new password:
 mail.forgotpwd.postlink=Note that this link will expire in 24 hours. If you don''t wish to reset your password, disregard this email and no action will be taken.
 
 mail.sign=Team MyWeb

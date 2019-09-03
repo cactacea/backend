@@ -21,7 +21,7 @@ class MediumsDAO @Inject()(db: DatabaseService) {
              size: Long,
              sessionId: SessionId): Future[MediumId] = {
 
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[Mediums].insert(
         _.key             -> lift(key),
@@ -39,27 +39,17 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(id: MediumId, sessionId: SessionId): Future[Option[Mediums]] = {
-    val by = sessionId.toAccountId
-    val q = quote {
-      query[Mediums]
-        .filter(_.id == lift(id))
-        .filter(_.by == lift(by))
-    }
-    run(q).map(_.headOption)
-  }
-
   def delete(id: MediumId): Future[Unit] = {
     val q = quote {
       query[Mediums]
         .filter(_.id == lift(id))
         .delete
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
-  def exist(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+  def own(mediumId: MediumId, sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.userId
     val q = quote {
       query[Mediums]
         .filter(_.id == lift(mediumId))
@@ -69,8 +59,8 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def exist(mediumIds: List[MediumId], sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.toAccountId
+  def exists(mediumIds: List[MediumId], sessionId: SessionId): Future[Boolean] = {
+    val by = sessionId.userId
     val q = quote {
       query[Mediums]
         .filter(m => liftQuery(mediumIds).contains(m.id))
@@ -79,5 +69,16 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_ == mediumIds.size)
   }
+
+  def find(id: MediumId, sessionId: SessionId): Future[Option[Mediums]] = {
+    val by = sessionId.userId
+    val q = quote {
+      query[Mediums]
+        .filter(_.id == lift(id))
+        .filter(_.by == lift(by))
+    }
+    run(q).map(_.headOption)
+  }
+
 
 }

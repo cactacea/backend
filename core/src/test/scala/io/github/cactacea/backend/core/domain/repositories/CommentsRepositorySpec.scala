@@ -1,114 +1,129 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
-import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId}
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{CommentNotFound, FeedNotFound}
+import java.util.Locale
+
+import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, NotificationType}
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
+import io.github.cactacea.backend.core.infrastructure.identifiers.CommentId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.CommentNotFound
 
 class CommentsRepositorySpec extends RepositorySpec {
 
-  val commentsRepository = injector.instance[CommentsRepository]
-  val commentsDAO = injector.instance[CommentsDAO]
-  val feedsRepository = injector.instance[FeedsRepository]
-  var reportsRepository = injector.instance[ReportsRepository]
+  feature("create") {
 
-  test("create a comment") {
+    scenario("should create a comment") {
+      forOne(userGen, userGen, userGen, feedGen, commentGen) { (s, a1, a2, f, c) =>
 
-    val session = signUp("CommentsRepositorySpec1", "session password", "udid")
-    val feedId = execute(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val commentId = execute(commentsRepository.create(feedId, "comment", session.id.toSessionId))
-    val result = execute(commentsDAO.exist(commentId, session.id.toSessionId))
-    assert(result == true)
+        // preparing
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(a1.userName)).id
+        val userId2 = await(createUser(a2.userName)).id
+        val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId1 = await(commentsRepository.create(feedId, c.message, None, userId1.sessionId))
+        val commentId2 = await(commentsRepository.create(feedId, c.message, Option(commentId1), userId2.sessionId))
+
+        // result
+        val result = await(commentsRepository.find(commentId1, sessionId))
+        assert(result.id == commentId1)
+        assert(result.message == c.message)
+        assert(result.likeCount == 0L)
+
+        val result2 = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), sessionId))
+        assert(result2.headOption.exists(_.contentId.exists(_ == commentId1.value)))
+        assert(result2.headOption.exists(_.notificationType == NotificationType.feedReply))
+
+        val result3 = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), userId1.sessionId))
+        assert(result3.headOption.exists(_.contentId.exists(_ == commentId2.value)))
+        assert(result3.headOption.exists(_.notificationType == NotificationType.commentReply))
+
+      }
+    }
+  }
+
+  feature("delete") {
+    scenario("should delete a comment") {
+      forOne(userGen, feedGen, commentGen) { (s, f, c) =>
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+        await(commentsRepository.delete(commentId, sessionId))
+        assertFutureValue(commentsDAO.own(commentId, sessionId), false)
+      }
+    }
+
+    scenario("should return exception if a feed not exist") {
+      forOne(userGen) { (s) =>
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        assert(intercept[CactaceaException] {
+          await(commentsRepository.delete(CommentId(0), sessionId))
+        }.error == CommentNotFound)
+      }
+    }
+
+
+    scenario("should delete comment likes") {
+      forOne(userGen, userGen, feedGen, commentGen) { (s, a, f, c) =>
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId = await(createUser(a.userName)).id
+        val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+        await(commentLikesRepository.create(commentId, userId.sessionId))
+        await(commentsRepository.delete(commentId, sessionId))
+        assertFutureValue(commentsDAO.own(commentId, sessionId), false)
+        assertFutureValue(commentLikesDAO.own(commentId, userId.sessionId), false)
+      }
+    }
+
+    scenario("should delete comment reports") {
+      forOne(userGen, feedGen, commentGen, commentReportGen) { (s, f, c, r) =>
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+        await(commentsRepository.report(commentId, r.reportType, r.reportContent, sessionId))
+        await(commentsRepository.delete(commentId, sessionId))
+        assertFutureValue(commentsDAO.own(commentId, sessionId), false)
+        assert(await(findCommentReport(commentId, sessionId)).isEmpty)
+      }
+    }
 
   }
 
-  test("create a comment on no exist feed") {
+  feature("find comments") {
 
-    val session = signUp("CommentsRepositorySpec2", "session password", "udid")
+    scenario("should return comment list") {
+      forOne(userGen, feedGen, comment20ListGen) {
+        (s, f, c) =>
+          // preparing
+          val sessionId = await(createUser(s.userName)).id.sessionId
+          val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+          val comments = c.map({ c =>
+            val id = await(commentsRepository.create(feedId, c.message, None, sessionId))
+            c.copy(id = id)
+          }).reverse
 
-    assert(intercept[CactaceaException] {
-      execute(commentsRepository.create(FeedId(0L), "comment", session.id.toSessionId))
-    }.error == FeedNotFound)
-
-  }
-
-  test("delete a comment") {
-
-    val session = signUp("CommentsRepositorySpec3", "session password", "udid")
-    val user = signUp("CommentsRepositorySpec3-2", "user password", "user udid")
-    val feedId = execute(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val commentId = execute(commentsRepository.create(feedId, "comment", session.id.toSessionId))
-    val reportContent = Some("report content")
-    execute(reportsRepository.createCommentReport(commentId, ReportType.inappropriate, reportContent, user.id.toSessionId))
-    execute(commentsRepository.delete(commentId, session.id.toSessionId))
-    // TODO : Check
-
-  }
-
-  test("delete no exist comment") {
-
-    val session = signUp("CommentsRepositorySpec4", "session password", "udid")
-
-    assert(intercept[CactaceaException] {
-      execute(commentsRepository.delete(CommentId(0l), session.id.toSessionId))
-    }.error == CommentNotFound)
+          // should return comment list
+          val result = await(commentsRepository.find(feedId, None, 0, 10, sessionId))
+          result.zipWithIndex.foreach({ case (c, i) =>
+            assert(c.id == comments(i).id)
+          })
+      }
+    }
 
   }
 
-  test("find a comment") {
+  feature("find a comment") {
 
-    val session = signUp("CommentsRepositorySpec5", "session password", "udid")
-    val feedId = execute(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val commentId = execute(commentsRepository.create(feedId, "comment", session.id.toSessionId))
-    val comment = execute(commentsRepository.find(commentId, session.id.toSessionId))
-    assert(comment.id == commentId)
-
-  }
-
-  test("find no exist comment") {
-
-    val session = signUp("CommentsRepositorySpec6", "session password", "udid")
-    assert(intercept[CactaceaException] {
-      execute(commentsRepository.find(CommentId(0L), session.id.toSessionId))
-    }.error == CommentNotFound)
-
-  }
-
-  test("find everyone comments") {
-
-    val session = signUp("CommentsRepositorySpec7", "session password", "udid")
-    val feedId = execute(feedsRepository.create("feed message", None, None, FeedPrivacyType.everyone, false, None, session.id.toSessionId))
-    val commentId1 = execute(commentsRepository.create(feedId, "comment 1", session.id.toSessionId))
-    val commentId2 = execute(commentsRepository.create(feedId, "comment 2", session.id.toSessionId))
-    val commentId3 = execute(commentsRepository.create(feedId, "comment 3", session.id.toSessionId))
-    val commentId4 = execute(commentsRepository.create(feedId, "comment 4", session.id.toSessionId))
-    val commentId5 = execute(commentsRepository.create(feedId, "comment 5", session.id.toSessionId))
-    val comments1 = execute(commentsRepository.find(feedId, None, 0, 3, session.id.toSessionId))
-    val comment1 = comments1(0)
-    val comment2 = comments1(1)
-    val comment3 = comments1(2)
-    assert(commentId5 == comment1.id)
-    assert(commentId4 == comment2.id)
-    assert(commentId3 == comment3.id)
-    val comments2 = execute(commentsRepository.find(feedId, comment3.next, 0, 3, session.id.toSessionId))
-    val comment4 = comments2(0)
-    val comment5 = comments2(1)
-    assert(commentId2 == comment4.id)
-    assert(commentId1 == comment5.id)
-
-  }
-
-  test("find comments on no exist feed") {
-
-    val session = signUp("CommentsRepositorySpec8", "session password", "udid")
-    assert(intercept[CactaceaException] {
-      execute(commentsRepository.find(FeedId(0L), None, 0, 3, session.id.toSessionId))
-    }.error == FeedNotFound)
+    scenario("should return exception if a feed not exist") {
+      forOne(userGen) { (s) =>
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        assert(intercept[CactaceaException] {
+          await(commentsRepository.find(CommentId(0), sessionId))
+        }.error == CommentNotFound)
+      }
+    }
 
   }
 
 }
-

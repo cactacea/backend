@@ -1,12 +1,13 @@
 package io.github.cactacea.backend.server.utils.swagger
 
 import com.google.inject.Provides
-import io.cactacea.finagger
-import io.cactacea.finagger.SwaggerModule
 import io.github.cactacea.backend.CactaceaBuildInfo
 import io.github.cactacea.backend.core.util.configs.Config
+import io.github.cactacea.finagger.{CactaceaSwagger, SwaggerModule}
 import io.swagger.models._
 import io.swagger.models.auth.{ApiKeyAuthDefinition, In}
+import io.swagger.models.ModelImpl
+import io.swagger.models.properties.{LongProperty, StringProperty}
 
 object CactaceaSwaggerModule extends SwaggerModule {
 
@@ -18,18 +19,18 @@ object CactaceaSwaggerModule extends SwaggerModule {
       .description("Cactacea / Cactacea backend API for web and mobile applications")
       .version(CactaceaBuildInfo.version)
 
-    val swaggerDefine = finagger.CactaceaSwagger.info(info)
+    val swaggerDefine = CactaceaSwagger.info(info)
 
     // Model defines
     swaggerDefine.addDefinition("CactaceaError", errorResponseScheme("CactaceaError"))
 
     // Tags
-    swaggerDefine.addTag(new Tag().name("Accounts").description("Manage accounts"))
+    swaggerDefine.addTag(new Tag().name("Users").description("Manage users"))
     swaggerDefine.addTag(new Tag().name("Blocks").description("Manage blocks"))
     swaggerDefine.addTag(new Tag().name("Comments").description("Manage comments"))
     swaggerDefine.addTag(new Tag().name("Feeds").description("Manage feeds"))
-    swaggerDefine.addTag(new Tag().name("Groups").description("Manage groups"))
-    swaggerDefine.addTag(new Tag().name("Invitations").description("Manage group invitations"))
+    swaggerDefine.addTag(new Tag().name("Channels").description("Manage channels"))
+    swaggerDefine.addTag(new Tag().name("Invitations").description("Manage invitations"))
     swaggerDefine.addTag(new Tag().name("Mediums").description("Manage media"))
     swaggerDefine.addTag(new Tag().name("Messages").description("Manage messages"))
     swaggerDefine.addTag(new Tag().name("Session").description("Manage session"))
@@ -54,8 +55,6 @@ object CactaceaSwaggerModule extends SwaggerModule {
   }
 
   def errorResponseScheme(name: String): ModelImpl = {
-    import io.swagger.models.ModelImpl
-    import io.swagger.models.properties.{LongProperty, StringProperty}
 
     val code = new LongProperty().description("code")
     val message = new StringProperty().description("message")

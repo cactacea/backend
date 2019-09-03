@@ -7,7 +7,7 @@ import com.twitter.inject.server.FeatureTest
 trait MutesControllerSpec extends FeatureTest {
   self: CactaceaServerSpec =>
 
-  test("POST /accounts/:id/mutes") (pending)
-  test("DELETE /accounts/:id/mutes") (pending)
+  test("POST /users/:id/mutes") (pending)
+  test("DELETE /users/:id/mutes") (pending)
 
 }

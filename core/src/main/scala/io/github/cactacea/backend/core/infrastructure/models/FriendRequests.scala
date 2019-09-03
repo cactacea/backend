@@ -1,13 +1,11 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
-import io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FriendRequestId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FriendRequestId}
 
 case class FriendRequests(
                            id: FriendRequestId,
-                           accountId: AccountId,
-                           by: AccountId,
+                           userId: UserId,
+                           by: UserId,
                            notified: Boolean,
-                           requestStatus: FriendRequestStatusType,
                            requestedAt: Long
                          )

@@ -2,17 +2,20 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.dao._
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{AccountsValidator, FeedsValidator, MediumsValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, FeedsValidator, MediumsValidator}
 
 
 class FeedsRepository @Inject()(
-                                 accountsValidator: AccountsValidator,
-                                 accountFeedsDAO: AccountFeedsDAO,
+                                 usersValidator: UsersValidator,
+                                 userFeedsDAO: UserFeedsDAO,
                                  feedsDAO: FeedsDAO,
+                                 feedTagsDAO: FeedTagsDAO,
+                                 feedMediumsDAO: FeedMediumsDAO,
+                                 feedReportsDAO: FeedReportsDAO,
                                  feedsValidator: FeedsValidator,
                                  mediumsValidator: MediumsValidator,
                                  notificationsDAO: NotificationsDAO
@@ -28,11 +31,12 @@ class FeedsRepository @Inject()(
 
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- mediumsValidator.exist(ids, sessionId)
+      _ <- mediumsValidator.mustExist(ids, sessionId)
       i <- feedsDAO.create(message, ids, tags, privacyType, contentWarning, expiration, sessionId)
-      _ <- accountFeedsDAO.create(i, sessionId)
-      _ <- notificationsDAO.createFeed(i, sessionId)
-
+      _ <- feedTagsDAO.create(i, tags)
+      _ <- feedMediumsDAO.create(i, mediumIds)
+      _ <- userFeedsDAO.create(i, sessionId)
+      _ <- notificationsDAO.create(i, sessionId)
     } yield (i)
   }
 
@@ -47,39 +51,43 @@ class FeedsRepository @Inject()(
 
     val ids = mediumIds.map(_.distinct)
     for {
-      _ <- mediumsValidator.exist(ids, sessionId)
-      _ <- feedsValidator.exist(feedId, sessionId)
+      _ <- feedsValidator.mustOwn(feedId, sessionId)
+      _ <- mediumsValidator.mustExist(ids, sessionId)
+      _ <- feedTagsDAO.delete(feedId)
+      _ <- feedMediumsDAO.delete(feedId)
       _ <- feedsDAO.update(feedId, message, ids, tags, privacyType, contentWarning, expiration, sessionId)
+      _ <- feedTagsDAO.create(feedId, tags)
+      _ <- feedMediumsDAO.create(feedId, mediumIds)
     } yield (())
   }
 
   def delete(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- feedsValidator.exist(feedId, sessionId)
+      _ <- feedsValidator.mustOwn(feedId, sessionId)
       _ <- feedsDAO.delete(feedId, sessionId)
     } yield (())
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
     for {
-      _ <- accountsValidator.exist(accountId, sessionId)
-      _ <- accountsValidator.exist(sessionId.toAccountId, accountId.toSessionId)
-      r <- feedsDAO.find(accountId, since, offset, count, sessionId)
+      _ <- usersValidator.mustExist(userId, sessionId)
+      r <- feedsDAO.find(userId, since, offset, count, sessionId)
     } yield (r)
   }
 
   def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
-    for {
-      r <- accountFeedsDAO.find(since, offset, count, privacyType, sessionId)
-    } yield (r)
-  }
-
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedsDAO.find(since, offset, count, sessionId)
+    userFeedsDAO.find(since, offset, count, privacyType, sessionId)
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {
-    feedsValidator.find(feedId, sessionId)
+    feedsValidator.mustFind(feedId, sessionId)
+  }
+
+  def report(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
+    for {
+      _ <- feedsValidator.mustExist(feedId, sessionId)
+      _ <- feedReportsDAO.create(feedId, reportType, reportContent, sessionId)
+    } yield (())
   }
 
 }

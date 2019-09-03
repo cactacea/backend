@@ -5,13 +5,22 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
+import io.github.cactacea.backend.auth.core.utils.moduels.JWTAuthenticationModule
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.modules.CoreModule
-import io.github.cactacea.backend.server.utils.modules.AuthenticationModule
+import io.github.cactacea.backend.core.helpers.generators.{Generator, ModelsGenerator, StatusGenerator}
+import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
+import io.github.cactacea.backend.server.helpers.RequestGenerator
+import io.github.cactacea.backend.server.utils.modules.APIPrefixModule
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 @Singleton
 class CactaceaServerSpec extends FeatureTest
-  with AccountsControllerSpec
+  with GeneratorDrivenPropertyChecks
+  with Generator
+  with StatusGenerator
+  with ModelsGenerator
+  with RequestGenerator
+  with UsersControllerSpec
   with BlocksControllerSpec
   with CommentLikesControllerSpec
   with CommentsControllerSpec
@@ -19,7 +28,7 @@ class CactaceaServerSpec extends FeatureTest
   with FeedsControllerSpec
   with FollowsControllerSpec
   with FriendsControllerSpec
-  with GroupsControllerSpec
+  with ChannelsControllerSpec
   with InvitationsControllerSpec
   with MessagesControllerSpec
   with MutesControllerSpec
@@ -30,18 +39,16 @@ class CactaceaServerSpec extends FeatureTest
   with SettingsControllerSpec {
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new CactaceaServer {
-      addFrameworkModule(AuthenticationModule)
-
-    }
+    twitterServer = new CactaceaServer
   )
 
   override val injector =
     TestInjector(
       modules = Seq(
           DatabaseModule,
-          AuthenticationModule,
-          CoreModule,
+          JWTAuthenticationModule,
+          APIPrefixModule,
+          DefaultCoreModule,
           DefaultChatModule,
           DefaultDeepLinkModule,
           DefaultJacksonModule,

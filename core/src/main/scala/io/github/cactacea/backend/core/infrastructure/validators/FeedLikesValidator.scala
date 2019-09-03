@@ -10,8 +10,8 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{FeedAlread
 @Singleton
 class FeedLikesValidator @Inject()(feedLikesDAO: FeedLikesDAO) {
 
-  def notExist(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    feedLikesDAO.exist(feedId, sessionId).flatMap(_ match {
+  def mustNotLiked(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+    feedLikesDAO.own(feedId, sessionId).flatMap(_ match {
       case false =>
         Future.Unit
       case true =>
@@ -20,8 +20,8 @@ class FeedLikesValidator @Inject()(feedLikesDAO: FeedLikesDAO) {
   }
 
 
-  def exist(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
-    feedLikesDAO.exist(feedId, sessionId).flatMap(_ match {
+  def mustLiked(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+    feedLikesDAO.own(feedId, sessionId).flatMap(_ match {
       case false =>
         Future.exception(CactaceaException(FeedNotLiked))
       case true =>

@@ -10,7 +10,7 @@ trait CommentsHelper extends CommonHelper {
   self: APIServerSpec =>
 
   def postComment(id: FeedId, message: String, accessToken: String): CommentCreated = {
-    val request = PostComment(id, message)
+    val request = PostComment(id, None, message)
     val body = mapper.writePrettyString(request)
     val path = s"/comments"
     server.httpPostJson[CommentCreated](

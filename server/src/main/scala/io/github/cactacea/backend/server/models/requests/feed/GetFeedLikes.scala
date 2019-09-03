@@ -9,13 +9,13 @@ case class GetFeedLikes(
                          @ApiModelProperty(value = "Feed identifier.", required = true)
                          @RouteParam id: FeedId,
 
-                         @ApiModelProperty(value = "Filters accounts which started on since or later.")
+                         @ApiModelProperty(value = "Filters users which started on since or later.")
                          @QueryParam since: Option[Long],
 
-                         @ApiModelProperty(value = "The offset of accounts. By default the value is 0.")
+                         @ApiModelProperty(value = "The offset of users. By default the value is 0.")
                          @QueryParam offset: Option[Int],
 
-                         @ApiModelProperty(value = "Maximum number of accounts returned on one result page." +
+                         @ApiModelProperty(value = "Maximum number of users returned on one result page." +
                            " By default the value is 20 entries. The page size can never be larger than 50.")
                          @QueryParam @Max(50) count: Option[Int]
                     )

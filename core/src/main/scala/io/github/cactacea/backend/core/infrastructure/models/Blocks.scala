@@ -1,10 +1,10 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, BlockId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, BlockId}
 
 case class Blocks(
                    id: BlockId,
-                   accountId: AccountId,
-                   by: AccountId,
+                   userId: UserId,
+                   by: UserId,
                    blockedAt: Long
                         )

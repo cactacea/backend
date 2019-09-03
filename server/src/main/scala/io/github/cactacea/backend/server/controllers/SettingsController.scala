@@ -5,7 +5,7 @@ import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
-import io.github.cactacea.backend.server.models.requests.setting.{PostActiveStatus, PostDevicePushToken, PutNotificationSetting}
+import io.github.cactacea.backend.server.models.requests.setting.{PutDevice, PutNotificationSetting}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
@@ -48,38 +48,26 @@ class SettingsController @Inject()(
         request.comment,
         request.friendRequest,
         request.message,
-        request.groupMessage,
-        request.groupInvitation,
+        request.channelMessage,
+        request.invitation,
         request.showMessage,
         CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 
-    scope(basic).postWithDoc("/session/push/token")  { o =>
-      o.summary("Update device push token")
-        .tag(tagName)
-        .operationId("updatePushToken")
-        .request[PostDevicePushToken]
-        .responseWith(Status.Ok.code, successfulMessage)
-    } { request: PostDevicePushToken =>
-      deviceTokenService.update(
-        request.pushToken,
-        CactaceaContext.sessionId,
-        request.udid
-      ).map(_ => response.ok)
-    }
-
-    postWithDoc("/session/status")  { o =>
+    scope(basic).putWithDoc("/session/device")  { o =>
       o.summary("Update device status")
         .tag(tagName)
         .operationId("updateDeviceStatus")
-        .request[PostActiveStatus]
+        .request[PutDevice]
         .responseWith(Status.Ok.code, successfulMessage)
-    } { request: PostActiveStatus =>
+    } { request: PutDevice =>
       deviceTokenService.update(
-        request.status,
-        CactaceaContext.sessionId,
-        request.udid
+        request.udid,
+        request.pushToken,
+        CactaceaContext.deviceType,
+        request.userAgent,
+        CactaceaContext.sessionId
       ).map(_ => response.ok)
     }
 

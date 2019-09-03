@@ -7,12 +7,11 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.domain.repositories._
-import io.github.cactacea.backend.core.infrastructure.identifiers.{AccountId, FeedId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, MediumId, SessionId}
 
 class FeedsService @Inject()(
                               databaseService: DatabaseService,
                               feedsRepository: FeedsRepository,
-                              reportsRepository: ReportsRepository,
                               queueService: QueueService
                             ) {
 
@@ -58,12 +57,8 @@ class FeedsService @Inject()(
     feedsRepository.find(since, offset, count, privacyType, sessionId)
   }
 
-  def find(accountId: AccountId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedsRepository.find(accountId, since, offset, count, sessionId)
-  }
-
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
-    feedsRepository.find(since, offset, count, sessionId)
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+    feedsRepository.find(userId, since, offset, count, sessionId)
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {
@@ -72,7 +67,7 @@ class FeedsService @Inject()(
 
   def report(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     transaction {
-      reportsRepository.createFeedReport(feedId, reportType, reportContent, sessionId)
+      feedsRepository.report(feedId, reportType, reportContent, sessionId)
     }
   }
 

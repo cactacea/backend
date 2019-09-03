@@ -1,155 +1,154 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.domain.enums.FriendsSortType
-import io.github.cactacea.backend.core.helpers.DAOSpec
+import com.twitter.finagle.mysql.ServerError
+import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.Relationships
 
 class FriendsDAOSpec extends DAOSpec {
 
   import db._
 
-  test("create") {
+  feature("create") {
+    forAll(userGen, userGen) { (a1, a2) =>
+      val sessionId = await(usersDAO.create(a1.userName)).sessionId
+      val userId = await(usersDAO.create(a2.userName))
+      await(friendsDAO.create(userId, sessionId))
+      assert(await(friendsDAO.own(userId, sessionId)))
+      assert(await(usersDAO.find(sessionId)).map(_.friendCount) == Option(1L))
+      assert(await(db.run(query[Relationships]
+        .filter(_.userId == lift(userId))
+        .filter(_.by == lift(sessionId.userId)).nonEmpty)))
+    }
 
-    val sessionAccount = createAccount("FriendsDAOSpec1")
-    val friendAccount1 = createAccount("FriendsDAOSpec2")
-    val friendAccount2 = createAccount("FriendsDAOSpec3")
+    scenario("should return an exception occurs if duplicated") {
+      forAll(userGen, userGen) { (a1, a2) =>
+        val sessionId = await(usersDAO.create(a1.userName)).sessionId
+        val userId = await(usersDAO.create(a2.userName))
+        await(friendsDAO.create(userId, sessionId))
 
-    // create friends
-    execute(friendsDAO.create(sessionAccount.id, friendAccount1.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount.id, friendAccount2.id.toSessionId))
-    val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(friendAccount1.id))))).head
-    val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(friendAccount2.id))))).head
-    assert(result1.isFriend == true)
-    assert(result2.isFriend == true)
-
-  }
-
-  test("delete") {
-
-    val sessionAccount = createAccount("FriendsDAOSpec4")
-    val friendAccount1 = createAccount("FriendsDAOSpec5")
-    val friendAccount2 = createAccount("FriendsDAOSpec6")
-    execute(friendsDAO.create(sessionAccount.id, friendAccount1.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount.id, friendAccount2.id.toSessionId))
-
-    // delete friends
-    execute(friendsDAO.delete(sessionAccount.id, friendAccount1.id.toSessionId))
-    execute(friendsDAO.delete(sessionAccount.id, friendAccount2.id.toSessionId))
-    val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(friendAccount1.id))))).head
-    val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(friendAccount2.id))))).head
-    assert(result1.isFriend == false)
-    assert(result2.isFriend == false)
+        // exception occurs
+        assert(intercept[ServerError] {
+          await(friendsDAO.create(userId, sessionId))
+        }.code == 1062)
+      }
+    }
 
   }
 
-  test("exist") {
-
-    val sessionAccount = createAccount("FriendsDAOSpec7")
-    val friendAccount1 = createAccount("FriendsDAOSpec8")
-    val friendAccount2 = createAccount("FriendsDAOSpec9")
-    val friendAccount3 = createAccount("FriendsDAOSpec10")
-    execute(friendsDAO.create(sessionAccount.id, friendAccount1.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount.id, friendAccount2.id.toSessionId))
-
-    // exist friends
-    val result1 = execute(friendsDAO.exist(sessionAccount.id, friendAccount1.id.toSessionId))
-    val result2 = execute(friendsDAO.exist(sessionAccount.id, friendAccount2.id.toSessionId))
-    val result3 = execute(friendsDAO.exist(sessionAccount.id, friendAccount3.id.toSessionId))
-    assert(result1 == true)
-    assert(result2 == true)
-    assert(result3 == false)
-
+  feature("delete") {
+    forAll(userGen, userGen) { (a1, a2) =>
+      val sessionId = await(usersDAO.create(a1.userName)).sessionId
+      val userId = await(usersDAO.create(a2.userName))
+      await(friendsDAO.create(userId, sessionId))
+      assert(await(friendsDAO.own(userId, sessionId)))
+      assert(await(usersDAO.find(sessionId)).map(_.friendCount) == Option(1L))
+      assert(await(db.run(query[Relationships]
+        .filter(_.userId == lift(userId))
+        .filter(_.by == lift(sessionId.userId))
+        .filter(_.isFriend).nonEmpty)))
+      await(friendsDAO.delete(userId, sessionId))
+      assert(!await(friendsDAO.own(userId, sessionId)))
+      assert(await(usersDAO.find(sessionId)).map(_.friendCount) == Option(0L))
+      assert(await(db.run(query[Relationships]
+        .filter(_.userId == lift(userId))
+        .filter(_.by == lift(sessionId.userId))
+        .filter(_.isFriend).isEmpty)))
+    }
   }
 
-  test("find a account's friends") {
-
-    val sessionAccount1 = createAccount("FriendsDAOSpec11")
-    val sessionAccount2 = createAccount("FriendsDAOSpec12")
-    val sessionAccount3 = createAccount("FriendsDAOSpec13")
-    val sessionAccount4 = createAccount("FriendsDAOSpec14")
-    val sessionAccount5 = createAccount("FriendsDAOSpec15")
-    val sessionAccount6 = createAccount("FriendsDAOSpec16")
-    val friendUser = createAccount("FriendsDAOSpec17")
-
-    execute(friendsDAO.create(sessionAccount1.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount2.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount3.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount4.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount5.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount6.id, friendUser.id.toSessionId))
-
-    // find friends top page
-    val result1 = execute(friendsDAO.find(friendUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
-    assert(result1(0).id == sessionAccount6.id)
-    assert(result1(1).id == sessionAccount5.id)
-    assert(result1(2).id == sessionAccount4.id)
-
-    // find friends next page
-    val result2 = execute(friendsDAO.find(friendUser.id, result1(2).next, 0, 3, sessionAccount1.id.toSessionId))
-    assert(result2(0).id == sessionAccount3.id)
-    assert(result2(1).id == sessionAccount2.id)
-    assert(result2(2).id == sessionAccount1.id)
+  feature("own") {
+    scenario("should return followed or not") {
+      forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(friendsDAO.create(userId1, userId2.sessionId))
+        await(friendsDAO.create(userId2, userId3.sessionId))
+        await(friendsDAO.create(userId3, userId1.sessionId))
+        assertFutureValue(friendsDAO.own(userId2, userId1.sessionId), false)
+        assertFutureValue(friendsDAO.own(userId3, userId1.sessionId), true)
+        assertFutureValue(friendsDAO.own(userId1, userId2.sessionId), true)
+        assertFutureValue(friendsDAO.own(userId3, userId2.sessionId), false)
+        assertFutureValue(friendsDAO.own(userId1, userId3.sessionId), false)
+        assertFutureValue(friendsDAO.own(userId2, userId3.sessionId), true)
+      }
+    }
   }
 
-  test("find session friends sort by friendsAt") {
+  feature("find") {
 
-    val sessionAccount1 = createAccount("FriendsDAOSpec21")
-    val sessionAccount2 = createAccount("FriendsDAOSpec22")
-    val sessionAccount3 = createAccount("FriendsDAOSpec23")
-    val sessionAccount4 = createAccount("FriendsDAOSpec24")
-    val sessionAccount5 = createAccount("FriendsDAOSpec25")
-    val sessionAccount6 = createAccount("FriendsDAOSpec26")
-    val friendUser = createAccount("FriendsDAOSpec27")
+    scenario("should return session friend list") {
+      forAll(sortedNameGen, userGen, sortedUserGen, sortedUserGen, sortedUserGen, userGen)
+      { (h, s, a1, a2, a3, a4) =>
 
-    execute(friendsDAO.create(sessionAccount1.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount2.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount3.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount4.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount5.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount6.id, friendUser.id.toSessionId))
+        // preparing
+        //   session user follow user1
+        //   session user follow user2
+        //   session user follow user3
+        //   session user follow user4
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(h + a1.userName))
+        val userId2 = await(usersDAO.create(h + a2.userName))
+        val userId3 = await(usersDAO.create(h + a3.userName))
+        val userId4 = await(usersDAO.create(a4.userName))
+        await(friendsDAO.create(userId1, sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(userId3, sessionId))
+        await(friendsDAO.create(userId4, sessionId))
 
-    // find friends top page
-    val result1 = execute(friendsDAO.find(None, 0, 3, FriendsSortType.friendsAt, friendUser.id.toSessionId))
-    assert(result1(0).id == sessionAccount6.id)
-    assert(result1(1).id == sessionAccount5.id)
-    assert(result1(2).id == sessionAccount4.id)
+        // return user1 found
+        // return user2 found
+        // return user3 found
+        // return user4 not found because of user name not matched
+        val result1 = await(friendsDAO.find(Option(h), None, 0, 2, sessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == userId3)
+        assert(result1(1).id == userId2)
 
-    // find friends next page
-    val result2 = execute(friendsDAO.find(result1(2).next, 0, 3, FriendsSortType.friendsAt, friendUser.id.toSessionId))
-    assert(result2(0).id == sessionAccount3.id)
-    assert(result2(1).id == sessionAccount2.id)
-    assert(result2(2).id == sessionAccount1.id)
+        val result2 = await(friendsDAO.find(Option(h), result1.lastOption.map(_.next), 0, 2, sessionId))
+        assert(result2.size == 1)
+        assert(result2(0).id == userId1)
+      }
+    }
+
+    scenario("should return an user's friend list") {
+      forAll(sortedNameGen, userGen, sortedUserGen, sortedUserGen, sortedUserGen, userGen)
+      { (h, s, a1, a2, a3, a4) =>
+
+        // preparing
+        //   session user follow user1
+        //   session user follow user2
+        //   session user follow user3
+        //   session user follow user4
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(h + a1.userName))
+        val userId2 = await(usersDAO.create(h + a2.userName))
+        val userId3 = await(usersDAO.create(h + a3.userName))
+        val userId4 = await(usersDAO.create(a4.userName))
+        await(friendsDAO.create(userId1, sessionId))
+        await(friendsDAO.create(userId2, sessionId))
+        await(friendsDAO.create(userId3, sessionId))
+        await(friendsDAO.create(userId4, sessionId))
+
+        // user2 block user1
+        await(blocksDAO.create(userId1, userId2.sessionId))
+
+        // return user1 found
+        // return user2 not found because of user2 be blocked by user1
+        // return user3 found
+        // return user4 not found because of user name not matched
+        val result1 = await(friendsDAO.find(sessionId.userId, Option(h), None, 0, 2, userId1.sessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == userId3)
+        assert(result1(1).id == userId1)
+
+        val result2 = await(friendsDAO.find(sessionId.userId, Option(h), result1.lastOption.map(_.next), 0, 2, userId1.sessionId))
+        assert(result2.size == 0)
+      }
+    }
+
+
   }
-
-  test("find session friends sort by accountName") {
-
-    val sessionAccount1 = createAccount("FriendsDAOSpec31")
-    val sessionAccount2 = createAccount("FriendsDAOSpec32")
-    val sessionAccount3 = createAccount("FriendsDAOSpec33")
-    val sessionAccount4 = createAccount("FriendsDAOSpec34")
-    val sessionAccount5 = createAccount("FriendsDAOSpec35")
-    val sessionAccount6 = createAccount("FriendsDAOSpec36")
-    val friendUser = createAccount("FriendsDAOSpec37")
-
-    execute(friendsDAO.create(sessionAccount1.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount2.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount3.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount4.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount5.id, friendUser.id.toSessionId))
-    execute(friendsDAO.create(sessionAccount6.id, friendUser.id.toSessionId))
-
-    // find friends top page
-    val result1 = execute(friendsDAO.find(None, 0, 3, FriendsSortType.accountName, friendUser.id.toSessionId))
-    assert(result1(0).id == sessionAccount1.id)
-    assert(result1(1).id == sessionAccount2.id)
-    assert(result1(2).id == sessionAccount3.id)
-
-    // find friends next page
-    val result2 = execute(friendsDAO.find(result1(2).next, 0, 3, FriendsSortType.accountName, friendUser.id.toSessionId))
-    assert(result2(0).id == sessionAccount4.id)
-    assert(result2(1).id == sessionAccount5.id)
-    assert(result2(2).id == sessionAccount6.id)
-  }
-
 
 }
+

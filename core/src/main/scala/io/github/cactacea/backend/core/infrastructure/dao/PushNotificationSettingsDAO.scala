@@ -13,78 +13,53 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
 
   def create(sessionId: SessionId): Future[Unit] = {
 
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
       query[PushNotificationSettings].insert(
-        _.accountId           -> lift(accountId),
+        _.userId           -> lift(userId),
         _.feed                -> lift(true),
         _.comment             -> lift(true),
         _.friendRequest       -> lift(true),
         _.message             -> lift(true),
-        _.groupMessage        -> lift(true),
-        _.groupInvitation     -> lift(true),
+        _.channelMessage        -> lift(true),
+        _.invitation     -> lift(true),
         _.showMessage         -> lift(true)
       )
     }
-    run(q).map(_ => Unit)
-  }
-
-  def create(feed: Boolean,
-             comment:Boolean,
-             friendRequest: Boolean,
-             message: Boolean,
-             groupMessage: Boolean,
-             groupInvitation: Boolean,
-             showMessage: Boolean,
-             sessionId: SessionId): Future[Unit] = {
-
-    val accountId = sessionId.toAccountId
-    val q = quote {
-      query[PushNotificationSettings].insert(
-        _.accountId           -> lift(accountId),
-        _.feed                -> lift(feed),
-        _.comment             -> lift(comment),
-        _.friendRequest       -> lift(friendRequest),
-        _.message             -> lift(message),
-        _.groupMessage        -> lift(groupMessage),
-        _.groupInvitation     -> lift(groupInvitation),
-        _.showMessage         -> lift(showMessage)
-      )
-    }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def update(feed: Boolean,
              comment:Boolean,
              friendRequest: Boolean,
              message: Boolean,
-             groupMessage: Boolean,
-             groupInvitation: Boolean,
+             channelMessage: Boolean,
+             invitation: Boolean,
              showMessage: Boolean,
              sessionId: SessionId): Future[Unit] = {
 
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
       query[PushNotificationSettings]
-        .filter(_.accountId == lift(accountId))
+        .filter(_.userId == lift(userId))
         .update(
           _.feed            -> lift(feed),
           _.comment         -> lift(comment),
           _.friendRequest   -> lift(friendRequest),
           _.message         -> lift(message),
-          _.groupMessage    -> lift(groupMessage),
-          _.groupInvitation -> lift(groupInvitation),
+          _.channelMessage    -> lift(channelMessage),
+          _.invitation      -> lift(invitation),
           _.showMessage     -> lift(showMessage)
         )
     }
-    run(q).map(_ => Unit)
+    run(q).map(_ => ())
   }
 
   def find(sessionId: SessionId): Future[Option[PushNotificationSettings]] = {
-    val accountId = sessionId.toAccountId
+    val userId = sessionId.userId
     val q = quote {
       query[PushNotificationSettings]
-        .filter(_.accountId == lift(accountId))
+        .filter(_.userId == lift(userId))
     }
     run(q).map(_.headOption)
   }

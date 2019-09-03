@@ -7,8 +7,8 @@ case class PushNotificationSetting(
                                     comment: Boolean,
                                     friendRequest: Boolean,
                                     message: Boolean,
-                                    groupMessage: Boolean,
-                                    groupInvitation: Boolean,
+                                    channelMessage: Boolean,
+                                    invitation: Boolean,
                                     showMessage: Boolean
                                )
 
@@ -20,8 +20,8 @@ object PushNotificationSetting {
       comment         = s.comment,
       friendRequest   = s.friendRequest,
       message         = s.message,
-      groupMessage    = s.groupMessage,
-      groupInvitation = s.groupInvitation,
+      channelMessage    = s.channelMessage,
+      invitation = s.invitation,
       showMessage     = s.showMessage
     )
   }

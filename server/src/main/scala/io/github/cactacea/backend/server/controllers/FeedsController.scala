@@ -5,9 +5,9 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models.Feed
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
-import io.github.cactacea.backend.server.models.requests.feed.{DeleteFeed, GetFeed, GetFeeds, PostFeed, PostFeedReport, PutFeed}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
+import io.github.cactacea.backend.server.models.requests.feed._
 import io.github.cactacea.backend.server.models.responses.FeedCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
@@ -23,23 +23,6 @@ class FeedsController @Inject()(
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
-
-    scope(feeds).getWithDoc("/feeds") { o =>
-      o.summary("Find feeds")
-        .tag(feedsTag)
-        .operationId("findFeeds")
-        .request[GetFeeds]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
-    } { request: GetFeeds =>
-      feedsService.find(
-        request.since,
-        request.offset.getOrElse(0),
-        request.count.getOrElse(20),
-        request.feedPrivacyType,
-        CactaceaContext.sessionId
-      )
-    }
 
     scope(feeds).postWithDoc("/feeds") { o =>
       o.summary("Post a feed")

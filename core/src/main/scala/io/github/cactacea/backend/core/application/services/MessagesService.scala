@@ -16,35 +16,34 @@ class MessagesService @Inject()(
 
   import databaseService._
 
-  def createText(groupId: GroupId, message: String, sessionId: SessionId): Future[Message] = {
+  def createText(channelId: ChannelId, message: String, sessionId: SessionId): Future[Message] = {
     transaction {
       for {
-        m <- messagesRepository.createText(groupId, message, sessionId)
+        m <- messagesRepository.createText(channelId, message, sessionId)
         _ <- queueService.enqueueMessage(m.id)
       } yield (m)
     }
   }
 
-  def createMedium(groupId: GroupId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
+  def createMedium(channelId: ChannelId, mediumId: MediumId, sessionId: SessionId): Future[Message] = {
     transaction {
       for {
-        m <- messagesRepository.createMedium(groupId, mediumId, sessionId)
+        m <- messagesRepository.createMedium(channelId, mediumId, sessionId)
         _ <- queueService.enqueueMessage(m.id)
       } yield (m)
     }
   }
 
-  def delete(groupId: GroupId, sessionId: SessionId): Future[Unit] = {
+  def delete(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     transaction {
-      messagesRepository.delete(groupId, sessionId)
+      messagesRepository.delete(channelId, sessionId)
     }
   }
 
-  def find(groupId: GroupId, since: Option[Long], offset: Int, count: Int, ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {
+  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int, ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {
     transaction {
       for {
-        m <- messagesRepository.find(groupId, since, offset, count, ascending, sessionId)
-        _ <- messagesRepository.updateReadStatus(m, sessionId)
+        m <- messagesRepository.find(channelId, since, offset, count, ascending, sessionId)
       } yield (m)
     }
   }

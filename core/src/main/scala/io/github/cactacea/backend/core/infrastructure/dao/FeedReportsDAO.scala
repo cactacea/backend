@@ -14,7 +14,7 @@ class FeedReportsDAO @Inject()(db: DatabaseService) {
 
   def create(feedId: FeedId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[FeedReportId] = {
     val reportedAt = System.currentTimeMillis()
-    val by = sessionId.toAccountId
+    val by = sessionId.userId
     val q = quote {
       query[FeedReports].insert(
         _.feedId        -> lift(feedId),
@@ -25,6 +25,15 @@ class FeedReportsDAO @Inject()(db: DatabaseService) {
       ).returning(_.id)
     }
     run(q)
+  }
+
+  def delete(feedId: FeedId): Future[Unit] = {
+    val q = quote {
+      query[FeedReports]
+        .filter(_.feedId == lift(feedId))
+        .delete
+    }
+    run(q).map(_ => ())
   }
 
 }

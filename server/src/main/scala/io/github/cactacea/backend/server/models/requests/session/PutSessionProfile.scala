@@ -10,12 +10,12 @@ case class PutSessionProfile (
                                @ApiModelProperty(value = "Profile URL.", required = false)
                                @Size(min = 0, max = 2038) web: Option[String],
 
-                               @ApiModelProperty(value = "Account birthday.", required = false)
+                               @ApiModelProperty(value = "User birthday.", required = false)
                                birthday: Option[Long],
 
-                               @ApiModelProperty(value = "Account address.", required = false)
+                               @ApiModelProperty(value = "User address.", required = false)
                                @Size(min = 0, max = 255) location: Option[String],
 
-                               @ApiModelProperty(value = "Account bio.", required = false)
+                               @ApiModelProperty(value = "User bio.", required = false)
                                @Size(min = 0, max = 1024) bio: Option[String],
                              )

@@ -6,7 +6,7 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services.BlocksService
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
-import io.github.cactacea.backend.server.models.requests.account.{DeleteBlock, PostBlock}
+import io.github.cactacea.backend.server.models.requests.user.{DeleteBlock, PostBlock}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
@@ -22,14 +22,14 @@ class BlocksController @Inject()(
 
   prefix(apiPrefix) {
 
-    scope(basic).postWithDoc("/accounts/:id/blocks") { o =>
-      o.summary("Block a account")
-        .tag(accountsTag)
+    scope(basic).postWithDoc("/users/:id/blocks") { o =>
+      o.summary("Block an user")
+        .tag(usersTag)
         .operationId("block")
         .request[PostBlock]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CanNotSpecifyMyself, AccountAlreadyBlocked))))
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(InvalidUserIdError, UserAlreadyBlocked))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
 
     } { request: PostBlock =>
       blocksService.create(
@@ -38,14 +38,14 @@ class BlocksController @Inject()(
       ).map(_ => response.ok)
     }
 
-    scope(basic).deleteWithDoc("/accounts/:id/blocks") { o =>
-      o.summary("Unblock a account")
-        .tag(accountsTag)
+    scope(basic).deleteWithDoc("/users/:id/blocks") { o =>
+      o.summary("Unblock an user")
+        .tag(usersTag)
         .operationId("unblock")
         .request[DeleteBlock]
         .responseWith(Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(CanNotSpecifyMyself, AccountNotBlocked))))
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(AccountNotFound))))
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(InvalidUserIdError, UserNotBlocked))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
 
     } { request: DeleteBlock =>
       blocksService.delete(

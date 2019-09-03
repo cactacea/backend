@@ -11,7 +11,7 @@ class DefaultMobilePushService @Inject()(
                                           pushNotificationCommentsRepository: PushNotificationCommentsRepository,
                                           pushNotificationMessagesRepository: PushNotificationMessagesRepository,
                                           pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
-                                          pushNotificationGroupInvitationsRepository: PushNotificationGroupInvitationsRepository
+                                          pushNotificationInvitationsRepository: PushNotificationInvitationsRepository
 
                                         ) extends MobilePushService {
 
@@ -22,7 +22,7 @@ class DefaultMobilePushService @Inject()(
         println(l) // scalastyle:ignore
         for {
           _ <- pushNotificationFeedsRepository.update(id)
-          _ <- pushNotificationFeedsRepository.update(id, l.map(_.destinations.map(_.accountId)).flatten)
+          _ <- pushNotificationFeedsRepository.update(id, l.map(_.destinations.map(_.userId)).flatten)
         } yield (())
 
       case None =>
@@ -39,7 +39,7 @@ class DefaultMobilePushService @Inject()(
         println(l) // scalastyle:ignore
         for {
           _ <- pushNotificationMessagesRepository.update(id)
-          _ <- pushNotificationMessagesRepository.update(id, l.map(_.destinations.map(_.accountId)).flatten)
+          _ <- pushNotificationMessagesRepository.update(id, l.map(_.destinations.map(_.userId)).flatten)
         } yield (())
 
       case None =>
@@ -81,13 +81,13 @@ class DefaultMobilePushService @Inject()(
     })
   }
 
-  def sendGroupInvitation(id: GroupInvitationId): Future[Unit] = {
-    pushNotificationGroupInvitationsRepository.find(id).flatMap(_ match {
+  def sendInvitation(id: InvitationId): Future[Unit] = {
+    pushNotificationInvitationsRepository.find(id).flatMap(_ match {
       case Some(l) =>
         println("----- Push Notification ----") // scalastyle:ignore
         println(l) // scalastyle:ignore
         for {
-          _ <- pushNotificationGroupInvitationsRepository.update(id)
+          _ <- pushNotificationInvitationsRepository.update(id)
         } yield (())
 
       case None =>

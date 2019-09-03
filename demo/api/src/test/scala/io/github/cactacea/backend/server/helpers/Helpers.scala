@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.server.helpers
 
+import java.nio.file.{Files, Paths}
 import com.twitter.finagle.http.Response
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
@@ -12,16 +13,16 @@ trait Helpers extends FeatureTest
   with FeedsHelper
   with CommonHelper
   with MediumsHelper
-  with AccountsHelper
+  with UsersHelper
   with FollowsHelper
   with SessionHelper
   with SessionsHelper {
 
   self: APIServerSpec =>
 
-  def createAccount(accountName: String, password: String): Authentication = {
-    val authentication = signUp(accountName, password)
-    val mediums = uploadMedium("profile", accountName + ".jpg", authentication.accessToken)
+  def createUser(userName: String, password: String): Authentication = {
+    val authentication = signUp(userName, password)
+    val mediums = uploadMedium("profile", userName + ".jpg", authentication.accessToken)
     mediums.headOption.foreach(medium =>
       updateProfileImage(medium.id, authentication.accessToken)
     )
@@ -40,12 +41,11 @@ trait Helpers extends FeatureTest
 
 
   def createFollow(target: Authentication, by: Authentication): Response = {
-    follow(target.account.id, by.accessToken)
+    follow(target.user.id, by.accessToken)
   }
 
   def cleanUp(): Unit = {
     val localPath = storageService.localPath
-    import java.nio.file.{Files, Paths}
     val path = Paths.get(localPath)
     if (Files.exists(path)) {
       val files = Files.list(path)

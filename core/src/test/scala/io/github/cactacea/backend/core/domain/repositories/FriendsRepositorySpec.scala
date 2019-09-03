@@ -1,227 +1,178 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
-import io.github.cactacea.backend.core.domain.enums.FriendsSortType
-import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyFriend, AccountNotFound, AccountNotFriend, CanNotSpecifyMyself}
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{UserNotFound, InvalidUserIdError}
 
 class FriendsRepositorySpec extends RepositorySpec {
 
-  val friendsRepository = injector.instance[FriendsRepository]
-  val blocksRepository = injector.instance[BlocksRepository]
+  feature("delete") {
 
-  test("create friendship a user") {
+    scenario("should delete a friend") {
+      forAll(userGen, userGen) { (a1, a2) =>
+        val sessionId = await(createUser(a1.userName)).id.sessionId
+        val userId = await(createUser(a2.userName)).id
+        val requestId = await(friendRequestsRepository.create(userId, sessionId))
+        await(friendRequestsRepository.accept(requestId, userId.sessionId))
 
-    // TODO : Block user
-    val sessionUser = signUp("FriendsRepositorySpec1", "session user password", "session user udid")
-    val friendUser = signUp("FriendsRepositorySpec2", "friend user password", "friend user udid")
-    execute(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
+        assert(await(friendsDAO.own(userId, sessionId)))
+        assert(await(friendsDAO.own(sessionId.userId, userId.sessionId)))
+        assert(await(usersRepository.find(sessionId)).friendCount == 1L)
+        assert(await(usersRepository.find(userId.sessionId)).friendCount == 1L)
+        await(friendsRepository.delete(userId, sessionId))
 
-    val result = execute(friendsRepository.find(None, 0, 2, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
-    assert(result.size == 1)
-    val resultFollowedUser = result(0)
-    assert(friendUser.id == resultFollowedUser.id)
-
-    val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account1.id == sessionUser.id)
-    assert(account1.followerCount == 1L)
-    assert(account1.followCount == 1L)
-    assert(account1.friendCount == 1L)
-
-    val account2 = execute(accountsRepository.find(friendUser.id.toSessionId))
-    assert(account2.id == friendUser.id)
-    assert(account2.followerCount == 1L)
-    assert(account2.followerCount == 1L)
-    assert(account2.friendCount == 1L)
-
-  }
-
-  test("create friendship a blocked user") {
-
-    val sessionUser = signUp("FriendsRepositorySpec3", "session user password", "session user udid")
-    val blockingUser = signUp("FriendsRepositorySpec4", "blocked user password", "blocked user udid")
-
-    execute(blocksRepository.create(sessionUser.id, blockingUser.id.toSessionId))
-    val result = try {
-      execute(friendsRepository.create(sessionUser.id, blockingUser.id.toSessionId))
-      false
-    } catch {
-      case e: CactaceaException => {
-        e.error == AccountNotFound
+        assert(!await(friendsDAO.own(userId, sessionId)))
+        assert(!await(friendsDAO.own(sessionId.userId, userId.sessionId)))
+        assert(await(usersRepository.find(sessionId)).friendCount == 0L)
+        assert(await(usersRepository.find(userId.sessionId)).friendCount == 0L)
       }
     }
-    assert(result == true)
 
-  }
+    scenario("should return exception if id is same") {
+      forOne(userGen) { (s) =>
 
-  test("create friendship a friend user") {
+        // preparing
+        val session = await(createUser(s.userName))
+        val sessionId = session.id.sessionId
 
-    val sessionUser = signUp("FriendsRepositorySpec5", "session user password", "session user udid")
-    val friendUser = signUp("FriendsRepositorySpec6", "friend user password", "friend user udid")
+        // result
+        assert(intercept[CactaceaException] {
+          await(friendsRepository.delete(sessionId.userId, sessionId))
+        }.error == InvalidUserIdError)
 
-    execute(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
-
-    val result = try {
-      execute(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
-      false
-    } catch {
-      case e: CactaceaException => {
-        e.error == AccountAlreadyFriend
       }
     }
-    assert(result == true)
 
-  }
+    scenario("should return exception if user is not exist") {
+      forOne(userGen) { (s) =>
 
-  test("create friend a session user") {
+        // preparing
+        val session = await(createUser(s.userName))
+        val sessionId = session.id.sessionId
 
-    val sessionUser = signUp("FriendsRepositorySpec7", "session user password", "session user udid")
+        // result
+        assert(intercept[CactaceaException] {
+          await(friendsRepository.delete(UserId(0), sessionId))
+        }.error == UserNotFound)
 
-    val result = try {
-      execute(friendsRepository.create(sessionUser.id, sessionUser.id.toSessionId))
-      false
-    } catch {
-      case e: CactaceaException => {
-        e.error == CanNotSpecifyMyself
       }
     }
-    assert(result == true)
 
   }
 
+  feature("find") {
 
+    scenario("should return session friend list") {
+      forAll(sortedNameGen, userGen, sortedUserGen, sortedUserGen, sortedUserGen, userGen)
+      { (h, s, a1, a2, a3, a4) =>
 
+        // preparing
+        //   session user follow user1
+        //   session user follow user2
+        //   session user follow user3
+        //   session user follow user4
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(h + a1.userName)).id
+        val userId2 = await(createUser(h + a2.userName)).id
+        val userId3 = await(createUser(h + a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
+        val requestId1 = await(friendRequestsRepository.create(userId1, sessionId))
+        val requestId2 = await(friendRequestsRepository.create(userId2, sessionId))
+        val requestId3 = await(friendRequestsRepository.create(userId3, sessionId))
+        val requestId4 = await(friendRequestsRepository.create(userId4, sessionId))
+        await(friendRequestsRepository.accept(requestId1, userId1.sessionId))
+        await(friendRequestsRepository.accept(requestId2, userId2.sessionId))
+        await(friendRequestsRepository.accept(requestId3, userId3.sessionId))
+        await(friendRequestsRepository.accept(requestId4, userId4.sessionId))
 
+        // return user1 found
+        // return user2 found
+        // return user3 found
+        // return user4 not found because of user name not matched
+        val result1 = await(friendsRepository.find(Option(h), None, 0, 2, sessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == userId3)
+        assert(result1(1).id == userId2)
 
-  test("delete friendship") {
-
-    val sessionUser = signUp("FriendsRepositorySpec8", "session user password", "session user udid")
-    val friendUser = signUp("FriendsRepositorySpec9", "friend user password", "friend user udid")
-
-    execute(friendsRepository.create(friendUser.id, sessionUser.id.toSessionId))
-
-    val account1 = execute(accountsRepository.find(sessionUser.id.toSessionId))
-    assert(account1.friendCount == 1L)
-    assert(account1.followerCount == 1L)
-    assert(account1.followCount == 1L)
-
-    execute(friendsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
-    val account2 = execute(accountsRepository.find(friendUser.id.toSessionId))
-    assert(account2.followerCount == 1L)
-    assert(account2.followerCount == 1L)
-    assert(account2.friendCount == 0L)
-
-  }
-
-  test("delete no friend friendship ") {
-
-    val sessionUser = signUp("FriendsRepositorySpec10", "session user password", "session user udid")
-    val friendUser = signUp("FriendsRepositorySpec11", "friend user password", "friend user udid")
-
-    val result = try {
-      execute(friendsRepository.delete(friendUser.id, sessionUser.id.toSessionId))
-      false
-    } catch {
-      case e: CactaceaException => {
-        e.error == AccountNotFriend
+        val result2 = await(friendsRepository.find(Option(h), result1.lastOption.map(_.next), 0, 2, sessionId))
+        assert(result2.size == 1)
+        assert(result2(0).id == userId1)
       }
     }
-    assert(result == true)
 
-  }
+    scenario("should return an user's friend list") {
+      forAll(sortedNameGen, userGen, sortedUserGen, sortedUserGen, sortedUserGen, userGen)
+      { (h, s, a1, a2, a3, a4) =>
 
-  test("delete no exist account friendship ") {
+        // preparing
+        //   session user follow user1
+        //   session user follow user2
+        //   session user follow user3
+        //   session user follow user4
+        val sessionId = await(createUser(s.userName)).id.sessionId
+        val userId1 = await(createUser(h + a1.userName)).id
+        val userId2 = await(createUser(h + a2.userName)).id
+        val userId3 = await(createUser(h + a3.userName)).id
+        val userId4 = await(createUser(a4.userName)).id
+        val requestId1 = await(friendRequestsRepository.create(userId1, sessionId))
+        val requestId2 = await(friendRequestsRepository.create(userId2, sessionId))
+        val requestId3 = await(friendRequestsRepository.create(userId3, sessionId))
+        val requestId4 = await(friendRequestsRepository.create(userId4, sessionId))
+        await(friendRequestsRepository.accept(requestId1, userId1.sessionId))
+        await(friendRequestsRepository.accept(requestId2, userId2.sessionId))
+        await(friendRequestsRepository.accept(requestId3, userId3.sessionId))
+        await(friendRequestsRepository.accept(requestId4, userId4.sessionId))
 
-    val sessionUser = signUp("FriendsRepositorySpec12", "session user password", "session user udid")
+        // user2 block user1
+        await(blocksRepository.create(userId1, userId2.sessionId))
 
-    val result = try {
-      execute(friendsRepository.delete(AccountId(0L), sessionUser.id.toSessionId))
-      false
-    } catch {
-      case e: CactaceaException => {
-        e.error == AccountNotFound
+        // return user1 found
+        // return user2 not found because of user2 be blocked by user1
+        // return user3 found
+        // return user4 not found because of user name not matched
+        val result1 = await(friendsRepository.find(sessionId.userId, Option(h), None, 0, 2, userId1.sessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == userId3)
+        assert(result1(1).id == userId1)
+
+        val result2 = await(friendsRepository.find(sessionId.userId, Option(h), result1.lastOption.map(_.next), 0, 2, userId1.sessionId))
+        assert(result2.size == 0)
       }
     }
-    assert(result == true)
 
-  }
+    scenario("should return exception if id is same") {
+      forOne(userGen) { (s) =>
 
-  test("delete friend session user") {
+        // preparing
+        val session = await(createUser(s.userName))
+        val sessionId = session.id.sessionId
 
-    val sessionUser = signUp("FriendsRepositorySpec13", "session user password", "session user udid")
+        // result
+        assert(intercept[CactaceaException] {
+          await(friendsRepository.find(sessionId.userId, None, None, 0, 2, sessionId))
+        }.error == InvalidUserIdError)
 
-    val result = try {
-      execute(friendsRepository.delete(sessionUser.id, sessionUser.id.toSessionId))
-      false
-    } catch {
-      case e: CactaceaException => {
-        e.error == CanNotSpecifyMyself
       }
     }
-    assert(result == true)
+
+    scenario("should return exception if user is not exist") {
+      forOne(userGen) { (s) =>
+
+        // preparing
+        val session = await(createUser(s.userName))
+        val sessionId = session.id.sessionId
+
+        // result
+        assert(intercept[CactaceaException] {
+          await(friendsRepository.find(UserId(0), None, None, 0, 2, sessionId))
+        }.error == UserNotFound)
+
+      }
+    }
 
   }
 
-
-
-
-  test("find a user's friends") {
-
-    val sessionUser = signUp("FriendsRepositorySpec14", "session user password", "session user udid")
-    val user = signUp("FriendsRepositorySpec15", "user password", "user udid")
-    val friendUser1 = signUp("FriendsRepositorySpec16", "user password 1", "user udid 1")
-    val friendUser2 = signUp("FriendsRepositorySpec17", "user password 2", "user udid 2")
-    val friendUser3 = signUp("FriendsRepositorySpec18", "user password 3", "user udid 3")
-    val friendUser4 = signUp("FriendsRepositorySpec19", "user password 4", "user udid 4")
-    val friendUser5 = signUp("FriendsRepositorySpec20", "user password 5", "user udid 5")
-
-    execute(friendsRepository.create(friendUser1.id, user.id.toSessionId))
-    execute(friendsRepository.create(friendUser2.id, user.id.toSessionId))
-    execute(friendsRepository.create(friendUser3.id, user.id.toSessionId))
-    execute(friendsRepository.create(friendUser4.id, user.id.toSessionId))
-    execute(friendsRepository.create(friendUser5.id, user.id.toSessionId))
-
-    val friends1 = execute(friendsRepository.find(user.id, None, 0, 3, sessionUser.id.toSessionId))
-    assert(friends1.size == 3)
-    assert(friends1(0).id == friendUser5.id)
-    assert(friends1(1).id == friendUser4.id)
-    assert(friends1(2).id == friendUser3.id)
-
-    val friends2 = execute(friendsRepository.find(user.id, friends1(2).next, 0, 3, sessionUser.id.toSessionId))
-    assert(friends2.size == 2)
-    assert(friends2(0).id == friendUser2.id)
-    assert(friends2(1).id == friendUser1.id)
-
-  }
-
-  test("find session's friends") {
-
-    val sessionUser = signUp("FriendsRepositorySpec21", "session user password", "session user udid")
-    val friendUser1 = signUp("FriendsRepositorySpec22", "user password 1", "user udid 1")
-    val friendUser2 = signUp("FriendsRepositorySpec23", "user password 2", "user udid 2")
-    val friendUser3 = signUp("FriendsRepositorySpec24", "user password 3", "user udid 3")
-    val friendUser4 = signUp("FriendsRepositorySpec25", "user password 4", "user udid 4")
-    val friendUser5 = signUp("FriendsRepositorySpec26", "user password 5", "user udid 5")
-
-    execute(friendsRepository.create(friendUser1.id, sessionUser.id.toSessionId))
-    execute(friendsRepository.create(friendUser2.id, sessionUser.id.toSessionId))
-    execute(friendsRepository.create(friendUser3.id, sessionUser.id.toSessionId))
-    execute(friendsRepository.create(friendUser4.id, sessionUser.id.toSessionId))
-    execute(friendsRepository.create(friendUser5.id, sessionUser.id.toSessionId))
-
-    val friends = execute(friendsRepository.find(None, 0, 3, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
-    assert(friends.size == 3)
-    assert(friends(0).id == friendUser5.id)
-    assert(friends(1).id == friendUser4.id)
-    assert(friends(2).id == friendUser3.id)
-
-    val friends2 = execute(friendsRepository.find(friends(2).next, 0, 3, FriendsSortType.friendsAt, sessionUser.id.toSessionId))
-    assert(friends2.size == 2)
-    assert(friends2(0).id == friendUser2.id)
-    assert(friends2(1).id == friendUser1.id)
-
-  }
 
 }

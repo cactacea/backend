@@ -22,5 +22,5 @@ package io.github.cactacea.filhouette.api.exceptions
 /**
  * A marker exception for the Silhouette project.
  */
-class FilhouetteException(val msg: String, val cause: Throwable = null)
+class FilhouetteException(val msg: String, val cause: Throwable)
   extends scala.Exception(msg, cause)

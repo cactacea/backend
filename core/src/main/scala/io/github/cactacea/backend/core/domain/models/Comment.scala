@@ -1,47 +1,51 @@
 package io.github.cactacea.backend.core.domain.models
 
-import io.github.cactacea.backend.core.domain.enums.ContentStatusType
-import io.github.cactacea.backend.core.infrastructure.identifiers.CommentId
-import io.github.cactacea.backend.core.infrastructure.models.{Accounts, Comments, Relationships}
+import io.github.cactacea.backend.core.domain.enums.{UserStatusType, ContentStatusType}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId}
+import io.github.cactacea.backend.core.infrastructure.models.{Users, Comments, Relationships}
 
 case class Comment(
                     id: CommentId,
                     replyId: Option[CommentId],
+                    feedId: FeedId,
                     message: String,
-                    account: Account,
+                    user: User,
                     likeCount: Long,
-                    contentWarning: Boolean,
-                    contentDeleted: Boolean,
+                    warning: Boolean,
+                    rejected: Boolean,
                     postedAt: Long,
-                    next: Option[Long])
+                    next: Long)
 
 object Comment {
 
-  def apply(c: Comments, a: Accounts, r: Option[Relationships]): Comment = {
-    c.contentStatus match {
-      case ContentStatusType.rejected =>
+  def apply(c: Comments, a: Users, r: Option[Relationships]): Comment = {
+    val rejected = (c.contentStatus == ContentStatusType.rejected) || (a.userStatus != UserStatusType.normally)
+    rejected match {
+      case true =>
         Comment(
           id              = c.id,
           replyId         = c.replyId,
+          feedId          = c.feedId,
           message         = "",
-          account         = Account(a, r),
+          user         = User(a, r),
           likeCount       = 0L,
-          contentWarning  = false,
-          contentDeleted  = true,
+          warning         = false,
+          rejected        = rejected,
           postedAt        = c.postedAt,
-          next            = None
+          next            = c.id.value
         )
-      case _ => {
+      case false => {
         Comment(
           id              = c.id,
           replyId         = c.replyId,
+          feedId          = c.feedId,
           message         = c.message,
-          account         = Account(a, r),
+          user         = User(a, r),
           likeCount       = c.likeCount,
-          contentWarning  = c.contentWarning,
-          contentDeleted  = false,
+          warning         = c.contentWarning,
+          rejected        = rejected,
           postedAt        = c.postedAt,
-          next            = Some(c.id.value)
+          next            = c.id.value
         )
       }
     }

@@ -25,12 +25,12 @@
 -- UNLOCK TABLES;
 
 --
--- Dumping data for table `account_groups`
+-- Dumping data for table `account_channels`
 --
 
--- LOCK TABLES `account_groups` WRITE;
-/*!40000 ALTER TABLE `account_groups` DISABLE KEYS */;
-/*!40000 ALTER TABLE `account_groups` ENABLE KEYS */;
+-- LOCK TABLES `account_channels` WRITE;
+/*!40000 ALTER TABLE `account_channels` DISABLE KEYS */;
+/*!40000 ALTER TABLE `account_channels` ENABLE KEYS */;
 -- UNLOCK TABLES;
 
 --
@@ -131,7 +131,7 @@ INSERT INTO `authentications` VALUES ('credentials','aritomo_yamagata','$2a$10$L
 
 -- LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES (1,'When he was four Ieyasu was sent as a hostage to secure an alliance between his clan and the neighbouring Imagawa clan. He was raised at their court and given the education suitable for a nobleman.',3,NULL,0,59,0,0,0,1563109573174),(2,'In 1567 Ieyasu, whose father\'s death had groupLeft him as leader of the Matsudaira, allied with Oda Nobunaga, a powerful neighbour.',3,NULL,0,60,0,0,0,1563109573267),(3,'It was at this time that he changed his name from Matsudaira to Tokugawa, which was the name of the area from which his family originated.',3,NULL,0,61,0,0,0,1563109573307),(4,'He also changed his personal name to Ieyasu, so he was now known as Tokugawa Ieyasu.',3,NULL,0,62,0,0,0,1563109573349),(5,'When he was four Ieyasu was sent as a hostage to secure an alliance between his clan and the neighbouring Imagawa clan.',3,NULL,0,63,0,0,0,1563109573394),(6,'He was raised at their court and given the education suitable for a nobleman.',3,NULL,0,64,0,0,0,1563109573428);
+INSERT INTO `comments` VALUES (1,'When he was four Ieyasu was sent as a hostage to secure an alliance between his clan and the neighbouring Imagawa clan. He was raised at their court and given the education suitable for a nobleman.',3,NULL,0,59,0,0,0,1563109573174),(2,'In 1567 Ieyasu, whose father\'s death had channelLeft him as leader of the Matsudaira, allied with Oda Nobunaga, a powerful neighbour.',3,NULL,0,60,0,0,0,1563109573267),(3,'It was at this time that he changed his name from Matsudaira to Tokugawa, which was the name of the area from which his family originated.',3,NULL,0,61,0,0,0,1563109573307),(4,'He also changed his personal name to Ieyasu, so he was now known as Tokugawa Ieyasu.',3,NULL,0,62,0,0,0,1563109573349),(5,'When he was four Ieyasu was sent as a hostage to secure an alliance between his clan and the neighbouring Imagawa clan.',3,NULL,0,63,0,0,0,1563109573394),(6,'He was raised at their court and given the education suitable for a nobleman.',3,NULL,0,64,0,0,0,1563109573428);
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 -- UNLOCK TABLES;
 
@@ -239,30 +239,30 @@ INSERT INTO `feeds` VALUES (1,'Uesugi Kenshin (上杉 謙信, February 18, 1530 
 -- UNLOCK TABLES;
 
 --
--- Dumping data for table `group_invitations`
+-- Dumping data for table `channel_invitations`
 --
 
--- LOCK TABLES `group_invitations` WRITE;
-/*!40000 ALTER TABLE `group_invitations` DISABLE KEYS */;
-/*!40000 ALTER TABLE `group_invitations` ENABLE KEYS */;
+-- LOCK TABLES `channel_invitations` WRITE;
+/*!40000 ALTER TABLE `channel_invitations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `channel_invitations` ENABLE KEYS */;
 -- UNLOCK TABLES;
 
 --
--- Dumping data for table `group_reports`
+-- Dumping data for table `channel_reports`
 --
 
--- LOCK TABLES `group_reports` WRITE;
-/*!40000 ALTER TABLE `group_reports` DISABLE KEYS */;
-/*!40000 ALTER TABLE `group_reports` ENABLE KEYS */;
+-- LOCK TABLES `channel_reports` WRITE;
+/*!40000 ALTER TABLE `channel_reports` DISABLE KEYS */;
+/*!40000 ALTER TABLE `channel_reports` ENABLE KEYS */;
 -- UNLOCK TABLES;
 
 --
--- Dumping data for table `groups`
+-- Dumping data for table `channels`
 --
 
--- LOCK TABLES `groups` WRITE;
-/*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-/*!40000 ALTER TABLE `groups` ENABLE KEYS */;
+-- LOCK TABLES `channels` WRITE;
+/*!40000 ALTER TABLE `channels` DISABLE KEYS */;
+/*!40000 ALTER TABLE `channels` ENABLE KEYS */;
 -- UNLOCK TABLES;
 
 --

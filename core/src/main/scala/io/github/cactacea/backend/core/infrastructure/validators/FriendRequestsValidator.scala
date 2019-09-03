@@ -5,14 +5,13 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.infrastructure.dao.FriendRequestsDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AccountAlreadyRequested, FriendRequestNotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{UserAlreadyRequested, FriendRequestNotFound}
 
 @Singleton
 class FriendRequestsValidator @Inject()(friendRequestsDAO: FriendRequestsDAO) {
 
-  def find(id: FriendRequestId, sessionId: SessionId): Future[AccountId] = {
-
-    friendRequestsDAO.find(id, sessionId).flatMap(_ match {
+  def mustFind(id: FriendRequestId, sessionId: SessionId): Future[UserId] = {
+    friendRequestsDAO.find(id, sessionId.userId).flatMap(_ match {
       case Some(r) =>
         Future.value(r)
       case None =>
@@ -21,8 +20,8 @@ class FriendRequestsValidator @Inject()(friendRequestsDAO: FriendRequestsDAO) {
   }
 
 
-  def exist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    friendRequestsDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustRequested(userId: UserId, sessionId: SessionId): Future[Unit] = {
+    friendRequestsDAO.own(userId, sessionId).flatMap(_ match {
       case false =>
         Future.exception(CactaceaException(FriendRequestNotFound))
       case true =>
@@ -30,10 +29,10 @@ class FriendRequestsValidator @Inject()(friendRequestsDAO: FriendRequestsDAO) {
     })
   }
 
-  def notExist(accountId: AccountId, sessionId: SessionId): Future[Unit] = {
-    friendRequestsDAO.exist(accountId, sessionId).flatMap(_ match {
+  def mustNotRequested(userId: UserId, sessionId: SessionId): Future[Unit] = {
+    friendRequestsDAO.own(userId, sessionId).flatMap(_ match {
       case true =>
-        Future.exception(CactaceaException(AccountAlreadyRequested))
+        Future.exception(CactaceaException(UserAlreadyRequested))
       case false =>
         Future.Unit
     })

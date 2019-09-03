@@ -4,8 +4,8 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 trait DeepLinkService {
 
-  def getAccounts(): String
-  def getAccount(id: AccountId): String
+  def getUsers(): String
+  def getUser(id: UserId): String
   def getFeeds(): String
   def getFeed(id: FeedId): String
   def getComments(id: FeedId): String
@@ -13,10 +13,10 @@ trait DeepLinkService {
   def getRequests(): String
   def getRequest(id: FriendRequestId): String
   def getInvitations(): String
-  def getInvitation(id: GroupInvitationId): String
-  def getGroups(): String
-  def getGroup(id: GroupId): String
-  def getMessages(groupId: GroupId, id: MessageId): String
+  def getInvitation(id: InvitationId): String
+  def getChannels(): String
+  def getChannel(id: ChannelId): String
+  def getMessages(channelId: ChannelId, id: MessageId): String
   def getNotification(id: NotificationId): String
 
 }

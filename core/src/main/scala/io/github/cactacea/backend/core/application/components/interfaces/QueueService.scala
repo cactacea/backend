@@ -8,6 +8,6 @@ trait QueueService {
   def enqueueFeed(feedId: FeedId): Future[Unit]
   def enqueueComment(commentId: CommentId): Future[Unit]
   def enqueueMessage(messageId: MessageId): Future[Unit]
-  def enqueueGroupInvitation(groupInvitationId: GroupInvitationId): Future[Unit]
+  def enqueueInvitation(invitationId: InvitationId): Future[Unit]
   def enqueueFriendRequest(friendRequestId: FriendRequestId): Future[Unit]
 }

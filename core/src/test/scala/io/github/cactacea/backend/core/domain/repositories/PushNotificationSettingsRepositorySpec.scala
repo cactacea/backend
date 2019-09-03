@@ -1,46 +1,25 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import io.github.cactacea.backend.core.helpers.RepositorySpec
-import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.AccountNotFound
+import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 
 class PushNotificationSettingsRepositorySpec extends RepositorySpec {
 
-  val notificationSettingsRepository = injector.instance[PushNotificationSettingsRepository]
+  feature("update") {
 
-  test("find session setting") {
-
-    val sessionUser = signUp("PushNotificationSettingsRepositorySpec1", "session user password", "session udid")
-    val result = execute(notificationSettingsRepository.find(sessionUser.id.toSessionId))
-    assert(result.groupMessage == true)
-    assert(result.message == true)
-    assert(result.comment == true)
-    assert(result.groupInvitation == true)
-    assert(result.feed == true)
-
-  }
-
-  test("find no exist session setting") {
-
-    assert(intercept[CactaceaException] {
-      execute(notificationSettingsRepository.find(SessionId(0L)))
-    }.error == AccountNotFound)
-
-  }
-
-  test("update session setting") {
-
-    val sessionUser = signUp("PushNotificationSettingsRepositorySpec2", "session user password", "session udid")
-
-    execute(notificationSettingsRepository.update(false, false, false, false, false, false, false, sessionUser.id.toSessionId))
-    val result = execute(notificationSettingsRepository.find(sessionUser.id.toSessionId))
-    assert(!result.groupMessage)
-    assert(!result.message)
-    assert(!result.comment)
-    assert(!result.groupInvitation)
-    assert(!result.friendRequest)
-    assert(!result.feed)
+    scenario("should update notification settings") {
+      forAll(userGen, boolean7ListGen) { (a, b) =>
+        val sessionId = await(createUser(a.userName)).id.sessionId
+        await(pushNotificationSettingsRepository.update(b(0), b(1), b(2), b(3), b(4), b(5), b(6), sessionId))
+        val result = await(pushNotificationSettingsRepository.find(sessionId))
+        assert(result.feed == b(0))
+        assert(result.comment == b(1))
+        assert(result.friendRequest == b(2))
+        assert(result.message == b(3))
+        assert(result.channelMessage == b(4))
+        assert(result.invitation == b(5))
+        assert(result.showMessage == b(6))
+      }
+    }
 
   }
 

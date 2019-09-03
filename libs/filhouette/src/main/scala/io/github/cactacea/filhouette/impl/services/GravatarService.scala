@@ -76,7 +76,7 @@ class GravatarService @Inject() (httpLayer: HttpClient, settings: GravatarServic
   private def hash(email: String): Option[String] = {
     val s = email.trim.toLowerCase
     if (s.length > 0) {
-      Some(MessageDigest.getInstance(MD5).digest(s.getBytes).map("%02x".format(_)).mkString)
+      Option(MessageDigest.getInstance(MD5).digest(s.getBytes).map("%02x".format(_)).mkString)
     } else {
       None
     }

@@ -1,24 +1,24 @@
 package io.github.cactacea.backend.server.helpers
 
 import com.twitter.finagle.http.Response
-import io.github.cactacea.backend.core.domain.models.Account
-import io.github.cactacea.backend.core.infrastructure.identifiers.AccountId
+import io.github.cactacea.backend.core.domain.models.User
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 import io.github.cactacea.backend.server.APIServerSpec
 
 trait FollowsHelper extends CommonHelper {
   self: APIServerSpec =>
 
-  def sessionFollow(accessToken: String): Array[Account] = {
+  def sessionFollow(accessToken: String): Array[User] = {
     val path = s"/session/follows"
-    server.httpGetJson[Array[Account]](
+    server.httpGetJson[Array[User]](
       path = path,
       headers = headers(accessToken)
     )
   }
 
-  def follow(accountId: AccountId, accessToken: String): Response = {
+  def follow(userId: UserId, accessToken: String): Response = {
     server.httpPost(
-      path = s"/accounts/${accountId.value}/follows",
+      path = s"/users/${userId.value}/follows",
       headers = headers(accessToken),
       postBody = ""
     )

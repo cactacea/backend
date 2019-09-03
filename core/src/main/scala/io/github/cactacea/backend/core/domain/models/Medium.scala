@@ -12,8 +12,8 @@ case class Medium(
                    size: Long,
                    thumbnailUrl: Option[String],
                    mediumType: MediumType,
-                   contentWarning: Boolean,
-                   contentDeleted: Boolean
+                   warning: Boolean,
+                   rejected: Boolean
                   )
 
 object Medium {
@@ -29,8 +29,8 @@ object Medium {
           size            = 0L,
           thumbnailUrl    = None,
           mediumType      = i.mediumType,
-          contentWarning  = false,
-          contentDeleted = true
+          warning         = false,
+          rejected        = true
         )
       case _ =>
         Medium(
@@ -41,8 +41,8 @@ object Medium {
           size            = i.size,
           thumbnailUrl    = i.thumbnailUrl,
           mediumType      = i.mediumType,
-          contentWarning  = i.contentWarning,
-          contentDeleted = false
+          warning         = i.contentWarning,
+          rejected        = false
         )
     }
   }

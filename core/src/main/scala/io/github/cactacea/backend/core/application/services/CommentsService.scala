@@ -6,22 +6,21 @@ import io.github.cactacea.backend.core.application.components.interfaces.QueueSe
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.Comment
-import io.github.cactacea.backend.core.domain.repositories.{CommentsRepository, ReportsRepository}
+import io.github.cactacea.backend.core.domain.repositories.CommentsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
 
 class CommentsService @Inject()(
                                  commentsRepository: CommentsRepository,
                                  databaseService: DatabaseService,
-                                 reportsRepository: ReportsRepository,
                                  queueService: QueueService
                                ) {
 
   import databaseService._
 
-  def create(feedId: FeedId, message: String, sessionId: SessionId): Future[CommentId] = {
+  def create(feedId: FeedId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
     transaction {
       for {
-        i <- commentsRepository.create(feedId, message, sessionId)
+        i <- commentsRepository.create(feedId, message, replyId, sessionId)
         _ <- queueService.enqueueComment(i)
       } yield (i)
     }
@@ -43,7 +42,7 @@ class CommentsService @Inject()(
 
   def report(commentId: CommentId, reportType: ReportType, reportContent: Option[String], sessionId: SessionId): Future[Unit] = {
     transaction {
-      reportsRepository.createCommentReport(commentId, reportType, reportContent, sessionId)
+      commentsRepository.report(commentId, reportType, reportContent, sessionId)
     }
   }
 

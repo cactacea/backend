@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(migrationSettings)
-  .aggregate(auth, chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, oauth, docs, utils)
+  .aggregate(auth, chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, oauth, docs, utils, benchmarks)
   .enablePlugins(FlywayPlugin)
 
 
@@ -27,7 +27,7 @@ lazy val server = (project in file("server"))
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
   .enablePlugins(BuildInfoPlugin)
-  .dependsOn(core, auth, oauth, finagger, filhouette)
+  .dependsOn(core % "test->test", auth, oauth, finagger, filhouette)
 
 
 lazy val oauth = (project in file("oauth"))
@@ -38,7 +38,7 @@ lazy val oauth = (project in file("oauth"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .dependsOn(core, auth, utils, filhouette)
+  .dependsOn(core, utils, filhouette)
 
 
 lazy val auth = (project in file("auth"))
@@ -48,7 +48,7 @@ lazy val auth = (project in file("auth"))
   .settings(libraryDependencies ++= Dependencies.finatra)
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(libraryDependencies ++= Dependencies.log)
-  .dependsOn(core, utils, filhouette)
+  .dependsOn(core % "test->test", utils, oauth, finagger, filhouette)
 
 
 lazy val core = (project in file("core"))
@@ -166,6 +166,24 @@ lazy val chat = (project in file("demo/chat"))
   .enablePlugins(JavaAppPackaging)
 
 
+lazy val benchmarks = (project in file("benchmarks"))
+  .settings(
+    sourceDirectory in Jmh := (sourceDirectory in Test).value,
+    classDirectory in Jmh := (classDirectory in Test).value,
+    dependencyClasspath in Jmh := (dependencyClasspath in Test).value,
+    // rewire tasks, so that 'jmh:run' automatically invokes 'jmh:compile' (otherwise a clean 'jmh:run' would fail)
+    compile in Jmh := (compile in Jmh).dependsOn(compile in Test).value,
+    run in Jmh := (run in Jmh).dependsOn(Keys.compile in Jmh).evaluated
+  )
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(libraryDependencies ++= Dependencies.mysql)
+  .settings(libraryDependencies ++= Dependencies.finatra)
+  .settings(libraryDependencies ++= Dependencies.test)
+  .dependsOn(core % "test->test")
+  .dependsOn(server % "test->test")
+  .enablePlugins(JmhPlugin)
+
 
 lazy val commonSettings = Seq(
   organization := "io.github.cactacea",
@@ -174,8 +192,7 @@ lazy val commonSettings = Seq(
   testOptions in Test += Tests.Argument("-oI"),
   concurrentRestrictions += Tags.limit(Tags.Test, 1),
   parallelExecution := false,
-  fork := true
-)
+  fork := true)
 
 
 lazy val commonResolverSetting = Seq(
@@ -400,3 +417,4 @@ val migrationSettings = Seq(
 )
 
 addCommandAlias("flywayTest", ";flywayClean ;flywayMigrate ;test")
+addCommandAlias("benchmark", ";project benchmarks ;jmh:clean ;jmh:run -i 3 -wi 3 -f1 -t1; project root")

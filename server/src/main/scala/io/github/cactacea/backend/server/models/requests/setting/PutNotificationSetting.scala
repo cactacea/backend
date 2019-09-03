@@ -9,17 +9,17 @@ case class PutNotificationSetting(
                                    @ApiModelProperty(value = "Notice new comment arrived.", required = true)
                                    comment: Boolean,
 
-                                   @ApiModelProperty(value = "Notice new friend request arrived.", required = true)
+                                   @ApiModelProperty(value = "Notice new friend friendRequest arrived.", required = true)
                                    friendRequest: Boolean,
 
                                    @ApiModelProperty(value = "Notice new message arrived.", required = true)
                                    message: Boolean,
 
-                                   @ApiModelProperty(value = "Notice new group message arrived.", required = true)
-                                   groupMessage: Boolean,
+                                   @ApiModelProperty(value = "Notice new channel message arrived.", required = true)
+                                   channelMessage: Boolean,
 
-                                   @ApiModelProperty(value = "Notice new group groupInvitation arrived.", required = true)
-                                   groupInvitation: Boolean,
+                                   @ApiModelProperty(value = "Notice new invitation arrived.", required = true)
+                                   invitation: Boolean,
 
                                    @ApiModelProperty(value = "Show messages text on notification.", required = true)
                                    showMessage: Boolean

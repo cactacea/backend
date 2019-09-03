@@ -1,121 +1,165 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
-import io.github.cactacea.backend.core.helpers.DAOSpec
-import io.github.cactacea.backend.core.infrastructure.models.Relationships
+import com.twitter.finagle.mysql.ServerError
+import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
 class FollowsDAOSpec extends DAOSpec {
 
-  import db._
+  feature("create") {
 
-  test("create") {
+    scenario("should follow an user") {
+      forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(userId1, userId2.sessionId))
+        await(followsDAO.create(userId2, userId3.sessionId))
+        await(followsDAO.create(userId3, userId1.sessionId))
+        assertFutureValue(followsDAO.own(userId3, userId1.sessionId), true)
+        assertFutureValue(followsDAO.own(userId1, userId2.sessionId), true)
+        assertFutureValue(followsDAO.own(userId2, userId3.sessionId), true)
+        val result1 = await(usersDAO.find(userId1.sessionId))
+        val result2 = await(usersDAO.find(userId2.sessionId))
+        val result3 = await(usersDAO.find(userId3.sessionId))
+        assert(result1.map(_.followCount) == Option(1L))
+        assert(result2.map(_.followCount) == Option(1L))
+        assert(result3.map(_.followCount) == Option(1L))
+      }
+    }
 
-    val sessionAccount = createAccount("FollowsDAOSpec1")
-    val followAccount1 = createAccount("FollowsDAOSpec2")
-    val followAccount2 = createAccount("FollowsDAOSpec3")
+    scenario("should return an exception occurs when create duplicate follow") {
+      forOne(userGen, userGen) { (a1, a2) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        await(followsDAO.create(userId1, userId2.sessionId))
+        // exception occurs
+        assert(intercept[ServerError] {
+          await(followsDAO.create(userId1, userId2.sessionId))
+        }.code == 1062)
 
-    // create follower
-    execute(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
-    execute(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
-    val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
-    val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.follow == true)
-    assert(result2.follow == true)
-
-    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 1)
-    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 1)
-
-    // delete follower
-    execute(followsDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
-    execute(followsDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
-
-    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 0)
-    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 0)
-
-    // create follower
-    execute(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
-    execute(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
-    val result3 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
-    val result4 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result3.follow == true)
-    assert(result4.follow == true)
-
-    assert(execute(accountsDAO.find(followAccount1.id.toSessionId)).get.followCount == 1)
-    assert(execute(accountsDAO.find(followAccount2.id.toSessionId)).get.followCount == 1)
+      }
+    }
 
   }
 
-  test("delete") {
-
-    val sessionAccount = createAccount("FollowsDAOSpec4")
-    val followAccount1 = createAccount("FollowsDAOSpec5")
-    val followAccount2 = createAccount("FollowsDAOSpec6")
-    execute(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
-    execute(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
-
-    // delete follower
-    execute(followsDAO.delete(sessionAccount.id, followAccount1.id.toSessionId))
-    execute(followsDAO.delete(sessionAccount.id, followAccount2.id.toSessionId))
-    val result1 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount1.id))))).head
-    val result2 = execute(db.run(quote(query[Relationships].filter(_.accountId == lift(sessionAccount.id)).filter(_.by == lift(followAccount2.id))))).head
-    assert(result1.follow == false)
-    assert(result2.follow == false)
-
+  feature("delete") {
+    scenario("should unfollow an user") {
+      forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(userId1, userId2.sessionId))
+        await(followsDAO.create(userId2, userId3.sessionId))
+        await(followsDAO.create(userId3, userId1.sessionId))
+        await(followsDAO.delete(userId1, userId2.sessionId))
+        await(followsDAO.delete(userId2, userId3.sessionId))
+        await(followsDAO.delete(userId3, userId1.sessionId))
+        assertFutureValue(followsDAO.own(userId1, userId2.sessionId), false)
+        assertFutureValue(followsDAO.own(userId2, userId3.sessionId), false)
+        assertFutureValue(followsDAO.own(userId3, userId1.sessionId), false)
+        val result1 = await(usersDAO.find(userId1.sessionId))
+        val result2 = await(usersDAO.find(userId2.sessionId))
+        val result3 = await(usersDAO.find(userId3.sessionId))
+        assert(result1.map(_.followCount) == Option(0L))
+        assert(result2.map(_.followCount) == Option(0L))
+        assert(result3.map(_.followCount) == Option(0L))
+      }
+    }
   }
 
-  test("exist") {
-
-    val sessionAccount = createAccount("FollowsDAOSpec7")
-    val followAccount1 = createAccount("FollowsDAOSpec8")
-    val followAccount2 = createAccount("FollowsDAOSpec9")
-    val followAccount3 = createAccount("FollowsDAOSpec10")
-    execute(followsDAO.create(sessionAccount.id, followAccount1.id.toSessionId))
-    execute(followsDAO.create(sessionAccount.id, followAccount2.id.toSessionId))
-
-    // exist follower
-    val result1 = execute(followsDAO.exist(sessionAccount.id, followAccount1.id.toSessionId))
-    val result2 = execute(followsDAO.exist(sessionAccount.id, followAccount2.id.toSessionId))
-    val result3 = execute(followsDAO.exist(sessionAccount.id, followAccount3.id.toSessionId))
-    assert(result1 == true)
-    assert(result2 == true)
-    assert(result3 == false)
-
+  feature("own") {
+    scenario("should return followed or not") {
+      forAll(userGen, userGen, userGen) { (a1, a2, a3) =>
+        val userId1 = await(usersDAO.create(a1.userName))
+        val userId2 = await(usersDAO.create(a2.userName))
+        val userId3 = await(usersDAO.create(a3.userName))
+        await(followsDAO.create(userId1, userId2.sessionId))
+        await(followsDAO.create(userId2, userId3.sessionId))
+        await(followsDAO.create(userId3, userId1.sessionId))
+        assertFutureValue(followsDAO.own(userId2, userId1.sessionId), false)
+        assertFutureValue(followsDAO.own(userId3, userId1.sessionId), true)
+        assertFutureValue(followsDAO.own(userId1, userId2.sessionId), true)
+        assertFutureValue(followsDAO.own(userId3, userId2.sessionId), false)
+        assertFutureValue(followsDAO.own(userId1, userId3.sessionId), false)
+        assertFutureValue(followsDAO.own(userId2, userId3.sessionId), true)
+      }
+    }
   }
 
-  test("find all") {
+  feature("find") {
 
-    val sessionAccount1 = createAccount("FollowsDAOSpec11")
-    val sessionAccount2 = createAccount("FollowsDAOSpec12")
-    val sessionAccount3 = createAccount("FollowsDAOSpec13")
-    val sessionAccount4 = createAccount("FollowsDAOSpec14")
-    val sessionAccount5 = createAccount("FollowsDAOSpec15")
-    val sessionAccount6 = createAccount("FollowsDAOSpec16")
-    val followUser = createAccount("FollowsDAOSpec17")
+    scenario("should return session follow list") {
+      forAll(sortedNameGen, userGen, sortedUserGen, sortedUserGen, sortedUserGen, userGen)
+      { (h, s, a1, a2, a3, a4) =>
 
-    execute(followsDAO.create(sessionAccount1.id, followUser.id.toSessionId))
-    execute(followsDAO.create(sessionAccount2.id, followUser.id.toSessionId))
-    execute(followsDAO.create(sessionAccount3.id, followUser.id.toSessionId))
-    execute(followsDAO.create(sessionAccount4.id, followUser.id.toSessionId))
-    execute(followsDAO.create(sessionAccount5.id, followUser.id.toSessionId))
-    execute(followsDAO.create(sessionAccount6.id, followUser.id.toSessionId))
+        // preparing
+        //   session user follow user1
+        //   session user follow user2
+        //   session user follow user3
+        //   session user follow user4
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(h + a1.userName))
+        val userId2 = await(usersDAO.create(h + a2.userName))
+        val userId3 = await(usersDAO.create(h + a3.userName))
+        val userId4 = await(usersDAO.create(a4.userName))
+        await(followsDAO.create(userId1, sessionId))
+        await(followsDAO.create(userId2, sessionId))
+        await(followsDAO.create(userId3, sessionId))
+        await(followsDAO.create(userId4, sessionId))
 
-    // find follower top page
-    val result1 = execute(followsDAO.find(followUser.id, None, 0, 3, sessionAccount1.id.toSessionId))
-    val account1 = result1(0)
-    val account2 = result1(1)
-    val account3 = result1(2)
-    assert(account1.id == sessionAccount6.id)
-    assert(account2.id == sessionAccount5.id)
-    assert(account3.id == sessionAccount4.id)
+        // return user1 found
+        // return user2 found
+        // return user3 found
+        // return user4 not found because of user name not matched
+        val result1 = await(followsDAO.find(Option(h), None, 0, 2, sessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == userId3)
+        assert(result1(1).id == userId2)
 
-    // find follower next page
-    val result2 = execute(followsDAO.find(followUser.id, account3.next, 0, 3, sessionAccount1.id.toSessionId))
-    val account4 = result2(0)
-    val account5 = result2(1)
-    val account6 = result2(2)
-    assert(account4.id == sessionAccount3.id)
-    assert(account5.id == sessionAccount2.id)
-    assert(account6.id == sessionAccount1.id)
+        val result2 = await(followsDAO.find(Option(h), result1.lastOption.map(_.next), 0, 2, sessionId))
+        assert(result2.size == 1)
+        assert(result2(0).id == userId1)
+      }
+    }
+
+    scenario("should return an user's follow list") {
+      forAll(sortedNameGen, userGen, sortedUserGen, sortedUserGen, sortedUserGen, userGen)
+      { (h, s, a1, a2, a3, a4) =>
+
+        // preparing
+        //   session user follow user1
+        //   session user follow user2
+        //   session user follow user3
+        //   session user follow user4
+        val sessionId = await(usersDAO.create(s.userName)).sessionId
+        val userId1 = await(usersDAO.create(h + a1.userName))
+        val userId2 = await(usersDAO.create(h + a2.userName))
+        val userId3 = await(usersDAO.create(h + a3.userName))
+        val userId4 = await(usersDAO.create(a4.userName))
+        await(followsDAO.create(userId1, sessionId))
+        await(followsDAO.create(userId2, sessionId))
+        await(followsDAO.create(userId3, sessionId))
+        await(followsDAO.create(userId4, sessionId))
+
+        // user2 block user1
+        await(blocksDAO.create(userId1, userId2.sessionId))
+
+        // return user1 found
+        // return user2 not found because of user2 be blocked by user1
+        // return user3 found
+        // return user4 not found because of user name not matched
+        val result1 = await(followsDAO.find(sessionId.userId, Option(h), None, 0, 2, userId1.sessionId))
+        assert(result1.size == 2)
+        assert(result1(0).id == userId3)
+        assert(result1(1).id == userId1)
+
+        val result2 = await(followsDAO.find(sessionId.userId, Option(h), result1.lastOption.map(_.next), 0, 2, userId1.sessionId))
+        assert(result2.size == 0)
+      }
+    }
 
   }
+  
 
 }
+
