@@ -30,7 +30,7 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService, channelUsersDAO: 
       r <- findRelationship(userId, c.by.sessionId)
       _ <- mustNotDirectMessageChannel(c.directMessage)
       _ <- mustHaveJoinAuthority(c, r, userId.sessionId)
-      _ <- mustHaveInviteAuthority(c, u, sessionId)
+      _ <- mustHaveInviteAuthority(c, u)
     } yield (())
   }
 
@@ -39,7 +39,7 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService, channelUsersDAO: 
       c <- findChannel(channelId)
       u <- findUserChannel(channelId, sessionId)
       _ <- mustNotDirectMessageChannel(c.directMessage)
-      _ <- mustHaveInviteAuthority(c, u, sessionId)
+      _ <- mustHaveInviteAuthority(c, u)
       _ <- mustNotLastOrganizer(c, sessionId)
     } yield (())
   }
@@ -49,7 +49,7 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService, channelUsersDAO: 
       c <- findChannel(channelId)
       u <- findUserChannel(channelId, sessionId)
       _ <- mustNotDirectMessageChannel(c.directMessage)
-      _ <- mustHaveInviteAuthority(c, u, sessionId)
+      _ <- mustHaveInviteAuthority(c, u)
     } yield (())
   }
 
@@ -141,7 +141,7 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService, channelUsersDAO: 
     }
   }
 
-  private def mustHaveInviteAuthority(g: Channels, u: UserChannels, sessionId: SessionId): Future[Unit] = {
+  private def mustHaveInviteAuthority(g: Channels, u: UserChannels): Future[Unit] = {
     g.authorityType match {
       case ChannelAuthorityType.organizer =>
         u.authorityType match {
