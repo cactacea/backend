@@ -1,4 +1,4 @@
-package io.cactacea.finagger.valuetypes.locator;
+package io.github.cactacea.finagger.valuetypes.locator;
 
 import lombok.Data;
 

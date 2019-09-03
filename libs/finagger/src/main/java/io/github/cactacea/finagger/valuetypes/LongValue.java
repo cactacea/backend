@@ -1,6 +1,6 @@
-package io.cactacea.finagger.valuetypes;
+package io.github.cactacea.finagger.valuetypes;
 
-import io.cactacea.finagger.valuetypes.annotations.WrapsValueType;
+import io.github.cactacea.finagger.valuetypes.annotations.WrapsValueType;
 import lombok.NonNull;
 
 import javax.annotation.Nonnull;

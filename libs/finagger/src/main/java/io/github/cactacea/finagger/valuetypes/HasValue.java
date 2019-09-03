@@ -1,4 +1,4 @@
-package io.cactacea.finagger.valuetypes;
+package io.github.cactacea.finagger.valuetypes;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
