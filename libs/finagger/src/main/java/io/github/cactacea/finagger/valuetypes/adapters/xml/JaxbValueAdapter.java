@@ -1,6 +1,6 @@
-package io.cactacea.finagger.valuetypes.adapters.xml;
+package io.github.cactacea.finagger.valuetypes.adapters.xml;
 
-import io.cactacea.finagger.valuetypes.Value;
+import io.github.cactacea.finagger.valuetypes.Value;
 
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.adapters.XmlAdapter;

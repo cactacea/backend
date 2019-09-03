@@ -1,10 +1,10 @@
-package io.cactacea.finagger.valuetypes.locator;
+package io.github.cactacea.finagger.valuetypes.locator;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import io.cactacea.finagger.valuetypes.StringValue;
-import io.cactacea.finagger.valuetypes.Value;
-import io.cactacea.finagger.valuetypes.annotations.WrapsValueType;
+import io.github.cactacea.finagger.valuetypes.Value;
+import io.github.cactacea.finagger.valuetypes.annotations.WrapsValueType;
+import io.github.cactacea.finagger.valuetypes.StringValue;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;

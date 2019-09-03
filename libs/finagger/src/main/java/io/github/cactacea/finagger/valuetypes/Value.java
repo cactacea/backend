@@ -1,7 +1,7 @@
-package io.cactacea.finagger.valuetypes;
+package io.github.cactacea.finagger.valuetypes;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.cactacea.finagger.valuetypes.adapters.xml.JaxbValueAdapter;
+import io.github.cactacea.finagger.valuetypes.adapters.xml.JaxbValueAdapter;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 

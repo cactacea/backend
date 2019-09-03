@@ -1,4 +1,4 @@
-package io.cactacea.finagger.valuetypes.annotations;
+package io.github.cactacea.finagger.valuetypes.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

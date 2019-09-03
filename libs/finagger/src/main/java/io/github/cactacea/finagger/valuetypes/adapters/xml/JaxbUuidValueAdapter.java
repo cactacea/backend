@@ -1,6 +1,6 @@
-package io.cactacea.finagger.valuetypes.adapters.xml;
+package io.github.cactacea.finagger.valuetypes.adapters.xml;
 
-import io.cactacea.finagger.valuetypes.UuidValue;
+import io.github.cactacea.finagger.valuetypes.UuidValue;
 
 import java.util.UUID;
 
