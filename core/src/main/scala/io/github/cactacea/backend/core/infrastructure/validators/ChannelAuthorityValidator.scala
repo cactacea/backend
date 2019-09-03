@@ -70,7 +70,7 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService, channelUsersDAO: 
       r <- findRelationship(userId, c.by.sessionId)
       _ <- mustNotDirectMessageChannel(c.directMessage)
       _ <- mustHaveJoinAuthority(c, r, userId.sessionId)
-      _ <- mustHaveInviteAuthority(c, u, sessionId)
+      _ <- mustHaveInviteAuthority(c, u)
     } yield (())
   }
 
