@@ -11,8 +11,18 @@ public enum ContentStatusType {
 
     private byte value;
 
-    private ContentStatusType(byte value) {
+    ContentStatusType(byte value) {
         this.value = value;
+    }
+
+    public static final List<ContentStatusType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ContentStatusType>() {{
+            add(unchecked);
+            add(accepted);
+            add(rejected);
+        }} );
     }
 
     static public ContentStatusType forName(byte value) {
@@ -26,16 +36,6 @@ public enum ContentStatusType {
 
     public byte toValue() {
         return value;
-    }
-
-    public static final List<ContentStatusType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<ContentStatusType>() {{
-            add(unchecked);
-            add(accepted);
-            add(rejected);
-        }} );
     }
 
 }

@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.util.modules
 
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.repositories.{BlocksRepository, ChannelUsersRepository, ChannelsRepository, CommentLikesRepository, CommentsRepository, DevicesRepository, FeedLikesRepository, FeedsRepository, FollowersRepository, FollowsRepository, FriendRequestsRepository, FriendsRepository, InvitationsRepository, MediumsRepository, MessagesRepository, MutesRepository, NotificationsRepository, PushNotificationCommentsRepository, PushNotificationFeedsRepository, PushNotificationFriendRequestsRepository, PushNotificationInvitationsRepository, PushNotificationMessagesRepository, PushNotificationSettingsRepository, UserChannelRepository, UsersRepository}
+import io.github.cactacea.backend.core.domain.repositories._
 
 object DefaultCoreModule extends TwitterModule {
 

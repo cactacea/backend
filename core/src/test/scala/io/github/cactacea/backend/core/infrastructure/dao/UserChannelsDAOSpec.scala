@@ -194,7 +194,7 @@ class UserChannelsDAOSpec extends DAOSpec {
         assert(result.exists(_.userCount == 2))
         assert(result.exists(_.authorityType == ChannelAuthorityType.member))
         assert(result.exists(_.id == channelId))
-        assert(result.exists(_.message.exists(_.message == m.message)))
+        assert(result.exists(_.message.exists(_.message.getOrElse("") == m.message.getOrElse(""))))
         assert(result.exists(_.message.exists(_.messageType == m.messageType)))
         assert(result.exists(_.message.exists(_.userCount == 2)))
         assert(result.exists(_.message.exists(_.user.id == sessionId.userId)))

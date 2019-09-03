@@ -14,21 +14,8 @@ public enum NotificationType {
 
     private byte value;
 
-    private NotificationType(byte value) {
+    NotificationType(byte value) {
         this.value = value;
-    }
-
-    static public NotificationType forName(byte value) {
-        for (NotificationType e : values()) {
-            if (e.value == value) {
-                return e;
-            }
-        }
-        throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
     public static final List<NotificationType> all;
@@ -42,6 +29,19 @@ public enum NotificationType {
             add(feedReply);
             add(commentReply);
         }} );
+    }
+
+    static public NotificationType forName(byte value) {
+        for (NotificationType e : values()) {
+            if (e.value == value) {
+                return e;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    public byte toValue() {
+        return value;
     }
 
 }

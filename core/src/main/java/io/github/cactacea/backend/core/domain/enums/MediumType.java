@@ -10,8 +10,17 @@ public enum MediumType {
 
     private byte value;
 
-    private MediumType(byte value) {
+    MediumType(byte value) {
         this.value = value;
+    }
+
+    public static final List<MediumType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<MediumType>() {{
+            add(image);
+            add(movie);
+        }});
     }
 
     static public MediumType forName(byte value) {
@@ -25,15 +34,6 @@ public enum MediumType {
 
     public byte toValue() {
         return value;
-    }
-
-    public static final List<MediumType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<MediumType>() {{
-            add(image);
-            add(movie);
-        }});
     }
 
 }

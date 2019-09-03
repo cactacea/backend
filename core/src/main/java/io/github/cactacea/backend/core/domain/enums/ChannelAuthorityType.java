@@ -10,8 +10,17 @@ public enum ChannelAuthorityType {
 
     private byte value;
 
-    private ChannelAuthorityType(byte value) {
+    ChannelAuthorityType(byte value) {
         this.value = value;
+    }
+
+    public static final List<ChannelAuthorityType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ChannelAuthorityType>() {{
+            add(organizer);
+            add(member);
+        }} );
     }
 
     static public ChannelAuthorityType forName(byte value) {
@@ -25,15 +34,6 @@ public enum ChannelAuthorityType {
 
     public byte toValue() {
         return value;
-    }
-
-    public static final List<ChannelAuthorityType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<ChannelAuthorityType>() {{
-            add(organizer);
-            add(member);
-        }} );
     }
 
 }

@@ -12,8 +12,19 @@ public enum ChannelPrivacyType {
 
     private byte value;
 
-    private ChannelPrivacyType(byte value) {
+    ChannelPrivacyType(byte value) {
         this.value = value;
+    }
+
+    public static final List<ChannelPrivacyType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ChannelPrivacyType>() {{
+            add(everyone);
+            add(follows);
+            add(followers);
+            add(friends);
+        }} );
     }
 
     static public ChannelPrivacyType forName(byte value) {
@@ -27,17 +38,6 @@ public enum ChannelPrivacyType {
 
     public byte toValue() {
         return value;
-    }
-
-    public static final List<ChannelPrivacyType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<ChannelPrivacyType>() {{
-            add(everyone);
-            add(follows);
-            add(followers);
-            add(friends);
-        }} );
     }
 
 }

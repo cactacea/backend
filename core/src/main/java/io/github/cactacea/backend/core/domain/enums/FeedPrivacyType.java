@@ -12,8 +12,19 @@ public enum FeedPrivacyType {
 
     private byte value;
 
-    private FeedPrivacyType(byte value) {
+    FeedPrivacyType(byte value) {
         this.value = value;
+    }
+
+    public static final List<FeedPrivacyType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<FeedPrivacyType>() {{
+            add(everyone);
+            add(followers);
+            add(friends);
+            add(self);
+        }} );
     }
 
     static public FeedPrivacyType forName(byte value) {
@@ -27,17 +38,6 @@ public enum FeedPrivacyType {
 
     public byte toValue() {
         return value;
-    }
-
-    public static final List<FeedPrivacyType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<FeedPrivacyType>() {{
-            add(everyone);
-            add(followers);
-            add(friends);
-            add(self);
-        }} );
     }
 
 }

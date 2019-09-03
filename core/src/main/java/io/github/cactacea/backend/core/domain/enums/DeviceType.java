@@ -11,8 +11,18 @@ public enum DeviceType {
 
     private byte value;
 
-    private DeviceType(byte value) {
+    DeviceType(byte value) {
         this.value = value;
+    }
+
+    public static final List<DeviceType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<DeviceType>() {{
+            add(ios);
+            add(android);
+            add(web);
+        }} );
     }
 
     static public DeviceType forName(byte value) {
@@ -26,16 +36,6 @@ public enum DeviceType {
 
     public byte toValue() {
         return value;
-    }
-
-    public static final List<DeviceType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<DeviceType>() {{
-            add(ios);
-            add(android);
-            add(web);
-        }} );
     }
 
 }

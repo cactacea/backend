@@ -16,21 +16,8 @@ public enum PushNotificationType {
 
     private byte value;
 
-    private PushNotificationType(byte value) {
+    PushNotificationType(byte value) {
         this.value = value;
-    }
-
-    static public PushNotificationType forName(byte value) {
-        for (PushNotificationType e : values()) {
-            if (e.value == value) {
-                return e;
-            }
-        }
-        throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
     public static final List<PushNotificationType> all;
@@ -46,6 +33,19 @@ public enum PushNotificationType {
             add(feedReply);
             add(commentReply);
         }} );
+    }
+
+    static public PushNotificationType forName(byte value) {
+        for (PushNotificationType e : values()) {
+            if (e.value == value) {
+                return e;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    public byte toValue() {
+        return value;
     }
 
 }

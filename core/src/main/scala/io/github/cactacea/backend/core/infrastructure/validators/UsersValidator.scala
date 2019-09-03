@@ -74,14 +74,15 @@ class UsersValidator @Inject()(
   def mustFind(providerId: String, providerKey: String, expiresIn: Long): Future[Option[User]] = {
     usersDAO.find(providerId, providerKey).flatMap( _ match {
       case Some(a) =>
-        if (a.userStatus == UserStatusType.terminated) {
-          Future.exception(CactaceaException(UserTerminated))
-        } else if (a.userStatus == UserStatusType.deleted) {
-          Future.exception(CactaceaException(UserDeleted))
-        } else if (a.signedOutAt.map(_ < expiresIn).getOrElse(false)) {
-          Future.exception(CactaceaException(SessionTimeout))
-        } else {
-          Future.value(Option(a))
+        a.userStatus match {
+          case UserStatusType.terminated =>
+            Future.exception(CactaceaException(UserTerminated))
+          case UserStatusType.deleted =>
+            Future.exception(CactaceaException(UserDeleted))
+          case _ if (a.signedOutAt.map(_ < expiresIn).getOrElse(false)) =>
+            Future.exception(CactaceaException(SessionTimeout))
+          case _ =>
+            Future.value(Option(a))
         }
       case None =>
         Future.None
@@ -92,12 +93,13 @@ class UsersValidator @Inject()(
   def mustFind(providerId: String, providerKey: String): Future[User] = {
     usersDAO.find(providerId, providerKey).flatMap(_ match {
       case Some(a) =>
-        if (a.userStatus == UserStatusType.terminated) {
-          Future.exception(CactaceaException(UserTerminated))
-        } else if (a.userStatus == UserStatusType.deleted) {
-          Future.exception(CactaceaException(UserDeleted))
-        } else {
-          Future.value(a)
+        a.userStatus match {
+          case UserStatusType.terminated =>
+            Future.exception(CactaceaException(UserTerminated))
+          case UserStatusType.deleted =>
+            Future.exception(CactaceaException(UserDeleted))
+          case _ =>
+            Future.value(a)
         }
       case None =>
         Future.exception(CactaceaException(UserNotFound))

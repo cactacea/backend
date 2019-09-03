@@ -14,21 +14,8 @@ public enum MessageType {
 
     private byte value;
 
-    private MessageType(byte value) {
+    MessageType(byte value) {
         this.value = value;
-    }
-
-    static public MessageType forName(byte value) {
-        for (MessageType e : values()) {
-            if (e.value == value) {
-                return e;
-            }
-        }
-        throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
     public static final List<MessageType> all;
@@ -42,6 +29,19 @@ public enum MessageType {
             add(joined);
             add(left);
         }} );
+    }
+
+    static public MessageType forName(byte value) {
+        for (MessageType e : values()) {
+            if (e.value == value) {
+                return e;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    public byte toValue() {
+        return value;
     }
 
 }

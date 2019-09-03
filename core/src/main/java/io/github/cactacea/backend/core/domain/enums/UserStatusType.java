@@ -11,8 +11,18 @@ public enum UserStatusType {
 
     private byte value;
 
-    private UserStatusType(byte value) {
+    UserStatusType(byte value) {
         this.value = value;
+    }
+
+    public static final List<UserStatusType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<UserStatusType>() {{
+            add(normally);
+            add(deleted);
+            add(terminated);
+        }} );
     }
 
     static public UserStatusType forName(byte value) {
@@ -26,16 +36,6 @@ public enum UserStatusType {
 
     public byte toValue() {
         return value;
-    }
-
-    public static final List<UserStatusType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<UserStatusType>() {{
-            add(normally);
-            add(deleted);
-            add(terminated);
-        }} );
     }
 
 }

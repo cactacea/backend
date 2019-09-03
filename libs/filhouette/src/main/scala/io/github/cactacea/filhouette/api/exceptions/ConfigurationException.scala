@@ -25,5 +25,5 @@ package io.github.cactacea.filhouette.api.exceptions
  * @param msg The exception message.
  * @param cause The exception cause.
  */
-class ConfigurationException(msg: String, cause: Throwable = null)
+class ConfigurationException(msg: String, cause: Throwable)
   extends FilhouetteException(msg, cause)

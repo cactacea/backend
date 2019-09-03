@@ -10,8 +10,17 @@ public enum ActiveStatusType {
 
     private byte value;
 
-    private ActiveStatusType(byte value) {
+    ActiveStatusType(byte value) {
         this.value = value;
+    }
+
+    public static final List<ActiveStatusType> all;
+
+    static {
+        all = Collections.unmodifiableList(new ArrayList<ActiveStatusType>() {{
+            add(active);
+            add(inactive);
+        }} );
     }
 
     static public ActiveStatusType forName(byte value) {
@@ -27,13 +36,5 @@ public enum ActiveStatusType {
         return value;
     }
 
-    public static final List<ActiveStatusType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<ActiveStatusType>() {{
-            add(active);
-            add(inactive);
-        }} );
-    }
 
 }
