@@ -313,10 +313,10 @@
 
         <div class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getAccount" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getAccount(id:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId):String"></a><a id="getAccount(AccountId):String"></a>
+              <ol><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getChannel" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="getChannel(id:io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId):String"></a><a id="getChannel(ChannelId):String"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getAccount(id:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId):String" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getChannel(id:io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId):String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -325,14 +325,14 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getAccount</span><span class="params">(<span name="id">id: <a href="../../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">getChannel</span><span class="params">(<span name="id">id: <a href="../../../infrastructure/identifiers/ChannelId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId">ChannelId</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getAccounts" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getAccounts():String"></a>
+    </li><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getChannels" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="getChannels():String"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getAccounts():String" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getChannels():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -341,7 +341,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getAccounts</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">getChannels</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       
@@ -409,42 +409,10 @@
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getGroup" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getGroup(id:io.github.cactacea.backend.core.infrastructure.identifiers.GroupId):String"></a><a id="getGroup(GroupId):String"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getGroup(id:io.github.cactacea.backend.core.infrastructure.identifiers.GroupId):String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getGroup</span><span class="params">(<span name="id">id: <a href="../../../infrastructure/identifiers/GroupId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupId">GroupId</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getGroups" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getGroups():String"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getGroups():String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getGroups</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      
-      
     </li><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getInvitation" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getInvitation(id:io.github.cactacea.backend.core.infrastructure.identifiers.GroupInvitationId):String"></a><a id="getInvitation(GroupInvitationId):String"></a>
+      <a id="getInvitation(id:io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId):String"></a><a id="getInvitation(InvitationId):String"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getInvitation(id:io.github.cactacea.backend.core.infrastructure.identifiers.GroupInvitationId):String" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getInvitation(id:io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId):String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -453,7 +421,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getInvitation</span><span class="params">(<span name="id">id: <a href="../../../infrastructure/identifiers/GroupInvitationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupInvitationId">GroupInvitationId</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">getInvitation</span><span class="params">(<span name="id">id: <a href="../../../infrastructure/identifiers/InvitationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId">InvitationId</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       
@@ -474,9 +442,9 @@
       
       
     </li><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getMessages" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getMessages(groupId:io.github.cactacea.backend.core.infrastructure.identifiers.GroupId,id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId):String"></a><a id="getMessages(GroupId,MessageId):String"></a>
+      <a id="getMessages(channelId:io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId,id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId):String"></a><a id="getMessages(ChannelId,MessageId):String"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getMessages(groupId:io.github.cactacea.backend.core.infrastructure.identifiers.GroupId,id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId):String" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getMessages(channelId:io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId,id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId):String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -485,7 +453,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getMessages</span><span class="params">(<span name="groupId">groupId: <a href="../../../infrastructure/identifiers/GroupId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupId">GroupId</a></span>, <span name="id">id: <a href="../../../infrastructure/identifiers/MessageId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MessageId">MessageId</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">getMessages</span><span class="params">(<span name="channelId">channelId: <a href="../../../infrastructure/identifiers/ChannelId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId">ChannelId</a></span>, <span name="id">id: <a href="../../../infrastructure/identifiers/MessageId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MessageId">MessageId</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       
@@ -534,6 +502,38 @@
       </span>
       <span class="symbol">
         <span class="name">getRequests</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getUser" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="getUser(id:io.github.cactacea.backend.core.infrastructure.identifiers.UserId):String"></a><a id="getUser(UserId):String"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getUser(id:io.github.cactacea.backend.core.infrastructure.identifiers.UserId):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getUser</span><span class="params">(<span name="id">id: <a href="../../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService#getUsers" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="getUsers():String"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/interfaces/DeepLinkService.html#getUsers():String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getUsers</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       

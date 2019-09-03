@@ -183,20 +183,16 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="AccountGroupsRepository.html" title=""></a>
-                        <a href="AccountGroupsRepository.html" title="">AccountGroupsRepository</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountsRepository.html" title=""></a>
-                        <a href="AccountsRepository.html" title="">AccountsRepository</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AuthenticationsRepository.html" title=""></a>
-                        <a href="AuthenticationsRepository.html" title="">AuthenticationsRepository</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
                         <a class="class" href="BlocksRepository.html" title=""></a>
                         <a href="BlocksRepository.html" title="">BlocksRepository</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="ChannelUsersRepository.html" title=""></a>
+                        <a href="ChannelUsersRepository.html" title="">ChannelUsersRepository</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="ChannelsRepository.html" title=""></a>
+                        <a href="ChannelsRepository.html" title="">ChannelsRepository</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="CommentLikesRepository.html" title=""></a>
@@ -235,16 +231,8 @@
                         <a href="FriendsRepository.html" title="">FriendsRepository</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="GroupAccountsRepository.html" title=""></a>
-                        <a href="GroupAccountsRepository.html" title="">GroupAccountsRepository</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="GroupInvitationsRepository.html" title=""></a>
-                        <a href="GroupInvitationsRepository.html" title="">GroupInvitationsRepository</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="GroupsRepository.html" title=""></a>
-                        <a href="GroupsRepository.html" title="">GroupsRepository</a>
+                        <a class="class" href="InvitationsRepository.html" title=""></a>
+                        <a href="InvitationsRepository.html" title="">InvitationsRepository</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="MediumsRepository.html" title=""></a>
@@ -275,8 +263,8 @@
                         <a href="PushNotificationFriendRequestsRepository.html" title="">PushNotificationFriendRequestsRepository</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="PushNotificationGroupInvitationsRepository.html" title=""></a>
-                        <a href="PushNotificationGroupInvitationsRepository.html" title="">PushNotificationGroupInvitationsRepository</a>
+                        <a class="class" href="PushNotificationInvitationsRepository.html" title=""></a>
+                        <a href="PushNotificationInvitationsRepository.html" title="">PushNotificationInvitationsRepository</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="PushNotificationMessagesRepository.html" title=""></a>
@@ -287,8 +275,12 @@
                         <a href="PushNotificationSettingsRepository.html" title="">PushNotificationSettingsRepository</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="ReportsRepository.html" title=""></a>
-                        <a href="ReportsRepository.html" title="">ReportsRepository</a>
+                        <a class="class" href="UserChannelRepository.html" title=""></a>
+                        <a href="UserChannelRepository.html" title="">UserChannelRepository</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UsersRepository.html" title=""></a>
+                        <a href="UsersRepository.html" title="">UsersRepository</a>
                       </li>
               </ul>
             </div>
@@ -373,9 +365,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.repositories.CommentsRepository#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(commentsDAO:io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO,commentsValidator:io.github.cactacea.backend.core.infrastructure.validators.CommentsValidator,feedsValidator:io.github.cactacea.backend.core.infrastructure.validators.FeedsValidator,notificationsDAO:io.github.cactacea.backend.core.infrastructure.dao.NotificationsDAO):io.github.cactacea.backend.core.domain.repositories.CommentsRepository"></a><a id="&lt;init&gt;:CommentsRepository"></a>
+      <a id="&lt;init&gt;(commentsDAO:io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO,commentReportsDAO:io.github.cactacea.backend.core.infrastructure.dao.CommentReportsDAO,commentLikesDAO:io.github.cactacea.backend.core.infrastructure.dao.CommentLikesDAO,commentsValidator:io.github.cactacea.backend.core.infrastructure.validators.CommentsValidator,feedsValidator:io.github.cactacea.backend.core.infrastructure.validators.FeedsValidator,notificationsDAO:io.github.cactacea.backend.core.infrastructure.dao.NotificationsDAO):io.github.cactacea.backend.core.domain.repositories.CommentsRepository"></a><a id="&lt;init&gt;:CommentsRepository"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/CommentsRepository.html#&lt;init&gt;(commentsDAO:io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO,commentsValidator:io.github.cactacea.backend.core.infrastructure.validators.CommentsValidator,feedsValidator:io.github.cactacea.backend.core.infrastructure.validators.FeedsValidator,notificationsDAO:io.github.cactacea.backend.core.infrastructure.dao.NotificationsDAO):io.github.cactacea.backend.core.domain.repositories.CommentsRepository" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/CommentsRepository.html#&lt;init&gt;(commentsDAO:io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO,commentReportsDAO:io.github.cactacea.backend.core.infrastructure.dao.CommentReportsDAO,commentLikesDAO:io.github.cactacea.backend.core.infrastructure.dao.CommentLikesDAO,commentsValidator:io.github.cactacea.backend.core.infrastructure.validators.CommentsValidator,feedsValidator:io.github.cactacea.backend.core.infrastructure.validators.FeedsValidator,notificationsDAO:io.github.cactacea.backend.core.infrastructure.dao.NotificationsDAO):io.github.cactacea.backend.core.domain.repositories.CommentsRepository" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -384,7 +376,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">CommentsRepository</span><span class="params">(<span name="commentsDAO">commentsDAO: <a href="../../infrastructure/dao/CommentsDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO">CommentsDAO</a></span>, <span name="commentsValidator">commentsValidator: <a href="../../infrastructure/validators/CommentsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.CommentsValidator">CommentsValidator</a></span>, <span name="feedsValidator">feedsValidator: <a href="../../infrastructure/validators/FeedsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.FeedsValidator">FeedsValidator</a></span>, <span name="notificationsDAO">notificationsDAO: <a href="../../infrastructure/dao/NotificationsDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.NotificationsDAO">NotificationsDAO</a></span>)</span>
+        <span class="name">CommentsRepository</span><span class="params">(<span name="commentsDAO">commentsDAO: <a href="../../infrastructure/dao/CommentsDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.CommentsDAO">CommentsDAO</a></span>, <span name="commentReportsDAO">commentReportsDAO: <a href="../../infrastructure/dao/CommentReportsDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.CommentReportsDAO">CommentReportsDAO</a></span>, <span name="commentLikesDAO">commentLikesDAO: <a href="../../infrastructure/dao/CommentLikesDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.CommentLikesDAO">CommentLikesDAO</a></span>, <span name="commentsValidator">commentsValidator: <a href="../../infrastructure/validators/CommentsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.CommentsValidator">CommentsValidator</a></span>, <span name="feedsValidator">feedsValidator: <a href="../../infrastructure/validators/FeedsValidator.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.validators.FeedsValidator">FeedsValidator</a></span>, <span name="notificationsDAO">notificationsDAO: <a href="../../infrastructure/dao/NotificationsDAO.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.dao.NotificationsDAO">NotificationsDAO</a></span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -533,9 +525,9 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.repositories.CommentsRepository#create" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="create(feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,message:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId]"></a><a id="create(FeedId,String,SessionId):Future[CommentId]"></a>
+      <a id="create(feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,message:String,replyId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId]"></a><a id="create(FeedId,String,Option[CommentId],SessionId):Future[CommentId]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/CommentsRepository.html#create(feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,message:String,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/CommentsRepository.html#create(feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,message:String,replyId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -544,7 +536,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">create</span><span class="params">(<span name="feedId">feedId: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>
+        <span class="name">create</span><span class="params">(<span name="feedId">feedId: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>
       </span>
       
       
@@ -861,6 +853,22 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.CommentsRepository#report" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="report(commentId:io.github.cactacea.backend.core.infrastructure.identifiers.CommentId,reportType:io.github.cactacea.backend.core.domain.enums.ReportType,reportContent:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="report(CommentId,ReportType,Option[String],SessionId):Future[Unit]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/CommentsRepository.html#report(commentId:io.github.cactacea.backend.core.infrastructure.identifiers.CommentId,reportType:io.github.cactacea.backend.core.domain.enums.ReportType,reportContent:Option[String],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">report</span><span class="params">(<span name="commentId">commentId: <a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a></span>, <span name="reportType">reportType: <a href="../enums/ReportType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.ReportType">ReportType</a></span>, <span name="reportContent">reportContent: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">

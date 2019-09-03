@@ -200,7 +200,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">OAuthToken</span><span class="params">(<span name="accountId">accountId: <a href="../core/infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="issuedAt">issuedAt: <span class="extype" name="java.util.Date">Date</span></span>, <span name="expiresIn">expiresIn: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="clientId">clientId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="redirectUri">redirectUri: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="scope">scope: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">OAuthToken</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="issuedAt">issuedAt: <span class="extype" name="java.util.Date">Date</span></span>, <span name="expiresIn">expiresIn: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="clientId">clientId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="redirectUri">redirectUri: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="scope">scope: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -261,9 +261,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.oauth.OAuthToken#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,issuedAt:java.util.Date,expiresIn:Option[Long],clientId:String,redirectUri:Option[String],scope:Option[String]):io.github.cactacea.backend.oauth.OAuthToken"></a><a id="&lt;init&gt;:OAuthToken"></a>
+      <a id="&lt;init&gt;(userName:String,issuedAt:java.util.Date,expiresIn:Option[Long],clientId:String,redirectUri:Option[String],scope:Option[String]):io.github.cactacea.backend.oauth.OAuthToken"></a><a id="&lt;init&gt;:OAuthToken"></a>
       <span class="permalink">
-      <a href="../../../../../io/github/cactacea/backend/oauth/OAuthToken.html#&lt;init&gt;(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,issuedAt:java.util.Date,expiresIn:Option[Long],clientId:String,redirectUri:Option[String],scope:Option[String]):io.github.cactacea.backend.oauth.OAuthToken" title="Permalink">
+      <a href="../../../../../io/github/cactacea/backend/oauth/OAuthToken.html#&lt;init&gt;(userName:String,issuedAt:java.util.Date,expiresIn:Option[Long],clientId:String,redirectUri:Option[String],scope:Option[String]):io.github.cactacea.backend.oauth.OAuthToken" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -272,7 +272,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">OAuthToken</span><span class="params">(<span name="accountId">accountId: <a href="../core/infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="issuedAt">issuedAt: <span class="extype" name="java.util.Date">Date</span></span>, <span name="expiresIn">expiresIn: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="clientId">clientId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="redirectUri">redirectUri: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="scope">scope: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
+        <span class="name">OAuthToken</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="issuedAt">issuedAt: <span class="extype" name="java.util.Date">Date</span></span>, <span name="expiresIn">expiresIn: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="clientId">clientId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="redirectUri">redirectUri: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="scope">scope: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
       </span>
       
       
@@ -377,22 +377,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.oauth.OAuthToken#accountId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId"></a><a id="accountId:AccountId"></a>
-      <span class="permalink">
-      <a href="../../../../../io/github/cactacea/backend/oauth/OAuthToken.html#accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">accountId</span><span class="result">: <a href="../core/infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>
-      </span>
-      
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -759,6 +743,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.oauth.OAuthToken#userName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="userName:String"></a>
+      <span class="permalink">
+      <a href="../../../../../io/github/cactacea/backend/oauth/OAuthToken.html#userName:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

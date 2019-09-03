@@ -199,6 +199,10 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.server.models.requests">requests</a></dd></dl></div>
     </li><li class="current-entities indented8">
                         <span class="separator"></span>
+                        <a class="class" href="DeleteSignOut.html" title=""></a>
+                        <a href="DeleteSignOut.html" title="">DeleteSignOut</a>
+                      </li><li class="current-entities indented8">
+                        <span class="separator"></span>
                         <a class="class" href="GetSessionBlocks.html" title=""></a>
                         <a href="GetSessionBlocks.html" title="">GetSessionBlocks</a>
                       </li><li class="current-entities indented8">
@@ -223,12 +227,8 @@
                         <a href="GetSessionMutes.html" title="">GetSessionMutes</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="PutSessionAccountName.html" title=""></a>
-                        <a href="PutSessionAccountName.html" title="">PutSessionAccountName</a>
-                      </li><li class="current-entities indented8">
-                        <span class="separator"></span>
-                        <a class="class" href="PutSessionPassword.html" title=""></a>
-                        <a href="PutSessionPassword.html" title="">PutSessionPassword</a>
+                        <a class="class" href="PutSession.html" title=""></a>
+                        <a href="PutSession.html" title="">PutSession</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
                         <a class="class" href="PutSessionProfile.html" title=""></a>
@@ -260,12 +260,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">GetSessionFollows</span><span class="params">(<span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">GetSessionFollows</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/server/src/main/scala/io/github/cactacea/backend/server/models/requests/session/GetSessionFollowings.scala" target="_blank">GetSessionFollowings.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/server/src/main/scala/io/github/cactacea/backend/server/models/requests/session/GetSessionFollows.scala" target="_blank">GetSessionFollows.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -321,9 +321,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.server.models.requests.session.GetSessionFollows#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(since:Option[Long],offset:Option[Int],count:Option[Int]):io.github.cactacea.backend.server.models.requests.session.GetSessionFollows"></a><a id="&lt;init&gt;:GetSessionFollows"></a>
+      <a id="&lt;init&gt;(userName:Option[String],since:Option[Long],offset:Option[Int],count:Option[Int]):io.github.cactacea.backend.server.models.requests.session.GetSessionFollows"></a><a id="&lt;init&gt;:GetSessionFollows"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/session/GetSessionFollows.html#&lt;init&gt;(since:Option[Long],offset:Option[Int],count:Option[Int]):io.github.cactacea.backend.server.models.requests.session.GetSessionFollows" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/session/GetSessionFollows.html#&lt;init&gt;(userName:Option[String],since:Option[Long],offset:Option[Int],count:Option[Int]):io.github.cactacea.backend.server.models.requests.session.GetSessionFollows" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -332,7 +332,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">GetSessionFollows</span><span class="params">(<span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span>
+        <span class="name">GetSessionFollows</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span>
       </span>
       
       
@@ -771,6 +771,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.models.requests.session.GetSessionFollows#userName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="userName:Option[String]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/session/GetSessionFollows.html#userName:Option[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userName</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

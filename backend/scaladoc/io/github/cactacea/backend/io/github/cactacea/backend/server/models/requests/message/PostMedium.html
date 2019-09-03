@@ -236,7 +236,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">PostMedium</span><span class="params">(<span name="groupId">groupId: <a href="../../../../core/infrastructure/identifiers/GroupId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupId">GroupId</a></span>, <span name="mediumId">mediumId: <a href="../../../../core/infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">PostMedium</span><span class="params">(<span name="channelId">channelId: <a href="../../../../core/infrastructure/identifiers/ChannelId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId">ChannelId</a></span>, <span name="mediumId">mediumId: <a href="../../../../core/infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -297,9 +297,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.server.models.requests.message.PostMedium#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(groupId:io.github.cactacea.backend.core.infrastructure.identifiers.GroupId,mediumId:io.github.cactacea.backend.core.infrastructure.identifiers.MediumId):io.github.cactacea.backend.server.models.requests.message.PostMedium"></a><a id="&lt;init&gt;:PostMedium"></a>
+      <a id="&lt;init&gt;(channelId:io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId,mediumId:io.github.cactacea.backend.core.infrastructure.identifiers.MediumId):io.github.cactacea.backend.server.models.requests.message.PostMedium"></a><a id="&lt;init&gt;:PostMedium"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/message/PostMedium.html#&lt;init&gt;(groupId:io.github.cactacea.backend.core.infrastructure.identifiers.GroupId,mediumId:io.github.cactacea.backend.core.infrastructure.identifiers.MediumId):io.github.cactacea.backend.server.models.requests.message.PostMedium" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/message/PostMedium.html#&lt;init&gt;(channelId:io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId,mediumId:io.github.cactacea.backend.core.infrastructure.identifiers.MediumId):io.github.cactacea.backend.server.models.requests.message.PostMedium" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -308,7 +308,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PostMedium</span><span class="params">(<span name="groupId">groupId: <a href="../../../../core/infrastructure/identifiers/GroupId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupId">GroupId</a></span>, <span name="mediumId">mediumId: <a href="../../../../core/infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>)</span>
+        <span class="name">PostMedium</span><span class="params">(<span name="channelId">channelId: <a href="../../../../core/infrastructure/identifiers/ChannelId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId">ChannelId</a></span>, <span name="mediumId">mediumId: <a href="../../../../core/infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>)</span>
       </span>
       
       
@@ -429,6 +429,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.models.requests.message.PostMedium#channelId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="channelId:io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId"></a><a id="channelId:ChannelId"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/message/PostMedium.html#channelId:io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">channelId</span><span class="result">: <a href="../../../../core/infrastructure/identifiers/ChannelId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId">ChannelId</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
@@ -613,22 +629,6 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.github.cactacea.backend.server.models.requests.message.PostMedium#groupId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupId:io.github.cactacea.backend.core.infrastructure.identifiers.GroupId"></a><a id="groupId:GroupId"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/message/PostMedium.html#groupId:io.github.cactacea.backend.core.infrastructure.identifiers.GroupId" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">groupId</span><span class="result">: <a href="../../../../core/infrastructure/identifiers/GroupId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupId">GroupId</a></span>
-      </span>
-      
-      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">

@@ -182,13 +182,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented7">
-                        <a class="object" href="Account$.html" title=""></a>
-                        <a class="class" href="Account.html" title=""></a>
-                        <a href="Account.html" title="">Account</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountStatus.html" title=""></a>
-                        <a href="AccountStatus.html" title="">AccountStatus</a>
+                        <a class="object" href="Channel$.html" title=""></a>
+                        <a class="class" href="Channel.html" title=""></a>
+                        <a href="Channel.html" title="">Channel</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Comment$.html" title=""></a>
                         <a class="class" href="Comment.html" title=""></a>
@@ -206,13 +202,9 @@
                         <a class="class" href="FriendRequest.html" title=""></a>
                         <a href="FriendRequest.html" title="">FriendRequest</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Group$.html" title=""></a>
-                        <a class="class" href="Group.html" title=""></a>
-                        <a href="Group.html" title="">Group</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="GroupInvitation$.html" title=""></a>
-                        <a class="class" href="GroupInvitation.html" title=""></a>
-                        <a href="GroupInvitation.html" title="">GroupInvitation</a>
+                        <a class="object" href="Invitation$.html" title=""></a>
+                        <a class="class" href="Invitation.html" title=""></a>
+                        <a href="Invitation.html" title="">Invitation</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Medium$.html" title=""></a>
                         <a class="class" href="Medium.html" title=""></a>
@@ -237,6 +229,14 @@
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="User$.html" title=""></a>
+                        <a class="class" href="User.html" title=""></a>
+                        <a href="User.html" title="">User</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserStatus.html" title=""></a>
+                        <a href="UserStatus.html" title="">UserStatus</a>
                       </li>
               </ul>
             </div>
@@ -373,9 +373,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.models.Feed#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(f:io.github.cactacea.backend.core.infrastructure.models.Feeds,ft:List[io.github.cactacea.backend.core.infrastructure.models.FeedTags],m:List[io.github.cactacea.backend.core.infrastructure.models.Mediums],a:io.github.cactacea.backend.core.infrastructure.models.Accounts,r:Option[io.github.cactacea.backend.core.infrastructure.models.Relationships],n:Long):io.github.cactacea.backend.core.domain.models.Feed"></a><a id="apply(Feeds,List[FeedTags],List[Mediums],Accounts,Option[Relationships],Long):Feed"></a>
+      <a id="apply(f:io.github.cactacea.backend.core.infrastructure.models.Feeds,l:Option[io.github.cactacea.backend.core.infrastructure.models.FeedLikes],m:List[io.github.cactacea.backend.core.infrastructure.models.Mediums],a:io.github.cactacea.backend.core.infrastructure.models.Users,r:Option[io.github.cactacea.backend.core.infrastructure.models.Relationships],next:Long):io.github.cactacea.backend.core.domain.models.Feed"></a><a id="apply(Feeds,Option[FeedLikes],List[Mediums],Users,Option[Relationships],Long):Feed"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Feed$.html#apply(f:io.github.cactacea.backend.core.infrastructure.models.Feeds,ft:List[io.github.cactacea.backend.core.infrastructure.models.FeedTags],m:List[io.github.cactacea.backend.core.infrastructure.models.Mediums],a:io.github.cactacea.backend.core.infrastructure.models.Accounts,r:Option[io.github.cactacea.backend.core.infrastructure.models.Relationships],n:Long):io.github.cactacea.backend.core.domain.models.Feed" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Feed$.html#apply(f:io.github.cactacea.backend.core.infrastructure.models.Feeds,l:Option[io.github.cactacea.backend.core.infrastructure.models.FeedLikes],m:List[io.github.cactacea.backend.core.infrastructure.models.Mediums],a:io.github.cactacea.backend.core.infrastructure.models.Users,r:Option[io.github.cactacea.backend.core.infrastructure.models.Relationships],next:Long):io.github.cactacea.backend.core.domain.models.Feed" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -384,39 +384,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="f">f: <a href="../../infrastructure/models/Feeds.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Feeds">Feeds</a></span>, <span name="ft">ft: <span class="extype" name="scala.List">List</span>[<a href="../../infrastructure/models/FeedTags.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.FeedTags">FeedTags</a>]</span>, <span name="m">m: <span class="extype" name="scala.List">List</span>[<a href="../../infrastructure/models/Mediums.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Mediums">Mediums</a>]</span>, <span name="a">a: <a href="../../infrastructure/models/Accounts.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Accounts">Accounts</a></span>, <span name="r">r: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/models/Relationships.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Relationships">Relationships</a>]</span>, <span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="Feed.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Feed">Feed</a></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.Feed#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(f:io.github.cactacea.backend.core.infrastructure.models.Feeds,ft:List[io.github.cactacea.backend.core.infrastructure.models.FeedTags],m:List[io.github.cactacea.backend.core.infrastructure.models.Mediums],n:Long):io.github.cactacea.backend.core.domain.models.Feed"></a><a id="apply(Feeds,List[FeedTags],List[Mediums],Long):Feed"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Feed$.html#apply(f:io.github.cactacea.backend.core.infrastructure.models.Feeds,ft:List[io.github.cactacea.backend.core.infrastructure.models.FeedTags],m:List[io.github.cactacea.backend.core.infrastructure.models.Mediums],n:Long):io.github.cactacea.backend.core.domain.models.Feed" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="f">f: <a href="../../infrastructure/models/Feeds.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Feeds">Feeds</a></span>, <span name="ft">ft: <span class="extype" name="scala.List">List</span>[<a href="../../infrastructure/models/FeedTags.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.FeedTags">FeedTags</a>]</span>, <span name="m">m: <span class="extype" name="scala.List">List</span>[<a href="../../infrastructure/models/Mediums.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Mediums">Mediums</a>]</span>, <span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="Feed.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Feed">Feed</a></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.Feed#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(f:io.github.cactacea.backend.core.infrastructure.models.Feeds,fl:io.github.cactacea.backend.core.infrastructure.models.FeedLikes,n:Long):io.github.cactacea.backend.core.domain.models.Feed"></a><a id="apply(Feeds,FeedLikes,Long):Feed"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Feed$.html#apply(f:io.github.cactacea.backend.core.infrastructure.models.Feeds,fl:io.github.cactacea.backend.core.infrastructure.models.FeedLikes,n:Long):io.github.cactacea.backend.core.domain.models.Feed" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="f">f: <a href="../../infrastructure/models/Feeds.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Feeds">Feeds</a></span>, <span name="fl">fl: <a href="../../infrastructure/models/FeedLikes.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.FeedLikes">FeedLikes</a></span>, <span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="Feed.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Feed">Feed</a></span>
+        <span class="name">apply</span><span class="params">(<span name="f">f: <a href="../../infrastructure/models/Feeds.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Feeds">Feeds</a></span>, <span name="l">l: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/models/FeedLikes.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.FeedLikes">FeedLikes</a>]</span>, <span name="m">m: <span class="extype" name="scala.List">List</span>[<a href="../../infrastructure/models/Mediums.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Mediums">Mediums</a>]</span>, <span name="a">a: <a href="../../infrastructure/models/Users.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Users">Users</a></span>, <span name="r">r: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/models/Relationships.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.models.Relationships">Relationships</a>]</span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="Feed.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Feed">Feed</a></span>
       </span>
       
       

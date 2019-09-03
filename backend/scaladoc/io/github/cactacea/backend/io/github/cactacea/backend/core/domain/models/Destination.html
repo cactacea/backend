@@ -182,13 +182,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented7">
-                        <a class="object" href="Account$.html" title=""></a>
-                        <a class="class" href="Account.html" title=""></a>
-                        <a href="Account.html" title="">Account</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountStatus.html" title=""></a>
-                        <a href="AccountStatus.html" title="">AccountStatus</a>
+                        <a class="object" href="Channel$.html" title=""></a>
+                        <a class="class" href="Channel.html" title=""></a>
+                        <a href="Channel.html" title="">Channel</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Comment$.html" title=""></a>
                         <a class="class" href="Comment.html" title=""></a>
@@ -206,13 +202,9 @@
                         <a class="class" href="FriendRequest.html" title=""></a>
                         <a href="FriendRequest.html" title="">FriendRequest</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Group$.html" title=""></a>
-                        <a class="class" href="Group.html" title=""></a>
-                        <a href="Group.html" title="">Group</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="GroupInvitation$.html" title=""></a>
-                        <a class="class" href="GroupInvitation.html" title=""></a>
-                        <a href="GroupInvitation.html" title="">GroupInvitation</a>
+                        <a class="object" href="Invitation$.html" title=""></a>
+                        <a class="class" href="Invitation.html" title=""></a>
+                        <a href="Invitation.html" title="">Invitation</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Medium$.html" title=""></a>
                         <a class="class" href="Medium.html" title=""></a>
@@ -237,6 +229,14 @@
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="User$.html" title=""></a>
+                        <a class="class" href="User.html" title=""></a>
+                        <a href="User.html" title="">User</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserStatus.html" title=""></a>
+                        <a href="UserStatus.html" title="">UserStatus</a>
                       </li>
               </ul>
             </div>
@@ -260,7 +260,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Destination</span><span class="params">(<span name="accountId">accountId: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="accountToken">accountToken: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="by">by: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Destination</span><span class="params">(<span name="userId">userId: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="userToken">userToken: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="by">by: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -321,9 +321,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.models.Destination#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,accountToken:String,accountName:String,by:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId):io.github.cactacea.backend.core.domain.models.Destination"></a><a id="&lt;init&gt;:Destination"></a>
+      <a id="&lt;init&gt;(userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,userToken:String,userName:String,by:io.github.cactacea.backend.core.infrastructure.identifiers.UserId):io.github.cactacea.backend.core.domain.models.Destination"></a><a id="&lt;init&gt;:Destination"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#&lt;init&gt;(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,accountToken:String,accountName:String,by:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId):io.github.cactacea.backend.core.domain.models.Destination" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#&lt;init&gt;(userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,userToken:String,userName:String,by:io.github.cactacea.backend.core.infrastructure.identifiers.UserId):io.github.cactacea.backend.core.domain.models.Destination" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -332,7 +332,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Destination</span><span class="params">(<span name="accountId">accountId: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="accountToken">accountToken: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="by">by: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>)</span>
+        <span class="name">Destination</span><span class="params">(<span name="userId">userId: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="userToken">userToken: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="by">by: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>)</span>
       </span>
       
       
@@ -437,54 +437,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.Destination#accountId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId"></a><a id="accountId:AccountId"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">accountId</span><span class="result">: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.Destination#accountName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="accountName:String"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#accountName:String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">accountName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.Destination#accountToken" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="accountToken:String"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#accountToken:String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">accountToken</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -502,9 +454,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.models.Destination#by" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="by:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId"></a><a id="by:AccountId"></a>
+      <a id="by:io.github.cactacea.backend.core.infrastructure.identifiers.UserId"></a><a id="by:UserId"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#by:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#by:io.github.cactacea.backend.core.infrastructure.identifiers.UserId" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -513,7 +465,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">by</span><span class="result">: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>
+        <span class="name">by</span><span class="result">: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>
       </span>
       
       
@@ -787,6 +739,54 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Destination#userId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId"></a><a id="userId:UserId"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userId</span><span class="result">: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.models.Destination#userName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="userName:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#userName:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.models.Destination#userToken" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="userToken:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Destination.html#userToken:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userToken</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

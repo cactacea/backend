@@ -217,7 +217,10 @@
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/server/src/main/scala/io/github/cactacea/backend/server/utils/filters/CactaceaAuthenticationFilter.scala" target="_blank">CactaceaAuthenticationFilter.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@Singleton</span><span class="args">()</span>
+              
+        </dd><dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/server/src/main/scala/io/github/cactacea/backend/server/utils/filters/CactaceaAuthenticationFilter.scala" target="_blank">CactaceaAuthenticationFilter.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -273,9 +276,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.domain.models.User,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]):io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter"></a><a id="&lt;init&gt;:CactaceaAuthenticationFilter"></a>
+      <a id="&lt;init&gt;(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]):io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter"></a><a id="&lt;init&gt;:CactaceaAuthenticationFilter"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/server/utils/filters/CactaceaAuthenticationFilter.html#&lt;init&gt;(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.domain.models.User,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]):io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/server/utils/filters/CactaceaAuthenticationFilter.html#&lt;init&gt;(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]):io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -284,7 +287,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">CactaceaAuthenticationFilter</span><span class="params">(<span name="auth">auth: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span>
+        <span class="name">CactaceaAuthenticationFilter</span><span class="params">(<span name="auth">auth: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span>
       </span>
       
       
@@ -389,22 +392,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter#accountsRepository" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="accountsRepository:io.github.cactacea.backend.core.domain.repositories.AccountsRepository"></a><a id="accountsRepository:AccountsRepository"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/server/utils/filters/CactaceaAuthenticationFilter.html#accountsRepository:io.github.cactacea.backend.core.domain.repositories.AccountsRepository" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">accountsRepository</span><span class="result">: <a href="../../../core/domain/repositories/AccountsRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.AccountsRepository">AccountsRepository</a></span>
-      </span>
-      
-      
     </li><li name="com.twitter.finagle.Filter#agnosticAndThen" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="agnosticAndThen(next:com.twitter.finagle.Filter.TypeAgnostic):com.twitter.finagle.Filter[ReqIn,RepOut,ReqOut,RepIn]"></a><a id="agnosticAndThen(TypeAgnostic):Filter[Request,Response,Request,Response]"></a>
       <span class="permalink">
@@ -826,9 +813,9 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter#securedActionBuilder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="securedActionBuilder:io.github.cactacea.filhouette.api.actions.SecuredActionBuilder[io.github.cactacea.backend.auth.domain.models.User,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]"></a><a id="securedActionBuilder:SecuredActionBuilder[User,JWTAuthenticator]"></a>
+      <a id="securedActionBuilder:io.github.cactacea.filhouette.api.actions.SecuredActionBuilder[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]"></a><a id="securedActionBuilder:SecuredActionBuilder[Authentication,JWTAuthenticator]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/server/utils/filters/CactaceaAuthenticationFilter.html#securedActionBuilder:io.github.cactacea.filhouette.api.actions.SecuredActionBuilder[io.github.cactacea.backend.auth.domain.models.User,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/server/utils/filters/CactaceaAuthenticationFilter.html#securedActionBuilder:io.github.cactacea.filhouette.api.actions.SecuredActionBuilder[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -837,7 +824,7 @@
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">securedActionBuilder</span><span class="result">: <span class="extype" name="io.github.cactacea.filhouette.api.actions.SecuredActionBuilder">SecuredActionBuilder</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>
+        <span class="name">securedActionBuilder</span><span class="result">: <span class="extype" name="io.github.cactacea.filhouette.api.actions.SecuredActionBuilder">SecuredActionBuilder</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>
       </span>
       
       
@@ -892,6 +879,22 @@
                 <span class="name">@unspecialized</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilter#usersRepository" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="usersRepository:io.github.cactacea.backend.core.domain.repositories.UsersRepository"></a><a id="usersRepository:UsersRepository"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/server/utils/filters/CactaceaAuthenticationFilter.html#usersRepository:io.github.cactacea.backend.core.domain.repositories.UsersRepository" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">usersRepository</span><span class="result">: <a href="../../../core/domain/repositories/UsersRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.UsersRepository">UsersRepository</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

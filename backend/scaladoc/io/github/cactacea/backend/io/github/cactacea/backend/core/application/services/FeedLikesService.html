@@ -183,16 +183,16 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.application">application</a></dd></dl></div>
     </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="AccountGroupsService.html" title=""></a>
-                        <a href="AccountGroupsService.html" title="">AccountGroupsService</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountsService.html" title=""></a>
-                        <a href="AccountsService.html" title="">AccountsService</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
                         <a class="class" href="BlocksService.html" title=""></a>
                         <a href="BlocksService.html" title="">BlocksService</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="ChannelUsersService.html" title=""></a>
+                        <a href="ChannelUsersService.html" title="">ChannelUsersService</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="ChannelsService.html" title=""></a>
+                        <a href="ChannelsService.html" title="">ChannelsService</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="CommentLikesService.html" title=""></a>
@@ -231,16 +231,8 @@
                         <a href="FriendsService.html" title="">FriendsService</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="GroupAccountsService.html" title=""></a>
-                        <a href="GroupAccountsService.html" title="">GroupAccountsService</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="GroupInvitationsService.html" title=""></a>
-                        <a href="GroupInvitationsService.html" title="">GroupInvitationsService</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="GroupsService.html" title=""></a>
-                        <a href="GroupsService.html" title="">GroupsService</a>
+                        <a class="class" href="InvitationsService.html" title=""></a>
+                        <a href="InvitationsService.html" title="">InvitationsService</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="MediumsService.html" title=""></a>
@@ -261,6 +253,14 @@
                         <span class="separator"></span>
                         <a class="class" href="SettingsService.html" title=""></a>
                         <a href="SettingsService.html" title="">SettingsService</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserChannelsService.html" title=""></a>
+                        <a href="UserChannelsService.html" title="">UserChannelsService</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UsersService.html" title=""></a>
+                        <a href="UsersService.html" title="">UsersService</a>
                       </li>
               </ul>
             </div>
@@ -687,9 +687,9 @@
       
       
     </li><li name="io.github.cactacea.backend.core.application.services.FeedLikesService#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="find(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.Feed]]"></a><a id="find(AccountId,Option[Long],Int,Int,SessionId):Future[List[Feed]]"></a>
+      <a id="find(userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.Feed]]"></a><a id="find(UserId,Option[Long],Int,Int,SessionId):Future[List[Feed]]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/FeedLikesService.html#find(accountId:io.github.cactacea.backend.core.infrastructure.identifiers.AccountId,since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.Feed]]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/FeedLikesService.html#find(userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.Feed]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -698,14 +698,14 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">find</span><span class="params">(<span name="accountId">accountId: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="count">count: <span class="extype" name="scala.Int">Int</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.List">List</span>[<a href="../../domain/models/Feed.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Feed">Feed</a>]]</span>
+        <span class="name">find</span><span class="params">(<span name="userId">userId: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="count">count: <span class="extype" name="scala.Int">Int</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.List">List</span>[<a href="../../domain/models/Feed.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Feed">Feed</a>]]</span>
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.core.application.services.FeedLikesService#findAccounts" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="findAccounts(feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.Account]]"></a><a id="findAccounts(FeedId,Option[Long],Int,Int,SessionId):Future[List[Account]]"></a>
+    </li><li name="io.github.cactacea.backend.core.application.services.FeedLikesService#findUsers" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="findUsers(feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.User]]"></a><a id="findUsers(FeedId,Option[Long],Int,Int,SessionId):Future[List[User]]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/FeedLikesService.html#findAccounts(feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.Account]]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/FeedLikesService.html#findUsers(feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.User]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -714,7 +714,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">findAccounts</span><span class="params">(<span name="feedId">feedId: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="count">count: <span class="extype" name="scala.Int">Int</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.List">List</span>[<a href="../../domain/models/Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a>]]</span>
+        <span class="name">findUsers</span><span class="params">(<span name="feedId">feedId: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="count">count: <span class="extype" name="scala.Int">Int</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.List">List</span>[<a href="../../domain/models/User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]]</span>
       </span>
       
       

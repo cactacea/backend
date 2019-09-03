@@ -182,13 +182,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented7">
-                        <a class="object" href="Account$.html" title=""></a>
-                        <a class="class" href="Account.html" title=""></a>
-                        <a href="Account.html" title="">Account</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountStatus.html" title=""></a>
-                        <a href="AccountStatus.html" title="">AccountStatus</a>
+                        <a class="object" href="Channel$.html" title=""></a>
+                        <a class="class" href="Channel.html" title=""></a>
+                        <a href="Channel.html" title="">Channel</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Comment$.html" title=""></a>
                         <a class="class" href="Comment.html" title=""></a>
@@ -206,13 +202,9 @@
                         <a class="class" href="FriendRequest.html" title=""></a>
                         <a href="FriendRequest.html" title="">FriendRequest</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Group$.html" title=""></a>
-                        <a class="class" href="Group.html" title=""></a>
-                        <a href="Group.html" title="">Group</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="GroupInvitation$.html" title=""></a>
-                        <a class="class" href="GroupInvitation.html" title=""></a>
-                        <a href="GroupInvitation.html" title="">GroupInvitation</a>
+                        <a class="object" href="Invitation$.html" title=""></a>
+                        <a class="class" href="Invitation.html" title=""></a>
+                        <a href="Invitation.html" title="">Invitation</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Medium$.html" title=""></a>
                         <a class="class" href="Medium.html" title=""></a>
@@ -237,6 +229,14 @@
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="User$.html" title=""></a>
+                        <a class="class" href="User.html" title=""></a>
+                        <a href="User.html" title="">User</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserStatus.html" title=""></a>
+                        <a href="UserStatus.html" title="">UserStatus</a>
                       </li>
               </ul>
             </div>
@@ -262,7 +262,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">PushNotificationSetting</span><span class="params">(<span name="feed">feed: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="comment">comment: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequest">friendRequest: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="message">message: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="groupMessage">groupMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="groupInvitation">groupInvitation: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="showMessage">showMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">PushNotificationSetting</span><span class="params">(<span name="feed">feed: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="comment">comment: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequest">friendRequest: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="message">message: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="channelMessage">channelMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="invitation">invitation: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="showMessage">showMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -323,9 +323,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.models.PushNotificationSetting#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(feed:Boolean,comment:Boolean,friendRequest:Boolean,message:Boolean,groupMessage:Boolean,groupInvitation:Boolean,showMessage:Boolean):io.github.cactacea.backend.core.domain.models.PushNotificationSetting"></a><a id="&lt;init&gt;:PushNotificationSetting"></a>
+      <a id="&lt;init&gt;(feed:Boolean,comment:Boolean,friendRequest:Boolean,message:Boolean,channelMessage:Boolean,invitation:Boolean,showMessage:Boolean):io.github.cactacea.backend.core.domain.models.PushNotificationSetting"></a><a id="&lt;init&gt;:PushNotificationSetting"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/PushNotificationSetting.html#&lt;init&gt;(feed:Boolean,comment:Boolean,friendRequest:Boolean,message:Boolean,groupMessage:Boolean,groupInvitation:Boolean,showMessage:Boolean):io.github.cactacea.backend.core.domain.models.PushNotificationSetting" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/PushNotificationSetting.html#&lt;init&gt;(feed:Boolean,comment:Boolean,friendRequest:Boolean,message:Boolean,channelMessage:Boolean,invitation:Boolean,showMessage:Boolean):io.github.cactacea.backend.core.domain.models.PushNotificationSetting" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -334,7 +334,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PushNotificationSetting</span><span class="params">(<span name="feed">feed: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="comment">comment: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequest">friendRequest: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="message">message: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="groupMessage">groupMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="groupInvitation">groupInvitation: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="showMessage">showMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">PushNotificationSetting</span><span class="params">(<span name="feed">feed: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="comment">comment: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequest">friendRequest: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="message">message: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="channelMessage">channelMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="invitation">invitation: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="showMessage">showMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       
       
@@ -455,6 +455,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.PushNotificationSetting#channelMessage" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="channelMessage:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/PushNotificationSetting.html#channelMessage:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">channelMessage</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
@@ -687,10 +703,10 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.PushNotificationSetting#groupInvitation" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupInvitation:Boolean"></a>
+    </li><li name="io.github.cactacea.backend.core.domain.models.PushNotificationSetting#invitation" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="invitation:Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/PushNotificationSetting.html#groupInvitation:Boolean" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/PushNotificationSetting.html#invitation:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -699,23 +715,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">groupInvitation</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.PushNotificationSetting#groupMessage" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupMessage:Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/PushNotificationSetting.html#groupMessage:Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">groupMessage</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">invitation</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
       

@@ -198,13 +198,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented7">
-                        <a class="object" href="Account$.html" title=""></a>
-                        <a class="class" href="Account.html" title=""></a>
-                        <a href="Account.html" title="">Account</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountStatus.html" title=""></a>
-                        <a href="AccountStatus.html" title="">AccountStatus</a>
+                        <a class="object" href="Channel$.html" title=""></a>
+                        <a class="class" href="Channel.html" title=""></a>
+                        <a href="Channel.html" title="">Channel</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Comment$.html" title=""></a>
                         <a class="class" href="Comment.html" title=""></a>
@@ -222,13 +218,9 @@
                         <a class="class" href="FriendRequest.html" title=""></a>
                         <a href="FriendRequest.html" title="">FriendRequest</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Group$.html" title=""></a>
-                        <a class="class" href="Group.html" title=""></a>
-                        <a href="Group.html" title="">Group</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="GroupInvitation$.html" title=""></a>
-                        <a class="class" href="GroupInvitation.html" title=""></a>
-                        <a href="GroupInvitation.html" title="">GroupInvitation</a>
+                        <a class="object" href="Invitation$.html" title=""></a>
+                        <a class="class" href="Invitation.html" title=""></a>
+                        <a href="Invitation.html" title="">Invitation</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Medium$.html" title=""></a>
                         <a class="class" href="Medium.html" title=""></a>
@@ -253,6 +245,14 @@
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="User$.html" title=""></a>
+                        <a class="class" href="User.html" title=""></a>
+                        <a href="User.html" title="">User</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserStatus.html" title=""></a>
+                        <a href="UserStatus.html" title="">UserStatus</a>
                       </li><li name="io.github.cactacea.backend.core.domain.repositories" visbl="pub" class="indented7 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="repositories"></a><a id="repositories:repositories"></a>
       <span class="permalink">
@@ -332,10 +332,10 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="io.github.cactacea.backend.core.domain.models.Account" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AccountextendsProductwithSerializable"></a><a id="Account:Account"></a>
+              <ol><li name="io.github.cactacea.backend.core.domain.models.Channel" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ChannelextendsProductwithSerializable"></a><a id="Channel:Channel"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#AccountextendsProductwithSerializable" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#ChannelextendsProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -344,23 +344,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Account.html"><span class="name">Account</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="profileImageUrl">profileImageUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="follow">follow: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followCount">followCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followerCount">followerCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendCount">friendCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="feedCount">feedCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="muting">muting: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="blocking">blocking: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="web">web: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="birthday">birthday: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="location">location: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="bio">bio: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="joinedAt">joinedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.AccountStatus" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AccountStatusextendsProductwithSerializable"></a><a id="AccountStatus:AccountStatus"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#AccountStatusextendsProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="AccountStatus.html"><span class="name">AccountStatus</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="status">status: <a href="../enums/ActiveStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.ActiveStatusType">ActiveStatusType</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Channel.html"><span class="name">Channel</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/ChannelId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId">ChannelId</a></span>, <span name="name">name: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="message">message: <span class="extype" name="scala.Option">Option</span>[<a href="Message.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Message">Message</a>]</span>, <span name="invitationOnly">invitationOnly: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="privacyType">privacyType: <a href="../enums/ChannelPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.ChannelPrivacyType">ChannelPrivacyType</a></span>, <span name="authorityType">authorityType: <a href="../enums/ChannelAuthorityType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType">ChannelAuthorityType</a></span>, <span name="userCount">userCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="lastPostedAt">lastPostedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="organizedAt">organizedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -376,7 +360,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Comment.html"><span class="name">Comment</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="account">account: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>, <span name="likeCount">likeCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="contentWarning">contentWarning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="contentDeleted">contentDeleted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Comment.html"><span class="name">Comment</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="feedId">feedId: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="user">user: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>, <span name="likeCount">likeCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="warning">warning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="rejected">rejected: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -392,7 +376,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Destination.html"><span class="name">Destination</span></a><span class="params">(<span name="accountId">accountId: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>, <span name="accountToken">accountToken: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="by">by: <a href="../../infrastructure/identifiers/AccountId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.AccountId">AccountId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Destination.html"><span class="name">Destination</span></a><span class="params">(<span name="userId">userId: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="userToken">userToken: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="by">by: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -408,7 +392,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Feed.html"><span class="name">Feed</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="mediums">mediums: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<a href="Medium.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Medium">Medium</a>]]</span>, <span name="tags">tags: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="account">account: <span class="extype" name="scala.Option">Option</span>[<a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a>]</span>, <span name="likeCount">likeCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="commentCount">commentCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="contentWarning">contentWarning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="contentDeleted">contentDeleted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="likedAt">likedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Feed.html"><span class="name">Feed</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="mediums">mediums: <span class="extype" name="scala.List">List</span>[<a href="Medium.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Medium">Medium</a>]</span>, <span name="tags">tags: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="user">user: <span class="extype" name="scala.Option">Option</span>[<a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]</span>, <span name="likeCount">likeCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="commentCount">commentCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="liked">liked: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="warning">warning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="rejected">rejected: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -424,14 +408,14 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="FriendRequest.html"><span class="name">FriendRequest</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/FriendRequestId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId">FriendRequestId</a></span>, <span name="account">account: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>, <span name="requestStatus">requestStatus: <a href="../enums/FriendRequestStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType">FriendRequestStatusType</a></span>, <span name="requestedAt">requestedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="FriendRequest.html"><span class="name">FriendRequest</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/FriendRequestId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId">FriendRequestId</a></span>, <span name="user">user: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>, <span name="requestedAt">requestedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.core.domain.models.Group" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GroupextendsProductwithSerializable"></a><a id="Group:Group"></a>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Invitation" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InvitationextendsProductwithSerializable"></a><a id="Invitation:Invitation"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#GroupextendsProductwithSerializable" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#InvitationextendsProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -440,23 +424,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Group.html"><span class="name">Group</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/GroupId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupId">GroupId</a></span>, <span name="name">name: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="message">message: <span class="extype" name="scala.Option">Option</span>[<a href="Message.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Message">Message</a>]</span>, <span name="invitationOnly">invitationOnly: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="privacyType">privacyType: <a href="../enums/GroupPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.GroupPrivacyType">GroupPrivacyType</a></span>, <span name="authorityType">authorityType: <a href="../enums/GroupAuthorityType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.GroupAuthorityType">GroupAuthorityType</a></span>, <span name="accountCount">accountCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="lastPostedAt">lastPostedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="organizedAt">organizedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.GroupInvitation" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GroupInvitationextendsProductwithSerializable"></a><a id="GroupInvitation:GroupInvitation"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#GroupInvitationextendsProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="GroupInvitation.html"><span class="name">GroupInvitation</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/GroupInvitationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupInvitationId">GroupInvitationId</a></span>, <span name="group">group: <a href="Group.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Group">Group</a></span>, <span name="account">account: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>, <span name="invitationStatus">invitationStatus: <a href="../enums/GroupInvitationStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.GroupInvitationStatusType">GroupInvitationStatusType</a></span>, <span name="invitedAt">invitedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Invitation.html"><span class="name">Invitation</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/InvitationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId">InvitationId</a></span>, <span name="channel">channel: <a href="Channel.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Channel">Channel</a></span>, <span name="user">user: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>, <span name="invitedAt">invitedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -472,7 +440,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Medium.html"><span class="name">Medium</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>, <span name="uri">uri: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="width">width: <span class="extype" name="scala.Long">Long</span></span>, <span name="height">height: <span class="extype" name="scala.Long">Long</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="thumbnailUrl">thumbnailUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="mediumType">mediumType: <a href="../enums/MediumType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.MediumType">MediumType</a></span>, <span name="contentWarning">contentWarning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="contentDeleted">contentDeleted: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Medium.html"><span class="name">Medium</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>, <span name="uri">uri: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="width">width: <span class="extype" name="scala.Long">Long</span></span>, <span name="height">height: <span class="extype" name="scala.Long">Long</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="thumbnailUrl">thumbnailUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="mediumType">mediumType: <a href="../enums/MediumType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.MediumType">MediumType</a></span>, <span name="warning">warning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="rejected">rejected: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -488,7 +456,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Message.html"><span class="name">Message</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MessageId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MessageId">MessageId</a></span>, <span name="groupId">groupId: <a href="../../infrastructure/identifiers/GroupId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupId">GroupId</a></span>, <span name="messageType">messageType: <a href="../enums/MessageType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.MessageType">MessageType</a></span>, <span name="message">message: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="medium">medium: <span class="extype" name="scala.Option">Option</span>[<a href="Medium.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Medium">Medium</a>]</span>, <span name="account">account: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>, <span name="unread">unread: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="accountCount">accountCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="readAccountCount">readAccountCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="contentWarning">contentWarning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="contentDeleted">contentDeleted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Message.html"><span class="name">Message</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MessageId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MessageId">MessageId</a></span>, <span name="channelId">channelId: <a href="../../infrastructure/identifiers/ChannelId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId">ChannelId</a></span>, <span name="messageType">messageType: <a href="../enums/MessageType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.MessageType">MessageType</a></span>, <span name="message">message: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="medium">medium: <span class="extype" name="scala.Option">Option</span>[<a href="Medium.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Medium">Medium</a>]</span>, <span name="user">user: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>, <span name="unread">unread: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="userCount">userCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="readUserCount">readUserCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="warning">warning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="rejected">rejected: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -504,7 +472,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Notification.html"><span class="name">Notification</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/NotificationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId">NotificationId</a></span>, <span name="notificationType">notificationType: <a href="../enums/NotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.NotificationType">NotificationType</a></span>, <span name="contentId">contentId: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="url">url: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="notifiedAt">notifiedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Notification.html"><span class="name">Notification</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/NotificationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId">NotificationId</a></span>, <span name="notificationType">notificationType: <a href="../enums/NotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.NotificationType">NotificationType</a></span>, <span name="contentId">contentId: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="url">url: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="notifiedAt">notifiedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -536,7 +504,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="PushNotificationSetting.html"><span class="name">PushNotificationSetting</span></a><span class="params">(<span name="feed">feed: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="comment">comment: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequest">friendRequest: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="message">message: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="groupMessage">groupMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="groupInvitation">groupInvitation: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="showMessage">showMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="PushNotificationSetting.html"><span class="name">PushNotificationSetting</span></a><span class="params">(<span name="feed">feed: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="comment">comment: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequest">friendRequest: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="message">message: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="channelMessage">channelMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="invitation">invitation: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="showMessage">showMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -556,6 +524,38 @@
       </span>
       
       
+    </li><li name="io.github.cactacea.backend.core.domain.models.User" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UserextendsProductwithSerializable"></a><a id="User:User"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#UserextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="User.html"><span class="name">User</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="profileImageUrl">profileImageUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="follow">follow: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followCount">followCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followerCount">followerCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendCount">friendCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="feedCount">feedCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="muted">muted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="blocked">blocked: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="web">web: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="birthday">birthday: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="location">location: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="bio">bio: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="joinedAt">joinedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="userStatus">userStatus: <a href="../enums/UserStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.UserStatusType">UserStatusType</a></span>, <span name="signedOutAt">signedOutAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.models.UserStatus" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UserStatusextendsProductwithSerializable"></a><a id="UserStatus:UserStatus"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#UserStatusextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="UserStatus.html"><span class="name">UserStatus</span></a><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="status">status: <a href="../enums/ActiveStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.ActiveStatusType">ActiveStatusType</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
     </li></ol>
             </div>
 
@@ -564,10 +564,10 @@
         <div class="values members">
               <h3>Value Members</h3>
               <ol>
-                <li name="io.github.cactacea.backend.core.domain.models.Account" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Account"></a><a id="Account:Account"></a>
+                <li name="io.github.cactacea.backend.core.domain.models.Channel" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Channel"></a><a id="Channel:Channel"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#Account" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#Channel" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -576,7 +576,7 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Account$.html"><span class="name">Account</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Channel$.html"><span class="name">Channel</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -628,10 +628,10 @@
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.core.domain.models.Group" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Group"></a><a id="Group:Group"></a>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Invitation" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Invitation"></a><a id="Invitation:Invitation"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#Group" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#Invitation" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -640,23 +640,7 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Group$.html"><span class="name">Group</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.GroupInvitation" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GroupInvitation"></a><a id="GroupInvitation:GroupInvitation"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#GroupInvitation" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="GroupInvitation$.html"><span class="name">GroupInvitation</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Invitation$.html"><span class="name">Invitation</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -721,6 +705,22 @@
       </span>
       <span class="symbol">
         <a title="" href="PushNotificationSetting$.html"><span class="name">PushNotificationSetting</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.models.User" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="User"></a><a id="User:User"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/index.html#User" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="User$.html"><span class="name">User</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       

@@ -199,8 +199,8 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.server.models">models</a></dd></dl></div>
     </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="AccountNameNotExists.html" title=""></a>
-                        <a href="AccountNameNotExists.html" title="">AccountNameNotExists</a>
+                        <a class="class" href="ChannelCreated.html" title=""></a>
+                        <a href="ChannelCreated.html" title="">ChannelCreated</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="CommentCreated.html" title=""></a>
@@ -215,16 +215,16 @@
                         <a href="FriendRequestCreated.html" title="">FriendRequestCreated</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="GroupCreated.html" title=""></a>
-                        <a href="GroupCreated.html" title="">GroupCreated</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
                         <a class="class" href="InvitationCreated.html" title=""></a>
                         <a href="InvitationCreated.html" title="">InvitationCreated</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="MediumCreated.html" title=""></a>
                         <a href="MediumCreated.html" title="">MediumCreated</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserNameNotExists.html" title=""></a>
+                        <a href="UserNameNotExists.html" title="">UserNameNotExists</a>
                       </li>
               </ul>
             </div>
@@ -264,10 +264,10 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="io.github.cactacea.backend.server.models.responses.AccountNameNotExists" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AccountNameNotExistsextendsProductwithSerializable"></a><a id="AccountNameNotExists:AccountNameNotExists"></a>
+              <ol><li name="io.github.cactacea.backend.server.models.responses.ChannelCreated" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ChannelCreatedextendsProductwithSerializable"></a><a id="ChannelCreated:ChannelCreated"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/server/models/responses/index.html#AccountNameNotExistsextendsProductwithSerializable" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/server/models/responses/index.html#ChannelCreatedextendsProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -276,7 +276,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="AccountNameNotExists.html"><span class="name">AccountNameNotExists</span></a><span class="params">(<span name="accountName">accountName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="exists">exists: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="ChannelCreated.html"><span class="name">ChannelCreated</span></a><span class="params">(<span name="id">id: <a href="../../../core/infrastructure/identifiers/ChannelId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId">ChannelId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -328,22 +328,6 @@
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.server.models.responses.GroupCreated" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GroupCreatedextendsProductwithSerializable"></a><a id="GroupCreated:GroupCreated"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/server/models/responses/index.html#GroupCreatedextendsProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="GroupCreated.html"><span class="name">GroupCreated</span></a><span class="params">(<span name="id">id: <a href="../../../core/infrastructure/identifiers/GroupId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupId">GroupId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      
     </li><li name="io.github.cactacea.backend.server.models.responses.InvitationCreated" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="InvitationCreatedextendsProductwithSerializable"></a><a id="InvitationCreated:InvitationCreated"></a>
       <span class="permalink">
@@ -356,7 +340,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="InvitationCreated.html"><span class="name">InvitationCreated</span></a><span class="params">(<span name="id">id: <a href="../../../core/infrastructure/identifiers/GroupInvitationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.GroupInvitationId">GroupInvitationId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="InvitationCreated.html"><span class="name">InvitationCreated</span></a><span class="params">(<span name="id">id: <a href="../../../core/infrastructure/identifiers/InvitationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId">InvitationId</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -373,6 +357,22 @@
       </span>
       <span class="symbol">
         <a title="" href="MediumCreated.html"><span class="name">MediumCreated</span></a><span class="params">(<span name="id">id: <a href="../../../core/infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>, <span name="uri">uri: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.server.models.responses.UserNameNotExists" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UserNameNotExistsextendsProductwithSerializable"></a><a id="UserNameNotExists:UserNameNotExists"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/server/models/responses/index.html#UserNameNotExistsextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="UserNameNotExists.html"><span class="name">UserNameNotExists</span></a><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="exists">exists: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       

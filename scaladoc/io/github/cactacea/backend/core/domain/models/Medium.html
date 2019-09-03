@@ -182,13 +182,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented7">
-                        <a class="object" href="Account$.html" title=""></a>
-                        <a class="class" href="Account.html" title=""></a>
-                        <a href="Account.html" title="">Account</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountStatus.html" title=""></a>
-                        <a href="AccountStatus.html" title="">AccountStatus</a>
+                        <a class="object" href="Channel$.html" title=""></a>
+                        <a class="class" href="Channel.html" title=""></a>
+                        <a href="Channel.html" title="">Channel</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Comment$.html" title=""></a>
                         <a class="class" href="Comment.html" title=""></a>
@@ -206,13 +202,9 @@
                         <a class="class" href="FriendRequest.html" title=""></a>
                         <a href="FriendRequest.html" title="">FriendRequest</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Group$.html" title=""></a>
-                        <a class="class" href="Group.html" title=""></a>
-                        <a href="Group.html" title="">Group</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="GroupInvitation$.html" title=""></a>
-                        <a class="class" href="GroupInvitation.html" title=""></a>
-                        <a href="GroupInvitation.html" title="">GroupInvitation</a>
+                        <a class="object" href="Invitation$.html" title=""></a>
+                        <a class="class" href="Invitation.html" title=""></a>
+                        <a href="Invitation.html" title="">Invitation</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Medium$.html" title=""></a>
                         <a class="class" href="" title=""></a>
@@ -237,6 +229,14 @@
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="User$.html" title=""></a>
+                        <a class="class" href="User.html" title=""></a>
+                        <a href="User.html" title="">User</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserStatus.html" title=""></a>
+                        <a href="UserStatus.html" title="">UserStatus</a>
                       </li>
               </ul>
             </div>
@@ -262,7 +262,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Medium</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>, <span name="uri">uri: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="width">width: <span class="extype" name="scala.Long">Long</span></span>, <span name="height">height: <span class="extype" name="scala.Long">Long</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="thumbnailUrl">thumbnailUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="mediumType">mediumType: <a href="../enums/MediumType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.MediumType">MediumType</a></span>, <span name="contentWarning">contentWarning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="contentDeleted">contentDeleted: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Medium</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>, <span name="uri">uri: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="width">width: <span class="extype" name="scala.Long">Long</span></span>, <span name="height">height: <span class="extype" name="scala.Long">Long</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="thumbnailUrl">thumbnailUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="mediumType">mediumType: <a href="../enums/MediumType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.MediumType">MediumType</a></span>, <span name="warning">warning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="rejected">rejected: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -323,9 +323,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.models.Medium#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.MediumId,uri:String,width:Long,height:Long,size:Long,thumbnailUrl:Option[String],mediumType:io.github.cactacea.backend.core.domain.enums.MediumType,contentWarning:Boolean,contentDeleted:Boolean):io.github.cactacea.backend.core.domain.models.Medium"></a><a id="&lt;init&gt;:Medium"></a>
+      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.MediumId,uri:String,width:Long,height:Long,size:Long,thumbnailUrl:Option[String],mediumType:io.github.cactacea.backend.core.domain.enums.MediumType,warning:Boolean,rejected:Boolean):io.github.cactacea.backend.core.domain.models.Medium"></a><a id="&lt;init&gt;:Medium"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Medium.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.MediumId,uri:String,width:Long,height:Long,size:Long,thumbnailUrl:Option[String],mediumType:io.github.cactacea.backend.core.domain.enums.MediumType,contentWarning:Boolean,contentDeleted:Boolean):io.github.cactacea.backend.core.domain.models.Medium" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Medium.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.MediumId,uri:String,width:Long,height:Long,size:Long,thumbnailUrl:Option[String],mediumType:io.github.cactacea.backend.core.domain.enums.MediumType,warning:Boolean,rejected:Boolean):io.github.cactacea.backend.core.domain.models.Medium" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -334,7 +334,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Medium</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>, <span name="uri">uri: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="width">width: <span class="extype" name="scala.Long">Long</span></span>, <span name="height">height: <span class="extype" name="scala.Long">Long</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="thumbnailUrl">thumbnailUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="mediumType">mediumType: <a href="../enums/MediumType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.MediumType">MediumType</a></span>, <span name="contentWarning">contentWarning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="contentDeleted">contentDeleted: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">Medium</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MediumId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MediumId">MediumId</a></span>, <span name="uri">uri: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="width">width: <span class="extype" name="scala.Long">Long</span></span>, <span name="height">height: <span class="extype" name="scala.Long">Long</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="thumbnailUrl">thumbnailUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="mediumType">mediumType: <a href="../enums/MediumType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.MediumType">MediumType</a></span>, <span name="warning">warning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="rejected">rejected: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       
       
@@ -479,38 +479,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.Medium#contentDeleted" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="contentDeleted:Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Medium.html#contentDeleted:Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">contentDeleted</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.Medium#contentWarning" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="contentWarning:Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Medium.html#contentWarning:Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">contentWarning</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((Medium)⇒Boolean,⇒Any):Medium"></a>
       <span class="permalink">
@@ -789,6 +757,22 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Medium#rejected" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="rejected:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Medium.html#rejected:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rejected</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      
     </li><li name="io.github.cactacea.backend.core.domain.models.Medium#size" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="size:Long"></a>
       <span class="permalink">
@@ -921,6 +905,22 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Medium#warning" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="warning:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Medium.html#warning:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warning</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      
     </li><li name="io.github.cactacea.backend.core.domain.models.Medium#width" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="width:Long"></a>
       <span class="permalink">

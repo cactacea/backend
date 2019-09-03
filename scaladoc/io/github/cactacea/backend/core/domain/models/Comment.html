@@ -182,13 +182,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented7">
-                        <a class="object" href="Account$.html" title=""></a>
-                        <a class="class" href="Account.html" title=""></a>
-                        <a href="Account.html" title="">Account</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountStatus.html" title=""></a>
-                        <a href="AccountStatus.html" title="">AccountStatus</a>
+                        <a class="object" href="Channel$.html" title=""></a>
+                        <a class="class" href="Channel.html" title=""></a>
+                        <a href="Channel.html" title="">Channel</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Comment$.html" title=""></a>
                         <a class="class" href="" title=""></a>
@@ -206,13 +202,9 @@
                         <a class="class" href="FriendRequest.html" title=""></a>
                         <a href="FriendRequest.html" title="">FriendRequest</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Group$.html" title=""></a>
-                        <a class="class" href="Group.html" title=""></a>
-                        <a href="Group.html" title="">Group</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="GroupInvitation$.html" title=""></a>
-                        <a class="class" href="GroupInvitation.html" title=""></a>
-                        <a href="GroupInvitation.html" title="">GroupInvitation</a>
+                        <a class="object" href="Invitation$.html" title=""></a>
+                        <a class="class" href="Invitation.html" title=""></a>
+                        <a href="Invitation.html" title="">Invitation</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Medium$.html" title=""></a>
                         <a class="class" href="Medium.html" title=""></a>
@@ -237,6 +229,14 @@
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="User$.html" title=""></a>
+                        <a class="class" href="User.html" title=""></a>
+                        <a href="User.html" title="">User</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserStatus.html" title=""></a>
+                        <a href="UserStatus.html" title="">UserStatus</a>
                       </li>
               </ul>
             </div>
@@ -262,7 +262,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Comment</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="account">account: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>, <span name="likeCount">likeCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="contentWarning">contentWarning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="contentDeleted">contentDeleted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Comment</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="feedId">feedId: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="user">user: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>, <span name="likeCount">likeCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="warning">warning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="rejected">rejected: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -323,9 +323,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.models.Comment#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.CommentId,replyId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId],message:String,account:io.github.cactacea.backend.core.domain.models.Account,likeCount:Long,contentWarning:Boolean,contentDeleted:Boolean,postedAt:Long,next:Option[Long]):io.github.cactacea.backend.core.domain.models.Comment"></a><a id="&lt;init&gt;:Comment"></a>
+      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.CommentId,replyId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId],feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,message:String,user:io.github.cactacea.backend.core.domain.models.User,likeCount:Long,warning:Boolean,rejected:Boolean,postedAt:Long,next:Long):io.github.cactacea.backend.core.domain.models.Comment"></a><a id="&lt;init&gt;:Comment"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.CommentId,replyId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId],message:String,account:io.github.cactacea.backend.core.domain.models.Account,likeCount:Long,contentWarning:Boolean,contentDeleted:Boolean,postedAt:Long,next:Option[Long]):io.github.cactacea.backend.core.domain.models.Comment" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.CommentId,replyId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId],feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,message:String,user:io.github.cactacea.backend.core.domain.models.User,likeCount:Long,warning:Boolean,rejected:Boolean,postedAt:Long,next:Long):io.github.cactacea.backend.core.domain.models.Comment" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -334,7 +334,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Comment</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="account">account: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>, <span name="likeCount">likeCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="contentWarning">contentWarning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="contentDeleted">contentDeleted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span>
+        <span class="name">Comment</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="feedId">feedId: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="user">user: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>, <span name="likeCount">likeCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="warning">warning: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="rejected">rejected: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span>
       </span>
       
       
@@ -439,22 +439,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.Comment#account" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="account:io.github.cactacea.backend.core.domain.models.Account"></a><a id="account:Account"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#account:io.github.cactacea.backend.core.domain.models.Account" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">account</span><span class="result">: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>
-      </span>
-      
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -495,38 +479,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.Comment#contentDeleted" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="contentDeleted:Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#contentDeleted:Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">contentDeleted</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.Comment#contentWarning" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="contentWarning:Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#contentWarning:Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">contentWarning</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((Comment)⇒Boolean,⇒Any):Comment"></a>
       <span class="permalink">
@@ -623,6 +575,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Comment#feedId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId"></a><a id="feedId:FeedId"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#feedId:io.github.cactacea.backend.core.infrastructure.identifiers.FeedId" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">feedId</span><span class="result">: <a href="../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
@@ -768,9 +736,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.models.Comment#next" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="next:Option[Long]"></a>
+      <a id="next:Long"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#next:Option[Long]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#next:Long" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -779,7 +747,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">next</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">next</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       
       
@@ -837,6 +805,22 @@
       </span>
       
       
+    </li><li name="io.github.cactacea.backend.core.domain.models.Comment#rejected" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="rejected:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#rejected:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rejected</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      
     </li><li name="io.github.cactacea.backend.core.domain.models.Comment#replyId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="replyId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.CommentId]"></a><a id="replyId:Option[CommentId]"></a>
       <span class="permalink">
@@ -869,6 +853,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Comment#user" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="user:io.github.cactacea.backend.core.domain.models.User"></a><a id="user:User"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#user:io.github.cactacea.backend.core.domain.models.User" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">user</span><span class="result">: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
@@ -937,6 +937,22 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Comment#warning" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="warning:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Comment.html#warning:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warning</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      
     </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a><a id="→[B](B):(Comment,B)"></a>
       <span class="permalink">

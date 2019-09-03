@@ -182,13 +182,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented7">
-                        <a class="object" href="Account$.html" title=""></a>
-                        <a class="class" href="Account.html" title=""></a>
-                        <a href="Account.html" title="">Account</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AccountStatus.html" title=""></a>
-                        <a href="AccountStatus.html" title="">AccountStatus</a>
+                        <a class="object" href="Channel$.html" title=""></a>
+                        <a class="class" href="Channel.html" title=""></a>
+                        <a href="Channel.html" title="">Channel</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Comment$.html" title=""></a>
                         <a class="class" href="Comment.html" title=""></a>
@@ -206,13 +202,9 @@
                         <a class="class" href="" title=""></a>
                         <a href="" title="">FriendRequest</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Group$.html" title=""></a>
-                        <a class="class" href="Group.html" title=""></a>
-                        <a href="Group.html" title="">Group</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="GroupInvitation$.html" title=""></a>
-                        <a class="class" href="GroupInvitation.html" title=""></a>
-                        <a href="GroupInvitation.html" title="">GroupInvitation</a>
+                        <a class="object" href="Invitation$.html" title=""></a>
+                        <a class="class" href="Invitation.html" title=""></a>
+                        <a href="Invitation.html" title="">Invitation</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Medium$.html" title=""></a>
                         <a class="class" href="Medium.html" title=""></a>
@@ -237,6 +229,14 @@
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="User$.html" title=""></a>
+                        <a class="class" href="User.html" title=""></a>
+                        <a href="User.html" title="">User</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="UserStatus.html" title=""></a>
+                        <a href="UserStatus.html" title="">UserStatus</a>
                       </li>
               </ul>
             </div>
@@ -262,7 +262,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">FriendRequest</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/FriendRequestId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId">FriendRequestId</a></span>, <span name="account">account: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>, <span name="requestStatus">requestStatus: <a href="../enums/FriendRequestStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType">FriendRequestStatusType</a></span>, <span name="requestedAt">requestedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">FriendRequest</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/FriendRequestId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId">FriendRequestId</a></span>, <span name="user">user: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>, <span name="requestedAt">requestedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -323,9 +323,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.models.FriendRequest#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId,account:io.github.cactacea.backend.core.domain.models.Account,requestStatus:io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType,requestedAt:Long,next:Option[Long]):io.github.cactacea.backend.core.domain.models.FriendRequest"></a><a id="&lt;init&gt;:FriendRequest"></a>
+      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId,user:io.github.cactacea.backend.core.domain.models.User,requestedAt:Long,next:Long):io.github.cactacea.backend.core.domain.models.FriendRequest"></a><a id="&lt;init&gt;:FriendRequest"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/FriendRequest.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId,account:io.github.cactacea.backend.core.domain.models.Account,requestStatus:io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType,requestedAt:Long,next:Option[Long]):io.github.cactacea.backend.core.domain.models.FriendRequest" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/FriendRequest.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId,user:io.github.cactacea.backend.core.domain.models.User,requestedAt:Long,next:Long):io.github.cactacea.backend.core.domain.models.FriendRequest" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -334,7 +334,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">FriendRequest</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/FriendRequestId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId">FriendRequestId</a></span>, <span name="account">account: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>, <span name="requestStatus">requestStatus: <a href="../enums/FriendRequestStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType">FriendRequestStatusType</a></span>, <span name="requestedAt">requestedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>)</span>
+        <span class="name">FriendRequest</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/FriendRequestId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestId">FriendRequestId</a></span>, <span name="user">user: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>, <span name="requestedAt">requestedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span>
       </span>
       
       
@@ -439,22 +439,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.FriendRequest#account" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="account:io.github.cactacea.backend.core.domain.models.Account"></a><a id="account:Account"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/FriendRequest.html#account:io.github.cactacea.backend.core.domain.models.Account" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">account</span><span class="result">: <a href="Account.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Account">Account</a></span>
-      </span>
-      
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -704,9 +688,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.models.FriendRequest#next" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="next:Option[Long]"></a>
+      <a id="next:Long"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/FriendRequest.html#next:Option[Long]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/FriendRequest.html#next:Long" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -715,7 +699,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">next</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">next</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       
       
@@ -757,22 +741,6 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.FriendRequest#requestStatus" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="requestStatus:io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType"></a><a id="requestStatus:FriendRequestStatusType"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/FriendRequest.html#requestStatus:io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">requestStatus</span><span class="result">: <a href="../enums/FriendRequestStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FriendRequestStatusType">FriendRequestStatusType</a></span>
-      </span>
-      
-      
     </li><li name="io.github.cactacea.backend.core.domain.models.FriendRequest#requestedAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="requestedAt:Long"></a>
       <span class="permalink">
@@ -805,6 +773,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.FriendRequest#user" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="user:io.github.cactacea.backend.core.domain.models.User"></a><a id="user:User"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/FriendRequest.html#user:io.github.cactacea.backend.core.domain.models.User" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">user</span><span class="result">: <a href="User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

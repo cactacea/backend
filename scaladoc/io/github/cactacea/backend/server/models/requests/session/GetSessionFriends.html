@@ -199,6 +199,10 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.server.models.requests">requests</a></dd></dl></div>
     </li><li class="current-entities indented8">
                         <span class="separator"></span>
+                        <a class="class" href="DeleteSignOut.html" title=""></a>
+                        <a href="DeleteSignOut.html" title="">DeleteSignOut</a>
+                      </li><li class="current-entities indented8">
+                        <span class="separator"></span>
                         <a class="class" href="GetSessionBlocks.html" title=""></a>
                         <a href="GetSessionBlocks.html" title="">GetSessionBlocks</a>
                       </li><li class="current-entities indented8">
@@ -223,12 +227,8 @@
                         <a href="GetSessionMutes.html" title="">GetSessionMutes</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="PutSessionAccountName.html" title=""></a>
-                        <a href="PutSessionAccountName.html" title="">PutSessionAccountName</a>
-                      </li><li class="current-entities indented8">
-                        <span class="separator"></span>
-                        <a class="class" href="PutSessionPassword.html" title=""></a>
-                        <a href="PutSessionPassword.html" title="">PutSessionPassword</a>
+                        <a class="class" href="PutSession.html" title=""></a>
+                        <a href="PutSession.html" title="">PutSession</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
                         <a class="class" href="PutSessionProfile.html" title=""></a>
@@ -260,7 +260,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">GetSessionFriends</span><span class="params">(<span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="sortType">sortType: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/domain/enums/FriendsSortType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FriendsSortType">FriendsSortType</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">GetSessionFriends</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -321,9 +321,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.server.models.requests.session.GetSessionFriends#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(since:Option[Long],offset:Option[Int],count:Option[Int],sortType:Option[io.github.cactacea.backend.core.domain.enums.FriendsSortType]):io.github.cactacea.backend.server.models.requests.session.GetSessionFriends"></a><a id="&lt;init&gt;:GetSessionFriends"></a>
+      <a id="&lt;init&gt;(userName:Option[String],since:Option[Long],offset:Option[Int],count:Option[Int]):io.github.cactacea.backend.server.models.requests.session.GetSessionFriends"></a><a id="&lt;init&gt;:GetSessionFriends"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/session/GetSessionFriends.html#&lt;init&gt;(since:Option[Long],offset:Option[Int],count:Option[Int],sortType:Option[io.github.cactacea.backend.core.domain.enums.FriendsSortType]):io.github.cactacea.backend.server.models.requests.session.GetSessionFriends" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/session/GetSessionFriends.html#&lt;init&gt;(userName:Option[String],since:Option[Long],offset:Option[Int],count:Option[Int]):io.github.cactacea.backend.server.models.requests.session.GetSessionFriends" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -332,7 +332,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">GetSessionFriends</span><span class="params">(<span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="sortType">sortType: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/domain/enums/FriendsSortType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FriendsSortType">FriendsSortType</a>]</span>)</span>
+        <span class="name">GetSessionFriends</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span>
       </span>
       
       
@@ -755,22 +755,6 @@
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.server.models.requests.session.GetSessionFriends#sortType" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sortType:Option[io.github.cactacea.backend.core.domain.enums.FriendsSortType]"></a><a id="sortType:Option[FriendsSortType]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/session/GetSessionFriends.html#sortType:Option[io.github.cactacea.backend.core.domain.enums.FriendsSortType]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">sortType</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/domain/enums/FriendsSortType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FriendsSortType">FriendsSortType</a>]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -787,6 +771,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.models.requests.session.GetSessionFriends#userName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="userName:Option[String]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/session/GetSessionFriends.html#userName:Option[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userName</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

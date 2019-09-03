@@ -210,7 +210,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">CactaceaAuthorization</span><span class="params">(<span name="scope">scope: <a href="../../../oauth/Scope.html" class="extype" name="io.github.cactacea.backend.oauth.Scope">Scope</a></span>)</span><span class="result"> extends <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">CactaceaAuthorization</span><span class="params">(<span name="scope">scope: <a href="../../../oauth/Scope.html" class="extype" name="io.github.cactacea.backend.oauth.Scope">Scope</a></span>)</span><span class="result"> extends <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -219,7 +219,7 @@
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -329,7 +329,7 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization#&amp;&amp;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&amp;&amp;(authorization:io.github.cactacea.filhouette.api.Authorization[I,A]):io.github.cactacea.filhouette.api.Authorization[I,A]"></a><a id="&amp;&amp;(Authorization[User,JWTAuthenticator]):Authorization[User,JWTAuthenticator]"></a>
+      <a id="&amp;&amp;(authorization:io.github.cactacea.filhouette.api.Authorization[I,A]):io.github.cactacea.filhouette.api.Authorization[I,A]"></a><a id="&amp;&amp;(Authorization[Authentication,JWTAuthenticator]):Authorization[Authentication,JWTAuthenticator]"></a>
       <span class="permalink">
       <a href="../../../../../../../io/github/cactacea/backend/server/utils/authorizations/CactaceaAuthorization.html#&amp;&amp;(authorization:io.github.cactacea.filhouette.api.Authorization[I,A]):io.github.cactacea.filhouette.api.Authorization[I,A]" title="Permalink">
         <i class="material-icons"></i>
@@ -340,12 +340,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $amp$amp" class="implicit">&amp;&amp;</span><span class="params">(<span name="authorization">authorization: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span><span class="result">: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>
+        <span title="gt4s: $amp$amp" class="implicit">&amp;&amp;</span><span class="params">(<span name="authorization">authorization: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span><span class="result">: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization">CactaceaAuthorization</a> to
-            <span class="extype" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">RichAuthorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>] performed by method RichAuthorization in io.github.cactacea.filhouette.api.Authorization.
+            <span class="extype" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">RichAuthorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>] performed by method RichAuthorization in io.github.cactacea.filhouette.api.Authorization.
             
           </dd><dt>Definition Classes</dt><dd>RichAuthorization</dd></dl></div>
     </li><li name="scala.Predef.any2stringadd#+" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -608,9 +608,9 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization#isAuthorized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isAuthorized(user:io.github.cactacea.backend.auth.domain.models.User,authenticator:io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator)(implicitrequest:com.twitter.finagle.http.Request):com.twitter.util.Future[Boolean]"></a><a id="isAuthorized(User,JWTAuthenticator)(Request):Future[Boolean]"></a>
+      <a id="isAuthorized(user:io.github.cactacea.backend.auth.core.domain.models.Authentication,authenticator:io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator)(implicitrequest:com.twitter.finagle.http.Request):com.twitter.util.Future[Boolean]"></a><a id="isAuthorized(Authentication,JWTAuthenticator)(Request):Future[Boolean]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/server/utils/authorizations/CactaceaAuthorization.html#isAuthorized(user:io.github.cactacea.backend.auth.domain.models.User,authenticator:io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator)(implicitrequest:com.twitter.finagle.http.Request):com.twitter.util.Future[Boolean]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/server/utils/authorizations/CactaceaAuthorization.html#isAuthorized(user:io.github.cactacea.backend.auth.core.domain.models.Authentication,authenticator:io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator)(implicitrequest:com.twitter.finagle.http.Request):com.twitter.util.Future[Boolean]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -619,7 +619,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isAuthorized</span><span class="params">(<span name="user">user: <a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a></span>, <span name="authenticator">authenticator: <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">isAuthorized</span><span class="params">(<span name="user">user: <a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a></span>, <span name="authenticator">authenticator: <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization">CactaceaAuthorization</a> → Authorization</dd></dl></div>
@@ -726,7 +726,7 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization#unary_!" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="unary_!:io.github.cactacea.filhouette.api.Authorization[I,A]"></a><a id="unary_!:Authorization[User,JWTAuthenticator]"></a>
+      <a id="unary_!:io.github.cactacea.filhouette.api.Authorization[I,A]"></a><a id="unary_!:Authorization[Authentication,JWTAuthenticator]"></a>
       <span class="permalink">
       <a href="../../../../../../../io/github/cactacea/backend/server/utils/authorizations/CactaceaAuthorization.html#unary_!:io.github.cactacea.filhouette.api.Authorization[I,A]" title="Permalink">
         <i class="material-icons"></i>
@@ -737,12 +737,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: unary_$bang" class="implicit">unary_!</span><span class="result">: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>
+        <span title="gt4s: unary_$bang" class="implicit">unary_!</span><span class="result">: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization">CactaceaAuthorization</a> to
-            <span class="extype" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">RichAuthorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>] performed by method RichAuthorization in io.github.cactacea.filhouette.api.Authorization.
+            <span class="extype" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">RichAuthorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>] performed by method RichAuthorization in io.github.cactacea.filhouette.api.Authorization.
             
           </dd><dt>Definition Classes</dt><dd>RichAuthorization</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -814,7 +814,7 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization#||" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="||(authorization:io.github.cactacea.filhouette.api.Authorization[I,A]):io.github.cactacea.filhouette.api.Authorization[I,A]"></a><a id="||(Authorization[User,JWTAuthenticator]):Authorization[User,JWTAuthenticator]"></a>
+      <a id="||(authorization:io.github.cactacea.filhouette.api.Authorization[I,A]):io.github.cactacea.filhouette.api.Authorization[I,A]"></a><a id="||(Authorization[Authentication,JWTAuthenticator]):Authorization[Authentication,JWTAuthenticator]"></a>
       <span class="permalink">
       <a href="../../../../../../../io/github/cactacea/backend/server/utils/authorizations/CactaceaAuthorization.html#||(authorization:io.github.cactacea.filhouette.api.Authorization[I,A]):io.github.cactacea.filhouette.api.Authorization[I,A]" title="Permalink">
         <i class="material-icons"></i>
@@ -825,12 +825,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bar$bar" class="implicit">||</span><span class="params">(<span name="authorization">authorization: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span><span class="result">: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>
+        <span title="gt4s: $bar$bar" class="implicit">||</span><span class="params">(<span name="authorization">authorization: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span><span class="result">: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization">CactaceaAuthorization</a> to
-            <span class="extype" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">RichAuthorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>] performed by method RichAuthorization in io.github.cactacea.filhouette.api.Authorization.
+            <span class="extype" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">RichAuthorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>] performed by method RichAuthorization in io.github.cactacea.filhouette.api.Authorization.
             
           </dd><dt>Definition Classes</dt><dd>RichAuthorization</dd></dl></div>
     </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -872,7 +872,7 @@
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="io.github.cactacea.filhouette.api.Authorization">
-              <h3>Inherited from <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</h3>
+              <h3>Inherited from <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
@@ -880,7 +880,7 @@
             </div>
         <div class="conversion" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">
               <h3>Inherited by implicit conversion RichAuthorization from
-                <a href="" class="extype" name="io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization">CactaceaAuthorization</a> to <span class="extype" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">RichAuthorization</span>[<a href="../../../auth/domain/models/User.html" class="extype" name="io.github.cactacea.backend.auth.domain.models.User">User</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]
+                <a href="" class="extype" name="io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization">CactaceaAuthorization</a> to <span class="extype" name="io.github.cactacea.filhouette.api.Authorization.RichAuthorization">RichAuthorization</span>[<a href="../../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from

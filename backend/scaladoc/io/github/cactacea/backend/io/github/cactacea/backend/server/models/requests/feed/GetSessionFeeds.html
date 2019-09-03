@@ -207,10 +207,6 @@
                         <a href="DeleteFeedLike.html" title="">DeleteFeedLike</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="GetAccountFeeds.html" title=""></a>
-                        <a href="GetAccountFeeds.html" title="">GetAccountFeeds</a>
-                      </li><li class="current-entities indented8">
-                        <span class="separator"></span>
                         <a class="class" href="GetFeed.html" title=""></a>
                         <a href="GetFeed.html" title="">GetFeed</a>
                       </li><li class="current-entities indented8">
@@ -219,16 +215,16 @@
                         <a href="GetFeedLikes.html" title="">GetFeedLikes</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="GetFeeds.html" title=""></a>
-                        <a href="GetFeeds.html" title="">GetFeeds</a>
-                      </li><li class="current-entities indented8">
-                        <span class="separator"></span>
                         <a class="class" href="" title=""></a>
                         <a href="" title="">GetSessionFeeds</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
                         <a class="class" href="GetSessionLikedFeeds.html" title=""></a>
                         <a href="GetSessionLikedFeeds.html" title="">GetSessionLikedFeeds</a>
+                      </li><li class="current-entities indented8">
+                        <span class="separator"></span>
+                        <a class="class" href="GetUserFeeds.html" title=""></a>
+                        <a href="GetUserFeeds.html" title="">GetUserFeeds</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
                         <a class="class" href="PostFeed.html" title=""></a>
@@ -268,7 +264,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">GetSessionFeeds</span><span class="params">(<span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">GetSessionFeeds</span><span class="params">(<span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="feedPrivacyType">feedPrivacyType: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/domain/enums/FeedPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FeedPrivacyType">FeedPrivacyType</a>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -329,9 +325,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.server.models.requests.feed.GetSessionFeeds#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(since:Option[Long],offset:Option[Int],count:Option[Int]):io.github.cactacea.backend.server.models.requests.feed.GetSessionFeeds"></a><a id="&lt;init&gt;:GetSessionFeeds"></a>
+      <a id="&lt;init&gt;(since:Option[Long],offset:Option[Int],feedPrivacyType:Option[io.github.cactacea.backend.core.domain.enums.FeedPrivacyType],count:Option[Int]):io.github.cactacea.backend.server.models.requests.feed.GetSessionFeeds"></a><a id="&lt;init&gt;:GetSessionFeeds"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/feed/GetSessionFeeds.html#&lt;init&gt;(since:Option[Long],offset:Option[Int],count:Option[Int]):io.github.cactacea.backend.server.models.requests.feed.GetSessionFeeds" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/feed/GetSessionFeeds.html#&lt;init&gt;(since:Option[Long],offset:Option[Int],feedPrivacyType:Option[io.github.cactacea.backend.core.domain.enums.FeedPrivacyType],count:Option[Int]):io.github.cactacea.backend.server.models.requests.feed.GetSessionFeeds" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -340,7 +336,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">GetSessionFeeds</span><span class="params">(<span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span>
+        <span class="name">GetSessionFeeds</span><span class="params">(<span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="feedPrivacyType">feedPrivacyType: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/domain/enums/FeedPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FeedPrivacyType">FeedPrivacyType</a>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span>
       </span>
       
       
@@ -597,6 +593,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.models.requests.feed.GetSessionFeeds#feedPrivacyType" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="feedPrivacyType:Option[io.github.cactacea.backend.core.domain.enums.FeedPrivacyType]"></a><a id="feedPrivacyType:Option[FeedPrivacyType]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/server/models/requests/feed/GetSessionFeeds.html#feedPrivacyType:Option[io.github.cactacea.backend.core.domain.enums.FeedPrivacyType]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">feedPrivacyType</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/domain/enums/FeedPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FeedPrivacyType">FeedPrivacyType</a>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
