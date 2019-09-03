@@ -135,9 +135,12 @@ class AuthenticationsDAOSpec extends DAOSpec {
         assert(result1.headOption.exists(_.hasher == u1.hasher))
         assert(result1.headOption.exists(_.confirm))
 
-        await(authenticationsDAO.updateConfirm(u2.providerId, u2.providerKey, true))
         val result2 = await(authenticationsDAO.find(u2.providerId, u2.providerKey))
-        assert(result2.isEmpty)
+        assert(result2.headOption.exists(_.providerId == u2.providerId))
+        assert(result2.headOption.exists(_.providerKey == u2.providerKey))
+        assert(result2.headOption.exists(_.password == u2.password))
+        assert(result2.headOption.exists(_.hasher == u2.hasher))
+        assert(result2.headOption.exists(!_.confirm))
       }
     }
 
