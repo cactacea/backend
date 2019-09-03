@@ -4,76 +4,100 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{ChannelAuthorityType, ChannelPrivacyType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, ChannelId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.models.{Channels, Relationships}
+import io.github.cactacea.backend.core.infrastructure.dao.ChannelUsersDAO
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, SessionId, UserId}
+import io.github.cactacea.backend.core.infrastructure.models.{Channels, Relationships, UserChannels}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 
 @Singleton
-class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
+class ChannelAuthorityValidator @Inject()(db: DatabaseService, channelUsersDAO: ChannelUsersDAO) {
 
   import db._
 
-  def hasFindMembersAuthority(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def canFindMembers(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
-      g <- findChannel(channelId)
-      r <- findRelationship(sessionId.userId, g.by.sessionId)
-      _ <- mustHaveJoinAuthority(g, r, sessionId)
+      c <- findChannel(channelId)
+      r <- findRelationship(sessionId.userId, c.by.sessionId)
+      _ <- mustHaveJoinAuthority(c, r, sessionId)
     } yield (())
   }
 
-  def hasAddMembersAuthority(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def canAddMember(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
-      g <- findChannel(channelId)
-      r <- findRelationship(userId, g.by.sessionId)
-      _ <- mustNotDirectMessageChannel(g.directMessage)
-      _ <- mustHaveJoinAuthority(g, r, userId.sessionId)
-      _ <- mustHaveInviteAuthority(g, sessionId)
+      c <- findChannel(channelId)
+      u <- findUserChannel(channelId, sessionId)
+      r <- findRelationship(userId, c.by.sessionId)
+      _ <- mustNotDirectMessageChannel(c.directMessage)
+      _ <- mustHaveJoinAuthority(c, r, userId.sessionId)
+      _ <- mustHaveInviteAuthority(c, u, sessionId)
     } yield (())
   }
 
-  def hasRemoveMembersAuthority(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def canLeaveMember(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
-      g <- findChannel(channelId)
-      _ <- mustNotDirectMessageChannel(g.directMessage)
-      _ <- mustHaveInviteAuthority(g, sessionId)
-    } yield (())
-
-  }
-
-  def hasUpdateAuthority(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
-    for {
-      g <- findChannel(channelId)
-      _ <- mustNotDirectMessageChannel(g.directMessage)
-      _ <- mustHaveInviteAuthority(g, sessionId)
+      c <- findChannel(channelId)
+      u <- findUserChannel(channelId, sessionId)
+      _ <- mustNotDirectMessageChannel(c.directMessage)
+      _ <- mustHaveInviteAuthority(c, u, sessionId)
+      _ <- mustNotLastOrganizer(c, sessionId)
     } yield (())
   }
 
-  def hasJoinAuthority(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def canUpdate(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
-      g <- findChannel(channelId)
-      r <- findRelationship(sessionId.userId, g.by.sessionId)
-      _ <- mustNotDirectMessageChannel(g.directMessage)
-      _ <- mustNotInvitationOnlyChannel(g.invitationOnly)
-      _ <- mustHaveJoinAuthority(g, r, sessionId)
+      c <- findChannel(channelId)
+      u <- findUserChannel(channelId, sessionId)
+      _ <- mustNotDirectMessageChannel(c.directMessage)
+      _ <- mustHaveInviteAuthority(c, u, sessionId)
     } yield (())
   }
 
-  def hasInviteAuthority(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def canJoin(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
-      g <- findChannel(channelId)
-      r <- findRelationship(userId, g.by.sessionId)
-      _ <- mustNotDirectMessageChannel(g.directMessage)
-      _ <- mustHaveJoinAuthority(g, r, userId.sessionId)
-      _ <- mustHaveInviteAuthority(g, sessionId)
+      c <- findChannel(channelId)
+      r <- findRelationship(sessionId.userId, c.by.sessionId)
+      _ <- mustNotDirectMessageChannel(c.directMessage)
+      _ <- mustNotInvitationOnlyChannel(c.invitationOnly)
+      _ <- mustHaveJoinAuthority(c, r, sessionId)
     } yield (())
   }
 
+  def canInvite(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+    for {
+      c <- findChannel(channelId)
+      u <- findUserChannel(channelId, sessionId)
+      r <- findRelationship(userId, c.by.sessionId)
+      _ <- mustNotDirectMessageChannel(c.directMessage)
+      _ <- mustHaveJoinAuthority(c, r, userId.sessionId)
+      _ <- mustHaveInviteAuthority(c, u, sessionId)
+    } yield (())
+  }
+
+  def canLeave(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+    for {
+      c <- findChannel(channelId)
+      _ <- mustNotLastOrganizer(c, sessionId)
+    } yield (())
+  }
 
   private def findChannel(channelId: ChannelId): Future[Channels] = {
     val q = quote {
       query[Channels]
         .filter(_.id == lift(channelId))
+    }
+    run(q).flatMap(_.headOption match {
+      case Some(g) => Future.value(g)
+      case None => Future.exception(CactaceaException(ChannelNotFound))
+    })
+  }
+
+  private def findUserChannel(channelId: ChannelId, sessionId: SessionId): Future[UserChannels] = {
+    val userId = sessionId.userId
+    val q = quote {
+      query[UserChannels]
+        .filter(_.channelId == lift(channelId))
+        .filter(_.userId == lift(userId))
     }
     run(q).flatMap(_.headOption match {
       case Some(g) => Future.value(g)
@@ -117,13 +141,17 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
     }
   }
 
-  private def mustHaveInviteAuthority(g: Channels, sessionId: SessionId): Future[Unit] = {
-    if (sessionId.userId == g.by) {
-      Future.Unit
-    } else if (g.authorityType == ChannelAuthorityType.organizer) {
-      Future.exception(CactaceaException(AuthorityNotFound))
-    } else {
-      Future.Unit
+  private def mustHaveInviteAuthority(g: Channels, u: UserChannels, sessionId: SessionId): Future[Unit] = {
+    g.authorityType match {
+      case ChannelAuthorityType.organizer =>
+        u.authorityType match {
+          case ChannelAuthorityType.organizer =>
+            Future.Unit
+          case ChannelAuthorityType.member =>
+            Future.exception(CactaceaException(AuthorityNotFound))
+        }
+      case ChannelAuthorityType.member  =>
+        Future.Unit
     }
   }
 
@@ -133,6 +161,24 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService) {
         Future.exception(CactaceaException(InvitationChannelFound))
       case false =>
         Future.Unit
+    }
+  }
+
+  private def mustNotLastOrganizer(g: Channels, sessionId: SessionId): Future[Unit] = {
+    if (g.userCount == 1) {
+      Future.Unit
+    } else {
+      g.authorityType match {
+        case ChannelAuthorityType.organizer =>
+          channelUsersDAO.isLastOrganizer(g.id, sessionId).flatMap(_ match {
+            case true =>
+              Future.exception(CactaceaException(OrganizerCanNotLeave))
+            case false =>
+              Future.Unit
+          })
+        case ChannelAuthorityType.member =>
+          Future.Unit
+      }
     }
   }
 

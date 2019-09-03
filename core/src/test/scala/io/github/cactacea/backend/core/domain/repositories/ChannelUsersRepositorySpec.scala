@@ -417,7 +417,7 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         // preparing
         val sessionId = await(createUser(s.userName)).id.sessionId
         val userId1 = await(createUser(a1.userName)).id
-        val channelId = await(channelsRepository.create(g.name, false, g.privacyType, g.authorityType, sessionId))
+        val channelId = await(channelsRepository.create(g.name, false, g.privacyType, ChannelAuthorityType.organizer, sessionId))
         await(channelUsersRepository.create(userId1, channelId, sessionId))
 
         // result
@@ -464,7 +464,7 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
         val channelId = await(channelsRepository.create(g.name, false, g.privacyType, ChannelAuthorityType.member, sessionId))
         await(invitationsRepository.create(userId1, channelId, sessionId))
         await(invitationsRepository.create(userId2, channelId, sessionId))
-        await(channelUsersRepository.delete(sessionId.userId, channelId, userId1.sessionId))
+        await(channelUsersRepository.delete(channelId, sessionId))
 
         // result
         assert(intercept[CactaceaException] {
@@ -494,18 +494,15 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
     }
 
 
-    scenario("should exception if organizer and member user not only one") {
+    scenario("should not exception if organizer delete") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a1, g) =>
         // preparing
         val sessionId = await(createUser(s.userName)).id.sessionId
         val userId = await(createUser(a1.userName)).id
-        val channelId = await(channelsRepository.create(g.name, false, g.privacyType, ChannelAuthorityType.member, sessionId))
+        val channelId = await(channelsRepository.create(g.name, false, g.privacyType, ChannelAuthorityType.organizer, sessionId))
         await(channelUsersRepository.create(userId, channelId, sessionId))
-
-        // result
-        assert(intercept[CactaceaException] {
-          await(channelUsersRepository.delete(sessionId.userId, channelId, userId.sessionId))
-        }.error == OrganizerCanNotLeave)
+        await(userChannelsDAO.updateAuthorityType(channelId, ChannelAuthorityType.organizer, userId.sessionId))
+        await(channelUsersRepository.delete(sessionId.userId, channelId, userId.sessionId))
       }
     }
 

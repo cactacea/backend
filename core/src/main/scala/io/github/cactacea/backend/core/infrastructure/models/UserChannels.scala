@@ -1,6 +1,7 @@
 package io.github.cactacea.backend.core.infrastructure.models
 
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserChannelId, UserId, ChannelId}
+import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, UserChannelId, UserId}
 
 case class UserChannels(
                             id: UserChannelId,
@@ -9,6 +10,7 @@ case class UserChannels(
                             unreadCount: Long,
                             hidden: Boolean,
                             mute: Boolean,
+                            authorityType: ChannelAuthorityType,
                             by: UserId,
                             joinedAt: Long
                         )

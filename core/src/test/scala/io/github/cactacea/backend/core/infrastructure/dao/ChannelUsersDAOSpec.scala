@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
+import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
 class ChannelUsersDAOSpec extends DAOSpec {
@@ -11,7 +12,7 @@ class ChannelUsersDAOSpec extends DAOSpec {
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val userIds = l.map({ a =>
           val userId = await(usersDAO.create(a.userName))
-          await(userChannelsDAO.create(userId, channelId, sessionId))
+          await(userChannelsDAO.create(userId, channelId, ChannelAuthorityType.member, sessionId))
           userId
         }).reverse
 
@@ -51,7 +52,7 @@ class ChannelUsersDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val userId2 = await(usersDAO.create(a2.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.organizer, sessionId))
 
         // return user1 joined
         // return user2 not joined

@@ -2,9 +2,10 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.domain.models.Channel
-import io.github.cactacea.backend.core.infrastructure.dao.{UserChannelsDAO, UserMessagesDAO, ChannelsDAO}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, ChannelId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.dao.{ChannelsDAO, UserChannelsDAO, UserMessagesDAO}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, SessionId, UserId}
 import io.github.cactacea.backend.core.infrastructure.validators.{UserChannelsValidator, UsersValidator}
 
 
@@ -50,8 +51,8 @@ class UserChannelRepository @Inject()(
       case None =>
         for {
           i <- channelsDAO.create(sessionId)
-          _ <- userChannelsDAO.create(i, sessionId)
-          _ <- userChannelsDAO.create(userId, i, sessionId)
+          _ <- userChannelsDAO.create(i, ChannelAuthorityType.organizer, sessionId)
+          _ <- userChannelsDAO.create(userId, i, ChannelAuthorityType.organizer, sessionId)
           g <- userChannelsValidator.mustFindByUserId(userId, sessionId)
         } yield (g)
       case Some(g) =>

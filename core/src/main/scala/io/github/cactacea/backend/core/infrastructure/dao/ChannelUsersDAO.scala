@@ -3,9 +3,10 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.domain.models.User
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, ChannelId}
-import io.github.cactacea.backend.core.infrastructure.models.{UserChannels, Users, Relationships}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, SessionId, UserId}
+import io.github.cactacea.backend.core.infrastructure.models.{Relationships, UserChannels, Users}
 
 @Singleton
 class ChannelUsersDAO @Inject()(db: DatabaseService) {
@@ -30,6 +31,19 @@ class ChannelUsersDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({case (a, r, id) => User(a, r, id.value)}))
 
   }
+
+  def isLastOrganizer(channelId: ChannelId, sessionId: SessionId): Future[Boolean] = {
+    val userId = sessionId.userId
+    val q = quote {
+      query[UserChannels]
+        .filter(_.userId        != lift(userId))
+        .filter(_.channelId     == lift(channelId))
+        .filter(_.authorityType == lift(ChannelAuthorityType.organizer))
+        .isEmpty
+    }
+    run(q)
+  }
+
 
   def exists(channelId: ChannelId, userId: UserId): Future[Boolean] = {
     val q = quote {

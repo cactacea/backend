@@ -2,11 +2,11 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.Inject
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.MessageType
+import io.github.cactacea.backend.core.domain.enums.{ChannelAuthorityType, MessageType}
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.dao._
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, ChannelId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{UserChannelsValidator, UsersValidator, ChannelAuthorityValidator, ChannelsValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, SessionId, UserId}
+import io.github.cactacea.backend.core.infrastructure.validators.{ChannelAuthorityValidator, ChannelsValidator, UserChannelsValidator, UsersValidator}
 
 
 class ChannelUsersRepository @Inject()(
@@ -25,8 +25,8 @@ class ChannelUsersRepository @Inject()(
     val userId = sessionId.userId
     for {
       _ <- userChannelsValidator.mustNotJoined(userId, channelId)
-      _ <- channelAuthorityValidator.hasJoinAuthority(channelId, sessionId)
-      _ <- userChannelsDAO.create(userId, channelId, userId.sessionId)
+      _ <- channelAuthorityValidator.canJoin(channelId, sessionId)
+      _ <- userChannelsDAO.create(userId, channelId, ChannelAuthorityType.member, userId.sessionId)
       c <- channelsDAO.findUserCount(channelId)
       m <- messagesDAO.create(channelId, MessageType.joined, c, sessionId)
       _ <- userMessagesDAO.create(channelId, m, sessionId)
@@ -37,8 +37,8 @@ class ChannelUsersRepository @Inject()(
     for {
       _ <- usersValidator.mustExist(userId, sessionId)
       _ <- userChannelsValidator.mustNotJoined(userId, channelId)
-      _ <- channelAuthorityValidator.hasAddMembersAuthority(userId, channelId, sessionId)
-      _ <- userChannelsDAO.create(userId, channelId, userId.sessionId)
+      _ <- channelAuthorityValidator.canAddMember(userId, channelId, sessionId)
+      _ <- userChannelsDAO.create(userId, channelId, ChannelAuthorityType.member, userId.sessionId)
       c <- channelsDAO.findUserCount(channelId)
       m <- messagesDAO.create(channelId, MessageType.joined, c, userId.sessionId)
       _ <- userMessagesDAO.create(channelId, m, userId.sessionId)
@@ -50,7 +50,7 @@ class ChannelUsersRepository @Inject()(
     for {
       _ <- channelsValidator.mustExist(channelId, sessionId)
       _ <- userChannelsValidator.mustJoined(userId, channelId)
-      _ <- channelsValidator.mustNotLastOrganizer(channelId, sessionId)
+      _ <- channelAuthorityValidator.canLeave(channelId, sessionId)
       _ <- userChannelsDAO.delete(userId, channelId)
       _ <- userMessagesDAO.delete(userId, channelId)
       c <- channelsDAO.findUserCount(channelId)
@@ -63,8 +63,7 @@ class ChannelUsersRepository @Inject()(
       _ <- channelsValidator.mustExist(channelId, sessionId)
       _ <- usersValidator.mustExist(userId, sessionId)
       _ <- userChannelsValidator.mustJoined(userId, channelId)
-      _ <- channelsValidator.mustNotLastOrganizer(channelId, userId.sessionId)
-      _ <- channelAuthorityValidator.hasRemoveMembersAuthority(channelId, sessionId)
+      _ <- channelAuthorityValidator.canLeaveMember(channelId, userId.sessionId)
       _ <- userChannelsDAO.delete(userId, channelId)
       _ <- userMessagesDAO.delete(userId, channelId)
       c <- channelsDAO.findUserCount(channelId)
@@ -85,7 +84,7 @@ class ChannelUsersRepository @Inject()(
 
   def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
     for {
-      _ <- channelAuthorityValidator.hasFindMembersAuthority(channelId, sessionId)
+      _ <- channelAuthorityValidator.canFindMembers(channelId, sessionId)
       r <- channelUsersDAO.find(channelId, since, offset, count)
     } yield (r)
   }

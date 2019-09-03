@@ -3,6 +3,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.domain.models.Channel
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
@@ -12,29 +13,30 @@ class UserChannelsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(channelId: ChannelId, sessionId: SessionId): Future[UserChannelId] = {
-    create(sessionId.userId, channelId, sessionId)
+  def create(channelId: ChannelId, authorityType: ChannelAuthorityType, sessionId: SessionId): Future[UserChannelId] = {
+    create(sessionId.userId, channelId, authorityType, sessionId)
   }
 
-  def create(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[UserChannelId] = {
+  def create(userId: UserId, channelId: ChannelId, authorityType: ChannelAuthorityType, sessionId: SessionId): Future[UserChannelId] = {
     for {
-      r <- createUserChannels(userId, channelId, sessionId)
+      r <- createUserChannels(userId, channelId, authorityType, sessionId)
       _ <- updateUserCount(channelId, 1L)
     } yield (r)
   }
 
-  private def createUserChannels(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[UserChannelId] = {
+  private def createUserChannels(userId: UserId, channelId: ChannelId, authorityType: ChannelAuthorityType, sessionId: SessionId): Future[UserChannelId] = {
     val joinedAt = System.currentTimeMillis()
     val by = sessionId.userId
     val q = quote {
       query[UserChannels]
         .insert(
-          _.userId           -> lift(userId),
-          _.channelId             -> lift(channelId),
+          _.userId              -> lift(userId),
+          _.channelId           -> lift(channelId),
           _.unreadCount         -> 0L,
           _.joinedAt            -> lift(joinedAt),
           _.by                  -> lift(by),
           _.hidden              -> false,
+          _.authorityType       -> lift(authorityType),
           _.mute                -> false
         ).returning(_.id)
     }
@@ -93,6 +95,18 @@ class UserChannelsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
+  def updateAuthorityType(channelId: ChannelId, authorityType: ChannelAuthorityType, sessionId: SessionId): Future[Unit] = {
+    val by = sessionId.userId
+    val q = quote {
+      query[UserChannels]
+        .filter(_.channelId     == lift(channelId))
+        .filter(_.userId   == lift(by))
+        .update(
+          _.authorityType -> lift(authorityType)
+        )
+    }
+    run(q).map(_ => ())
+  }
 
   def findByUserId(userId: UserId, sessionId: SessionId): Future[Option[Channel]] = {
     val by = sessionId.userId

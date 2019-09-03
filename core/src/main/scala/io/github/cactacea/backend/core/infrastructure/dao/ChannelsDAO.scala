@@ -76,18 +76,6 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def isOrganizer(channelId: ChannelId, sessionId: SessionId): Future[Boolean] = {
-    val by = sessionId.userId
-    val q = quote {
-      query[Channels]
-        .filter(_.id == lift(channelId))
-        .filter(_.by == lift(by))
-        .filter(_.userCount > 1)
-        .nonEmpty
-    }
-    run(q)
-  }
-
   def find(channelId: ChannelId, sessionId: SessionId): Future[Option[Channel]] = {
     val by = sessionId.userId
     val q = quote {

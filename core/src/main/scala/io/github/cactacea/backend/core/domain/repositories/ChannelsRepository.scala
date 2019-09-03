@@ -25,7 +25,7 @@ class ChannelsRepository @Inject()(
              sessionId: SessionId): Future[ChannelId] = {
     for {
       id <- channelsDAO.create(name, byInvitationOnly, privacyType, authority, sessionId)
-      _ <- userChannelsDAO.create(sessionId.userId, id, sessionId)
+      _ <- userChannelsDAO.create(sessionId.userId, id, ChannelAuthorityType.organizer, sessionId)
     } yield (id)
   }
 
@@ -38,7 +38,7 @@ class ChannelsRepository @Inject()(
 
     for {
       _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
-      _ <- channelAuthorityValidator.hasUpdateAuthority(channelId, sessionId)
+      _ <- channelAuthorityValidator.canUpdate(channelId, sessionId)
       _ <- channelsDAO.update(channelId, name, byInvitationOnly, privacyType, authority, sessionId)
     } yield (())
   }

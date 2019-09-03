@@ -51,7 +51,7 @@ object Channel {
       invitationOnly    = g.invitationOnly,
       privacyType       = g.privacyType,
       authorityType     = g.authorityType,
-      userCount      = g.userCount,
+      userCount         = g.userCount,
       organizedAt       = g.organizedAt,
       lastPostedAt      = g.lastPostedAt,
       next              = n

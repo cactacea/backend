@@ -1,6 +1,7 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.finagle.mysql.ServerError
+import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
 class UserMessagesDAOSpec extends DAOSpec {
@@ -18,8 +19,8 @@ class UserMessagesDAOSpec extends DAOSpec {
           val userId1 = await(usersDAO.create(a1.userName))
           val userId2 = await(usersDAO.create(a2.userName))
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(sessionId.userId, channelId, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(sessionId.userId, channelId, ChannelAuthorityType.organizer, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
           val userCount = await(channelsDAO.findUserCount(channelId))
           val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), userCount, sessionId))
           await(userMessagesDAO.create(channelId, messageId, sessionId))
@@ -44,8 +45,8 @@ class UserMessagesDAOSpec extends DAOSpec {
           val sessionId = await(usersDAO.create(s.userName)).sessionId
           val userId1 = await(usersDAO.create(a1.userName))
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(sessionId.userId, channelId, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(sessionId.userId, channelId, ChannelAuthorityType.organizer, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
           val userCount = await(channelsDAO.findUserCount(channelId))
           val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), userCount, sessionId))
 
@@ -71,9 +72,9 @@ class UserMessagesDAOSpec extends DAOSpec {
           val userId1 = await(usersDAO.create(a1.userName))
           val userId2 = await(usersDAO.create(a2.userName))
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(sessionId.userId, channelId, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
-          await(userChannelsDAO.create(userId2, channelId, sessionId))
+          await(userChannelsDAO.create(sessionId.userId, channelId, ChannelAuthorityType.organizer, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
+          await(userChannelsDAO.create(userId2, channelId, ChannelAuthorityType.member, sessionId))
           val userCount = await(channelsDAO.findUserCount(channelId))
           val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), userCount, sessionId))
           await(userMessagesDAO.create(channelId, messageId, sessionId))
@@ -113,8 +114,8 @@ class UserMessagesDAOSpec extends DAOSpec {
           val userId1 = await(usersDAO.create(a1.userName))
           val userId2 = await(usersDAO.create(a2.userName))
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(sessionId.userId, channelId, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(sessionId.userId, channelId, ChannelAuthorityType.organizer, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
           val mediumId = await(mediumsDAO.create(i.key, i.uri, i.thumbnailUrl, i.mediumType, i.width, i.height, i.size, sessionId))
           val userCount = await(channelsDAO.findUserCount(channelId))
           val messageId = await(messagesDAO.create(channelId, mediumId, userCount, sessionId))
@@ -147,7 +148,7 @@ class UserMessagesDAOSpec extends DAOSpec {
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(sessionId.userId, channelId, sessionId))
+        await(userChannelsDAO.create(sessionId.userId, channelId, ChannelAuthorityType.organizer, sessionId))
 
         val userCount = await(channelsDAO.findUserCount(channelId))
 
@@ -214,8 +215,8 @@ class UserMessagesDAOSpec extends DAOSpec {
           val sessionId = await(usersDAO.create(s.userName)).sessionId
           val userId1 = await(usersDAO.create(a1.userName))
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(sessionId.userId, channelId, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(sessionId.userId, channelId, ChannelAuthorityType.organizer, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
           val userCount = await(channelsDAO.findUserCount(channelId))
           val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), userCount, sessionId))
           await(userMessagesDAO.create(channelId, messageId, sessionId))

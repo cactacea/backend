@@ -735,6 +735,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`user_channels` (
   `unread_count` BIGINT(20) NOT NULL,
   `hidden` TINYINT(4) NOT NULL,
   `mute` TINYINT(4) NOT NULL,
+  `authority_type` TINYINT(4) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `joined_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),

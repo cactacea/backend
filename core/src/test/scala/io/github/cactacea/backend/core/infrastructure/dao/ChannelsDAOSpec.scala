@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
+import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
 class ChannelsDAOSpec extends DAOSpec {
@@ -71,8 +72,8 @@ class ChannelsDAOSpec extends DAOSpec {
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId = await(usersDAO.create(a.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(channelId, sessionId))
-        await(userChannelsDAO.create(channelId, userId.sessionId))
+        await(userChannelsDAO.create(channelId, ChannelAuthorityType.organizer, sessionId))
+        await(userChannelsDAO.create(channelId, ChannelAuthorityType.member, userId.sessionId))
         val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), 2, sessionId))
         await(userMessagesDAO.create(channelId, messageId, sessionId))
         await(channelsDAO.delete(channelId))
@@ -116,8 +117,8 @@ class ChannelsDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val userId2 = await(usersDAO.create(a2.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
-        await(userChannelsDAO.create(userId2, channelId, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.organizer, sessionId))
+        await(userChannelsDAO.create(userId2, channelId, ChannelAuthorityType.organizer, sessionId))
         val result = await(channelsDAO.find(channelId, sessionId))
         assert(result.isDefined)
         assert(result.headOption.exists(_.id == channelId))
@@ -135,7 +136,7 @@ class ChannelsDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val userId2 = await(usersDAO.create(a2.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.organizer, sessionId))
         await(blocksDAO.create(userId2, sessionId))
         val result = await(channelsDAO.find(channelId, userId2.sessionId))
         assert(result.isEmpty)
@@ -152,9 +153,9 @@ class ChannelsDAOSpec extends DAOSpec {
           val userId1 = await(usersDAO.create(a1.userName))
           val userId2 = await(usersDAO.create(a2.userName))
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(channelId, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
-          await(userChannelsDAO.create(userId2, channelId, sessionId))
+          await(userChannelsDAO.create(channelId, ChannelAuthorityType.organizer, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
+          await(userChannelsDAO.create(userId2, channelId, ChannelAuthorityType.member, sessionId))
           val result1 = await(channelsDAO.findUserCount(channelId))
           assert(result1 == 3)
           await(userChannelsDAO.delete(userId1, channelId))

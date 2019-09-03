@@ -1,10 +1,11 @@
 package io.github.cactacea.backend.core.domain.repositories
 
 
+import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{UserNotJoined, AuthorityNotFound, ChannelNotFound}
+import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{AuthorityNotFound, ChannelNotFound, UserNotJoined}
 
 class ChannelsRepositorySpec extends RepositorySpec {
 
@@ -82,7 +83,7 @@ class ChannelsRepositorySpec extends RepositorySpec {
           val sessionId = await(createUser(s.userName)).id.sessionId
           val userId = await(createUser(a.userName)).id
           val channelId = await(channelsRepository.create(g1.name, g1.invitationOnly, g1.privacyType, g2.authorityType, sessionId))
-          await(userChannelsDAO.create(userId, channelId, sessionId))
+          await(userChannelsDAO.create(userId, channelId, ChannelAuthorityType.member, sessionId))
 
           // result
           assert(intercept[CactaceaException] {

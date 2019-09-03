@@ -14,8 +14,8 @@ class UserChannelsDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val userId2 = await(usersDAO.create(a2.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
-        await(userChannelsDAO.create(userId2, channelId, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
+        await(userChannelsDAO.create(userId2, channelId, ChannelAuthorityType.member, sessionId))
         assertFutureValue(userChannelsDAO.exists(channelId, userId1), true)
         assertFutureValue(userChannelsDAO.exists(channelId, userId2), true)
         val result = await(channelsDAO.find(channelId, sessionId))
@@ -30,9 +30,9 @@ class UserChannelsDAOSpec extends DAOSpec {
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
 
         // exception occurs
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.organizer, sessionId))
         assert(intercept[ServerError] {
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.organizer, sessionId))
         }.code == 1062)
       }
     }
@@ -46,8 +46,8 @@ class UserChannelsDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val userId2 = await(usersDAO.create(a2.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
-        await(userChannelsDAO.create(userId2, channelId, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
+        await(userChannelsDAO.create(userId2, channelId, ChannelAuthorityType.member, sessionId))
         assertFutureValue(userChannelsDAO.exists(channelId, userId1), true)
         assertFutureValue(userChannelsDAO.exists(channelId, userId2), true)
         val result1 = await(channelsDAO.find(channelId, sessionId))
@@ -75,7 +75,7 @@ class UserChannelsDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val userId2 = await(usersDAO.create(a2.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
 
         // return user1 joined
         // return user2 not joined
@@ -96,7 +96,7 @@ class UserChannelsDAOSpec extends DAOSpec {
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
         await(userChannelsDAO.updateHidden(channelId, true, sessionId))
         await(userChannelsDAO.updateUnreadCount(channelId))
         await(userChannelsDAO.updateUnreadCount(channelId))
@@ -123,8 +123,8 @@ class UserChannelsDAOSpec extends DAOSpec {
         val userId2 = await(usersDAO.create(a2.userName))
         val channelId1 = await(channelsDAO.create(g1.name, g1.invitationOnly, g1.privacyType, g1.authorityType, sessionId))
         val channelId2 = await(channelsDAO.create(g2.name, g2.invitationOnly, g2.privacyType, g2.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId1, sessionId))
-        await(userChannelsDAO.create(userId2, channelId2, sessionId))
+        await(userChannelsDAO.create(userId1, channelId1, ChannelAuthorityType.member, sessionId))
+        await(userChannelsDAO.create(userId2, channelId2, ChannelAuthorityType.member, sessionId))
         await(userChannelsDAO.updateHidden(channelId1, true, userId1.sessionId))
 
         // return channel1 is hidden
@@ -157,8 +157,8 @@ class UserChannelsDAOSpec extends DAOSpec {
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
         val channelId = await(channelsDAO.create(sessionId))
-        await(userChannelsDAO.create(channelId, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
+        await(userChannelsDAO.create(channelId, ChannelAuthorityType.organizer, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
 
         // result
         val result = await(userChannelsDAO.findByUserId(userId1, sessionId))
@@ -182,8 +182,8 @@ class UserChannelsDAOSpec extends DAOSpec {
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
         val channelId = await(channelsDAO.create(sessionId))
-        await(userChannelsDAO.create(channelId, sessionId))
-        await(userChannelsDAO.create(userId1, channelId, sessionId))
+        await(userChannelsDAO.create(channelId, ChannelAuthorityType.organizer, sessionId))
+        await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
         val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), 2, sessionId))
         await(userMessagesDAO.create(channelId, messageId, sessionId))
 
@@ -216,8 +216,8 @@ class UserChannelsDAOSpec extends DAOSpec {
           val sessionId = await(usersDAO.create(s.userName)).sessionId
           val userId1 = await(usersDAO.create(a1.userName))
           val channelId = await(channelsDAO.create(sessionId))
-          await(userChannelsDAO.create(channelId, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(channelId, ChannelAuthorityType.organizer, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
           val mediumId = await(mediumsDAO.create(i.key, i.uri, i.thumbnailUrl, i.mediumType, i.width, i.height, i.size, sessionId))
           val userCount = await(channelsDAO.findUserCount(channelId))
           val messageId = await(messagesDAO.create(channelId, mediumId, userCount, sessionId))
@@ -261,7 +261,7 @@ class UserChannelsDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val channels = g.map({g =>
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
           val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), 2, sessionId))
           await(userMessagesDAO.create(channelId, messageId, sessionId))
           g.copy(id = channelId)
@@ -308,7 +308,7 @@ class UserChannelsDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val channels = g.map({g =>
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
           val mediumId = await(mediumsDAO.create(i.key, i.uri, i.thumbnailUrl, i.mediumType, i.width, i.height, i.size, sessionId))
           val messageId = await(messagesDAO.create(channelId, mediumId, 2, sessionId))
           await(userMessagesDAO.create(channelId, messageId, sessionId))
@@ -368,7 +368,7 @@ class UserChannelsDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val channels = g.map({g =>
           val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
-          await(userChannelsDAO.create(userId1, channelId, sessionId))
+          await(userChannelsDAO.create(userId1, channelId, ChannelAuthorityType.member, sessionId))
           val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), 2, sessionId))
           await(userMessagesDAO.create(channelId, messageId, sessionId))
           g.copy(id = channelId)
@@ -407,8 +407,8 @@ class UserChannelsDAOSpec extends DAOSpec {
         val channelId1 = await(channelsDAO.create(g1.name, g1.invitationOnly, g1.privacyType, g1.authorityType, sessionId))
         val channelId2 = await(channelsDAO.create(g2.name, g2.invitationOnly, g2.privacyType, g2.authorityType, sessionId))
         val channelId3 = await(channelsDAO.create(g3.name, g3.invitationOnly, g3.privacyType, g3.authorityType, sessionId))
-        await(userChannelsDAO.create(userId1, channelId1, sessionId))
-        await(userChannelsDAO.create(userId1, channelId2, sessionId))
+        await(userChannelsDAO.create(userId1, channelId1, ChannelAuthorityType.member, sessionId))
+        await(userChannelsDAO.create(userId1, channelId2, ChannelAuthorityType.member, sessionId))
         await(userChannelsDAO.updateHidden(channelId1, true, userId1.sessionId))
 
         // return channel1 is hidden
