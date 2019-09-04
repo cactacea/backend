@@ -15,7 +15,7 @@ import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
 
 class CactaceaServer extends BaseServer {
 
-  override val disableAdminHttpServer = false
+  override val disableAdminHttpServer = true
   override val defaultHttpPort = ":9000"
   override val defaultAdminPort = 9001
   override val defaultHttpServerName = "Backend Server"

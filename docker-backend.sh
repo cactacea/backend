@@ -1,0 +1,1 @@
+docker run -r CACTACEA_MASTER_DB_DEST=docker.for.mac.host.internal:3306 -p 9000:9000 cactacea/api
