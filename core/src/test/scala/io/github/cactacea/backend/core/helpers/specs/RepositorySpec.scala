@@ -6,10 +6,15 @@ import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.domain.repositories._
+import io.github.cactacea.backend.core.helpers.generators.{ModelsGenerator, StatusGenerator}
+import io.github.cactacea.backend.core.helpers.utils.DAOHelper
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 
-class RepositorySpec extends SpecHelper with UtilHelper {
+class RepositorySpec extends Spec
+  with StatusGenerator
+  with ModelsGenerator
+  with DAOHelper {
 
   override val injector =
     TestInjector(

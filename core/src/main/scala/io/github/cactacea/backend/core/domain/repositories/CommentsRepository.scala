@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.Comment
-import io.github.cactacea.backend.core.infrastructure.dao.{CommentLikesDAO, CommentReportsDAO, CommentsDAO, NotificationsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{CommentReportsDAO, CommentsDAO, NotificationsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{CommentsValidator, FeedsValidator}
 
@@ -12,7 +12,6 @@ import io.github.cactacea.backend.core.infrastructure.validators.{CommentsValida
 class CommentsRepository @Inject()(
                                     commentsDAO: CommentsDAO,
                                     commentReportsDAO: CommentReportsDAO,
-                                    commentLikesDAO: CommentLikesDAO,
                                     commentsValidator: CommentsValidator,
                                     feedsValidator: FeedsValidator,
                                     notificationsDAO: NotificationsDAO
