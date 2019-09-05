@@ -23,4 +23,3 @@ class DatabaseService(client: OperationType => mysql.Client with mysql.Transacti
   }
 
 }
-
