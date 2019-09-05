@@ -4,9 +4,14 @@ import com.twitter.inject.app.TestInjector
 import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.modules.{DatabaseModule, DefaultDeepLinkModule, DefaultMessageModule}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.helpers.generators.{ModelsGenerator, StatusGenerator}
+import io.github.cactacea.backend.core.helpers.utils.DAOHelper
 import io.github.cactacea.backend.core.infrastructure.dao._
 
-class DAOSpec extends SpecHelper with UtilHelper {
+class DAOSpec extends Spec
+  with StatusGenerator
+  with ModelsGenerator
+  with DAOHelper {
 
   override val injector =
     TestInjector(

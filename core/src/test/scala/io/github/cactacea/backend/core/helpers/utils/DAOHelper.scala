@@ -1,13 +1,13 @@
-package io.github.cactacea.backend.core.helpers.specs
+package io.github.cactacea.backend.core.helpers.utils
 
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.Channel
 import io.github.cactacea.backend.core.helpers.tests.IntegrationFeatureTest
-import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, CommentId, FeedId, FriendRequestId, MediumId, MessageId, SessionId, UserId}
-import io.github.cactacea.backend.core.infrastructure.models.{Channels, CommentReports, Devices, FeedMediums, FeedReports, FeedTags, FriendRequests, Invitations, Messages, UserAuthentications, UserChannels, UserFeeds, UserMessages, UserReports}
+import io.github.cactacea.backend.core.infrastructure.identifiers._
+import io.github.cactacea.backend.core.infrastructure.models._
 
-trait UtilHelper extends IntegrationFeatureTest {
+trait DAOHelper extends IntegrationFeatureTest {
 
   val db: DatabaseService
 
