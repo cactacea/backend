@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(migrationSettings)
-  .aggregate(auth, chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, oauth, docs, utils, benchmarks)
+  .aggregate(auth, chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, oauth, docs, utils, benchmarks, members)
   .enablePlugins(FlywayPlugin)
 
 
@@ -163,6 +163,28 @@ lazy val chat = (project in file("demo/chat"))
   .settings(libraryDependencies ++= Dependencies.test)
   .settings(noPublishSettings)
   .dependsOn(finachat)
+  .enablePlugins(JavaAppPackaging)
+
+
+lazy val members = (project in file("demo/members"))
+  .settings(
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.server.APIServerApp"),
+    version in Docker := ( version in ThisBuild ).value,
+    maintainer in Docker := "Cactacea",
+    packageName in Docker := "api",
+    dockerBaseImage := "anapsix/alpine-java:8_server-jre_unlimited",
+    dockerExposedPorts := Seq(9000, 9001),
+    dockerRepository := Some("cactacea"),
+    dockerUpdateLatest := true
+  )
+  .settings(commonSettings)
+  .settings(commonResolverSetting)
+  .settings(libraryDependencies ++= Dependencies.test)
+  .settings(noPublishSettings)
+  .dependsOn(aws)
+  .dependsOn(onesignal)
+  .dependsOn(redis)
+  .dependsOn(server)
   .enablePlugins(JavaAppPackaging)
 
 
