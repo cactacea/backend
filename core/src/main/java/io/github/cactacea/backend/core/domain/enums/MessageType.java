@@ -1,9 +1,5 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public enum MessageType {
     text((byte)0),
     medium((byte)1),

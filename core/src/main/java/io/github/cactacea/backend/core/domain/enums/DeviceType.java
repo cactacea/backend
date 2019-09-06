@@ -1,9 +1,5 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public enum DeviceType {
     ios((byte)0),
     android((byte)1),
