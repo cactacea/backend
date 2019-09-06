@@ -24,9 +24,8 @@ package io.github.cactacea.filhouette.api.actions
 
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.util.Future
-import io.github.cactacea.filhouette.api.services.AuthenticatorService
 import io.github.cactacea.filhouette.api._
-import io.github.cactacea.filhouette.api.services.IdentityService
+import io.github.cactacea.filhouette.api.services.{IdentityService, AuthenticatorService}
 
 /**
   * A request that only allows access if an identity is authenticated and authorized.

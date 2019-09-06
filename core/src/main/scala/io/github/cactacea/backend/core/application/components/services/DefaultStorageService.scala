@@ -41,25 +41,28 @@ class DefaultStorageService(val localPath: String) extends StorageService {
   override def put(request: Request): Future[Seq[StorageFile]] = {
     val multiParams = RequestUtils.multiParams(request)
     val mediums = multiParams.toList.flatMap({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) })
-    if (mediums.size == 0) {
-      Future.exception(CactaceaException(UploadFileNotFound))
-    } else if (mediums.filter(_.data.size.bytes > Config.storage.maxFileSize).size > 0) {
-      Future.exception(CactaceaException(FileSizeLimitExceededError))
-    } else {
-      Future.traverseSequentially(mediums) { medium =>
-        futurePool {
-          val filename = UUID.randomUUID.toString
-          val host = Config.storage.hostName
-          val url = s"http://${host}${Config.storage.port}/mediums/" + filename
-          val filePath = localPath + filename
-          for {
-            out <- managed(new BufferedOutputStream(new java.io.FileOutputStream(filePath)))
-          } {
-            out.write(medium.data)
+    val count = mediums.size
+    val overCount = mediums.filter(_.data.size.bytes > Config.storage.maxFileSize).size
+    (count, overCount) match {
+      case (0, _) =>
+        Future.exception(CactaceaException(UploadFileNotFound))
+      case (_, 0) =>
+        Future.traverseSequentially(mediums) { medium =>
+          futurePool {
+            val filename = UUID.randomUUID.toString
+            val host = Config.storage.hostName
+            val url = s"http://${host}${Config.storage.port}/mediums/" + filename
+            val filePath = localPath + filename
+            for {
+              out <- managed(new BufferedOutputStream(new java.io.FileOutputStream(filePath)))
+            } {
+              out.write(medium.data)
+            }
+            StorageFile(filename, url, Some(url), medium.width, medium.height, medium.data.length, medium.mediumType)
           }
-          StorageFile(filename, url, Some(url), medium.width, medium.height, medium.data.length, medium.mediumType)
         }
-      }
+      case _ =>
+        Future.exception(CactaceaException(FileSizeLimitExceededError))
     }
   }
 

@@ -10,9 +10,8 @@ import io.github.cactacea.filhouette.api.actions.{SecuredActionBuilder, SecuredR
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator
 
 @Singleton
-class AuthenticationFilter() extends SimpleFilter[Request, Response] {
-
-  @Inject var securedActionBuilder: SecuredActionBuilder[Authentication, JWTAuthenticator] = _
+class AuthenticationFilter @Inject()(securedActionBuilder: SecuredActionBuilder[Authentication, JWTAuthenticator])
+  extends SimpleFilter[Request, Response] {
 
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     val block = (securedRequest: SecuredRequest[Authentication, JWTAuthenticator]) => {

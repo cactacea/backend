@@ -21,7 +21,6 @@ package io.github.cactacea.filhouette.api.repositories
 
 import com.twitter.util.Future
 import io.github.cactacea.filhouette.api.{AuthInfo, LoginInfo}
-import io.github.cactacea.filhouette.api.LoginInfo
 
 import scala.reflect.ClassTag
 
