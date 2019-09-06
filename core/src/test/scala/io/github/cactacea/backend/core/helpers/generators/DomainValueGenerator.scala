@@ -34,9 +34,9 @@ trait DomainValueGenerator extends ValueGenerator {
   } yield (userName)
 
   lazy val passwordGen: Gen[String] = for {
-    head <- Gen.listOfN(15, Gen.alphaNumChar).map(_.mkString)
-    last <- Gen.listOfN(15, Gen.alphaNumChar).map(_.mkString)
-    password <- Gen.delay(s"${head}_${last}")
+    head <- Gen.listOfN(5, Gen.alphaNumChar).map(_.mkString)
+    last <- Gen.listOfN(5, Gen.alphaNumChar).map(_.mkString)
+    password <- Gen.delay(s"${head}_${last}_2020")
   } yield (password)
 
 
