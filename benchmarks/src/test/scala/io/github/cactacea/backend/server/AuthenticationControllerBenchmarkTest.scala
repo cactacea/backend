@@ -2,9 +2,9 @@ package io.github.cactacea.backend.server
 
 import com.twitter.inject.Test
 
-class AuthenticationsControllerBenchmarkTest extends Test {
+class AuthenticationControllerBenchmarkTest extends Test {
 
-  val benchmark = new AuthenticationsControllerBenchmark
+  val benchmark = new AuthenticationControllerBenchmark
 
   test("signUp") {
     val result = await(benchmark.signUp())

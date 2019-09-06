@@ -72,7 +72,7 @@ object Config extends DurationReader {
 
   }
 
-  object storage {
+  object storage { // scalastyle:ignore
     lazy val hostName = storageConfig.hostName.getOrElse(InetAddress.getLocalHost().getHostName())
     lazy val port = storageConfig.port.getOrElse(":9000")
     lazy val maxFileSize = storageConfig.maxFileSize.getOrElse(1.megabytes)
