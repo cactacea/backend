@@ -8,19 +8,10 @@ public enum MediumType {
     image((byte)0),
     movie((byte)1);
 
-    private byte value;
+    public byte value;
 
     MediumType(byte value) {
         this.value = value;
-    }
-
-    public static final List<MediumType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<MediumType>() {{
-            add(image);
-            add(movie);
-        }});
     }
 
     static public MediumType forName(byte value) {
@@ -30,10 +21,6 @@ public enum MediumType {
             }
         }
         throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
 }

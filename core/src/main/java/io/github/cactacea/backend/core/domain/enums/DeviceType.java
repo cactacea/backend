@@ -9,20 +9,10 @@ public enum DeviceType {
     android((byte)1),
     web((byte)2);
 
-    private byte value;
+    public byte value;
 
     DeviceType(byte value) {
         this.value = value;
-    }
-
-    public static final List<DeviceType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<DeviceType>() {{
-            add(ios);
-            add(android);
-            add(web);
-        }} );
     }
 
     static public DeviceType forName(byte value) {
@@ -32,10 +22,6 @@ public enum DeviceType {
             }
         }
         throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
 }

@@ -9,20 +9,10 @@ public enum UserStatusType {
     deleted((byte)1),
     terminated((byte)2);
 
-    private byte value;
+    public byte value;
 
     UserStatusType(byte value) {
         this.value = value;
-    }
-
-    public static final List<UserStatusType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<UserStatusType>() {{
-            add(normally);
-            add(deleted);
-            add(terminated);
-        }} );
     }
 
     static public UserStatusType forName(byte value) {
@@ -32,10 +22,6 @@ public enum UserStatusType {
             }
         }
         throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
 }

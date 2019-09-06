@@ -10,21 +10,10 @@ public enum FeedPrivacyType {
     friends((byte)2),
     self((byte)3);
 
-    private byte value;
+    public byte value;
 
     FeedPrivacyType(byte value) {
         this.value = value;
-    }
-
-    public static final List<FeedPrivacyType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<FeedPrivacyType>() {{
-            add(everyone);
-            add(followers);
-            add(friends);
-            add(self);
-        }} );
     }
 
     static public FeedPrivacyType forName(byte value) {
@@ -34,10 +23,6 @@ public enum FeedPrivacyType {
             }
         }
         throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
 }

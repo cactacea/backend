@@ -12,23 +12,10 @@ public enum MessageType {
     joined((byte)4),
     left((byte)5);
 
-    private byte value;
+    public byte value;
 
     MessageType(byte value) {
         this.value = value;
-    }
-
-    public static final List<MessageType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<MessageType>() {{
-            add(text);
-            add(medium);
-            add(stamp);
-            add(invited);
-            add(joined);
-            add(left);
-        }} );
     }
 
     static public MessageType forName(byte value) {
@@ -38,10 +25,6 @@ public enum MessageType {
             }
         }
         throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
 }

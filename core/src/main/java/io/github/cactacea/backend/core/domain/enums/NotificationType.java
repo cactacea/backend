@@ -12,23 +12,10 @@ public enum NotificationType {
     feedReply((byte)4),
     commentReply((byte)5);
 
-    private byte value;
+    public byte value;
 
     NotificationType(byte value) {
         this.value = value;
-    }
-
-    public static final List<NotificationType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<NotificationType>() {{
-            add(operator);
-            add(invitation);
-            add(friendRequest);
-            add(feed);
-            add(feedReply);
-            add(commentReply);
-        }} );
     }
 
     static public NotificationType forName(byte value) {
@@ -38,10 +25,6 @@ public enum NotificationType {
             }
         }
         throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
 }
