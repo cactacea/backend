@@ -34,13 +34,13 @@ class ChannelAuthorityValidator @Inject()(db: DatabaseService, channelUsersDAO: 
     } yield (())
   }
 
-  def canLeaveMember(channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
+  def canLeaveMember(userId: UserId, channelId: ChannelId, sessionId: SessionId): Future[Unit] = {
     for {
       c <- findChannel(channelId)
       u <- findUserChannel(channelId, sessionId)
       _ <- mustNotDirectMessageChannel(c.directMessage)
       _ <- mustHaveInviteAuthority(c, u)
-      _ <- mustNotLastOrganizer(c, sessionId)
+      _ <- mustNotLastOrganizer(c, userId.sessionId)
     } yield (())
   }
 
