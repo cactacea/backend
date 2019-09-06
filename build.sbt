@@ -127,11 +127,11 @@ lazy val plugin = (project in file("plugin"))
 
 lazy val api = (project in file("demo/api"))
   .settings(
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.APIServerApp"),
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.server.APIServerApp"),
     version in Docker := ( version in ThisBuild ).value,
     maintainer in Docker := "Cactacea",
     packageName in Docker := "api",
-    dockerBaseImage := "adoptopenjdk/openjdk8",
+    dockerBaseImage := "anapsix/alpine-java:8_server-jre_unlimited",
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea"),
     dockerUpdateLatest := true
@@ -149,11 +149,11 @@ lazy val api = (project in file("demo/api"))
 
 lazy val chat = (project in file("demo/chat"))
   .settings(
-    mainClass in (Compile, run) := Some("io.github.cactacea.backend.ChatServerApp"),
+    mainClass in (Compile, run) := Some("io.github.cactacea.backend.server.ChatServerApp"),
     version in Docker := ( version in ThisBuild ).value,
     maintainer in Docker := "Cactacea",
     packageName in Docker := "chat",
-    dockerBaseImage := "adoptopenjdk/openjdk10",
+    dockerBaseImage := "anapsix/alpine-java:8_server-jre_unlimited",
     dockerExposedPorts := Seq(9000, 9001),
     dockerRepository := Some("cactacea"),
     dockerUpdateLatest := true

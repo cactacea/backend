@@ -7,8 +7,7 @@ import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 
 trait CactaceaApp extends App {
 
-  protected  def databaseModule: TwitterModule = DatabaseModule
-
+  def databaseModule: TwitterModule = DatabaseModule
   def chatModule: TwitterModule = DefaultChatModule
   def messageModule: TwitterModule = DefaultMessageModule
   def queueModule: TwitterModule =  DefaultQueueModule

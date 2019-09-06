@@ -47,7 +47,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     val q = quote {
       infix"""
         insert into notifications (user_id, `by`, content_id, notification_type, url, unread, notified_at)
-        select r.`by`, r.user_id, ${lift(feedId)}, ${lift(NotificationType.feed.toValue)}, ${lift(url)}, true as unread, CURRENT_TIMESTAMP
+        select r.`by`, r.user_id, ${lift(feedId)}, ${lift(NotificationType.feed.value)}, ${lift(url)}, true as unread, CURRENT_TIMESTAMP
         from relationships r, feeds f
         where f.id = ${lift(feedId)}
         and r.user_id = ${lift(by)}

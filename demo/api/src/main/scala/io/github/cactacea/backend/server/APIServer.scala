@@ -17,7 +17,6 @@ class APIServer extends CactaceaServer {
 
   override def warmup() {
     handle[MigrationHandler]()
-    handle[ImageSetupHandler]()
     handle[CactaceaQueueHandler]()
   }
 

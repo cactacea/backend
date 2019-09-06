@@ -63,7 +63,7 @@ class ChannelUsersRepository @Inject()(
       _ <- channelsValidator.mustExist(channelId, sessionId)
       _ <- usersValidator.mustExist(userId, sessionId)
       _ <- userChannelsValidator.mustJoined(userId, channelId)
-      _ <- channelAuthorityValidator.canLeaveMember(channelId, userId.sessionId)
+      _ <- channelAuthorityValidator.canLeaveMember(userId, channelId, sessionId)
       _ <- userChannelsDAO.delete(userId, channelId)
       _ <- userMessagesDAO.delete(userId, channelId)
       c <- channelsDAO.findUserCount(channelId)

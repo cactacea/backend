@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 import org.scalacheck.Gen
 
-trait ModelsGenerator extends StatusGenerator with ValueGenerator {
+trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   // list generator
   lazy val comment20ListGen = Gen.listOfN(20, commentGen)

@@ -1,28 +1,14 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public enum ReportType {
     none((byte)0),
     spam((byte)1),
     inappropriate((byte)2);
 
-    private byte value;
+    public byte value;
 
     ReportType(byte value) {
         this.value = value;
-    }
-
-    public static final List<ReportType> all;
-
-    static {
-        all = Collections.unmodifiableList(new ArrayList<ReportType>() {{
-            add(none);
-            add(spam);
-            add(inappropriate);
-        }} );
     }
 
     static public ReportType forName(byte value) {
@@ -32,10 +18,6 @@ public enum ReportType {
             }
         }
         throw new IllegalArgumentException();
-    }
-
-    public byte toValue() {
-        return value;
     }
 
 }

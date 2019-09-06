@@ -2,11 +2,11 @@ package io.github.cactacea.backend.server.helpers
 
 import com.twitter.finagle.http.Request
 import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
-import io.github.cactacea.backend.core.helpers.generators.{StatusGenerator, ValueGenerator}
+import io.github.cactacea.backend.core.helpers.generators.{StatusGenerator, DomainValueGenerator}
 import io.github.cactacea.backend.core.util.configs.Config
 import org.scalacheck.Gen
 
-trait RequestGenerator extends ValueGenerator with StatusGenerator {
+trait RequestGenerator extends DomainValueGenerator with StatusGenerator {
 
   lazy val userAgentGen: Gen[String] = Gen.const(
     "Mozilla/5.0 (iPhone; CPU iPhone OS 11_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) " +

@@ -1,17 +1,13 @@
 package io.github.cactacea.backend.core.helpers.specs
 
 import com.twitter.inject.app.TestInjector
-import com.twitter.util.logging.Logging
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.helpers.generators.ModelsGenerator
-import io.github.cactacea.backend.core.helpers.tests.IntegrationFeatureTest
+import io.github.cactacea.backend.core.helpers.generators.{ModelsGenerator, StatusGenerator}
 import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
-import org.scalatest.BeforeAndAfter
 
-class ServiceSpec extends IntegrationFeatureTest
-  with ModelsGenerator
-  with BeforeAndAfter
-  with Logging {
+class ServiceSpec extends Spec
+  with StatusGenerator
+  with ModelsGenerator {
 
   override val injector =
     TestInjector(

@@ -20,7 +20,7 @@ class HealthController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
         .tag("System")
         .responseWith(200, "Service is operating normally")
     } { (_: Request) =>
-      response.ok("pong")
+      response.ok.html("pong")
     }
 
   }
