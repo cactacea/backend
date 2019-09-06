@@ -10,8 +10,6 @@ class GroupsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-
-
   def create(name: String, memberCount: Long, by: MemberId, createdAt: Long): Future[GroupId] = {
     val createdAt = System.currentTimeMillis()
     val q = quote {

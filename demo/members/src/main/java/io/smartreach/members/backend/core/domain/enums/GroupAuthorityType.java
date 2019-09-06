@@ -43,10 +43,3 @@ public enum GroupAuthorityType {
     }
 
 }
-
-// organize_event
-// organize_group
-// organize_schedule
-// organize_survey
-// organize_task
-

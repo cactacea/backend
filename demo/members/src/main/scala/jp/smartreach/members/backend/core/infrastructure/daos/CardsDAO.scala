@@ -11,7 +11,7 @@ class CardsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(mediumId: Option[MediumId], by: MemberId): Future[CardId] = {
+  def create(mediumId: MediumId, by: MemberId): Future[CardId] = {
     val createdAt = System.currentTimeMillis()
     val q = quote {
       query[Cards]
@@ -24,7 +24,7 @@ class CardsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def update(id: CardId, mediumId: Option[MediumId]): Future[Unit] = {
+  def update(id: CardId, mediumId: MediumId): Future[Unit] = {
     val q = quote {
       query[Cards]
         .filter(_.id == lift(id))

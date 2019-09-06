@@ -185,6 +185,7 @@ lazy val members = (project in file("demo/members"))
   .dependsOn(onesignal)
   .dependsOn(redis)
   .dependsOn(server)
+  .dependsOn(core % "test->test")
   .enablePlugins(JavaAppPackaging)
 
 
@@ -428,13 +429,19 @@ val migrationSettings = Seq(
   flywayPassword := password,
   flywayUrl := s"jdbc:mysql://${hostName}:${port}/${databaseName}${options}",
   flywayPlaceholders := Map("schema" -> databaseName, "hostName" -> "localhost:9000"),
-  flywayLocations := Seq("filesystem:core/src/main/resources/db/migration/cactacea", "filesystem:demo/api/src/main/resources/db/migration/cactacea"),
+  flywayLocations := Seq(
+    "filesystem:core/src/main/resources/db/migration/cactacea",
+    "filesystem:demo/members/src/main/resources/db/migration/cactacea"
+  ),
 
   flywayUser in Test := user,
   flywayPassword in Test:= password,
   flywayUrl in Test:= s"jdbc:mysql://${hostName}:${port}/${databaseName}${options}",
   flywayPlaceholders in Test := Map("schema" -> databaseName, "hostName" -> "localhost:9000"),
-  flywayLocations in Test := Seq("filesystem:core/src/main/resources/db/migration/cactacea", "filesystem:demo/api/src/main/resources/db/migration/cactacea"),
+  flywayLocations in Test := Seq(
+    "filesystem:core/src/main/resources/db/migration/cactacea",
+    "filesystem:demo/members/src/main/resources/db/migration/cactacea"
+  ),
 
   libraryDependencies ++= Dependencies.mysql
 )

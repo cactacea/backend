@@ -1,11 +1,10 @@
-package jp.smartreach.members.backend.core.util.db
+package jp.smartreach.members.backend.core.infrastructure
 
-import io.getquill.context.sql.SqlContext
+import io.getquill.MappedEncoding
 import io.smartreach.members.backend.core.domain.enums._
 import jp.smartreach.members.backend.core.infrastructure.identifiers._
 
-trait Encoders {
-  this: SqlContext[_, _] =>
+package object daos {
 
   implicit val adjustmentIdDecode: MappedEncoding[AdjustmentId, Long] = MappedEncoding[AdjustmentId, Long] (id => id.onlyValue)
   implicit val adjustmentIdEncode: MappedEncoding[Long, AdjustmentId] = MappedEncoding[Long, AdjustmentId] (long => AdjustmentId(long))
@@ -60,6 +59,4 @@ trait Encoders {
   implicit val taskStatusTypeEncode: MappedEncoding[Byte, TaskStatusType]
   = MappedEncoding[Byte, TaskStatusType] (long => TaskStatusType.forName(long))
 
-
 }
-

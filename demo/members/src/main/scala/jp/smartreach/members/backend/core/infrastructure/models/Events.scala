@@ -1,7 +1,7 @@
 package jp.smartreach.members.backend.core.infrastructure.models
 
 import io.github.cactacea.backend.core.infrastructure.identifiers.ChannelId
-import jp.smartreach.members.backend.core.infrastructure.identifiers.{AdjustmentId, EventId, GroupId, TaskId}
+import jp.smartreach.members.backend.core.infrastructure.identifiers.{AdjustmentId, EventId, GroupId, MemberId, TaskId}
 
 case class Events (
                     id: EventId,
@@ -12,5 +12,6 @@ case class Events (
                     taskId: Option[TaskId],
                     channelId: ChannelId,
                     groupId: GroupId,
+                    by: MemberId,
                     createdAt: Long
                   )
