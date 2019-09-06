@@ -96,7 +96,7 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
   val sessionUserName = s"benchmark_user"
   val sessionPassword = s"benchmark_password_2000"
 
-  def headers(): Map[String, String] = {
+  def getHeaders(): Map[String, String] = {
     implicit val signUpRequest = Request()
     val response = Await.result(authenticationService.signIn(sessionUserName, sessionPassword))
     val token = response.headerMap.getOrNull(Config.auth.headerNames.authorizationKey)
@@ -107,8 +107,7 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
     headers
   }
 
-
-  def beforeAll(): Unit = {
+  def createSessionUser(): Unit = {
     val signUp = PostSignUp(sessionUserName, sessionPassword, Request())
     val body = mapper.writePrettyString(signUp)
     val headers = Map(
@@ -120,6 +119,13 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
     httpService(request)
   }
 
+  def beforeAll(): Unit = {
+  }
+
   beforeAll()
+  createSessionUser()
+
+  val headers = getHeaders()
+
 }
 
