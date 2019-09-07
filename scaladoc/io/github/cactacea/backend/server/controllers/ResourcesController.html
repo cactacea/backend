@@ -268,7 +268,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">ResourcesController</span><span class="result"> extends <span class="extype" name="com.twitter.finatra.http.Controller">Controller</span></span>
+        <span class="name">ResourcesController</span><span class="result"> extends <span class="extype" name="com.twitter.finatra.http.Controller">Controller</span> with <a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></span>
       </span>
       </h4>
 
@@ -280,7 +280,7 @@
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="com.twitter.finatra.http.Controller">Controller</span>, <span class="extype" name="com.twitter.inject.Logging">Logging</span>, <span class="extype" name="com.twitter.util.logging.Logging">Logging</span>, <span class="extype" name="com.twitter.finatra.http.RouteDSL">RouteDSL</span>, <span class="extype" name="com.twitter.finatra.http.RouteState">RouteState</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a>, <span class="extype" name="io.github.cactacea.finagger.SwaggerController">SwaggerController</span>, <span class="extype" name="io.github.cactacea.finagger.SwaggerSupport">SwaggerSupport</span>, <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL">SwaggerRouteDSL</span>, <span class="extype" name="com.twitter.finatra.http.Controller">Controller</span>, <span class="extype" name="com.twitter.inject.Logging">Logging</span>, <span class="extype" name="com.twitter.util.logging.Logging">Logging</span>, <span class="extype" name="com.twitter.finatra.http.RouteDSL">RouteDSL</span>, <span class="extype" name="com.twitter.finatra.http.RouteState">RouteState</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -306,7 +306,7 @@
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="io.github.cactacea.backend.server.controllers.ResourcesController"><span>ResourcesController</span></li><li class="in" name="com.twitter.finatra.http.Controller"><span>Controller</span></li><li class="in" name="com.twitter.inject.Logging"><span>Logging</span></li><li class="in" name="com.twitter.util.logging.Logging"><span>Logging</span></li><li class="in" name="com.twitter.finatra.http.RouteDSL"><span>RouteDSL</span></li><li class="in" name="com.twitter.finatra.http.RouteState"><span>RouteState</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="io.github.cactacea.backend.server.controllers.ResourcesController"><span>ResourcesController</span></li><li class="in" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController"><span>CactaceaController</span></li><li class="in" name="io.github.cactacea.finagger.SwaggerController"><span>SwaggerController</span></li><li class="in" name="io.github.cactacea.finagger.SwaggerSupport"><span>SwaggerSupport</span></li><li class="in" name="com.twitter.finatra.http.SwaggerRouteDSL"><span>SwaggerRouteDSL</span></li><li class="in" name="com.twitter.finatra.http.Controller"><span>Controller</span></li><li class="in" name="com.twitter.inject.Logging"><span>Logging</span></li><li class="in" name="com.twitter.util.logging.Logging"><span>Logging</span></li><li class="in" name="com.twitter.finatra.http.RouteDSL"><span>RouteDSL</span></li><li class="in" name="com.twitter.finatra.http.RouteState"><span>RouteState</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
                   <span class="filtertype">Implicitly<br />
@@ -331,10 +331,10 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="io.github.cactacea.backend.server.controllers.ResourcesController#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():io.github.cactacea.backend.server.controllers.ResourcesController"></a><a id="&lt;init&gt;:ResourcesController"></a>
+              <ol><li name="io.github.cactacea.backend.server.controllers.ResourcesController#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(apiPrefix:String,f:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory,s:io.swagger.models.Swagger):io.github.cactacea.backend.server.controllers.ResourcesController"></a><a id="&lt;init&gt;:ResourcesController"></a>
       <span class="permalink">
-      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#&lt;init&gt;():io.github.cactacea.backend.server.controllers.ResourcesController" title="Permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#&lt;init&gt;(apiPrefix:String,f:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory,s:io.swagger.models.Swagger):io.github.cactacea.backend.server.controllers.ResourcesController" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -343,10 +343,13 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ResourcesController</span><span class="params">()</span>
+        <span class="name">ResourcesController</span><span class="params">(<span name="apiPrefix">apiPrefix: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: <a href="../utils/filters/CactaceaAuthenticationFilterFactory.html" class="extype" name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory">CactaceaAuthenticationFilterFactory</a></span>, <span name="s">s: <span class="extype" name="io.swagger.models.Swagger">Swagger</span></span>)</span>
       </span>
       
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@Inject</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li></ol>
             </div>
 
@@ -544,6 +547,38 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#blocksTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="blocksTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#blocksTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">blocksTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#channelsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="channelsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#channelsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">channelsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
@@ -568,6 +603,86 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#commentLikesTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="commentLikesTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#commentLikesTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">commentLikesTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#commentsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="commentsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#commentsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">commentsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.finagger.SwaggerSupport#convertToFinatraOperation" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="convertToFinatraOperation:io.swagger.models.Operation=&gt;io.github.cactacea.finagger.FinatraOperation"></a><a id="convertToFinatraOperation:(Operation)⇒FinatraOperation"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#convertToFinatraOperation:io.swagger.models.Operation=&gt;io.github.cactacea.finagger.FinatraOperation" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">convertToFinatraOperation</span><span class="result">: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="io.github.cactacea.finagger.FinatraOperation">FinatraOperation</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>SwaggerSupport</dd></dl></div>
+    </li><li name="io.github.cactacea.finagger.SwaggerSupport#convertToFinatraSwagger" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="convertToFinatraSwagger:io.swagger.models.Swagger=&gt;io.github.cactacea.finagger.FinatraSwagger"></a><a id="convertToFinatraSwagger:(Swagger)⇒FinatraSwagger"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#convertToFinatraSwagger:io.swagger.models.Swagger=&gt;io.github.cactacea.finagger.FinatraSwagger" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">convertToFinatraSwagger</span><span class="result">: (<span class="extype" name="io.swagger.models.Swagger">Swagger</span>) ⇒ <span class="extype" name="io.github.cactacea.finagger.FinatraSwagger">FinatraSwagger</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>SwaggerSupport</dd></dl></div>
+    </li><li name="io.github.cactacea.finagger.SwaggerSupport#convertToSwaggerRouteDSL" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="convertToSwaggerRouteDSL:com.twitter.finatra.http.RouteDSL=&gt;com.twitter.finatra.http.SwaggerRouteDSL"></a><a id="convertToSwaggerRouteDSL:(RouteDSL)⇒SwaggerRouteDSL"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#convertToSwaggerRouteDSL:com.twitter.finatra.http.RouteDSL=&gt;com.twitter.finatra.http.SwaggerRouteDSL" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">convertToSwaggerRouteDSL</span><span class="result">: (<span class="extype" name="com.twitter.finatra.http.RouteDSL">RouteDSL</span>) ⇒ <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL">SwaggerRouteDSL</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>SwaggerSupport</dd></dl></div>
     </li><li name="com.twitter.util.logging.Logging#debug" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="debug(marker:org.slf4j.Marker,message:=&gt;Any,cause:Throwable):Unit"></a><a id="debug(Marker,⇒Any,Throwable):Unit"></a>
       <span class="permalink">
@@ -744,6 +859,38 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RouteDSL</dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#deleteWithDoc" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="deleteWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$11:Manifest[RequestType],implicitevidence$12:Manifest[ResponseType]):Unit"></a><a id="deleteWithDoc[RequestType,ResponseType](String,String,Boolean,Option[RouteIndex])((Operation)⇒Unit)((RequestType)⇒ResponseType)(Manifest[RequestType],Manifest[ResponseType]):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#deleteWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$11:Manifest[RequestType],implicitevidence$12:Manifest[ResponseType]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteWithDoc</span><span class="tparams">[<span name="RequestType">RequestType</span>, <span name="ResponseType">ResponseType</span>]</span><span class="params">(<span name="route">route: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="admin">admin: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="routeIndex">routeIndex: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.twitter.finagle.http.RouteIndex">RouteIndex</span>]</span>)</span><span class="params">(<span name="doc">doc: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="params">(<span name="callback">callback: (<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.deleteWithDoc.RequestType">RequestType</span>) ⇒ <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.deleteWithDoc.ResponseType">ResponseType</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.deleteWithDoc.RequestType">RequestType</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.deleteWithDoc.ResponseType">ResponseType</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#dsl" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="dsl:com.twitter.finatra.http.RouteDSL"></a><a id="dsl:RouteDSL"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#dsl:com.twitter.finatra.http.RouteDSL" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dsl</span><span class="result">: <span class="extype" name="com.twitter.finatra.http.RouteDSL">RouteDSL</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((ResourcesController)⇒Boolean,⇒Any):ResourcesController"></a>
       <span class="permalink">
@@ -936,6 +1083,54 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.controllers.ResourcesController#factory" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="factory:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory"></a><a id="factory:CactaceaAuthenticationFilterFactory"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#factory:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">factory</span><span class="result">: <a href="../utils/filters/CactaceaAuthenticationFilterFactory.html" class="extype" name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory">CactaceaAuthenticationFilterFactory</a></span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#feedsLikeTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="feedsLikeTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#feedsLikeTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">feedsLikeTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#feedsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="feedsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#feedsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">feedsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
     </li><li name="com.twitter.finatra.http.RouteDSL#filter" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="filter(next:com.twitter.finatra.http.HttpFilter):com.twitter.finatra.http.FilteredDSL[com.twitter.finatra.http.HttpFilter]"></a><a id="filter(HttpFilter):FilteredDSL[HttpFilter]"></a>
       <span class="permalink">
@@ -1029,6 +1224,22 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#friendRequestsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="friendRequestsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#friendRequestsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">friendRequestsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
     </li><li name="com.twitter.finatra.http.RouteDSL#get" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="get(route:String,name:String,admin:Boolean,index:com.twitter.finagle.http.RouteIndex,callback:com.twitter.finatra.http.JavaCallback[com.twitter.finagle.http.Request,Object]):Unit"></a><a id="get(String,String,Boolean,RouteIndex,JavaCallback[Request,AnyRef]):Unit"></a>
       <span class="permalink">
@@ -1128,6 +1339,22 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#getWithDoc" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$3:Manifest[RequestType],implicitevidence$4:Manifest[ResponseType]):Unit"></a><a id="getWithDoc[RequestType,ResponseType](String,String,Boolean,Option[RouteIndex])((Operation)⇒Unit)((RequestType)⇒ResponseType)(Manifest[RequestType],Manifest[ResponseType]):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#getWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$3:Manifest[RequestType],implicitevidence$4:Manifest[ResponseType]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getWithDoc</span><span class="tparams">[<span name="RequestType">RequestType</span>, <span name="ResponseType">ResponseType</span>]</span><span class="params">(<span name="route">route: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="admin">admin: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="routeIndex">routeIndex: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.twitter.finagle.http.RouteIndex">RouteIndex</span>]</span>)</span><span class="params">(<span name="doc">doc: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="params">(<span name="callback">callback: (<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.getWithDoc.RequestType">RequestType</span>) ⇒ <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.getWithDoc.ResponseType">ResponseType</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.getWithDoc.RequestType">RequestType</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.getWithDoc.ResponseType">ResponseType</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
@@ -1227,6 +1454,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RouteDSL</dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#headWithDoc" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="headWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$9:Manifest[RequestType],implicitevidence$10:Manifest[ResponseType]):Unit"></a><a id="headWithDoc[RequestType,ResponseType](String,String,Boolean,Option[RouteIndex])((Operation)⇒Unit)((RequestType)⇒ResponseType)(Manifest[RequestType],Manifest[ResponseType]):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#headWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$9:Manifest[RequestType],implicitevidence$10:Manifest[ResponseType]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">headWithDoc</span><span class="tparams">[<span name="RequestType">RequestType</span>, <span name="ResponseType">ResponseType</span>]</span><span class="params">(<span name="route">route: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="admin">admin: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="routeIndex">routeIndex: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.twitter.finagle.http.RouteIndex">RouteIndex</span>]</span>)</span><span class="params">(<span name="doc">doc: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="params">(<span name="callback">callback: (<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.headWithDoc.RequestType">RequestType</span>) ⇒ <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.headWithDoc.ResponseType">ResponseType</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.headWithDoc.RequestType">RequestType</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.headWithDoc.ResponseType">ResponseType</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
     </li><li name="com.twitter.util.logging.Logging#info" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="info(marker:org.slf4j.Marker,message:=&gt;Any,cause:Throwable):Unit"></a><a id="info(Marker,⇒Any,Throwable):Unit"></a>
       <span class="permalink">
@@ -1307,6 +1550,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#invitationsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="invitationsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#invitationsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">invitationsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
     </li><li name="com.twitter.util.logging.Logging#isDebugEnabled" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isDebugEnabled(marker:org.slf4j.Marker):Boolean"></a><a id="isDebugEnabled(Marker):Boolean"></a>
       <span class="permalink">
@@ -1515,6 +1774,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#mediumsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mediumsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#mediumsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mediumsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -1531,6 +1806,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#notificationsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notificationsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#notificationsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notificationsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
@@ -1649,6 +1940,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RouteDSL</dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#optionsWithDoc" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="optionsWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$13:Manifest[RequestType],implicitevidence$14:Manifest[ResponseType]):Unit"></a><a id="optionsWithDoc[RequestType,ResponseType](String,String,Boolean,Option[RouteIndex])((Operation)⇒Unit)((RequestType)⇒ResponseType)(Manifest[RequestType],Manifest[ResponseType]):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#optionsWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$13:Manifest[RequestType],implicitevidence$14:Manifest[ResponseType]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">optionsWithDoc</span><span class="tparams">[<span name="RequestType">RequestType</span>, <span name="ResponseType">ResponseType</span>]</span><span class="params">(<span name="route">route: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="admin">admin: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="routeIndex">routeIndex: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.twitter.finagle.http.RouteIndex">RouteIndex</span>]</span>)</span><span class="params">(<span name="doc">doc: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="params">(<span name="callback">callback: (<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.optionsWithDoc.RequestType">RequestType</span>) ⇒ <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.optionsWithDoc.ResponseType">ResponseType</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.optionsWithDoc.RequestType">RequestType</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.optionsWithDoc.ResponseType">ResponseType</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
     </li><li name="com.twitter.finatra.http.RouteDSL#patch" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="patch(route:String,name:String,admin:Boolean,index:com.twitter.finagle.http.RouteIndex,callback:com.twitter.finatra.http.JavaCallback[com.twitter.finagle.http.Request,Object]):Unit"></a><a id="patch(String,String,Boolean,RouteIndex,JavaCallback[Request,AnyRef]):Unit"></a>
       <span class="permalink">
@@ -1729,6 +2036,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RouteDSL</dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#patchWithDoc" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="patchWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$7:Manifest[RequestType],implicitevidence$8:Manifest[ResponseType]):Unit"></a><a id="patchWithDoc[RequestType,ResponseType](String,String,Boolean,Option[RouteIndex])((Operation)⇒Unit)((RequestType)⇒ResponseType)(Manifest[RequestType],Manifest[ResponseType]):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#patchWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$7:Manifest[RequestType],implicitevidence$8:Manifest[ResponseType]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">patchWithDoc</span><span class="tparams">[<span name="RequestType">RequestType</span>, <span name="ResponseType">ResponseType</span>]</span><span class="params">(<span name="route">route: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="admin">admin: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="routeIndex">routeIndex: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.twitter.finagle.http.RouteIndex">RouteIndex</span>]</span>)</span><span class="params">(<span name="doc">doc: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="params">(<span name="callback">callback: (<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.patchWithDoc.RequestType">RequestType</span>) ⇒ <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.patchWithDoc.ResponseType">ResponseType</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.patchWithDoc.RequestType">RequestType</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.patchWithDoc.ResponseType">ResponseType</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
     </li><li name="com.twitter.finatra.http.RouteDSL#post" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="post(route:String,name:String,admin:Boolean,index:com.twitter.finagle.http.RouteIndex,callback:com.twitter.finatra.http.JavaCallback[com.twitter.finagle.http.Request,Object]):Unit"></a><a id="post(String,String,Boolean,RouteIndex,JavaCallback[Request,AnyRef]):Unit"></a>
       <span class="permalink">
@@ -1809,6 +2132,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RouteDSL</dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#postWithDoc" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="postWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$1:Manifest[RequestType],implicitevidence$2:Manifest[ResponseType]):Unit"></a><a id="postWithDoc[RequestType,ResponseType](String,String,Boolean,Option[RouteIndex])((Operation)⇒Unit)((RequestType)⇒ResponseType)(Manifest[RequestType],Manifest[ResponseType]):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#postWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$1:Manifest[RequestType],implicitevidence$2:Manifest[ResponseType]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">postWithDoc</span><span class="tparams">[<span name="RequestType">RequestType</span>, <span name="ResponseType">ResponseType</span>]</span><span class="params">(<span name="route">route: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="admin">admin: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="routeIndex">routeIndex: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.twitter.finagle.http.RouteIndex">RouteIndex</span>]</span>)</span><span class="params">(<span name="doc">doc: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="params">(<span name="callback">callback: (<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.postWithDoc.RequestType">RequestType</span>) ⇒ <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.postWithDoc.ResponseType">ResponseType</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.postWithDoc.RequestType">RequestType</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.postWithDoc.ResponseType">ResponseType</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
     </li><li name="com.twitter.finatra.http.RouteDSL#prefix" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="prefix(value:String):com.twitter.finatra.http.PrefixedDSL"></a><a id="prefix(String):PrefixedDSL"></a>
       <span class="permalink">
@@ -1905,6 +2244,38 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RouteDSL</dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#putWithDoc" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="putWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$5:Manifest[RequestType],implicitevidence$6:Manifest[ResponseType]):Unit"></a><a id="putWithDoc[RequestType,ResponseType](String,String,Boolean,Option[RouteIndex])((Operation)⇒Unit)((RequestType)⇒ResponseType)(Manifest[RequestType],Manifest[ResponseType]):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#putWithDoc[RequestType,ResponseType](route:String,name:String,admin:Boolean,routeIndex:Option[com.twitter.finagle.http.RouteIndex])(doc:io.swagger.models.Operation=&gt;Unit)(callback:RequestType=&gt;ResponseType)(implicitevidence$5:Manifest[RequestType],implicitevidence$6:Manifest[ResponseType]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">putWithDoc</span><span class="tparams">[<span name="RequestType">RequestType</span>, <span name="ResponseType">ResponseType</span>]</span><span class="params">(<span name="route">route: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="admin">admin: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="routeIndex">routeIndex: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.twitter.finagle.http.RouteIndex">RouteIndex</span>]</span>)</span><span class="params">(<span name="doc">doc: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="params">(<span name="callback">callback: (<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.putWithDoc.RequestType">RequestType</span>) ⇒ <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.putWithDoc.ResponseType">ResponseType</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.putWithDoc.RequestType">RequestType</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL.putWithDoc.ResponseType">ResponseType</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
+    </li><li name="com.twitter.finatra.http.SwaggerRouteDSL#registerOperation" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="registerOperation(path:String,method:String)(doc:io.swagger.models.Operation=&gt;Unit):Unit"></a><a id="registerOperation(String,String)((Operation)⇒Unit):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#registerOperation(path:String,method:String)(doc:io.swagger.models.Operation=&gt;Unit):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">registerOperation</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="method">method: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="doc">doc: (<span class="extype" name="io.swagger.models.Operation">Operation</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SwaggerRouteDSL</dd></dl></div>
     </li><li name="com.twitter.finatra.http.Controller#response" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="response:com.twitter.finatra.http.response.ResponseBuilder"></a><a id="response:ResponseBuilder"></a>
       <span class="permalink">
@@ -1921,6 +2292,102 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Controller</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#scope" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scope(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator])(implicitfactory:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory):com.twitter.finatra.http.FilteredDSL[com.twitter.finatra.http.HttpFilter]"></a><a id="scope(Authorization[Authentication,JWTAuthenticator])(CactaceaAuthenticationFilterFactory):FilteredDSL[HttpFilter]"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#scope(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator])(implicitfactory:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory):com.twitter.finatra.http.FilteredDSL[com.twitter.finatra.http.HttpFilter]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scope</span><span class="params">(<span name="auth">auth: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="factory">factory: <a href="../utils/filters/CactaceaAuthenticationFilterFactory.html" class="extype" name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory">CactaceaAuthenticationFilterFactory</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.finatra.http.FilteredDSL">FilteredDSL</span>[<span class="extype" name="com.twitter.finatra.http.HttpFilter">HttpFilter</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#sessionTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sessionTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#sessionTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sessionTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#sessionsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sessionsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#sessionsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sessionsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#settingsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="settingsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#settingsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">settingsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#successfulMessage" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="successfulMessage:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#successfulMessage:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">successfulMessage</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.controllers.ResourcesController#swagger" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="swagger:io.swagger.models.Swagger"></a><a id="swagger:Swagger"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#swagger:io.swagger.models.Swagger" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">swagger</span><span class="result">: <span class="extype" name="io.swagger.models.Swagger">Swagger</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.github.cactacea.backend.server.controllers.ResourcesController">ResourcesController</a> → SwaggerRouteDSL</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -2129,6 +2596,38 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#usersTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="usersTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#usersTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">usersTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#validationErrorMessage" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="validationErrorMessage:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/ResourcesController.html#validationErrorMessage:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">validationErrorMessage</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
@@ -2307,7 +2806,15 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.twitter.finatra.http.Controller">
+        <div class="parent" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">
+              <h3>Inherited from <a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></h3>
+            </div><div class="parent" name="io.github.cactacea.finagger.SwaggerController">
+              <h3>Inherited from <span class="extype" name="io.github.cactacea.finagger.SwaggerController">SwaggerController</span></h3>
+            </div><div class="parent" name="io.github.cactacea.finagger.SwaggerSupport">
+              <h3>Inherited from <span class="extype" name="io.github.cactacea.finagger.SwaggerSupport">SwaggerSupport</span></h3>
+            </div><div class="parent" name="com.twitter.finatra.http.SwaggerRouteDSL">
+              <h3>Inherited from <span class="extype" name="com.twitter.finatra.http.SwaggerRouteDSL">SwaggerRouteDSL</span></h3>
+            </div><div class="parent" name="com.twitter.finatra.http.Controller">
               <h3>Inherited from <span class="extype" name="com.twitter.finatra.http.Controller">Controller</span></h3>
             </div><div class="parent" name="com.twitter.inject.Logging">
               <h3>Inherited from <span class="extype" name="com.twitter.inject.Logging">Logging</span></h3>

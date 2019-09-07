@@ -332,9 +332,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.server.controllers.InvitationsController#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(apiPrefix:String,invitationService:io.github.cactacea.backend.core.application.services.InvitationsService,s:io.swagger.models.Swagger):io.github.cactacea.backend.server.controllers.InvitationsController"></a><a id="&lt;init&gt;:InvitationsController"></a>
+      <a id="&lt;init&gt;(apiPrefix:String,invitationService:io.github.cactacea.backend.core.application.services.InvitationsService,f:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory,s:io.swagger.models.Swagger):io.github.cactacea.backend.server.controllers.InvitationsController"></a><a id="&lt;init&gt;:InvitationsController"></a>
       <span class="permalink">
-      <a href="../../../../../../io/github/cactacea/backend/server/controllers/InvitationsController.html#&lt;init&gt;(apiPrefix:String,invitationService:io.github.cactacea.backend.core.application.services.InvitationsService,s:io.swagger.models.Swagger):io.github.cactacea.backend.server.controllers.InvitationsController" title="Permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/InvitationsController.html#&lt;init&gt;(apiPrefix:String,invitationService:io.github.cactacea.backend.core.application.services.InvitationsService,f:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory,s:io.swagger.models.Swagger):io.github.cactacea.backend.server.controllers.InvitationsController" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -343,7 +343,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">InvitationsController</span><span class="params">(<span name="apiPrefix">apiPrefix: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="invitationService">invitationService: <a href="../../core/application/services/InvitationsService.html" class="extype" name="io.github.cactacea.backend.core.application.services.InvitationsService">InvitationsService</a></span>, <span name="s">s: <span class="extype" name="io.swagger.models.Swagger">Swagger</span></span>)</span>
+        <span class="name">InvitationsController</span><span class="params">(<span name="apiPrefix">apiPrefix: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="invitationService">invitationService: <a href="../../core/application/services/InvitationsService.html" class="extype" name="io.github.cactacea.backend.core.application.services.InvitationsService">InvitationsService</a></span>, <span name="f">f: <a href="../utils/filters/CactaceaAuthenticationFilterFactory.html" class="extype" name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory">CactaceaAuthenticationFilterFactory</a></span>, <span name="s">s: <span class="extype" name="io.swagger.models.Swagger">Swagger</span></span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -1083,6 +1083,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.controllers.InvitationsController#factory" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="factory:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory"></a><a id="factory:CactaceaAuthenticationFilterFactory"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/InvitationsController.html#factory:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">factory</span><span class="result">: <a href="../utils/filters/CactaceaAuthenticationFilterFactory.html" class="extype" name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory">CactaceaAuthenticationFilterFactory</a></span>
+      </span>
+      
+      
     </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#feedsLikeTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="feedsLikeTag:String"></a>
       <span class="permalink">
@@ -2277,9 +2293,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Controller</dd></dl></div>
     </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#scope" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="scope(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]):com.twitter.finatra.http.FilteredDSL[com.twitter.finatra.http.HttpFilter]"></a><a id="scope(Authorization[Authentication,JWTAuthenticator]):FilteredDSL[HttpFilter]"></a>
+      <a id="scope(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator])(implicitfactory:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory):com.twitter.finatra.http.FilteredDSL[com.twitter.finatra.http.HttpFilter]"></a><a id="scope(Authorization[Authentication,JWTAuthenticator])(CactaceaAuthenticationFilterFactory):FilteredDSL[HttpFilter]"></a>
       <span class="permalink">
-      <a href="../../../../../../io/github/cactacea/backend/server/controllers/InvitationsController.html#scope(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator]):com.twitter.finatra.http.FilteredDSL[com.twitter.finatra.http.HttpFilter]" title="Permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/InvitationsController.html#scope(auth:io.github.cactacea.filhouette.api.Authorization[io.github.cactacea.backend.auth.core.domain.models.Authentication,io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator])(implicitfactory:io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory):com.twitter.finatra.http.FilteredDSL[com.twitter.finatra.http.HttpFilter]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -2288,7 +2304,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">scope</span><span class="params">(<span name="auth">auth: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span><span class="result">: <span class="extype" name="com.twitter.finatra.http.FilteredDSL">FilteredDSL</span>[<span class="extype" name="com.twitter.finatra.http.HttpFilter">HttpFilter</span>]</span>
+        <span class="name">scope</span><span class="params">(<span name="auth">auth: <span class="extype" name="io.github.cactacea.filhouette.api.Authorization">Authorization</span>[<a href="../../auth/core/domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>, <span class="extype" name="io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticator">JWTAuthenticator</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="factory">factory: <a href="../utils/filters/CactaceaAuthenticationFilterFactory.html" class="extype" name="io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory">CactaceaAuthenticationFilterFactory</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.finatra.http.FilteredDSL">FilteredDSL</span>[<span class="extype" name="com.twitter.finatra.http.HttpFilter">HttpFilter</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
@@ -2321,6 +2337,22 @@
       </span>
       <span class="symbol">
         <span class="name">sessionsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.utils.swagger.CactaceaController#settingsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="settingsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../io/github/cactacea/backend/server/controllers/InvitationsController.html#settingsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">settingsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../utils/swagger/CactaceaController.html" class="extype" name="io.github.cactacea.backend.server.utils.swagger.CactaceaController">CactaceaController</a></dd></dl></div>

@@ -716,9 +716,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.infrastructure.dao.UsersDAO#exists" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="exists(userIds:List[io.github.cactacea.backend.core.infrastructure.identifiers.UserId],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Boolean]"></a><a id="exists(List[UserId],SessionId):Future[Boolean]"></a>
+      <a id="exists(userIds:Seq[io.github.cactacea.backend.core.infrastructure.identifiers.UserId],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Boolean]"></a><a id="exists(Seq[UserId],SessionId):Future[Boolean]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/dao/UsersDAO.html#exists(userIds:List[io.github.cactacea.backend.core.infrastructure.identifiers.UserId],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Boolean]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/dao/UsersDAO.html#exists(userIds:Seq[io.github.cactacea.backend.core.infrastructure.identifiers.UserId],sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Boolean]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -727,7 +727,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">exists</span><span class="params">(<span name="userIds">userIds: <span class="extype" name="scala.List">List</span>[<a href="../identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>, <span name="sessionId">sessionId: <a href="../identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">exists</span><span class="params">(<span name="userIds">userIds: <span class="extype" name="scala.Seq">Seq</span>[<a href="../identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>, <span name="sessionId">sessionId: <a href="../identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       
       
@@ -834,9 +834,9 @@
       
       
     </li><li name="io.github.cactacea.backend.core.infrastructure.dao.UsersDAO#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="find(userName:Option[String],since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.User]]"></a><a id="find(Option[String],Option[Long],Int,Int,SessionId):Future[List[User]]"></a>
+      <a id="find(userName:Option[String],since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Seq[io.github.cactacea.backend.core.domain.models.User]]"></a><a id="find(Option[String],Option[Long],Int,Int,SessionId):Future[Seq[User]]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/dao/UsersDAO.html#find(userName:Option[String],since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[List[io.github.cactacea.backend.core.domain.models.User]]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/dao/UsersDAO.html#find(userName:Option[String],since:Option[Long],offset:Int,count:Int,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Seq[io.github.cactacea.backend.core.domain.models.User]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -845,7 +845,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">find</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="count">count: <span class="extype" name="scala.Int">Int</span></span>, <span name="sessionId">sessionId: <a href="../identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.List">List</span>[<a href="../../domain/models/User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]]</span>
+        <span class="name">find</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="count">count: <span class="extype" name="scala.Int">Int</span></span>, <span name="sessionId">sessionId: <a href="../identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../domain/models/User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]]</span>
       </span>
       
       

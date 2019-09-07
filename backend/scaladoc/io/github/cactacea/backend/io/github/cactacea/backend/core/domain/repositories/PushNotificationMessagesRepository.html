@@ -309,7 +309,10 @@
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/core/src/main/scala/io/github/cactacea/backend/core/domain/repositories/PushNotificationMessagesRepository.scala" target="_blank">PushNotificationMessagesRepository.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@Singleton</span><span class="args">()</span>
+              
+        </dd><dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/core/src/main/scala/io/github/cactacea/backend/core/domain/repositories/PushNotificationMessagesRepository.scala" target="_blank">PushNotificationMessagesRepository.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -659,9 +662,9 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.repositories.PushNotificationMessagesRepository#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="find(id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId):com.twitter.util.Future[Option[List[io.github.cactacea.backend.core.domain.models.PushNotification]]]"></a><a id="find(MessageId):Future[Option[List[PushNotification]]]"></a>
+      <a id="find(id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId):com.twitter.util.Future[Option[Seq[io.github.cactacea.backend.core.domain.models.PushNotification]]]"></a><a id="find(MessageId):Future[Option[Seq[PushNotification]]]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/PushNotificationMessagesRepository.html#find(id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId):com.twitter.util.Future[Option[List[io.github.cactacea.backend.core.domain.models.PushNotification]]]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/PushNotificationMessagesRepository.html#find(id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId):com.twitter.util.Future[Option[Seq[io.github.cactacea.backend.core.domain.models.PushNotification]]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -670,7 +673,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">find</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MessageId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MessageId">MessageId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<a href="../models/PushNotification.html" class="extype" name="io.github.cactacea.backend.core.domain.models.PushNotification">PushNotification</a>]]]</span>
+        <span class="name">find</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MessageId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MessageId">MessageId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../models/PushNotification.html" class="extype" name="io.github.cactacea.backend.core.domain.models.PushNotification">PushNotification</a>]]]</span>
       </span>
       
       
@@ -838,9 +841,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.repositories.PushNotificationMessagesRepository#update" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="update(id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId,userIds:List[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]):com.twitter.util.Future[Unit]"></a><a id="update(MessageId,List[UserId]):Future[Unit]"></a>
+      <a id="update(id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId,userIds:Seq[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]):com.twitter.util.Future[Unit]"></a><a id="update(MessageId,Seq[UserId]):Future[Unit]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/PushNotificationMessagesRepository.html#update(id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId,userIds:List[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]):com.twitter.util.Future[Unit]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/PushNotificationMessagesRepository.html#update(id:io.github.cactacea.backend.core.infrastructure.identifiers.MessageId,userIds:Seq[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]):com.twitter.util.Future[Unit]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -849,7 +852,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MessageId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MessageId">MessageId</a></span>, <span name="userIds">userIds: <span class="extype" name="scala.List">List</span>[<a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+        <span class="name">update</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/MessageId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.MessageId">MessageId</a></span>, <span name="userIds">userIds: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
       
