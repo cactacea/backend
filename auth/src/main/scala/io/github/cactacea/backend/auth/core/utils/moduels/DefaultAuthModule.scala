@@ -21,7 +21,7 @@ import io.github.cactacea.filhouette.password.{BCryptPasswordHasher, BCryptSha25
 import io.github.cactacea.filhouette.persistence.daos.DelegableAuthInfoDAO
 import io.github.cactacea.filhouette.persistence.repositories.DelegableAuthInfoRepository
 
-object JWTAuthenticationModule extends TwitterModule {
+object DefaultAuthModule extends TwitterModule {
 
   /**
     * Configures the module.

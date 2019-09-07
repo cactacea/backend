@@ -10,6 +10,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.message.{DeleteMessages, GetMessages, PostMedium, PostText}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -17,9 +18,11 @@ import io.swagger.models.Swagger
 class MessagesController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     messagesService: MessagesService,
+                                    f: CactaceaAuthenticationFilterFactory,
                                     s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   protected val messagesTag = "Messages"
 

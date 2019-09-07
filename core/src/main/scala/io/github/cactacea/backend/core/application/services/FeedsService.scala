@@ -1,14 +1,15 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.QueueService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.domain.repositories._
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, MediumId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, MediumId, SessionId, UserId}
 
+@Singleton
 class FeedsService @Inject()(
                               databaseService: DatabaseService,
                               feedsRepository: FeedsRepository,

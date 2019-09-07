@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.QueueService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
@@ -8,6 +8,7 @@ import io.github.cactacea.backend.core.domain.models.Invitation
 import io.github.cactacea.backend.core.domain.repositories.InvitationsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
+@Singleton
 class InvitationsService @Inject()(
                                     databaseService: DatabaseService,
                                     invitationsRepository: InvitationsRepository,

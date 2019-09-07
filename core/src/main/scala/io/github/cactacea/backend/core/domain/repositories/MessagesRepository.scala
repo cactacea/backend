@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.validators._
 
-
+@Singleton
 class MessagesRepository @Inject()(
                                     userChannelsDAO: UserChannelsDAO,
                                     userChannelsValidator: UserChannelsValidator,

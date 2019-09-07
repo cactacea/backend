@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.dao.MutesDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, MutesValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{SessionId, UserId}
+import io.github.cactacea.backend.core.infrastructure.validators.{MutesValidator, UsersValidator}
 
-
+@Singleton
 class MutesRepository @Inject()(
                                  usersValidator: UsersValidator,
                                  mutesDAO: MutesDAO,

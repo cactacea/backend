@@ -12,6 +12,7 @@ import io.github.cactacea.backend.server.models.requests.medium.DeleteMedium
 import io.github.cactacea.backend.server.models.responses.MediumCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -19,9 +20,11 @@ import io.swagger.models.Swagger
 class MediumsController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    mediumsService: MediumsService,
+                                   f: CactaceaAuthenticationFilterFactory,
                                    s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 

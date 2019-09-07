@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.domain.models.Channel
@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.{ChannelsDAO, UserChan
 import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, SessionId, UserId}
 import io.github.cactacea.backend.core.infrastructure.validators.{UserChannelsValidator, UsersValidator}
 
-
+@Singleton
 class UserChannelRepository @Inject()(
                                        usersValidator: UsersValidator,
                                        userChannelsValidator: UserChannelsValidator,

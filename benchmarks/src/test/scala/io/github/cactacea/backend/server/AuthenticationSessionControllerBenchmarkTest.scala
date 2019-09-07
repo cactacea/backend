@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.server
 
+import com.twitter.finagle.http
 import com.twitter.inject.Test
 
 class AuthenticationSessionControllerBenchmarkTest extends Test {
@@ -8,7 +9,7 @@ class AuthenticationSessionControllerBenchmarkTest extends Test {
 
   test("changePassword") {
     val result = await(benchmark.changePassword())
-    assert(result.statusCode == 200)
+    assert(result.statusCode == http.Status.Ok.code)
   }
 
 

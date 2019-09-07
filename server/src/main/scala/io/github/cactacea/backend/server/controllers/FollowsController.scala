@@ -10,6 +10,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.server.models.requests.user.{DeleteFollow, GetFollows, PostFollow}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -17,9 +18,11 @@ import io.swagger.models.Swagger
 class FollowsController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    followsService: FollowsService,
+                                   f: CactaceaAuthenticationFilterFactory,
                                    s: Swagger) extends CactaceaController {
 
   protected implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 

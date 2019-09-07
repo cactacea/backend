@@ -58,7 +58,7 @@ object DefaultCoreModule extends TwitterModule {
   }
 
   override def configure(): Unit = {
-    configureRepository()
-    configureService()
+//    configureRepository()
+//    configureService()
   }
 }

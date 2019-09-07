@@ -13,7 +13,6 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
   lazy val comment20ListGen = Gen.listOfN(20, commentGen)
   lazy val feed20ListGen = Gen.listOfN(20, feedGen)
   lazy val medium5ListOptGen: Gen[Option[List[Mediums]]] = Gen.option(medium5ListGen)
-  lazy val feedTag5ListOptGen: Gen[Option[String]] = Gen.option(Gen.listOfN(5, feedTagGen).map(_.mkString(" ")))
   lazy val channel20ListGen: Gen[List[Channels]] = Gen.listOfN(20, channelGen)
   lazy val medium5ListGen: Gen[List[Mediums]] = Gen.listOfN(5, mediumGen)
   lazy val message20ListGen: Gen[List[(Messages, Option[Mediums])]] = for {

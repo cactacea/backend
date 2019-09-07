@@ -9,6 +9,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors.UserNotFrie
 import io.github.cactacea.backend.server.models.requests.user.DeleteFriend
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -16,9 +17,11 @@ import io.swagger.models.Swagger
 class FriendsController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    friendsService: FriendsService,
+                                   f: CactaceaAuthenticationFilterFactory,
                                    s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 

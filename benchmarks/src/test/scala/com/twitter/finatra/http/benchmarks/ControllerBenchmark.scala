@@ -10,19 +10,20 @@ import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.Injector
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.internal.modules.LibraryModule
-import com.twitter.util.Await
+import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
 import io.github.cactacea.backend.auth.core.application.services.AuthenticationService
-import io.github.cactacea.backend.auth.core.utils.moduels.JWTAuthenticationModule
+import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
 import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._
+import io.github.cactacea.backend.server.models.requests.session.PostSession
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper}
-import io.github.cactacea.backend.server.utils.modules.APIPrefixModule
+import io.github.cactacea.backend.server.utils.modules.{DefaultAPIPrefixModule, DefaultAuthFilterModule}
 import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
 import org.openjdk.jmh.annotations.{Scope, State}
 
@@ -34,18 +35,20 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
 
   val injector: Injector =
     TestInjector(
-      modules = Seq(
-        new LibraryModule("finatra"),
-        ExceptionManagerModule,
-        MessageBodyModule,
-        MustacheModule,
-        DocRootModule,
-        NullStatsReceiverModule
+      modules =
+        Seq(
+          new LibraryModule("finatra"),
+          ExceptionManagerModule,
+          MessageBodyModule,
+          MustacheModule,
+          DocRootModule,
+          NullStatsReceiverModule
       ) ++
         Seq(
           DatabaseModule,
-          APIPrefixModule,
-          JWTAuthenticationModule,
+          DefaultAPIPrefixModule,
+          DefaultAuthModule,
+          DefaultAuthFilterModule,
           DefaultCoreModule,
           DefaultJacksonModule,
           DefaultChatModule,
@@ -93,39 +96,48 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
   val mapper: FinatraObjectMapper = injector.instance[FinatraObjectMapper]
   val authenticationService: AuthenticationService = injector.instance[AuthenticationService]
 
-  val sessionUserName = s"benchmark_user"
-  val sessionPassword = s"benchmark_password_2000"
+  val sessionUserName: String = s"server_test"
+  val sessionPassword: String = s"server_test_password_2000"
+  val sessionHeaders: Map[String, String] = createSessionUser()
 
-  def getHeaders(): Map[String, String] = {
-    implicit val signUpRequest = Request()
-    val response = Await.result(authenticationService.signIn(sessionUserName, sessionPassword))
-    val token = response.headerMap.getOrNull(Config.auth.headerNames.authorizationKey)
-    val headers = Map(
+  def createSessionUser(): Map[String, String] = {
+
+    val signInUpHeaders = Map(Config.auth.headerNames.apiKey -> Config.auth.keys.ios)
+
+    // signUp
+    val signUpRequest = RequestBuilder.post(s"/sessions")
+    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, Request()))
+    signUpRequest.headers(signInUpHeaders)
+    signUpRequest.body(signUpBody)
+    Await.result(httpService(signUpRequest).rescue {
+      case _: RuntimeException => Future.Unit
+    })
+
+    // signIn
+    val signInRequest = RequestBuilder.get(s"/sessions?userName=${sessionUserName}&password=${sessionPassword}")
+    signInRequest.headers(signInUpHeaders)
+    val signInResponse = Await.result(httpService(signInRequest))
+    val token = signInResponse.headerMap.getOrNull(Config.auth.headerNames.authorizationKey)
+
+    // registerUser
+    val registerUserRequest = RequestBuilder.post(s"/session")
+    val registerUserHeaders = Map(
       Config.auth.headerNames.apiKey -> Config.auth.keys.ios,
       Config.auth.headerNames.authorizationKey -> token
     )
-    headers
+    val registerUserBody = mapper.writePrettyString(PostSession(sessionUserName, None))
+    registerUserRequest.headers(registerUserHeaders)
+    registerUserRequest.body(registerUserBody)
+    Await.result(httpService(registerUserRequest).rescue {
+      case _: RuntimeException => Future.Unit
+    })
+
+    registerUserHeaders
   }
 
-  def createSessionUser(): Unit = {
-    val signUp = PostSignUp(sessionUserName, sessionPassword, Request())
-    val body = mapper.writePrettyString(signUp)
-    val headers = Map(
-      Config.auth.headerNames.apiKey -> Config.auth.keys.ios
-    )
-    val request = RequestBuilder.post("/sessions")
-    request.body(body)
-    request.headers(headers)
-    httpService(request)
-  }
-
-  def beforeAll(): Unit = {
-  }
-
-  beforeAll()
   createSessionUser()
 
-  val headers = getHeaders()
-
 }
+
+
 

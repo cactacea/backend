@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.FriendRequest
 import io.github.cactacea.backend.core.infrastructure.dao.{FriendRequestsDAO, FriendsDAO, NotificationsDAO}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FriendRequestId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, FriendRequestsValidator, FriendsValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FriendRequestId, SessionId, UserId}
+import io.github.cactacea.backend.core.infrastructure.validators.{FriendRequestsValidator, FriendsValidator, UsersValidator}
 
-
+@Singleton
 class FriendRequestsRepository @Inject()(
                                           usersValidator: UsersValidator,
                                           friendsValidator: FriendsValidator,
