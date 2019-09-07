@@ -10,10 +10,10 @@ class FeedsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create a feed and increase feed count") {
-      forAll(userGen, feedGen, medium5ListOptGen) { (a, f, l) =>
+      forAll(userGen, feedGen, medium5SeqOptGen) { (a, f, l) =>
         val sessionId = await(usersDAO.create(a.userName)).sessionId
         val ids = l.map(_.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags = f.tags.map(_.split(' ').toList)
+        val tags = f.tags.map(_.split(' ').toSeq)
         val feedId = await(feedsDAO.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         val result1 = await(db.run(quote(query[Feeds].filter(_.id == lift(feedId))))).head
@@ -36,15 +36,15 @@ class FeedsDAOSpec extends DAOSpec {
 
   feature("update") {
     scenario("should update a feed") {
-      forAll(userGen, feedGen, feedGen, medium5ListOptGen, medium5ListOptGen) { (a, f, f2, l, l2) =>
+      forAll(userGen, feedGen, feedGen, medium5SeqOptGen, medium5SeqOptGen) { (a, f, f2, l, l2) =>
         val sessionId = await(usersDAO.create(a.userName)).sessionId
         val ids = l.map(_.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags = f.tags.map(_.split(' ').toList)
+        val tags = f.tags.map(_.split(' ').toSeq)
         val feedId = await(feedsDAO.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
 
         val ids2 = l2.map(_.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags2 = f2.tags.map(_.split(' ').toList)
+        val tags2 = f2.tags.map(_.split(' ').toSeq)
         await(feedsDAO.update(feedId, f2.message, ids2, tags2, f2.privacyType, f2.contentWarning, f2.expiration, sessionId))
 
         val result1 = await(db.run(quote(query[Feeds].filter(_.id == lift(feedId))))).head
@@ -106,7 +106,7 @@ class FeedsDAOSpec extends DAOSpec {
   feature("exists") {
 
     scenario("should not return when user is blocked") {
-      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
+      forOne(userGen, userGen, everyoneFeedGen, medium5SeqGen) { (s, a, f, l) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a.userName))
         val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, userId1.sessionId)))
@@ -238,7 +238,7 @@ class FeedsDAOSpec extends DAOSpec {
   feature("find feeds") {
 
     scenario("should return medium1-5") {
-      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
+      forOne(userGen, userGen, everyoneFeedGen, medium5SeqGen) { (s, a, f, l) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId = await(usersDAO.create(a.userName))
         val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, userId.sessionId)))
@@ -269,7 +269,7 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should return next page") {
-      forOne(userGen, userGen, feed20ListGen) { (s, a1, f) =>
+      forOne(userGen, userGen, feed20SeqGen) { (s, a1, f) =>
 
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
@@ -304,7 +304,7 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should not return privacy type is self") {
-      forOne(userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, feed20SeqGen) { (s, a1, a2, a3, f) =>
 
         // preparing
         //  user1 is a follower.
@@ -342,7 +342,7 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should not return feeds if privacy type is followers and an user is not a follower and a friend") {
-      forOne(userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, feed20SeqGen) { (s, a1, a2, a3, f) =>
 
         // preparing
         //  user1 is a follower.
@@ -388,7 +388,7 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should not return feeds when privacy type is friends and an user is not a friend") {
-      forOne(userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, feed20SeqGen) { (s, a1, a2, a3, f) =>
 
         // preparing
         //  user1 is a follower.
@@ -516,7 +516,7 @@ class FeedsDAOSpec extends DAOSpec {
   feature("find a feed") {
 
     scenario("should return medium1-5") {
-      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
+      forOne(userGen, userGen, everyoneFeedGen, medium5SeqGen) { (s, a, f, l) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId = await(usersDAO.create(a.userName))
         val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, userId.sessionId)))
@@ -547,7 +547,7 @@ class FeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should not return when user blocked") {
-      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, f, l) =>
+      forOne(userGen, userGen, everyoneFeedGen, medium5SeqGen) { (s, a, f, l) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a.userName))
         val ids = l.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId)))

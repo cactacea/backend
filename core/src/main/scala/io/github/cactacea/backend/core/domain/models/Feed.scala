@@ -7,8 +7,8 @@ import io.github.cactacea.backend.core.infrastructure.models.{Feeds, _}
 case class Feed(
                  id: FeedId,
                  message: String,
-                 mediums: List[Medium],
-                 tags: Option[List[String]],
+                 mediums: Seq[Medium],
+                 tags: Option[Seq[String]],
                  user: Option[User],
                  likeCount: Long,
                  commentCount: Long,
@@ -21,14 +21,14 @@ case class Feed(
 
 object Feed {
 
-  def apply(f: Feeds, l: Option[FeedLikes], m: List[Mediums], a: Users, r: Option[Relationships], next: Long): Feed = {
+  def apply(f: Feeds, l: Option[FeedLikes], m: Seq[Mediums], a: Users, r: Option[Relationships], next: Long): Feed = {
     val rejected = (f.contentStatus == ContentStatusType.rejected) || (a.userStatus != UserStatusType.normally)
     rejected match {
       case true => {
         Feed(
           id              = f.id,
           message         = "",
-          mediums         = List[Medium](),
+          mediums         = Seq[Medium](),
           tags            = None,
           user         = None,
           likeCount       = 0L,
@@ -46,7 +46,7 @@ object Feed {
           id              = f.id,
           message         = f.message,
           mediums         = images,
-          tags            = f.tags.map(_.split(' ').toList),
+          tags            = f.tags.map(_.split(' ').toSeq),
           user         = Option(User(a, r)),
           likeCount       = f.likeCount,
           commentCount    = f.commentCount,

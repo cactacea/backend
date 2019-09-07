@@ -192,9 +192,9 @@ class UsersDAOSpec extends DAOSpec {
         val userId4 = await(usersDAO.create(a4.userName))
         await(blocksDAO.create(userId3, sessionId))
         await(blocksDAO.create(sessionId.userId, userId4.sessionId))
-        assert(await(usersDAO.exists(List(userId2, userId3), sessionId)))
-        assert(!await(usersDAO.exists(List(userId2, userId4), sessionId)))
-        assert(await(usersDAO.exists(List(userId2), sessionId)))
+        assert(await(usersDAO.exists(Seq(userId2, userId3), sessionId)))
+        assert(!await(usersDAO.exists(Seq(userId2, userId4), sessionId)))
+        assert(await(usersDAO.exists(Seq(userId2), sessionId)))
       }
     }
   }

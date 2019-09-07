@@ -255,7 +255,7 @@ class UserChannelsDAOSpec extends DAOSpec {
 
   feature("find") {
     scenario("should return channels") {
-      forOne(userGen, userGen, messageGen, channel20ListGen) { (s, a1, m, g) =>
+      forOne(userGen, userGen, messageGen, channel20SeqGen) { (s, a1, m, g) =>
 
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
@@ -302,7 +302,7 @@ class UserChannelsDAOSpec extends DAOSpec {
 
     scenario("should return latest message and medium") {
 
-      forOne(userGen, userGen, mediumGen, channel20ListGen) { (s, a1, i, g) =>
+      forOne(userGen, userGen, mediumGen, channel20SeqGen) { (s, a1, i, g) =>
 
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
@@ -362,7 +362,7 @@ class UserChannelsDAOSpec extends DAOSpec {
 
     scenario("should filter hidden or not") {
 
-      forOne(userGen, userGen, messageGen, channel20ListGen) { (s, a1, m, g) =>
+      forOne(userGen, userGen, messageGen, channel20SeqGen) { (s, a1, m, g) =>
 
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))

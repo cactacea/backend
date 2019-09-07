@@ -32,7 +32,7 @@ class FriendRequestsService @Inject()(
     }
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
+  def find(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[Seq[FriendRequest]] = {
     friendRequestsRepository.find(since, offset, count, received, sessionId)
   }
 

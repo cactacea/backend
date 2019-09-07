@@ -9,7 +9,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, UserI
 @Singleton
 class PushNotificationFeedsRepository @Inject()(pushNotificationFeedsDAO: PushNotificationFeedsDAO) {
 
-  def find(feedId: FeedId): Future[Option[List[PushNotification]]] = {
+  def find(feedId: FeedId): Future[Option[Seq[PushNotification]]] = {
     pushNotificationFeedsDAO.find(feedId)
   }
 
@@ -17,7 +17,7 @@ class PushNotificationFeedsRepository @Inject()(pushNotificationFeedsDAO: PushNo
     pushNotificationFeedsDAO.update(feedId, true)
   }
 
-  def update(feedId: FeedId, userIds: List[UserId]): Future[Unit] = {
+  def update(feedId: FeedId, userIds: Seq[UserId]): Future[Unit] = {
     pushNotificationFeedsDAO.update(feedId, userIds, true)
   }
 

@@ -84,7 +84,7 @@ object Config extends DurationReader {
       lazy val ios = authConfig.iosApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
       lazy val android = authConfig.androidApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
       lazy val web = authConfig.webApiKey.getOrElse("78290547-ddd6-4cf2-8fe4-7dd241da3061")
-      lazy val all = List(
+      lazy val all = Seq(
         (DeviceType.ios, ios),
         (DeviceType.android, android),
         (DeviceType.web, web))

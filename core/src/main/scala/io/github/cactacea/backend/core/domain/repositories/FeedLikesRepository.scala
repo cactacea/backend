@@ -31,18 +31,18 @@ class FeedLikesRepository @Inject()(
     } yield (())
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     for {
       _ <- usersValidator.mustExist(userId, sessionId)
       r <- feedLikesDAO.find(userId, since, offset, count, sessionId)
     } yield (r)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     feedLikesDAO.find(sessionId.userId, since, offset, count, sessionId)
   }
 
-  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     for {
       _ <- feedsValidator.mustExist(feedId, sessionId)
       r <- feedLikesDAO.findUsers(feedId, since, offset, count, sessionId)

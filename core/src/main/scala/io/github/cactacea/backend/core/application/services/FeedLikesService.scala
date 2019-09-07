@@ -27,15 +27,15 @@ class FeedLikesService @Inject()(
     }
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     feedLikesRepository.find(userId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     feedLikesRepository.find(since, offset, count, sessionId)
   }
 
-  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     feedLikesRepository.findUsers(feedId, since, offset, count, sessionId)
   }
 

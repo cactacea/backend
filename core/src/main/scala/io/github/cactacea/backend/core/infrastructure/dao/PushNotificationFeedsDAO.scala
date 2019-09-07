@@ -16,14 +16,14 @@ class PushNotificationFeedsDAO @Inject()(
 
   import db._
 
-  def find(id: FeedId): Future[Option[List[PushNotification]]] = {
+  def find(id: FeedId): Future[Option[Seq[PushNotification]]] = {
     findFeed(id).flatMap(_ match {
       case Some(f) =>
         findDestinations(id).map({ d =>
           val url = deepLinkService.getFeed(id)
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
             PushNotification(userName, None, f.postedAt, url, destinations, PushNotificationType.feed)
-          }).toList
+          }).toSeq
           Some(r)
         })
       case None =>
@@ -41,7 +41,7 @@ class PushNotificationFeedsDAO @Inject()(
   }
 
 
-  private def findDestinations(id: FeedId): Future[List[Destination]] = {
+  private def findDestinations(id: FeedId): Future[Seq[Destination]] = {
     val q = quote {
       for {
         af <- query[UserFeeds]
@@ -69,7 +69,7 @@ class PushNotificationFeedsDAO @Inject()(
     run(q)
   }
 
-  def update(feedId: FeedId, userIds: List[UserId], notified: Boolean = true): Future[Unit] = {
+  def update(feedId: FeedId, userIds: Seq[UserId], notified: Boolean = true): Future[Unit] = {
     val q = quote {
       query[UserFeeds]
         .filter(_.feedId == lift(feedId))

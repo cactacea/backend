@@ -47,7 +47,7 @@ class InvitationsRepository @Inject()(
     } yield (())
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Invitation]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Invitation]] = {
     invitationsDAO.find(since, offset, count, sessionId)
   }
 

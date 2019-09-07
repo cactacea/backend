@@ -222,7 +222,7 @@ class FeedLikesDAOSpec extends DAOSpec {
   feature("find") {
 
     scenario("should return medium1-5") {
-      forOne(userGen, userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a, a2, f, l) =>
+      forOne(userGen, userGen, userGen, everyoneFeedGen, medium5SeqGen) { (s, a, a2, f, l) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId = await(usersDAO.create(a.userName))
         val userId2 = await(usersDAO.create(a2.userName))
@@ -256,7 +256,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     }
 
     scenario("should not return when user is blocked") {
-      forOne(userGen, userGen, userGen, everyoneFeedGen, medium5ListGen) { (s, a1, a2, f, l) =>
+      forOne(userGen, userGen, userGen, everyoneFeedGen, medium5SeqGen) { (s, a1, a2, f, l) =>
         // preparing
         //   session create a feed
         //   user1 like feed
@@ -275,7 +275,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     }
 
     scenario("should not return privacy type is self") {
-      forOne(userGen, userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, a4, f) =>
+      forOne(userGen, userGen, userGen, userGen, userGen, feed20SeqGen) { (s, a1, a2, a3, a4, f) =>
 
         // preparing
         //  user1 is a follower.
@@ -315,7 +315,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     }
 
     scenario("should not return feeds if privacy type is followers and an user is not a follower and a friend") {
-      forOne(userGen, userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, a4, f) =>
+      forOne(userGen, userGen, userGen, userGen, userGen, feed20SeqGen) { (s, a1, a2, a3, a4, f) =>
 
         // preparing
         //  user1 is a follower.
@@ -362,7 +362,7 @@ class FeedLikesDAOSpec extends DAOSpec {
     }
 
     scenario("should not return feeds when privacy type is friends and an user is not a friend") {
-      forOne(userGen, userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, a4, f) =>
+      forOne(userGen, userGen, userGen, userGen, userGen, feed20SeqGen) { (s, a1, a2, a3, a4, f) =>
 
         // preparing
         //  user1 is a follower.

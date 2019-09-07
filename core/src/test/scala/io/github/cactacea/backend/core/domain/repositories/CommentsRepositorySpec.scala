@@ -93,7 +93,7 @@ class CommentsRepositorySpec extends RepositorySpec {
   feature("find comments") {
 
     scenario("should return comment list") {
-      forOne(userGen, feedGen, comment20ListGen) {
+      forOne(userGen, feedGen, comment20SeqGen) {
         (s, f, c) =>
           // preparing
           val sessionId = await(createUser(s.userName)).id.sessionId

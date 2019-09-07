@@ -59,7 +59,7 @@ class MediumsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def exists(mediumIds: List[MediumId], sessionId: SessionId): Future[Boolean] = {
+  def exists(mediumIds: Seq[MediumId], sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.userId
     val q = quote {
       query[Mediums]

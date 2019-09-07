@@ -13,20 +13,20 @@ class FeedsRepositorySpec extends RepositorySpec {
 
   feature("create") {
     scenario("should create a feed") {
-      forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+      forOne(userGen, everyoneFeedGen, medium5SeqOptGen) { (a, f, l) =>
 
         // preparing
         val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags = f.tags.map(_.split(' ').toList)
+        val tags = f.tags.map(_.split(' ').toSeq)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
         val result1 = await(feedsRepository.find(feedId, sessionId))
         assert(result1.message == f.message)
         assert(result1.warning == f.contentWarning)
-        assert(result1.mediums.map(_.id) == ids.getOrElse(List[MediumId]()))
+        assert(result1.mediums.map(_.id) == ids.getOrElse(Seq[MediumId]()))
         assert(result1.tags == tags)
 
         tags.map(_.foreach({ name =>
@@ -72,7 +72,7 @@ class FeedsRepositorySpec extends RepositorySpec {
 
         // result
         assert(intercept[CactaceaException] {
-          await(feedsRepository.create(f.message, Option(List(MediumId(0L))), None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+          await(feedsRepository.create(f.message, Option(Seq(MediumId(0L))), None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         }.error == MediumNotFound)
 
       }
@@ -83,53 +83,53 @@ class FeedsRepositorySpec extends RepositorySpec {
   feature("update") {
     scenario("should update a feed") {
 
-      forOne(userGen, everyoneFeedGen, everyoneFeedGen, medium5ListOptGen, medium5ListOptGen) { (a, f, f2, l, l2) =>
+      forOne(userGen, everyoneFeedGen, everyoneFeedGen, medium5SeqOptGen, medium5SeqOptGen) { (a, f, f2, l, l2) =>
         val sessionId = await(createUser(a.userName)).id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags = f.tags.map(_.split(' ').toList)
+        val tags = f.tags.map(_.split(' ').toSeq)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
 
         val ids2 = l2.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags2 = f2.tags.map(_.split(' ').toList)
+        val tags2 = f2.tags.map(_.split(' ').toSeq)
         await(feedsRepository.update(feedId, f2.message, ids2, tags2, f2.privacyType, f2.contentWarning, f2.expiration, sessionId))
 
         // result
         val result1 = await(feedsRepository.find(feedId, sessionId))
         assert(result1.message == f2.message)
         assert(result1.warning == f2.contentWarning)
-        assert(result1.mediums.map(_.id) == ids2.getOrElse(List[MediumId]()))
+        assert(result1.mediums.map(_.id) == ids2.getOrElse(Seq[MediumId]()))
         assert(result1.tags == tags2)
 
       }
     }
 
     scenario("should return exception if medium not exist") {
-      forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+      forOne(userGen, everyoneFeedGen, medium5SeqOptGen) { (a, f, l) =>
 
         // preparing
         val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags = f.tags.map(_.split(' ').toList)
+        val tags = f.tags.map(_.split(' ').toSeq)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
         assert(intercept[CactaceaException] {
-          await(feedsRepository.update(feedId, f.message, Option(List(MediumId(0))), tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
+          await(feedsRepository.update(feedId, f.message, Option(Seq(MediumId(0))), tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
         }.error == MediumNotFound)
 
       }
     }
 
     scenario("should return exception if feed not exist") {
-      forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+      forOne(userGen, everyoneFeedGen, medium5SeqOptGen) { (a, f, l) =>
 
         // preparing
         val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags = f.tags.map(_.split(' ').toList)
+        val tags = f.tags.map(_.split(' ').toSeq)
 
         // result
         assert(intercept[CactaceaException] {
@@ -264,13 +264,13 @@ class FeedsRepositorySpec extends RepositorySpec {
     }
 
     scenario("should delete tags and meidums on a feed") {
-      forOne(userGen, everyoneFeedGen, medium5ListOptGen) { (a, f, l) =>
+      forOne(userGen, everyoneFeedGen, medium5SeqOptGen) { (a, f, l) =>
 
         // preparing
         val session = await(createUser(a.userName))
         val sessionId = session.id.sessionId
         val ids = l.map(_.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
-        val tags = f.tags.map(_.split(' ').toList)
+        val tags = f.tags.map(_.split(' ').toSeq)
         val feedId = await(feedsRepository.create(f.message, ids, tags, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result

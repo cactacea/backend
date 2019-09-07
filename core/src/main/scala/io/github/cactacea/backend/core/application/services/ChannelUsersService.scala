@@ -15,7 +15,7 @@ class ChannelUsersService @Inject()(
 
   import databaseService._
 
-  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     channelUsersRepository.find(channelId, since, offset, count, sessionId)
   }
 

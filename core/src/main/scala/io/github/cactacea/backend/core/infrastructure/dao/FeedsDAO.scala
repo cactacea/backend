@@ -14,8 +14,8 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   import db._
 
   def create(message: String,
-             mediumIds: Option[List[MediumId]],
-             tags: Option[List[String]],
+             mediumIds: Option[Seq[MediumId]],
+             tags: Option[Seq[String]],
              privacyType: FeedPrivacyType,
              contentWarning: Boolean,
              expiration: Option[Long],
@@ -28,8 +28,8 @@ class FeedsDAO @Inject()(db: DatabaseService) {
   }
 
   private def createFeeds(message: String,
-             mediumIds: Option[List[MediumId]],
-             tags: Option[List[String]],
+             mediumIds: Option[Seq[MediumId]],
+             tags: Option[Seq[String]],
              privacyType: FeedPrivacyType,
              contentWarning: Boolean,
              expiration: Option[Long],
@@ -69,8 +69,8 @@ class FeedsDAO @Inject()(db: DatabaseService) {
 
   def update(feedId: FeedId,
              message: String,
-             mediumIds: Option[List[MediumId]],
-             tags: Option[List[String]],
+             mediumIds: Option[Seq[MediumId]],
+             tags: Option[Seq[String]],
              privacyType: FeedPrivacyType,
              contentWarning: Boolean,
              expiration: Option[Long],
@@ -161,7 +161,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {  // scalastyle:ignore
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {  // scalastyle:ignore
     val e = System.currentTimeMillis()
     val by = sessionId.userId
     val q = quote {
@@ -208,7 +208,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.map({ case (f, l, i1, i2, i3, i4, i5, a, r, flb, fcb) =>
       val f2 = f.copy(commentCount = f.commentCount - fcb, likeCount = f.likeCount - flb)
-      Feed(f2, l, List(i1, i2, i3, i4, i5).flatten, a, r, f.id.value)
+      Feed(f2, l, Seq(i1, i2, i3, i4, i5).flatten, a, r, f.id.value)
     }))
   }
 
@@ -256,7 +256,7 @@ class FeedsDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.headOption.map({ case (f, l, i1, i2, i3, i4, i5, a, r, flb, fcb) =>
       val f2 = f.copy(commentCount = f.commentCount - fcb, likeCount = f.likeCount - flb)
-      Feed(f2, l, List(i1, i2, i3, i4, i5).flatten, a, r, f.id.value)
+      Feed(f2, l, Seq(i1, i2, i3, i4, i5).flatten, a, r, f.id.value)
     }))
   }
 

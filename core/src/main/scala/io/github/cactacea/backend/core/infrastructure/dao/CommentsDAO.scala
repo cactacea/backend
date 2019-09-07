@@ -117,7 +117,7 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     }).headOption)
   }
 
-  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
+  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
     val by = sessionId.userId
     val q = quote {
       (for {

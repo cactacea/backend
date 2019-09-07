@@ -17,14 +17,14 @@ class InvitationsService @Inject()(
 
   import databaseService._
 
-  def create(userIds: List[UserId], channelId: ChannelId, sessionId: SessionId): Future[List[InvitationId]] = {
+  def create(userIds: Seq[UserId], channelId: ChannelId, sessionId: SessionId): Future[Seq[InvitationId]] = {
     transaction {
       Future.traverseSequentially(userIds) { userId =>
         for {
           i <- invitationsRepository.create(userId, channelId, sessionId)
           _ <- queueService.enqueueInvitation(i)
         } yield (i)
-      }.map(_.toList)
+      }.map(_.toSeq)
     }
   }
 
@@ -43,7 +43,7 @@ class InvitationsService @Inject()(
     }
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Invitation]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Invitation]] = {
     invitationsRepository.find(since, offset, count, sessionId)
   }
 

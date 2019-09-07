@@ -82,7 +82,7 @@ class ChannelUsersRepository @Inject()(
     }
   }
 
-  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     for {
       _ <- channelAuthorityValidator.canFindMembers(channelId, sessionId)
       r <- channelUsersDAO.find(channelId, since, offset, count)

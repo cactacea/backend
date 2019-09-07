@@ -132,7 +132,7 @@ class UserChannelsDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({ case (g, am, m, i, a, r, id) => Channel(g, am, m, i, a, r, id.value)}).headOption)
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Channel]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[Seq[Channel]] = {
     val by = sessionId.userId
     val q = quote {
       (for {

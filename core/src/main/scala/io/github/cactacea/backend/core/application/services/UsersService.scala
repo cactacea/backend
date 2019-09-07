@@ -36,7 +36,7 @@ class UsersService @Inject()(
            since: Option[Long],
            offset: Int,
            count: Int,
-           sessionId: SessionId) : Future[List[User]]= {
+           sessionId: SessionId) : Future[Seq[User]]= {
 
     usersRepository.find(displayName, since, offset, count, sessionId)
   }

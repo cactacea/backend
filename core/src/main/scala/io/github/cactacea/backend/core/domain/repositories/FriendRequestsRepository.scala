@@ -36,7 +36,7 @@ class FriendRequestsRepository @Inject()(
     } yield (())
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[List[FriendRequest]] = {
+  def find(since: Option[Long], offset: Int, count: Int, received: Boolean, sessionId: SessionId): Future[Seq[FriendRequest]] = {
     friendRequestsDAO.find(since, offset, count, received, sessionId)
   }
 

@@ -9,7 +9,7 @@ class FeedMediumsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create feed mediums") {
-      forAll(userGen, feedGen, medium5ListOptGen) { (a, f, l) =>
+      forAll(userGen, feedGen, medium5SeqOptGen) { (a, f, l) =>
         val sessionId = await(usersDAO.create(a.userName)).sessionId
         val ids = l.map(_.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val feedId = await(feedsDAO.create(f.message, ids, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
@@ -22,7 +22,7 @@ class FeedMediumsDAOSpec extends DAOSpec {
 
   feature("delete") {
     scenario("should delete feed mediums") {
-      forAll(userGen, feedGen, medium5ListOptGen) { (a, f, l) =>
+      forAll(userGen, feedGen, medium5SeqOptGen) { (a, f, l) =>
         val sessionId = await(usersDAO.create(a.userName)).sessionId
         val ids = l.map(_.map(m => await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))))
         val feedId = await(feedsDAO.create(f.message, ids, None, f.privacyType, f.contentWarning, f.expiration, sessionId))

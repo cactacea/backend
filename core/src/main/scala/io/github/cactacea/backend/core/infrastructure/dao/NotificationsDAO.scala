@@ -79,7 +79,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     run(q)
   }
 
-  def updateReadStatus(notificationIds: List[NotificationId], sessionId: SessionId): Future[Unit] = {
+  def updateReadStatus(notificationIds: Seq[NotificationId], sessionId: SessionId): Future[Unit] = {
     val userId = sessionId.userId
     val q = quote {
       query[Notifications]
@@ -94,7 +94,7 @@ class NotificationsDAO @Inject()(db: DatabaseService,
            offset: Int,
            count: Int,
            locales: Seq[Locale],
-           sessionId: SessionId): Future[List[Notification]] = {
+           sessionId: SessionId): Future[Seq[Notification]] = {
 
     val by = sessionId.userId
     val q = quote {

@@ -27,11 +27,11 @@ class UserChannelsService @Inject()(
     }
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Channel]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Channel]] = {
     userChannelsRepository.find(userId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Channel]] = {
+  def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[Seq[Channel]] = {
     userChannelsRepository.find(since, offset, count, hidden, sessionId)
   }
 

@@ -15,14 +15,14 @@ class FollowsRepository @Inject()(
                                    followersDAO: FollowersDAO
                                 ) {
 
-  def find(userId: UserId, userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
+  def find(userId: UserId, userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[Seq[User]]= {
     for {
       _ <- usersValidator.mustExist(userId, sessionId)
       r <- followsDAO.find(userId, userName, since, offset, count, sessionId)
     } yield (r)
   }
 
-  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
+  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[Seq[User]]= {
     followsDAO.find(userName, since, offset, count, sessionId)
   }
 
