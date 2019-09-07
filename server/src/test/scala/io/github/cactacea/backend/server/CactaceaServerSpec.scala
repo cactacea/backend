@@ -3,6 +3,7 @@ package io.github.cactacea.backend.server
 import com.google.inject.Singleton
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.EmbeddedHttpServer
+import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.finatra.httpclient.RequestBuilder
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.app.TestInjector
@@ -16,6 +17,8 @@ import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.helpers.RequestGenerator
 import io.github.cactacea.backend.server.models.requests.session.PostSession
 import io.github.cactacea.backend.server.utils.modules.{DefaultAPIPrefixModule, DefaultAuthFilterModule}
+import io.github.cactacea.backend.server.utils.swagger.CactaceaSwaggerModule
+import io.github.cactacea.finagger.DocsController
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 @Singleton
@@ -41,10 +44,17 @@ class CactaceaServerSpec extends FeatureTest
   with FriendRequestsControllerSpec
   with SessionControllerSpec
   with SessionsControllerSpec
-  with SettingsControllerSpec {
+  with SettingsControllerSpec
+  with DocsControllerSpec {
 
   override val server = new EmbeddedHttpServer(
-    twitterServer = new CactaceaServer
+    twitterServer = new CactaceaServer {
+      override def configureHttp(router: HttpRouter): Unit = {
+        super.configureHttp(router)
+        router.add[DocsController]
+      }
+      addFrameworkModule(CactaceaSwaggerModule)
+    }
   )
 
   override val injector =
