@@ -16,7 +16,7 @@ class PushNotificationRequestsDAO @Inject()(
 
   import db._
 
-  def find(id: FriendRequestId): Future[Option[List[PushNotification]]] = {
+  def find(id: FriendRequestId): Future[Option[Seq[PushNotification]]] = {
     findFriendRequest(id).flatMap(_ match {
       case Some(f) =>
         findDestinations(id).map({ d =>
@@ -24,7 +24,7 @@ class PushNotificationRequestsDAO @Inject()(
           val url = deepLinkService.getRequest(id)
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
             PushNotification(userName, None, f.requestedAt, url, destinations, pt)
-          }).toList
+          }).toSeq
           Some(r)
         })
       case None =>
@@ -42,7 +42,7 @@ class PushNotificationRequestsDAO @Inject()(
   }
 
 
-  private def findDestinations(id: FriendRequestId): Future[List[Destination]] = {
+  private def findDestinations(id: FriendRequestId): Future[Seq[Destination]] = {
     val q = quote {
       for {
         f <- query[FriendRequests]

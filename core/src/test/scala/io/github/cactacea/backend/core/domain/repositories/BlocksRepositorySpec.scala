@@ -10,7 +10,7 @@ class BlocksRepositorySpec extends RepositorySpec {
 
   feature("find") {
     scenario("should return blocked user list") {
-      forOne(userGen, user20ListGen) { (s, l) =>
+      forOne(userGen, user20SeqGen) { (s, l) =>
 
         // preparing
         val session = await(createUser(s.userName))

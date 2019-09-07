@@ -30,7 +30,7 @@ trait DAOHelper extends IntegrationFeatureTest {
     await(db.run(quote(query[UserMessages].filter(_.messageId == lift(messageId)).filter(_.userId == lift(userId)).nonEmpty)))
   }
 
-  def findDevice(sessionId: SessionId): Future[List[Devices]] = {
+  def findDevice(sessionId: SessionId): Future[Seq[Devices]] = {
     val userId = sessionId.userId
     val q = quote {
       query[Devices]
@@ -63,7 +63,7 @@ trait DAOHelper extends IntegrationFeatureTest {
     db.run(q).map(_.headOption.map(Channel(_)))
   }
 
-  def findInvitation(channelId: ChannelId): Future[List[Invitations]] = {
+  def findInvitation(channelId: ChannelId): Future[Seq[Invitations]] = {
     val q = quote {
       query[Invitations]
         .filter(_.channelId == lift(channelId))

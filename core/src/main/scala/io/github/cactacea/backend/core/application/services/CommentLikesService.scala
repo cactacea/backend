@@ -27,7 +27,7 @@ class CommentLikesService @Inject()(
     }
   }
 
-  def findUsers(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def findUsers(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     commentLikesRepository.findUsers(commentId, since, offset, count, sessionId)
   }
 

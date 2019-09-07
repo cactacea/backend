@@ -256,7 +256,7 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
   feature("find") {
     scenario("should return received invitations") {
-      forOne(userGen, user20ListGen, everyoneChannelGen) { (s, l, g) =>
+      forOne(userGen, user20SeqGen, everyoneChannelGen) { (s, l, g) =>
         val sessionId = await(createUser(s.userName)).id.sessionId
         val creates = l.map({a =>
           val userId = await(createUser(a.userName)).id

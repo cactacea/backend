@@ -30,7 +30,7 @@ class CommentLikesRepository @Inject()(
     } yield (())
   }
 
-  def findUsers(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def findUsers(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     for {
       _ <- commentsValidator.mustExist(commentId, sessionId)
       r <- commentLikesDAO.findUsers(commentId, since, offset, count, sessionId)

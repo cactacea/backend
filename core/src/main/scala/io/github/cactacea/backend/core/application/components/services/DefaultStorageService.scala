@@ -40,7 +40,7 @@ class DefaultStorageService(val localPath: String) extends StorageService {
 
   override def put(request: Request): Future[Seq[StorageFile]] = {
     val multiParams = RequestUtils.multiParams(request)
-    val mediums = multiParams.toList.flatMap({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) })
+    val mediums = multiParams.toSeq.flatMap({ case (_, item) => MediaExtractor.extract(item.contentType, item.data) })
     val count = mediums.size
     val overCount = mediums.filter(_.data.size.bytes > Config.storage.maxFileSize).size
     (count, overCount) match {

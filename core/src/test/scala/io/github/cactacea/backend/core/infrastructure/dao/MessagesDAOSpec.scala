@@ -98,7 +98,7 @@ class MessagesDAOSpec extends DAOSpec {
           await(userChannelsDAO.create(sessionId.userId, channelId, ChannelAuthorityType.organizer, sessionId))
           val userCount = await(channelsDAO.findUserCount(channelId))
           val messageId = await(messagesDAO.create(channelId, m.message.getOrElse(""), userCount, sessionId))
-          await(messagesDAO.updateReadCount(List(messageId)))
+          await(messagesDAO.updateReadCount(Seq(messageId)))
           val result = await(findMessage(messageId))
           assert(result.exists(_.id == messageId))
           assert(result.exists(_.userCount == 1))

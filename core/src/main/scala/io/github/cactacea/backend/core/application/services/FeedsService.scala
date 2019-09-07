@@ -19,8 +19,8 @@ class FeedsService @Inject()(
   import databaseService._
 
   def create(message: String,
-             mediumIds: Option[List[MediumId]],
-             tags: Option[List[String]],
+             mediumIds: Option[Seq[MediumId]],
+             tags: Option[Seq[String]],
              privacyType: FeedPrivacyType,
              contentWarning: Boolean,
              expiration: Option[Long],
@@ -42,8 +42,8 @@ class FeedsService @Inject()(
 
   def edit(feedId: FeedId,
            message: String,
-           mediumIds: Option[List[MediumId]],
-           tags: Option[List[String]],
+           mediumIds: Option[Seq[MediumId]],
+           tags: Option[Seq[String]],
            privacyType: FeedPrivacyType,
            contentWarning: Boolean,
            expiration: Option[Long],
@@ -54,11 +54,11 @@ class FeedsService @Inject()(
     }
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[Seq[Feed]] = {
     feedsRepository.find(since, offset, count, privacyType, sessionId)
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     feedsRepository.find(userId, since, offset, count, sessionId)
   }
 

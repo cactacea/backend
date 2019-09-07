@@ -140,7 +140,7 @@ class UserMessagesDAOSpec extends DAOSpec {
 
   feature("find messages") {
     scenario("should return user messages") {
-      forAll(userGen, userGen, channelGen, message20ListGen, booleanGen) { (s, a1, g, l, ascending) =>
+      forAll(userGen, userGen, channelGen, message20SeqGen, booleanGen) { (s, a1, g, l, ascending) =>
 
         // preparing
         //  session user is owner
@@ -222,7 +222,7 @@ class UserMessagesDAOSpec extends DAOSpec {
           await(userMessagesDAO.create(channelId, messageId, sessionId))
 
           // user1 read a message
-          await(userMessagesDAO.updateUnread(List(messageId), userId1.sessionId))
+          await(userMessagesDAO.updateUnread(Seq(messageId), userId1.sessionId))
 
           // session user is member, so return a message
           val result1 = await(userMessagesDAO.find(messageId, sessionId))

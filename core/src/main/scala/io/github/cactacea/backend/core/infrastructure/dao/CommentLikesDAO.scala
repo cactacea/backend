@@ -66,7 +66,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
                 since: Option[Long],
                 offset: Int,
                 count: Int,
-                sessionId: SessionId): Future[List[User]] = {
+                sessionId: SessionId): Future[Seq[User]] = {
 
     val by = sessionId.userId
 

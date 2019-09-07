@@ -8,7 +8,7 @@ class CommentsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create a comment") {
-      forAll(userGen, userGen, userGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
+      forAll(userGen, userGen, userGen, feedGen, comment20SeqGen) { (s, a1, a2, f, c) =>
 
         // preparing
         //  user1 create a feed
@@ -47,7 +47,7 @@ class CommentsDAOSpec extends DAOSpec {
 
   feature("delete") {
     scenario("should delete a comment") {
-      forOne(userGen, userGen, userGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
+      forOne(userGen, userGen, userGen, feedGen, comment20SeqGen) { (s, a1, a2, f, c) =>
 
         // preparing
         //  user1 create a feed
@@ -89,7 +89,7 @@ class CommentsDAOSpec extends DAOSpec {
     }
 
     scenario("should delete all comments") {
-      forOne(userGen, userGen, userGen, feedGen, comment20ListGen) { (s, a1, a2, f, c) =>
+      forOne(userGen, userGen, userGen, feedGen, comment20SeqGen) { (s, a1, a2, f, c) =>
 
         // preparing
         //  user1 create a feed
@@ -279,7 +279,7 @@ class CommentsDAOSpec extends DAOSpec {
   feature("find") {
 
     scenario("should return comment list") {
-      forOne(userGen, userGen, userGen, feedGen, comment20ListGen) {
+      forOne(userGen, userGen, userGen, feedGen, comment20SeqGen) {
         (s, a1, a2, f, c) =>
 
           // preparing
@@ -325,7 +325,7 @@ class CommentsDAOSpec extends DAOSpec {
 
 
     scenario("should return like count") {
-      forOne(userGen, userGen, userGen, userGen, feedGen, comment20ListGen) {
+      forOne(userGen, userGen, userGen, userGen, feedGen, comment20SeqGen) {
         (s, a1, a2, a3, f, c) =>
           // preparing
           //  session user creates a feed

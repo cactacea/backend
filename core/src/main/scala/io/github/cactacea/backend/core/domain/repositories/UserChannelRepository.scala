@@ -25,7 +25,7 @@ class UserChannelRepository @Inject()(
     } yield (())
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Channel]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Channel]] = {
     for {
       _ <- usersValidator.mustNotSame(userId, sessionId)
       _ <- usersValidator.mustExist(userId, sessionId)
@@ -33,7 +33,7 @@ class UserChannelRepository @Inject()(
     } yield (r)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Channel]] = {
+  def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[Seq[Channel]] = {
     userChannelsDAO.find(sessionId.userId, since, offset, count, hidden, sessionId)
   }
 

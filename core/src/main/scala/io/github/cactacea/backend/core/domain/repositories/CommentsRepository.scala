@@ -17,7 +17,7 @@ class CommentsRepository @Inject()(
                                     notificationsDAO: NotificationsDAO
                                   ) {
 
-  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
+  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
     for {
       _ <- feedsValidator.mustExist(feedId, sessionId)
       r <- commentsDAO.find(feedId, since, offset, count, sessionId)

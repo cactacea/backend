@@ -41,7 +41,7 @@ class MessagesService @Inject()(
     }
   }
 
-  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int, ascending: Boolean, sessionId: SessionId): Future[List[Message]] = {
+  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int, ascending: Boolean, sessionId: SessionId): Future[Seq[Message]] = {
     transaction {
       for {
         m <- messagesRepository.find(channelId, since, offset, count, ascending, sessionId)

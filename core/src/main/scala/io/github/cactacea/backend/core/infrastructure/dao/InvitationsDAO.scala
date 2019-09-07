@@ -62,7 +62,7 @@ class InvitationsDAO @Inject()(db: DatabaseService) {
 
 
   def find(since: Option[Long], offset: Int,
-           count: Int, sessionId: SessionId): Future[List[Invitation]] = {
+           count: Int, sessionId: SessionId): Future[Seq[Invitation]] = {
     val by = sessionId.userId
     val q = quote {
       query[Invitations]

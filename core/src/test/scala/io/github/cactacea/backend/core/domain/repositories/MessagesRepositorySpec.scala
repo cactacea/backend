@@ -34,7 +34,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should create a user message") {
-      forOne(userGen, user20ListGen, everyoneChannelGen, textMessageGen) {
+      forOne(userGen, user20SeqGen, everyoneChannelGen, textMessageGen) {
         (s, l, g, m) =>
           val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
@@ -97,7 +97,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should create a user message") {
-      forOne(userGen, user20ListGen, everyoneChannelGen, mediumGen) {
+      forOne(userGen, user20SeqGen, everyoneChannelGen, mediumGen) {
         (s, l, g, i) =>
           val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
@@ -179,7 +179,7 @@ class MessagesRepositorySpec extends RepositorySpec {
   feature("find") {
 
     scenario("should return message list") {
-      forOne(userGen, userGen, everyoneChannelGen, message20ListGen, booleanGen) { (s, a1, g, l, ascending) =>
+      forOne(userGen, userGen, everyoneChannelGen, message20SeqGen, booleanGen) { (s, a1, g, l, ascending) =>
 
         // preparing
         //  session user is owner
@@ -240,7 +240,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should update unread count") {
-      forOne(userGen, user20ListGen, everyoneChannelGen, mediumGen) {
+      forOne(userGen, user20SeqGen, everyoneChannelGen, mediumGen) {
         (s, l, g, i) =>
           val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
@@ -264,7 +264,7 @@ class MessagesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should update unread status") {
-      forOne(userGen, user20ListGen, everyoneChannelGen, mediumGen) {
+      forOne(userGen, user20SeqGen, everyoneChannelGen, mediumGen) {
         (s, l, g, i) =>
           val sessionId = await(createUser(s.userName)).id.sessionId
           val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))

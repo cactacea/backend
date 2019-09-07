@@ -40,7 +40,7 @@ class UserMessagesDAO @Inject()(db: DatabaseService) {
            offset: Int,
            count: Int,
            ascending: Boolean,
-           sessionId: SessionId): Future[List[Message]] = {
+           sessionId: SessionId): Future[Seq[Message]] = {
 
     if (ascending) {
       findOlder(channelId, since, offset, count, sessionId)
@@ -54,7 +54,7 @@ class UserMessagesDAO @Inject()(db: DatabaseService) {
                           since: Option[Long],
                           offset: Int,
                           count: Int,
-                          sessionId: SessionId): Future[List[Message]] = {
+                          sessionId: SessionId): Future[Seq[Message]] = {
 
     val by = sessionId.userId
     val q = quote {
@@ -84,7 +84,7 @@ class UserMessagesDAO @Inject()(db: DatabaseService) {
                         since: Option[Long],
                         offset: Int,
                         count: Int,
-                        sessionId: SessionId): Future[List[Message]] = {
+                        sessionId: SessionId): Future[Seq[Message]] = {
     val by = sessionId.userId
     val q = quote {
       (for {
@@ -128,7 +128,7 @@ class UserMessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({ case (m, am, i, a, r) => Message(m, am, i, a, r, am.messageId.value) }).headOption)
   }
 
-  def updateUnread(messageIds: List[MessageId], sessionId: SessionId): Future[Unit] = {
+  def updateUnread(messageIds: Seq[MessageId], sessionId: SessionId): Future[Unit] = {
     val userId = sessionId.userId
     val q = quote {
       query[UserMessages]

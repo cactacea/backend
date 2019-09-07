@@ -13,7 +13,7 @@ class ChannelUsersDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int): Future[List[User]] = {
+  def find(channelId: ChannelId, since: Option[Long], offset: Int, count: Int): Future[Seq[User]] = {
     val q = quote {
       (for {
         ag <- query[UserChannels]

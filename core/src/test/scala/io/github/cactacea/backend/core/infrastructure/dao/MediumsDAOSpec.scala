@@ -39,7 +39,7 @@ class MediumsDAOSpec extends DAOSpec {
 
 
   feature("exist(mediumIds: sessionId)") {
-    forAll(userGen, medium5ListGen) { (a, m) =>
+    forAll(userGen, medium5SeqGen) { (a, m) =>
       val sessionId = await(usersDAO.create(a.userName)).sessionId
       val mediumIds = m.map({ m =>
         await(mediumsDAO.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId))

@@ -141,7 +141,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
   feature("find - feeds an user liked") {
 
     scenario("should return feed list an user liked") {
-      forOne(userGen, userGen, userGen, userGen, userGen, feed20ListGen) { (s, a1, a2, a3, a4, f) =>
+      forOne(userGen, userGen, userGen, userGen, userGen, feed20SeqGen) { (s, a1, a2, a3, a4, f) =>
 
         // preparing
         //  user1 is a follower.
@@ -207,7 +207,7 @@ class FeedLikesRepositorySpec extends RepositorySpec {
   feature("find - feeds session user liked") {
     scenario("should return feed list session user liked") {
 
-      forOne(userGen, userGen, feed20ListGen) { (s, a1, f) =>
+      forOne(userGen, userGen, feed20SeqGen) { (s, a1, f) =>
 
         // preparing
         val sessionId = await(createUser(s.userName)).id.sessionId

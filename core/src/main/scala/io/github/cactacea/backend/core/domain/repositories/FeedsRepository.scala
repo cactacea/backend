@@ -22,8 +22,8 @@ class FeedsRepository @Inject()(
                                ) {
 
   def create(message: String,
-             mediumIds: Option[List[MediumId]],
-             tags: Option[List[String]],
+             mediumIds: Option[Seq[MediumId]],
+             tags: Option[Seq[String]],
              privacyType: FeedPrivacyType,
              contentWarning: Boolean,
              expiration: Option[Long],
@@ -42,8 +42,8 @@ class FeedsRepository @Inject()(
 
   def update(feedId: FeedId,
              message: String,
-             mediumIds: Option[List[MediumId]],
-             tags: Option[List[String]],
+             mediumIds: Option[Seq[MediumId]],
+             tags: Option[Seq[String]],
              privacyType: FeedPrivacyType,
              contentWarning: Boolean,
              expiration: Option[Long],
@@ -68,14 +68,14 @@ class FeedsRepository @Inject()(
     } yield (())
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     for {
       _ <- usersValidator.mustExist(userId, sessionId)
       r <- feedsDAO.find(userId, since, offset, count, sessionId)
     } yield (r)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[Seq[Feed]] = {
     userFeedsDAO.find(since, offset, count, privacyType, sessionId)
   }
 

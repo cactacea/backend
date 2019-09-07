@@ -11,7 +11,7 @@ class FeedTagsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(feedId: FeedId, tagsOpt: Option[List[String]]): Future[Unit] = {
+  def create(feedId: FeedId, tagsOpt: Option[Seq[String]]): Future[Unit] = {
     tagsOpt match {
       case Some(tags) =>
         val feedTags = tags.zipWithIndex.map({case (tag, index) => FeedTags(feedId, tag, index)})

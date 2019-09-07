@@ -11,7 +11,7 @@ class FeedMediumsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(feedId: FeedId, mediumIdsOpt: Option[List[MediumId]]): Future[Unit] = {
+  def create(feedId: FeedId, mediumIdsOpt: Option[Seq[MediumId]]): Future[Unit] = {
     mediumIdsOpt.fold(Future.Unit) { mediumIds =>
       val feedImages = mediumIds.zipWithIndex.map({case (mediumId, index) => FeedMediums(feedId, mediumId, index)})
       val q = quote {

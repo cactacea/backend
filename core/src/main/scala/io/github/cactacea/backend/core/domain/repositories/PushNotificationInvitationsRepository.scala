@@ -9,7 +9,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId
 @Singleton
 class PushNotificationInvitationsRepository @Inject()(pushNotificationInvitationsDAO: PushNotificationInvitationsDAO) {
 
-  def find(id: InvitationId): Future[Option[List[PushNotification]]] = {
+  def find(id: InvitationId): Future[Option[Seq[PushNotification]]] = {
     pushNotificationInvitationsDAO.find(id)
   }
 
