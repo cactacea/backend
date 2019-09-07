@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{CommentLikesValidator, CommentsValidator}
 
-
+@Singleton
 class CommentLikesRepository @Inject()(
                                         commentsValidator: CommentsValidator,
                                         commentLikesDAO: CommentLikesDAO,

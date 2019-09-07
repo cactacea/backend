@@ -2,8 +2,11 @@ package io.github.cactacea.backend.server.helpers
 
 import com.twitter.finagle.http.Request
 import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
-import io.github.cactacea.backend.core.helpers.generators.{StatusGenerator, DomainValueGenerator}
+import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.helpers.generators.{DomainValueGenerator, StatusGenerator}
 import io.github.cactacea.backend.core.util.configs.Config
+import io.github.cactacea.backend.server.models.requests.feed.PostFeed
+import io.github.cactacea.backend.server.models.requests.session.PostSession
 import org.scalacheck.Gen
 
 trait RequestGenerator extends DomainValueGenerator with StatusGenerator {
@@ -24,6 +27,15 @@ trait RequestGenerator extends DomainValueGenerator with StatusGenerator {
     password <- passwordGen
   } yield (PostSignUp(userName, password, Request()))
 
+  lazy val postFeedGen: Gen[PostFeed] = for {
+    message <- feedMessageTextGen
+    contentWarning <- booleanGen
+  } yield (PostFeed(message, None, None, FeedPrivacyType.everyone, contentWarning, None))
+
+  lazy val putSession: Gen[PostSession] = for {
+    userName <- uniqueUserNameGen
+    displayname <- uniqueDisplayNameOptGen
+  } yield (PostSession(userName, displayname))
 
   def headers(accessToken: String): Gen[Map[String, String]] = {
     for {

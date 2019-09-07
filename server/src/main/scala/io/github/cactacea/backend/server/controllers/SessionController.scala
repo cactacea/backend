@@ -3,7 +3,6 @@ package io.github.cactacea.backend.server.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.auth.server.utils.contexts.AuthContext
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
@@ -15,6 +14,7 @@ import io.github.cactacea.backend.server.models.requests.user.GetUserName
 import io.github.cactacea.backend.server.models.responses.UserNameNotExists
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -22,7 +22,6 @@ import io.swagger.models.Swagger
 @Singleton
 class SessionController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
-                                   s: Swagger,
                                    usersService: UsersService,
                                    userChannelsService: UserChannelsService,
                                    feedsService: FeedsService,
@@ -33,10 +32,13 @@ class SessionController @Inject()(
                                    invitationService: InvitationsService,
                                    mutesService: MutesService,
                                    friendRequestsService: FriendRequestsService,
-                                   blocksService: BlocksService
+                                   blocksService: BlocksService,
+                                   f: CactaceaAuthenticationFilterFactory,
+                                   s: Swagger
                                  ) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 
@@ -45,10 +47,10 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("registerSession")
         .responseWith[User](Status.Ok.code, successfulMessage)
-    } { request: PutSession =>
+    } { request: PostSession =>
       usersService.create(
-        AuthContext.auth.providerId,
-        AuthContext.auth.providerKey,
+        CactaceaContext.auth.providerId,
+        CactaceaContext.auth.providerKey,
         request.userName,
         request.displayName
       )

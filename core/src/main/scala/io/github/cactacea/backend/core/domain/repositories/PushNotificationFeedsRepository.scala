@@ -1,12 +1,12 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.PushNotification
 import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationFeedsDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, UserId}
 
-
+@Singleton
 class PushNotificationFeedsRepository @Inject()(pushNotificationFeedsDAO: PushNotificationFeedsDAO) {
 
   def find(feedId: FeedId): Future[Option[List[PushNotification]]] = {

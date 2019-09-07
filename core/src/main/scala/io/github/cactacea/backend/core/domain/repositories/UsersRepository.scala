@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{ReportType, UserStatusType}
 import io.github.cactacea.backend.core.domain.models.{User, UserStatus}
@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.{DevicesDAO, PushNotif
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId, UserId}
 import io.github.cactacea.backend.core.infrastructure.validators.{MediumsValidator, UsersValidator}
 
-
+@Singleton
 class UsersRepository @Inject()(
                                  usersValidator: UsersValidator,
                                  devicesDAO: DevicesDAO,

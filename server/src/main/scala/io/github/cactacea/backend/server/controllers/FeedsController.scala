@@ -11,6 +11,7 @@ import io.github.cactacea.backend.server.models.requests.feed._
 import io.github.cactacea.backend.server.models.responses.FeedCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -18,9 +19,11 @@ import io.swagger.models.Swagger
 class FeedsController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  feedsService: FeedsService,
+                                 f: CactaceaAuthenticationFilterFactory,
                                  s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 

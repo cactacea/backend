@@ -2,13 +2,13 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import java.util.Locale
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-
+@Singleton
 class NotificationsRepository @Inject()(
                                          notificationsDAO: NotificationsDAO
                                        ) {

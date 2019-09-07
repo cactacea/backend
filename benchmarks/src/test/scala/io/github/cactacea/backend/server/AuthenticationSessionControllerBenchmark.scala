@@ -14,7 +14,7 @@ class AuthenticationSessionControllerBenchmark extends ControllerBenchmark {
     val putPassword = PutPassword(sessionPassword, Request())
     val body = mapper.writePrettyString(putPassword)
     val request = RequestBuilder.put(s"/session/password")
-    request.headers(headers)
+    request.headers(sessionHeaders)
     request.body(body)
     httpService(request)
   }

@@ -11,6 +11,7 @@ import io.github.cactacea.backend.server.models.requests.channel._
 import io.github.cactacea.backend.server.models.responses.ChannelCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -20,9 +21,11 @@ class ChannelsController @Inject()(
                                     channelsService: ChannelsService,
                                     channelUsersService: ChannelUsersService,
                                     userChannelsService: UserChannelsService,
+                                    f: CactaceaAuthenticationFilterFactory,
                                     s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 

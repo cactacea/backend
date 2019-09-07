@@ -22,6 +22,8 @@ trait DomainValueGenerator extends ValueGenerator {
   lazy val feedTagGen: Gen[String] = Gen.listOfN(198, Gen.alphaChar).map(_.mkString)
   lazy val reportContentGen: Gen[String] = Gen.listOfN(1000, Gen.alphaChar).map(_.mkString)
 
+  lazy val feedTag5ListOptGen: Gen[Option[String]] = Gen.option(Gen.listOfN(5, feedTagGen).map(_.mkString(" ")))
+
   // option string generator
   lazy val messageTextOptGen: Gen[Option[String]] = Gen.option(messageTextGen)
   lazy val reportContentOptGen: Gen[Option[String]] = Gen.option(reportContentGen)

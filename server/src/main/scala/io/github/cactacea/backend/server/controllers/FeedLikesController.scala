@@ -10,6 +10,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.feed.{DeleteFeedLike, GetFeedLikes, PostFeedLike}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -17,10 +18,12 @@ import io.swagger.models.Swagger
 class FeedLikesController @Inject()(
                                      @Flag("cactacea.api.prefix") apiPrefix: String,
                                      feedLikesService: FeedLikesService,
+                                     f: CactaceaAuthenticationFilterFactory,
                                      s: Swagger
                                    ) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 

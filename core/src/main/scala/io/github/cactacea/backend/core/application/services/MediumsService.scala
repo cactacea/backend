@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.StorageService
@@ -8,6 +8,7 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.repositories.MediumsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId}
 
+@Singleton
 class MediumsService @Inject()(
                                 databaseService: DatabaseService,
                                 storageService: StorageService,
