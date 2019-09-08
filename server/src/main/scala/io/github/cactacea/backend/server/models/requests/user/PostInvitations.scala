@@ -9,5 +9,5 @@ case class PostInvitations(
                                    @RouteParam id: ChannelId,
 
                             @ApiModelProperty(value = "User Identifies.")
-                                   userIds: Array[UserId]
+                                   userIds: Seq[UserId]
                                  )

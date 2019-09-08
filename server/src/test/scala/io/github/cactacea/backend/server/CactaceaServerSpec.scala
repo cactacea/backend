@@ -9,7 +9,7 @@ import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
-import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
+import io.github.cactacea.backend.auth.server.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.helpers.generators.{Generator, ModelsGenerator, StatusGenerator}
 import io.github.cactacea.backend.core.util.configs.Config
@@ -87,14 +87,16 @@ class CactaceaServerSpec extends FeatureTest
 
     // signUp
     val signUpRequest = RequestBuilder.post(s"/sessions")
-    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, Request()))
+    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, None, Request()))
     signUpRequest.headers(signInUpHeaders)
     signUpRequest.body(signUpBody)
     server.httpRequest(signUpRequest)
 
     // signIn
-    val signInRequest = RequestBuilder.get(s"/sessions?userName=${sessionUserName}&password=${sessionPassword}")
+    val signInRequest = RequestBuilder.get(s"/sessions")
+    val signInBody = mapper.writePrettyString(GetSignIn(sessionUserName, sessionPassword, Request()))
     signInRequest.headers(signInUpHeaders)
+    signInRequest.body(signInBody)
     val signInResponse = server.httpRequest(signInRequest)
     val token = signInResponse.headerMap.getOrNull(Config.auth.headerNames.authorizationKey)
 

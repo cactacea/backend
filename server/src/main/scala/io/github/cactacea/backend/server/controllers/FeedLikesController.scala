@@ -32,7 +32,7 @@ class FeedLikesController @Inject()(
         .tag(feedsLikeTag)
         .operationId("findUsersLikedFeed")
         .request[GetFeedLikes]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
     } { request: GetFeedLikes =>
       feedLikesService.findUsers(

@@ -1,5 +1,6 @@
 package io.github.cactacea.backend.server.models.requests.feed
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.twitter.finatra.request.RouteParam
 import com.twitter.finatra.validation.Size
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
@@ -14,10 +15,10 @@ case class PutFeed(
                     @Size(min = 1, max = 1000) message : String,
 
                     @ApiModelProperty(value = "Medium identifiers of attached.")
-                    mediumIds : Option[Array[MediumId]],
+                    mediumIds : Option[Seq[MediumId]],
 
                     @ApiModelProperty(value = "Tags of feed.")
-                    @Size(min = 0, max = 1000) tags : Option[Array[String]],
+                    @Size(min = 0, max = 1000) tags : Option[Seq[String]],
 
                     @ApiModelProperty(value = "Channel privacy type.", required = true)
                     privacyType : FeedPrivacyType,

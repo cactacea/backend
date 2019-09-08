@@ -31,7 +31,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(commentsTag)
         .operationId("findComments")
         .request[GetComments]
-        .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Comment]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
     } { request: GetComments =>
       commentsService.find(

@@ -6,6 +6,7 @@ import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.core.domain.repositories.AuthenticationsRepository
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.domain.repositories.UsersRepository
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
 import io.github.cactacea.filhouette.api.util.{Credentials, PasswordHasherRegistry}
@@ -20,18 +21,20 @@ class AuthenticationService @Inject()(
                                        authInfoRepository: AuthInfoRepository,
                                        credentialsProvider: CredentialsProvider,
                                        passwordHasherRegistry: PasswordHasherRegistry,
-                                       authenticatorService: JWTAuthenticatorService //,
+                                       usersRepository: UsersRepository,
+                                       authenticatorService: JWTAuthenticatorService
                                ) {
 
   import db._
 
-  def signUp(userName: String, password: String)(implicit request: Request): Future[Response] = {
+  def signUp(userName: String, password: String, displayName: Option[String])(implicit request: Request): Future[Response] = {
     val l = LoginInfo(CredentialsProvider.ID, userName)
     transaction {
       for {
         _ <- authenticationsRepository.notExists(l.providerId, l.providerKey)
         _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
         _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
+        _ <- usersRepository.create(l.providerId, l.providerKey, userName, displayName)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
         r <- authenticatorService.embed(c, response.ok)

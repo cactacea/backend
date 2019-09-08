@@ -46,7 +46,7 @@ class MediumsController @Inject()(
         .operationId("uploadMedium")
         .consumes("multipart/form-data")
         .formParam[File](name = "file", description = "Upload a medium file", true)
-        .responseWith[Array[MediumCreated]](Status.Created.code, successfulMessage)
+        .responseWith[Seq[MediumCreated]](Status.Created.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason,
             Some(CactaceaErrors(Seq(NotAcceptableMimeTypeFound, UploadFileNotFound, FileSizeLimitExceededError))))
 

@@ -1,27 +1,25 @@
 package io.github.cactacea.backend.server
 
 import com.twitter.finagle.http.{Request, Response}
-import com.twitter.finatra.http.benchmarks.ControllerBenchmark
 import com.twitter.finatra.httpclient.RequestBuilder
 import com.twitter.util.Future
-import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
+import io.github.cactacea.backend.auth.server.models.requests.sessions.{GetSignIn, PostSignUp}
 import io.github.cactacea.backend.core.util.configs.Config
 import org.openjdk.jmh.annotations.Benchmark
 
-class AuthenticationControllerBenchmark extends ControllerBenchmark {
+class AuthenticationControllerBenchmark extends BenchmarkHelper {
 
   @Benchmark
   def signUp(): Future[Response] = {
     val userName = s"username_${System.nanoTime()}"
     val password = s"password_${System.nanoTime()}"
-    val signUp = PostSignUp(userName, password, Request())
-
-    val body = mapper.writePrettyString(signUp)
+    val signUp = PostSignUp(userName, password, None, Request())
+    val signUpBody = mapper.writePrettyString(signUp)
     val headers = Map(
       Config.auth.headerNames.apiKey -> Config.auth.keys.ios
     )
     val request = RequestBuilder.post("/sessions")
-    request.body(body)
+    request.body(signUpBody)
     request.headers(headers)
     httpService(request)
   }
@@ -31,7 +29,10 @@ class AuthenticationControllerBenchmark extends ControllerBenchmark {
     val headers = Map(
       Config.auth.headerNames.apiKey -> Config.auth.keys.ios
     )
-    val request = RequestBuilder.get(s"/sessions?userName=${sessionUserName}&password=${sessionPassword}")
+    val signIn = GetSignIn(sessionUserName, sessionPassword, Request())
+    val signInBody = mapper.writePrettyString(signIn)
+    val request = RequestBuilder.get(s"/sessions")
+    request.body(signInBody)
     request.headers(headers)
     httpService(request)
   }

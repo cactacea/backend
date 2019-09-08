@@ -134,11 +134,11 @@ class SessionController @Inject()(
     }
 
     scope(basic).getWithDoc("/session/blocks") { o =>
-      o.summary("Get blocking users list")
-        .tag(blocksTag)
-        .operationId("findBlockingUsers")
+      o.summary("Get block users list")
+        .tag(sessionTag)
+        .operationId("findSessionBlocks")
         .request[GetSessionBlocks]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     } { request: GetSessionBlocks =>
       blocksService.find(
         request.userName,
@@ -151,10 +151,10 @@ class SessionController @Inject()(
 
     scope(feeds).getWithDoc("/session/feeds") { o =>
       o.summary("Find session feeds")
-        .tag(feedsTag)
+        .tag(sessionTag)
         .operationId("findSessionFeeds")
         .request[GetSessionFeeds]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetSessionFeeds =>
       feedsService.find(
@@ -169,9 +169,9 @@ class SessionController @Inject()(
     scope(feeds).getWithDoc("/session/likes") { o =>
       o.summary("Get feeds list session user set a like")
         .tag(sessionTag)
-        .operationId("findSessionFeedsLiked")
+        .operationId("findSessionLikes")
         .request[GetSessionLikedFeeds]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetSessionLikedFeeds =>
       feedLikesService.find(
         request.since,
@@ -184,9 +184,9 @@ class SessionController @Inject()(
     scope(basic).getWithDoc("/session/follows") { o =>
       o.summary("Get users list session user followed")
         .tag(sessionTag)
-        .operationId("findSessionFollow")
+        .operationId("findSessionFollows")
         .request[GetSessionFollows]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollows =>
       followsService.find(
         request.userName,
@@ -202,7 +202,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findSessionFollowers")
         .request[GetSessionFollowers]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollowers =>
       followersService.find(
         request.userName,
@@ -218,7 +218,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findSessionFriends")
         .request[GetSessionFriends]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     }  { request: GetSessionFriends =>
       friendsService.find(
         request.userName,
@@ -234,7 +234,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findSessionChannels")
         .request[GetSessionChannels]
-        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Channel]](Status.Ok.code, successfulMessage)
     } { request: GetSessionChannels =>
       userChannelsService.find(
         request.since,
@@ -248,9 +248,9 @@ class SessionController @Inject()(
     scope(channels).getWithDoc("/session/hides") { o =>
       o.summary("Get hidden channels list session user channelJoined")
         .tag(sessionTag)
-        .operationId("findHiddenChannels")
+        .operationId("findSessionHiddenChannels")
         .request[GetSessionChannels]
-        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Channel]](Status.Ok.code, successfulMessage)
 
     } { request: GetSessionChannels =>
       userChannelsService.find(
@@ -265,9 +265,9 @@ class SessionController @Inject()(
     scope(invitations).getWithDoc("/session/invitations") { o =>
       o.summary("Get invitations list session user received")
         .tag(sessionTag)
-        .operationId("findInvitations")
+        .operationId("findSessionInvitations")
         .request[GetSessionInvitations]
-        .responseWith[Array[Invitation]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Invitation]](Status.Ok.code, successfulMessage)
     } { request: GetSessionInvitations =>
       invitationService.find(
         request.since,
@@ -280,9 +280,9 @@ class SessionController @Inject()(
     scope(basic).getWithDoc("/session/mutes") { o =>
       o.summary("Get users list session user muted")
         .tag(sessionTag)
-        .operationId("findMutingUsers")
+        .operationId("findSessionMutes")
         .request[GetSessionMutes]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     } { request: GetSessionMutes =>
       mutesService.find(
         request.userName,
@@ -296,9 +296,9 @@ class SessionController @Inject()(
     scope(relationships).getWithDoc("/session/requests") { o =>
       o.summary("Get friend requests list session user created or received")
         .tag(sessionTag)
-        .operationId("findFriendRequests")
+        .operationId("findSessionFriendRequests")
         .request[GetSessionFriendRequests]
-        .responseWith[Array[FriendRequest]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[FriendRequest]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFriendRequests =>
       friendRequestsService.find(
         request.since,

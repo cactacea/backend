@@ -40,7 +40,7 @@ class UsersController @Inject()(
         .tag(sessionTag)
         .operationId("findUsers")
         .request[GetUsers]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
 
     } { request: GetUsers =>
       usersService.find(
@@ -101,7 +101,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserFeeds")
         .request[GetUserFeeds]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetUserFeeds =>
       feedsService.find(
@@ -118,7 +118,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserFeedsLiked")
         .request[GetLikes]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetLikes =>
       feedLikesService.find(
@@ -135,7 +135,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserFollowers")
         .request[GetFollowers]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetFollowers =>
       followersService.find(
@@ -153,7 +153,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserFriends")
         .request[GetFriends]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetFriends =>
       friendsService.find(
@@ -218,7 +218,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserChannels")
         .request[GetUserChannels]
-        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Channel]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
 
     } { request: GetUserChannels =>
