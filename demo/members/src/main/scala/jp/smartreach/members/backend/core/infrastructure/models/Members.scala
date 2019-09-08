@@ -6,7 +6,7 @@ import jp.smartreach.members.backend.core.infrastructure.identifiers.MemberId
 
 case class Members (
                      id: MemberId,
-                     name: Option[String],
+                     name: String,
                      address: Option[String],
                      city: Option[String],
                      state: Option[String],
