@@ -33,7 +33,7 @@ class MessagesController @Inject()(
         .tag(messagesTag)
         .operationId("findMessages")
         .request[GetMessages]
-        .responseWith[Array[Message]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Message]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
     } { request: GetMessages =>
       messagesService.find(

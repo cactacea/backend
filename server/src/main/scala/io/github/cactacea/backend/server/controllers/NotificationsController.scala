@@ -30,7 +30,7 @@ class NotificationsController @Inject()(
         .tag(notificationsTag)
         .operationId("findNotifications")
         .request[GetNotifications]
-        .responseWith[Array[Notification]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Notification]](Status.Ok.code, successfulMessage)
     } { request: GetNotifications =>
       notificationsService.find(
         request.since,

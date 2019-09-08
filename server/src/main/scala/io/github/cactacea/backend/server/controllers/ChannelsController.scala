@@ -113,7 +113,7 @@ class ChannelsController @Inject()(
         .tag(channelsTag)
         .operationId("findChannelUsers")
         .request[GetChannelUsers]
-        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Channel]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(ChannelNotFound))))
     } { request: GetChannelUsers =>
       channelUsersService.find(
