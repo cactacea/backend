@@ -26,7 +26,7 @@ trait RequestGenerator extends DomainValueGenerator with StatusGenerator {
   lazy val postSignUpGen: Gen[PostSignUp] = for {
     userName <- uniqueUserNameGen
     password <- passwordGen
-  } yield (PostSignUp(userName, password, Request()))
+  } yield (PostSignUp(userName, password, None, Request()))
 
   lazy val postEveryoneFeedGen: Gen[PostFeed] = for {
     message <- feedMessageTextGen

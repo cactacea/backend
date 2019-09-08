@@ -13,7 +13,7 @@ class AuthenticationControllerBenchmark extends BenchmarkHelper {
   def signUp(): Future[Response] = {
     val userName = s"username_${System.nanoTime()}"
     val password = s"password_${System.nanoTime()}"
-    val signUp = PostSignUp(userName, password, Request())
+    val signUp = PostSignUp(userName, password, None, Request())
     val signUpBody = mapper.writePrettyString(signUp)
     val headers = Map(
       Config.auth.headerNames.apiKey -> Config.auth.keys.ios

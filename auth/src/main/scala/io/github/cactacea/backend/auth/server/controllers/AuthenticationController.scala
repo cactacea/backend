@@ -32,7 +32,8 @@ class AuthenticationController @Inject()(
 
       authenticationService.signUp(
         request.userName,
-        request.password
+        request.password,
+        request.displayName
       )
     }
 

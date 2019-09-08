@@ -30,7 +30,7 @@ abstract class BenchmarkHelper extends ControllerBenchmark {
 
     // signUp
     val signUpRequest = RequestBuilder.post(s"/sessions")
-    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, Request()))
+    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, None, Request()))
     signUpRequest.headers(signInUpHeaders)
     signUpRequest.body(signUpBody)
     Await.result(httpService(signUpRequest).rescue {

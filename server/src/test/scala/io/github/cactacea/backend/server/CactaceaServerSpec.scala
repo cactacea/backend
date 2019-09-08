@@ -87,7 +87,7 @@ class CactaceaServerSpec extends FeatureTest
 
     // signUp
     val signUpRequest = RequestBuilder.post(s"/sessions")
-    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, Request()))
+    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, None, Request()))
     signUpRequest.headers(signInUpHeaders)
     signUpRequest.body(signUpBody)
     server.httpRequest(signUpRequest)

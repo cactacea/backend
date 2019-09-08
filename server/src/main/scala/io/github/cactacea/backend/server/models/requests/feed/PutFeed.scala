@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiModelProperty
 
 case class PutFeed(
                     @ApiModelProperty(value = "Feed identifier.", required = true)
-                    @JsonIgnore
                     @RouteParam id: FeedId,
 
                     @ApiModelProperty(value = "A feed message will be posted.", required = true)
