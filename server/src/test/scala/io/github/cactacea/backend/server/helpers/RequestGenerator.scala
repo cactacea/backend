@@ -4,8 +4,9 @@ import com.twitter.finagle.http.Request
 import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.helpers.generators.{DomainValueGenerator, StatusGenerator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.server.models.requests.feed.PostFeed
+import io.github.cactacea.backend.server.models.requests.feed.{PostFeed, PutFeed}
 import io.github.cactacea.backend.server.models.requests.session.PostSession
 import org.scalacheck.Gen
 
@@ -27,10 +28,15 @@ trait RequestGenerator extends DomainValueGenerator with StatusGenerator {
     password <- passwordGen
   } yield (PostSignUp(userName, password, Request()))
 
-  lazy val postFeedGen: Gen[PostFeed] = for {
+  lazy val postEveryoneFeedGen: Gen[PostFeed] = for {
     message <- feedMessageTextGen
     contentWarning <- booleanGen
   } yield (PostFeed(message, None, None, FeedPrivacyType.everyone, contentWarning, None))
+
+  lazy val putFollowersFeedGen: Gen[PutFeed] = for {
+    message <- feedMessageTextGen
+    contentWarning <- booleanGen
+  } yield (PutFeed(FeedId(0), message, None, None, FeedPrivacyType.followers, contentWarning, None))
 
   lazy val putSession: Gen[PostSession] = for {
     userName <- uniqueUserNameGen
