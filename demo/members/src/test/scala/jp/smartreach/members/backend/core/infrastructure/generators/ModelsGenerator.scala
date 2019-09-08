@@ -10,6 +10,12 @@ import scala.collection.JavaConverters._
 
 trait ModelsGenerator extends ValueGenerator {
 
+  val memberNameMaxLength = 30
+  val addressMaxLength = 255
+  val cityMaxLength = 11
+  val stateMaxLength = 11
+  val zipMaxLength = 11
+
   lazy val emailGen: Gen[String] = for {
     username <- Gen.oneOf("user1", "user2", "user3")
     host <- Gen.oneOf("example1", "example2", "example3")
@@ -23,6 +29,15 @@ trait ModelsGenerator extends ValueGenerator {
     n3 <- Gen.listOfN(4, Gen.numChar)
   } yield { s"$z${n1.mkString}-${n2.mkString}-${n3.mkString}" }
 
+  val zipGen = for {
+    n1 <- Gen.listOfN(4, Gen.numChar)
+    n2 <- Gen.listOfN(3, Gen.numChar)
+  } yield { s"${n1.mkString}-${n2.mkString}" }
+
+  val memberNameGen = Gen.listOfN(memberNameMaxLength, Gen.numChar).map(_.mkString)
+  val addressGen = Gen.listOfN(addressMaxLength, Gen.numChar).map(_.mkString)
+  val cityGen = Gen.listOfN(cityMaxLength, Gen.numChar).map(_.mkString)
+  val stateGen = Gen.listOfN(stateMaxLength, Gen.numChar).map(_.mkString)
 
   val adjustmentAnswerTypeGen: Gen[AdjustmentAnswerType] = Gen.oneOf(AdjustmentAnswerType.all.asScala)
   val communicationTypeGen: Gen[CommunicationType] = Gen.oneOf(CommunicationType.all.asScala)
@@ -36,6 +51,11 @@ trait ModelsGenerator extends ValueGenerator {
     registeredAt <- currentTimeMillisGen
     email <- Gen.option(emailGen)
     phoneNo <- Gen.option(telGen)
-  } yield (Members(MemberId(0), communicationType, None, email, phoneNo, registeredAt))
+    name <- Gen.option(memberNameGen)
+    city <- Gen.option(cityGen)
+    address <- Gen.option(addressGen)
+    zip <- Gen.option(zipGen)
+    state <- Gen.option(stateGen)
+  } yield (Members(MemberId(0L), name, address, city, state, zip, communicationType, None, email, phoneNo, registeredAt))
 
 }

@@ -22,6 +22,11 @@ USE `${schema}` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `${schema}`.`members` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(30) NULL DEFAULT NULL,
+  `address` VARCHAR(255) NULL DEFAULT NULL,
+  `city` VARCHAR(11) NULL DEFAULT NULL,
+  `state` VARCHAR(11) NULL DEFAULT NULL,
+  `zip` VARCHAR(11) NULL DEFAULT NULL,
   `communication_type` TINYINT(4) NOT NULL,
   `user_id` BIGINT(20) NULL,
   `email` VARCHAR(256) NULL,
