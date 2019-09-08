@@ -93,50 +93,6 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
       .services
       .externalService
 
-  val mapper: FinatraObjectMapper = injector.instance[FinatraObjectMapper]
-  val authenticationService: AuthenticationService = injector.instance[AuthenticationService]
-
-  val sessionUserName: String = s"server_test"
-  val sessionPassword: String = s"server_test_password_2000"
-  val sessionHeaders: Map[String, String] = createSessionUser()
-
-  def createSessionUser(): Map[String, String] = {
-
-    val signInUpHeaders = Map(Config.auth.headerNames.apiKey -> Config.auth.keys.ios)
-
-    // signUp
-    val signUpRequest = RequestBuilder.post(s"/sessions")
-    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, Request()))
-    signUpRequest.headers(signInUpHeaders)
-    signUpRequest.body(signUpBody)
-    Await.result(httpService(signUpRequest).rescue {
-      case _: RuntimeException => Future.Unit
-    })
-
-    // signIn
-    val signInRequest = RequestBuilder.get(s"/sessions?userName=${sessionUserName}&password=${sessionPassword}")
-    signInRequest.headers(signInUpHeaders)
-    val signInResponse = Await.result(httpService(signInRequest))
-    val token = signInResponse.headerMap.getOrNull(Config.auth.headerNames.authorizationKey)
-
-    // registerUser
-    val registerUserRequest = RequestBuilder.post(s"/session")
-    val registerUserHeaders = Map(
-      Config.auth.headerNames.apiKey -> Config.auth.keys.ios,
-      Config.auth.headerNames.authorizationKey -> token
-    )
-    val registerUserBody = mapper.writePrettyString(PostSession(sessionUserName, None))
-    registerUserRequest.headers(registerUserHeaders)
-    registerUserRequest.body(registerUserBody)
-    Await.result(httpService(registerUserRequest).rescue {
-      case _: RuntimeException => Future.Unit
-    })
-
-    registerUserHeaders
-  }
-
-  createSessionUser()
-
 }
 
 
