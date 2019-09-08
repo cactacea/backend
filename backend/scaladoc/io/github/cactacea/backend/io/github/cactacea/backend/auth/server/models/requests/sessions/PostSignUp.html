@@ -248,7 +248,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">PostSignUp</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">PostSignUp</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -309,9 +309,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(userName:String,password:String,request:com.twitter.finagle.http.Request):io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp"></a><a id="&lt;init&gt;:PostSignUp"></a>
+      <a id="&lt;init&gt;(userName:String,password:String,displayName:Option[String],request:com.twitter.finagle.http.Request):io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp"></a><a id="&lt;init&gt;:PostSignUp"></a>
       <span class="permalink">
-      <a href="../../../../../../../../../io/github/cactacea/backend/auth/server/models/requests/sessions/PostSignUp.html#&lt;init&gt;(userName:String,password:String,request:com.twitter.finagle.http.Request):io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp" title="Permalink">
+      <a href="../../../../../../../../../io/github/cactacea/backend/auth/server/models/requests/sessions/PostSignUp.html#&lt;init&gt;(userName:String,password:String,displayName:Option[String],request:com.twitter.finagle.http.Request):io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -320,7 +320,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PostSignUp</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span>
+        <span class="name">PostSignUp</span><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span>
       </span>
       
       
@@ -465,6 +465,22 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp#displayName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="displayName:Option[String]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../../io/github/cactacea/backend/auth/server/models/requests/sessions/PostSignUp.html#displayName:Option[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">displayName</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((PostSignUp)⇒Boolean,⇒Any):PostSignUp"></a>
       <span class="permalink">
