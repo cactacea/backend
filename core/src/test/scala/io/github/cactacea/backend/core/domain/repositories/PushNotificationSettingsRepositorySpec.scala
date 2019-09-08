@@ -7,7 +7,7 @@ class PushNotificationSettingsRepositorySpec extends RepositorySpec {
   feature("update") {
 
     scenario("should update notification settings") {
-      forAll(userGen, boolean7ListGen) { (a, b) =>
+      forAll(userGen, boolean7SeqGen) { (a, b) =>
         val sessionId = await(createUser(a.userName)).id.sessionId
         await(pushNotificationSettingsRepository.update(b(0), b(1), b(2), b(3), b(4), b(5), b(6), sessionId))
         val result = await(pushNotificationSettingsRepository.find(sessionId))

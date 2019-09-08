@@ -11,14 +11,18 @@ import io.github.cactacea.backend.server.models.requests.comment.{DeleteComment,
 import io.github.cactacea.backend.server.models.responses.CommentCreated
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
 @Singleton
-class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String, commentsService: CommentsService, s: Swagger)
-  extends CactaceaController {
+class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: String,
+                                   commentsService: CommentsService,
+                                   f: CactaceaAuthenticationFilterFactory,
+                                   s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 
@@ -27,7 +31,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .tag(commentsTag)
         .operationId("findComments")
         .request[GetComments]
-        .responseWith[Array[Comment]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Comment]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
     } { request: GetComments =>
       commentsService.find(

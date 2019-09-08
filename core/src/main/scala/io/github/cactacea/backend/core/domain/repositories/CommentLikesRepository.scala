@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{CommentLikesValidator, CommentsValidator}
 
-
+@Singleton
 class CommentLikesRepository @Inject()(
                                         commentsValidator: CommentsValidator,
                                         commentLikesDAO: CommentLikesDAO,
@@ -30,7 +30,7 @@ class CommentLikesRepository @Inject()(
     } yield (())
   }
 
-  def findUsers(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def findUsers(commentId: CommentId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     for {
       _ <- commentsValidator.mustExist(commentId, sessionId)
       r <- commentLikesDAO.findUsers(commentId, since, offset, count, sessionId)

@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.models.{User, Feed}
+import io.github.cactacea.backend.core.domain.models.{Feed, User}
 import io.github.cactacea.backend.core.infrastructure.dao.FeedLikesDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, FeedLikesValidator, FeedsValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, SessionId, UserId}
+import io.github.cactacea.backend.core.infrastructure.validators.{FeedLikesValidator, FeedsValidator, UsersValidator}
 
-
+@Singleton
 class FeedLikesRepository @Inject()(
                                      usersValidator: UsersValidator,
                                      feedsValidator: FeedsValidator,
@@ -31,18 +31,18 @@ class FeedLikesRepository @Inject()(
     } yield (())
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     for {
       _ <- usersValidator.mustExist(userId, sessionId)
       r <- feedLikesDAO.find(userId, since, offset, count, sessionId)
     } yield (r)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     feedLikesDAO.find(sessionId.userId, since, offset, count, sessionId)
   }
 
-  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     for {
       _ <- feedsValidator.mustExist(feedId, sessionId)
       r <- feedLikesDAO.findUsers(feedId, since, offset, count, sessionId)

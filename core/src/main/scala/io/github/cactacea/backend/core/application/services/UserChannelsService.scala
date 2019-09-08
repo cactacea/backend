@@ -1,12 +1,13 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.models.Channel
 import io.github.cactacea.backend.core.domain.repositories._
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, ChannelId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, SessionId, UserId}
 
+@Singleton
 class UserChannelsService @Inject()(
                                      userChannelsRepository: UserChannelRepository,
                                      databaseService: DatabaseService
@@ -26,11 +27,11 @@ class UserChannelsService @Inject()(
     }
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Channel]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Channel]] = {
     userChannelsRepository.find(userId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Channel]] = {
+  def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[Seq[Channel]] = {
     userChannelsRepository.find(since, offset, count, hidden, sessionId)
   }
 

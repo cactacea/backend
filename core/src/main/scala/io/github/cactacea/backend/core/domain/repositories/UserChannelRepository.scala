@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.ChannelAuthorityType
 import io.github.cactacea.backend.core.domain.models.Channel
@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.{ChannelsDAO, UserChan
 import io.github.cactacea.backend.core.infrastructure.identifiers.{ChannelId, SessionId, UserId}
 import io.github.cactacea.backend.core.infrastructure.validators.{UserChannelsValidator, UsersValidator}
 
-
+@Singleton
 class UserChannelRepository @Inject()(
                                        usersValidator: UsersValidator,
                                        userChannelsValidator: UserChannelsValidator,
@@ -25,7 +25,7 @@ class UserChannelRepository @Inject()(
     } yield (())
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Channel]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Channel]] = {
     for {
       _ <- usersValidator.mustNotSame(userId, sessionId)
       _ <- usersValidator.mustExist(userId, sessionId)
@@ -33,7 +33,7 @@ class UserChannelRepository @Inject()(
     } yield (r)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[List[Channel]] = {
+  def find(since: Option[Long], offset: Int, count: Int, hidden: Boolean, sessionId: SessionId): Future[Seq[Channel]] = {
     userChannelsDAO.find(sessionId.userId, since, offset, count, hidden, sessionId)
   }
 

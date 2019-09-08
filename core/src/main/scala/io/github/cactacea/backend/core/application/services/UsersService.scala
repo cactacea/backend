@@ -1,13 +1,14 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.{User, UserStatus}
-import io.github.cactacea.backend.core.domain.repositories.{UsersRepository}
+import io.github.cactacea.backend.core.domain.repositories.UsersRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId, UserId}
 
+@Singleton
 class UsersService @Inject()(
                                  usersRepository: UsersRepository,
                                  databaseService: DatabaseService
@@ -35,7 +36,7 @@ class UsersService @Inject()(
            since: Option[Long],
            offset: Int,
            count: Int,
-           sessionId: SessionId) : Future[List[User]]= {
+           sessionId: SessionId) : Future[Seq[User]]= {
 
     usersRepository.find(displayName, since, offset, count, sessionId)
   }

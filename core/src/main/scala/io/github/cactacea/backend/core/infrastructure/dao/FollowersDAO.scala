@@ -59,7 +59,7 @@ class FollowersDAO @Inject()(db: DatabaseService, relationshipsDAO: Relationship
            since: Option[Long],
            offset: Int,
            count: Int,
-           sessionId: SessionId): Future[List[User]] = {
+           sessionId: SessionId): Future[Seq[User]] = {
 
     find(sessionId.userId, userName, since, offset, count, sessionId)
   }
@@ -69,7 +69,7 @@ class FollowersDAO @Inject()(db: DatabaseService, relationshipsDAO: Relationship
            since: Option[Long],
            offset: Int,
            count: Int,
-           sessionId: SessionId): Future[List[User]] = {
+           sessionId: SessionId): Future[Seq[User]] = {
 
     val by = sessionId.userId
     val q = quote {

@@ -5,15 +5,17 @@ import io.github.cactacea.backend.auth.core.domain.models.Authentication
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 
-object AuthContext {
+object AuthContext extends AuthContextInfo
 
-  private[this] val localUser = new Local[Authentication]
-  def auth: Authentication = localUser() match {
+trait AuthContextInfo {
+
+  private[this] val localAuth = new Local[Authentication]
+  def auth: Authentication = localAuth() match {
     case Some(auth) => auth
     case None => throw new CactaceaException(CactaceaErrors.SessionNotAuthorized)
   }
-  def setAuth(auth: Authentication): Unit = localUser.update(auth)
-  def clearId(): Unit = localUser.clear()
+  def setAuth(auth: Authentication): Unit = localAuth.update(auth)
+  def clearAuth(): Unit = localAuth.clear()
 
   private[this] val localScope = new Local[Option[String]]
   def scope: Option[String] = localScope() match {

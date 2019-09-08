@@ -1,12 +1,13 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.{User, Feed}
+import io.github.cactacea.backend.core.domain.models.{Feed, User}
 import io.github.cactacea.backend.core.domain.repositories.FeedLikesRepository
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, SessionId, UserId}
 
+@Singleton
 class FeedLikesService @Inject()(
                                   databaseService: DatabaseService,
                                   feedLikesRepository: FeedLikesRepository
@@ -26,15 +27,15 @@ class FeedLikesService @Inject()(
     }
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     feedLikesRepository.find(userId, since, offset, count, sessionId)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = {
+  def find(since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {
     feedLikesRepository.find(since, offset, count, sessionId)
   }
 
-  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def findUsers(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     feedLikesRepository.findUsers(feedId, since, offset, count, sessionId)
   }
 

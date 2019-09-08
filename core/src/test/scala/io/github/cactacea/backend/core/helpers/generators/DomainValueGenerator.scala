@@ -22,6 +22,8 @@ trait DomainValueGenerator extends ValueGenerator {
   lazy val feedTagGen: Gen[String] = Gen.listOfN(198, Gen.alphaChar).map(_.mkString)
   lazy val reportContentGen: Gen[String] = Gen.listOfN(1000, Gen.alphaChar).map(_.mkString)
 
+  lazy val feedTag5SeqOptGen: Gen[Option[String]] = Gen.option(Gen.listOfN(5, feedTagGen).map(_.mkString(" ")))
+
   // option string generator
   lazy val messageTextOptGen: Gen[Option[String]] = Gen.option(messageTextGen)
   lazy val reportContentOptGen: Gen[Option[String]] = Gen.option(reportContentGen)
@@ -34,9 +36,9 @@ trait DomainValueGenerator extends ValueGenerator {
   } yield (userName)
 
   lazy val passwordGen: Gen[String] = for {
-    head <- Gen.listOfN(15, Gen.alphaNumChar).map(_.mkString)
-    last <- Gen.listOfN(15, Gen.alphaNumChar).map(_.mkString)
-    password <- Gen.delay(s"${head}_${last}")
+    head <- Gen.listOfN(5, Gen.alphaNumChar).map(_.mkString)
+    last <- Gen.listOfN(5, Gen.alphaNumChar).map(_.mkString)
+    password <- Gen.delay(s"${head}_${last}_2020")
   } yield (password)
 
 

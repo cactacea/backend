@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.dao.MutesDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{UsersValidator, MutesValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{SessionId, UserId}
+import io.github.cactacea.backend.core.infrastructure.validators.{MutesValidator, UsersValidator}
 
-
+@Singleton
 class MutesRepository @Inject()(
                                  usersValidator: UsersValidator,
                                  mutesDAO: MutesDAO,
@@ -32,7 +32,7 @@ class MutesRepository @Inject()(
     } yield (())
   }
 
-  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[List[User]]= {
+  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId) : Future[Seq[User]]= {
     mutesDAO.find(userName, since, offset, count, sessionId)
   }
 

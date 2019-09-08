@@ -16,7 +16,7 @@ class PushNotificationMessagesDAO @Inject()(
 
   import db._
 
-  def find(id: MessageId): Future[Option[List[PushNotification]]] = {
+  def find(id: MessageId): Future[Option[Seq[PushNotification]]] = {
     findMessage(id).flatMap(_ match {
       case Some(m) =>
         findDestinations(id).map({ d =>
@@ -24,7 +24,7 @@ class PushNotificationMessagesDAO @Inject()(
           val url = deepLinkService.getMessages(m.channelId, m.id)
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
             PushNotification(userName, m.message, m.postedAt, url, destinations, pt)
-          }).toList
+          }).toSeq
           Some(r)
         })
       case None =>
@@ -41,7 +41,7 @@ class PushNotificationMessagesDAO @Inject()(
     run(q).map(_.headOption)
   }
 
-  def findDestinations(id: MessageId): Future[List[Destination]] = {
+  def findDestinations(id: MessageId): Future[Seq[Destination]] = {
     val q = quote {
       for {
         am <- query[UserMessages]
@@ -78,7 +78,7 @@ class PushNotificationMessagesDAO @Inject()(
     run(q).map(_ => ())
   }
 
-  def update(messageId: MessageId, userIds: List[UserId]): Future[Unit] = {
+  def update(messageId: MessageId, userIds: Seq[UserId]): Future[Unit] = {
     val q = quote {
       query[UserMessages]
         .filter(_.messageId == lift(messageId))

@@ -8,14 +8,14 @@ case class OneSignalNotification(
                                   appId: String,
 
                                   // Send to Specific Devices
-                                  includePlayerIds: Option[List[String]],
-                                  includeIosTokens: Option[List[String]],
-                                  includeWpUrls: Option[List[String]],
-                                  includeWpWnsUris: Option[List[String]],
-                                  includeAmazonRegIds: Option[List[String]],
-                                  includeChromeRegIds: Option[List[String]],
-                                  includeChromeWebRegIds: Option[List[String]],
-                                  includeAndroidRegIds: Option[List[String]],
+                                  includePlayerIds: Option[Seq[String]],
+                                  includeIosTokens: Option[Seq[String]],
+                                  includeWpUrls: Option[Seq[String]],
+                                  includeWpWnsUris: Option[Seq[String]],
+                                  includeAmazonRegIds: Option[Seq[String]],
+                                  includeChromeRegIds: Option[Seq[String]],
+                                  includeChromeWebRegIds: Option[Seq[String]],
+                                  includeAndroidRegIds: Option[Seq[String]],
 
                                   // Content & Language
                                   contents: OneSignalNotificationContent,
@@ -24,8 +24,8 @@ case class OneSignalNotification(
                                   templateId: Option[String],
                                   contentAvailable: Option[Boolean],
                                   mutableContent: Option[Boolean],
-                                  includedSegments: Option[List[String]],
-                                  excludedSegments: Option[List[String]],
+                                  includedSegments: Option[Seq[String]],
+                                  excludedSegments: Option[Seq[String]],
 
                                   // Attachments
                                   data: Option[Map[String, String]],
@@ -36,14 +36,14 @@ case class OneSignalNotification(
                                   chromeBigPicture: Option[String],
 
                                   // Action Buttons
-                                  buttons: Option[List[Map[String, String]]],
-                                  webButtons: Option[List[Map[String, String]]],
+                                  buttons: Option[Seq[Map[String, String]]],
+                                  webButtons: Option[Seq[Map[String, String]]],
                                   iosCategory: Option[String],
 
                                   // Appearance
                                   androidChannelId: Option[String],
                                   existingAndroidChannelId: Option[String],
-                                  androidBackgroundLayout: Option[List[Map[String, String]]],
+                                  androidBackgroundLayout: Option[Seq[Map[String, String]]],
                                   smallIcon: Option[String],
                                   largeIcon: Option[String],
                                   admSmallIcon: Option[String],
@@ -94,7 +94,7 @@ case class OneSignalNotification(
 object OneSignalNotification {
 
   // scalastyle:ignore
-  def apply(appId: String, includePlayerIds: List[String], en: String, ja: String, url: String): OneSignalNotification = {
+  def apply(appId: String, includePlayerIds: Seq[String], en: String, ja: String, url: String): OneSignalNotification = {
     val contents = OneSignalNotificationContent(en = Option(en), ja = Option(ja))
     OneSignalNotification(
       appId,

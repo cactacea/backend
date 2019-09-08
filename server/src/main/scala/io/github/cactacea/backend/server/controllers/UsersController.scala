@@ -12,6 +12,7 @@ import io.github.cactacea.backend.server.models.requests.feed.GetUserFeeds
 import io.github.cactacea.backend.server.models.requests.channel.{GetUserChannel, GetUserChannels}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -25,10 +26,12 @@ class UsersController @Inject()(
                                  friendsService: FriendsService,
                                  channelUsersService: ChannelUsersService,
                                  userChannelsService: UserChannelsService,
+                                 f: CactaceaAuthenticationFilterFactory,
                                  s: Swagger
                                   ) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 
@@ -37,7 +40,7 @@ class UsersController @Inject()(
         .tag(sessionTag)
         .operationId("findUsers")
         .request[GetUsers]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
 
     } { request: GetUsers =>
       usersService.find(
@@ -98,7 +101,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserFeeds")
         .request[GetUserFeeds]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetUserFeeds =>
       feedsService.find(
@@ -115,7 +118,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserFeedsLiked")
         .request[GetLikes]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetLikes =>
       feedLikesService.find(
@@ -132,7 +135,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserFollowers")
         .request[GetFollowers]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetFollowers =>
       followersService.find(
@@ -150,7 +153,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserFriends")
         .request[GetFriends]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetFriends =>
       friendsService.find(
@@ -215,7 +218,7 @@ class UsersController @Inject()(
         .tag(usersTag)
         .operationId("findUserChannels")
         .request[GetUserChannels]
-        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Channel]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
 
     } { request: GetUserChannels =>

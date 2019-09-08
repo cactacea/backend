@@ -1,12 +1,12 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import io.github.cactacea.backend.core.infrastructure.dao.DevicesDAO
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 
-
+@Singleton
 class DevicesRepository @Inject()(
                                    devicesDAO: DevicesDAO
                                  ) {

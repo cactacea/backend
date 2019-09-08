@@ -10,18 +10,17 @@ import org.scalacheck.Gen
 trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   // list generator
-  lazy val comment20ListGen = Gen.listOfN(20, commentGen)
-  lazy val feed20ListGen = Gen.listOfN(20, feedGen)
-  lazy val medium5ListOptGen: Gen[Option[List[Mediums]]] = Gen.option(medium5ListGen)
-  lazy val feedTag5ListOptGen: Gen[Option[String]] = Gen.option(Gen.listOfN(5, feedTagGen).map(_.mkString(" ")))
-  lazy val channel20ListGen: Gen[List[Channels]] = Gen.listOfN(20, channelGen)
-  lazy val medium5ListGen: Gen[List[Mediums]] = Gen.listOfN(5, mediumGen)
-  lazy val message20ListGen: Gen[List[(Messages, Option[Mediums])]] = for {
+  lazy val comment20SeqGen = Gen.listOfN(20, commentGen)
+  lazy val feed20SeqGen = Gen.listOfN(20, feedGen)
+  lazy val medium5SeqOptGen: Gen[Option[Seq[Mediums]]] = Gen.option(medium5SeqGen)
+  lazy val channel20SeqGen: Gen[Seq[Channels]] = Gen.listOfN(20, channelGen)
+  lazy val medium5SeqGen: Gen[Seq[Mediums]] = Gen.listOfN(5, mediumGen)
+  lazy val message20SeqGen: Gen[Seq[(Messages, Option[Mediums])]] = for {
     m <- messageGen
     i <- mediumOptGen
     l <- Gen.listOfN(20, (m, i))
   } yield (l)
-  lazy val boolean7ListGen: Gen[List[Boolean]] = Gen.listOfN(7, booleanGen)
+  lazy val boolean7SeqGen: Gen[Seq[Boolean]] = Gen.listOfN(7, booleanGen)
 
   // model generator
   lazy val userGen: Gen[Users] = for {
@@ -34,11 +33,11 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
     userStatus <- userStatusGen
   } yield Users(UserId(0L), userName, displayName, None, None, 0L, 0L, 0L, 0L, url, birthday, location, bio, userStatus, None)
 
-  lazy val userAuthentication20ListGen: Gen[List[UserAuthentications]] = for {
+  lazy val userAuthentication20SeqGen: Gen[Seq[UserAuthentications]] = for {
     l <- Gen.listOfN(20, userAuthenticationGen)
   } yield (l)
 
-  lazy val user20ListGen: Gen[List[Users]] = for {
+  lazy val user20SeqGen: Gen[Seq[Users]] = for {
     l <- Gen.listOfN(20, userGen)
   } yield (l)
 
@@ -172,7 +171,7 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   lazy val feedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
-    tags <- feedTag5ListOptGen
+    tags <- feedTag5SeqOptGen
     privacyType <- feedPrivacyTypeGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
@@ -181,7 +180,7 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   lazy val notExpiredFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
-    tags <- feedTag5ListOptGen
+    tags <- feedTag5SeqOptGen
     privacyType <- feedPrivacyTypeGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
@@ -191,7 +190,7 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   lazy val expiredFeedsGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
-    tags <- feedTag5ListOptGen
+    tags <- feedTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- passDateTimeMillisGen
@@ -200,7 +199,7 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   lazy val everyoneFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
-    tags <- feedTag5ListOptGen
+    tags <- feedTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
@@ -209,7 +208,7 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   lazy val followerFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
-    tags <- feedTag5ListOptGen
+    tags <- feedTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
@@ -218,7 +217,7 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   lazy val selfFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
-    tags <- feedTag5ListOptGen
+    tags <- feedTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
@@ -227,7 +226,7 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   lazy val friendFeedGen: Gen[Feeds] = for {
     message <- feedMessageTextGen
-    tags <- feedTag5ListOptGen
+    tags <- feedTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen

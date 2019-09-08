@@ -22,7 +22,7 @@ class PushNotificationMessagesDAOSpec extends DAOSpec {
 //    val messageId = await(messagesDAO.create(channelId, Some("new message"), None, sessionUser.id.toSessionId))
 //    await(userMessagesDAO.create(channelId, messageId, sessionUser.id.toSessionId))
 //
-//    val ids = List(
+//    val ids = Seq(
 //      sessionUser.id,
 //      user1.id,
 //      user2.id,

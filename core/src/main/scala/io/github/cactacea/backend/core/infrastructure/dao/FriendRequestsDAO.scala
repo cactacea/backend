@@ -77,7 +77,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
            offset: Int,
            count: Int,
            received: Boolean,
-           sessionId: SessionId): Future[List[FriendRequest]] = {
+           sessionId: SessionId): Future[Seq[FriendRequest]] = {
 
 
     if (received) {
@@ -91,7 +91,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
   private def findReceivedRequests(since: Option[Long],
                                    offset: Int,
                                    count: Int,
-                                   sessionId: SessionId): Future[List[FriendRequest]] = {
+                                   sessionId: SessionId): Future[Seq[FriendRequest]] = {
 
     val by = sessionId.userId
 
@@ -116,7 +116,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
   private def findSentRequests(since: Option[Long],
                                offset: Int,
                                count: Int,
-                               sessionId: SessionId): Future[List[FriendRequest]] = {
+                               sessionId: SessionId): Future[Seq[FriendRequest]] = {
 
     val by = sessionId.userId
 

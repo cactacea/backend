@@ -68,7 +68,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
                 since: Option[Long],
                 offset: Int,
                 count: Int,
-                sessionId: SessionId): Future[List[User]] = {
+                sessionId: SessionId): Future[Seq[User]] = {
     val by = sessionId.userId
     val q = quote {
       (for {
@@ -88,7 +88,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     run(q).map(_.map({ case (a, r, id) => User(a, r, id.value) }))
   }
 
-  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Feed]] = { // scalastyle:ignore
+  def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = { // scalastyle:ignore
     val e = System.currentTimeMillis()
     val by = sessionId.userId
     val q = quote {
@@ -135,7 +135,7 @@ class FeedLikesDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.map({ case (fl, l, f, i1, i2, i3, i4, i5, a, r, flb, fcb) =>
       val f2 = f.copy(commentCount = f.commentCount - fcb, likeCount = f.likeCount - flb)
-      Feed(f2, l, List(i1, i2, i3, i4, i5).flatten, a, r, fl.feedId.value)
+      Feed(f2, l, Seq(i1, i2, i3, i4, i5).flatten, a, r, fl.feedId.value)
     }))
   }
 

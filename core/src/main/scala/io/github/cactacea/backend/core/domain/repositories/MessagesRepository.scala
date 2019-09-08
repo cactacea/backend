@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.Message
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.validators._
 
-
+@Singleton
 class MessagesRepository @Inject()(
                                     userChannelsDAO: UserChannelsDAO,
                                     userChannelsValidator: UserChannelsValidator,
@@ -41,7 +41,7 @@ class MessagesRepository @Inject()(
     } yield (m)
   }
 
-  private def updateReadStatus(messages: List[Message], sessionId: SessionId): Future[Unit] = {
+  private def updateReadStatus(messages: Seq[Message], sessionId: SessionId): Future[Unit] = {
     val m = messages.filter(_.unread)
     if (m.size == 0) {
       Future.Unit
@@ -63,7 +63,7 @@ class MessagesRepository @Inject()(
            offset: Int,
            count: Int,
            ascending: Boolean,
-           sessionId: SessionId): Future[List[Message]] = {
+           sessionId: SessionId): Future[Seq[Message]] = {
     for {
       _ <- userChannelsValidator.mustJoined(sessionId.userId, channelId)
       r <- userMessagesDAO.find(channelId, since, offset, count, ascending, sessionId)

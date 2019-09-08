@@ -7,6 +7,6 @@ case class PushNotification(
                              message: Option[String],
                              postedAt: Long,
                              url: String,
-                             destinations: List[Destination],
+                             destinations: Seq[Destination],
                              notificationType: PushNotificationType
                            )

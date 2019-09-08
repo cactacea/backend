@@ -78,7 +78,7 @@ class MessagesDAO @Inject()(db: DatabaseService) {
     run(q).map(id => (id, postedAt))
   }
 
-  def updateReadCount(messageIds: List[MessageId]): Future[Unit] = {
+  def updateReadCount(messageIds: Seq[MessageId]): Future[Unit] = {
     val q = quote {
       query[Messages]
         .filter(m => liftQuery(messageIds).contains(m.id))

@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.application.services
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.QueueService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
@@ -9,6 +9,7 @@ import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.domain.repositories.CommentsRepository
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
 
+@Singleton
 class CommentsService @Inject()(
                                  commentsRepository: CommentsRepository,
                                  databaseService: DatabaseService,
@@ -32,7 +33,7 @@ class CommentsService @Inject()(
     }
   }
 
-  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
+  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
     commentsRepository.find(feedId, since, offset, count, sessionId)
   }
 

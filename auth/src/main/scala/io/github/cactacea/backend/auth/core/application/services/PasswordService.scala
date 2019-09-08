@@ -9,6 +9,7 @@ import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
 import io.github.cactacea.backend.auth.enums.TokenType
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.utils.RequestImplicits._
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
 import io.github.cactacea.filhouette.api.util.PasswordHasherRegistry
@@ -27,7 +28,6 @@ class PasswordService @Inject()(
                                ) {
 
   import db._
-  import io.github.cactacea.backend.utils.RequestImplicits._
 
   def changePassword(providerId: String, providerKey: String, newPassword: String)(implicit request: Request): Future[Response] = {
     transaction {

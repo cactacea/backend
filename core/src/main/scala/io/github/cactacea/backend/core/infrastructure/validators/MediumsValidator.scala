@@ -20,7 +20,7 @@ class MediumsValidator @Inject()(mediumsDAO: MediumsDAO) {
     })
   }
 
-  def mustExist(mediumIdsOpt: Option[List[MediumId]], sessionId: SessionId): Future[Unit] = {
+  def mustExist(mediumIdsOpt: Option[Seq[MediumId]], sessionId: SessionId): Future[Unit] = {
     mediumIdsOpt match {
       case Some(mediumIds) =>
         mediumsDAO.exists(mediumIds, sessionId).flatMap(_ match {

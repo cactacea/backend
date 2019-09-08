@@ -10,6 +10,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.comment.{DeleteCommentLike, GetCommentLikes, PostCommentLike}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -17,9 +18,11 @@ import io.swagger.models.Swagger
 class CommentLikesController @Inject()(
                                         @Flag("cactacea.api.prefix") apiPrefix: String,
                                         commentLikesService: CommentLikesService,
+                                        f: CactaceaAuthenticationFilterFactory,
                                         s: Swagger) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 
@@ -28,8 +31,8 @@ class CommentLikesController @Inject()(
         .tag(commentLikesTag)
         .operationId("findUsersLikedComment")
         .request[GetCommentLikes]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Array(CommentNotFound))))
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(CommentNotFound))))
     } { request: GetCommentLikes =>
       commentLikesService.findUsers(
         request.id,

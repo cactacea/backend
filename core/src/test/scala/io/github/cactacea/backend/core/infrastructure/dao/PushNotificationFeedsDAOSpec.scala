@@ -17,8 +17,8 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
 //    val medium2 = createMedium(sessionUser1.id)
 //    val medium3 = createMedium(sessionUser1.id)
 //    val message = "message"
-//    val mediums = List(medium1.id, medium2.id, medium3.id)
-//    val tags = List("tag1", "tag2", "tag3")
+//    val mediums = Seq(medium1.id, medium2.id, medium3.id)
+//    val tags = Seq("tag1", "tag2", "tag3")
 //    val privacyType = FeedPrivacyType.followers
 //    val contentWarning = true
 //
@@ -83,8 +83,8 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
 //    val medium2 = createMedium(sessionUser1.id)
 //    val medium3 = createMedium(sessionUser1.id)
 //    val message = "message"
-//    val mediums = List(medium1.id, medium2.id, medium3.id)
-//    val tags = List("tag1", "tag2", "tag3")
+//    val mediums = Seq(medium1.id, medium2.id, medium3.id)
+//    val tags = Seq("tag1", "tag2", "tag3")
 //    val privacyType = FeedPrivacyType.followers
 //    val contentWarning = true
 //
@@ -105,7 +105,7 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
 //    // create user feeds
 //    await(userFeedsDAO.create(feedId, sessionUser2.id.toSessionId))
 //
-//    val ids =  List(
+//    val ids =  Seq(
 //      sessionUser1.id,
 //      sessionUser3.id,
 //      sessionUser4.id,
@@ -140,15 +140,15 @@ class PushNotificationFeedsDAOSpec extends DAOSpec {
 //    //    val message4 = "message4"
 //    //    val message5 = "message5"
 //    //    val message6 = "message6"
-//    val mediums1 = List[MediumId]()
-//    val mediums2 = List(medium1.id)
-//    val mediums3 = List(medium1.id, medium2.id)
-//    //    val mediums4 = List(medium1.id, medium2.id, medium3.id)
-//    //    val mediums5 = List(medium1.id, medium2.id)
-//    //    val mediums6 = List(medium1.id, medium2.id, medium3.id)
-//    val tags1 = List[String]()
-//    val tags2 = List("tag1")
-//    val tags3 = List("tag1", "tag2")
+//    val mediums1 = Seq[MediumId]()
+//    val mediums2 = Seq(medium1.id)
+//    val mediums3 = Seq(medium1.id, medium2.id)
+//    //    val mediums4 = Seq(medium1.id, medium2.id, medium3.id)
+//    //    val mediums5 = Seq(medium1.id, medium2.id)
+//    //    val mediums6 = Seq(medium1.id, medium2.id, medium3.id)
+//    val tags1 = Seq[String]()
+//    val tags2 = Seq("tag1")
+//    val tags3 = Seq("tag1", "tag2")
 //    val privacyType1 = FeedPrivacyType.self
 //    val privacyType2 = FeedPrivacyType.friends
 //    val privacyType3 = FeedPrivacyType.self

@@ -4,12 +4,12 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
-import io.github.cactacea.backend.auth.core.utils.moduels.JWTAuthenticationModule
+import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper}
-import io.github.cactacea.backend.server.utils.modules.APIPrefixModule
+import io.github.cactacea.backend.server.utils.modules.{DefaultAPIPrefixModule, DefaultAuthFilterModule}
 import io.github.cactacea.backend.server.utils.warmups.{CactaceaDatabaseMigrationHandler, CactaceaQueueHandler}
 import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
 
@@ -52,8 +52,9 @@ class CactaceaServer extends BaseServer {
       .add[HealthController]
   }
 
-  addFrameworkModule(APIPrefixModule)
-  addFrameworkModule(JWTAuthenticationModule)
+  addFrameworkModule(DefaultAPIPrefixModule)
+  addFrameworkModule(DefaultAuthFilterModule)
+  addFrameworkModule(DefaultAuthModule)
   addFrameworkModule(DefaultMailModule)
 
   override def warmup() {

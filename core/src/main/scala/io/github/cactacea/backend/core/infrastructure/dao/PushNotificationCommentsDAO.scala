@@ -16,7 +16,7 @@ class PushNotificationCommentsDAO @Inject()(
 
   import db._
 
-  def find(id: CommentId): Future[Option[List[PushNotification]]] = {
+  def find(id: CommentId): Future[Option[Seq[PushNotification]]] = {
     findComment(id).flatMap(_ match {
       case Some(c) =>
         findDestinations(id).map({ d =>
@@ -30,7 +30,7 @@ class PushNotificationCommentsDAO @Inject()(
           }
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
             PushNotification(userName, None, c.postedAt, url, destinations, pt)
-          }).toList
+          }).toSeq
           Some(r)
         })
       case None =>
@@ -47,7 +47,7 @@ class PushNotificationCommentsDAO @Inject()(
     run(q).map(_.headOption)
   }
 
-  private def findDestinations(id: CommentId): Future[List[Destination]] = {
+  private def findDestinations(id: CommentId): Future[Seq[Destination]] = {
     val q = quote {
       for {
         c <- query[Comments]

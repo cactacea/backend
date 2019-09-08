@@ -102,7 +102,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
 
   feature("find") {
     scenario("should return an user`s channels") {
-      forOne(userGen, userGen, messageTextGen, channel20ListGen) { (s, a1, m, g) =>
+      forOne(userGen, userGen, messageTextGen, channel20SeqGen) { (s, a1, m, g) =>
 
         val sessionId = await(createUser(s.userName)).id.sessionId
         val userId1 = await(createUser(a1.userName)).id
@@ -180,7 +180,7 @@ class UserChannelsRepositorySpec extends RepositorySpec {
 
   feature("find session's channels") {
     scenario("should return channels") {
-      forOne(userGen, messageTextGen, channel20ListGen) { (s, m, g) =>
+      forOne(userGen, messageTextGen, channel20SeqGen) { (s, m, g) =>
 
         val sessionId = await(createUser(s.userName)).id.sessionId
         val channels = g.map({g =>

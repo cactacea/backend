@@ -178,7 +178,7 @@ class UserFeedsDAOSpec extends DAOSpec {
 
     scenario("should return feeds") {
 
-      forAll(userGen, userGen, feed20ListGen, feedPrivacyTypeOptGen) { (s, a1, f, t) =>
+      forAll(userGen, userGen, feed20SeqGen, feedPrivacyTypeOptGen) { (s, a1, f, t) =>
 
         // preparing
         //  user1 is friend.
@@ -322,7 +322,7 @@ class UserFeedsDAOSpec extends DAOSpec {
     }
 
     scenario("should return mediums") {
-      forOne(userGen, userGen, everyoneFeedGen, medium5ListGen) {
+      forOne(userGen, userGen, everyoneFeedGen, medium5SeqGen) {
         (s, a1, f, m) =>
           // preparing
           //  user1 is friend
@@ -359,7 +359,7 @@ class UserFeedsDAOSpec extends DAOSpec {
 
     scenario("should not return expired feeds") {
 
-      forAll(userGen, userGen, feed20ListGen, passDateTimeMillisGen) { (s, a1, f, t) =>
+      forAll(userGen, userGen, feed20SeqGen, passDateTimeMillisGen) { (s, a1, f, t) =>
 
         // preparing
         //  user1 is friend.

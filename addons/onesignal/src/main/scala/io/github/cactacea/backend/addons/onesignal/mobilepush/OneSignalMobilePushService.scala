@@ -28,8 +28,8 @@ class OneSignalMobilePushService @Inject()(
   def sendFeed(id: FeedId): Future[Unit] = {
     pushNotificationFeedsRepository.find(id).flatMap(_ match {
       case Some(notifications) =>
-        val list = createContentList(notifications)
-        sendContentList(list).map({ result =>
+        val list = createContentSeq(notifications)
+        sendContentSeq(list).map({ result =>
           Future.traverseSequentially(result) { ids =>
             pushNotificationFeedsRepository.update(id, ids)
           }.map(_ =>
@@ -50,8 +50,8 @@ class OneSignalMobilePushService @Inject()(
   def sendMessage(id: MessageId): Future[Unit] = {
     pushNotificationMessagesRepository.find(id).flatMap(_ match {
       case Some(notifications) =>
-        val list = createContentList(notifications)
-        sendContentList(list).map({ result =>
+        val list = createContentSeq(notifications)
+        sendContentSeq(list).map({ result =>
           Future.traverseSequentially(result) { ids =>
             pushNotificationMessagesRepository.update(id, ids)
           }.map(_ =>
@@ -73,7 +73,7 @@ class OneSignalMobilePushService @Inject()(
     pushNotificationCommentsRepository.find(id).flatMap(_ match {
       case Some(notifications) =>
         for {
-          _ <- sendContentList(createContentList(notifications))
+          _ <- sendContentSeq(createContentSeq(notifications))
           r <- db.transaction(pushNotificationCommentsRepository.update(id))
         } yield (r)
       case None =>
@@ -87,7 +87,7 @@ class OneSignalMobilePushService @Inject()(
     pushNotificationFriendRequestsRepository.find(id).flatMap(_ match {
       case Some(notifications) =>
         for {
-          _ <- sendContentList(createContentList(notifications))
+          _ <- sendContentSeq(createContentSeq(notifications))
           r <- db.transaction(pushNotificationFriendRequestsRepository.update(id))
         } yield (r)
       case None =>
@@ -101,7 +101,7 @@ class OneSignalMobilePushService @Inject()(
     pushNotificationInvitationsRepository.find(id).flatMap(_ match {
       case Some(notifications) =>
         for {
-          _ <- sendContentList(createContentList(notifications))
+          _ <- sendContentSeq(createContentSeq(notifications))
           r <- db.transaction(pushNotificationInvitationsRepository.update(id))
         } yield (r)
       case None =>
@@ -113,7 +113,7 @@ class OneSignalMobilePushService @Inject()(
 
 
 
-  private def createContentList(notifications: List[PushNotification]): List[(OneSignalNotification, List[UserId])] = {
+  private def createContentSeq(notifications: Seq[PushNotification]): Seq[(OneSignalNotification, Seq[UserId])] = {
     notifications.flatMap({ notification =>
       val displayName = notification.displayName
       val message = notification.message
@@ -129,7 +129,7 @@ class OneSignalMobilePushService @Inject()(
     })
   }
 
-  private def sendContentList(l: List[(OneSignalNotification, List[UserId])]): Future[List[List[UserId]]] = {
+  private def sendContentSeq(l: Seq[(OneSignalNotification, Seq[UserId])]): Future[Seq[Seq[UserId]]] = {
     val result = Future.traverseSequentially(l) { case (content, accountIds) =>
       client.createNotification(content).flatMap(response =>
         if (response.statusCode >= 200 && response.statusCode <= 299) {
@@ -139,7 +139,7 @@ class OneSignalMobilePushService @Inject()(
         }
       )
     }
-    result.map(_.flatten.toList)
+    result.map(_.flatten.toSeq)
   }
 
 

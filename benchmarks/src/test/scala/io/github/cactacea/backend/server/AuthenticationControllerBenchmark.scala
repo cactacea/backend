@@ -8,22 +8,7 @@ import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignU
 import io.github.cactacea.backend.core.util.configs.Config
 import org.openjdk.jmh.annotations.Benchmark
 
-class AuthenticationsControllerBenchmark extends ControllerBenchmark {
-
-  override def beforeAll(): Unit = {
-    val userName = s"SessionsController"
-    val password = s"SessionsController_"
-    val signUp = PostSignUp(userName, password, Request())
-
-    val body = mapper.writePrettyString(signUp)
-    val headers = Map(
-      Config.auth.headerNames.apiKey -> Config.auth.keys.ios
-    )
-    val request = RequestBuilder.post("/sessions")
-    request.body(body)
-    request.headers(headers)
-    httpService(request)
-  }
+class AuthenticationControllerBenchmark extends ControllerBenchmark {
 
   @Benchmark
   def signUp(): Future[Response] = {
@@ -43,12 +28,10 @@ class AuthenticationsControllerBenchmark extends ControllerBenchmark {
 
   @Benchmark
   def signIn(): Future[Response] = {
-    val userName = "benchmark"
-    val password = "benchmark_2020"
     val headers = Map(
       Config.auth.headerNames.apiKey -> Config.auth.keys.ios
     )
-    val request = RequestBuilder.get(s"/sessions?userName=${userName}&password=${password}")
+    val request = RequestBuilder.get(s"/sessions?userName=${sessionUserName}&password=${sessionPassword}")
     request.headers(headers)
     httpService(request)
   }

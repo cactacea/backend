@@ -40,7 +40,7 @@ class UserFeedsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[List[Feed]] = { // scalastyle:ignore
+  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[Seq[Feed]] = { // scalastyle:ignore
     val e = System.currentTimeMillis()
     val by = sessionId.userId
     val q = quote {
@@ -84,7 +84,7 @@ class UserFeedsDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.map({ case (af, f, l, i1, i2, i3, i4, i5, a, r, flb, fcb) =>
       val f2 = f.copy(commentCount = f.commentCount - fcb, likeCount = f.likeCount - flb)
-      Feed(f2, l, List(i1, i2, i3, i4, i5).flatten, a, r, af.feedId.value)
+      Feed(f2, l, Seq(i1, i2, i3, i4, i5).flatten, a, r, af.feedId.value)
     }))
   }
 

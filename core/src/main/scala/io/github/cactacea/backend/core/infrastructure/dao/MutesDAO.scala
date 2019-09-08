@@ -62,7 +62,7 @@ class MutesDAO @Inject()(db: DatabaseService, relationshipsDAO: RelationshipsDAO
     run(q)
   }
 
-  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     val by = sessionId.userId
     val q = quote {
       (for {

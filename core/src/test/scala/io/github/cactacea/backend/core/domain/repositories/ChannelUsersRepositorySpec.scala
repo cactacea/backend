@@ -530,7 +530,7 @@ class ChannelUsersRepositorySpec extends RepositorySpec {
   feature("find") {
     
     scenario("should return user list") {
-      forOne(userGen, user20ListGen, everyoneChannelGen) { (s, l, g) =>
+      forOne(userGen, user20SeqGen, everyoneChannelGen) { (s, l, g) =>
         val sessionId = await(createUser(s.userName)).id.sessionId
         val channelId = await(channelsRepository.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val userIds = l.map({ a =>

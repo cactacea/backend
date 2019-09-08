@@ -53,7 +53,7 @@ trait BaseChatServer extends TwitterServer {
     *    .withRequestTimeout(10.minutes)
     * }
     *
-    * @param se]o configure.
+    * @param server configure.
     *
     * @return a configud WebSocket.Server.
     */

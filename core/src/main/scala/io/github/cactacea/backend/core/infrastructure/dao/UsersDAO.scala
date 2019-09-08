@@ -79,7 +79,7 @@ class UsersDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def exists(userIds: List[UserId], sessionId: SessionId): Future[Boolean] = {
+  def exists(userIds: Seq[UserId], sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.userId
     val q = quote {
       query[Users]
@@ -118,7 +118,7 @@ class UsersDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[User]] = {
+  def find(userName: Option[String], since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[User]] = {
     for {
       n <- findUserName(since)
       r <- findSortByUserName(userName, n, offset, count, sessionId)
@@ -144,7 +144,7 @@ class UsersDAO @Inject()(db: DatabaseService) {
                                     sinceUserName: Option[String],
                                     offset: Int,
                                     count: Int,
-                                    sessionId: SessionId): Future[List[User]] = {
+                                    sessionId: SessionId): Future[Seq[User]] = {
 
     val by = sessionId.userId
 

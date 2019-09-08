@@ -159,7 +159,7 @@ class NotificationsDAOSpec extends DAOSpec {
         val channelId = await(channelsDAO.create(g.name, g.invitationOnly, g.privacyType, g.authorityType, sessionId))
         val invitationId = await(invitationsDAO.create(userId, channelId, sessionId))
         val notificationId = await(notificationsDAO.create(invitationId, userId, sessionId))
-        await(notificationsDAO.updateReadStatus(List(notificationId), userId.sessionId))
+        await(notificationsDAO.updateReadStatus(Seq(notificationId), userId.sessionId))
 
         // result
         val result = await(db.run(query[Notifications].filter(_.id == lift(notificationId)))).headOption
@@ -171,7 +171,7 @@ class NotificationsDAOSpec extends DAOSpec {
 
   feature("find") {
     scenario("should return notification user received") {
-      forOne(userGen, userGen, channel20ListGen) { (s, a, l) =>
+      forOne(userGen, userGen, channel20SeqGen) { (s, a, l) =>
 
         // preparing
         val sessionId = await(usersDAO.create(s.userName)).sessionId

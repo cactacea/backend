@@ -8,7 +8,7 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
 addSbtPlugin("io.github.davidmweber" % "flyway-sbt" % "6.0.0")
 
-addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "1.3.17")
+addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "2.112")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.4.1")

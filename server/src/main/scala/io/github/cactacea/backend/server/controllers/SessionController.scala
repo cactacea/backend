@@ -3,7 +3,6 @@ package io.github.cactacea.backend.server.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.auth.server.utils.contexts.AuthContext
 import io.github.cactacea.backend.core.application.services._
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
@@ -15,6 +14,7 @@ import io.github.cactacea.backend.server.models.requests.user.GetUserName
 import io.github.cactacea.backend.server.models.responses.UserNameNotExists
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
+import io.github.cactacea.backend.server.utils.filters.CactaceaAuthenticationFilterFactory
 import io.github.cactacea.backend.server.utils.swagger.CactaceaController
 import io.swagger.models.Swagger
 
@@ -22,7 +22,6 @@ import io.swagger.models.Swagger
 @Singleton
 class SessionController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
-                                   s: Swagger,
                                    usersService: UsersService,
                                    userChannelsService: UserChannelsService,
                                    feedsService: FeedsService,
@@ -33,10 +32,13 @@ class SessionController @Inject()(
                                    invitationService: InvitationsService,
                                    mutesService: MutesService,
                                    friendRequestsService: FriendRequestsService,
-                                   blocksService: BlocksService
+                                   blocksService: BlocksService,
+                                   f: CactaceaAuthenticationFilterFactory,
+                                   s: Swagger
                                  ) extends CactaceaController {
 
   implicit val swagger: Swagger = s
+  implicit val factory: CactaceaAuthenticationFilterFactory = f
 
   prefix(apiPrefix) {
 
@@ -45,10 +47,10 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("registerSession")
         .responseWith[User](Status.Ok.code, successfulMessage)
-    } { request: PutSession =>
+    } { request: PostSession =>
       usersService.create(
-        AuthContext.auth.providerId,
-        AuthContext.auth.providerKey,
+        CactaceaContext.auth.providerId,
+        CactaceaContext.auth.providerKey,
         request.userName,
         request.displayName
       )
@@ -136,7 +138,7 @@ class SessionController @Inject()(
         .tag(blocksTag)
         .operationId("findBlockingUsers")
         .request[GetSessionBlocks]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     } { request: GetSessionBlocks =>
       blocksService.find(
         request.userName,
@@ -152,7 +154,7 @@ class SessionController @Inject()(
         .tag(feedsTag)
         .operationId("findSessionFeeds")
         .request[GetSessionFeeds]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetSessionFeeds =>
       feedsService.find(
@@ -169,7 +171,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findSessionFeedsLiked")
         .request[GetSessionLikedFeeds]
-        .responseWith[Array[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetSessionLikedFeeds =>
       feedLikesService.find(
         request.since,
@@ -184,7 +186,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findSessionFollow")
         .request[GetSessionFollows]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollows =>
       followsService.find(
         request.userName,
@@ -200,7 +202,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findSessionFollowers")
         .request[GetSessionFollowers]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFollowers =>
       followersService.find(
         request.userName,
@@ -216,7 +218,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findSessionFriends")
         .request[GetSessionFriends]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     }  { request: GetSessionFriends =>
       friendsService.find(
         request.userName,
@@ -232,7 +234,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findSessionChannels")
         .request[GetSessionChannels]
-        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Channel]](Status.Ok.code, successfulMessage)
     } { request: GetSessionChannels =>
       userChannelsService.find(
         request.since,
@@ -248,7 +250,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findHiddenChannels")
         .request[GetSessionChannels]
-        .responseWith[Array[Channel]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Channel]](Status.Ok.code, successfulMessage)
 
     } { request: GetSessionChannels =>
       userChannelsService.find(
@@ -265,7 +267,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findInvitations")
         .request[GetSessionInvitations]
-        .responseWith[Array[Invitation]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Invitation]](Status.Ok.code, successfulMessage)
     } { request: GetSessionInvitations =>
       invitationService.find(
         request.since,
@@ -280,7 +282,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findMutingUsers")
         .request[GetSessionMutes]
-        .responseWith[Array[User]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[User]](Status.Ok.code, successfulMessage)
     } { request: GetSessionMutes =>
       mutesService.find(
         request.userName,
@@ -296,7 +298,7 @@ class SessionController @Inject()(
         .tag(sessionTag)
         .operationId("findFriendRequests")
         .request[GetSessionFriendRequests]
-        .responseWith[Array[FriendRequest]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[FriendRequest]](Status.Ok.code, successfulMessage)
     } { request: GetSessionFriendRequests =>
       friendRequestsService.find(
         request.since,

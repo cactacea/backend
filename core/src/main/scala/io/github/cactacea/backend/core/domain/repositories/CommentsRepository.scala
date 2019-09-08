@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.Comment
@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.infrastructure.dao.{CommentReportsDAO, Co
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{CommentsValidator, FeedsValidator}
 
-
+@Singleton
 class CommentsRepository @Inject()(
                                     commentsDAO: CommentsDAO,
                                     commentReportsDAO: CommentReportsDAO,
@@ -17,7 +17,7 @@ class CommentsRepository @Inject()(
                                     notificationsDAO: NotificationsDAO
                                   ) {
 
-  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[List[Comment]] = {
+  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
     for {
       _ <- feedsValidator.mustExist(feedId, sessionId)
       r <- commentsDAO.find(feedId, since, offset, count, sessionId)
