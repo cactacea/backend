@@ -231,12 +231,8 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.auth.server.models.requests">requests</a></dd></dl></div>
     </li><li class="current-entities indented9">
                         <span class="separator"></span>
-                        <a class="class" href="GetSignIn.html" title=""></a>
-                        <a href="GetSignIn.html" title="">GetSignIn</a>
-                      </li><li class="current-entities indented9">
-                        <span class="separator"></span>
-                        <a class="class" href="PostEmailSignUp.html" title=""></a>
-                        <a href="PostEmailSignUp.html" title="">PostEmailSignUp</a>
+                        <a class="class" href="PostSignIn.html" title=""></a>
+                        <a href="PostSignIn.html" title="">PostSignIn</a>
                       </li><li class="current-entities indented9">
                         <span class="separator"></span>
                         <a class="class" href="PostSignUp.html" title=""></a>
@@ -280,10 +276,10 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="io.github.cactacea.backend.auth.server.models.requests.sessions.GetSignIn" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GetSignInextendsProductwithSerializable"></a><a id="GetSignIn:GetSignIn"></a>
+              <ol><li name="io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignIn" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PostSignInextendsProductwithSerializable"></a><a id="PostSignIn:PostSignIn"></a>
       <span class="permalink">
-      <a href="../../../../../../../../../io/github/cactacea/backend/auth/server/models/requests/sessions/index.html#GetSignInextendsProductwithSerializable" title="Permalink">
+      <a href="../../../../../../../../../io/github/cactacea/backend/auth/server/models/requests/sessions/index.html#PostSignInextendsProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -292,23 +288,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="GetSignIn.html"><span class="name">GetSignIn</span></a><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.auth.server.models.requests.sessions.PostEmailSignUp" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PostEmailSignUpextendsProductwithSerializable"></a><a id="PostEmailSignUp:PostEmailSignUp"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../../io/github/cactacea/backend/auth/server/models/requests/sessions/index.html#PostEmailSignUpextendsProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="PostEmailSignUp.html"><span class="name">PostEmailSignUp</span></a><span class="params">(<span name="email">email: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="PostSignIn.html"><span class="name">PostSignIn</span></a><span class="params">(<span name="authType">authType: <a href="../../../../enums/AuthType.html" class="extype" name="io.github.cactacea.backend.auth.enums.AuthType">AuthType</a></span>, <span name="identifier">identifier: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -324,7 +304,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="PostSignUp.html"><span class="name">PostSignUp</span></a><span class="params">(<span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="PostSignUp.html"><span class="name">PostSignUp</span></a><span class="params">(<span name="authType">authType: <a href="../../../../enums/AuthType.html" class="extype" name="io.github.cactacea.backend.auth.enums.AuthType">AuthType</a></span>, <span name="identifier">identifier: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="request">request: <span class="extype" name="com.twitter.finagle.http.Request">Request</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       

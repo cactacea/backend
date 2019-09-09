@@ -528,9 +528,9 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.repositories.UsersRepository#create" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="create(providerId:String,providerKey:String,userName:String,displayName:Option[String]):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.User]"></a><a id="create(String,String,String,Option[String]):Future[User]"></a>
+      <a id="create(providerId:String,providerKey:String,userName:String,displayName:Option[String]):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]"></a><a id="create(String,String,String,Option[String]):Future[UserId]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/UsersRepository.html#create(providerId:String,providerKey:String,userName:String,displayName:Option[String]):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.User]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/UsersRepository.html#create(providerId:String,providerKey:String,userName:String,displayName:Option[String]):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -539,7 +539,23 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">create</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../models/User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]</span>
+        <span class="name">create</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.UsersRepository#create" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="create(providerId:String,providerKey:String,userName:String):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]"></a><a id="create(String,String,String):Future[UserId]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/UsersRepository.html#create(providerId:String,providerKey:String,userName:String):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">create</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>
       </span>
       
       
@@ -677,6 +693,22 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.repositories.UsersRepository#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="find(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.User]"></a><a id="find(String,String):Future[User]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/repositories/UsersRepository.html#find(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.User]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">find</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../models/User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]</span>
+      </span>
+      
+      
     </li><li name="io.github.cactacea.backend.core.domain.repositories.UsersRepository#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="find(providerId:String,providerKey:String,expiresIn:Long):com.twitter.util.Future[Option[io.github.cactacea.backend.core.domain.models.User]]"></a><a id="find(String,String,Long):Future[Option[User]]"></a>
       <span class="permalink">
