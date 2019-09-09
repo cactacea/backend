@@ -32,7 +32,11 @@ object RequestExtractor {
                   None
                 case false =>
                   val json = Json.obj(request.contentString).get(name)
-                  Option(json.asText())
+                  if (json == null) {
+                    None
+                  } else {
+                    Option(json.asText())
+                  }
               }
             }
             case _ => None
