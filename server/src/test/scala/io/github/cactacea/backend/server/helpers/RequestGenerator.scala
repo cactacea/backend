@@ -1,6 +1,7 @@
 package io.github.cactacea.backend.server.helpers
 
 import com.twitter.finagle.http.Request
+import io.github.cactacea.backend.auth.enums.AuthType
 import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
 import io.github.cactacea.backend.core.helpers.generators.{DomainValueGenerator, StatusGenerator}
@@ -26,7 +27,7 @@ trait RequestGenerator extends DomainValueGenerator with StatusGenerator {
   lazy val postSignUpGen: Gen[PostSignUp] = for {
     userName <- uniqueUserNameGen
     password <- passwordGen
-  } yield (PostSignUp(userName, password, None, Request()))
+  } yield (PostSignUp(AuthType.username, userName, password, Request()))
 
   lazy val postEveryoneFeedGen: Gen[PostFeed] = for {
     message <- feedMessageTextGen

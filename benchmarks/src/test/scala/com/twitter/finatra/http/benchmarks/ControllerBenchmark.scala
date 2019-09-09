@@ -5,24 +5,17 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{ExceptionMappingFilter, HttpResponseFilter}
 import com.twitter.finatra.http.modules._
 import com.twitter.finatra.http.routing.HttpRouter
-import com.twitter.finatra.httpclient.RequestBuilder
-import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.Injector
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.internal.modules.LibraryModule
-import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
-import io.github.cactacea.backend.auth.core.application.services.AuthenticationService
 import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
-import io.github.cactacea.backend.auth.server.models.requests.sessions.PostSignUp
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._
-import io.github.cactacea.backend.server.models.requests.session.PostSession
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
-import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper}
+import io.github.cactacea.backend.server.utils.mappers.{CactaceaCaseClassExceptionMapper, CactaceaExceptionMapper, IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper, OAuthErrorExceptionMapper}
 import io.github.cactacea.backend.server.utils.modules.{DefaultAPIPrefixModule, DefaultAuthFilterModule}
 import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
 import org.openjdk.jmh.annotations.{Scope, State}
@@ -68,8 +61,11 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
     httpRouter
       .filter[HttpResponseFilter[Request]]
       .filter[ExceptionMappingFilter[Request]]
+      .exceptionMapper[CactaceaCaseClassExceptionMapper]
+      .exceptionMapper[CactaceaExceptionMapper]
       .exceptionMapper[InvalidPasswordExceptionMapper]
       .exceptionMapper[IdentityNotFoundExceptionMapper]
+      .exceptionMapper[OAuthErrorExceptionMapper]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, UsersController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, BlocksController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, CommentsController]

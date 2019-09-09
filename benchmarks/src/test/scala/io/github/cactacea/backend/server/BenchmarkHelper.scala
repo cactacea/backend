@@ -6,7 +6,8 @@ import com.twitter.finatra.httpclient.RequestBuilder
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.auth.core.application.services.AuthenticationService
-import io.github.cactacea.backend.auth.server.models.requests.sessions.{GetSignIn, PostSignUp}
+import io.github.cactacea.backend.auth.enums.AuthType
+import io.github.cactacea.backend.auth.server.models.requests.sessions.{PostSignIn, PostSignUp}
 import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.backend.server.models.requests.session.PostSession
 import org.openjdk.jmh.annotations.{Scope, State}
@@ -29,8 +30,8 @@ abstract class BenchmarkHelper extends ControllerBenchmark {
     val signInUpHeaders = Map(Config.auth.headerNames.apiKey -> Config.auth.keys.ios)
 
     // signUp
-    val signUpRequest = RequestBuilder.post(s"/sessions")
-    val signUpBody = mapper.writePrettyString(PostSignUp(sessionUserName, sessionPassword, None, Request()))
+    val signUpRequest = RequestBuilder.post(s"/signup")
+    val signUpBody = mapper.writePrettyString(PostSignUp(AuthType.username, sessionUserName, sessionPassword, Request()))
     signUpRequest.headers(signInUpHeaders)
     signUpRequest.body(signUpBody)
     Await.result(httpService(signUpRequest).rescue {
@@ -38,11 +39,14 @@ abstract class BenchmarkHelper extends ControllerBenchmark {
     })
 
     // signIn
-    val signInRequest = RequestBuilder.get(s"/sessions?userName=${sessionUserName}&password=${sessionPassword}")
-    val signInBody = mapper.writePrettyString(GetSignIn(sessionUserName, sessionPassword, Request()))
+    val signInRequest = RequestBuilder.post(s"/signin")
+    val signInBody = mapper.writePrettyString(PostSignIn(AuthType.username, sessionUserName, sessionPassword, Request()))
     signInRequest.headers(signInUpHeaders)
     signInRequest.body(signInBody)
-    val signInResponse = Await.result(httpService(signInRequest))
+    val signInResponse = Await.result(httpService(signInRequest).rescue {
+      case e: RuntimeException => Future.exception(e)
+    })
+
     val token = signInResponse.headerMap.getOrNull(Config.auth.headerNames.authorizationKey)
 
     // registerUser

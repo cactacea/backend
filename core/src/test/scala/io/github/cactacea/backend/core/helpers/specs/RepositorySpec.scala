@@ -90,7 +90,10 @@ class RepositorySpec extends Spec
   val pushNotificationRequestsDAO = injector.instance[PushNotificationRequestsDAO]
 
   def createUser(userName: String): Future[User] = {
-    usersRepository.create("credentails", userName, userName, None)
+    for {
+      i <- usersRepository.create("credentails", userName, userName, None)
+      u <- usersRepository.find(i.sessionId)
+    } yield (u)
   }
 
 }

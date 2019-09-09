@@ -6,9 +6,9 @@ import scala.util.matching.Regex
 
 object CactaceaValidations {
 
-  def validateEmail(maybeValue: Option[String]): ValidationResult = {
+  def validateEmail(email: String): ValidationResult = {
     validate(
-      maybeValue,
+      Option(email),
       "Email must be acceptable email address syntax according to RFC.",
       """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
     )
@@ -16,7 +16,7 @@ object CactaceaValidations {
 
   def validateUserName(userName: String): ValidationResult = {
     validate(
-      Some(userName),
+      Option(userName),
       "User name must be alphabet, numeric, period and underscore and its length between 2 to 30.",
       """^[A-Za-z0-9._]+$""".r
     )
@@ -24,14 +24,14 @@ object CactaceaValidations {
 
   def validatePassword(password: String): ValidationResult = {
     validate(
-      Some(password),
+      Option(password),
       "Password must be minimum 8 characters at least 1 alphabet, 1 numeirc and 1 special characters.",
       """^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[^A-Za-z0-9])[A-Za-z0-9!#$%&@_.]{8,}$""".r
     )
   }
 
-  private def validate(maybeString: Option[String], message: String, regex: Regex): ValidationResult = {
-    maybeString match {
+  private def validate(value: Option[String], message: String, regex: Regex): ValidationResult = {
+    value match {
       case Some(value) =>
         ValidationResult.validate(regex.findFirstMatchIn(value).isDefined, message)
       case None =>

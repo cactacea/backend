@@ -10,14 +10,14 @@ Auth
 To get started, add a dependency on cactacea depending.
 
 ```
-"io.github.cactacea" %% "auth" % "19.9.2"
+"io.github.cactacea" %% "auth" % "19.9.3"
 ```
 Or similarily with Maven:
 ```
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>auth_2.12</artifactId>
-  <version>19.9.2</version>
+  <version>19.9.3</version>
 </dependency>
 ```
 

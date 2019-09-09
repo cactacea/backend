@@ -11,7 +11,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   feature("create") {
 
-    scenario("should create a friend friendRequest") {
+    scenario("should create a friend request") {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
@@ -74,7 +74,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
   feature("delete") {
     
-    scenario("should delete a friend friendRequest") {
+    scenario("should delete a friend request") {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing
@@ -229,7 +229,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
   }
 
   feature("reject") {
-    scenario("should delete a friend friendRequest") {
+    scenario("should delete a friend request") {
       forOne(userGen, userGen) { (s, a1) =>
         // preparing
         val sessionId = await(createUser(s.userName)).id.sessionId

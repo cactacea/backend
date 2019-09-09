@@ -1,27 +1,37 @@
 package io.github.cactacea.backend.auth.server.models.requests.sessions
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.twitter.finagle.http.Request
-import com.twitter.finatra.validation._
+import com.twitter.finatra.validation.{MethodValidation, Size, ValidationResult}
+import io.github.cactacea.backend.auth.enums.AuthType
 import io.github.cactacea.backend.auth.server.utils.validations.CactaceaValidations
 import io.swagger.annotations.ApiModelProperty
 
 case class PostSignUp(
-                       @ApiModelProperty(value = "User name.", required = true)
-                       @Size(min = 2, max = 50) userName: String,
+                       @ApiModelProperty(value = "Auth type.", required = true)
+                       authType: AuthType,
+
+                       @ApiModelProperty(value = "User name or email address.", required = true)
+                       @Size(min = 2, max = 50) identifier: String,
 
                        @ApiModelProperty(value = "User password.", required = true)
                        @Size(min = 8, max = 255) password: String,
 
-                       @ApiModelProperty(value = "Display name.", required = false)
-                       @Size(min = 1, max = 50) displayName: Option[String],
-
+                       @JsonIgnore
                        @ApiModelProperty(hidden = true)
                        request: Request
 
                      ) {
 
   @MethodValidation
-  def userNameCheck: ValidationResult = CactaceaValidations.validateUserName(userName)
+  def userNameCheck: ValidationResult = {
+    authType match {
+      case AuthType.username =>
+        CactaceaValidations.validateUserName(identifier)
+      case AuthType.email =>
+        CactaceaValidations.validateEmail(identifier)
+    }
+  }
 
   @MethodValidation
   def passwordCheck: ValidationResult = CactaceaValidations.validatePassword(password)

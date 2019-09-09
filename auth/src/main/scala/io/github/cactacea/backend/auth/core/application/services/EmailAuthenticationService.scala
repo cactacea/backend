@@ -30,26 +30,32 @@ class EmailAuthenticationService @Inject()(
 
   import db._
 
-  def signUp(email: String)(implicit request: Request): Future[Unit] = {
-    transaction {
-      for {
-        _ <- authenticationsRepository.notExists(emailsProvider.id, email)
-        t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
-        _ <- mailer.welcome(email, t, request.currentLocale())
-      } yield (())
-    }
-  }
-
   def signUp(email: String, password: String)(implicit request: Request): Future[Unit] = {
     val l = LoginInfo(emailsProvider.id, email)
-    transaction {
-      for {
-        _ <- authenticationsRepository.notExists(emailsProvider.id, email)
-        _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
-        t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
-        _ <- mailer.welcome(email, t, request.currentLocale())
-      } yield (())
-    }
+    authenticationsRepository.notExists(emailsProvider.id, email).flatMap(_ match {
+      case true =>
+        for {
+          t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
+          _ <- mailer.welcome(email, t, request.currentLocale())
+        } yield (())
+      case false =>
+        transaction {
+          for {
+            _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
+            t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
+            _ <- mailer.welcome(email, t, request.currentLocale())
+          } yield (())
+        }
+    })
+  }
+
+  def signIn(email: String, password: String)(implicit request: Request): Future[Response] = {
+    for {
+      l <- emailsProvider.authenticate(Credentials(email, password))
+      s <- authenticatorService.create(l)
+      c <- authenticatorService.init(s)
+      r <- authenticatorService.embed(c, response.ok)
+    } yield (r)
   }
 
   def verify(token: String): Future[Unit] = {
@@ -67,17 +73,6 @@ class EmailAuthenticationService @Inject()(
         l <- tokensRepository.verify(token, TokenType.signUp)
         _ <- authInfoRepository.remove(l)
       } yield (())
-    }
-  }
-
-  def signIn(email: String, password: String)(implicit request: Request): Future[Response] = {
-    transaction {
-      for {
-        l <- emailsProvider.authenticate(Credentials(email, password))
-        s <- authenticatorService.create(l)
-        c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok)
-      } yield (r)
     }
   }
 

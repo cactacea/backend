@@ -4,7 +4,7 @@ import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.backend.auth.core.domain.models.Authentication
 import io.github.cactacea.backend.auth.core.domain.repositories.{AuthRepository, PasswordsRepository, SocialsRepository}
-import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
+import io.github.cactacea.backend.auth.core.utils.providers.{EmailsProvider, OAuth2RequestProvider}
 import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.filhouette.api.actions._
 import io.github.cactacea.filhouette.api.crypto.CrypterAuthenticatorEncoder

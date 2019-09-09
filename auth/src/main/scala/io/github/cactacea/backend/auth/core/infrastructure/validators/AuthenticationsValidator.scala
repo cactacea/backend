@@ -11,21 +11,6 @@ class AuthenticationsValidator @Inject()(
                                           authenticationsDAO: AuthenticationsDAO
                            ) {
 
-//  def mustFind(providerId: String, providerKey: String): Future[Authentication] = {
-//    authenticationsDAO.find(providerId, providerKey).flatMap(_ match {
-//      case Some(a) =>
-//        Future.value(a)
-////        a.userId match {
-////          case Some(id) =>
-////            Future.value(id)
-////          case None =>
-////            Future.exception(CactaceaException(UserNotFound))
-////        }
-//      case None =>
-//        Future.exception(CactaceaException(UserNotFound))
-//    })
-//  }
-
   def mustNotExists(providerId: String, providerKey: String): Future[Unit] = {
     authenticationsDAO.exists(providerId, providerKey).flatMap(_ match {
       case false =>

@@ -19,14 +19,17 @@ class UsersRepository @Inject()(
                                  notificationSettingsDAO: PushNotificationSettingsDAO
                                   ) {
 
-  def create(providerId: String, providerKey: String, userName: String, displayName: Option[String]): Future[User] = {
+  def create(providerId: String, providerKey: String, userName: String): Future[UserId] = {
+    create(providerId, providerKey, userName, None)
+  }
+
+  def create(providerId: String, providerKey: String, userName: String, displayName: Option[String]): Future[UserId] = {
     for {
       _ <- usersValidator.mustNotExist(userName)
       i <- usersDAO.create(userName, displayName.getOrElse(userName))
       _ <- userAuthenticationsDAO.create(i, providerId, providerKey)
       _ <- notificationSettingsDAO.create(i.sessionId)
-      a <- usersValidator.mustFind(i.sessionId)
-    } yield (a)
+    } yield (i)
   }
 
   def updateProfile(displayName: String,
@@ -75,6 +78,10 @@ class UsersRepository @Inject()(
 
   def find(providerId: String, providerKey: String, expiresIn: Long): Future[Option[User]] = {
     usersValidator.mustFind(providerId, providerKey, expiresIn)
+  }
+
+  def find(providerId: String, providerKey: String): Future[User] = {
+    usersValidator.mustFind(providerId, providerKey)
   }
 
   def findActiveStatus(userId: UserId, sessionId: SessionId): Future[UserStatus] = {

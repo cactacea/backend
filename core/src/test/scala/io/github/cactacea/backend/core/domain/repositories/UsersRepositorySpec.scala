@@ -11,7 +11,8 @@ class UsersRepositorySpec extends RepositorySpec {
   feature("create") {
     scenario("should create an user") {
       forAll(userGen, userAuthenticationGen) { (u, a) =>
-        val result = await(usersRepository.create(a.providerId, a.providerKey, u.userName, None))
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, u.userName, None)).sessionId
+        val result = await(usersRepository.find(sessionId))
         assert(result.userName == u.userName)
         assert(result.displayName == u.userName)
         assert(result.feedCount == 0)
@@ -30,7 +31,7 @@ class UsersRepositorySpec extends RepositorySpec {
         assert(result.profileImageUrl.isEmpty)
         assert(result.userStatus == UserStatusType.normally)
 
-        val result2 = await(pushNotificationSettingsRepository.find(result.id.sessionId))
+        val result2 = await(pushNotificationSettingsRepository.find(sessionId))
         assert(result2.feed)
         assert(result2.comment)
         assert(result2.friendRequest)
@@ -56,7 +57,8 @@ class UsersRepositorySpec extends RepositorySpec {
   feature("create and update display name") {
     scenario("should create an user") {
       forOne(userGen, userAuthenticationGen) { (u, a) =>
-        val result = await(usersRepository.create(a.providerId, a.providerKey, u.userName, Option(u.displayName)))
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, u.userName, Option(u.displayName))).sessionId
+        val result = await(usersRepository.find(sessionId))
         assert(result.userName == u.userName)
         assert(result.displayName == u.displayName)
         assert(result.feedCount == 0)
@@ -91,16 +93,15 @@ class UsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, userGen, userGen, feedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        val session = await(usersRepository.create("credentials", s.userName, s.userName, Option(s.displayName)))
-        val sessionId = session.id.sessionId
-        val follow = await(usersRepository.create("credentials", a1.userName, a1.userName, None))
-        val follower = await(usersRepository.create("credentials", a2.userName, a2.userName, None))
-        val friend = await(usersRepository.create("credentials", a3.userName, a3.userName, None))
+        val sessionId = await(usersRepository.create("credentials", s.userName, s.userName, Option(s.displayName))).sessionId
+        val followId = await(usersRepository.create("credentials", a1.userName, a1.userName, None))
+        val followerId = await(usersRepository.create("credentials", a2.userName, a2.userName, None))
+        val friendId = await(usersRepository.create("credentials", a3.userName, a3.userName, None))
         await(usersRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
-        await(followsRepository.create(follow.id, sessionId))
-        await(followsRepository.create(sessionId.userId, follower.id.sessionId))
-        val requestId = await(friendRequestsRepository.create(friend.id, sessionId))
-        await(friendRequestsRepository.accept(requestId, friend.id.sessionId))
+        await(followsRepository.create(followId, sessionId))
+        await(followsRepository.create(sessionId.userId, followerId.sessionId))
+        val requestId = await(friendRequestsRepository.create(friendId, sessionId))
+        await(friendRequestsRepository.accept(requestId, friendId.sessionId))
         await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
@@ -141,20 +142,19 @@ class UsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, userGen, userGen, feedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        val session = await(usersRepository.create("credentials", s.userName, s.userName, Option(s.displayName)))
-        val sessionId = session.id.sessionId
-        val follow = await(usersRepository.create("credentials", a1.userName, a1.userName, None))
-        val follower = await(usersRepository.create("credentials", a2.userName, a2.userName, None))
-        val friend = await(usersRepository.create("credentials", a3.userName, a3.userName, None))
+        val sessionId = await(usersRepository.create("credentials", s.userName, s.userName, Option(s.displayName))).sessionId
+        val followId = await(usersRepository.create("credentials", a1.userName, a1.userName, None))
+        val followerId = await(usersRepository.create("credentials", a2.userName, a2.userName, None))
+        val friendId = await(usersRepository.create("credentials", a3.userName, a3.userName, None))
         await(usersRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
-        await(followsRepository.create(follow.id, sessionId))
-        await(followsRepository.create(sessionId.userId, follower.id.sessionId))
-        val requestId = await(friendRequestsRepository.create(friend.id, sessionId))
-        await(friendRequestsRepository.accept(requestId, friend.id.sessionId))
+        await(followsRepository.create(followId, sessionId))
+        await(followsRepository.create(sessionId.userId, followerId.sessionId))
+        val requestId = await(friendRequestsRepository.create(friendId, sessionId))
+        await(friendRequestsRepository.accept(requestId, friendId.sessionId))
         await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
-        val result = await(usersRepository.find(sessionId.userId, follow.id.sessionId))
+        val result = await(usersRepository.find(sessionId.userId, followId.sessionId))
         assert(result.userName == s.userName)
         assert(result.displayName == s.displayName)
         assert(result.bio == s.bio)
@@ -180,20 +180,19 @@ class UsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, userGen, userGen, feedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        val session = await(usersRepository.create("credentials", s.userName, s.userName, Option(s.displayName)))
-        val sessionId = session.id.sessionId
-        val follow = await(usersRepository.create("credentials", a1.userName, a1.userName, None))
-        val follower = await(usersRepository.create("credentials", a2.userName, a2.userName, None))
-        val friend = await(usersRepository.create("credentials", a3.userName, a3.userName, None))
+        val sessionId = await(usersRepository.create("credentials", s.userName, s.userName, Option(s.displayName))).sessionId
+        val followId = await(usersRepository.create("credentials", a1.userName, a1.userName, None))
+        val followerId = await(usersRepository.create("credentials", a2.userName, a2.userName, None))
+        val friendId = await(usersRepository.create("credentials", a3.userName, a3.userName, None))
         await(usersRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
-        await(followsRepository.create(follow.id, sessionId))
-        await(followsRepository.create(sessionId.userId, follower.id.sessionId))
-        val requestId = await(friendRequestsRepository.create(friend.id, sessionId))
-        await(friendRequestsRepository.accept(requestId, friend.id.sessionId))
+        await(followsRepository.create(followId, sessionId))
+        await(followsRepository.create(sessionId.userId, followerId.sessionId))
+        val requestId = await(friendRequestsRepository.create(friendId, sessionId))
+        await(friendRequestsRepository.accept(requestId, friendId.sessionId))
         await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
-        val result = await(usersRepository.find(sessionId.userId, follower.id.sessionId))
+        val result = await(usersRepository.find(sessionId.userId, followerId.sessionId))
         assert(result.userName == s.userName)
         assert(result.displayName == s.displayName)
         assert(result.bio == s.bio)
@@ -219,21 +218,20 @@ class UsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userGen, userGen, userGen, feedGen) { (s, a1, a2, a3, f) =>
 
         // preparing
-        val session = await(usersRepository.create("credentails", s.userName, s.userName, Option(s.displayName)))
-        val sessionId = session.id.sessionId
-        val follow = await(usersRepository.create("credentials", a1.userName, a1.userName, None))
-        val follower = await(usersRepository.create("credentials", a2.userName, a2.userName, None))
-        val friend = await(usersRepository.create("credentials", a3.userName, a3.userName, None))
+        val sessionId = await(usersRepository.create("credentails", s.userName, s.userName, Option(s.displayName))).sessionId
+        val followId = await(usersRepository.create("credentials", a1.userName, a1.userName, None))
+        val followerId = await(usersRepository.create("credentials", a2.userName, a2.userName, None))
+        val friendId = await(usersRepository.create("credentials", a3.userName, a3.userName, None))
         await(usersRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
-        await(followsRepository.create(follow.id, sessionId))
-        await(followsRepository.create(sessionId.userId, follower.id.sessionId))
-        val requestId = await(friendRequestsRepository.create(friend.id, sessionId))
-        await(friendRequestsRepository.accept(requestId, friend.id.sessionId))
+        await(followsRepository.create(followId, sessionId))
+        await(followsRepository.create(sessionId.userId, followerId.sessionId))
+        val requestId = await(friendRequestsRepository.create(friendId, sessionId))
+        await(friendRequestsRepository.accept(requestId, friendId.sessionId))
         await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
-        await(mutesRepository.create(sessionId.userId, follower.id.sessionId))
+        await(mutesRepository.create(sessionId.userId, followerId.sessionId))
 
         // result
-        val result = await(usersRepository.find(sessionId.userId, follower.id.sessionId))
+        val result = await(usersRepository.find(sessionId.userId, followerId.sessionId))
         assert(result.userName == s.userName)
         assert(result.displayName == s.displayName)
         assert(result.bio == s.bio)
@@ -257,7 +255,7 @@ class UsersRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if user is not exist") {
       forOne(userGen, userAuthenticationGen) { (s, a) =>
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
         assert(intercept[CactaceaException] {
           await(usersRepository.find(UserId(0L), sessionId))
         }.error == UserNotFound)
@@ -271,7 +269,7 @@ class UsersRepositorySpec extends RepositorySpec {
       forAll(userGen, userAuthenticationGen, userStatusGen) { (s, a, t) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
         await(usersRepository.updateUserStatus(t, sessionId))
 
         // result
@@ -290,7 +288,7 @@ class UsersRepositorySpec extends RepositorySpec {
 //      forOne(userGen, authenticationGen) { (s, u1) =>
 //
 //        // preparing
-//        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+//        val sessionId = await(usersRepository.create(s.userName)).sessionId
 //        await(userAuthenticationsDAO.create(sessionId.userId, u1.providerId, u1.providerKey))
 ////        await(userAuthenticationsDAO.updateUserId(u1.providerId, u1.providerKey, sessionId))
 //
@@ -333,7 +331,7 @@ class UsersRepositorySpec extends RepositorySpec {
 //      forOne(userGen, authenticationGen) { (s, u1) =>
 //
 //        // preparing
-//        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+//        val sessionId = await(usersRepository.create(s.userName)).sessionId
 //        await(userAuthenticationsDAO.create(sessionId.userId, u1.providerId, u1.providerKey))
 ////        await(userAuthenticationsDAO.updateUserId(u1.providerId, u1.providerKey, sessionId))
 //        await(usersDAO.updateUserStatus(UserStatusType.terminated, sessionId))
@@ -350,7 +348,7 @@ class UsersRepositorySpec extends RepositorySpec {
 //      forOne(userGen, authenticationGen) { (s, u1) =>
 //
 //        // preparing
-//        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+//        val sessionId = await(usersRepository.create(s.userName)).sessionId
 //        await(userAuthenticationsDAO.create(sessionId.userId, u1.providerId, u1.providerKey))
 ////        await(userAuthenticationsDAO.updateUserId(u1.providerId, u1.providerKey, sessionId))
 //        await(usersDAO.updateUserStatus(UserStatusType.deleted, sessionId))
@@ -370,8 +368,8 @@ class UsersRepositorySpec extends RepositorySpec {
     scenario("should return user active status") {
       forOne(userGen, userGen, userAuthenticationGen, userAuthenticationGen, deviceGen, deviceGen) { (s, u1, a1, a2, d1, d2) =>
 
-        val sessionId = await(usersRepository.create(a1.providerId, a1.providerKey, s.userName, Option(s.displayName))).id.sessionId
-        val userId = await(usersRepository.create(a2.providerId, a2.providerKey, u1.userName, Option(u1.displayName))).id
+        val sessionId = await(usersRepository.create(a1.providerId, a1.providerKey, s.userName, Option(s.displayName))).sessionId
+        val userId = await(usersRepository.create(a2.providerId, a2.providerKey, u1.userName, Option(u1.displayName)))
         assertFutureValue(usersRepository.findActiveStatus(userId, sessionId).map(_.status), ActiveStatusType.inactive)
         await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, userId.sessionId))
         await(devicesRepository.create(d2.udid, d2.pushToken, d2.deviceType, d2.userAgent, userId.sessionId))
@@ -386,7 +384,7 @@ class UsersRepositorySpec extends RepositorySpec {
     scenario("should return exception if an user not exist") {
       forOne(userGen, userAuthenticationGen) { (s, a) =>
 
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, None)).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, None)).sessionId
         assert(intercept[CactaceaException] {
           await(usersRepository.findActiveStatus(UserId(-1), sessionId))
         }.error == UserNotFound)
@@ -403,7 +401,7 @@ class UsersRepositorySpec extends RepositorySpec {
     scenario("should return user name already registered or not") {
       forOne(userGen, userAuthenticationGen) { (s, a) =>
         assertFutureValue(usersRepository.isRegistered(s.userName), false)
-        await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
         assertFutureValue(usersRepository.isRegistered(s.userName), true)
       }
 
@@ -416,8 +414,8 @@ class UsersRepositorySpec extends RepositorySpec {
 //      forOne(userGen) { (s) =>
 //
 //        // preparing
-//        val session = await(usersRepository.create(s.userName, Option(s.displayName)))
-//        val sessionId = session.id.sessionId
+//        val sessionId = await(usersRepository.create(s.userName, Option(s.displayName)))
+//        val sessionId = session.sessionId
 //
 //        val result = await(usersRepository.find(sessionId, DateTime.now().getMillis))
 //        assert(result.id == sessionId.userId)
@@ -429,8 +427,8 @@ class UsersRepositorySpec extends RepositorySpec {
 //      forOne(userGen, deviceGen) { (s, d1) =>
 //
 //        // preparing
-//        val session = await(usersRepository.create(s.userName, Option(s.displayName)))
-//        val sessionId = session.id.sessionId
+//        val sessionId = await(usersRepository.create(s.userName, Option(s.displayName)))
+//        val sessionId = session.sessionId
 //        await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
 //        await(usersRepository.signOut(d1.udid, sessionId))
 //
@@ -445,7 +443,7 @@ class UsersRepositorySpec extends RepositorySpec {
 //      forOne(userGen, authenticationGen) { (s, u1) =>
 //
 //        // preparing
-//        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+//        val sessionId = await(usersRepository.create(s.userName)).sessionId
 //        await(userAuthenticationsDAO.create(sessionId.userId, u1.providerId, u1.providerKey))
 ////        await(userAuthenticationsDAO.updateUserId(u1.providerId, u1.providerKey, sessionId))
 //        await(usersDAO.updateUserStatus(UserStatusType.terminated, sessionId))
@@ -462,7 +460,7 @@ class UsersRepositorySpec extends RepositorySpec {
 //      forOne(userGen, authenticationGen) { (s, u1) =>
 //
 //        // preparing
-//        val sessionId = await(usersRepository.create(s.userName)).id.sessionId
+//        val sessionId = await(usersRepository.create(s.userName)).sessionId
 //        await(userAuthenticationsDAO.create(sessionId.userId, u1.providerId, u1.providerKey))
 ////        await(userAuthenticationsDAO.updateUserId(u1.providerId, u1.providerKey, sessionId))
 //        await(usersDAO.updateUserStatus(UserStatusType.deleted, sessionId))
@@ -484,10 +482,10 @@ class UsersRepositorySpec extends RepositorySpec {
         // preparing
         //  user2 block session user
         //  session user block user3
-        val sessionId = await(usersRepository.create("credentails", h + s.userName, h + s.userName, None)).id.sessionId
-        val userId1 = await(usersRepository.create("credentails", h + a1.userName, h + a1.userName, None)).id
-        val userId2 = await(usersRepository.create("credentails", h + a2.userName, h + a2.userName, None)).id
-        val userId3 = await(usersRepository.create("credentails", h + a3.userName, h + a3.userName, None)).id
+        val sessionId = await(usersRepository.create("credentails", h + s.userName, h + s.userName, None)).sessionId
+        val userId1 = await(usersRepository.create("credentails", h + a1.userName, h + a1.userName, None))
+        val userId2 = await(usersRepository.create("credentails", h + a2.userName, h + a2.userName, None))
+        val userId3 = await(usersRepository.create("credentails", h + a3.userName, h + a3.userName, None))
         await(usersRepository.create("credentails", h + a4.userName, h + a4.userName, None))
         await(blocksRepository.create(sessionId.userId, userId2.sessionId))
         await(blocksRepository.create(userId3, sessionId))
@@ -513,8 +511,8 @@ class UsersRepositorySpec extends RepositorySpec {
       forAll(userGen, userGen, userAuthenticationGen, userAuthenticationGen,  uniqueDisplayNameOptGen) { (s, u1, a1, a2, d) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(a1.providerId, a1.providerKey, s.userName, Option(s.displayName))).id.sessionId
-        val userId = await(usersRepository.create(a2.providerId, a2.providerKey, u1.userName, Option(u1.displayName))).id
+        val sessionId = await(usersRepository.create(a1.providerId, a1.providerKey, s.userName, Option(s.displayName))).sessionId
+        val userId = await(usersRepository.create(a2.providerId, a2.providerKey, u1.userName, Option(u1.displayName)))
 
         await(usersRepository.updateDisplayName(userId, d, sessionId))
 
@@ -527,7 +525,7 @@ class UsersRepositorySpec extends RepositorySpec {
     scenario("should return exception if user is not exist"){
       forAll(userGen, userAuthenticationGen, uniqueDisplayNameOptGen) { (s, a, d) =>
 
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
         assert(intercept[CactaceaException] {
           await(usersRepository.updateDisplayName(UserId(0L), d, sessionId))
         }.error == UserNotFound)
@@ -537,7 +535,7 @@ class UsersRepositorySpec extends RepositorySpec {
     scenario("should return exception if user and session are same."){
       forAll(userGen, userAuthenticationGen, uniqueDisplayNameOptGen) { (s, a, d) =>
 
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
         assert(intercept[CactaceaException] {
           await(usersRepository.updateDisplayName(sessionId.userId, d, sessionId))
         }.error == InvalidUserIdError)
@@ -552,7 +550,7 @@ class UsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userAuthenticationGen) { (s, a) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
         await(usersRepository.updateProfile(s.displayName, s.web, s.birthday, s.location, s.bio, sessionId))
 
         // result
@@ -571,7 +569,7 @@ class UsersRepositorySpec extends RepositorySpec {
   feature("updateProfileImage") {
     scenario("should update profile image") {
       forAll(userGen, userAuthenticationGen, mediumOptGen) { (s, a, m) =>
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
         val medium = m.map(m => await(mediumsRepository.create(m.key, m.uri, m.thumbnailUrl, m.mediumType, m.width, m.height, m.size, sessionId)))
         await(usersRepository.updateProfileImage(medium, sessionId))
 
@@ -583,7 +581,7 @@ class UsersRepositorySpec extends RepositorySpec {
 
     scenario("should return exception if a medium is not exist") {
       forOne(userGen, userAuthenticationGen) { (s, a) =>
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
 
         assert(intercept[CactaceaException] {
           await(usersRepository.updateProfileImage(Option(MediumId(0)), sessionId))
@@ -597,9 +595,9 @@ class UsersRepositorySpec extends RepositorySpec {
 
     scenario("should report an user") {
       forAll(userGen, userGen, userAuthenticationGen, userAuthenticationGen, userReportGen) { (u1, u2, a1, a2, r) =>
-        val sessionId = await(usersRepository.create(a1.providerId, a1.providerKey, u1.userName, Option(u1.displayName))).id.sessionId
-        val userId = await(usersRepository.create(a2.providerId, a2.providerKey, u2.userName, Option(u2.displayName))).id
-//        val sessionId = await(usersRepository.create(u1.userName)).id.sessionId
+        val sessionId = await(usersRepository.create(a1.providerId, a1.providerKey, u1.userName, Option(u1.displayName))).sessionId
+        val userId = await(usersRepository.create(a2.providerId, a2.providerKey, u2.userName, Option(u2.displayName)))
+//        val sessionId = await(usersRepository.create(u1.userName)).sessionId
 //        val userId = await(usersRepository.create(u2.userName)).id
         await(usersRepository.report(userId, r.reportType, r.reportContent, sessionId))
         val result = await(findUserReport(userId, sessionId))
@@ -628,7 +626,7 @@ class UsersRepositorySpec extends RepositorySpec {
       forOne(userGen, userAuthenticationGen, deviceGen) { (s, a, d1) =>
 
         // preparing
-        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).id.sessionId
+        val sessionId = await(usersRepository.create(a.providerId, a.providerKey, s.userName, Option(s.displayName))).sessionId
         await(devicesRepository.create(d1.udid, d1.pushToken, d1.deviceType, d1.userAgent, sessionId))
         await(usersRepository.signOut(d1.udid, sessionId))
 

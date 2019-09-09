@@ -8,7 +8,7 @@ import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
-import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper}
+import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper, OAuthErrorExceptionMapper}
 import io.github.cactacea.backend.server.utils.modules.{DefaultAPIPrefixModule, DefaultAuthFilterModule}
 import io.github.cactacea.backend.server.utils.warmups.{CactaceaDatabaseMigrationHandler, CactaceaQueueHandler}
 import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
@@ -28,6 +28,7 @@ class CactaceaServer extends BaseServer {
       .filter[CommonFilters]
       .exceptionMapper[InvalidPasswordExceptionMapper]
       .exceptionMapper[IdentityNotFoundExceptionMapper]
+      .exceptionMapper[OAuthErrorExceptionMapper]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, UsersController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, BlocksController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, CommentsController]
