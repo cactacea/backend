@@ -70,7 +70,7 @@ class UsersValidator @Inject()(
     })
   }
 
-  // for signIn
+  // for token expired
   def mustFind(providerId: String, providerKey: String, expiresIn: Long): Future[Option[User]] = {
     usersDAO.find(providerId, providerKey).flatMap( _ match {
       case Some(a) =>
@@ -89,7 +89,7 @@ class UsersValidator @Inject()(
     })
   }
 
-  // for reset password
+  // for sign in and reset password
   def mustFind(providerId: String, providerKey: String): Future[User] = {
     usersDAO.find(providerId, providerKey).flatMap(_ match {
       case Some(a) =>

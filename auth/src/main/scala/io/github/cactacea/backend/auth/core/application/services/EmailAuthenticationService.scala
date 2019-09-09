@@ -9,6 +9,8 @@ import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
 import io.github.cactacea.backend.auth.enums.TokenType
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.domain.models.User
+import io.github.cactacea.backend.core.domain.repositories.UsersRepository
 import io.github.cactacea.backend.utils.RequestImplicits._
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
@@ -25,6 +27,7 @@ class EmailAuthenticationService @Inject()(
                                             emailsProvider: EmailsProvider,
                                             mailer: Mailer,
                                             passwordHasherRegistry: PasswordHasherRegistry,
+                                            usersRepository: UsersRepository,
                                             authenticatorService: JWTAuthenticatorService
                                ) {
 
@@ -52,12 +55,13 @@ class EmailAuthenticationService @Inject()(
     }
   }
 
-  def verify(token: String): Future[Unit] = {
+  def verify(token: String): Future[User] = {
     transaction {
       for {
         l <- tokensRepository.verify(token, TokenType.signUp)
         _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
-      } yield (())
+        u <- usersRepository.find(l.providerId, l.providerKey)
+      } yield (u)
     }
   }
 
@@ -74,9 +78,10 @@ class EmailAuthenticationService @Inject()(
     transaction {
       for {
         l <- emailsProvider.authenticate(Credentials(email, password))
+        u <- usersRepository.find(l.providerId, l.providerKey)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok)
+        r <- authenticatorService.embed(c, response.ok.body(u))
       } yield (r)
     }
   }

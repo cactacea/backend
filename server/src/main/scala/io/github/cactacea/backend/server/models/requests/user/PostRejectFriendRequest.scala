@@ -5,6 +5,6 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.FriendRequestI
 import io.swagger.annotations.ApiModelProperty
 
 case class PostRejectFriendRequest (
-                                     @ApiModelProperty(value = "Friend friendRequest Identifier.", required = true)
+                                     @ApiModelProperty(value = "friend request Identifier.", required = true)
                                      @RouteParam id: FriendRequestId
                             )

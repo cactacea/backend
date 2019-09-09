@@ -77,6 +77,10 @@ class UsersRepository @Inject()(
     usersValidator.mustFind(providerId, providerKey, expiresIn)
   }
 
+  def find(providerId: String, providerKey: String): Future[User] = {
+    usersValidator.mustFind(providerId, providerKey)
+  }
+
   def findActiveStatus(userId: UserId, sessionId: SessionId): Future[UserStatus] = {
     for {
       _ <- usersValidator.mustExist(userId, sessionId)

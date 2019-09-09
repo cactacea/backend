@@ -28,7 +28,7 @@ class FriendRequestsController @Inject()(
   prefix(apiPrefix) {
 
     scope(relationships).postWithDoc("/users/:id/requests") { o =>
-      o.summary("Create a friend friendRequest to an user")
+      o.summary("Create a friend request to an user")
         .tag(usersTag)
         .operationId("createRequest")
         .request[PostFriendRequest]
@@ -44,7 +44,7 @@ class FriendRequestsController @Inject()(
     }
 
     scope(relationships).deleteWithDoc("/users/:id/requests") { o =>
-      o.summary("Remove a friend friendRequest to an user")
+      o.summary("Remove a friend request to an user")
         .tag(usersTag)
         .operationId("deleteRequest")
         .request[DeleteFriendRequest]
@@ -61,7 +61,7 @@ class FriendRequestsController @Inject()(
   }
 
   scope(relationships).postWithDoc("/requests/:id/accept") { o =>
-    o.summary("Accept a friend friendRequest")
+    o.summary("Accept a friend request")
       .tag(friendRequestsTag)
       .operationId("acceptRequest")
       .request[PostAcceptFriendRequest]
@@ -75,7 +75,7 @@ class FriendRequestsController @Inject()(
   }
 
   scope(relationships).postWithDoc("/requests/:id/reject") { o =>
-    o.summary("Reject a friend friendRequest")
+    o.summary("Reject a friend request")
       .tag(friendRequestsTag)
       .operationId("rejectRequest")
       .request[PostRejectFriendRequest]

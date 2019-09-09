@@ -34,10 +34,10 @@ class AuthenticationService @Inject()(
         _ <- authenticationsRepository.notExists(l.providerId, l.providerKey)
         _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
         _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
-        _ <- usersRepository.create(l.providerId, l.providerKey, userName, displayName)
+        u <- usersRepository.create(l.providerId, l.providerKey, userName, displayName)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok)
+        r <- authenticatorService.embed(c, response.ok.body(u))
       } yield (r)
     }
 
@@ -47,9 +47,10 @@ class AuthenticationService @Inject()(
     transaction {
       for {
         l <- credentialsProvider.authenticate(Credentials(userName, password))
+        u <- usersRepository.find(l.providerId, l.providerKey)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok)
+        r <- authenticatorService.embed(c, response.ok.body(u))
       } yield (r)
     }
   }
