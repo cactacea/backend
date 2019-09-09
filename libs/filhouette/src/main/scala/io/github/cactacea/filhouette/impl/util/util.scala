@@ -38,7 +38,8 @@ object Json {
   }
 
   def obj(string: String): JsonNode = {
-    finatraObjectMapper.objectMapper.readValue(jsonFactory.createParser(string), classOf[JsonNode])
+    val json = jsonFactory.createParser(string)
+    finatraObjectMapper.objectMapper.readValue(json, classOf[JsonNode])
   }
 
   def obj(fields: (String, Any)*): JsonNode = {
