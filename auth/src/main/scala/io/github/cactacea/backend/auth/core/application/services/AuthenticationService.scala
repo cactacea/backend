@@ -27,32 +27,29 @@ class AuthenticationService @Inject()(
 
   import db._
 
-  def signUp(userName: String, password: String, displayName: Option[String])(implicit request: Request): Future[Response] = {
+  def signUp(userName: String, password: String)(implicit request: Request): Future[Response] = {
     val l = LoginInfo(CredentialsProvider.ID, userName)
     transaction {
       for {
-        _ <- authenticationsRepository.notExists(l.providerId, l.providerKey)
+        _ <- authenticationsRepository.mustNotExists(l.providerId, l.providerKey)
         _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
         _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
-        u <- usersRepository.create(l.providerId, l.providerKey, userName, displayName)
+        _ <- usersRepository.create(l.providerId, l.providerKey, userName)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok.body(u))
+        r <- authenticatorService.embed(c, response.ok)
       } yield (r)
     }
 
   }
 
   def signIn(userName: String, password: String)(implicit request: Request): Future[Response] = {
-    transaction {
-      for {
-        l <- credentialsProvider.authenticate(Credentials(userName, password))
-        u <- usersRepository.find(l.providerId, l.providerKey)
-        s <- authenticatorService.create(l)
-        c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok.body(u))
-      } yield (r)
-    }
+    for {
+      l <- credentialsProvider.authenticate(Credentials(userName, password))
+      s <- authenticatorService.create(l)
+      c <- authenticatorService.init(s)
+      r <- authenticatorService.embed(c, response.ok)
+    } yield (r)
   }
 
   def changeUserName(providerId: String, providerKey: String, newUserName: String): Future[Unit] = {

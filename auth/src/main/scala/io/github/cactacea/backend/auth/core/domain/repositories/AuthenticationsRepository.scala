@@ -40,16 +40,18 @@ class AuthenticationsRepository @Inject()(
 
   }
 
-  def exists(providerId: String, providerKey: String): Future[Unit] = {
-    authenticationsValidator.mustExists(providerId, providerKey)
-  }
-
-  def notExists(providerId: String, providerKey: String): Future[Unit] = {
+  def mustNotExists(providerId: String, providerKey: String): Future[Unit] = {
     for {
       _ <- authenticationsValidator.mustNotExists(providerId, providerKey)
       _ <- userAuthenticationsValidator.mustNotExists(providerId, providerKey)
     } yield (())
+  }
 
+  def notExists(providerId: String, providerKey: String): Future[Boolean] = {
+    for {
+      r1 <- authenticationsDAO.exists(providerId, providerKey)
+      r2 <- userAuthenticationsDAO.exists(providerId, providerKey)
+    } yield (r1 || r2)
   }
 
 }

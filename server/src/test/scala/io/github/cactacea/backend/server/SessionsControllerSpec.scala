@@ -8,11 +8,11 @@ import com.twitter.inject.server.FeatureTest
 trait SessionsControllerSpec extends FeatureTest {
   self: CactaceaServerSpec =>
 
-  test("POST /sessions") {
+  test("POST /signup") {
     forOne(postSignUpGen, headerGen) { (r, h) =>
       val body = mapper.writePrettyString(r)
       server.httpPost(
-        path = "/sessions",
+        path = s"/signup",
         headers = h,
         postBody = body,
         andExpect = http.Status.Ok
@@ -20,6 +20,6 @@ trait SessionsControllerSpec extends FeatureTest {
     }
   }
 
-  test("GET  /sessions") (pending)
+  test("GET  /signin") (pending)
 
 }

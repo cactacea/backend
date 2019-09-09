@@ -17,7 +17,12 @@ class UsersService @Inject()(
   import databaseService._
 
   def create(providerId: String, providerKey: String, userName: String, displayName: Option[String]): Future[User] = {
-    usersRepository.create(providerId, providerKey, userName, displayName)
+    transaction {
+      for {
+        i <- usersRepository.create(providerId, providerKey, userName, displayName)
+        u <- usersRepository.find(i.sessionId)
+      } yield (u)
+    }
   }
 
   def find(sessionId: SessionId): Future[User] = {
