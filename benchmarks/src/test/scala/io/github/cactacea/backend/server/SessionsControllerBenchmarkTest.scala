@@ -3,7 +3,7 @@ package io.github.cactacea.backend.server
 import com.twitter.finagle.http
 import com.twitter.inject.Test
 
-class AuthenticationControllerBenchmarkTest extends Test {
+class SessionsControllerBenchmarkTest extends Test {
 
   val benchmark = new AuthenticationControllerBenchmark
 

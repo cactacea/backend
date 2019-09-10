@@ -6,13 +6,13 @@ import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, EmailAuthenticationService}
 import io.github.cactacea.backend.auth.core.domain.models.Session
 import io.github.cactacea.backend.auth.enums.AuthType
-import io.github.cactacea.backend.auth.server.models.requests.sessions.{PostSignIn, PostSignUp}
+import io.github.cactacea.backend.auth.server.models.requests.sessions.{PostRejectToken, PostSignIn, PostSignUp, PostVerifyToken}
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class AuthenticationController @Inject()(
+class SessionsController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     authenticationService: AuthenticationService,
@@ -69,6 +69,32 @@ class AuthenticationController @Inject()(
             request.identifier,
             request.password
           )
+      }
+
+    }
+
+    prefix(apiPrefix) {
+
+      postWithDoc("/verify") { o =>
+        o.summary("Verify token")
+          .tag(sessionsTag)
+          .operationId("verifyEmail")
+          .request[PostVerifyToken]
+          .responseWith(Status.Ok.code, successfulMessage)
+
+      } { req: PostVerifyToken =>
+        emailAuthenticationService.verify(req.token).map(_ => response.ok)
+      }
+
+      postWithDoc("/reject") { o =>
+        o.summary("Reject token")
+          .tag(sessionsTag)
+          .operationId("rejectEmail")
+          .request[PostRejectToken]
+          .responseWith(Status.Ok.code, successfulMessage)
+
+      } { req: PostVerifyToken =>
+        emailAuthenticationService.verify(req.token).map(_ => response.ok)
       }
 
     }

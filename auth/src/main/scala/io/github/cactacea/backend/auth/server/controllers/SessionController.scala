@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class AuthenticationSessionController @Inject()(
+class SessionController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     authenticationService: AuthenticationService,

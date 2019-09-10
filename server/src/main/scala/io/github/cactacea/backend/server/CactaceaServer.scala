@@ -5,7 +5,7 @@ import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceI
 import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
 import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
-import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
+import io.github.cactacea.backend.auth.server.controllers.{SessionsController, PasswordController, SessionController}
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper, OAuthErrorExceptionMapper}
@@ -46,9 +46,9 @@ class CactaceaServer extends BaseServer {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FriendRequestsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationPasswordController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationSessionController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, SessionsController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, PasswordController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, SessionController]
       .add[ResourcesController]
       .add[HealthController]
   }

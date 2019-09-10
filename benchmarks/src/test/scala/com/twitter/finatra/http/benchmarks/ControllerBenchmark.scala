@@ -10,7 +10,7 @@ import com.twitter.inject.app.TestInjector
 import com.twitter.inject.internal.modules.LibraryModule
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
 import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
-import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
+import io.github.cactacea.backend.auth.server.controllers.{SessionsController, PasswordController, SessionController}
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._
@@ -83,9 +83,9 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FriendRequestsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationPasswordController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationSessionController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, SessionsController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, PasswordController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, SessionController]
       .services
       .externalService
 
