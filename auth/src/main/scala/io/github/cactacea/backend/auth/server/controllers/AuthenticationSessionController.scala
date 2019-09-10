@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, PasswordService}
 import io.github.cactacea.backend.auth.server.models.requests.session.{PutPassword, PutUserName}
-import io.github.cactacea.backend.auth.server.utils.contexts.AuthContext
+import io.github.cactacea.backend.auth.server.utils.contexts.AuthenticationContext
 import io.github.cactacea.backend.auth.server.utils.filters.AuthenticationFilter
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
@@ -32,8 +32,8 @@ class AuthenticationSessionController @Inject()(
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserAlreadyExist))))
     } { request: PutUserName =>
       authenticationService.changeUserName(
-        AuthContext.auth.providerId,
-        AuthContext.auth.providerKey,
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey,
         request.name,
       ).map(_ => response.ok)
     }
@@ -48,8 +48,8 @@ class AuthenticationSessionController @Inject()(
       implicit val r = request.request
 
       passwordService.changePassword(
-        AuthContext.auth.providerId,
-        AuthContext.auth.providerKey,
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey,
         request.newPassword
       ).map(_ => response.ok)
     }

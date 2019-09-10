@@ -5,9 +5,9 @@ import io.github.cactacea.backend.auth.core.domain.models.Authentication
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 
-object AuthContext extends AuthContextInfo
+object AuthenticationContext extends AuthenticationContext
 
-trait AuthContextInfo {
+trait AuthenticationContext {
 
   private[this] val localAuth = new Local[Authentication]
   def auth: Authentication = localAuth() match {

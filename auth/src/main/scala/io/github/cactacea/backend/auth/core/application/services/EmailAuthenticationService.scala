@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
+import io.github.cactacea.backend.auth.core.domain.models.Session
 import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository}
 import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
@@ -30,21 +31,21 @@ class EmailAuthenticationService @Inject()(
 
   import db._
 
-  def signUp(email: String, password: String)(implicit request: Request): Future[Unit] = {
+  def signUp(email: String, password: String)(implicit request: Request): Future[Response] = {
     val l = LoginInfo(emailsProvider.id, email)
     authenticationsRepository.notExists(emailsProvider.id, email).flatMap(_ match {
       case true =>
         for {
           t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
           _ <- mailer.welcome(email, t, request.currentLocale())
-        } yield (())
+        } yield (response.ok.body(Session(email)))
       case false =>
         transaction {
           for {
             _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
             t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
             _ <- mailer.welcome(email, t, request.currentLocale())
-          } yield (())
+          } yield (response.ok.body(Session(email)))
         }
     })
   }
@@ -54,7 +55,7 @@ class EmailAuthenticationService @Inject()(
       l <- emailsProvider.authenticate(Credentials(email, password))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
-      r <- authenticatorService.embed(c, response.ok)
+      r <- authenticatorService.embed(c, response.ok.body(Session(email, c)))
     } yield (r)
   }
 
