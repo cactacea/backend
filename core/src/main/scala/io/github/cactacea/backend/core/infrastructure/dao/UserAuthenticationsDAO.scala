@@ -44,4 +44,14 @@ class UserAuthenticationsDAO  @Inject()(db: DatabaseService) {
     run(q)
   }
 
+  def exists(userId: UserId, providerId: String, providerKey: String): Future[Boolean] = {
+    val q = quote {
+      query[UserAuthentications]
+        .filter(_.providerId == lift(providerId))
+        .filter(_.providerKey == lift(providerKey))
+        .nonEmpty
+    }
+    run(q)
+  }
+
 }

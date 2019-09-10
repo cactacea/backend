@@ -71,7 +71,7 @@ trait OAuth2Provider extends SocialStateProvider with OAuth2Constants with Logge
     * Starts the authentication process.
     *
     * @param request The current request.
-    * @return Either a Result or the auth info from the provider.
+    * @return Either a Response or the auth info from the provider.
     */
   def authenticate()(implicit request: Request): Future[Either[Response, OAuth2Info]] = {
     handleFlow(handleAuthorizationFlow(stateHandler)) { code =>
@@ -90,7 +90,7 @@ trait OAuth2Provider extends SocialStateProvider with OAuth2Constants with Logge
     *
     * @tparam S The type of the user state.
     * @param request The request.
-    * @return Either a `play.api.mvc.Result` or the [[StatefulAuthInfo]] from the provider.
+    * @return Either a Response or the [[StatefulAuthInfo]] from the provider.
     */
     def authenticate[S <: SocialStateItem](userState: S)(
       implicit

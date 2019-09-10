@@ -5,7 +5,7 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.core.domain.models.Session
-import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository}
+import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository, UserAuthenticationsRepository}
 import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
 import io.github.cactacea.backend.auth.enums.TokenType
@@ -20,6 +20,7 @@ import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService
 class EmailAuthenticationService @Inject()(
                                             db: DatabaseService,
                                             response: ResponseBuilder,
+                                            userAuthenticationsRepository: UserAuthenticationsRepository,
                                             authenticationsRepository: AuthenticationsRepository,
                                             authInfoRepository: AuthInfoRepository,
                                             tokensRepository: TokensRepository,
@@ -33,7 +34,7 @@ class EmailAuthenticationService @Inject()(
 
   def signUp(email: String, password: String)(implicit request: Request): Future[Response] = {
     val l = LoginInfo(emailsProvider.id, email)
-    authenticationsRepository.notExists(emailsProvider.id, email).flatMap(_ match {
+    userAuthenticationsRepository.notExists(emailsProvider.id, email).flatMap(_ match {
       case true =>
         for {
           t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
@@ -63,7 +64,7 @@ class EmailAuthenticationService @Inject()(
     transaction {
       for {
         l <- tokensRepository.verify(token, TokenType.signUp)
-        _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
+        _ <- authenticationsRepository.confirm(l)
       } yield (())
     }
   }

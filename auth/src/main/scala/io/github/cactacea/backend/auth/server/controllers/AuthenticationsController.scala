@@ -12,11 +12,11 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class SessionsController @Inject()(
+class AuthenticationsController@Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     authenticationService: AuthenticationService,
-                                    emailAuthenticationService: EmailAuthenticationService
+                                    emailAuthenticationService: EmailAuthenticationService,
                                   ) extends BaseController {
 
   implicit val swagger: Swagger = s

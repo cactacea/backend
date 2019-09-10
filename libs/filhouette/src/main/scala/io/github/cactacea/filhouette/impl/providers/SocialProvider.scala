@@ -60,7 +60,7 @@ trait SocialProvider extends Provider with SocialProfileBuilder {
     * provider).
     *
     * @param request The request.
-    * @return Either a `play.api.mvc.Result` or the `AuthInfo` from the provider.
+    * @return Either a `com.twitter.finagle.http.Response` or the `AuthInfo` from the provider.
     */
   def authenticate()(implicit request: Request): Future[Either[Response, A]]
 

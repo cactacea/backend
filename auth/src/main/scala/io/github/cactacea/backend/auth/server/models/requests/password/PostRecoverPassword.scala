@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.auth.server.models.requests.sessions
+package io.github.cactacea.backend.auth.server.models.requests.password
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.twitter.finagle.http.Request

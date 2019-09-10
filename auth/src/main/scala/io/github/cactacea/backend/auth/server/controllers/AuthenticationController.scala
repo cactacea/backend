@@ -3,8 +3,9 @@ package io.github.cactacea.backend.auth.server.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, PasswordService}
+import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, PasswordService, SocialAuthenticationService}
 import io.github.cactacea.backend.auth.server.models.requests.session.{PutPassword, PutUserName}
+import io.github.cactacea.backend.auth.server.models.requests.social.PostSocialLink
 import io.github.cactacea.backend.auth.server.utils.contexts.AuthenticationContext
 import io.github.cactacea.backend.auth.server.utils.filters.AuthenticationFilter
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
@@ -12,11 +13,12 @@ import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
 
 @Singleton
-class SessionController @Inject()(
+class AuthenticationController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
                                     authenticationService: AuthenticationService,
-                                    passwordService: PasswordService
+                                    passwordService: PasswordService,
+                                    socialAuthenticationService: SocialAuthenticationService
                                                ) extends BaseController {
 
   implicit val swagger: Swagger = s
@@ -52,6 +54,17 @@ class SessionController @Inject()(
         AuthenticationContext.auth.providerKey,
         request.newPassword
       ).map(_ => response.ok)
+    }
+
+    filter[AuthenticationFilter].post("/session/:provider/link") { request: PostSocialLink =>
+      socialAuthenticationService.link(
+        request.provider,
+        request.token,
+        request.expiresIn,
+        request.secret,
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey
+      )
     }
 
   }

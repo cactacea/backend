@@ -17,14 +17,14 @@ import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService
 
 @Singleton
 class PasswordService @Inject()(
-                                       db: DatabaseService,
-                                       response: ResponseBuilder,
-                                       authenticationsRepository: AuthenticationsRepository,
-                                       authInfoRepository: AuthInfoRepository,
-                                       tokensRepository: TokensRepository,
-                                       passwordHasherRegistry: PasswordHasherRegistry,
-                                       authenticatorService: JWTAuthenticatorService,
-                                       mailer: Mailer
+                                 db: DatabaseService,
+                                 response: ResponseBuilder,
+                                 authenticationsRepository: AuthenticationsRepository,
+                                 authInfoRepository: AuthInfoRepository,
+                                 tokensRepository: TokensRepository,
+                                 passwordHasherRegistry: PasswordHasherRegistry,
+                                 authenticatorService: JWTAuthenticatorService,
+                                 mailer: Mailer
                                ) {
 
   import db._
@@ -41,7 +41,7 @@ class PasswordService @Inject()(
 
   def recoverPassword(email: String)(implicit request: Request): Future[Response] = {
     transaction {
-      authenticationsRepository.find(EmailsProvider.ID, email).flatMap(_ match {
+      authenticationsRepository.find(LoginInfo(EmailsProvider.ID, email)).flatMap(_ match {
         case Some(_) =>
           for {
             t <- tokensRepository.issue(EmailsProvider.ID, email, TokenType.resetPassword)

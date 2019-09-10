@@ -3,20 +3,15 @@ package io.github.cactacea.backend.auth.core.domain.repositories
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.core.infrastructure.dao.AuthenticationsDAO
-import io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.util.PasswordInfo
 import io.github.cactacea.filhouette.persistence.daos.DelegableAuthInfoDAO
 
-class PasswordsRepository @Inject()(authenticationsValidator: AuthenticationsValidator,
-                                    authenticationsDAO: AuthenticationsDAO)
+class PasswordsRepository @Inject()(authenticationsDAO: AuthenticationsDAO)
   extends DelegableAuthInfoDAO[PasswordInfo] {
 
   override def add(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    for {
-      _ <- authenticationsValidator.mustNotExists(loginInfo.providerId, loginInfo.providerKey)
-      a <- authenticationsDAO.create(loginInfo.providerId, loginInfo.providerKey, authInfo.password, authInfo.hasher).map(_ => authInfo)
-    } yield (a)
+    authenticationsDAO.create(loginInfo.providerId, loginInfo.providerKey, authInfo.password, authInfo.hasher).map(_ => authInfo)
   }
 
   override def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = {

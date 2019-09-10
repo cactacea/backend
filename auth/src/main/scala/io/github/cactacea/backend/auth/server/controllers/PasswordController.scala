@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.auth.core.application.services.PasswordService
-import io.github.cactacea.backend.auth.server.models.requests.sessions.{PostRecoverPassword, PostResetPassword}
+import io.github.cactacea.backend.auth.server.models.requests.password.{PostRecoverPassword, PostResetPassword}
 import io.swagger.models.Swagger
 
 @Singleton

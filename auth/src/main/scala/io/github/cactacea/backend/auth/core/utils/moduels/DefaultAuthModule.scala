@@ -3,7 +3,7 @@ package io.github.cactacea.backend.auth.core.utils.moduels
 import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.backend.auth.core.domain.models.Authentication
-import io.github.cactacea.backend.auth.core.domain.repositories.{AuthRepository, PasswordsRepository, SocialsRepository}
+import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, OAuth2Repository, PasswordsRepository}
 import io.github.cactacea.backend.auth.core.utils.providers.{EmailsProvider, OAuth2RequestProvider}
 import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.filhouette.api.actions._
@@ -30,9 +30,9 @@ object DefaultAuthModule extends TwitterModule {
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[Clock].toInstance(Clock())
-    bindSingleton[IdentityService[Authentication]].to[AuthRepository]
+    bindSingleton[IdentityService[Authentication]].to[AuthenticationsRepository]
     bindSingleton[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordsRepository]
-    bindSingleton[DelegableAuthInfoDAO[OAuth2Info]].to[SocialsRepository]
+    bindSingleton[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2Repository]
   }
 
   /**
