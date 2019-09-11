@@ -17,7 +17,6 @@ object CactaceaErrors {
   final val c40008 = "40008"
   final val c40009 = "40009"
   final val c40010 = "40010"
-  final val c40011 = "40011"
   final val c40012 = "40012"
   final val c40013 = "40013"
   final val c40014 = "40014"
@@ -56,7 +55,6 @@ object CactaceaErrors {
   final val m40008 = "API Key is invalid."
   final val m40009 = "User name already used."
   final val m40010 = "Can not specify myself."
-  final val m40011 = "User not registered."
   final val m40012 = "Invalid User name or password."
   final val m40013 = "File size limit exceeded error."
   final val m40014 = "Upload media not found."
@@ -142,10 +140,6 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40010)  override val message: String = m40010
   }
 
-  final object UserNotRegistered extends BadRequest {
-    @ApiModelProperty(example = c40011)  override val code: Int =       c40011.toInt
-    @ApiModelProperty(example = m40011)  override val message: String = m40011
-  }
 
   final object UserNameOrPasswordNotMatched extends BadRequest {
     @ApiModelProperty(example = c40012)  override val code: Int =       c40012.toInt
@@ -280,6 +274,7 @@ object CactaceaErrors {
   final val c40405 = "40405"
   final val c40406 = "40406"
   final val c40407 = "40407"
+  final val c40408 = "40408"
 
   final val c40100 = "40100"
   final val c40101 = "40101"
@@ -292,6 +287,7 @@ object CactaceaErrors {
   final val m40405 = "Channel not found."
   final val m40406 = "Invitation not found."
   final val m40407 = "Message not found."
+  final val m40408 = "User not registered."
 
   final val m40100 = "Session not authorized."
   final val m40101 = "Access token expired."
@@ -340,6 +336,13 @@ object CactaceaErrors {
     @ApiModelProperty(example = c40407)  override val code: Int =       c40407.toInt
     @ApiModelProperty(example = m40407)  override val message: String = m40407
   }
+
+  final object UserNotRegistered extends BadRequest {
+    @ApiModelProperty(example = c40408)  override val code: Int =       c40408.toInt
+    @ApiModelProperty(example = m40408)  override val message: String = m40408
+  }
+
+
 
   // 401 Unauthorized
 

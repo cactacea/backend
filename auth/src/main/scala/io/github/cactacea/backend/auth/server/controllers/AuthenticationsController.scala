@@ -3,10 +3,11 @@ package io.github.cactacea.backend.auth.server.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, EmailAuthenticationService}
+import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, EmailAuthenticationService, SocialAuthenticationService}
 import io.github.cactacea.backend.auth.core.domain.models.Token
 import io.github.cactacea.backend.auth.enums.AuthType
 import io.github.cactacea.backend.auth.server.models.requests.sessions.{PostRejectToken, PostSignIn, PostSignUp, PostVerifyToken}
+import io.github.cactacea.backend.auth.server.models.requests.social.PostSocialSignup
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.models.Swagger
@@ -17,6 +18,7 @@ class AuthenticationsController@Inject()(
                                     s: Swagger,
                                     authenticationService: AuthenticationService,
                                     emailAuthenticationService: EmailAuthenticationService,
+                                    socialAuthenticationService: SocialAuthenticationService
                                   ) extends BaseController {
 
   implicit val swagger: Swagger = s
@@ -44,6 +46,22 @@ class AuthenticationsController@Inject()(
             request.password
           )
       }
+    }
+
+    postWithDoc("/signup/:provider") { o =>
+      o.summary("Sign up")
+        .tag(sessionsTag)
+        .operationId("socialSignUp")
+        .request[PostSocialSignup]
+        .responseWith[Token](Status.Ok.code, successfulMessage)
+    } { request: PostSocialSignup =>
+      implicit val r = request.request
+      socialAuthenticationService.authenticate(
+        request.provider,
+        request.token,
+        request.expiresIn,
+        request.secret
+      )
     }
 
     postWithDoc("/signin") { o =>

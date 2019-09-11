@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Request
 import com.twitter.finatra.request.RouteParam
 import io.swagger.annotations.ApiModelProperty
 
-case class PostSocialAuthentication(
+case class PostSocialSignup(
                                      @ApiModelProperty(value = "Provider type.", required = true)
                                      @RouteParam provider: String,
 
@@ -15,7 +15,7 @@ case class PostSocialAuthentication(
                                      @ApiModelProperty(value = "expiresIn.", required = true)
                                      expiresIn: Option[Int],
 
-                                     @ApiModelProperty(value = "secret.", required = true)
+                                     @ApiModelProperty(value = "secret.", required = false)
                                      secret: Option[String],
 
                                      @JsonIgnore
