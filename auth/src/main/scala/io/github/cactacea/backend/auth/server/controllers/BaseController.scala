@@ -10,6 +10,8 @@ trait BaseController extends SwaggerController {
   protected val socialAccountsTag = "SocialAccounts"
   protected val sessionsTag = "Sessions"
   protected val sessionTag = "Session"
+  protected val passwordTag = "Password"
+
 
 }
 

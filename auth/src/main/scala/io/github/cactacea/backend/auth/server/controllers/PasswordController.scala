@@ -20,7 +20,7 @@ class PasswordController @Inject()(
 
     postWithDoc("/password/recover") { o =>
       o.summary("Recover password")
-        .tag(sessionsTag)
+        .tag(passwordTag)
         .operationId("recoverPassword")
         .request[PostRecoverPassword]
         .responseWith(Status.Ok.code, successfulMessage)
@@ -33,7 +33,7 @@ class PasswordController @Inject()(
 
     postWithDoc("/password/reset") { o =>
       o.summary("Reset Password")
-        .tag(sessionsTag)
+        .tag(passwordTag)
         .operationId("resetPassword")
         .request[PostResetPassword]
         .responseWith(Status.Ok.code, successfulMessage)

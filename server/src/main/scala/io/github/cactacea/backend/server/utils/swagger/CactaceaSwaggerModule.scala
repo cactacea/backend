@@ -36,7 +36,7 @@ object CactaceaSwaggerModule extends SwaggerModule {
     swaggerDefine.addTag(new Tag().name("Sessions").description("Manage sessions"))
     swaggerDefine.addTag(new Tag().name("Settings").description("Manage session settings"))
     swaggerDefine.addTag(new Tag().name("System").description("Health checking and etc"))
-
+    swaggerDefine.addTag(new Tag().name("Password").description("Manage password"))
 
     val apiKeyAuthDefinition = new ApiKeyAuthDefinition(Config.auth.headerNames.apiKey, In.HEADER)
     swaggerDefine.securityDefinition("api_key", apiKeyAuthDefinition)

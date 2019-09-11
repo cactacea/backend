@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, EmailAuthenticationService}
-import io.github.cactacea.backend.auth.core.domain.models.Session
+import io.github.cactacea.backend.auth.core.domain.models.Token
 import io.github.cactacea.backend.auth.enums.AuthType
 import io.github.cactacea.backend.auth.server.models.requests.sessions.{PostRejectToken, PostSignIn, PostSignUp, PostVerifyToken}
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
@@ -28,7 +28,7 @@ class AuthenticationsController@Inject()(
         .tag(sessionsTag)
         .operationId("signUp")
         .request[PostSignUp]
-        .responseWith[Session](Status.Ok.code, successfulMessage)
+        .responseWith[Token](Status.Ok.code, successfulMessage)
     } { request: PostSignUp =>
       implicit val r = request.request
 
@@ -51,7 +51,7 @@ class AuthenticationsController@Inject()(
         .tag(sessionsTag)
         .operationId("signIn")
         .request[PostSignIn]
-        .responseWith[Session](Status.Ok.code, successfulMessage)
+        .responseWith[Token](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason,
         Some(CactaceaErrors(Seq(UserNameOrPasswordNotMatched, UserTerminated))))
 

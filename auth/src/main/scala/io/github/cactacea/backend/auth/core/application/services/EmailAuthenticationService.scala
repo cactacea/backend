@@ -4,13 +4,12 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
-import io.github.cactacea.backend.auth.core.domain.models.Session
+import io.github.cactacea.backend.auth.core.domain.models.Token
 import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository}
 import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
 import io.github.cactacea.backend.auth.enums.AuthTokenType
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.repositories.UsersRepository
 import io.github.cactacea.backend.utils.RequestImplicits._
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
@@ -39,15 +38,19 @@ class EmailAuthenticationService @Inject()(
         transaction {
           for {
             _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
+            s <- authenticatorService.create(l)
+            c <- authenticatorService.init(s)
             t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
             _ <- mailer.welcome(email, t, request.currentLocale())
-          } yield (response.ok.body(Session(email)))
+          } yield (response.ok.body(Token(email, c)))
         }
       case false =>
         for {
+          s <- authenticatorService.create(l)
+          c <- authenticatorService.init(s)
           t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
           _ <- mailer.welcome(email, t, request.currentLocale())
-        } yield (response.ok.body(Session(email)))
+        } yield (response.ok.body(Token(email, c)))
     })
   }
 
@@ -56,7 +59,7 @@ class EmailAuthenticationService @Inject()(
       l <- emailsProvider.authenticate(Credentials(email, password))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
-      r <- authenticatorService.embed(c, response.ok.body(Session(email, c)))
+      r <- authenticatorService.embed(c, response.ok.body(Token(email, c)))
     } yield (r)
   }
 
