@@ -59,7 +59,6 @@ class RepositorySpec extends Spec
   val userChannelsDAO = injector.instance[UserChannelsDAO]
   val userMessagesDAO = injector.instance[UserMessagesDAO]
   val userReportsDAO = injector.instance[UserReportsDAO]
-  val userAuthenticationsDAO = injector.instance[UserAuthenticationsDAO]
   val blocksDAO = injector.instance[BlocksDAO]
   val commentsDAO = injector.instance[CommentsDAO]
   val commentLikesDAO = injector.instance[CommentLikesDAO]
@@ -91,7 +90,7 @@ class RepositorySpec extends Spec
 
   def createUser(userName: String): Future[User] = {
     for {
-      i <- usersRepository.create("credentails", userName, userName, None)
+      i <- usersRepository.create(userName, None)
       u <- usersRepository.find(i.sessionId)
     } yield (u)
   }

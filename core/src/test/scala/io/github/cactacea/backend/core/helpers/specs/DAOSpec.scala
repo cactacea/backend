@@ -29,7 +29,6 @@ class DAOSpec extends Spec
   val userChannelsDAO = injector.instance[UserChannelsDAO]
   val userMessagesDAO = injector.instance[UserMessagesDAO]
   val userReportsDAO = injector.instance[UserReportsDAO]
-  val userAuthenticationsDAO = injector.instance[UserAuthenticationsDAO]
   val blocksDAO = injector.instance[BlocksDAO]
   val commentsDAO = injector.instance[CommentsDAO]
   val commentLikesDAO = injector.instance[CommentLikesDAO]

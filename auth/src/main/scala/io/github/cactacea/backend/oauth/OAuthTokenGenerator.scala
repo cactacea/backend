@@ -2,12 +2,13 @@ package io.github.cactacea.backend.oauth
 
 import java.util.Date
 
+import io.github.cactacea.backend.auth.enums.OAuthTokenType
 import io.github.cactacea.backend.core.util.configs.Config
 import io.jsonwebtoken.{JwtException, Jwts, SignatureAlgorithm}
 
 object OAuthTokenGenerator {
 
-  def generate(tokenType: TokenType, userName: String, clientId: String, scope: Option[String], redirectUri: Option[String], expiration: Long): String = {
+  def generate(tokenType: OAuthTokenType, userName: String, clientId: String, scope: Option[String], redirectUri: Option[String], expiration: Long): String = {
     val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
     Jwts.builder()
       .setIssuer(Config.auth.token.issuer)
@@ -23,7 +24,7 @@ object OAuthTokenGenerator {
       .compact()
   }
 
-  def parse(tokenType: TokenType, token: String): Option[OAuthToken] = {
+  def parse(tokenType: OAuthTokenType, token: String): Option[OAuthToken] = {
     try {
       val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
       val parsed = Jwts.parser().setSigningKey(Config.auth.token.signingKey).parseClaimsJws(token)

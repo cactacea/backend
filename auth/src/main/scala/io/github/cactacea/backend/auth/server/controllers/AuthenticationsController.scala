@@ -73,30 +73,26 @@ class AuthenticationsController@Inject()(
 
     }
 
-    prefix(apiPrefix) {
+    postWithDoc("/verify") { o =>
+      o.summary("Verify token")
+        .tag(sessionsTag)
+        .operationId("verifyEmail")
+        .request[PostVerifyToken]
+        .responseWith(Status.Ok.code, successfulMessage)
 
-      postWithDoc("/verify") { o =>
-        o.summary("Verify token")
-          .tag(sessionsTag)
-          .operationId("verifyEmail")
-          .request[PostVerifyToken]
-          .responseWith(Status.Ok.code, successfulMessage)
+    } { req: PostVerifyToken =>
+      emailAuthenticationService.verify(req.token).map(_ => response.ok)
+    }
 
-      } { req: PostVerifyToken =>
-        emailAuthenticationService.verify(req.token).map(_ => response.ok)
-      }
+    postWithDoc("/reject") { o =>
+      o.summary("Reject token")
+        .tag(sessionsTag)
+        .operationId("rejectEmail")
+        .request[PostRejectToken]
+        .responseWith(Status.Ok.code, successfulMessage)
 
-      postWithDoc("/reject") { o =>
-        o.summary("Reject token")
-          .tag(sessionsTag)
-          .operationId("rejectEmail")
-          .request[PostRejectToken]
-          .responseWith(Status.Ok.code, successfulMessage)
-
-      } { req: PostVerifyToken =>
-        emailAuthenticationService.verify(req.token).map(_ => response.ok)
-      }
-
+    } { req: PostVerifyToken =>
+      emailAuthenticationService.verify(req.token).map(_ => response.ok)
     }
 
   }

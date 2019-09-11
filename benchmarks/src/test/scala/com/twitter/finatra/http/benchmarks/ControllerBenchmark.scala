@@ -11,6 +11,7 @@ import com.twitter.inject.internal.modules.LibraryModule
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
 import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.server.controllers._
+import io.github.cactacea.backend.auth.server.utils.filters.AuthenticationFilter
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._
@@ -84,7 +85,7 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]
       .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationsController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationController]
+      .add[CactaceaAPIKeyFilter, AuthenticationFilter, CorsFilter, AuthenticationController]
       .add[CactaceaAPIKeyFilter, CorsFilter, PasswordController]
       .add[CorsFilter, SocialAuthenticationsController]
       .services

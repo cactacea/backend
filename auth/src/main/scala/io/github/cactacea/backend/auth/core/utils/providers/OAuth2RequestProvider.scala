@@ -14,10 +14,11 @@ import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 class OAuth2RequestProvider @Inject()(authenticationsRepository: AuthenticationsRepository, dataHandler: OAuthDataHandler) extends RequestProvider with OAuth2 {
   def authenticate(request: Request): Future[Option[LoginInfo]] = {
     authorize(request, dataHandler) flatMap { auth =>
-      authenticationsRepository.find(LoginInfo(CredentialsProvider.ID, auth.user.userName)).map(_.map({ a =>
+      val loginInfo = LoginInfo(CredentialsProvider.ID, auth.user.userName)
+      authenticationsRepository.find(loginInfo).map(_.map({ a =>
         AuthenticationContext.setScope(auth.scope)
         AuthenticationContext.setAuth(a)
-        LoginInfo(a.providerId, a.providerKey)
+        loginInfo
       }))
     }
   }

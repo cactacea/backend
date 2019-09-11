@@ -5,7 +5,7 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.core.domain.models.Session
-import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, UserAuthenticationsRepository}
+import io.github.cactacea.backend.auth.core.domain.repositories.AuthenticationsRepository
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.filhouette.api.exceptions.{ConfigurationException, ProviderException}
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
@@ -18,7 +18,6 @@ class SocialAuthenticationService @Inject()(
                                              response: ResponseBuilder,
                                              authInfoRepository: AuthInfoRepository,
                                              authenticationsRepository: AuthenticationsRepository,
-                                             userAuthenticationsRepository: UserAuthenticationsRepository,
                                              authenticatorService: JWTAuthenticatorService,
                                              socialProviderRegistry: SocialProviderRegistry,
                                ) {
@@ -76,7 +75,7 @@ class SocialAuthenticationService @Inject()(
           for {
             profile <- p.retrieveProfile(authInfo)
             _ <- authInfoRepository.save(profile.loginInfo, authInfo)
-            _ <- userAuthenticationsRepository.create(providerId, providerKey, profile.loginInfo.providerId, profile.loginInfo.providerKey)
+//            _ <- authenticationsRepository.create(providerId, providerKey, profile.loginInfo.providerId, profile.loginInfo.providerKey)
           } yield (())
 
         case _ =>

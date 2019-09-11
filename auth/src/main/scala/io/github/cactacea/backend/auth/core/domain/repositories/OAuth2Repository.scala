@@ -27,7 +27,7 @@ class OAuth2Repository @Inject()(authenticationsDAO: AuthenticationsDAO)
   }
 
   override def update(loginInfo: LoginInfo, authInfo: OAuth2Info): Future[OAuth2Info] = {
-    authenticationsDAO.update(loginInfo.providerId, loginInfo.providerKey, authInfo.accessToken, "").map(_ => authInfo)
+    authenticationsDAO.updatePassword(loginInfo.providerId, loginInfo.providerKey, authInfo.accessToken, "").map(_ => authInfo)
   }
 
   override def save(loginInfo: LoginInfo, authInfo: OAuth2Info): Future[OAuth2Info] = {

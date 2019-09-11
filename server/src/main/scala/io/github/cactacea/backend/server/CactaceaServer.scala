@@ -6,6 +6,7 @@ import com.twitter.finatra.http.routing.HttpRouter
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
 import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.server.controllers._
+import io.github.cactacea.backend.auth.server.utils.filters.AuthenticationFilter
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers.{IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper, OAuthErrorExceptionMapper}
@@ -47,7 +48,7 @@ class CactaceaServer extends BaseServer {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]
       .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationsController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationController]
+      .add[CactaceaAPIKeyFilter, AuthenticationFilter, CorsFilter, AuthenticationController]
       .add[CactaceaAPIKeyFilter, CorsFilter, PasswordController]
       .add[CorsFilter, SocialAuthenticationsController]
       .add[ResourcesController]

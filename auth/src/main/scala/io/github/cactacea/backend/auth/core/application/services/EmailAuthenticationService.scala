@@ -5,11 +5,12 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.core.domain.models.Session
-import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository, UserAuthenticationsRepository}
+import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository}
 import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
-import io.github.cactacea.backend.auth.enums.TokenType
+import io.github.cactacea.backend.auth.enums.AuthTokenType
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.domain.repositories.UsersRepository
 import io.github.cactacea.backend.utils.RequestImplicits._
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
@@ -20,7 +21,6 @@ import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService
 class EmailAuthenticationService @Inject()(
                                             db: DatabaseService,
                                             response: ResponseBuilder,
-                                            userAuthenticationsRepository: UserAuthenticationsRepository,
                                             authenticationsRepository: AuthenticationsRepository,
                                             authInfoRepository: AuthInfoRepository,
                                             tokensRepository: TokensRepository,
@@ -34,20 +34,20 @@ class EmailAuthenticationService @Inject()(
 
   def signUp(email: String, password: String)(implicit request: Request): Future[Response] = {
     val l = LoginInfo(emailsProvider.id, email)
-    userAuthenticationsRepository.notExists(emailsProvider.id, email).flatMap(_ match {
+    authenticationsRepository.exists(emailsProvider.id, email).flatMap(_ match {
       case true =>
-        for {
-          t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
-          _ <- mailer.welcome(email, t, request.currentLocale())
-        } yield (response.ok.body(Session(email)))
-      case false =>
         transaction {
           for {
             _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
-            t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
+            t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
             _ <- mailer.welcome(email, t, request.currentLocale())
           } yield (response.ok.body(Session(email)))
         }
+      case false =>
+        for {
+          t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
+          _ <- mailer.welcome(email, t, request.currentLocale())
+        } yield (response.ok.body(Session(email)))
     })
   }
 
@@ -63,7 +63,7 @@ class EmailAuthenticationService @Inject()(
   def verify(token: String): Future[Unit] = {
     transaction {
       for {
-        l <- tokensRepository.verify(token, TokenType.signUp)
+        l <- tokensRepository.verify(token, AuthTokenType.signUp)
         _ <- authenticationsRepository.confirm(l)
       } yield (())
     }
@@ -72,7 +72,7 @@ class EmailAuthenticationService @Inject()(
   def reject(token: String): Future[Unit] = {
     transaction {
       for {
-        l <- tokensRepository.verify(token, TokenType.signUp)
+        l <- tokensRepository.verify(token, AuthTokenType.signUp)
         _ <- authInfoRepository.remove(l)
       } yield (())
     }

@@ -42,20 +42,6 @@ class SessionController @Inject()(
 
   prefix(apiPrefix) {
 
-    scope(basic).postWithDoc("/session") { o =>
-      o.summary("Register user")
-        .tag(sessionTag)
-        .operationId("registerSession")
-        .responseWith[User](Status.Ok.code, successfulMessage)
-    } { request: PostSession =>
-      usersService.create(
-        CactaceaContext.auth.providerId,
-        CactaceaContext.auth.providerKey,
-        request.userName,
-        request.displayName
-      )
-    }
-
     scope(basic).getWithDoc("/session") { o =>
       o.summary("Get user information")
         .tag(sessionTag)

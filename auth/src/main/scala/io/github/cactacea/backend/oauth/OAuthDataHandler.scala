@@ -5,12 +5,15 @@ import java.util.Date
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.oauth2.{AccessToken, AuthInfo, DataHandler, InvalidScope}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.infrastructure.dao.{ClientsDAO, UsersDAO}
+import io.github.cactacea.backend.auth.core.infrastructure.dao.AuthenticationsDAO
+import io.github.cactacea.backend.auth.enums.OAuthTokenType
+import io.github.cactacea.backend.core.infrastructure.dao.ClientsDAO
 import io.github.cactacea.filhouette.api.util.Credentials
 import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 
 @Singleton
-class OAuthDataHandler @Inject()(usersDAO: UsersDAO,
+class OAuthDataHandler @Inject()(
+                                  authenticationsDAO: AuthenticationsDAO,
                                  clientsDAO: ClientsDAO,
                                  credentialsProvider: CredentialsProvider
                             ) extends DataHandler[OAuthUser] {
@@ -19,7 +22,7 @@ class OAuthDataHandler @Inject()(usersDAO: UsersDAO,
   // Authorization Code Flow
   override def findAuthInfoByCode(code: String): Future[Option[AuthInfo[OAuthUser]]] = {
     val token = for {
-      t <- OAuthTokenGenerator.parse(TokenType.code, code)
+      t <- OAuthTokenGenerator.parse(OAuthTokenType.code, code)
       i <- createAuthInfo(t.userName, t.clientId, t.redirectUri, t.issuedAt, t.scope)
     } yield (i)
     Future.value(token)
@@ -29,7 +32,7 @@ class OAuthDataHandler @Inject()(usersDAO: UsersDAO,
   // Refresh Token Flow
   override def findAuthInfoByRefreshToken(refreshToken: String): Future[Option[AuthInfo[OAuthUser]]] = {
     val token = for {
-      t <- OAuthTokenGenerator.parse(TokenType.refreshToken, refreshToken)
+      t <- OAuthTokenGenerator.parse(OAuthTokenType.refreshToken, refreshToken)
       i <- createAuthInfo(t.userName, t.clientId, t.redirectUri, t.issuedAt, t.scope)
     } yield (i)
     Future.value(token)
@@ -48,7 +51,7 @@ class OAuthDataHandler @Inject()(usersDAO: UsersDAO,
   override def findUser(username: String, password: String): Future[Option[OAuthUser]] = {
     for {
       l <- credentialsProvider.authenticate(Credentials(username, password))
-      a <- usersDAO.find(l.providerId, l.providerKey).map(_.map(a => OAuthUser(a.userName, new Date())))
+      a <- authenticationsDAO.find(l.providerId, l.providerKey).map(_.map(a => OAuthUser(username, new Date())))
     } yield (a)
   }
 
@@ -63,14 +66,14 @@ class OAuthDataHandler @Inject()(usersDAO: UsersDAO,
     val tokenExpiresIn = 60L * 60
     val refreshExpiresIn = 60L * 60 * 24 * 365
     val token = OAuthTokenGenerator.generate(
-      TokenType.token,
+      OAuthTokenType.token,
       authInfo.user.userName,
       authInfo.clientId,
       authInfo.scope,
       authInfo.redirectUri,
       tokenExpiresIn)
     val refreshToken = OAuthTokenGenerator.generate(
-      TokenType.refreshToken,
+      OAuthTokenType.refreshToken,
       authInfo.user.userName,
       authInfo.clientId,
       authInfo.scope,
@@ -90,7 +93,7 @@ class OAuthDataHandler @Inject()(usersDAO: UsersDAO,
   override def refreshAccessToken(authInfo: AuthInfo[OAuthUser], refreshToken: String): Future[AccessToken] = {
     val tokenExpiresIn = 60L * 60
     val token = OAuthTokenGenerator.generate(
-      TokenType.token,
+      OAuthTokenType.token,
       authInfo.user.userName,
       authInfo.clientId,
       authInfo.scope,
@@ -102,14 +105,14 @@ class OAuthDataHandler @Inject()(usersDAO: UsersDAO,
 
   // Authorize flow #1
   override def findAccessToken(token: String): Future[Option[AccessToken]] = {
-    val accessToken = OAuthTokenGenerator.parse(TokenType.token, token)
+    val accessToken = OAuthTokenGenerator.parse(OAuthTokenType.token, token)
       .map(t => AccessToken(token, None, t.scope, t.expiresIn, t.issuedAt))
     Future.value(accessToken)
   }
 
   // Authorize flow #2
   override def findAuthInfoByAccessToken(accessToken: AccessToken): Future[Option[AuthInfo[OAuthUser]]] = {
-    val authInfo = OAuthTokenGenerator.parse(TokenType.token, accessToken.token)
+    val authInfo = OAuthTokenGenerator.parse(OAuthTokenType.token, accessToken.token)
       .flatMap(t => createAuthInfo(t.userName, t.clientId, t.redirectUri, t.issuedAt, t.scope))
     Future.value(authInfo)
   }
@@ -144,7 +147,7 @@ class OAuthDataHandler @Inject()(usersDAO: UsersDAO,
   def createAccessCode(clientId: String, scope: Option[String], redirectUri: Option[String]): Future[String] = {
     val tokenExpiresIn = 60L * 60
     val token = OAuthTokenGenerator.generate(
-      TokenType.code,
+      OAuthTokenType.code,
       "",
       clientId,
       scope,

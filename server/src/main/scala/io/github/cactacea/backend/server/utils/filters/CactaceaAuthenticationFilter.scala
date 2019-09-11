@@ -22,17 +22,19 @@ class CactaceaAuthenticationFilter @Inject()(@Assisted auth: Authorization[Authe
     val block = (securedRequest: SecuredRequest[Authentication, JWTAuthenticator]) => {
       CactaceaContext.setAuth(securedRequest.identity)
       CactaceaContext.setScope(AuthenticationContext.scope)
-
       val expiresIn = securedRequest.authenticator.expirationDateTime.getMillis
-      val providerId = securedRequest.identity.providerId
-      val providerKey = securedRequest.identity.providerKey
-      usersRepository.find(providerId, providerKey, expiresIn).flatMap( _ match {
-        case Some(a) =>
-          CactaceaContext.setUser(a)
-          service(request)
+      securedRequest.identity.userId match {
+        case Some(userId) =>
+          usersRepository.find(userId, expiresIn).flatMap(_ match {
+            case Some(u) =>
+              CactaceaContext.setUser(u)
+              service(request)
+            case None =>
+              service(request)
+          })
         case None =>
           service(request)
-      })
+      }
     }
     securedActionBuilder(auth).invokeBlock(request, block)
   }

@@ -241,19 +241,6 @@ class UsersDAOSpec extends DAOSpec {
 
   }
 
-  feature("find an authentication") {
-    scenario("should return an user") {
-      forAll(userGen, userAuthenticationGen, userAuthenticationGen) { (s, a1, a2) =>
-        val sessionId = await(usersDAO.create(s.userName)).sessionId
-        await(userAuthenticationsDAO.create(sessionId.userId, a1.providerId, a1.providerKey))
-        val result1 = await(usersDAO.find(a1.providerId, a1.providerKey))
-        val result2 = await(usersDAO.find(a2.providerId, a2.providerKey))
-        assert(result1.isDefined)
-        assert(result2.isEmpty)
-      }
-    }
-  }
-
   feature("find user list") {
     scenario("should return user list") {
       forAll(sortedNameGen, sortedUserGen, sortedUserGen, sortedUserGen, sortedUserGen, sortedUserGen)

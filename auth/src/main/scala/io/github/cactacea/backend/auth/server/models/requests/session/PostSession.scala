@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.server.models.requests.session
+package io.github.cactacea.backend.auth.server.models.requests.session
 
 import com.twitter.finatra.validation.Size
 import io.swagger.annotations.ApiModelProperty

@@ -4,7 +4,7 @@ import java.util.Date
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.auth.enums.TokenType
+import io.github.cactacea.backend.auth.enums.AuthTokenType
 import io.github.cactacea.backend.core.util.configs.Config
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors.{InvalidTokenError, TokenAlreadyExpired}
@@ -15,7 +15,7 @@ import org.joda.time.DateTime
 @Singleton
 class TokensRepository @Inject()() {
 
-  def issue(providerId: String, providerKey: String, tokenType: TokenType, expiration: Int = 3): Future[String] = {
+  def issue(providerId: String, providerKey: String, tokenType: AuthTokenType, expiration: Int = 3): Future[String] = {
     val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
     val expired = new DateTime().plusMinutes(expiration).toDate
     val token = Jwts.builder()
@@ -30,7 +30,7 @@ class TokensRepository @Inject()() {
     Future.value(token)
   }
 
-  def verify(token: String, tokenType: TokenType): Future[LoginInfo] = {
+  def verify(token: String, tokenType: AuthTokenType): Future[LoginInfo] = {
     try {
       val signatureAlgorithm = SignatureAlgorithm.forName(Config.auth.token.algorithm)
       val parsed = Jwts.parser().setSigningKey(Config.auth.token.signingKey).parseClaimsJws(token)

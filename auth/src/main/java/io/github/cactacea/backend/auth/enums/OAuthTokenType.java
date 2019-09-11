@@ -1,18 +1,18 @@
-package io.github.cactacea.backend.oauth;
+package io.github.cactacea.backend.auth.enums;
 
-public enum TokenType {
+public enum OAuthTokenType {
     code("code"),
     token("token"),
     refreshToken("refreshToken");
 
     private String value;
 
-    private TokenType(String value) {
+    private OAuthTokenType(String value) {
         this.value = value;
     }
 
-    static public TokenType forName(String value) {
-        for (TokenType e : values()) {
+    static public OAuthTokenType forName(String value) {
+        for (OAuthTokenType e : values()) {
             if (e.value == value) {
                 return e;
             }

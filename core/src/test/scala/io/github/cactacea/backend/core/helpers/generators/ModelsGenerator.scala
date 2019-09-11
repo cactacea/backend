@@ -33,10 +33,6 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
     userStatus <- userStatusGen
   } yield Users(UserId(0L), userName, displayName, None, None, 0L, 0L, 0L, 0L, url, birthday, location, bio, userStatus, None)
 
-  lazy val userAuthentication20SeqGen: Gen[Seq[UserAuthentications]] = for {
-    l <- Gen.listOfN(20, userAuthenticationGen)
-  } yield (l)
-
   lazy val user20SeqGen: Gen[Seq[Users]] = for {
     l <- Gen.listOfN(20, userGen)
   } yield (l)
@@ -263,11 +259,6 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
     reportContent <- reportContentOptGen
     reportedAt <- currentTimeMillisGen
   } yield ChannelReports(ChannelReportId(0L), ChannelId(0L), UserId(0L), reportType, reportContent, reportedAt)
-
-  lazy val userAuthenticationGen: Gen[UserAuthentications] = for {
-    providerId <- Gen.listOfN(30, Gen.alphaChar).map(_.mkString)
-    providerKey <- uniqueUserNameGen
-  } yield (UserAuthentications(UserId(0L), providerId, providerKey))
 
   lazy val clientGen = for {
     clientId <- clientIdGen
