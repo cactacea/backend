@@ -201,7 +201,7 @@ trait OAuth2Provider extends SocialStateProvider with OAuth2Constants with Logge
     val r = RequestBuilder().url(Request.queryString(settings.accessTokenURL, params)).build(Method.Post, None)
     headers.foreach({ case (k, v) => request.headerMap.add(k, v) })
 
-    httpLayer.execute(r).flatMap({ response =>
+    httpClient.execute(r).flatMap({ response =>
       logger.debug("[Filhouette][%s] Access token response: [%s]".format(id, response.contentString))
       Future.const(buildInfo(response))
     })

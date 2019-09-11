@@ -1,6 +1,8 @@
 package io.github.cactacea.backend.auth.core.utils.moduels
 
+import com.google.inject.name.Named
 import com.google.inject.{Provides, Singleton}
+import com.twitter.finatra.httpclient.HttpClient
 import com.twitter.inject.TwitterModule
 import io.github.cactacea.backend.auth.core.domain.models.Authentication
 import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, OAuth2Repository, PasswordsRepository}
@@ -14,7 +16,7 @@ import io.github.cactacea.filhouette.api.util._
 import io.github.cactacea.filhouette.impl.authenticators._
 import io.github.cactacea.filhouette.impl.crypto.{JcaCrypter, JcaCrypterSettings, JcaSigner, JcaSignerSettings}
 import io.github.cactacea.filhouette.impl.providers._
-import io.github.cactacea.filhouette.impl.providers.oauth2.FacebookProvider
+import io.github.cactacea.filhouette.impl.providers.oauth2.{FacebookClientModule, FacebookProvider}
 import io.github.cactacea.filhouette.impl.providers.state.{CsrfStateItemHandler, CsrfStateSettings}
 import io.github.cactacea.filhouette.impl.util.{DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import io.github.cactacea.filhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
@@ -23,6 +25,7 @@ import io.github.cactacea.filhouette.persistence.repositories.DelegableAuthInfoR
 
 object DefaultAuthModule extends TwitterModule {
 
+  override val modules = Seq(new FacebookClientModule())
   /**
     * Configures the module.
     */
@@ -185,7 +188,7 @@ object DefaultAuthModule extends TwitterModule {
     * @return The Facebook provider.
     */
   @Provides
-  def provideFacebookProvider(socialStateHandler: SocialStateHandler): FacebookProvider = {
+  def provideFacebookProvider(socialStateHandler: SocialStateHandler, @Named("FacebookHttpClient") httpClient: HttpClient): FacebookProvider = {
 
     val settings = OAuth2Settings(
       authorizationURL = Config.facebook.authorizationURL,
@@ -196,7 +199,7 @@ object DefaultAuthModule extends TwitterModule {
       scope = Config.facebook.scope
     )
 
-    new FacebookProvider(socialStateHandler, settings)
+    new FacebookProvider(socialStateHandler, settings, httpClient)
   }
 
 

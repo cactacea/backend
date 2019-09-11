@@ -35,7 +35,7 @@ trait SocialProvider extends Provider with SocialProfileBuilder {
   /**
     * The HTTP layer implementation.
     */
-  protected var httpLayer: HttpClient
+  protected var httpClient: HttpClient
 
   /**
     * Gets the provider settings.

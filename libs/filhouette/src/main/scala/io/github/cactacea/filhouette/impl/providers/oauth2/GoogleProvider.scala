@@ -67,7 +67,7 @@ trait BaseGoogleProvider extends OAuth2Provider {
    */
   override protected def buildProfile(authInfo: OAuth2Info): Future[Profile] = {
     val request = Request(Version.Http11, Method.Get, urls("api").format(authInfo.accessToken))
-    httpLayer.execute(request).flatMap({ response =>
+    httpClient.execute(request).flatMap({ response =>
       val json = Json.obj(response.contentString)
       val error = json.get("error")
       if (error != null) {
@@ -131,7 +131,7 @@ class GoogleProvider(
   /**
     * The HTTP layer implementation.
     */
-  @Inject var httpLayer: HttpClient = _
+  @Inject var httpClient: HttpClient = _
 
   /**
    * The type of this class.
