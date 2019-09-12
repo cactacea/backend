@@ -34,11 +34,12 @@ class SocialAuthenticationService @Inject()(
             case Right(authInfo) => {
               for {
                 profile <- p.retrieveProfile(authInfo)
+                u <- authenticationsRepository.find(profile.loginInfo).map(_.flatMap(_.userId))
                 _ <- authInfoRepository.save(profile.loginInfo, authInfo)
                 _ <- authenticationsRepository.confirm(profile.loginInfo)
                 s <- authenticatorService.create(profile.loginInfo)
                 c <- authenticatorService.init(s)
-                r <- authenticatorService.embed(c, response.ok.body(Token(profile.loginInfo.providerKey, c)))
+                r <- authenticatorService.embed(c, response.ok.body(Token(profile.loginInfo.providerKey, c, u)))
               } yield (r)
             }
           }
@@ -55,11 +56,12 @@ class SocialAuthenticationService @Inject()(
           val authInfo = OAuth2Info(accessToken = token, expiresIn = expiresIn)
           for {
             profile <- p.retrieveProfile(authInfo)
+            u <- authenticationsRepository.find(profile.loginInfo).map(_.flatMap(_.userId))
             _ <- authInfoRepository.save(profile.loginInfo, authInfo)
             _ <- authenticationsRepository.confirm(profile.loginInfo)
             s <- authenticatorService.create(profile.loginInfo)
             c <- authenticatorService.init(s)
-            r <- authenticatorService.embed(c, response.ok.body(Token(profile.loginInfo.providerKey, c)))
+            r <- authenticatorService.embed(c, response.ok.body(Token(profile.loginInfo.providerKey, c, u)))
           } yield (r)
         case _ =>
           Future.exception(new ConfigurationException(s"Cannot retrive information with unexpected social provider $provider"))

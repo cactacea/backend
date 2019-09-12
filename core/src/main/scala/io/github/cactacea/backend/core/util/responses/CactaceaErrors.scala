@@ -337,7 +337,7 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40407)  override val message: String = m40407
   }
 
-  final object UserNotRegistered extends BadRequest {
+  final object UserNotRegistered extends NotFound {
     @ApiModelProperty(example = c40408)  override val code: Int =       c40408.toInt
     @ApiModelProperty(example = m40408)  override val message: String = m40408
   }

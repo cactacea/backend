@@ -42,7 +42,7 @@ class AuthenticationService @Inject()(
         _ <- authenticationsRepository.link(l.providerId, l.providerKey, u)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok.body(Token(userName, c)))
+        r <- authenticatorService.embed(c, response.ok.body(Token(userName, c, None)))
       } yield (r)
     }
 
@@ -51,9 +51,10 @@ class AuthenticationService @Inject()(
   def signIn(userName: String, password: String)(implicit request: Request): Future[Response] = {
     for {
       l <- credentialsProvider.authenticate(Credentials(userName, password))
+      u <- authenticationsRepository.find(l).map(_.flatMap(_.userId))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
-      r <- authenticatorService.embed(c, response.ok.body(Token(userName, c)))
+      r <- authenticatorService.embed(c, response.ok.body(Token(userName, c, u)))
     } yield (r)
   }
 

@@ -42,7 +42,7 @@ class EmailAuthenticationService @Inject()(
             c <- authenticatorService.init(s)
             t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
             _ <- mailer.welcome(email, t, request.currentLocale())
-          } yield (response.ok.body(Token(email, c)))
+          } yield (response.ok.body(Token(email, c, None)))
         }
       case false =>
         for {
@@ -50,16 +50,17 @@ class EmailAuthenticationService @Inject()(
           c <- authenticatorService.init(s)
           t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
           _ <- mailer.welcome(email, t, request.currentLocale())
-        } yield (response.ok.body(Token(email, c)))
+        } yield (response.ok.body(Token(email, c, None)))
     })
   }
 
   def signIn(email: String, password: String)(implicit request: Request): Future[Response] = {
     for {
       l <- emailsProvider.authenticate(Credentials(email, password))
+      u <- authenticationsRepository.find(l).map(_.flatMap(_.userId))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
-      r <- authenticatorService.embed(c, response.ok.body(Token(email, c)))
+      r <- authenticatorService.embed(c, response.ok.body(Token(email, c, u)))
     } yield (r)
   }
 
