@@ -6,7 +6,9 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.finatra.httpclient.RequestBuilder
 import com.twitter.finatra.json.FinatraObjectMapper
+import com.twitter.inject.InjectorModule
 import com.twitter.inject.app.TestInjector
+import com.twitter.inject.modules.StatsReceiverModule
 import com.twitter.inject.server.FeatureTest
 import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.enums.AuthType
@@ -73,6 +75,8 @@ class CactaceaServerSpec extends FeatureTest
         DefaultMobilePushModule,
         DefaultQueueModule,
         DefaultStorageModule,
+        InjectorModule,
+        StatsReceiverModule
       )
     ).create
 

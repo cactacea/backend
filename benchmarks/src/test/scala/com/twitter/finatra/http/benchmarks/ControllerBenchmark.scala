@@ -5,9 +5,9 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{ExceptionMappingFilter, HttpResponseFilter}
 import com.twitter.finatra.http.modules._
 import com.twitter.finatra.http.routing.HttpRouter
-import com.twitter.inject.Injector
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.internal.modules.LibraryModule
+import com.twitter.inject.{Injector, InjectorModule}
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
 import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.server.controllers._
@@ -36,7 +36,8 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
           MessageBodyModule,
           MustacheModule,
           DocRootModule,
-          NullStatsReceiverModule
+          NullStatsReceiverModule,
+          InjectorModule
       ) ++
         Seq(
           DatabaseModule,
@@ -51,7 +52,7 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
           DefaultMobilePushModule,
           DefaultQueueModule,
           DefaultStorageModule,
-          DefaultMailModule
+          DefaultMailModule,
         )
 
     ).create
