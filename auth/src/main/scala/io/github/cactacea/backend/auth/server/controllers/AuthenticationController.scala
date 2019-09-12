@@ -29,6 +29,7 @@ class AuthenticationController @Inject()(
       o.summary("Register user")
         .tag(sessionTag)
         .operationId("registerSession")
+        .request[PostSession]
         .responseWith[User](Status.Ok.code, successfulMessage)
     } { request: PostSession =>
       authenticationService.create(
