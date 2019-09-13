@@ -23,14 +23,19 @@
 package io.github.cactacea.filhouette.impl.providers.oauth2
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.google.inject.Inject
+import com.google.inject.Provides
+import com.google.inject.name.Named
+import com.twitter.finagle.Http
 import com.twitter.finagle.http.{Method, Request, Version}
+import com.twitter.finagle.stats.StatsReceiver
 import com.twitter.finatra.httpclient.HttpClient
+import com.twitter.finatra.httpclient.modules.HttpClientModuleTrait
+import com.twitter.finatra.json.FinatraObjectMapper
+import com.twitter.inject.Injector
 import com.twitter.util.Future
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.impl.exceptions.ProfileRetrievalException
 import io.github.cactacea.filhouette.impl.providers._
-import io.github.cactacea.filhouette.impl.providers.oauth2.FacebookProvider.{ID, SpecifiedProfileError}
 import io.github.cactacea.filhouette.impl.providers.oauth2.GoogleProvider._
 import io.github.cactacea.filhouette.impl.util.Json
 
@@ -125,13 +130,9 @@ class GoogleProfileParser extends SocialProfileParser[JsonNode, CommonSocialProf
  */
 class GoogleProvider(
                       protected val stateHandler: SocialStateHandler,
-                      val settings: OAuth2Settings)
+                      val settings: OAuth2Settings,
+                      val httpClient: HttpClient)
   extends BaseGoogleProvider with CommonSocialProfileBuilder {
-
-  /**
-    * The HTTP layer implementation.
-    */
-  @Inject var httpClient: HttpClient = _
 
   /**
    * The type of this class.
@@ -149,7 +150,7 @@ class GoogleProvider(
    * @param f A function which gets the settings passed and returns different settings.
    * @return An instance of the provider initialized with new settings.
    */
-  def withSettings(f: (Settings) => Settings) = new GoogleProvider(stateHandler, f(settings))
+  def withSettings(f: (Settings) => Settings): GoogleProvider = new GoogleProvider(stateHandler, f(settings), httpClient)
 }
 
 /**
@@ -167,4 +168,25 @@ object GoogleProvider {
    */
   val ID = "google"
   val API = "https://www.googleapis.com/plus/v1/people/me?access_token=%s"
+}
+
+class GoogleClientModule extends HttpClientModuleTrait {
+  override val dest = "www.googleapis.com:443"
+  override val label = "google"
+  val sslHostname = "www.googleapis.com"
+
+  // we only override in this example for TLS configuration with the `sslHostname`
+  override def configureClient(
+                                injector: Injector,
+                                client: Http.Client
+                              ): Http.Client = client.withTls(sslHostname)
+
+  @Provides
+  @Named("GoogleHttpClient")
+  final def provideHttpClient(
+                               injector: Injector,
+                               statsReceiver: StatsReceiver,
+                               mapper: FinatraObjectMapper
+                             ): HttpClient = newHttpClient(injector, statsReceiver, mapper)
+
 }

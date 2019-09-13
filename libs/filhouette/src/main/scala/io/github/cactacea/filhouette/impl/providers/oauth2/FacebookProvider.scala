@@ -124,7 +124,7 @@ class FacebookProfileParser extends SocialProfileParser[JsonNode, CommonSocialPr
 class FacebookProvider (
                         protected val stateHandler: SocialStateHandler,
                         val settings: OAuth2Settings,
-                        var httpClient: HttpClient)
+                        val httpClient: HttpClient)
   extends BaseFacebookProvider with CommonSocialProfileBuilder {
 
   /**

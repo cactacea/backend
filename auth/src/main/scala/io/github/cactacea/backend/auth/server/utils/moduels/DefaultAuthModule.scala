@@ -17,7 +17,7 @@ import io.github.cactacea.filhouette.api.util._
 import io.github.cactacea.filhouette.impl.authenticators._
 import io.github.cactacea.filhouette.impl.crypto.{JcaCrypter, JcaCrypterSettings, JcaSigner, JcaSignerSettings}
 import io.github.cactacea.filhouette.impl.providers._
-import io.github.cactacea.filhouette.impl.providers.oauth2.{FacebookClientModule, FacebookProvider}
+import io.github.cactacea.filhouette.impl.providers.oauth2.{FacebookClientModule, FacebookProvider, GoogleClientModule, GoogleProvider}
 import io.github.cactacea.filhouette.impl.providers.state.{CsrfStateItemHandler, CsrfStateSettings}
 import io.github.cactacea.filhouette.impl.util.{DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import io.github.cactacea.filhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
@@ -26,7 +26,7 @@ import io.github.cactacea.filhouette.persistence.repositories.DelegableAuthInfoR
 
 object DefaultAuthModule extends TwitterModule {
 
-  override val modules = Seq(new FacebookClientModule())
+  override val modules = Seq(new FacebookClientModule(), new GoogleClientModule())
   /**
     * Configures the module.
     */
@@ -205,13 +205,34 @@ object DefaultAuthModule extends TwitterModule {
 
 
   /**
+    * Provides the Facebook provider.
+    *
+    * @param socialStateHandler The social state handler implementation.
+    * @return The Google provider.
+    */
+  @Provides
+  def provideGoogleProvider(socialStateHandler: SocialStateHandler, @Named("GoogleHttpClient") httpClient: HttpClient): GoogleProvider = {
+
+    val settings = OAuth2Settings(
+      authorizationURL = Config.google.authorizationURL,
+      accessTokenURL = Config.google.accessTokenURL,
+      redirectURL = Config.google.redirectURL,
+      clientID = Config.google.clientID,
+      clientSecret = Config.google.clientSecret,
+      scope = Config.google.scope
+    )
+
+    new GoogleProvider(socialStateHandler, settings, httpClient)
+  }
+
+  /**
     * Provides the social provider registry.
     *
     * @return The SocialProviderRegistry
     */
   @Provides
-  def provideSocialProviderRegistry(facebookProvider: FacebookProvider): SocialProviderRegistry = {
-    SocialProviderRegistry(Seq(facebookProvider))
+  def provideSocialProviderRegistry(facebookProvider: FacebookProvider, googleProvider: GoogleProvider): SocialProviderRegistry = {
+    SocialProviderRegistry(Seq(facebookProvider, googleProvider))
   }
 
 

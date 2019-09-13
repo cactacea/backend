@@ -20,6 +20,7 @@ object Config extends DurationReader {
   private val passwordConfig = config.as[PasswordConfig]("password")
   private val storageConfig = config.as[StorageConfig]("storage")
   private val facebookConfig = config.as[OAuth2Config]("socials.facebook")
+  private val googleConfig = config.as[OAuth2Config]("socials.google")
   private val twitterConfig = config.as[OAuth1Config]("socials.twitte")
   object db { // scalastyle:ignore
 
@@ -125,6 +126,15 @@ object Config extends DurationReader {
     val scope = facebookConfig.scope
   }
 
+  object google { // scalastyle:ignore
+    val authorizationURL = googleConfig.authorizationURL
+    val accessTokenURL = googleConfig.accessTokenURL.getOrElse("")
+    val redirectURL = googleConfig.redirectURL
+    val clientID = googleConfig.clientID.getOrElse("")
+    val clientSecret = googleConfig.clientSecret.getOrElse("")
+    val scope = googleConfig.scope
+  }
+
   object twitter { // scalastyle:ignore
     val requestTokenURL = twitterConfig.requestTokenURL.getOrElse("")
     val accessTokenURL = twitterConfig.accessTokenURL.getOrElse("")
@@ -188,6 +198,12 @@ object Config extends DurationReader {
   println(s"facebook.clientID = ${facebook.clientID}") // scalastyle:ignore
   println(s"facebook.clientSecret = ${facebook.clientSecret}") // scalastyle:ignore
   println(s"facebook.scope = ${facebook.scope}") // scalastyle:ignore
+  println(s"google.authorizationURL = ${google.authorizationURL}") // scalastyle:ignore
+  println(s"google.accessTokenURL = ${google.accessTokenURL}") // scalastyle:ignore
+  println(s"google.redirectURL = ${google.redirectURL}") // scalastyle:ignore
+  println(s"google.clientID = ${google.clientID}") // scalastyle:ignore
+  println(s"google.clientSecret = ${google.clientSecret}") // scalastyle:ignore
+  println(s"google.scope = ${google.scope}") // scalastyle:ignore
   println(s"twitter.requestTokenURL = ${twitter.requestTokenURL}") // scalastyle:ignore
   println(s"twitter.accessTokenURL = ${twitter.accessTokenURL}") // scalastyle:ignore
   println(s"twitter.authorizationURL = ${twitter.authorizationURL}") // scalastyle:ignore
