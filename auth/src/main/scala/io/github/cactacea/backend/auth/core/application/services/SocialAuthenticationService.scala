@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
-import io.github.cactacea.backend.auth.core.domain.models.Token
+import io.github.cactacea.backend.auth.core.domain.models.SessionToken
 import io.github.cactacea.backend.auth.core.domain.repositories.AuthenticationsRepository
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.filhouette.api.exceptions.{ConfigurationException, ProviderException}
@@ -39,7 +39,7 @@ class SocialAuthenticationService @Inject()(
                 _ <- authenticationsRepository.confirm(profile.loginInfo)
                 s <- authenticatorService.create(profile.loginInfo)
                 c <- authenticatorService.init(s)
-                r <- authenticatorService.embed(c, response.ok.body(Token(profile.loginInfo.providerKey, c, u)))
+                r <- authenticatorService.embed(c, response.ok.body(SessionToken(profile.loginInfo.providerKey, c, u)))
               } yield (r)
             }
           }
@@ -61,7 +61,7 @@ class SocialAuthenticationService @Inject()(
             _ <- authenticationsRepository.confirm(profile.loginInfo)
             s <- authenticatorService.create(profile.loginInfo)
             c <- authenticatorService.init(s)
-            r <- authenticatorService.embed(c, response.ok.body(Token(profile.loginInfo.providerKey, c, u)))
+            r <- authenticatorService.embed(c, response.ok.body(SessionToken(profile.loginInfo.providerKey, c, u)))
           } yield (r)
         case _ =>
           Future.exception(new ConfigurationException(s"Cannot retrive information with unexpected social provider $provider"))

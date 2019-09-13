@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
-import io.github.cactacea.backend.auth.core.domain.models.Token
+import io.github.cactacea.backend.auth.core.domain.models.SessionToken
 import io.github.cactacea.backend.auth.core.domain.repositories.AuthenticationsRepository
 import io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
@@ -42,7 +42,7 @@ class AuthenticationService @Inject()(
         _ <- authenticationsRepository.link(l.providerId, l.providerKey, u)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok.body(Token(userName, c, None)))
+        r <- authenticatorService.embed(c, response.ok.body(SessionToken(userName, c, None)))
       } yield (r)
     }
 
@@ -54,7 +54,7 @@ class AuthenticationService @Inject()(
       u <- authenticationsRepository.find(l).map(_.flatMap(_.userId))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
-      r <- authenticatorService.embed(c, response.ok.body(Token(userName, c, u)))
+      r <- authenticatorService.embed(c, response.ok.body(SessionToken(userName, c, u)))
     } yield (r)
   }
 

@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
-import io.github.cactacea.backend.auth.core.domain.models.Token
+import io.github.cactacea.backend.auth.core.domain.models.SessionToken
 import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository}
 import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
@@ -42,7 +42,7 @@ class EmailAuthenticationService @Inject()(
             c <- authenticatorService.init(s)
             t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
             _ <- mailer.welcome(email, t, request.currentLocale())
-          } yield (response.ok.body(Token(email, c, None)))
+          } yield (response.ok.body(SessionToken(email, c, None)))
         }
       case false =>
         for {
@@ -50,7 +50,7 @@ class EmailAuthenticationService @Inject()(
           c <- authenticatorService.init(s)
           t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
           _ <- mailer.welcome(email, t, request.currentLocale())
-        } yield (response.ok.body(Token(email, c, None)))
+        } yield (response.ok.body(SessionToken(email, c, None)))
     })
   }
 
@@ -60,7 +60,7 @@ class EmailAuthenticationService @Inject()(
       u <- authenticationsRepository.find(l).map(_.flatMap(_.userId))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
-      r <- authenticatorService.embed(c, response.ok.body(Token(email, c, u)))
+      r <- authenticatorService.embed(c, response.ok.body(SessionToken(email, c, u)))
     } yield (r)
   }
 

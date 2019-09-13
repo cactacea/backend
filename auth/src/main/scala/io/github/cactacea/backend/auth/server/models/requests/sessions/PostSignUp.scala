@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.validation.{MethodValidation, Size, ValidationResult}
 import io.github.cactacea.backend.auth.enums.AuthType
-import io.github.cactacea.backend.auth.server.utils.validations.CactaceaValidations
+import io.github.cactacea.backend.auth.server.utils.validations.ValueValidator
 import io.swagger.annotations.ApiModelProperty
 
 case class PostSignUp(
@@ -27,13 +27,13 @@ case class PostSignUp(
   def userNameCheck: ValidationResult = {
     authType match {
       case AuthType.username =>
-        CactaceaValidations.validateUserName(identifier)
+        ValueValidator.validateUserName(identifier)
       case AuthType.email =>
-        CactaceaValidations.validateEmail(identifier)
+        ValueValidator.validateEmail(identifier)
     }
   }
 
   @MethodValidation
-  def passwordCheck: ValidationResult = CactaceaValidations.validatePassword(password)
+  def passwordCheck: ValidationResult = ValueValidator.validatePassword(password)
 
 }

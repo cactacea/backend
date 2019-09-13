@@ -3,7 +3,7 @@ package io.github.cactacea.backend.auth.server.models.requests.password
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.validation.{MethodValidation, ValidationResult}
-import io.github.cactacea.backend.auth.server.utils.validations.CactaceaValidations
+import io.github.cactacea.backend.auth.server.utils.validations.ValueValidator
 import io.swagger.annotations.ApiModelProperty
 
 case class PostResetPassword(
@@ -19,6 +19,6 @@ case class PostResetPassword(
                       ) {
 
   @MethodValidation
-  def passwordCheck: ValidationResult = CactaceaValidations.validatePassword(newPassword)
+  def passwordCheck: ValidationResult = ValueValidator.validatePassword(newPassword)
 
 }

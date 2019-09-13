@@ -1,4 +1,4 @@
-package io.github.cactacea.backend.auth.core.utils.providers
+package io.github.cactacea.backend.auth.server.utils.providers
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.OAuth2

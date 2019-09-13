@@ -9,9 +9,9 @@ import com.twitter.inject.app.TestInjector
 import com.twitter.inject.internal.modules.LibraryModule
 import com.twitter.inject.{Injector, InjectorModule}
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
-import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.server.controllers._
 import io.github.cactacea.backend.auth.server.utils.filters.AuthenticationFilter
+import io.github.cactacea.backend.auth.server.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._

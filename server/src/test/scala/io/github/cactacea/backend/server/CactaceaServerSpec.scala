@@ -10,10 +10,10 @@ import com.twitter.inject.InjectorModule
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.modules.StatsReceiverModule
 import com.twitter.inject.server.FeatureTest
-import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.auth.enums.AuthType
 import io.github.cactacea.backend.auth.server.models.requests.session.PostSession
 import io.github.cactacea.backend.auth.server.models.requests.sessions.{PostSignIn, PostSignUp}
+import io.github.cactacea.backend.auth.server.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.helpers.generators.{Generator, ModelsGenerator, StatusGenerator}
 import io.github.cactacea.backend.core.util.configs.Config
