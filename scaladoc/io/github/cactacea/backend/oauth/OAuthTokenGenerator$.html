@@ -173,10 +173,6 @@
                         <a class="object" href="Scope$.html" title=""></a>
                         <a class="class" href="Scope.html" title=""></a>
                         <a href="Scope.html" title="">Scope</a>
-                      </li><li class="current-entities indented5">
-                        <span class="separator"></span>
-                        <a class="class" href="TokenType.html" title=""></a>
-                        <a href="TokenType.html" title="">TokenType</a>
                       </li>
               </ul>
             </div>
@@ -205,7 +201,7 @@
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/oauth/src/main/scala/io/github/cactacea/backend/oauth/OAuthTokenGenerator.scala" target="_blank">OAuthTokenGenerator.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/cactacea/backend/tree/master/auth/src/main/scala/io/github/cactacea/backend/oauth/OAuthTokenGenerator.scala" target="_blank">OAuthTokenGenerator.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -405,9 +401,9 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.backend.oauth.OAuthTokenGenerator#generate" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="generate(tokenType:io.github.cactacea.backend.oauth.TokenType,userName:String,clientId:String,scope:Option[String],redirectUri:Option[String],expiration:Long):String"></a><a id="generate(TokenType,String,String,Option[String],Option[String],Long):String"></a>
+      <a id="generate(tokenType:io.github.cactacea.backend.auth.enums.OAuthTokenType,userName:String,clientId:String,scope:Option[String],redirectUri:Option[String],expiration:Long):String"></a><a id="generate(OAuthTokenType,String,String,Option[String],Option[String],Long):String"></a>
       <span class="permalink">
-      <a href="../../../../../io/github/cactacea/backend/oauth/OAuthTokenGenerator$.html#generate(tokenType:io.github.cactacea.backend.oauth.TokenType,userName:String,clientId:String,scope:Option[String],redirectUri:Option[String],expiration:Long):String" title="Permalink">
+      <a href="../../../../../io/github/cactacea/backend/oauth/OAuthTokenGenerator$.html#generate(tokenType:io.github.cactacea.backend.auth.enums.OAuthTokenType,userName:String,clientId:String,scope:Option[String],redirectUri:Option[String],expiration:Long):String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -416,7 +412,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">generate</span><span class="params">(<span name="tokenType">tokenType: <a href="TokenType.html" class="extype" name="io.github.cactacea.backend.oauth.TokenType">TokenType</a></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="clientId">clientId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="scope">scope: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="redirectUri">redirectUri: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="expiration">expiration: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">generate</span><span class="params">(<span name="tokenType">tokenType: <a href="../auth/enums/OAuthTokenType.html" class="extype" name="io.github.cactacea.backend.auth.enums.OAuthTokenType">OAuthTokenType</a></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="clientId">clientId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="scope">scope: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="redirectUri">redirectUri: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="expiration">expiration: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       
@@ -529,9 +525,9 @@
               
         </dd></dl></div>
     </li><li name="io.github.cactacea.backend.oauth.OAuthTokenGenerator#parse" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="parse(tokenType:io.github.cactacea.backend.oauth.TokenType,token:String):Option[io.github.cactacea.backend.oauth.OAuthToken]"></a><a id="parse(TokenType,String):Option[OAuthToken]"></a>
+      <a id="parse(tokenType:io.github.cactacea.backend.auth.enums.OAuthTokenType,token:String):Option[io.github.cactacea.backend.oauth.OAuthToken]"></a><a id="parse(OAuthTokenType,String):Option[OAuthToken]"></a>
       <span class="permalink">
-      <a href="../../../../../io/github/cactacea/backend/oauth/OAuthTokenGenerator$.html#parse(tokenType:io.github.cactacea.backend.oauth.TokenType,token:String):Option[io.github.cactacea.backend.oauth.OAuthToken]" title="Permalink">
+      <a href="../../../../../io/github/cactacea/backend/oauth/OAuthTokenGenerator$.html#parse(tokenType:io.github.cactacea.backend.auth.enums.OAuthTokenType,token:String):Option[io.github.cactacea.backend.oauth.OAuthToken]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -540,7 +536,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">parse</span><span class="params">(<span name="tokenType">tokenType: <a href="TokenType.html" class="extype" name="io.github.cactacea.backend.oauth.TokenType">TokenType</a></span>, <span name="token">token: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="OAuthToken.html" class="extype" name="io.github.cactacea.backend.oauth.OAuthToken">OAuthToken</a>]</span>
+        <span class="name">parse</span><span class="params">(<span name="tokenType">tokenType: <a href="../auth/enums/OAuthTokenType.html" class="extype" name="io.github.cactacea.backend.auth.enums.OAuthTokenType">OAuthTokenType</a></span>, <span name="token">token: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="OAuthToken.html" class="extype" name="io.github.cactacea.backend.oauth.OAuthToken">OAuthToken</a>]</span>
       </span>
       
       

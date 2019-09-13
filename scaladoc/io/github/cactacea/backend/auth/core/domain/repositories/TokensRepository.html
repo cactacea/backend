@@ -199,20 +199,16 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.auth.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="AuthRepository.html" title=""></a>
-                        <a href="AuthRepository.html" title="">AuthRepository</a>
-                      </li><li class="current-entities indented8">
-                        <span class="separator"></span>
                         <a class="class" href="AuthenticationsRepository.html" title=""></a>
                         <a href="AuthenticationsRepository.html" title="">AuthenticationsRepository</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="PasswordsRepository.html" title=""></a>
-                        <a href="PasswordsRepository.html" title="">PasswordsRepository</a>
+                        <a class="class" href="OAuth2Repository.html" title=""></a>
+                        <a href="OAuth2Repository.html" title="">OAuth2Repository</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="SocialsRepository.html" title=""></a>
-                        <a href="SocialsRepository.html" title="">SocialsRepository</a>
+                        <a class="class" href="PasswordsRepository.html" title=""></a>
+                        <a href="PasswordsRepository.html" title="">PasswordsRepository</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
                         <a class="class" href="" title=""></a>
@@ -675,9 +671,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.github.cactacea.backend.auth.core.domain.repositories.TokensRepository#issue" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="issue(providerId:String,providerKey:String,tokenType:io.github.cactacea.backend.auth.enums.TokenType,expiration:Int):com.twitter.util.Future[String]"></a><a id="issue(String,String,TokenType,Int):Future[String]"></a>
+      <a id="issue(providerId:String,providerKey:String,tokenType:io.github.cactacea.backend.auth.enums.AuthTokenType,expiration:Int):com.twitter.util.Future[String]"></a><a id="issue(String,String,AuthTokenType,Int):Future[String]"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/TokensRepository.html#issue(providerId:String,providerKey:String,tokenType:io.github.cactacea.backend.auth.enums.TokenType,expiration:Int):com.twitter.util.Future[String]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/TokensRepository.html#issue(providerId:String,providerKey:String,tokenType:io.github.cactacea.backend.auth.enums.AuthTokenType,expiration:Int):com.twitter.util.Future[String]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -686,7 +682,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">issue</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="tokenType">tokenType: <a href="../../../enums/TokenType.html" class="extype" name="io.github.cactacea.backend.auth.enums.TokenType">TokenType</a></span>, <span name="expiration">expiration: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">3</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">issue</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="tokenType">tokenType: <a href="../../../enums/AuthTokenType.html" class="extype" name="io.github.cactacea.backend.auth.enums.AuthTokenType">AuthTokenType</a></span>, <span name="expiration">expiration: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">3</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       
@@ -777,9 +773,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.github.cactacea.backend.auth.core.domain.repositories.TokensRepository#verify" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="verify(token:String,tokenType:io.github.cactacea.backend.auth.enums.TokenType):com.twitter.util.Future[io.github.cactacea.filhouette.api.LoginInfo]"></a><a id="verify(String,TokenType):Future[LoginInfo]"></a>
+      <a id="verify(token:String,tokenType:io.github.cactacea.backend.auth.enums.AuthTokenType):com.twitter.util.Future[io.github.cactacea.filhouette.api.LoginInfo]"></a><a id="verify(String,AuthTokenType):Future[LoginInfo]"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/TokensRepository.html#verify(token:String,tokenType:io.github.cactacea.backend.auth.enums.TokenType):com.twitter.util.Future[io.github.cactacea.filhouette.api.LoginInfo]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/TokensRepository.html#verify(token:String,tokenType:io.github.cactacea.backend.auth.enums.AuthTokenType):com.twitter.util.Future[io.github.cactacea.filhouette.api.LoginInfo]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -788,7 +784,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">verify</span><span class="params">(<span name="token">token: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="tokenType">tokenType: <a href="../../../enums/TokenType.html" class="extype" name="io.github.cactacea.backend.auth.enums.TokenType">TokenType</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="io.github.cactacea.filhouette.api.LoginInfo">LoginInfo</span>]</span>
+        <span class="name">verify</span><span class="params">(<span name="token">token: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="tokenType">tokenType: <a href="../../../enums/AuthTokenType.html" class="extype" name="io.github.cactacea.backend.auth.enums.AuthTokenType">AuthTokenType</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="io.github.cactacea.filhouette.api.LoginInfo">LoginInfo</span>]</span>
       </span>
       
       

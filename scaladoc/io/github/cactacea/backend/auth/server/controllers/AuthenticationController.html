@@ -187,16 +187,20 @@
                         <a href="" title="">AuthenticationController</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="AuthenticationPasswordController.html" title=""></a>
-                        <a href="AuthenticationPasswordController.html" title="">AuthenticationPasswordController</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="AuthenticationSessionController.html" title=""></a>
-                        <a href="AuthenticationSessionController.html" title="">AuthenticationSessionController</a>
+                        <a class="class" href="AuthenticationsController.html" title=""></a>
+                        <a href="AuthenticationsController.html" title="">AuthenticationsController</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="trait" href="BaseController.html" title=""></a>
                         <a href="BaseController.html" title="">BaseController</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="PasswordController.html" title=""></a>
+                        <a href="PasswordController.html" title="">PasswordController</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="SocialAuthenticationsController.html" title=""></a>
+                        <a href="SocialAuthenticationsController.html" title="">SocialAuthenticationsController</a>
                       </li>
               </ul>
             </div>
@@ -284,9 +288,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.auth.server.controllers.AuthenticationController#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(apiPrefix:String,s:io.swagger.models.Swagger,authenticationService:io.github.cactacea.backend.auth.core.application.services.AuthenticationService,emailAuthenticationService:io.github.cactacea.backend.auth.core.application.services.EmailAuthenticationService):io.github.cactacea.backend.auth.server.controllers.AuthenticationController"></a><a id="&lt;init&gt;:AuthenticationController"></a>
+      <a id="&lt;init&gt;(apiPrefix:String,s:io.swagger.models.Swagger,authenticationService:io.github.cactacea.backend.auth.core.application.services.AuthenticationService,passwordService:io.github.cactacea.backend.auth.core.application.services.PasswordService,socialAuthenticationService:io.github.cactacea.backend.auth.core.application.services.SocialAuthenticationService):io.github.cactacea.backend.auth.server.controllers.AuthenticationController"></a><a id="&lt;init&gt;:AuthenticationController"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/auth/server/controllers/AuthenticationController.html#&lt;init&gt;(apiPrefix:String,s:io.swagger.models.Swagger,authenticationService:io.github.cactacea.backend.auth.core.application.services.AuthenticationService,emailAuthenticationService:io.github.cactacea.backend.auth.core.application.services.EmailAuthenticationService):io.github.cactacea.backend.auth.server.controllers.AuthenticationController" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/auth/server/controllers/AuthenticationController.html#&lt;init&gt;(apiPrefix:String,s:io.swagger.models.Swagger,authenticationService:io.github.cactacea.backend.auth.core.application.services.AuthenticationService,passwordService:io.github.cactacea.backend.auth.core.application.services.PasswordService,socialAuthenticationService:io.github.cactacea.backend.auth.core.application.services.SocialAuthenticationService):io.github.cactacea.backend.auth.server.controllers.AuthenticationController" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -295,7 +299,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">AuthenticationController</span><span class="params">(<span name="apiPrefix">apiPrefix: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="s">s: <span class="extype" name="io.swagger.models.Swagger">Swagger</span></span>, <span name="authenticationService">authenticationService: <a href="../../core/application/services/AuthenticationService.html" class="extype" name="io.github.cactacea.backend.auth.core.application.services.AuthenticationService">AuthenticationService</a></span>, <span name="emailAuthenticationService">emailAuthenticationService: <a href="../../core/application/services/EmailAuthenticationService.html" class="extype" name="io.github.cactacea.backend.auth.core.application.services.EmailAuthenticationService">EmailAuthenticationService</a></span>)</span>
+        <span class="name">AuthenticationController</span><span class="params">(<span name="apiPrefix">apiPrefix: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="s">s: <span class="extype" name="io.swagger.models.Swagger">Swagger</span></span>, <span name="authenticationService">authenticationService: <a href="../../core/application/services/AuthenticationService.html" class="extype" name="io.github.cactacea.backend.auth.core.application.services.AuthenticationService">AuthenticationService</a></span>, <span name="passwordService">passwordService: <a href="../../core/application/services/PasswordService.html" class="extype" name="io.github.cactacea.backend.auth.core.application.services.PasswordService">PasswordService</a></span>, <span name="socialAuthenticationService">socialAuthenticationService: <a href="../../core/application/services/SocialAuthenticationService.html" class="extype" name="io.github.cactacea.backend.auth.core.application.services.SocialAuthenticationService">SocialAuthenticationService</a></span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -2113,6 +2117,22 @@
       </span>
       <span class="symbol">
         <span class="name">sessionsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="BaseController.html" class="extype" name="io.github.cactacea.backend.auth.server.controllers.BaseController">BaseController</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.auth.server.controllers.BaseController#socialAccountsTag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="socialAccountsTag:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/auth/server/controllers/AuthenticationController.html#socialAccountsTag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">socialAccountsTag</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="BaseController.html" class="extype" name="io.github.cactacea.backend.auth.server.controllers.BaseController">BaseController</a></dd></dl></div>

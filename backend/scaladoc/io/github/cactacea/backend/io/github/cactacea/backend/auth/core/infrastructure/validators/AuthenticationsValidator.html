@@ -658,10 +658,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator#mustExists" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mustExists(providerId:String,providerKey:String):com.twitter.util.Future[Unit]"></a><a id="mustExists(String,String):Future[Unit]"></a>
+    </li><li name="io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator#mustFind" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mustFind(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.auth.core.domain.models.Authentication]"></a><a id="mustFind(String,String):Future[Authentication]"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/infrastructure/validators/AuthenticationsValidator.html#mustExists(providerId:String,providerKey:String):com.twitter.util.Future[Unit]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/infrastructure/validators/AuthenticationsValidator.html#mustFind(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.auth.core.domain.models.Authentication]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -670,7 +670,55 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mustExists</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+        <span class="name">mustFind</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../domain/models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>]</span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator#mustFindProviderKey" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mustFindProviderKey(providerId:String,userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId):com.twitter.util.Future[String]"></a><a id="mustFindProviderKey(String,UserId):Future[String]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/infrastructure/validators/AuthenticationsValidator.html#mustFindProviderKey(providerId:String,userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId):com.twitter.util.Future[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mustFindProviderKey</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="userId">userId: <a href="../../../../core/infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator#mustFindUserId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mustFindUserId(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]"></a><a id="mustFindUserId(String,String):Future[UserId]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/infrastructure/validators/AuthenticationsValidator.html#mustFindUserId(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mustFindUserId</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../../../core/infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator#mustNotExists" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mustNotExists(providerId:String,userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId):com.twitter.util.Future[Unit]"></a><a id="mustNotExists(String,UserId):Future[Unit]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/infrastructure/validators/AuthenticationsValidator.html#mustNotExists(providerId:String,userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId):com.twitter.util.Future[Unit]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mustNotExists</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="userId">userId: <a href="../../../../core/infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
       

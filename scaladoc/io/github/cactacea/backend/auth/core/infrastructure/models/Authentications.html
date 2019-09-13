@@ -224,7 +224,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Authentications</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hasher">hasher: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="confirm">confirm: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Authentications</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hasher">hasher: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="confirm">confirm: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="userId">userId: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -285,9 +285,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.auth.core.infrastructure.models.Authentications#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(providerId:String,providerKey:String,password:String,hasher:String,confirm:Boolean):io.github.cactacea.backend.auth.core.infrastructure.models.Authentications"></a><a id="&lt;init&gt;:Authentications"></a>
+      <a id="&lt;init&gt;(providerId:String,providerKey:String,password:String,hasher:String,confirm:Boolean,userId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]):io.github.cactacea.backend.auth.core.infrastructure.models.Authentications"></a><a id="&lt;init&gt;:Authentications"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/infrastructure/models/Authentications.html#&lt;init&gt;(providerId:String,providerKey:String,password:String,hasher:String,confirm:Boolean):io.github.cactacea.backend.auth.core.infrastructure.models.Authentications" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/infrastructure/models/Authentications.html#&lt;init&gt;(providerId:String,providerKey:String,password:String,hasher:String,confirm:Boolean,userId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]):io.github.cactacea.backend.auth.core.infrastructure.models.Authentications" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -296,7 +296,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Authentications</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hasher">hasher: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="confirm">confirm: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">Authentications</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hasher">hasher: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="confirm">confirm: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="userId">userId: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>)</span>
       </span>
       
       
@@ -767,6 +767,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.auth.core.infrastructure.models.Authentications#userId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="userId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]"></a><a id="userId:Option[UserId]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/infrastructure/models/Authentications.html#userId:Option[io.github.cactacea.backend.core.infrastructure.identifiers.UserId]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userId</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

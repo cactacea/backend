@@ -215,20 +215,16 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.auth.core.domain">domain</a></dd></dl></div>
     </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="AuthRepository.html" title=""></a>
-                        <a href="AuthRepository.html" title="">AuthRepository</a>
-                      </li><li class="current-entities indented8">
-                        <span class="separator"></span>
                         <a class="class" href="AuthenticationsRepository.html" title=""></a>
                         <a href="AuthenticationsRepository.html" title="">AuthenticationsRepository</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="PasswordsRepository.html" title=""></a>
-                        <a href="PasswordsRepository.html" title="">PasswordsRepository</a>
+                        <a class="class" href="OAuth2Repository.html" title=""></a>
+                        <a href="OAuth2Repository.html" title="">OAuth2Repository</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="SocialsRepository.html" title=""></a>
-                        <a href="SocialsRepository.html" title="">SocialsRepository</a>
+                        <a class="class" href="PasswordsRepository.html" title=""></a>
+                        <a href="PasswordsRepository.html" title="">PasswordsRepository</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
                         <a class="class" href="TokensRepository.html" title=""></a>
@@ -272,10 +268,10 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="io.github.cactacea.backend.auth.core.domain.repositories.AuthRepository" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AuthRepositoryextendsIdentityService[io.github.cactacea.backend.auth.core.domain.models.Authentication]"></a><a id="AuthRepository:AuthRepository"></a>
+              <ol><li name="io.github.cactacea.backend.auth.core.domain.repositories.AuthenticationsRepository" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AuthenticationsRepositoryextendsIdentityService[io.github.cactacea.backend.auth.core.domain.models.Authentication]"></a><a id="AuthenticationsRepository:AuthenticationsRepository"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/index.html#AuthRepositoryextendsIdentityService[io.github.cactacea.backend.auth.core.domain.models.Authentication]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/index.html#AuthenticationsRepositoryextendsIdentityService[io.github.cactacea.backend.auth.core.domain.models.Authentication]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -284,14 +280,14 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="" href="AuthRepository.html"><span class="name">AuthRepository</span></a><span class="result"> extends <span class="extype" name="io.github.cactacea.filhouette.api.services.IdentityService">IdentityService</span>[<a href="../models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>]</span>
+        <a title="" href="AuthenticationsRepository.html"><span class="name">AuthenticationsRepository</span></a><span class="result"> extends <span class="extype" name="io.github.cactacea.filhouette.api.services.IdentityService">IdentityService</span>[<a href="../models/Authentication.html" class="extype" name="io.github.cactacea.backend.auth.core.domain.models.Authentication">Authentication</a>]</span>
       </span>
       
       
-    </li><li name="io.github.cactacea.backend.auth.core.domain.repositories.AuthenticationsRepository" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="AuthenticationsRepositoryextendsAnyRef"></a><a id="AuthenticationsRepository:AuthenticationsRepository"></a>
+    </li><li name="io.github.cactacea.backend.auth.core.domain.repositories.OAuth2Repository" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OAuth2RepositoryextendsDelegableAuthInfoDAO[io.github.cactacea.filhouette.impl.providers.OAuth2Info]"></a><a id="OAuth2Repository:OAuth2Repository"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/index.html#AuthenticationsRepositoryextendsAnyRef" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/index.html#OAuth2RepositoryextendsDelegableAuthInfoDAO[io.github.cactacea.filhouette.impl.providers.OAuth2Info]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -300,13 +296,10 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="" href="AuthenticationsRepository.html"><span class="name">AuthenticationsRepository</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="" href="OAuth2Repository.html"><span class="name">OAuth2Repository</span></a><span class="result"> extends <span class="extype" name="io.github.cactacea.filhouette.persistence.daos.DelegableAuthInfoDAO">DelegableAuthInfoDAO</span>[<span class="extype" name="io.github.cactacea.filhouette.impl.providers.OAuth2Info">OAuth2Info</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@Singleton</span><span class="args">()</span>
-              
-        </dd></dl></div>
+      
     </li><li name="io.github.cactacea.backend.auth.core.domain.repositories.PasswordsRepository" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PasswordsRepositoryextendsDelegableAuthInfoDAO[io.github.cactacea.filhouette.api.util.PasswordInfo]"></a><a id="PasswordsRepository:PasswordsRepository"></a>
       <span class="permalink">
@@ -320,22 +313,6 @@
       </span>
       <span class="symbol">
         <a title="" href="PasswordsRepository.html"><span class="name">PasswordsRepository</span></a><span class="result"> extends <span class="extype" name="io.github.cactacea.filhouette.persistence.daos.DelegableAuthInfoDAO">DelegableAuthInfoDAO</span>[<span class="extype" name="io.github.cactacea.filhouette.api.util.PasswordInfo">PasswordInfo</span>]</span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.auth.core.domain.repositories.SocialsRepository" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SocialsRepositoryextendsDelegableAuthInfoDAO[io.github.cactacea.filhouette.impl.providers.OAuth2Info]"></a><a id="SocialsRepository:SocialsRepository"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/auth/core/domain/repositories/index.html#SocialsRepositoryextendsDelegableAuthInfoDAO[io.github.cactacea.filhouette.impl.providers.OAuth2Info]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="SocialsRepository.html"><span class="name">SocialsRepository</span></a><span class="result"> extends <span class="extype" name="io.github.cactacea.filhouette.persistence.daos.DelegableAuthInfoDAO">DelegableAuthInfoDAO</span>[<span class="extype" name="io.github.cactacea.filhouette.impl.providers.OAuth2Info">OAuth2Info</span>]</span>
       </span>
       
       

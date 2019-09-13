@@ -239,10 +239,6 @@
                         <a href="PushNotificationSettingsValidator.html" title="">PushNotificationSettingsValidator</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="UserAuthenticationsValidator.html" title=""></a>
-                        <a href="UserAuthenticationsValidator.html" title="">UserAuthenticationsValidator</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
                         <a class="class" href="UserChannelsValidator.html" title=""></a>
                         <a href="UserChannelsValidator.html" title="">UserChannelsValidator</a>
                       </li><li class="current-entities indented7">
@@ -743,9 +739,9 @@
       
       
     </li><li name="io.github.cactacea.backend.core.infrastructure.validators.UsersValidator#mustFind" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mustFind(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.User]"></a><a id="mustFind(String,String):Future[User]"></a>
+      <a id="mustFind(userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,expiresIn:Long):com.twitter.util.Future[Option[io.github.cactacea.backend.core.domain.models.User]]"></a><a id="mustFind(UserId,Long):Future[Option[User]]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/validators/UsersValidator.html#mustFind(providerId:String,providerKey:String):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.User]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/validators/UsersValidator.html#mustFind(userId:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,expiresIn:Long):com.twitter.util.Future[Option[io.github.cactacea.backend.core.domain.models.User]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -754,23 +750,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mustFind</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../domain/models/User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]</span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.infrastructure.validators.UsersValidator#mustFind" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mustFind(providerId:String,providerKey:String,expiresIn:Long):com.twitter.util.Future[Option[io.github.cactacea.backend.core.domain.models.User]]"></a><a id="mustFind(String,String,Long):Future[Option[User]]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/infrastructure/validators/UsersValidator.html#mustFind(providerId:String,providerKey:String,expiresIn:Long):com.twitter.util.Future[Option[io.github.cactacea.backend.core.domain.models.User]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mustFind</span><span class="params">(<span name="providerId">providerId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="providerKey">providerKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="expiresIn">expiresIn: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Option">Option</span>[<a href="../../domain/models/User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]]</span>
+        <span class="name">mustFind</span><span class="params">(<span name="userId">userId: <a href="../identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="expiresIn">expiresIn: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Option">Option</span>[<a href="../../domain/models/User.html" class="extype" name="io.github.cactacea.backend.core.domain.models.User">User</a>]]</span>
       </span>
       
       
