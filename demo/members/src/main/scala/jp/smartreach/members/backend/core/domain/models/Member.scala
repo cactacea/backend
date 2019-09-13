@@ -23,7 +23,7 @@ object Member {
   def apply(m: Members): Member = {
     Member(
       m.id,
-      m.name.getOrElse(""),
+      m.name,
       m.address.getOrElse(""),
       m.city.getOrElse(""),
       m.state.getOrElse(""),

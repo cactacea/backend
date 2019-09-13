@@ -51,7 +51,7 @@ trait ModelsGenerator extends ValueGenerator {
     registeredAt <- currentTimeMillisGen
     email <- Gen.option(emailGen)
     phoneNo <- Gen.option(telGen)
-    name <- Gen.option(memberNameGen)
+    name <- memberNameGen
     city <- Gen.option(cityGen)
     address <- Gen.option(addressGen)
     zip <- Gen.option(zipGen)

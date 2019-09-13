@@ -3,6 +3,7 @@ package jp.smartreach.members.backend.core.infrastructure.daos
 import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 import io.smartreach.members.backend.core.domain.enums.CommunicationType
 import jp.smartreach.members.backend.core.infrastructure.identifiers.MemberId
 import jp.smartreach.members.backend.core.infrastructure.models.Members
@@ -52,7 +53,7 @@ class MembersDAO @Inject()(db: DatabaseService) {
   
   
   def create(communicationType: CommunicationType,
-             userId: Option[MemberId], email: Option[String], phoneNo: Option[String]): Future[MemberId] = {
+             userId: Option[UserId], email: Option[String], phoneNo: Option[String]): Future[MemberId] = {
 
     val registeredAt = System.currentTimeMillis()
     val q = quote {
@@ -69,7 +70,7 @@ class MembersDAO @Inject()(db: DatabaseService) {
   }
 
   def update(id: MemberId, communicationType: CommunicationType,
-             userId: Option[MemberId], email: Option[String], phoneNo: Option[String]): Future[Unit] = {
+             userId: Option[UserId], email: Option[String], phoneNo: Option[String]): Future[Unit] = {
 
     val registeredAt = System.currentTimeMillis()
     val q = quote {
@@ -86,7 +87,7 @@ class MembersDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  def update(id: MemberId, name: Option[String], address: Option[String], city: Option[String],
+  def update(id: MemberId, name: String, address: Option[String], city: Option[String],
              state: Option[String], zip: Option[String], tel: Option[String]): Future[Unit] = {
 
     val q = quote {
