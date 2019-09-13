@@ -168,19 +168,6 @@ class UsersDAO @Inject()(db: DatabaseService) {
 
   }
 
-  def find(providerId: String, providerKey: String): Future[Option[User]] = {
-    val q = quote {
-      for {
-        au <- query[UserAuthentications]
-          .filter(_.providerId == lift(providerId))
-          .filter(_.providerKey == lift(providerKey))
-        a <- query[Users]
-          .filter(_.id == au.userId)
-      } yield (a)
-    }
-    run(q).map(_.headOption.map(User(_)))
-  }
-
   def signOut(sessionId: SessionId): Future[Unit] = {
     val userId = sessionId.userId
     val signedOutAt = Option(System.currentTimeMillis())

@@ -4,10 +4,11 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
+import io.github.cactacea.backend.auth.core.domain.models.SessionToken
 import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository}
 import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
-import io.github.cactacea.backend.auth.enums.TokenType
+import io.github.cactacea.backend.auth.enums.AuthTokenType
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.utils.RequestImplicits._
 import io.github.cactacea.filhouette.api.LoginInfo
@@ -30,38 +31,43 @@ class EmailAuthenticationService @Inject()(
 
   import db._
 
-  def signUp(email: String, password: String)(implicit request: Request): Future[Unit] = {
+  def signUp(email: String, password: String)(implicit request: Request): Future[Response] = {
     val l = LoginInfo(emailsProvider.id, email)
-    authenticationsRepository.notExists(emailsProvider.id, email).flatMap(_ match {
+    authenticationsRepository.exists(emailsProvider.id, email).flatMap(_ match {
       case true =>
-        for {
-          t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
-          _ <- mailer.welcome(email, t, request.currentLocale())
-        } yield (())
-      case false =>
         transaction {
           for {
             _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
-            t <- tokensRepository.issue(emailsProvider.id, email, TokenType.signUp)
+            s <- authenticatorService.create(l)
+            c <- authenticatorService.init(s)
+            t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
             _ <- mailer.welcome(email, t, request.currentLocale())
-          } yield (())
+          } yield (response.ok.body(SessionToken(email, c, None)))
         }
+      case false =>
+        for {
+          s <- authenticatorService.create(l)
+          c <- authenticatorService.init(s)
+          t <- tokensRepository.issue(emailsProvider.id, email, AuthTokenType.signUp)
+          _ <- mailer.welcome(email, t, request.currentLocale())
+        } yield (response.ok.body(SessionToken(email, c, None)))
     })
   }
 
   def signIn(email: String, password: String)(implicit request: Request): Future[Response] = {
     for {
       l <- emailsProvider.authenticate(Credentials(email, password))
+      u <- authenticationsRepository.find(l.providerId, l.providerKey).map(_.flatMap(_.userId))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
-      r <- authenticatorService.embed(c, response.ok)
+      r <- authenticatorService.embed(c, response.ok.body(SessionToken(email, c, u)))
     } yield (r)
   }
 
   def verify(token: String): Future[Unit] = {
     transaction {
       for {
-        l <- tokensRepository.verify(token, TokenType.signUp)
+        l <- tokensRepository.verify(token, AuthTokenType.signUp)
         _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
       } yield (())
     }
@@ -70,7 +76,7 @@ class EmailAuthenticationService @Inject()(
   def reject(token: String): Future[Unit] = {
     transaction {
       for {
-        l <- tokensRepository.verify(token, TokenType.signUp)
+        l <- tokensRepository.verify(token, AuthTokenType.signUp)
         _ <- authInfoRepository.remove(l)
       } yield (())
     }

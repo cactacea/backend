@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
+import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, FeedType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.dao._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, MediumId, SessionId, UserId}
@@ -75,8 +75,13 @@ class FeedsRepository @Inject()(
     } yield (r)
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[Seq[Feed]] = {
-    userFeedsDAO.find(since, offset, count, privacyType, sessionId)
+  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], feedType: FeedType, sessionId: SessionId): Future[Seq[Feed]] = {
+    feedType match {
+      case FeedType.posted =>
+        feedsDAO.find(sessionId.userId, since, offset, count, sessionId)
+      case FeedType.received =>
+        userFeedsDAO.find(since, offset, count, privacyType, sessionId)
+    }
   }
 
   def find(feedId: FeedId, sessionId: SessionId): Future[Feed] = {

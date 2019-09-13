@@ -13,7 +13,7 @@ class AuthenticationsDAOSpec extends DAOSpec {
     password <- passwordGen
     hasher <-  hasherGen
     confirm <- booleanGen
-  } yield (Authentications(providerId, providerKey, password, hasher, confirm))
+  } yield (Authentications(providerId, providerKey, password, hasher, confirm, None))
 
   val authenticationsDAO = injector.instance[AuthenticationsDAO]
 
@@ -48,7 +48,7 @@ class AuthenticationsDAOSpec extends DAOSpec {
     scenario("should update password and hasher") {
       forOne(authenticationGen, authenticationGen) { (u1, u2) =>
         await(authenticationsDAO.create(u1.providerId, u1.providerKey, u1.password, u1.hasher))
-        await(authenticationsDAO.update(u1.providerId, u1.providerKey, u2.password, u2.hasher))
+        await(authenticationsDAO.updatePassword(u1.providerId, u1.providerKey, u2.password, u2.hasher))
         val result = await(authenticationsDAO.find(u1.providerId, u1.providerKey))
         assert(result.headOption.exists(_.providerId == u1.providerId))
         assert(result.headOption.exists(_.providerKey == u1.providerKey))
@@ -169,4 +169,3 @@ class AuthenticationsDAOSpec extends DAOSpec {
 
 
 }
-

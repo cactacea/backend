@@ -36,13 +36,13 @@ object CactaceaSwaggerModule extends SwaggerModule {
     swaggerDefine.addTag(new Tag().name("Sessions").description("Manage sessions"))
     swaggerDefine.addTag(new Tag().name("Settings").description("Manage session settings"))
     swaggerDefine.addTag(new Tag().name("System").description("Health checking and etc"))
-
+    swaggerDefine.addTag(new Tag().name("Password").description("Manage password"))
 
     val apiKeyAuthDefinition = new ApiKeyAuthDefinition(Config.auth.headerNames.apiKey, In.HEADER)
     swaggerDefine.securityDefinition("api_key", apiKeyAuthDefinition)
 
     val authorizationKeyAuthDefinition = new ApiKeyAuthDefinition(Config.auth.headerNames.authorizationKey, In.HEADER)
-    swaggerDefine.securityDefinition("authorization", authorizationKeyAuthDefinition)
+    swaggerDefine.securityDefinition("Authorization", authorizationKeyAuthDefinition)
 
 //    val scopes = Permissions.values.map(t => (t.value -> t.description)).toMap
 //    val accessCode = new OAuth2Definition().accessCode("http://localhost:9000/oauth2/authorization", "http://localhost:9000/oauth2/token")

@@ -7,7 +7,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.auth.core.domain.repositories.{AuthenticationsRepository, TokensRepository}
 import io.github.cactacea.backend.auth.core.utils.mailer.Mailer
 import io.github.cactacea.backend.auth.core.utils.providers.EmailsProvider
-import io.github.cactacea.backend.auth.enums.TokenType
+import io.github.cactacea.backend.auth.enums.AuthTokenType
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.utils.RequestImplicits._
 import io.github.cactacea.filhouette.api.LoginInfo
@@ -17,14 +17,14 @@ import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService
 
 @Singleton
 class PasswordService @Inject()(
-                                       db: DatabaseService,
-                                       response: ResponseBuilder,
-                                       authenticationsRepository: AuthenticationsRepository,
-                                       authInfoRepository: AuthInfoRepository,
-                                       tokensRepository: TokensRepository,
-                                       passwordHasherRegistry: PasswordHasherRegistry,
-                                       authenticatorService: JWTAuthenticatorService,
-                                       mailer: Mailer
+                                 db: DatabaseService,
+                                 response: ResponseBuilder,
+                                 authenticationsRepository: AuthenticationsRepository,
+                                 authInfoRepository: AuthInfoRepository,
+                                 tokensRepository: TokensRepository,
+                                 passwordHasherRegistry: PasswordHasherRegistry,
+                                 authenticatorService: JWTAuthenticatorService,
+                                 mailer: Mailer
                                ) {
 
   import db._
@@ -44,7 +44,7 @@ class PasswordService @Inject()(
       authenticationsRepository.find(EmailsProvider.ID, email).flatMap(_ match {
         case Some(_) =>
           for {
-            t <- tokensRepository.issue(EmailsProvider.ID, email, TokenType.resetPassword)
+            t <- tokensRepository.issue(EmailsProvider.ID, email, AuthTokenType.resetPassword)
             _ <- mailer.forgotPassword(email, t, request.currentLocale())
           } yield (response.ok)
         case None =>
@@ -56,7 +56,7 @@ class PasswordService @Inject()(
   def resetPassword(token: String, password: String)(implicit request: Request): Future[Response] = {
     transaction {
       for {
-        l <- tokensRepository.verify(token, TokenType.resetPassword)
+        l <- tokensRepository.verify(token, AuthTokenType.resetPassword)
         _ <- authInfoRepository.update(l, passwordHasherRegistry.current.hash(password))
         a <- authenticatorService.create(l)
         r <- authenticatorService.renew(a, response.ok)

@@ -146,13 +146,4 @@ trait DAOHelper extends IntegrationFeatureTest {
     ).map(_.headOption)
   }
 
-  def findUserAuthentication(providerId: String, providerKey: String): Future[Option[UserAuthentications]] = {
-    val q = quote {
-      query[UserAuthentications]
-        .filter(_.providerId == lift(providerId))
-        .filter(_.providerKey == lift(providerKey))
-    }
-    db.run(q).map(_.headOption)
-  }
-
 }

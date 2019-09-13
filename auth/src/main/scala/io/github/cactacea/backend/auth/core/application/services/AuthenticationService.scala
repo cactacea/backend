@@ -4,8 +4,11 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
+import io.github.cactacea.backend.auth.core.domain.models.SessionToken
 import io.github.cactacea.backend.auth.core.domain.repositories.AuthenticationsRepository
+import io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.domain.repositories.UsersRepository
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
@@ -17,6 +20,7 @@ import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 class AuthenticationService @Inject()(
                                        db: DatabaseService,
                                        response: ResponseBuilder,
+                                       authenticationsValidator: AuthenticationsValidator,
                                        authenticationsRepository: AuthenticationsRepository,
                                        authInfoRepository: AuthInfoRepository,
                                        credentialsProvider: CredentialsProvider,
@@ -31,13 +35,14 @@ class AuthenticationService @Inject()(
     val l = LoginInfo(CredentialsProvider.ID, userName)
     transaction {
       for {
-        _ <- authenticationsRepository.mustNotExists(l.providerId, l.providerKey)
+        _ <- authenticationsValidator.mustNotExists(l.providerId, l.providerKey)
         _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
         _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
-        _ <- usersRepository.create(l.providerId, l.providerKey, userName)
+        u <- usersRepository.create(userName)
+        _ <- authenticationsRepository.link(l.providerId, l.providerKey, u)
         s <- authenticatorService.create(l)
         c <- authenticatorService.init(s)
-        r <- authenticatorService.embed(c, response.ok)
+        r <- authenticatorService.embed(c, response.ok.body(SessionToken(userName, c, None)))
       } yield (r)
     }
 
@@ -46,9 +51,10 @@ class AuthenticationService @Inject()(
   def signIn(userName: String, password: String)(implicit request: Request): Future[Response] = {
     for {
       l <- credentialsProvider.authenticate(Credentials(userName, password))
+      u <- authenticationsRepository.find(l.providerId, l.providerKey).map(_.flatMap(_.userId))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
-      r <- authenticatorService.embed(c, response.ok)
+      r <- authenticatorService.embed(c, response.ok.body(SessionToken(userName, c, u)))
     } yield (r)
   }
 
@@ -60,6 +66,15 @@ class AuthenticationService @Inject()(
     }
   }
 
+  def create(providerId: String, providerKey: String, userName: String, displayName: Option[String]): Future[User] = {
+    transaction {
+      for {
+        i <- usersRepository.create(userName, displayName)
+        _ <- authenticationsRepository.link(providerId, providerKey, i)
+        u <- usersRepository.find(i.sessionId)
+      } yield (u)
+    }
+  }
 
 }
 

@@ -7,9 +7,9 @@ import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.util.{Await, Future}
 import io.github.cactacea.backend.auth.core.application.services.AuthenticationService
 import io.github.cactacea.backend.auth.enums.AuthType
+import io.github.cactacea.backend.auth.server.models.requests.session.PostSession
 import io.github.cactacea.backend.auth.server.models.requests.sessions.{PostSignIn, PostSignUp}
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.server.models.requests.session.PostSession
 import org.openjdk.jmh.annotations.{Scope, State}
 
 /**

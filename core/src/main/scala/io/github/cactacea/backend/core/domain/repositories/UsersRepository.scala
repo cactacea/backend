@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{ReportType, UserStatusType}
 import io.github.cactacea.backend.core.domain.models.{User, UserStatus}
-import io.github.cactacea.backend.core.infrastructure.dao.{DevicesDAO, PushNotificationSettingsDAO, UserAuthenticationsDAO, UserReportsDAO, UsersDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{DevicesDAO, PushNotificationSettingsDAO, UserReportsDAO, UsersDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId, UserId}
 import io.github.cactacea.backend.core.infrastructure.validators.{MediumsValidator, UsersValidator}
 
@@ -13,21 +13,19 @@ class UsersRepository @Inject()(
                                  usersValidator: UsersValidator,
                                  devicesDAO: DevicesDAO,
                                  usersDAO: UsersDAO,
-                                 userAuthenticationsDAO: UserAuthenticationsDAO,
                                  userReportsDAO: UserReportsDAO,
                                  mediumsValidator: MediumsValidator,
                                  notificationSettingsDAO: PushNotificationSettingsDAO
                                   ) {
 
-  def create(providerId: String, providerKey: String, userName: String): Future[UserId] = {
-    create(providerId, providerKey, userName, None)
+  def create(userName: String): Future[UserId] = {
+    create(userName, None)
   }
 
-  def create(providerId: String, providerKey: String, userName: String, displayName: Option[String]): Future[UserId] = {
+  def create(userName: String, displayName: Option[String]): Future[UserId] = {
     for {
       _ <- usersValidator.mustNotExist(userName)
       i <- usersDAO.create(userName, displayName.getOrElse(userName))
-      _ <- userAuthenticationsDAO.create(i, providerId, providerKey)
       _ <- notificationSettingsDAO.create(i.sessionId)
     } yield (i)
   }
@@ -76,13 +74,13 @@ class UsersRepository @Inject()(
     usersDAO.find(userName, since, offset, count, sessionId)
   }
 
-  def find(providerId: String, providerKey: String, expiresIn: Long): Future[Option[User]] = {
-    usersValidator.mustFind(providerId, providerKey, expiresIn)
+  def find(userId: UserId, expiresIn: Long): Future[Option[User]] = {
+    usersValidator.mustFind(userId, expiresIn)
   }
 
-  def find(providerId: String, providerKey: String): Future[User] = {
-    usersValidator.mustFind(providerId, providerKey)
-  }
+//  def find(providerId: String, providerKey: String): Future[User] = {
+//    usersValidator.mustFind(providerId, providerKey)
+//  }
 
   def findActiveStatus(userId: UserId, sessionId: SessionId): Future[UserStatus] = {
     for {

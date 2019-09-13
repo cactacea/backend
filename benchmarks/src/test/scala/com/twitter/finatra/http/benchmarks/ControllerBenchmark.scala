@@ -5,17 +5,18 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.filters.{ExceptionMappingFilter, HttpResponseFilter}
 import com.twitter.finatra.http.modules._
 import com.twitter.finatra.http.routing.HttpRouter
-import com.twitter.inject.Injector
 import com.twitter.inject.app.TestInjector
 import com.twitter.inject.internal.modules.LibraryModule
+import com.twitter.inject.{Injector, InjectorModule}
 import io.github.cactacea.backend.auth.core.application.components.modules.DefaultMailModule
-import io.github.cactacea.backend.auth.core.utils.moduels.DefaultAuthModule
-import io.github.cactacea.backend.auth.server.controllers.{AuthenticationController, AuthenticationPasswordController, AuthenticationSessionController}
+import io.github.cactacea.backend.auth.server.controllers._
+import io.github.cactacea.backend.auth.server.utils.filters.AuthenticationFilter
+import io.github.cactacea.backend.auth.server.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
-import io.github.cactacea.backend.server.utils.mappers.{CactaceaCaseClassExceptionMapper, CactaceaExceptionMapper, IdentityNotFoundExceptionMapper, InvalidPasswordExceptionMapper, OAuthErrorExceptionMapper}
+import io.github.cactacea.backend.server.utils.mappers._
 import io.github.cactacea.backend.server.utils.modules.{DefaultAPIPrefixModule, DefaultAuthFilterModule}
 import io.github.cactacea.backend.utils.{CorsFilter, ETagFilter}
 import org.openjdk.jmh.annotations.{Scope, State}
@@ -35,7 +36,8 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
           MessageBodyModule,
           MustacheModule,
           DocRootModule,
-          NullStatsReceiverModule
+          NullStatsReceiverModule,
+          InjectorModule
       ) ++
         Seq(
           DatabaseModule,
@@ -50,7 +52,7 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
           DefaultMobilePushModule,
           DefaultQueueModule,
           DefaultStorageModule,
-          DefaultMailModule
+          DefaultMailModule,
         )
 
     ).create
@@ -83,9 +85,10 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FriendRequestsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationPasswordController]
-      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationSessionController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, AuthenticationsController]
+      .add[CactaceaAPIKeyFilter, AuthenticationFilter, CorsFilter, AuthenticationController]
+      .add[CactaceaAPIKeyFilter, CorsFilter, PasswordController]
+      .add[CorsFilter, SocialAuthenticationsController]
       .services
       .externalService
 
