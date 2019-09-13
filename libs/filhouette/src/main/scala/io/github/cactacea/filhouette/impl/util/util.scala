@@ -19,11 +19,6 @@ import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.JsonNode
 import com.twitter.finatra.json.FinatraObjectMapper
 
-/**
- * Provides implementations of utility traits.
- */
-package object util {}
-
 object Json {
 
   private val finatraObjectMapper = FinatraObjectMapper.create()
@@ -38,7 +33,8 @@ object Json {
   }
 
   def obj(string: String): JsonNode = {
-    finatraObjectMapper.objectMapper.readValue(jsonFactory.createParser(string), classOf[JsonNode])
+    val json = jsonFactory.createParser(string)
+    finatraObjectMapper.objectMapper.readValue(json, classOf[JsonNode])
   }
 
   def obj(fields: (String, Any)*): JsonNode = {
@@ -57,7 +53,7 @@ object Json {
     finatraObjectMapper.writeValueAsString(value)
   }
 
-  def toMap[V](json:String)(implicit m: Manifest[V]) = fromJson[Map[String,V]](json)
+  def toMap[V](json:String)(implicit m: Manifest[V]): Map[String, V] = fromJson[Map[String,V]](json)
 
   def fromJson[T](json: String)(implicit m : Manifest[T]): T = {
     val jsonNode = Json.obj(json)

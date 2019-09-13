@@ -1,16 +1,10 @@
 package io.github.cactacea.backend.core.util.responses
 
-import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.swagger.annotations.ApiModelProperty
 
 case class CactaceaErrors(errors: Seq[CactaceaError])
 
-object CactaceaErrors
-  extends CactaceaValidationErrors
-  with Cactacea400Errors
-  with Cactacea404Errors
-
-trait Cactacea400Errors {
+object CactaceaErrors {
 
   final val c40000 = "40000"
   final val c40001 = "40001"
@@ -23,7 +17,6 @@ trait Cactacea400Errors {
   final val c40008 = "40008"
   final val c40009 = "40009"
   final val c40010 = "40010"
-  final val c40011 = "40011"
   final val c40012 = "40012"
   final val c40013 = "40013"
   final val c40014 = "40014"
@@ -49,6 +42,8 @@ trait Cactacea400Errors {
   final val c40037 = "40037"
   final val c40038 = "40038"
   final val c40039 = "40039"
+  final val c40040 = "40040"
+  final val c40041 = "40041"
 
   final val m40000 = "User not signed up."
   final val m40001 = "User deleted."
@@ -61,12 +56,33 @@ trait Cactacea400Errors {
   final val m40008 = "API Key is invalid."
   final val m40009 = "User name already used."
   final val m40010 = "Can not specify myself."
-  final val m40011 = "User not registered."
   final val m40012 = "Invalid User name or password."
   final val m40013 = "File size limit exceeded error."
   final val m40014 = "Upload media not found."
   final val m40015 = "Not acceptable mime type found."
 
+  final val m40020 = "User already followed."
+  final val m40021 = "User not followed."
+  final val m40022 = "User already blocked."
+  final val m40023 = "User not blocked."
+  final val m40024 = "User already muted."
+  final val m40025 = "User not muted."
+  final val m40026 = "User already friend."
+  final val m40027 = "User not friend."
+  final val m40028 = "User already invited."
+  final val m40029 = "User already requested."
+  final val m40030 = "User already channelJoined."
+  final val m40031 = "User not channelJoined."
+  final val m40032 = "Comment already liked."
+  final val m40033 = "Comment not liked."
+  final val m40034 = "Feed already liked."
+  final val m40035 = "Feed not liked."
+  final val m40036 = "Channel already hidden."
+  final val m40037 = "Channel not hidden."
+  final val m40038 = "Token already expired."
+  final val m40039 = "Invalid token error."
+  final val m40040 = "Account already linked."
+  final val m40041 = "Account not linked."
 
   // 400 Bad Request
 
@@ -125,10 +141,6 @@ trait Cactacea400Errors {
     @ApiModelProperty(example = m40010)  override val message: String = m40010
   }
 
-  final object UserNotRegistered extends BadRequest {
-    @ApiModelProperty(example = c40011)  override val code: Int =       c40011.toInt
-    @ApiModelProperty(example = m40011)  override val message: String = m40011
-  }
 
   final object UserNameOrPasswordNotMatched extends BadRequest {
     @ApiModelProperty(example = c40012)  override val code: Int =       c40012.toInt
@@ -250,9 +262,15 @@ trait Cactacea400Errors {
     @ApiModelProperty(example = m40039)  override val message: String = m40039
   }
 
-}
+  final object AccountAlreadyLinked extends BadRequest {
+    @ApiModelProperty(example = c40040)  override val code: Int =       c40040.toInt
+    @ApiModelProperty(example = m40040)  override val message: String = m40040
+  }
 
-trait Cactacea404Errors {
+  final object AccountNotLinked extends BadRequest {
+    @ApiModelProperty(example = c40041)  override val code: Int =       c40041.toInt
+    @ApiModelProperty(example = m40041)  override val message: String = m40041
+  }
 
   final val c40400 = "40400"
   final val c40401 = "40401"
@@ -262,30 +280,10 @@ trait Cactacea404Errors {
   final val c40405 = "40405"
   final val c40406 = "40406"
   final val c40407 = "40407"
+  final val c40408 = "40408"
 
   final val c40100 = "40100"
   final val c40101 = "40101"
-
-  final val m40020 = "User already followed."
-  final val m40021 = "User not followed."
-  final val m40022 = "User already blocked."
-  final val m40023 = "User not blocked."
-  final val m40024 = "User already muted."
-  final val m40025 = "User not muted."
-  final val m40026 = "User already friend."
-  final val m40027 = "User not friend."
-  final val m40028 = "User already invited."
-  final val m40029 = "User already requested."
-  final val m40030 = "User already channelJoined."
-  final val m40031 = "User not channelJoined."
-  final val m40032 = "Comment already liked."
-  final val m40033 = "Comment not liked."
-  final val m40034 = "Feed already liked."
-  final val m40035 = "Feed not liked."
-  final val m40036 = "Channel already hidden."
-  final val m40037 = "Channel not hidden."
-  final val m40038 = "Token already expired."
-  final val m40039 = "Invalid token error."
 
   final val m40400 = "User not found."
   final val m40401 = "Comment not found."
@@ -295,6 +293,7 @@ trait Cactacea404Errors {
   final val m40405 = "Channel not found."
   final val m40406 = "Invitation not found."
   final val m40407 = "Message not found."
+  final val m40408 = "User not registered."
 
   final val m40100 = "Session not authorized."
   final val m40101 = "Access token expired."
@@ -344,6 +343,13 @@ trait Cactacea404Errors {
     @ApiModelProperty(example = m40407)  override val message: String = m40407
   }
 
+  final object UserNotRegistered extends NotFound {
+    @ApiModelProperty(example = c40408)  override val code: Int =       c40408.toInt
+    @ApiModelProperty(example = m40408)  override val message: String = m40408
+  }
+
+
+
   // 401 Unauthorized
 
   final object SessionNotAuthorized extends Unauthorized {
@@ -356,10 +362,6 @@ trait Cactacea404Errors {
     @ApiModelProperty(example = m40101)  override val message: String = m40101
   }
 
-
-}
-
-trait CactaceaValidationErrors {
 
   // 400 Bad Request
 

@@ -29,24 +29,8 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`authentications` (
   `password` VARCHAR(255) NOT NULL,
   `hasher` VARCHAR(30) NOT NULL,
   `confirm` TINYINT(1) NOT NULL,
+  `user_id` BIGINT(20) DEFAULT NULL,
   PRIMARY KEY (`provider_id`, `provider_key`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `${schema}`.`user_authentications`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`user_authentications` (
-  `user_id` BIGINT(20) NOT NULL,
-  `provider_id` VARCHAR(30) NOT NULL,
-  `provider_key` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`provider_id`, `provider_key`),
-  INDEX `ui_user_authentications1_idx` (`user_id` ASC),
-  CONSTRAINT `fk_user_authentications_users1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `${schema}`.`users` (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;

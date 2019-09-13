@@ -5,7 +5,7 @@ import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 class FriendRequestsDAOSpec extends DAOSpec {
 
   feature("create") {
-    scenario("should create a friend friendRequest") {
+    scenario("should create a friend request") {
       forOne(userGen, userGen) { (s, a1) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
@@ -21,7 +21,7 @@ class FriendRequestsDAOSpec extends DAOSpec {
 
   feature("delete") {
 
-    scenario("should delete a friend friendRequest") {
+    scenario("should delete a friend request") {
       forOne(userGen, userGen) { (s, a1) =>
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))

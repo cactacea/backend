@@ -1,22 +1,14 @@
 package io.github.cactacea.backend.server.utils.context
 
 import com.twitter.util.Local
-import io.github.cactacea.backend.auth.server.utils.contexts.AuthContextInfo
+import io.github.cactacea.backend.auth.server.utils.contexts.AuthenticationContext
 import io.github.cactacea.backend.core.domain.enums.DeviceType
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 
-object CactaceaContext extends AuthContextInfo {
-
-//  private[this] val localScope = new Local[Option[String]]
-//  def scope: Option[String] = localScope() match {
-//    case Some(scope) => scope
-//    case None => None
-//  }
-//  def setScope(scope: Option[String]): Unit = localScope.update(scope)
-//  def clearScope(): Unit = localScope.clear()
+object CactaceaContext extends AuthenticationContext {
 
   private[this] val localUser = new Local[User]
   def user: User = localUser() match {

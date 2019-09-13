@@ -1,13 +1,11 @@
 package io.github.cactacea.backend.server.models.requests.feed
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.twitter.finatra.validation.Size
-import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
 import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.infrastructure.identifiers.MediumId
 import io.swagger.annotations.ApiModelProperty
 
 case class PostFeed(
-                     @JsonIgnore
                      @ApiModelProperty(value = "A feed message will be posted.", required = true)
                      @Size(min = 1, max = 1000) message : String,
 

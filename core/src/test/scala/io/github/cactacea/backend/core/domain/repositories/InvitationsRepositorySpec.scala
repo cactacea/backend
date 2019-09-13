@@ -319,7 +319,7 @@ class InvitationsRepositorySpec extends RepositorySpec {
 
   feature("reject") {
 
-    scenario("should delete a friend friendRequest") {
+    scenario("should delete a friend request") {
       forOne(userGen, userGen, everyoneChannelGen) { (s, a, g) =>
         val sessionId = await(createUser(s.userName)).id.sessionId
         val userId = await(createUser(a.userName)).id

@@ -1,23 +1,41 @@
 package io.github.cactacea.backend.auth.core.domain.repositories
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.core.domain.models.Authentication
 import io.github.cactacea.backend.auth.core.infrastructure.dao.AuthenticationsDAO
 import io.github.cactacea.backend.auth.core.infrastructure.validators.AuthenticationsValidator
-import io.github.cactacea.backend.core.infrastructure.dao.{UserAuthenticationsDAO, UsersDAO}
-import io.github.cactacea.backend.core.infrastructure.validators.{UserAuthenticationsValidator, UsersValidator}
+import io.github.cactacea.backend.core.infrastructure.dao.UsersDAO
+import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
+import io.github.cactacea.filhouette.api.LoginInfo
+import io.github.cactacea.filhouette.api.services.IdentityService
 import io.github.cactacea.filhouette.impl.providers.CredentialsProvider
 
-@Singleton
-class AuthenticationsRepository @Inject()(
-                                           usersDAO: UsersDAO,
-                                           usersValidator: UsersValidator,
-                                           userAuthenticationsValidator: UserAuthenticationsValidator,
-                                           userAuthenticationsDAO: UserAuthenticationsDAO,
-                                           authenticationsDAO: AuthenticationsDAO,
-                                           authenticationsValidator: AuthenticationsValidator
-                                  ) {
+class AuthenticationsRepository @Inject()(authenticationsDAO: AuthenticationsDAO,
+                                          authenticationsValidator: AuthenticationsValidator,
+                                          usersDAO: UsersDAO) extends IdentityService[Authentication] {
+
+  override def retrieve(loginInfo: LoginInfo): Future[Option[Authentication]] = {
+    authenticationsDAO.find(loginInfo.providerId, loginInfo.providerKey)
+      .flatMap(_ match {
+        case Some(a) =>
+          Future.value(Option(a))
+        case None =>
+          Future.None
+      })
+  }
+
+  def findUserId(providerId: String, providerKey: String): Future[UserId] = {
+    authenticationsValidator.mustFindUserId(providerId, providerKey)
+  }
+
+  def findProviderKey(providerId: String, userId: UserId): Future[String] = {
+    authenticationsValidator.mustFindProviderKey(providerId, userId)
+  }
+
+  def mustNotExists(providerId: String, userId: UserId): Future[Unit] = {
+    authenticationsValidator.mustNotExists(providerId, userId)
+  }
 
   def find(providerId: String, providerKey: String): Future[Option[Authentication]] = {
     authenticationsDAO.find(providerId, providerKey)
@@ -27,29 +45,37 @@ class AuthenticationsRepository @Inject()(
     authenticationsDAO.updateConfirm(providerId, providerKey, true)
   }
 
+  def exists(providerId: String, providerKey: String): Future[Boolean] = {
+    authenticationsDAO.exists(providerId, providerKey)
+  }
 
   def updateUserName(providerId: String, providerKey: String, newUserName: String): Future[Unit] = {
-    for {
-      u <- usersValidator.mustFind(providerId, providerKey)
-      _ <- authenticationsValidator.mustNotExists(CredentialsProvider.ID, newUserName)
-      _ <- userAuthenticationsValidator.mustNotExists(CredentialsProvider.ID, newUserName)
-      _ <- authenticationsDAO.updateProviderKey(CredentialsProvider.ID, u.userName, newUserName)
-      _ <- userAuthenticationsDAO.update(CredentialsProvider.ID, u.userName, newUserName)
-      _ <- usersDAO.updateUserName(newUserName, u.id.sessionId)
-    } yield (())
-
+    updateProviderKey(providerId, providerKey, newUserName).flatMap(_.userId match {
+      case Some(userId) =>
+        usersDAO.updateUserName(newUserName, userId.sessionId)
+      case None =>
+        Future.Unit
+    })
   }
 
-  def exists(providerId: String, providerKey: String): Future[Unit] = {
-    authenticationsValidator.mustExists(providerId, providerKey)
+  def link(providerId: String, providerKey: String, userId: UserId): Future[Unit] = {
+    authenticationsDAO.updateUserId(providerId, providerKey, userId)
   }
 
-  def notExists(providerId: String, providerKey: String): Future[Unit] = {
-    for {
-      _ <- authenticationsValidator.mustNotExists(providerId, providerKey)
-      _ <- userAuthenticationsValidator.mustNotExists(providerId, providerKey)
-    } yield (())
-
+  private def updateProviderKey(providerId: String, providerKey: String, newUserName: String): Future[Authentication] = {
+    providerId match {
+      case CredentialsProvider.ID =>
+        for {
+          a <- authenticationsValidator.mustFind(providerId: String, providerKey)
+          _ <- authenticationsValidator.mustNotExists(CredentialsProvider.ID, newUserName)
+          _ <- authenticationsDAO.updateProviderKey(providerId, providerKey, newUserName)
+        } yield (a)
+      case _ =>
+        for {
+          a <- authenticationsValidator.mustFind(providerId: String, providerKey)
+          _ <- authenticationsDAO.updateProviderKey(CredentialsProvider.ID, a.userId, newUserName)
+        } yield (a)
+    }
   }
 
 }

@@ -35,7 +35,7 @@ class NotificationsDAOSpec extends DAOSpec {
       }
     }
 
-    scenario("should create a friend friendRequest notification") {
+    scenario("should create a friend request notification") {
       forOne(userGen, userGen) { (s, a1) =>
 
         // preparing

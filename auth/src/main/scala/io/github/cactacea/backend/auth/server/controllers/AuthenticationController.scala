@@ -3,8 +3,10 @@ package io.github.cactacea.backend.auth.server.controllers
 import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
-import io.github.cactacea.backend.auth.core.application.services.AuthenticationService
-import io.github.cactacea.backend.auth.server.models.requests.sessions.{GetSignIn, PostSignUp}
+import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, PasswordService, SocialAuthenticationService}
+import io.github.cactacea.backend.auth.server.models.requests.session.{PostSession, PutPassword, PutUserName}
+import io.github.cactacea.backend.auth.server.models.requests.social.{DeleteSocialLink, PostSocialLink}
+import io.github.cactacea.backend.auth.server.utils.contexts.AuthenticationContext
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
@@ -14,43 +16,91 @@ import io.swagger.models.Swagger
 class AuthenticationController @Inject()(
                                     @Flag("cactacea.api.prefix") apiPrefix: String,
                                     s: Swagger,
-                                    authenticationService: AuthenticationService
-                                  ) extends BaseController {
+                                    authenticationService: AuthenticationService,
+                                    passwordService: PasswordService,
+                                    socialAuthenticationService: SocialAuthenticationService
+                                               ) extends BaseController {
 
   implicit val swagger: Swagger = s
 
   prefix(apiPrefix) {
 
-    postWithDoc("/sessions") { o =>
-      o.summary("Sign up")
-        .tag(sessionsTag)
-        .operationId("signUp")
-        .request[PostSignUp]
+    postWithDoc("/session") { o =>
+      o.summary("Register user")
+        .tag(sessionTag)
+        .operationId("registerSession")
+        .request[PostSession]
         .responseWith[User](Status.Ok.code, successfulMessage)
-    } { request: PostSignUp =>
-      implicit val r = request.request
-
-      authenticationService.signUp(
+    } { request: PostSession =>
+      authenticationService.create(
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey,
         request.userName,
-        request.password
+        request.displayName
       )
     }
 
-    getWithDoc("/sessions") { o =>
-      o.summary("Sign in")
-        .tag(sessionsTag)
-        .operationId("signIn")
-        .request[GetSignIn]
-        .responseWith[User](Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason,
-        Some(CactaceaErrors(Seq(UserNameOrPasswordNotMatched, UserTerminated))))
+    putWithDoc("/session/username") { o =>
+      o.summary("Update the user name")
+        .tag(sessionTag)
+        .operationId("updateUserName")
+        .request[PutUserName]
+        .responseWith(Status.Ok.code, successfulMessage)
+        .responseWith[CactaceaErrors](Status.BadRequest.code, Status.BadRequest.reason, Some(CactaceaErrors(Seq(UserAlreadyExist))))
+    } { request: PutUserName =>
+      authenticationService.changeUserName(
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey,
+        request.name,
+      ).map(_ => response.ok)
+    }
 
-    } { request: GetSignIn =>
+    putWithDoc("/session/password") { o =>
+      o.summary("Update the password")
+        .tag(sessionTag)
+        .operationId("updatePassword")
+        .request[PutPassword]
+        .responseWith(Status.Ok.code, successfulMessage)
+    } { request: PutPassword =>
       implicit val r = request.request
 
-      authenticationService.signIn(
-        request.userName,
-        request.password
+      passwordService.changePassword(
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey,
+        request.newPassword
+      ).map(_ => response.ok)
+    }
+
+    postWithDoc("/session/:provider/link") { o =>
+      o.summary("link an social account")
+        .tag(sessionTag)
+        .operationId("linkSocialAccount")
+        .request[PostSocialLink]
+        .responseWith(Status.Ok.code, successfulMessage)
+
+    } { request: PostSocialLink =>
+      socialAuthenticationService.link(
+        request.provider,
+        request.token,
+        request.expiresIn,
+        request.secret,
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey
+      )
+    }
+
+    deleteWithDoc("/session/:provider/link") { o =>
+      o.summary("unlink an social account")
+        .tag(sessionTag)
+        .operationId("unlinkSocialAccount")
+        .request[PostSocialLink]
+        .responseWith(Status.Ok.code, successfulMessage)
+
+    } { request: DeleteSocialLink =>
+      socialAuthenticationService.unlink(
+        request.provider,
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey
       )
     }
 

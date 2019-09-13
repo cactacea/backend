@@ -27,11 +27,16 @@ object RequestExtractor {
         .orElse(
           request.contentType match {
             case Some(MediaType.Json) => {
-              val json = Json.obj(request.contentString).get(name)
-              if (json == null) {
-                None
-              } else {
-                Option(json.asText())
+              request.contentString.isEmpty match {
+                case true =>
+                  None
+                case false =>
+                  val json = Json.obj(request.contentString).get(name)
+                  if (json == null) {
+                    None
+                  } else {
+                    Option(json.asText())
+                  }
               }
             }
             case _ => None

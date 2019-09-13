@@ -1,13 +1,12 @@
 package io.github.cactacea.backend.server
 
 import com.twitter.finagle.http.{Request, Response}
-import com.twitter.finatra.http.benchmarks.ControllerBenchmark
 import com.twitter.finatra.httpclient.RequestBuilder
 import com.twitter.util.Future
 import io.github.cactacea.backend.auth.server.models.requests.session.PutPassword
 import org.openjdk.jmh.annotations.Benchmark
 
-class AuthenticationSessionControllerBenchmark extends ControllerBenchmark {
+class AuthenticationSessionControllerBenchmark extends BenchmarkHelper {
 
   @Benchmark
   def changePassword(): Future[Response] = {

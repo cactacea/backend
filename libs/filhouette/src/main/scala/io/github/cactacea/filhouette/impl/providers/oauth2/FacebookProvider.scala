@@ -23,9 +23,14 @@
 package io.github.cactacea.filhouette.impl.providers.oauth2
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.twitter.finatra.httpclient.modules.HttpClientModule
+import com.google.inject.Provides
+import com.google.inject.name.Named
+import com.twitter.finagle.Http
+import com.twitter.finagle.stats.StatsReceiver
+import com.twitter.finatra.httpclient.modules.HttpClientModuleTrait
 import com.twitter.finatra.httpclient.{HttpClient, RequestBuilder}
 import com.twitter.finatra.json.FinatraObjectMapper
+import com.twitter.inject.Injector
 import com.twitter.util.Future
 import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.impl.exceptions.ProfileRetrievalException
@@ -65,7 +70,7 @@ trait BaseFacebookProvider extends OAuth2Provider {
    */
   override protected def buildProfile(authInfo: OAuth2Info): Future[Profile] = {
     val request = RequestBuilder.get(urls("api").format(authInfo.accessToken))
-    httpLayer.execute(request).flatMap({ response =>
+    httpClient.execute(request).flatMap({ response =>
       val json = Json.obj(response.contentString)
       val error = json.get("error")
       if (error != null) {
@@ -118,17 +123,9 @@ class FacebookProfileParser extends SocialProfileParser[JsonNode, CommonSocialPr
  */
 class FacebookProvider (
                         protected val stateHandler: SocialStateHandler,
-                        val settings: OAuth2Settings)
+                        val settings: OAuth2Settings,
+                        val httpClient: HttpClient)
   extends BaseFacebookProvider with CommonSocialProfileBuilder {
-
-  private val httpClientModule = new HttpClientModule() {
-    val dest = "graph.facebook.com"
-  }
-
-  /**
-    * The HTTP layer implementation.
-    */
-  var httpLayer: HttpClient = httpClientModule.provideHttpClient(FinatraObjectMapper.create(), httpClientModule.provideHttpService)
 
   /**
    * The type of this class.
@@ -146,7 +143,7 @@ class FacebookProvider (
    * @param f A function which gets the settings passed and returns different settings.
    * @return An instance of the provider initialized with new settings.
    */
-  override def withSettings(f: (Settings) => Settings): FacebookProvider = new FacebookProvider(stateHandler, f(settings))
+  override def withSettings(f: (Settings) => Settings): FacebookProvider = new FacebookProvider(stateHandler, f(settings), httpClient)
 }
 
 /**
@@ -164,4 +161,26 @@ object FacebookProvider {
    */
   val ID = "facebook"
   val API = "https://graph.facebook.com/v2.3/me?fields=name,first_name,last_name,picture,email&return_ssl_resources=1&access_token=%s"
+}
+
+
+class FacebookClientModule extends HttpClientModuleTrait {
+  override val dest = "graph.facebook.com:443"
+  override val label = "facebook"
+  val sslHostname = "graph.facebook.com"
+
+  // we only override in this example for TLS configuration with the `sslHostname`
+  override def configureClient(
+                                injector: Injector,
+                                client: Http.Client
+                              ): Http.Client = client.withTls(sslHostname)
+
+  @Provides
+  @Named("FacebookHttpClient")
+  final def provideHttpClient(
+                               injector: Injector,
+                               statsReceiver: StatsReceiver,
+                               mapper: FinatraObjectMapper
+                             ): HttpClient = newHttpClient(injector, statsReceiver, mapper)
+
 }

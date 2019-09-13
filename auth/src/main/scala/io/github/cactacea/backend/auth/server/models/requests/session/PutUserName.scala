@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.auth.server.models.requests.session
 
 import com.twitter.finatra.validation.{MethodValidation, Size, ValidationResult}
-import io.github.cactacea.backend.auth.server.utils.validations.CactaceaValidations
+import io.github.cactacea.backend.auth.server.utils.validations.ValueValidator
 import io.swagger.annotations.ApiModelProperty
 
 case class PutUserName(
@@ -10,6 +10,6 @@ case class PutUserName(
                                 ) {
 
   @MethodValidation
-  def userNameCheck: ValidationResult = CactaceaValidations.validateUserName(name)
+  def userNameCheck: ValidationResult = ValueValidator.validateUserName(name)
 
 }
