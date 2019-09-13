@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import java.util.Locale
 
-import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.domain.enums.{FeedType, NotificationType}
 import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, MediumId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -52,7 +52,7 @@ class FeedsRepositorySpec extends RepositorySpec {
         val feedId = await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
-        val result1 = await(feedsRepository.find(None, 0, 10, None, userId.sessionId))
+        val result1 = await(feedsRepository.find(None, 0, 10, None, FeedType.received, userId.sessionId))
         assert(result1.size == 1)
         assert(result1.headOption.exists(_.id == feedId))
 

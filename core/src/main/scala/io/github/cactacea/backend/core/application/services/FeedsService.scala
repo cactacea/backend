@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.QueueService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, ReportType}
+import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, FeedType, ReportType}
 import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, MediumId, SessionId, UserId}
@@ -54,8 +54,8 @@ class FeedsService @Inject()(
     }
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[Seq[Feed]] = {
-    feedsRepository.find(since, offset, count, privacyType, sessionId)
+  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], feedType: FeedType, sessionId: SessionId): Future[Seq[Feed]] = {
+    feedsRepository.find(since, offset, count, privacyType, feedType, sessionId)
   }
 
   def find(userId: UserId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Feed]] = {

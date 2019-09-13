@@ -52,7 +52,7 @@ class SocialAuthenticationService @Inject()(
   def authenticate(provider: String, token: String, expiresIn: Option[Int], secret: Option[String])(implicit request: Request): Future[Response] = {
     transaction {
       (socialProviderRegistry.get[SocialProvider](provider) match {
-        case Some(p: OAuth2Provider with CommonSocialProfileBuilder) => //for OAuth2 provider type
+        case Some(p: OAuth2Provider with CommonSocialProfileBuilder) =>
           val authInfo = OAuth2Info(accessToken = token, expiresIn = expiresIn)
           for {
             profile <- p.retrieveProfile(authInfo)

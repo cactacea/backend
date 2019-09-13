@@ -24,7 +24,6 @@ class MigrationHandler extends Handler {
       .placeholders(Map("schema" -> database, "hostName" -> (Config.storage.hostName + Config.storage.port)).asJava)
       .load()
 
-    flyway.clean()
     flyway.migrate()
   }
 
