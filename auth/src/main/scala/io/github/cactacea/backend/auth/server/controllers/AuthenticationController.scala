@@ -5,7 +5,7 @@ import com.twitter.finagle.http.Status
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.auth.core.application.services.{AuthenticationService, PasswordService, SocialAuthenticationService}
 import io.github.cactacea.backend.auth.server.models.requests.session.{PostSession, PutPassword, PutUserName}
-import io.github.cactacea.backend.auth.server.models.requests.social.PostSocialLink
+import io.github.cactacea.backend.auth.server.models.requests.social.{DeleteSocialLink, PostSocialLink}
 import io.github.cactacea.backend.auth.server.utils.contexts.AuthenticationContext
 import io.github.cactacea.backend.core.domain.models.User
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
@@ -71,12 +71,34 @@ class AuthenticationController @Inject()(
       ).map(_ => response.ok)
     }
 
-    post("/session/:provider/link") { request: PostSocialLink =>
+    postWithDoc("/session/:provider/link") { o =>
+      o.summary("link an social account")
+        .tag(sessionTag)
+        .operationId("linkSocialAccount")
+        .request[PostSocialLink]
+        .responseWith(Status.Ok.code, successfulMessage)
+
+    } { request: PostSocialLink =>
       socialAuthenticationService.link(
         request.provider,
         request.token,
         request.expiresIn,
         request.secret,
+        AuthenticationContext.auth.providerId,
+        AuthenticationContext.auth.providerKey
+      )
+    }
+
+    deleteWithDoc("/session/:provider/link") { o =>
+      o.summary("unlink an social account")
+        .tag(sessionTag)
+        .operationId("unlinkSocialAccount")
+        .request[PostSocialLink]
+        .responseWith(Status.Ok.code, successfulMessage)
+
+    } { request: DeleteSocialLink =>
+      socialAuthenticationService.unlink(
+        request.provider,
         AuthenticationContext.auth.providerId,
         AuthenticationContext.auth.providerKey
       )

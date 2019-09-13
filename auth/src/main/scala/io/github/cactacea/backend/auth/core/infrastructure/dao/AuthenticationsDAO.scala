@@ -97,11 +97,41 @@ class AuthenticationsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
+  def exists(providerId: String, providerKey: String, userId: UserId): Future[Boolean] = {
+    val q = quote {
+      query[Authentications]
+        .filter(_.providerId == lift(providerId))
+        .filter(_.providerKey == lift(providerKey))
+        .filter(_.userId == lift(Option(userId)))
+        .nonEmpty
+    }
+    run(q)
+  }
+
+  def exists(providerId: String, userId: UserId): Future[Boolean] = {
+    val q = quote {
+      query[Authentications]
+        .filter(_.providerId == lift(providerId))
+        .filter(_.userId == lift(Option(userId)))
+        .nonEmpty
+    }
+    run(q)
+  }
+
   def find(providerId: String, providerKey: String): Future[Option[Authentication]] = {
     val q = quote {
       query[Authentications]
         .filter(_.providerId == lift(providerId))
         .filter(_.providerKey == lift(providerKey))
+    }
+    run(q).map(_.headOption.map(Authentication(_)))
+  }
+
+  def find(providerId: String, userId: UserId): Future[Option[Authentication]] = {
+    val q = quote {
+      query[Authentications]
+        .filter(_.providerId == lift(providerId))
+        .filter(_.userId == lift(Option(userId)))
     }
     run(q).map(_.headOption.map(Authentication(_)))
   }

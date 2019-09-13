@@ -15,7 +15,7 @@ class OAuth2RequestProvider @Inject()(authenticationsRepository: Authentications
   def authenticate(request: Request): Future[Option[LoginInfo]] = {
     authorize(request, dataHandler) flatMap { auth =>
       val loginInfo = LoginInfo(CredentialsProvider.ID, auth.user.userName)
-      authenticationsRepository.find(loginInfo).map(_.map({ a =>
+      authenticationsRepository.find(loginInfo.providerId, loginInfo.providerKey).map(_.map({ a =>
         AuthenticationContext.setScope(auth.scope)
         AuthenticationContext.setAuth(a)
         loginInfo

@@ -41,7 +41,7 @@ class PasswordService @Inject()(
 
   def recoverPassword(email: String)(implicit request: Request): Future[Response] = {
     transaction {
-      authenticationsRepository.find(LoginInfo(EmailsProvider.ID, email)).flatMap(_ match {
+      authenticationsRepository.find(EmailsProvider.ID, email).flatMap(_ match {
         case Some(_) =>
           for {
             t <- tokensRepository.issue(EmailsProvider.ID, email, AuthTokenType.resetPassword)

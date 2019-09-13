@@ -43,6 +43,7 @@ object CactaceaErrors {
   final val c40038 = "40038"
   final val c40039 = "40039"
   final val c40040 = "40040"
+  final val c40041 = "40041"
 
   final val m40000 = "User not signed up."
   final val m40001 = "User deleted."
@@ -81,7 +82,7 @@ object CactaceaErrors {
   final val m40038 = "Token already expired."
   final val m40039 = "Invalid token error."
   final val m40040 = "Account already linked."
-
+  final val m40041 = "Account not linked."
 
   // 400 Bad Request
 
@@ -264,6 +265,11 @@ object CactaceaErrors {
   final object AccountAlreadyLinked extends BadRequest {
     @ApiModelProperty(example = c40040)  override val code: Int =       c40040.toInt
     @ApiModelProperty(example = m40040)  override val message: String = m40040
+  }
+
+  final object AccountNotLinked extends BadRequest {
+    @ApiModelProperty(example = c40041)  override val code: Int =       c40041.toInt
+    @ApiModelProperty(example = m40041)  override val message: String = m40041
   }
 
   final val c40400 = "40400"

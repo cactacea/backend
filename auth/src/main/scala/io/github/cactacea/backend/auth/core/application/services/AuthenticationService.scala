@@ -37,7 +37,7 @@ class AuthenticationService @Inject()(
       for {
         _ <- authenticationsValidator.mustNotExists(l.providerId, l.providerKey)
         _ <- authInfoRepository.add(l, passwordHasherRegistry.current.hash(password))
-        _ <- authenticationsRepository.confirm(l)
+        _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
         u <- usersRepository.create(userName)
         _ <- authenticationsRepository.link(l.providerId, l.providerKey, u)
         s <- authenticatorService.create(l)
@@ -51,7 +51,7 @@ class AuthenticationService @Inject()(
   def signIn(userName: String, password: String)(implicit request: Request): Future[Response] = {
     for {
       l <- credentialsProvider.authenticate(Credentials(userName, password))
-      u <- authenticationsRepository.find(l).map(_.flatMap(_.userId))
+      u <- authenticationsRepository.find(l.providerId, l.providerKey).map(_.flatMap(_.userId))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
       r <- authenticatorService.embed(c, response.ok.body(SessionToken(userName, c, u)))

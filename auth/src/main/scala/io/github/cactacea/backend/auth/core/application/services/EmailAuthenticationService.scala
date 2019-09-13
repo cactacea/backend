@@ -57,7 +57,7 @@ class EmailAuthenticationService @Inject()(
   def signIn(email: String, password: String)(implicit request: Request): Future[Response] = {
     for {
       l <- emailsProvider.authenticate(Credentials(email, password))
-      u <- authenticationsRepository.find(l).map(_.flatMap(_.userId))
+      u <- authenticationsRepository.find(l.providerId, l.providerKey).map(_.flatMap(_.userId))
       s <- authenticatorService.create(l)
       c <- authenticatorService.init(s)
       r <- authenticatorService.embed(c, response.ok.body(SessionToken(email, c, u)))
@@ -68,7 +68,7 @@ class EmailAuthenticationService @Inject()(
     transaction {
       for {
         l <- tokensRepository.verify(token, AuthTokenType.signUp)
-        _ <- authenticationsRepository.confirm(l)
+        _ <- authenticationsRepository.confirm(l.providerId, l.providerKey)
       } yield (())
     }
   }

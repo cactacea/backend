@@ -7,6 +7,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.auth.core.domain.models.SessionToken
 import io.github.cactacea.backend.auth.core.domain.repositories.AuthenticationsRepository
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
+import io.github.cactacea.filhouette.api.LoginInfo
 import io.github.cactacea.filhouette.api.exceptions.{ConfigurationException, ProviderException}
 import io.github.cactacea.filhouette.api.repositories.AuthInfoRepository
 import io.github.cactacea.filhouette.impl.authenticators.JWTAuthenticatorService
@@ -34,9 +35,9 @@ class SocialAuthenticationService @Inject()(
             case Right(authInfo) => {
               for {
                 profile <- p.retrieveProfile(authInfo)
-                u <- authenticationsRepository.find(profile.loginInfo).map(_.flatMap(_.userId))
+                u <- authenticationsRepository.find(profile.loginInfo.providerId, profile.loginInfo.providerKey).map(_.flatMap(_.userId))
                 _ <- authInfoRepository.save(profile.loginInfo, authInfo)
-                _ <- authenticationsRepository.confirm(profile.loginInfo)
+                _ <- authenticationsRepository.confirm(profile.loginInfo.providerId, profile.loginInfo.providerKey)
                 s <- authenticatorService.create(profile.loginInfo)
                 c <- authenticatorService.init(s)
                 r <- authenticatorService.embed(c, response.ok.body(SessionToken(profile.loginInfo.providerKey, c, u)))
@@ -56,9 +57,9 @@ class SocialAuthenticationService @Inject()(
           val authInfo = OAuth2Info(accessToken = token, expiresIn = expiresIn)
           for {
             profile <- p.retrieveProfile(authInfo)
-            u <- authenticationsRepository.find(profile.loginInfo).map(_.flatMap(_.userId))
+            u <- authenticationsRepository.find(profile.loginInfo.providerId, profile.loginInfo.providerKey).map(_.flatMap(_.userId))
             _ <- authInfoRepository.save(profile.loginInfo, authInfo)
-            _ <- authenticationsRepository.confirm(profile.loginInfo)
+            _ <- authenticationsRepository.confirm(profile.loginInfo.providerId, profile.loginInfo.providerKey)
             s <- authenticatorService.create(profile.loginInfo)
             c <- authenticatorService.init(s)
             r <- authenticatorService.embed(c, response.ok.body(SessionToken(profile.loginInfo.providerKey, c, u)))
@@ -76,8 +77,10 @@ class SocialAuthenticationService @Inject()(
           val authInfo = OAuth2Info(accessToken = token, expiresIn = expiresIn)
           for {
             profile <- p.retrieveProfile(authInfo)
+            i <- authenticationsRepository.findUserId(providerId, providerKey)
+
             _ <- authInfoRepository.save(profile.loginInfo, authInfo)
-//            _ <- authenticationsRepository.create(providerId, providerKey, profile.loginInfo.providerId, profile.loginInfo.providerKey)
+            _ <- authenticationsRepository.link(providerId, providerKey, i)
           } yield (())
 
         case _ =>
@@ -86,24 +89,19 @@ class SocialAuthenticationService @Inject()(
     }
   }
 
-//  def unlink(provider: String, providerId: String, providerKey: String): Future[Unit] = {
-//    transaction {
-//      (socialProviderRegistry.get[SocialProvider](provider) match {
-//        case Some(p: OAuth2Provider with CommonSocialProfileBuilder) => //for OAuth2 provider type
-//          val authInfo = OAuth2Info(accessToken = token, expiresIn = expiresIn)
-//          for {
-//            profile <- p.retrieveProfile(authInfo)
-//            _ <- authInfoRepository.save(profile.loginInfo, authInfo)
-//          } yield (())
-//
-//        case _ =>
-//          Future.exception(new ConfigurationException(s"Cannot retrive information with unexpected social provider $provider"))
-//      })
-//    }
-//  }
-
-  //      //      case Some(p: OAuth1Provider with CommonSocialProfileBuilder) => //for OAuth1 provider type
-  //      //        val authInfo = OAuth1Info(token = socialAuth.token, socialAuth.secret.get)
-  //      //        p.retrieveProfile(authInfo).map(profile => (profile, authInfo))
+  def unlink(provider: String, providerId: String, providerKey: String): Future[Unit] = {
+    transaction {
+      (socialProviderRegistry.get[SocialProvider](provider) match {
+        case Some(_: OAuth2Provider with CommonSocialProfileBuilder) => //for OAuth2 provider type
+          for {
+            i <- authenticationsRepository.findUserId(providerId, providerKey)
+            k <- authenticationsRepository.findProviderKey(provider, i)
+            _ <- authInfoRepository.remove(LoginInfo(provider, k))
+          } yield (())
+        case _ =>
+          Future.exception(new ConfigurationException(s"Cannot retrive information with unexpected social provider $provider"))
+      })
+    }
+  }
 
 }
