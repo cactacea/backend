@@ -6,39 +6,39 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.{DeepLinkService, MessageService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.NotificationType
-import io.github.cactacea.backend.core.domain.models.Notification
+import io.github.cactacea.backend.core.domain.enums.{FeedType}
+import io.github.cactacea.backend.core.domain.models.Feed
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class NotificationsDAO @Inject()(db: DatabaseService,
-                                 deepLinkService: DeepLinkService,
-                                 messageService: MessageService,
+class FeedsDAO @Inject()(db: DatabaseService,
+                         deepLinkService: DeepLinkService,
+                         messageService: MessageService,
                                  ) {
 
   import db._
 
-  def create(id: InvitationId, userId: UserId, sessionId: SessionId): Future[NotificationId] = {
+  def create(id: InvitationId, userId: UserId, sessionId: SessionId): Future[FeedId] = {
     val by = sessionId.userId
     val url = deepLinkService.getInvitation(id)
-    insert(userId, by, NotificationType.invitation, id.value, url)
+    insert(userId, by, FeedType.invitation, id.value, url)
   }
 
-  def create(id: FriendRequestId, userId: UserId, sessionId: SessionId): Future[NotificationId] = {
+  def create(id: FriendRequestId, userId: UserId, sessionId: SessionId): Future[FeedId] = {
     val by = sessionId.userId
     val url = deepLinkService.getRequest(id)
-    insert(userId, by, NotificationType.friendRequest, id.value, url)
+    insert(userId, by, FeedType.friendRequest, id.value, url)
   }
 
-  def create(tweetId: TweetId, commentId: CommentId, userId: UserId, commentReply: Boolean, sessionId: SessionId): Future[NotificationId] = {
+  def create(tweetId: TweetId, commentId: CommentId, userId: UserId, commentReply: Boolean, sessionId: SessionId): Future[FeedId] = {
     val by = sessionId.userId
-    val notificationType = commentReply match {
-      case true => NotificationType.commentReply
-      case false => NotificationType.tweetReply
+    val feedType = commentReply match {
+      case true => FeedType.commentReply
+      case false => FeedType.tweetReply
     }
     val url = deepLinkService.getComment(tweetId, commentId)
-    insert(userId, by, notificationType, commentId.value, url)
+    insert(userId, by, feedType, commentId.value, url)
   }
 
   def create(tweetId: TweetId, sessionId: SessionId): Future[Unit] = {
@@ -46,8 +46,8 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     val url = deepLinkService.getTweet(tweetId)
     val q = quote {
       infix"""
-        insert into notifications (user_id, `by`, content_id, notification_type, url, unread, notified_at)
-        select r.`by`, r.user_id, ${lift(tweetId)}, ${lift(NotificationType.tweet.value)}, ${lift(url)}, true as unread, CURRENT_TIMESTAMP
+        insert into feeds (user_id, `by`, content_id, feed_type, url, unread, notified_at)
+        select r.`by`, r.user_id, ${lift(tweetId)}, ${lift(FeedType.tweet.value)}, ${lift(url)}, true as unread, CURRENT_TIMESTAMP
         from relationships r, tweets f
         where f.id = ${lift(tweetId)}
         and r.user_id = ${lift(by)}
@@ -62,14 +62,14 @@ class NotificationsDAO @Inject()(db: DatabaseService,
   }
 
 
-  private def insert(userId: UserId, by: UserId, notificationType: NotificationType, contentId: Long, url: String): Future[NotificationId] = {
+  private def insert(userId: UserId, by: UserId, feedType: FeedType, contentId: Long, url: String): Future[FeedId] = {
     val notifiedAt = System.currentTimeMillis()
     val contentIdOpt: Option[Long] = Some(contentId)
     val q = quote {
-      query[Notifications].insert(
+      query[Feeds].insert(
         _.userId         -> lift(userId),
         _.by                -> lift(by),
-        _.notificationType  -> lift(notificationType),
+        _.feedType  -> lift(feedType),
         _.contentId         -> lift(contentIdOpt),
         _.url               -> lift(url),
         _.unread            -> true,
@@ -79,12 +79,12 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     run(q)
   }
 
-  def updateReadStatus(notificationIds: Seq[NotificationId], sessionId: SessionId): Future[Unit] = {
+  def updateReadStatus(feedIds: Seq[FeedId], sessionId: SessionId): Future[Unit] = {
     val userId = sessionId.userId
     val q = quote {
-      query[Notifications]
+      query[Feeds]
         .filter(_.userId == lift(userId))
-        .filter(n => liftQuery(notificationIds).contains(n.id))
+        .filter(n => liftQuery(feedIds).contains(n.id))
         .update(_.unread -> false)
     }
     run(q).map(_ => ())
@@ -94,12 +94,12 @@ class NotificationsDAO @Inject()(db: DatabaseService,
            offset: Int,
            count: Int,
            locales: Seq[Locale],
-           sessionId: SessionId): Future[Seq[Notification]] = {
+           sessionId: SessionId): Future[Seq[Feed]] = {
 
     val by = sessionId.userId
     val q = quote {
       (for {
-        n <- query[Notifications]
+        n <- query[Feeds]
           .filter(n => n.userId == lift(by))
           .filter(n => lift(since).forall(n.id < _))
           .filter(n => query[Blocks].filter(b => b.userId == lift(by) && b.by == n.by).isEmpty)
@@ -115,8 +115,8 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     }
     run(q).map(_.map({ case (n, a, r) =>
         val displayName = r.map(_.displayName).getOrElse(a.userName)
-        val message = messageService.getNotificationMessage(n.notificationType, locales, displayName)
-        Notification(n, message, n.id.value)
+        val message = messageService.getPushMessage(n.feedType, locales, displayName)
+        Feed(n, message, n.id.value)
       }))
 
 

@@ -3,7 +3,6 @@ package io.github.cactacea.backend.core.helpers.specs
 import com.twitter.inject.app.TestInjector
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.helpers.generators.{ModelsGenerator, StatusGenerator}
-import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 
 class ServiceSpec extends Spec
   with StatusGenerator
@@ -13,7 +12,6 @@ class ServiceSpec extends Spec
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultCoreModule,
         DefaultChatModule,
         DefaultMessageModule,
         DefaultQueueModule,

@@ -25,7 +25,7 @@ object DefaultCoreModule extends TwitterModule {
     bindSingleton[MediumsRepository]
     bindSingleton[MessagesRepository]
     bindSingleton[MutesRepository]
-    bindSingleton[NotificationsRepository]
+    bindSingleton[FeedsRepository]
     bindSingleton[PushNotificationCommentsRepository]
     bindSingleton[PushNotificationTweetsRepository]
     bindSingleton[PushNotificationFriendRequestsRepository]
@@ -53,7 +53,7 @@ object DefaultCoreModule extends TwitterModule {
     bindSingleton[MediumsService]
     bindSingleton[MessagesService]
     bindSingleton[MutesService]
-    bindSingleton[NotificationsService]
+    bindSingleton[FeedsService]
     bindSingleton[SettingsService]
   }
 

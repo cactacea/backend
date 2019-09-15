@@ -16,12 +16,12 @@ object PushNotificationSetting {
 
   def apply(s: PushNotificationSettings): PushNotificationSetting = {
     PushNotificationSetting(
-      tweet            = s.tweet,
+      tweet           = s.tweet,
       comment         = s.comment,
       friendRequest   = s.friendRequest,
       message         = s.message,
-      channelMessage    = s.channelMessage,
-      invitation = s.invitation,
+      channelMessage  = s.channelMessage,
+      invitation      = s.invitation,
       showMessage     = s.showMessage
     )
   }

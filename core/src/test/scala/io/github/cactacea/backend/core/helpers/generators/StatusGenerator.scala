@@ -15,7 +15,7 @@ trait StatusGenerator {
   val channelPrivacyTypeGen: Gen[ChannelPrivacyType] = Gen.oneOf(ChannelPrivacyType.values())
   val mediumTypeGen: Gen[MediumType] = Gen.oneOf(MediumType.values())
   val messageTypeGen: Gen[MessageType] = Gen.oneOf(MessageType.values())
-  val notificationTypeGen: Gen[NotificationType] = Gen.oneOf(NotificationType.values())
+  val feedTypeGen: Gen[FeedType] = Gen.oneOf(FeedType.values())
   val pushNotificationTypeGen: Gen[PushNotificationType] = Gen.oneOf(PushNotificationType.values())
   val reportTypeGen: Gen[ReportType] = Gen.oneOf(ReportType.values())
 

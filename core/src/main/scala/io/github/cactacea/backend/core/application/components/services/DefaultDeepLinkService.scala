@@ -59,7 +59,7 @@ class DefaultDeepLinkService @Inject()(@Flag("scheme") scheme: String) extends D
     s"${scheme}://channels/${channelId}/messages/${messageId}"
   }
 
-  def getNotification(id: NotificationId): String = {
+  def getFeed(id: FeedId): String = {
     s"${scheme}://notifications/${id}"
   }
 

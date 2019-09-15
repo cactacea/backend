@@ -18,7 +18,7 @@ class TweetsRepository @Inject()(
                                   tweetReportsDAO: TweetReportsDAO,
                                   tweetsValidator: TweetsValidator,
                                   mediumsValidator: MediumsValidator,
-                                  notificationsDAO: NotificationsDAO
+                                  feedsDAO: FeedsDAO
                                ) {
 
   def create(message: String,
@@ -36,7 +36,7 @@ class TweetsRepository @Inject()(
       _ <- tweetTagsDAO.create(i, tags)
       _ <- tweetMediumsDAO.create(i, mediumIds)
       _ <- userTweetsDAO.create(i, sessionId)
-      _ <- notificationsDAO.create(i, sessionId)
+      _ <- feedsDAO.create(i, sessionId)
     } yield (i)
   }
 

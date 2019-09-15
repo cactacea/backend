@@ -13,7 +13,6 @@ import io.github.cactacea.backend.auth.server.controllers._
 import io.github.cactacea.backend.auth.server.utils.filters.AuthenticationFilter
 import io.github.cactacea.backend.auth.server.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers._
@@ -44,7 +43,6 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
           DefaultAPIPrefixModule,
           DefaultAuthModule,
           DefaultAuthFilterModule,
-          DefaultCoreModule,
           DefaultJacksonModule,
           DefaultChatModule,
           DefaultDeepLinkModule,

@@ -4,7 +4,7 @@ import java.util.Locale
 
 import com.osinka.i18n.{Lang, Messages}
 import io.github.cactacea.backend.core.application.components.interfaces.MessageService
-import io.github.cactacea.backend.core.domain.enums.{NotificationType, PushNotificationType}
+import io.github.cactacea.backend.core.domain.enums.{FeedType, PushNotificationType}
 
 class DefaultMessageService extends MessageService {
 
@@ -28,14 +28,14 @@ class DefaultMessageService extends MessageService {
     Messages(message, args:_*)(lang)
   }
 
-  def getNotificationMessage(notificationType: NotificationType, locales: Seq[Locale], args : Any*): String = {
-    val message = notificationType match {
-      case NotificationType.operator => "operator"
-      case NotificationType.`invitation` => "channel_invitation"
-      case NotificationType.`friendRequest` => "friend_request"
-      case NotificationType.tweet => "tweet"
-      case NotificationType.tweetReply => "tweet_reply"
-      case NotificationType.commentReply => "comment_reply"
+  def getPushMessage(feedType: FeedType, locales: Seq[Locale], args : Any*): String = {
+    val message = feedType match {
+      case FeedType.operator => "operator"
+      case FeedType.`invitation` => "channel_invitation"
+      case FeedType.`friendRequest` => "friend_request"
+      case FeedType.tweet => "tweet"
+      case FeedType.tweetReply => "tweet_reply"
+      case FeedType.commentReply => "comment_reply"
     }
     val lang = validLanguage(locales)
     Messages(message, args:_*)(lang)

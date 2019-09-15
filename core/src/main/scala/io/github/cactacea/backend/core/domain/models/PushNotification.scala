@@ -8,5 +8,5 @@ case class PushNotification(
                              postedAt: Long,
                              url: String,
                              destinations: Seq[Destination],
-                             notificationType: PushNotificationType
+                             feedType: PushNotificationType
                            )

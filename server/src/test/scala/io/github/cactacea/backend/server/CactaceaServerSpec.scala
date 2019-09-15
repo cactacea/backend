@@ -17,7 +17,6 @@ import io.github.cactacea.backend.auth.server.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.core.application.components.modules._
 import io.github.cactacea.backend.core.helpers.generators.{Generator, ModelsGenerator, StatusGenerator}
 import io.github.cactacea.backend.core.util.configs.Config
-import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.helpers.RequestGenerator
 import io.github.cactacea.backend.server.utils.modules.{DefaultAPIPrefixModule, DefaultAuthFilterModule}
 import io.github.cactacea.backend.server.utils.swagger.CactaceaSwaggerModule
@@ -67,7 +66,6 @@ class CactaceaServerSpec extends FeatureTest
         DefaultAPIPrefixModule,
         DefaultAuthModule,
         DefaultAuthFilterModule,
-        DefaultCoreModule,
         DefaultChatModule,
         DefaultDeepLinkModule,
         DefaultJacksonModule,

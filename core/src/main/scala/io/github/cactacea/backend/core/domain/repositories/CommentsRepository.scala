@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.Comment
-import io.github.cactacea.backend.core.infrastructure.dao.{CommentReportsDAO, CommentsDAO, NotificationsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{CommentReportsDAO, CommentsDAO, FeedsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, TweetId, SessionId}
 import io.github.cactacea.backend.core.infrastructure.validators.{CommentsValidator, TweetsValidator}
 
@@ -14,7 +14,7 @@ class CommentsRepository @Inject()(
                                     commentReportsDAO: CommentReportsDAO,
                                     commentsValidator: CommentsValidator,
                                     tweetsValidator: TweetsValidator,
-                                    notificationsDAO: NotificationsDAO
+                                    notificationsDAO: FeedsDAO
                                   ) {
 
   def find(tweetId: TweetId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {

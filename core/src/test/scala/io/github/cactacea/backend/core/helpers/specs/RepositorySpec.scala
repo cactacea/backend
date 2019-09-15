@@ -9,7 +9,6 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.helpers.generators.{ModelsGenerator, StatusGenerator}
 import io.github.cactacea.backend.core.helpers.utils.DAOHelper
 import io.github.cactacea.backend.core.infrastructure.dao._
-import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 
 class RepositorySpec extends Spec
   with StatusGenerator
@@ -20,7 +19,6 @@ class RepositorySpec extends Spec
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultCoreModule,
         DefaultChatModule,
         DefaultMessageModule,
         DefaultQueueModule,
@@ -51,7 +49,7 @@ class RepositorySpec extends Spec
   val mediumsRepository = injector.instance[MediumsRepository]
   val mutesRepository = injector.instance[MutesRepository]
   val messagesRepository = injector.instance[MessagesRepository]
-  val notificationsRepository = injector.instance[NotificationsRepository]
+  val notificationsRepository = injector.instance[FeedsRepository]
   val pushNotificationSettingsRepository = injector.instance[PushNotificationSettingsRepository]
 
   val usersDAO = injector.instance[UsersDAO]

@@ -630,25 +630,25 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`notifications`
+-- Table `${schema}`.`feeds`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`notifications` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`feeds` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `user_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
-  `notification_type` TINYINT(4) NOT NULL,
+  `feed_type` TINYINT(4) NOT NULL,
   `content_id` BIGINT(20) NULL DEFAULT NULL,
   `url` VARCHAR(2083) NOT NULL,
   `unread` TINYINT(4) NOT NULL,
   `notified_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `ui_notifications1_idx` (`user_id` ASC, `by` ASC, `notification_type` ASC, `content_id` ASC),
-  INDEX `fk_notifications_users1_idx` (`user_id` ASC),
-  INDEX `fk_notifications_users2_idx` (`by` ASC),
-  CONSTRAINT `fk_notifications_users1`
+  UNIQUE INDEX `ui_feeds1_idx` (`user_id` ASC, `by` ASC, `feed_type` ASC, `content_id` ASC),
+  INDEX `fk_feeds_users1_idx` (`user_id` ASC),
+  INDEX `fk_feeds_users2_idx` (`by` ASC),
+  CONSTRAINT `fk_feeds_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `${schema}`.`users` (`id`),
-  CONSTRAINT `fk_notifications_users2`
+  CONSTRAINT `fk_feeds_users2`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`users` (`id`))
 ENGINE = InnoDB
