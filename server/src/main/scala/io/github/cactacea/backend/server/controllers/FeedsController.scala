@@ -14,9 +14,9 @@ import io.github.cactacea.backend.utils.RequestImplicits._
 import io.swagger.models.Swagger
 
 @Singleton
-class NotificationsController @Inject()(
+class FeedsController @Inject()(
                                          @Flag("cactacea.api.prefix") apiPrefix: String,
-                                         notificationsService: FeedsService,
+                                         feedsService: FeedsService,
                                          f: CactaceaAuthenticationFilterFactory,
                                          s: Swagger) extends CactaceaController {
 
@@ -25,14 +25,14 @@ class NotificationsController @Inject()(
 
   prefix(apiPrefix) {
 
-    scope(basic).getWithDoc("/notifications") { o =>
-      o.summary("Search notifications")
+    scope(basic).getWithDoc("/feeds") { o =>
+      o.summary("Search feeds")
         .tag(notificationsTag)
-        .operationId("findNotifications")
+        .operationId("findFeeds")
         .request[GetNotifications]
         .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
     } { request: GetNotifications =>
-      notificationsService.find(
+      feedsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),

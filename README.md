@@ -7,18 +7,3 @@
 **Cactacea** is a framework to construct social networking applications and built on top of [Finatra](https://twitter.github.io/finatra/), [Finagle](https://twitter.github.io/finagle/), Twitter Server.
 
 - [`API Reference`](https://cactacea.github.io/backend/swagger.html)
-<<<<<<< HEAD
-
-
-#### Demo App Images
-
-![SignIn](docs/src/main/resources/microsite/img/ios/signin.png)
-![Contact](docs/src/main/resources/microsite/img/ios/contact.png)
-![Chat](docs/src/main/resources/microsite/img/ios/chat.png)
-![Tweets](docs/src/main/resources/microsite/img/ios/tweets.png)
-![Followers](docs/src/main/resources/microsite/img/ios/followers.png)
-![MyPage](docs/src/main/resources/microsite/img/ios/mypage.png)
-![Setting](docs/src/main/resources/microsite/img/ios/setting.png)
-![Options](docs/src/main/resources/microsite/img/ios/options.png)
-=======
->>>>>>> master
