@@ -3,8 +3,8 @@ package io.github.cactacea.backend.server.models.requests.setting
 import io.swagger.annotations.ApiModelProperty
 
 case class PutNotificationSetting(
-                                   @ApiModelProperty(value = "Notice new follower feed arrived.", required = true)
-                                   feed: Boolean,
+                                   @ApiModelProperty(value = "Notice new follower tweet arrived.", required = true)
+                                   tweet: Boolean,
 
                                    @ApiModelProperty(value = "Notice new comment arrived.", required = true)
                                    comment: Boolean,

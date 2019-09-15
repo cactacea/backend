@@ -20,8 +20,8 @@ class DefaultMessageService extends MessageService {
       case PushNotificationType.image => "message_image"
       case PushNotificationType.`invitation` => "channel_invitation"
       case PushNotificationType.`request` => "friend_request"
-      case PushNotificationType.feed => "feed"
-      case PushNotificationType.feedReply => "feed_reply"
+      case PushNotificationType.tweet => "tweet"
+      case PushNotificationType.tweetReply => "tweet_reply"
       case PushNotificationType.commentReply => "comment_reply"
     }
     val lang = validLanguage(locales)
@@ -33,8 +33,8 @@ class DefaultMessageService extends MessageService {
       case NotificationType.operator => "operator"
       case NotificationType.`invitation` => "channel_invitation"
       case NotificationType.`friendRequest` => "friend_request"
-      case NotificationType.feed => "feed"
-      case NotificationType.feedReply => "feed_reply"
+      case NotificationType.tweet => "tweet"
+      case NotificationType.tweetReply => "tweet_reply"
       case NotificationType.commentReply => "comment_reply"
     }
     val lang = validLanguage(locales)

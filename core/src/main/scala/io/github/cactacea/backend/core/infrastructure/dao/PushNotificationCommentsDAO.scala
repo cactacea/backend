@@ -22,11 +22,11 @@ class PushNotificationCommentsDAO @Inject()(
         findDestinations(id).map({ d =>
           val pt = c.replyId.isDefined match {
             case true => PushNotificationType.commentReply
-            case false => PushNotificationType.feedReply
+            case false => PushNotificationType.tweetReply
           }
           val url = c.replyId.isDefined match {
-            case true => deepLinkService.getComments(c.feedId)
-            case false => deepLinkService.getComment(c.feedId, c.id)
+            case true => deepLinkService.getComments(c.tweetId)
+            case false => deepLinkService.getComment(c.tweetId, c.id)
           }
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
             PushNotification(userName, None, c.postedAt, url, destinations, pt)
@@ -53,8 +53,8 @@ class PushNotificationCommentsDAO @Inject()(
         c <- query[Comments]
           .filter(_.id == lift(id))
           .filter(_.notified == false)
-        f <- query[Feeds]
-          .join(_.id == c.feedId)
+        f <- query[Tweets]
+          .join(_.id == c.tweetId)
         _ <- query[PushNotificationSettings]
           .join(_.userId == f.by)
           .filter(_.comment == true)

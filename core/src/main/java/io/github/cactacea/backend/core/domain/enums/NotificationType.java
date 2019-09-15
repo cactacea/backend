@@ -4,8 +4,8 @@ public enum NotificationType {
     operator((byte)0),
     invitation((byte)1),
     friendRequest((byte)2),
-    feed((byte)3),
-    feedReply((byte)4),
+    tweet((byte)3),
+    tweetReply((byte)4),
     commentReply((byte)5);
 
     public byte value;

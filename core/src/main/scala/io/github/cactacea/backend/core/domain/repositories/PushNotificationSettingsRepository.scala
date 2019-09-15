@@ -16,7 +16,7 @@ class PushNotificationSettingsRepository @Inject()(
     pushNotificationSettingsValidator.mustFind(sessionId)
   }
 
-  def update(feed: Boolean,
+  def update(tweet: Boolean,
              comment: Boolean,
              friendRequest: Boolean,
              message: Boolean,
@@ -26,7 +26,7 @@ class PushNotificationSettingsRepository @Inject()(
              sessionId: SessionId): Future[Unit] = {
 
     pushNotificationSettingsDAO.update(
-      feed,
+      tweet,
       comment,
       friendRequest,
       message,

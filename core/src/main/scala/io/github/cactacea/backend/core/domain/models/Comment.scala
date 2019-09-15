@@ -1,13 +1,13 @@
 package io.github.cactacea.backend.core.domain.models
 
 import io.github.cactacea.backend.core.domain.enums.{UserStatusType, ContentStatusType}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, TweetId}
 import io.github.cactacea.backend.core.infrastructure.models.{Users, Comments, Relationships}
 
 case class Comment(
                     id: CommentId,
                     replyId: Option[CommentId],
-                    feedId: FeedId,
+                    tweetId: TweetId,
                     message: String,
                     user: User,
                     likeCount: Long,
@@ -25,7 +25,7 @@ object Comment {
         Comment(
           id              = c.id,
           replyId         = c.replyId,
-          feedId          = c.feedId,
+          tweetId          = c.tweetId,
           message         = "",
           user         = User(a, r),
           likeCount       = 0L,
@@ -38,7 +38,7 @@ object Comment {
         Comment(
           id              = c.id,
           replyId         = c.replyId,
-          feedId          = c.feedId,
+          tweetId          = c.tweetId,
           message         = c.message,
           user         = User(a, r),
           likeCount       = c.likeCount,

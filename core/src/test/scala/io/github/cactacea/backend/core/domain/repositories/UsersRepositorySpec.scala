@@ -15,7 +15,7 @@ class UsersRepositorySpec extends RepositorySpec {
         val result = await(usersRepository.find(sessionId))
         assert(result.userName == u.userName)
         assert(result.displayName == u.userName)
-        assert(result.feedCount == 0)
+        assert(result.tweetCount == 0)
         assert(result.followCount == 0)
         assert(result.followerCount == 0)
         assert(result.friendCount == 0)
@@ -32,7 +32,7 @@ class UsersRepositorySpec extends RepositorySpec {
         assert(result.userStatus == UserStatusType.normally)
 
         val result2 = await(pushNotificationSettingsRepository.find(sessionId))
-        assert(result2.feed)
+        assert(result2.tweet)
         assert(result2.comment)
         assert(result2.friendRequest)
         assert(result2.message)
@@ -61,7 +61,7 @@ class UsersRepositorySpec extends RepositorySpec {
         val result = await(usersRepository.find(sessionId))
         assert(result.userName == u.userName)
         assert(result.displayName == u.displayName)
-        assert(result.feedCount == 0)
+        assert(result.tweetCount == 0)
         assert(result.followCount == 0)
         assert(result.followerCount == 0)
         assert(result.friendCount == 0)
@@ -90,7 +90,7 @@ class UsersRepositorySpec extends RepositorySpec {
 
   feature("find(session id)") {
     scenario("should return user") {
-      forOne(userGen, userGen, userGen, userGen, feedGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, tweetGen) { (s, a1, a2, a3, f) =>
 
         // preparing
         val sessionId = await(usersRepository.create(s.userName, Option(s.displayName))).sessionId
@@ -102,7 +102,7 @@ class UsersRepositorySpec extends RepositorySpec {
         await(followsRepository.create(sessionId.userId, followerId.sessionId))
         val requestId = await(friendRequestsRepository.create(friendId, sessionId))
         await(friendRequestsRepository.accept(requestId, friendId.sessionId))
-        await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        await(tweetsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
         val result = await(usersRepository.find(sessionId))
@@ -112,7 +112,7 @@ class UsersRepositorySpec extends RepositorySpec {
         assert(result.birthday == s.birthday)
         assert(result.location == s.location)
         assert(result.web == s.web)
-        assert(result.feedCount == 1)
+        assert(result.tweetCount == 1)
         assert(result.followCount == 1)
         assert(result.followerCount == 1)
         assert(result.friendCount == 1)
@@ -139,7 +139,7 @@ class UsersRepositorySpec extends RepositorySpec {
   feature("find(user id, session id)") {
 
     scenario("should return user by follow user") {
-      forOne(userGen, userGen, userGen, userGen, feedGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, tweetGen) { (s, a1, a2, a3, f) =>
 
         // preparing
         val sessionId = await(usersRepository.create(s.userName, Option(s.displayName))).sessionId
@@ -151,7 +151,7 @@ class UsersRepositorySpec extends RepositorySpec {
         await(followsRepository.create(sessionId.userId, followerId.sessionId))
         val requestId = await(friendRequestsRepository.create(friendId, sessionId))
         await(friendRequestsRepository.accept(requestId, friendId.sessionId))
-        await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        await(tweetsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
         val result = await(usersRepository.find(sessionId.userId, followId.sessionId))
@@ -161,7 +161,7 @@ class UsersRepositorySpec extends RepositorySpec {
         assert(result.birthday == s.birthday)
         assert(result.location == s.location)
         assert(result.web == s.web)
-        assert(result.feedCount == 1)
+        assert(result.tweetCount == 1)
         assert(result.followCount == 1)
         assert(result.followerCount == 1)
         assert(result.friendCount == 1)
@@ -177,7 +177,7 @@ class UsersRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return user by follower user") {
-      forOne(userGen, userGen, userGen, userGen, feedGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, tweetGen) { (s, a1, a2, a3, f) =>
 
         // preparing
         val sessionId = await(usersRepository.create(s.userName, Option(s.displayName))).sessionId
@@ -189,7 +189,7 @@ class UsersRepositorySpec extends RepositorySpec {
         await(followsRepository.create(sessionId.userId, followerId.sessionId))
         val requestId = await(friendRequestsRepository.create(friendId, sessionId))
         await(friendRequestsRepository.accept(requestId, friendId.sessionId))
-        await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        await(tweetsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
 
         // result
         val result = await(usersRepository.find(sessionId.userId, followerId.sessionId))
@@ -199,7 +199,7 @@ class UsersRepositorySpec extends RepositorySpec {
         assert(result.birthday == s.birthday)
         assert(result.location == s.location)
         assert(result.web == s.web)
-        assert(result.feedCount == 1)
+        assert(result.tweetCount == 1)
         assert(result.followCount == 1)
         assert(result.followerCount == 1)
         assert(result.friendCount == 1)
@@ -215,7 +215,7 @@ class UsersRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return user by follower and mute user") {
-      forOne(userGen, userGen, userGen, userGen, feedGen) { (s, a1, a2, a3, f) =>
+      forOne(userGen, userGen, userGen, userGen, tweetGen) { (s, a1, a2, a3, f) =>
 
         // preparing
         val sessionId = await(usersRepository.create(s.userName, Option(s.displayName))).sessionId
@@ -227,7 +227,7 @@ class UsersRepositorySpec extends RepositorySpec {
         await(followsRepository.create(sessionId.userId, followerId.sessionId))
         val requestId = await(friendRequestsRepository.create(friendId, sessionId))
         await(friendRequestsRepository.accept(requestId, friendId.sessionId))
-        await(feedsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
+        await(tweetsRepository.create(f.message, None, None, f.privacyType, f.contentWarning, f.expiration, sessionId))
         await(mutesRepository.create(sessionId.userId, followerId.sessionId))
 
         // result
@@ -238,7 +238,7 @@ class UsersRepositorySpec extends RepositorySpec {
         assert(result.birthday == s.birthday)
         assert(result.location == s.location)
         assert(result.web == s.web)
-        assert(result.feedCount == 1)
+        assert(result.tweetCount == 1)
         assert(result.followCount == 1)
         assert(result.followerCount == 1)
         assert(result.friendCount == 1)

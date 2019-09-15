@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import java.util.Locale
 
 import com.twitter.finagle.mysql.ServerError
-import io.github.cactacea.backend.core.domain.enums.{FeedPrivacyType, NotificationType}
+import io.github.cactacea.backend.core.domain.enums.{TweetPrivacyType, NotificationType}
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 import io.github.cactacea.backend.core.infrastructure.models.Notifications
 
@@ -59,40 +59,40 @@ class NotificationsDAOSpec extends DAOSpec {
 
     // TODO : Follower test
 
-    scenario("should create a feed notification if user is a friend") {
-      forOne(userGen, userGen, feedGen) { (s, a1, f) =>
+    scenario("should create a tweet notification if user is a friend") {
+      forOne(userGen, userGen, tweetGen) { (s, a1, f) =>
 
         // preparing
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId = await(usersDAO.create(a1.userName))
         await(friendsDAO.create(userId, sessionId))
         await(friendsDAO.create(sessionId.userId, userId.sessionId))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-        await(notificationsDAO.create(feedId, sessionId))
-        val link = deepLinkService.getFeed(feedId)
-        val contentId = feedId.value
+        val tweetId = await(tweetsDAO.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        await(notificationsDAO.create(tweetId, sessionId))
+        val link = deepLinkService.getTweet(tweetId)
+        val contentId = tweetId.value
 
         // result
         val result = await(db.run(query[Notifications].filter(_.by == lift(sessionId.userId)).filter(_.contentId == lift(contentId)))).headOption
         assert(result.isDefined)
         assert(result.exists(_.userId == userId))
         assert(result.exists(_.by == sessionId.userId))
-        assert(result.exists(_.notificationType == NotificationType.feed))
+        assert(result.exists(_.notificationType == NotificationType.tweet))
         assert(result.exists(_.url == link))
         assert(result.exists(_.unread))
       }
     }
 
-    scenario("should create a feed reply notification") {
-      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
+    scenario("should create a tweet reply notification") {
+      forOne(userGen, userGen, tweetGen, commentGen) { (s, a1, f, c) =>
 
         // preparing
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId = await(usersDAO.create(a1.userName))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, userId.sessionId))
-        val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
-        val notificationId = await(notificationsDAO.create(feedId, commentId, userId, false, sessionId))
-        val link = deepLinkService.getComment(feedId, commentId)
+        val tweetId = await(tweetsDAO.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, userId.sessionId))
+        val commentId = await(commentsDAO.create(tweetId, c.message, None, sessionId))
+        val notificationId = await(notificationsDAO.create(tweetId, commentId, userId, false, sessionId))
+        val link = deepLinkService.getComment(tweetId, commentId)
 
         // result
         val result = await(db.run(query[Notifications].filter(_.id == lift(notificationId)))).headOption
@@ -100,22 +100,22 @@ class NotificationsDAOSpec extends DAOSpec {
         assert(result.exists(_.id == notificationId))
         assert(result.exists(_.userId == userId))
         assert(result.exists(_.by == sessionId.userId))
-        assert(result.exists(_.notificationType == NotificationType.feedReply))
+        assert(result.exists(_.notificationType == NotificationType.tweetReply))
         assert(result.exists(_.url == link))
         assert(result.exists(_.unread))
       }
     }
 
     scenario("should create a comment reply notification") {
-      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
+      forOne(userGen, userGen, tweetGen, commentGen) { (s, a1, f, c) =>
 
         // preparing
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId = await(usersDAO.create(a1.userName))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, userId.sessionId))
-        val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
-        val notificationId = await(notificationsDAO.create(feedId, commentId, userId, true, sessionId))
-        val link = deepLinkService.getComment(feedId, commentId)
+        val tweetId = await(tweetsDAO.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, userId.sessionId))
+        val commentId = await(commentsDAO.create(tweetId, c.message, None, sessionId))
+        val notificationId = await(notificationsDAO.create(tweetId, commentId, userId, true, sessionId))
+        val link = deepLinkService.getComment(tweetId, commentId)
 
         // result
         val result = await(db.run(query[Notifications].filter(_.id == lift(notificationId)))).headOption

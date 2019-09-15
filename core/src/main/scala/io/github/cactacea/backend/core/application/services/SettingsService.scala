@@ -19,7 +19,7 @@ class SettingsService @Inject()(
     notificationSettingsRepository.find(sessionId)
   }
 
-  def updatePushNotificationSettings(feed: Boolean,
+  def updatePushNotificationSettings(tweet: Boolean,
                                      comment: Boolean,
                                      friendRequest: Boolean,
                                      message: Boolean,
@@ -29,7 +29,7 @@ class SettingsService @Inject()(
                                      sessionId: SessionId): Future[Unit] = {
     transaction {
       notificationSettingsRepository.update(
-        feed,
+        tweet,
         comment,
         friendRequest,
         message,

@@ -31,25 +31,25 @@ class NotificationsDAO @Inject()(db: DatabaseService,
     insert(userId, by, NotificationType.friendRequest, id.value, url)
   }
 
-  def create(feedId: FeedId, commentId: CommentId, userId: UserId, commentReply: Boolean, sessionId: SessionId): Future[NotificationId] = {
+  def create(tweetId: TweetId, commentId: CommentId, userId: UserId, commentReply: Boolean, sessionId: SessionId): Future[NotificationId] = {
     val by = sessionId.userId
     val notificationType = commentReply match {
       case true => NotificationType.commentReply
-      case false => NotificationType.feedReply
+      case false => NotificationType.tweetReply
     }
-    val url = deepLinkService.getComment(feedId, commentId)
+    val url = deepLinkService.getComment(tweetId, commentId)
     insert(userId, by, notificationType, commentId.value, url)
   }
 
-  def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+  def create(tweetId: TweetId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.userId
-    val url = deepLinkService.getFeed(feedId)
+    val url = deepLinkService.getTweet(tweetId)
     val q = quote {
       infix"""
         insert into notifications (user_id, `by`, content_id, notification_type, url, unread, notified_at)
-        select r.`by`, r.user_id, ${lift(feedId)}, ${lift(NotificationType.feed.value)}, ${lift(url)}, true as unread, CURRENT_TIMESTAMP
-        from relationships r, feeds f
-        where f.id = ${lift(feedId)}
+        select r.`by`, r.user_id, ${lift(tweetId)}, ${lift(NotificationType.tweet.value)}, ${lift(url)}, true as unread, CURRENT_TIMESTAMP
+        from relationships r, tweets f
+        where f.id = ${lift(tweetId)}
         and r.user_id = ${lift(by)}
         and (
            (r.follow = true and (f.privacy_type in (0, 1)))

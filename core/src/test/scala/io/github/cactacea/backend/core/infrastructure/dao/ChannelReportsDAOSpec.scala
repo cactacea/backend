@@ -10,7 +10,7 @@ class ChannelReportsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create a report") {
-      forOne(userGen, userGen, feedReportGen, feedReportGen) { (a1, a2, r1, r2) =>
+      forOne(userGen, userGen, tweetReportGen, tweetReportGen) { (a1, a2, r1, r2) =>
         val userId1 = await(usersDAO.create(a1.userName))
         val userId2 = await(usersDAO.create(a2.userName))
         val channelId = await(channelsDAO.create(userId1.sessionId))

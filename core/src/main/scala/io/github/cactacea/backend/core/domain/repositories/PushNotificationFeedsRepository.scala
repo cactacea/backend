@@ -3,22 +3,22 @@ package io.github.cactacea.backend.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.PushNotification
-import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationFeedsDAO
-import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, UserId}
+import io.github.cactacea.backend.core.infrastructure.dao.PushNotificationTweetsDAO
+import io.github.cactacea.backend.core.infrastructure.identifiers.{TweetId, UserId}
 
 @Singleton
-class PushNotificationFeedsRepository @Inject()(pushNotificationFeedsDAO: PushNotificationFeedsDAO) {
+class PushNotificationTweetsRepository @Inject()(pushNotificationTweetsDAO: PushNotificationTweetsDAO) {
 
-  def find(feedId: FeedId): Future[Option[Seq[PushNotification]]] = {
-    pushNotificationFeedsDAO.find(feedId)
+  def find(tweetId: TweetId): Future[Option[Seq[PushNotification]]] = {
+    pushNotificationTweetsDAO.find(tweetId)
   }
 
-  def update(feedId: FeedId): Future[Unit] = {
-    pushNotificationFeedsDAO.update(feedId, true)
+  def update(tweetId: TweetId): Future[Unit] = {
+    pushNotificationTweetsDAO.update(tweetId, true)
   }
 
-  def update(feedId: FeedId, userIds: Seq[UserId]): Future[Unit] = {
-    pushNotificationFeedsDAO.update(feedId, userIds, true)
+  def update(tweetId: TweetId, userIds: Seq[UserId]): Future[Unit] = {
+    pushNotificationTweetsDAO.update(tweetId, userIds, true)
   }
 
 }

@@ -4,12 +4,12 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.enums.FeedType
+import io.github.cactacea.backend.core.domain.enums.TweetType
 import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.channel.{GetSessionChannels, GetSessionInvitations}
-import io.github.cactacea.backend.server.models.requests.feed.{GetSessionFeeds, GetSessionLikedFeeds}
+import io.github.cactacea.backend.server.models.requests.tweet.{GetSessionTweets, GetSessionLikedTweets}
 import io.github.cactacea.backend.server.models.requests.session.{DeleteSignOut, _}
 import io.github.cactacea.backend.server.models.requests.user.GetUserName
 import io.github.cactacea.backend.server.models.responses.UserNameNotExists
@@ -25,8 +25,8 @@ class SessionController @Inject()(
                                    @Flag("cactacea.api.prefix") apiPrefix: String,
                                    usersService: UsersService,
                                    userChannelsService: UserChannelsService,
-                                   feedsService: FeedsService,
-                                   feedLikesService: FeedLikesService,
+                                   tweetsService: TweetsService,
+                                   tweetLikesService: TweetLikesService,
                                    followsService: FollowsService,
                                    followersService: FollowersService,
                                    friendsService: FriendsService,
@@ -136,32 +136,32 @@ class SessionController @Inject()(
       )
     }
 
-    scope(feeds).getWithDoc("/session/feeds") { o =>
-      o.summary("Find session feeds")
+    scope(tweets).getWithDoc("/session/tweets") { o =>
+      o.summary("Find session tweets")
         .tag(sessionTag)
-        .operationId("findSessionFeeds")
-        .request[GetSessionFeeds]
-        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
+        .operationId("findSessionTweets")
+        .request[GetSessionTweets]
+        .responseWith[Seq[Tweet]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
-    } { request: GetSessionFeeds =>
-      feedsService.find(
+    } { request: GetSessionTweets =>
+      tweetsService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),
-        request.feedPrivacyType,
-        request.feedType.getOrElse(FeedType.received),
+        request.tweetPrivacyType,
+        request.tweetType.getOrElse(TweetType.received),
         CactaceaContext.sessionId
       )
     }
 
-    scope(feeds).getWithDoc("/session/likes") { o =>
-      o.summary("Get feeds list session user set a like")
+    scope(tweets).getWithDoc("/session/likes") { o =>
+      o.summary("Get tweets list session user set a like")
         .tag(sessionTag)
         .operationId("findSessionLikes")
-        .request[GetSessionLikedFeeds]
-        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
-    } { request: GetSessionLikedFeeds =>
-      feedLikesService.find(
+        .request[GetSessionLikedTweets]
+        .responseWith[Seq[Tweet]](Status.Ok.code, successfulMessage)
+    } { request: GetSessionLikedTweets =>
+      tweetLikesService.find(
         request.since,
         request.offset.getOrElse(0),
         request.count.getOrElse(20),

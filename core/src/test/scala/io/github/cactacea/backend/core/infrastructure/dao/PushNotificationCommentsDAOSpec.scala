@@ -10,8 +10,8 @@ class PushNotificationCommentsDAOSpec extends DAOSpec {
 //    val sessionUser1 = createUser("CommentsDAOSpec3")
 //    val sessionUser2 = createUser("CommentsDAOSpec4")
 //
-//    val feedId = await(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionUser1.id.toSessionId))
-//    val commentId = await(commentsDAO.create(feedId, "1" * 100, sessionUser2.id.toSessionId))
+//    val tweetId = await(tweetsDAO.create("message", None, None, TweetPrivacyType.everyone, false, None, sessionUser1.id.toSessionId))
+//    val commentId = await(commentsDAO.create(tweetId, "1" * 100, sessionUser2.id.toSessionId))
 //
 //    val displayName = Some("Invitation Sender Name")
 //    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
@@ -36,9 +36,9 @@ class PushNotificationCommentsDAOSpec extends DAOSpec {
 //    val sessionUser1 = createUser("CommentsDAOSpec13")
 //    val sessionUser2 = createUser("CommentsDAOSpec14")
 //
-//    val feedId = await(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionUser1.id.toSessionId))
-//    val commentId1 = await(commentsDAO.create(feedId, "1" * 100, sessionUser2.id.toSessionId))
-//    val commentId2 = await(commentsDAO.create(feedId, "2" * 100, sessionUser1.id.toSessionId))
+//    val tweetId = await(tweetsDAO.create("message", None, None, TweetPrivacyType.everyone, false, None, sessionUser1.id.toSessionId))
+//    val commentId1 = await(commentsDAO.create(tweetId, "1" * 100, sessionUser2.id.toSessionId))
+//    val commentId2 = await(commentsDAO.create(tweetId, "2" * 100, sessionUser1.id.toSessionId))
 //
 //    val comment1 = await(db.run(query[Comments].filter(_.id == lift(commentId1))).map(_.head))
 //    val comment2 = await(db.run(query[Comments].filter(_.id == lift(commentId2))).map(_.head))
@@ -57,9 +57,9 @@ class PushNotificationCommentsDAOSpec extends DAOSpec {
 //    val sessionUser1 = createUser("CommentsDAOSpec15")
 //    val sessionUser2 = createUser("CommentsDAOSpec16")
 //
-//    val feedId = await(feedsDAO.create("message", None, None, FeedPrivacyType.everyone, false, None, sessionUser1.id.toSessionId))
-//    val commentId1 = await(commentsDAO.create(feedId, "1" * 100, sessionUser2.id.toSessionId))
-//    val commentId2 = await(commentsDAO.create(feedId, "2" * 100, sessionUser1.id.toSessionId))
+//    val tweetId = await(tweetsDAO.create("message", None, None, TweetPrivacyType.everyone, false, None, sessionUser1.id.toSessionId))
+//    val commentId1 = await(commentsDAO.create(tweetId, "1" * 100, sessionUser2.id.toSessionId))
+//    val commentId2 = await(commentsDAO.create(tweetId, "2" * 100, sessionUser1.id.toSessionId))
 //
 //    await(pushNotificationCommentsDAO.update(commentId1))
 //    await(pushNotificationCommentsDAO.update(commentId2))

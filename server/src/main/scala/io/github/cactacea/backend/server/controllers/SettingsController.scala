@@ -45,7 +45,7 @@ class SettingsController @Inject()(
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutNotificationSetting =>
       settingsService.updatePushNotificationSettings(
-        request.feed,
+        request.tweet,
         request.comment,
         request.friendRequest,
         request.message,

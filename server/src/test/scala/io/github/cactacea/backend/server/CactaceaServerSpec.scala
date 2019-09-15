@@ -35,8 +35,8 @@ class CactaceaServerSpec extends FeatureTest
   with BlocksControllerSpec
   with CommentLikesControllerSpec
   with CommentsControllerSpec
-  with FeedLikesControllerSpec
-  with FeedsControllerSpec
+  with TweetLikesControllerSpec
+  with TweetsControllerSpec
   with FollowsControllerSpec
   with FriendsControllerSpec
   with ChannelsControllerSpec

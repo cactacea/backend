@@ -1,7 +1,6 @@
 package io.github.cactacea.backend.core.domain.repositories
 
-
-import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.domain.enums.TweetPrivacyType
 import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.CommentId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -13,9 +12,9 @@ class CommentLikesRepositorySpec extends RepositorySpec {
   feature("create") {
     scenario("should create a comment liked") {
 
-      forOne(userGen, userGen, userGen, userGen, feedGen, commentGen) { (s, a1, a2, a3, f, c) =>
+      forOne(userGen, userGen, userGen, userGen, tweetGen, commentGen) { (s, a1, a2, a3, f, c) =>
         // preparing
-        //  session user creates a feed
+        //  session user creates a tweet
         //  session user create a comment
         //  user1 like a comment
         //  user2 like a comment
@@ -28,8 +27,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
         val userId3 = await(createUser(a3.userName)).id
         await(blocksRepository.create(userId2, userId1.sessionId))
         await(blocksRepository.create(userId1, userId2.sessionId))
-        val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+        val tweetId = await(tweetsRepository.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(tweetId, c.message, None, sessionId))
         await(commentLikesRepository.create(commentId, userId1.sessionId))
         await(commentLikesRepository.create(commentId, userId2.sessionId))
         await(commentLikesRepository.create(commentId, userId3.sessionId))
@@ -50,14 +49,14 @@ class CommentLikesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return exception if a comment already liked") {
-      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
+      forOne(userGen, userGen, tweetGen, commentGen) { (s, a1, f, c) =>
         // preparing
-        //  session user creates a feed
+        //  session user creates a tweet
         //  session user create a comment
         val sessionId = await(createUser(s.userName)).id.sessionId
         val userId1 = await(createUser(a1.userName)).id
-        val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+        val tweetId = await(tweetsRepository.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(tweetId, c.message, None, sessionId))
 
         // exception occurs
         await(commentLikesRepository.create(commentId, userId1.sessionId))
@@ -83,10 +82,10 @@ class CommentLikesRepositorySpec extends RepositorySpec {
 
     scenario("should delete a comment liked") {
 
-      forOne(userGen, userGen, userGen, userGen, feedGen, commentGen) {
+      forOne(userGen, userGen, userGen, userGen, tweetGen, commentGen) {
         (s, a1, a2, a3, f, c) =>
           // preparing
-          //  session user creates a feed
+          //  session user creates a tweet
           //  session user create a comment
           //  user1 like a comment
           //  user2 like a comment
@@ -95,8 +94,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
           val userId1 = await(createUser(a1.userName)).id
           val userId2 = await(createUser(a2.userName)).id
           val userId3 = await(createUser(a3.userName)).id
-          val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-          val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+          val tweetId = await(tweetsRepository.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+          val commentId = await(commentsRepository.create(tweetId, c.message, None, sessionId))
           await(commentLikesRepository.create(commentId, userId1.sessionId))
           await(commentLikesRepository.create(commentId, userId2.sessionId))
           await(commentLikesRepository.create(commentId, userId3.sessionId))
@@ -111,14 +110,14 @@ class CommentLikesRepositorySpec extends RepositorySpec {
     }
 
     scenario("should return exception if a comment not liked") {
-      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
+      forOne(userGen, userGen, tweetGen, commentGen) { (s, a1, f, c) =>
         // preparing
-        //  session user creates a feed
+        //  session user creates a tweet
         //  session user create a comment
         val sessionId = await(createUser(s.userName)).id.sessionId
         val userId1 = await(createUser(a1.userName)).id
-        val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-        val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+        val tweetId = await(tweetsRepository.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsRepository.create(tweetId, c.message, None, sessionId))
 
         // exception occurs
         assert(intercept[CactaceaException] {
@@ -143,11 +142,11 @@ class CommentLikesRepositorySpec extends RepositorySpec {
   feature("findUsers") {
 
     scenario("should return user list who liked a comment") {
-      forOne(userGen, userGen, userGen, userGen, userGen, userGen, feedGen, commentGen) {
+      forOne(userGen, userGen, userGen, userGen, userGen, userGen, tweetGen, commentGen) {
         (s, a1, a2, a3, a4, a5, f, c) =>
 
           // preparing
-          //  session user creates a feed
+          //  session user creates a tweet
           //  session user create a comment
           //  user1 like a comment
           //  user2 like a comment
@@ -165,8 +164,8 @@ class CommentLikesRepositorySpec extends RepositorySpec {
           await(blocksRepository.create(userId4, userId5.sessionId))
           await(blocksRepository.create(userId5, userId4.sessionId))
 
-          val feedId = await(feedsRepository.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-          val commentId = await(commentsRepository.create(feedId, c.message, None, sessionId))
+          val tweetId = await(tweetsRepository.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+          val commentId = await(commentsRepository.create(tweetId, c.message, None, sessionId))
           await(commentLikesRepository.create(commentId, userId1.sessionId))
           await(commentLikesRepository.create(commentId, userId2.sessionId))
           await(commentLikesRepository.create(commentId, userId3.sessionId))

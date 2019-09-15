@@ -29,10 +29,10 @@ class CommentsValidator @Inject()(commentsDAO: CommentsDAO) {
     })
   }
 
-  def mustExist(feedId: FeedId, commentId: Option[CommentId], sessionId: SessionId): Future[Unit] = {
+  def mustExist(tweetId: TweetId, commentId: Option[CommentId], sessionId: SessionId): Future[Unit] = {
     commentId match {
       case Some(id) =>
-        commentsDAO.exists(feedId, id, sessionId).flatMap(_ match {
+        commentsDAO.exists(tweetId, id, sessionId).flatMap(_ match {
           case true =>
             Future.Unit
           case false =>

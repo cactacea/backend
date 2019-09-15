@@ -32,7 +32,7 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
         .operationId("findComments")
         .request[GetComments]
         .responseWith[Seq[Comment]](Status.Ok.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(TweetNotFound))))
     } { request: GetComments =>
       commentsService.find(
         request.id,
@@ -44,12 +44,12 @@ class CommentsController @Inject()(@Flag("cactacea.api.prefix") apiPrefix: Strin
     }
 
     scope(comments).postWithDoc("/comments") { o =>
-      o.summary("Create a comment on a feed")
+      o.summary("Create a comment on a tweet")
         .tag(commentsTag)
         .operationId("postComment")
         .request[PostComment]
         .responseWith[CommentCreated](Status.Created.code, successfulMessage)
-        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(FeedNotFound))))
+        .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(TweetNotFound))))
     } { request: PostComment =>
       commentsService.create(
         request.id,

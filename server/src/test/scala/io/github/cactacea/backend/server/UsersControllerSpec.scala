@@ -12,7 +12,7 @@ trait UsersControllerSpec extends FeatureTest {
   test("GET /users/:id/status") (pending)
   test("PUT /users/:id/display_name") (pending)
   test("GET /user/:userName") (pending)
-  test("GET /users/:id/feeds") (pending)
+  test("GET /users/:id/tweets") (pending)
   test("GET /users/:id/likes") (pending)
   test("GET /users/:id/followers") (pending)
   test("GET /users/:id/friends") (pending)

@@ -12,7 +12,7 @@ case class Users(
                   followCount: Long,
                   followerCount: Long,
                   friendCount: Long,
-                  feedCount: Long,
+                  tweetCount: Long,
                   web: Option[String],
                   birthday: Option[Long],
                   location: Option[String],

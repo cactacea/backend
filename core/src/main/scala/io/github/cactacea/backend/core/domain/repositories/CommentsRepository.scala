@@ -5,22 +5,22 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.infrastructure.dao.{CommentReportsDAO, CommentsDAO, NotificationsDAO}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
-import io.github.cactacea.backend.core.infrastructure.validators.{CommentsValidator, FeedsValidator}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, TweetId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.validators.{CommentsValidator, TweetsValidator}
 
 @Singleton
 class CommentsRepository @Inject()(
                                     commentsDAO: CommentsDAO,
                                     commentReportsDAO: CommentReportsDAO,
                                     commentsValidator: CommentsValidator,
-                                    feedsValidator: FeedsValidator,
+                                    tweetsValidator: TweetsValidator,
                                     notificationsDAO: NotificationsDAO
                                   ) {
 
-  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
+  def find(tweetId: TweetId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
     for {
-      _ <- feedsValidator.mustExist(feedId, sessionId)
-      r <- commentsDAO.find(feedId, since, offset, count, sessionId)
+      _ <- tweetsValidator.mustExist(tweetId, sessionId)
+      r <- commentsDAO.find(tweetId, since, offset, count, sessionId)
     } yield (r)
   }
 
@@ -28,20 +28,20 @@ class CommentsRepository @Inject()(
     commentsValidator.mustFind(commentId, sessionId)
   }
 
-  def create(feedId: FeedId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
+  def create(tweetId: TweetId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
     for {
-      _ <- feedsValidator.mustExist(feedId, sessionId)
-      a <- feedsValidator.mustFindOwner(feedId, replyId)
-      _ <- commentsValidator.mustExist(feedId, replyId, sessionId)
-      i <- commentsDAO.create(feedId, message, replyId, sessionId)
-      _ <- notificationsDAO.create(feedId, i, a, replyId.isDefined, sessionId)
+      _ <- tweetsValidator.mustExist(tweetId, sessionId)
+      a <- tweetsValidator.mustFindOwner(tweetId, replyId)
+      _ <- commentsValidator.mustExist(tweetId, replyId, sessionId)
+      i <- commentsDAO.create(tweetId, message, replyId, sessionId)
+      _ <- notificationsDAO.create(tweetId, i, a, replyId.isDefined, sessionId)
     } yield (i)
   }
 
   def delete(commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
       c <- commentsValidator.mustFind(commentId, sessionId)
-      _ <- commentsDAO.delete(c.feedId, commentId, sessionId)
+      _ <- commentsDAO.delete(c.tweetId, commentId, sessionId)
     } yield (())
   }
 

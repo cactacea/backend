@@ -17,7 +17,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
     val q = quote {
       query[PushNotificationSettings].insert(
         _.userId           -> lift(userId),
-        _.feed                -> lift(true),
+        _.tweet                -> lift(true),
         _.comment             -> lift(true),
         _.friendRequest       -> lift(true),
         _.message             -> lift(true),
@@ -29,7 +29,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  def update(feed: Boolean,
+  def update(tweet: Boolean,
              comment:Boolean,
              friendRequest: Boolean,
              message: Boolean,
@@ -43,7 +43,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
       query[PushNotificationSettings]
         .filter(_.userId == lift(userId))
         .update(
-          _.feed            -> lift(feed),
+          _.tweet            -> lift(tweet),
           _.comment         -> lift(comment),
           _.friendRequest   -> lift(friendRequest),
           _.message         -> lift(message),

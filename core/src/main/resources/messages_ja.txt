@@ -1,8 +1,8 @@
 operator = 運営からのお知らせがあります。
 channel_invitation = {0}さんからグループへ招待が届きました。
 friend_request = {0}さんからフレンド申請が届きました。
-feed =  {0}さんがフィードを投稿しました。
-feed_reply =  {0}さんがコメントを残しました。
+tweet =  {0}さんがフィードを投稿しました。
+tweet_reply =  {0}さんがコメントを残しました。
 comment_reply =  {0}さんがあなたのコメントに返信を残しました。
 
 message = {0} : {1}

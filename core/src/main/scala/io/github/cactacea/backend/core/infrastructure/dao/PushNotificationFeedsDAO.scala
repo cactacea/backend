@@ -6,23 +6,23 @@ import io.github.cactacea.backend.core.application.components.interfaces.DeepLin
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.domain.enums.PushNotificationType
 import io.github.cactacea.backend.core.domain.models.{Destination, PushNotification}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, FeedId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, TweetId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class PushNotificationFeedsDAO @Inject()(
+class PushNotificationTweetsDAO @Inject()(
                                       db: DatabaseService,
                                       deepLinkService: DeepLinkService) {
 
   import db._
 
-  def find(id: FeedId): Future[Option[Seq[PushNotification]]] = {
-    findFeed(id).flatMap(_ match {
+  def find(id: TweetId): Future[Option[Seq[PushNotification]]] = {
+    findTweet(id).flatMap(_ match {
       case Some(f) =>
         findDestinations(id).map({ d =>
-          val url = deepLinkService.getFeed(id)
+          val url = deepLinkService.getTweet(id)
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
-            PushNotification(userName, None, f.postedAt, url, destinations, PushNotificationType.feed)
+            PushNotification(userName, None, f.postedAt, url, destinations, PushNotificationType.tweet)
           }).toSeq
           Some(r)
         })
@@ -31,9 +31,9 @@ class PushNotificationFeedsDAO @Inject()(
     })
   }
 
-  private def findFeed(id: FeedId): Future[Option[Feeds]] = {
+  private def findTweet(id: TweetId): Future[Option[Tweets]] = {
     val q = quote {
-      query[Feeds]
+      query[Tweets]
         .filter(_.id == lift(id))
         .filter(_.notified == false)
     }
@@ -41,11 +41,11 @@ class PushNotificationFeedsDAO @Inject()(
   }
 
 
-  private def findDestinations(id: FeedId): Future[Seq[Destination]] = {
+  private def findDestinations(id: TweetId): Future[Seq[Destination]] = {
     val q = quote {
       for {
-        af <- query[UserFeeds]
-          .filter(_.feedId == lift(id))
+        af <- query[UserTweets]
+          .filter(_.tweetId == lift(id))
           .filter(_.notified == false)
         a <- query[Users]
           .join(_.id == af.by)
@@ -54,7 +54,7 @@ class PushNotificationFeedsDAO @Inject()(
           .filter(_.pushToken.isDefined)
         _ <- query[PushNotificationSettings]
           .join(_.userId == af.userId)
-          .filter(_.feed == true)
+          .filter(_.tweet == true)
         r <- query[Relationships]
           .leftJoin(r => r.userId == af.by && r.by == af.userId)
 
@@ -69,20 +69,20 @@ class PushNotificationFeedsDAO @Inject()(
     run(q)
   }
 
-  def update(feedId: FeedId, userIds: Seq[UserId], notified: Boolean = true): Future[Unit] = {
+  def update(tweetId: TweetId, userIds: Seq[UserId], notified: Boolean = true): Future[Unit] = {
     val q = quote {
-      query[UserFeeds]
-        .filter(_.feedId == lift(feedId))
+      query[UserTweets]
+        .filter(_.tweetId == lift(tweetId))
         .filter(m => liftQuery(userIds).contains(m.userId))
         .update(_.notified -> lift(notified))
     }
     run(q).map(_ => ())
   }
 
-  def update(feedId: FeedId, notified: Boolean): Future[Unit] = {
+  def update(tweetId: TweetId, notified: Boolean): Future[Unit] = {
     val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
+      query[Tweets]
+        .filter(_.id == lift(tweetId))
         .update(_.notified -> lift(notified))
     }
     run(q).map(_ => ())

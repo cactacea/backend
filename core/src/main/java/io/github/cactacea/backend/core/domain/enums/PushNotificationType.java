@@ -6,8 +6,8 @@ public enum PushNotificationType {
     image((byte)2),
     invitation((byte)3),
     request((byte)4),
-    feed((byte)5),
-    feedReply((byte)6),
+    tweet((byte)5),
+    tweetReply((byte)6),
     commentReply((byte)7);
 
     public byte value;

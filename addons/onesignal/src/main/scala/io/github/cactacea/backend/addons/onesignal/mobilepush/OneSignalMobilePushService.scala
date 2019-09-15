@@ -15,7 +15,7 @@ class OneSignalMobilePushService @Inject()(
                                             db: DatabaseService,
                                             client: OneSignalClient,
                                             messageService: MessageService,
-                                            pushNotificationFeedsRepository: PushNotificationFeedsRepository,
+                                            pushNotificationTweetsRepository: PushNotificationTweetsRepository,
                                             pushNotificationCommentsRepository: PushNotificationCommentsRepository,
                                             pushNotificationMessagesRepository: PushNotificationMessagesRepository,
                                             pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
@@ -25,16 +25,16 @@ class OneSignalMobilePushService @Inject()(
 
   val numberOfChannels = 100
 
-  def sendFeed(id: FeedId): Future[Unit] = {
-    pushNotificationFeedsRepository.find(id).flatMap(_ match {
+  def sendTweet(id: TweetId): Future[Unit] = {
+    pushNotificationTweetsRepository.find(id).flatMap(_ match {
       case Some(notifications) =>
         val list = createContentSeq(notifications)
         sendContentSeq(list).map({ result =>
           Future.traverseSequentially(result) { ids =>
-            pushNotificationFeedsRepository.update(id, ids)
+            pushNotificationTweetsRepository.update(id, ids)
           }.map(_ =>
             if (result.size == list.size) {
-              pushNotificationFeedsRepository.update(id)
+              pushNotificationTweetsRepository.update(id)
             } else {
               Future.Done
             }
@@ -42,7 +42,7 @@ class OneSignalMobilePushService @Inject()(
         })
       case None =>
         db.transaction {
-          pushNotificationFeedsRepository.update(id)
+          pushNotificationTweetsRepository.update(id)
         }
     })
   }

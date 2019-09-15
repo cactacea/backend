@@ -13,20 +13,20 @@ class CommentsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(feedId: FeedId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
+  def create(tweetId: TweetId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
     for {
-      i <- createComments(feedId, message, replyId, sessionId)
-      _ <- updateCommentCount(feedId, 1L)
+      i <- createComments(tweetId, message, replyId, sessionId)
+      _ <- updateCommentCount(tweetId, 1L)
     } yield (i)
   }
 
-  private def createComments(feedId: FeedId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
+  private def createComments(tweetId: TweetId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
     val by = sessionId.userId
     val postedAt = System.currentTimeMillis()
     val q = quote {
       query[Comments]
         .insert(
-          _.feedId            -> lift(feedId),
+          _.tweetId            -> lift(tweetId),
           _.replyId           -> lift(replyId),
           _.by                -> lift(by),
           _.message           -> lift(message),
@@ -40,9 +40,9 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def delete(feedId: FeedId, commentId: CommentId, sessionId: SessionId): Future[Unit] = {
+  def delete(tweetId: TweetId, commentId: CommentId, sessionId: SessionId): Future[Unit] = {
     for {
-      _ <- updateCommentCount(feedId, -1L)
+      _ <- updateCommentCount(tweetId, -1L)
       _ <- deleteComments(commentId, sessionId)
     } yield (())
   }
@@ -69,12 +69,12 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     run(q)
   }
 
-  def exists(feedId: FeedId, commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
+  def exists(tweetId: TweetId, commentId: CommentId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.userId
     val q = quote {
       query[Comments]
         .filter(_.id == lift(commentId))
-        .filter(_.feedId == lift(feedId))
+        .filter(_.tweetId == lift(tweetId))
         .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).isEmpty)
         .nonEmpty
     }
@@ -117,12 +117,12 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     }).headOption)
   }
 
-  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
+  def find(tweetId: TweetId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
     val by = sessionId.userId
     val q = quote {
       (for {
         (c, b) <- query[Comments]
-          .filter(c => c.feedId == lift(feedId))
+          .filter(c => c.tweetId == lift(tweetId))
           .filter(c => lift(since).forall(c.id  < _))
           .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).isEmpty)
             .map(c =>
@@ -148,10 +148,10 @@ class CommentsDAO @Inject()(db: DatabaseService) {
     }))
   }
 
-  private def updateCommentCount(feedId: FeedId, count: Long): Future[Unit] = {
+  private def updateCommentCount(tweetId: TweetId, count: Long): Future[Unit] = {
     val q = quote {
-      query[Feeds]
-        .filter(_.id == lift(feedId))
+      query[Tweets]
+        .filter(_.id == lift(tweetId))
         .update(
           a => a.commentCount -> (a.commentCount + lift(count))
         )

@@ -4,7 +4,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 
 case class PushNotificationSettings(
                                      userId: UserId,
-                                     feed: Boolean,
+                                     tweet: Boolean,
                                      comment: Boolean,
                                      friendRequest: Boolean,
                                      message: Boolean,

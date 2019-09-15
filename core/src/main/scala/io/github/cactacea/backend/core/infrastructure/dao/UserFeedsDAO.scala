@@ -3,24 +3,24 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
-import io.github.cactacea.backend.core.domain.models.Feed
-import io.github.cactacea.backend.core.infrastructure.identifiers.{FeedId, SessionId}
+import io.github.cactacea.backend.core.domain.enums.{ TweetPrivacyType}
+import io.github.cactacea.backend.core.domain.models.Tweet
+import io.github.cactacea.backend.core.infrastructure.identifiers.{SessionId, TweetId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class UserFeedsDAO @Inject()(db: DatabaseService) {
+class UserTweetsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
-  def create(feedId: FeedId, sessionId: SessionId): Future[Unit] = {
+  def create(tweetId: TweetId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.userId
     val q = quote {
       infix"""
-        insert into user_feeds (user_id, feed_id, `by`, notified, posted_at)
-        select r.`by`, ${lift(feedId)}, r.user_id, false as notified, CURRENT_TIMESTAMP
-        from relationships r, feeds f
-        where f.id = ${lift(feedId)}
+        insert into user_tweets (user_id, tweet_id, `by`, notified, posted_at)
+        select r.`by`, ${lift(tweetId)}, r.user_id, false as notified, CURRENT_TIMESTAMP
+        from relationships r, tweets f
+        where f.id = ${lift(tweetId)}
         and r.user_id = ${lift(by)}
         and (
            (r.follow = true and (f.privacy_type in (0, 1)))
@@ -32,41 +32,41 @@ class UserFeedsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  def delete(feedId: FeedId): Future[Unit] = {
+  def delete(tweetId: TweetId): Future[Unit] = {
     val q = quote {
-      query[UserFeeds]
-        .filter(_.feedId == lift(feedId))
+      query[UserTweets]
+        .filter(_.tweetId == lift(tweetId))
     }
     run(q).map(_ => ())
   }
 
-  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[FeedPrivacyType], sessionId: SessionId): Future[Seq[Feed]] = { // scalastyle:ignore
+  def find(since: Option[Long], offset: Int, count: Int, privacyType: Option[TweetPrivacyType], sessionId: SessionId): Future[Seq[Tweet]] = { // scalastyle:ignore
     val e = System.currentTimeMillis()
     val by = sessionId.userId
     val q = quote {
       (for {
-        af <- query[UserFeeds]
+        af <- query[UserTweets]
           .filter(af => af.userId == lift(by))
-          .filter(af => lift(since).forall(af.feedId < _ ))
-        (f, flb, fcb) <- query[Feeds]
-          .join(_.id == af.feedId)
+          .filter(af => lift(since).forall(af.tweetId < _ ))
+        (f, flb, fcb) <- query[Tweets]
+          .join(_.id == af.tweetId)
           .filter(f => f.expiration.forall(_ > lift(e)))
           .filter(f => lift(privacyType).forall(_ == f.privacyType))
           .map(f =>
             (f,
-              query[FeedLikes]
-                .filter(_.feedId == f.id)
+              query[TweetLikes]
+                .filter(_.tweetId == f.id)
                 .filter(fl =>
                   query[Blocks].filter(b => b.userId == lift(by) && b.by == fl.by).nonEmpty
                 ).size,
               query[Comments]
-                .filter(_.feedId == f.id)
+                .filter(_.tweetId == f.id)
                 .filter(c =>
                   query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty
                 ).size
             )
           )
-        l <- query[FeedLikes].leftJoin(fl => fl.feedId == f.id && fl.by == lift(by))
+        l <- query[TweetLikes].leftJoin(fl => fl.tweetId == f.id && fl.by == lift(by))
         i1 <- query[Mediums].leftJoin(_.id == f.mediumId1)
         i2 <- query[Mediums].leftJoin(_.id == f.mediumId2)
         i3 <- query[Mediums].leftJoin(_.id == f.mediumId3)
@@ -78,13 +78,13 @@ class UserFeedsDAO @Inject()(db: DatabaseService) {
         r <- query[Relationships]
             .leftJoin(r => r.userId == f.by && r.by == lift(by))
       } yield (af, f, l, i1, i2, i3, i4, i5, a, r, flb, fcb))
-        .sortBy({ case (af, _, _, _, _, _, _, _, _, _, _, _) => af.feedId })(Ord.desc)
+        .sortBy({ case (af, _, _, _, _, _, _, _, _, _, _, _) => af.tweetId })(Ord.desc)
         .drop(lift(offset))
         .take(lift(count))
     }
     run(q).map(_.map({ case (af, f, l, i1, i2, i3, i4, i5, a, r, flb, fcb) =>
       val f2 = f.copy(commentCount = f.commentCount - fcb, likeCount = f.likeCount - flb)
-      Feed(f2, l, Seq(i1, i2, i3, i4, i5).flatten, a, r, af.feedId.value)
+      Tweet(f2, l, Seq(i1, i2, i3, i4, i5).flatten, a, r, af.tweetId.value)
     }))
   }
 

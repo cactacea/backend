@@ -15,20 +15,20 @@ class DefaultDeepLinkService @Inject()(@Flag("scheme") scheme: String) extends D
     s"${scheme}://users/:id"
   }
 
-  def getFeeds(): String = {
-    s"${scheme}://feeds"
+  def getTweets(): String = {
+    s"${scheme}://tweets"
   }
 
-  def getFeed(id: FeedId): String = {
-    s"${scheme}://feeds/${id}"
+  def getTweet(id: TweetId): String = {
+    s"${scheme}://tweets/${id}"
   }
 
-  def getComments(id: FeedId): String = {
-    s"${scheme}://feeds/${id}/comments"
+  def getComments(id: TweetId): String = {
+    s"${scheme}://tweets/${id}/comments"
   }
 
-  def getComment(feedId: FeedId, commentId: CommentId): String = {
-    s"${scheme}://feeds/${feedId}/comments/${commentId}"
+  def getComment(tweetId: TweetId, commentId: CommentId): String = {
+    s"${scheme}://tweets/${tweetId}/comments/${commentId}"
   }
 
   def getRequests(): String = {

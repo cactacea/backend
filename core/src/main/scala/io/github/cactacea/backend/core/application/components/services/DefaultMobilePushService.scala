@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 class DefaultMobilePushService @Inject()(
-                                          pushNotificationFeedsRepository: PushNotificationFeedsRepository,
+                                          pushNotificationTweetsRepository: PushNotificationTweetsRepository,
                                           pushNotificationCommentsRepository: PushNotificationCommentsRepository,
                                           pushNotificationMessagesRepository: PushNotificationMessagesRepository,
                                           pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
@@ -15,14 +15,14 @@ class DefaultMobilePushService @Inject()(
 
                                         ) extends MobilePushService {
 
-  def sendFeed(id: FeedId): Future[Unit] = {
-    pushNotificationFeedsRepository.find(id).flatMap(_ match {
+  def sendTweet(id: TweetId): Future[Unit] = {
+    pushNotificationTweetsRepository.find(id).flatMap(_ match {
       case Some(l) =>
         println("----- Push Notification ----") // scalastyle:ignore
         println(l) // scalastyle:ignore
         for {
-          _ <- pushNotificationFeedsRepository.update(id)
-          _ <- pushNotificationFeedsRepository.update(id, l.map(_.destinations.map(_.userId)).flatten)
+          _ <- pushNotificationTweetsRepository.update(id)
+          _ <- pushNotificationTweetsRepository.update(id, l.map(_.destinations.map(_.userId)).flatten)
         } yield (())
 
       case None =>

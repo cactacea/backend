@@ -75,8 +75,8 @@ object CactaceaErrors {
   final val m40031 = "User not channelJoined."
   final val m40032 = "Comment already liked."
   final val m40033 = "Comment not liked."
-  final val m40034 = "Feed already liked."
-  final val m40035 = "Feed not liked."
+  final val m40034 = "Tweet already liked."
+  final val m40035 = "Tweet not liked."
   final val m40036 = "Channel already hidden."
   final val m40037 = "Channel not hidden."
   final val m40038 = "Token already expired."
@@ -232,12 +232,12 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40033)  override val message: String = m40033
   }
 
-  final object FeedAlreadyLiked extends BadRequest {
+  final object TweetAlreadyLiked extends BadRequest {
     @ApiModelProperty(example = c40034)  override val code: Int =       c40034.toInt
     @ApiModelProperty(example = m40034)  override val message: String = m40034
   }
 
-  final object FeedNotLiked extends BadRequest {
+  final object TweetNotLiked extends BadRequest {
     @ApiModelProperty(example = c40035)  override val code: Int =       c40035.toInt
     @ApiModelProperty(example = m40035)  override val message: String = m40035
   }
@@ -288,7 +288,7 @@ object CactaceaErrors {
   final val m40400 = "User not found."
   final val m40401 = "Comment not found."
   final val m40402 = "Medium not found."
-  final val m40403 = "Feed not found."
+  final val m40403 = "Tweet not found."
   final val m40404 = "Request not found."
   final val m40405 = "Channel not found."
   final val m40406 = "Invitation not found."
@@ -318,7 +318,7 @@ object CactaceaErrors {
     @ApiModelProperty(example = m40402)  override val message: String = m40402
   }
 
-  final object FeedNotFound extends NotFound {
+  final object TweetNotFound extends NotFound {
     @ApiModelProperty(example = c40403)  override val code: Int =       c40403.toInt
     @ApiModelProperty(example = m40403)  override val message: String = m40403
   }

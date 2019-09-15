@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.domain.models
 import io.github.cactacea.backend.core.infrastructure.models.PushNotificationSettings
 
 case class PushNotificationSetting(
-                                    feed: Boolean,
+                                    tweet: Boolean,
                                     comment: Boolean,
                                     friendRequest: Boolean,
                                     message: Boolean,
@@ -16,7 +16,7 @@ object PushNotificationSetting {
 
   def apply(s: PushNotificationSettings): PushNotificationSetting = {
     PushNotificationSetting(
-      feed            = s.feed,
+      tweet            = s.tweet,
       comment         = s.comment,
       friendRequest   = s.friendRequest,
       message         = s.message,
