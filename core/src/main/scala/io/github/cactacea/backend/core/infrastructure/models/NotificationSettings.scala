@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.models
 
 import io.github.cactacea.backend.core.infrastructure.identifiers.UserId
 
-case class PushNotificationSettings(
+case class NotificationSettings(
                                      userId: UserId,
                                      tweet: Boolean,
                                      comment: Boolean,

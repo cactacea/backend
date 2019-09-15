@@ -4,26 +4,26 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.PushNotificationType
-import io.github.cactacea.backend.core.domain.models.{Destination, PushNotification}
+import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.domain.models.{Destination, Notification}
 import io.github.cactacea.backend.core.infrastructure.identifiers.InvitationId
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class PushNotificationInvitationsDAO @Inject()(
+class NotificationInvitationsDAO @Inject()(
                                                      db: DatabaseService,
                                                      deepLinkService: DeepLinkService) {
 
   import db._
 
-  def find(id: InvitationId): Future[Option[Seq[PushNotification]]] = {
+  def find(id: InvitationId): Future[Option[Seq[Notification]]] = {
     findInvitation(id).flatMap(_.map(f => f) match {
       case Some(f) =>
         findDestinations(id).map({ d =>
-          val pt = PushNotificationType.invitation
+          val pt = NotificationType.invitation
           val url = deepLinkService.getInvitation(id)
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
-            PushNotification(userName, None, f.invitedAt, url, destinations, pt)
+            Notification(userName, None, f.invitedAt, url, destinations, pt)
           }).toSeq
           Option(r)
         })
@@ -52,7 +52,7 @@ class PushNotificationInvitationsDAO @Inject()(
         d <- query[Devices]
           .join(_.userId == g.userId)
           .filter(_.pushToken.isDefined)
-        _ <- query[PushNotificationSettings]
+        _ <- query[NotificationSettings]
           .join(_.userId == g.userId)
           .filter(_.invitation == lift(true))
         r <- query[Relationships]

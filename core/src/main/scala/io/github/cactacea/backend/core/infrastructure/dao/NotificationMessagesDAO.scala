@@ -4,26 +4,26 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.PushNotificationType
-import io.github.cactacea.backend.core.domain.models.{Destination, PushNotification}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, MessageId}
+import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.domain.models.{Destination, Notification}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{MessageId, UserId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class PushNotificationMessagesDAO @Inject()(
+class NotificationMessagesDAO @Inject()(
                                              db: DatabaseService,
                                              deepLinkService: DeepLinkService) {
 
   import db._
 
-  def find(id: MessageId): Future[Option[Seq[PushNotification]]] = {
+  def find(id: MessageId): Future[Option[Seq[Notification]]] = {
     findMessage(id).flatMap(_ match {
       case Some(m) =>
         findDestinations(id).map({ d =>
-          val pt = PushNotificationType.invitation
+          val pt = NotificationType.invitation
           val url = deepLinkService.getMessages(m.channelId, m.id)
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
-            PushNotification(userName, m.message, m.postedAt, url, destinations, pt)
+            Notification(userName, m.message, m.postedAt, url, destinations, pt)
           }).toSeq
           Some(r)
         })
@@ -53,7 +53,7 @@ class PushNotificationMessagesDAO @Inject()(
         d <- query[Devices]
           .join(_.userId == am.userId)
           .filter(_.pushToken.isDefined)
-        _ <- query[PushNotificationSettings]
+        _ <- query[NotificationSettings]
           .join(_.userId == am.userId)
           .filter(p => ((p.message == true && g.directMessage == true) || (p.channelMessage == true && g.directMessage == false)))
         r <- query[Relationships]

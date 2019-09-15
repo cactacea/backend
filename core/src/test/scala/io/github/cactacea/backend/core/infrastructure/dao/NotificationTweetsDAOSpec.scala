@@ -2,17 +2,17 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
-class PushNotificationTweetsDAOSpec extends DAOSpec {
+class NotificationTweetsDAOSpec extends DAOSpec {
 
   feature("find") (pending)
 //  {
 //
-//    val sessionUser1 = createUser("PushNotificationsDAOSPec5")
-//    val sessionUser2 = createUser("PushNotificationsDAOSPec6")
-//    val sessionUser3 = createUser("PushNotificationsDAOSPec7")
-//    val sessionUser4 = createUser("PushNotificationsDAOSPec8")
-//    val sessionUser5 = createUser("PushNotificationsDAOSPec9")
-//    val sessionUser6 = createUser("PushNotificationsDAOSPec10")
+//    val sessionUser1 = createUser("NotificationsDAOSPec5")
+//    val sessionUser2 = createUser("NotificationsDAOSPec6")
+//    val sessionUser3 = createUser("NotificationsDAOSPec7")
+//    val sessionUser4 = createUser("NotificationsDAOSPec8")
+//    val sessionUser5 = createUser("NotificationsDAOSPec9")
+//    val sessionUser6 = createUser("NotificationsDAOSPec10")
 //    val medium1 = createMedium(sessionUser1.id)
 //    val medium2 = createMedium(sessionUser1.id)
 //    val medium3 = createMedium(sessionUser1.id)
@@ -39,11 +39,11 @@ class PushNotificationTweetsDAOSpec extends DAOSpec {
 //    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
 //    val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 //
-//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser1.id.toSessionId))
-//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser3.id.toSessionId))
-//    await(pushNotificationSettingDAO.create(false,false, false, false, false, false, false, sessionUser4.id.toSessionId))
-//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser5.id.toSessionId))
-//    await(pushNotificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser6.id.toSessionId))
+//    await(notificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser1.id.toSessionId))
+//    await(notificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser3.id.toSessionId))
+//    await(notificationSettingDAO.create(false,false, false, false, false, false, false, sessionUser4.id.toSessionId))
+//    await(notificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser5.id.toSessionId))
+//    await(notificationSettingDAO.create(true, false, false, false, false, false, false, sessionUser6.id.toSessionId))
 //
 //    await(devicesDAO.create(udid, DeviceType.ios, None, sessionUser1.id.toSessionId))
 //    await(devicesDAO.create(udid, DeviceType.ios, None, sessionUser3.id.toSessionId))
@@ -63,7 +63,7 @@ class PushNotificationTweetsDAOSpec extends DAOSpec {
 //    await(usersDAO.updateDisplayName(sessionUser2.id, displayName, sessionUser6.id.toSessionId))
 //
 //    // find user tweet tokens
-//    val result = await(pushNotificationTweetsDAO.find(tweetId))
+//    val result = await(notificationTweetsDAO.find(tweetId))
 //
 //    assert(result.get.head.destinations.size == 4)
 //
@@ -114,7 +114,7 @@ class PushNotificationTweetsDAOSpec extends DAOSpec {
 //    )
 //
 //    // update notified
-//    await(pushNotificationTweetsDAO.update(tweetId, ids, true))
+//    await(notificationTweetsDAO.update(tweetId, ids, true))
 //
 //    //
 //    val q = quote { query[UserTweets].filter(_.tweetId == lift(tweetId)).filter(_.notified == true).size}
@@ -163,9 +163,9 @@ class PushNotificationTweetsDAOSpec extends DAOSpec {
 //
 //    await(
 //      for {
-//        _ <- pushNotificationTweetsDAO.update(tweetId1, true)
-//        _ <- pushNotificationTweetsDAO.update(tweetId2, false)
-//        _ <- pushNotificationTweetsDAO.update(tweetId3, true)
+//        _ <- notificationTweetsDAO.update(tweetId1, true)
+//        _ <- notificationTweetsDAO.update(tweetId2, false)
+//        _ <- notificationTweetsDAO.update(tweetId3, true)
 //      } yield (())
 //    )
 //

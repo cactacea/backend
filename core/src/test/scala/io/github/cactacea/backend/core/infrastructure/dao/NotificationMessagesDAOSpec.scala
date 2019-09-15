@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
-class PushNotificationMessagesDAOSpec extends DAOSpec {
+class NotificationMessagesDAOSpec extends DAOSpec {
 
   feature("update") (pending)
 //  {
@@ -28,7 +28,7 @@ class PushNotificationMessagesDAOSpec extends DAOSpec {
 //      user2.id,
 //      user3.id
 //    )
-//    await(pushNotificationMessagesDAO.update(messageId, ids))
+//    await(notificationMessagesDAO.update(messageId, ids))
 //
 //    val result2 = await(db.run(quote(query[UserMessages].filter(_.messageId == lift(messageId)).filter(_.notified == true)).size))
 //    assert(result2 == ids.size)

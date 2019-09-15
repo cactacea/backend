@@ -4,25 +4,25 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.PushNotificationType
-import io.github.cactacea.backend.core.domain.models.{Destination, PushNotification}
-import io.github.cactacea.backend.core.infrastructure.identifiers.{UserId, TweetId}
+import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.domain.models.{Destination, Notification}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{TweetId, UserId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class PushNotificationTweetsDAO @Inject()(
+class NotificationTweetsDAO @Inject()(
                                       db: DatabaseService,
                                       deepLinkService: DeepLinkService) {
 
   import db._
 
-  def find(id: TweetId): Future[Option[Seq[PushNotification]]] = {
+  def find(id: TweetId): Future[Option[Seq[Notification]]] = {
     findTweet(id).flatMap(_ match {
       case Some(f) =>
         findDestinations(id).map({ d =>
           val url = deepLinkService.getTweet(id)
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
-            PushNotification(userName, None, f.postedAt, url, destinations, PushNotificationType.tweet)
+            Notification(userName, None, f.postedAt, url, destinations, NotificationType.tweet)
           }).toSeq
           Some(r)
         })
@@ -52,7 +52,7 @@ class PushNotificationTweetsDAO @Inject()(
         d <- query[Devices]
           .join(_.userId == af.userId)
           .filter(_.pushToken.isDefined)
-        _ <- query[PushNotificationSettings]
+        _ <- query[NotificationSettings]
           .join(_.userId == af.userId)
           .filter(_.tweet == true)
         r <- query[Relationships]

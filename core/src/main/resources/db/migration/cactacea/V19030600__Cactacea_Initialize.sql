@@ -657,9 +657,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`push_notification_settings`
+-- Table `${schema}`.`notification_settings`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`push_notification_settings` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`notification_settings` (
   `user_id` BIGINT(20) NOT NULL,
   `invitation` TINYINT(4) NOT NULL,
   `tweet` TINYINT(4) NOT NULL,
@@ -668,7 +668,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`push_notification_settings` (
   `message` TINYINT(4) NOT NULL,
   `show_message` TINYINT(4) NOT NULL,
   `friend_request` TINYINT(4) NOT NULL,
-  UNIQUE INDEX `ui_push_notification_settings1_idx` (`user_id` ASC),
+  UNIQUE INDEX `ui_notification_settings1_idx` (`user_id` ASC),
   INDEX `fk_user_notification_settings_users1_idx` (`user_id` ASC),
   CONSTRAINT `fk_user_notification_settings_users1`
     FOREIGN KEY (`user_id`)

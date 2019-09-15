@@ -26,12 +26,12 @@ object DefaultCoreModule extends TwitterModule {
     bindSingleton[MessagesRepository]
     bindSingleton[MutesRepository]
     bindSingleton[FeedsRepository]
-    bindSingleton[PushNotificationCommentsRepository]
-    bindSingleton[PushNotificationTweetsRepository]
-    bindSingleton[PushNotificationFriendRequestsRepository]
-    bindSingleton[PushNotificationInvitationsRepository]
-    bindSingleton[PushNotificationMessagesRepository]
-    bindSingleton[PushNotificationSettingsRepository]
+    bindSingleton[NotificationCommentsRepository]
+    bindSingleton[NotificationTweetsRepository]
+    bindSingleton[NotificationFriendRequestsRepository]
+    bindSingleton[NotificationInvitationsRepository]
+    bindSingleton[NotificationMessagesRepository]
+    bindSingleton[NotificationSettingsRepository]
   }
 
   def configureService(): Unit = {

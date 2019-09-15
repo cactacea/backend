@@ -77,10 +77,10 @@ trait Encoders {
   implicit val messageTypeEncode: MappedEncoding[Byte, MessageType] = MappedEncoding[Byte, MessageType] (long => MessageType.forName(long))
   implicit val feedTypeDecode: MappedEncoding[FeedType, Byte] = MappedEncoding[FeedType, Byte] (enumValue => enumValue.value)
   implicit val feedTypeEncode: MappedEncoding[Byte, FeedType] = MappedEncoding[Byte, FeedType] (long => FeedType.forName(long))
-  implicit val pushNotificationTypeDecode: MappedEncoding[PushNotificationType, Byte]
-  = MappedEncoding[PushNotificationType, Byte] (enumValue => enumValue.value)
-  implicit val pushNotificationTypeEncode: MappedEncoding[Byte, PushNotificationType]
-  = MappedEncoding[Byte, PushNotificationType] (long => PushNotificationType.forName(long))
+  implicit val notificationTypeDecode: MappedEncoding[NotificationType, Byte]
+  = MappedEncoding[NotificationType, Byte] (enumValue => enumValue.value)
+  implicit val notificationTypeEncode: MappedEncoding[Byte, NotificationType]
+  = MappedEncoding[Byte, NotificationType] (long => NotificationType.forName(long))
   implicit val reportTypeDecode: MappedEncoding[ReportType, Byte] = MappedEncoding[ReportType, Byte] (enumValue => enumValue.value)
   implicit val reportTypeEncode: MappedEncoding[Byte, ReportType] = MappedEncoding[Byte, ReportType] (long => ReportType.forName(long))
   implicit val contentStatusTypeDecode: MappedEncoding[ContentStatusType, Byte] = MappedEncoding[ContentStatusType, Byte] (enumValue => enumValue.value)

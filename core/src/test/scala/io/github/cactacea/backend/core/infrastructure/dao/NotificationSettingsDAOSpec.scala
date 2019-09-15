@@ -3,14 +3,14 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.twitter.finagle.mysql.ServerError
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
-class PushNotificationSettingsDAOSpec extends DAOSpec {
+class NotificationSettingsDAOSpec extends DAOSpec {
 
   feature("create") {
     scenario("should create notification settings") {
       forOne(userGen) { (a) =>
         val sessionId = await(usersDAO.create(a.userName)).sessionId
-        await(pushNotificationSettingsDAO.create(sessionId))
-        val result = await(pushNotificationSettingDAO.find(sessionId))
+        await(notificationSettingsDAO.create(sessionId))
+        val result = await(notificationSettingDAO.find(sessionId))
         assert(result.exists(_.comment))
         assert(result.exists(_.friendRequest))
         assert(result.exists(_.tweet))
@@ -24,11 +24,11 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     scenario("should return an exception occurs if duplicated") {
       forOne(userGen) { (a) =>
         val sessionId = await(usersDAO.create(a.userName)).sessionId
-        await(pushNotificationSettingsDAO.create(sessionId))
+        await(notificationSettingsDAO.create(sessionId))
 
         // exception occurs
         assert(intercept[ServerError] {
-          await(pushNotificationSettingsDAO.create(sessionId))
+          await(notificationSettingsDAO.create(sessionId))
         }.code == 1062)
       }
     }
@@ -36,9 +36,9 @@ class PushNotificationSettingsDAOSpec extends DAOSpec {
     scenario("should update notification settings") {
       forAll(userGen, boolean7SeqGen) { (a, b) =>
         val sessionId = await(usersDAO.create(a.userName)).sessionId
-        await(pushNotificationSettingsDAO.create(sessionId))
-        await(pushNotificationSettingsDAO.update(b(0), b(1), b(2), b(3), b(4), b(5), b(6), sessionId))
-        val result = await(pushNotificationSettingDAO.find(sessionId))
+        await(notificationSettingsDAO.create(sessionId))
+        await(notificationSettingsDAO.update(b(0), b(1), b(2), b(3), b(4), b(5), b(6), sessionId))
+        val result = await(notificationSettingDAO.find(sessionId))
         assert(result.exists(_.tweet == b(0)))
         assert(result.exists(_.comment == b(1)))
         assert(result.exists(_.friendRequest == b(2)))

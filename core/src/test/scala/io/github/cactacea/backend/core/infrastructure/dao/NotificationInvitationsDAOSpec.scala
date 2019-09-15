@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
-class PushNotificationInvitationsDAOSpec extends DAOSpec {
+class NotificationInvitationsDAOSpec extends DAOSpec {
 
 
   feature("update") (pending)
@@ -28,9 +28,9 @@ class PushNotificationInvitationsDAOSpec extends DAOSpec {
 //    val channelInvitationId4 = await(channelInvitationsDAO.create(sessionUser.id, channelId4, owner4.id.toSessionId))
 //    val channelInvitationId5 = await(channelInvitationsDAO.create(sessionUser.id, channelId5, owner5.id.toSessionId))
 //
-//    await(pushNotificationChannelInvitationsDAO.update(channelInvitationId1))
-//    await(pushNotificationChannelInvitationsDAO.update(channelInvitationId3))
-//    await(pushNotificationChannelInvitationsDAO.update(channelInvitationId5))
+//    await(notificationChannelInvitationsDAO.update(channelInvitationId1))
+//    await(notificationChannelInvitationsDAO.update(channelInvitationId3))
+//    await(notificationChannelInvitationsDAO.update(channelInvitationId5))
 //
 //    val invitation1 = await(db.run(query[ChannelInvitations].filter(_.id == lift(channelInvitationId1)))).head
 //    val invitation2 = await(db.run(query[ChannelInvitations].filter(_.id == lift(channelInvitationId2)))).head

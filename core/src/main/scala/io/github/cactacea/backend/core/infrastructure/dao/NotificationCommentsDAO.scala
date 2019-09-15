@@ -4,32 +4,32 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.PushNotificationType
-import io.github.cactacea.backend.core.domain.models.{Destination, PushNotification}
+import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.domain.models.{Destination, Notification}
 import io.github.cactacea.backend.core.infrastructure.identifiers.CommentId
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class PushNotificationCommentsDAO @Inject()(
+class NotificationCommentsDAO @Inject()(
                                              db: DatabaseService,
                                              deepLinkService: DeepLinkService) {
 
   import db._
 
-  def find(id: CommentId): Future[Option[Seq[PushNotification]]] = {
+  def find(id: CommentId): Future[Option[Seq[Notification]]] = {
     findComment(id).flatMap(_ match {
       case Some(c) =>
         findDestinations(id).map({ d =>
           val pt = c.replyId.isDefined match {
-            case true => PushNotificationType.commentReply
-            case false => PushNotificationType.tweetReply
+            case true => NotificationType.commentReply
+            case false => NotificationType.tweetReply
           }
           val url = c.replyId.isDefined match {
             case true => deepLinkService.getComments(c.tweetId)
             case false => deepLinkService.getComment(c.tweetId, c.id)
           }
           val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
-            PushNotification(userName, None, c.postedAt, url, destinations, pt)
+            Notification(userName, None, c.postedAt, url, destinations, pt)
           }).toSeq
           Some(r)
         })
@@ -55,7 +55,7 @@ class PushNotificationCommentsDAO @Inject()(
           .filter(_.notified == false)
         f <- query[Tweets]
           .join(_.id == c.tweetId)
-        _ <- query[PushNotificationSettings]
+        _ <- query[NotificationSettings]
           .join(_.userId == f.by)
           .filter(_.comment == true)
         a <- query[Users]

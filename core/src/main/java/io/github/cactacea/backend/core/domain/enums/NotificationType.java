@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-public enum PushNotificationType {
+public enum NotificationType {
     message((byte)0),
     nonDisplay((byte)1),
     image((byte)2),
@@ -12,12 +12,12 @@ public enum PushNotificationType {
 
     public byte value;
 
-    PushNotificationType(byte value) {
+    NotificationType(byte value) {
         this.value = value;
     }
 
-    static public PushNotificationType forName(byte value) {
-        for (PushNotificationType e : values()) {
+    static public NotificationType forName(byte value) {
+        for (NotificationType e : values()) {
             if (e.value == value) {
                 return e;
             }

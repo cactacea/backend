@@ -50,7 +50,7 @@ class RepositorySpec extends Spec
   val mutesRepository = injector.instance[MutesRepository]
   val messagesRepository = injector.instance[MessagesRepository]
   val notificationsRepository = injector.instance[FeedsRepository]
-  val pushNotificationSettingsRepository = injector.instance[PushNotificationSettingsRepository]
+  val notificationSettingsRepository = injector.instance[NotificationSettingsRepository]
 
   val usersDAO = injector.instance[UsersDAO]
   val userTweetsDAO = injector.instance[UserTweetsDAO]
@@ -78,13 +78,13 @@ class RepositorySpec extends Spec
   val mediumsDAO = injector.instance[MediumsDAO]
   val messagesDAO = injector.instance[MessagesDAO]
   val mutesDAO = injector.instance[MutesDAO]
-  val pushNotificationSettingDAO = injector.instance[PushNotificationSettingsDAO]
-  val pushNotificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
-  val pushNotificationTweetsDAO = injector.instance[PushNotificationTweetsDAO]
-  val pushNotificationCommentsDAO = injector.instance[PushNotificationCommentsDAO]
-  val pushNotificationMessagesDAO = injector.instance[PushNotificationMessagesDAO]
-  val pushNotificationInvitationsDAO = injector.instance[PushNotificationInvitationsDAO]
-  val pushNotificationRequestsDAO = injector.instance[PushNotificationRequestsDAO]
+  val notificationSettingDAO = injector.instance[NotificationSettingsDAO]
+  val notificationSettingsDAO = injector.instance[NotificationSettingsDAO]
+  val notificationTweetsDAO = injector.instance[NotificationTweetsDAO]
+  val notificationCommentsDAO = injector.instance[NotificationCommentsDAO]
+  val notificationMessagesDAO = injector.instance[NotificationMessagesDAO]
+  val notificationInvitationsDAO = injector.instance[NotificationInvitationsDAO]
+  val notificationRequestsDAO = injector.instance[NotificationRequestsDAO]
 
   def createUser(userName: String): Future[User] = {
     for {

@@ -31,7 +31,7 @@ class UsersRepositorySpec extends RepositorySpec {
         assert(result.profileImageUrl.isEmpty)
         assert(result.userStatus == UserStatusType.normally)
 
-        val result2 = await(pushNotificationSettingsRepository.find(sessionId))
+        val result2 = await(notificationSettingsRepository.find(sessionId))
         assert(result2.tweet)
         assert(result2.comment)
         assert(result2.friendRequest)

@@ -4,10 +4,10 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
 import io.github.cactacea.backend.core.infrastructure.identifiers.SessionId
-import io.github.cactacea.backend.core.infrastructure.models.PushNotificationSettings
+import io.github.cactacea.backend.core.infrastructure.models.NotificationSettings
 
 @Singleton
-class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
+class NotificationSettingsDAO @Inject()(db: DatabaseService) {
 
   import db._
 
@@ -15,7 +15,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
 
     val userId = sessionId.userId
     val q = quote {
-      query[PushNotificationSettings].insert(
+      query[NotificationSettings].insert(
         _.userId           -> lift(userId),
         _.tweet                -> lift(true),
         _.comment             -> lift(true),
@@ -40,7 +40,7 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
 
     val userId = sessionId.userId
     val q = quote {
-      query[PushNotificationSettings]
+      query[NotificationSettings]
         .filter(_.userId == lift(userId))
         .update(
           _.tweet            -> lift(tweet),
@@ -55,10 +55,10 @@ class PushNotificationSettingsDAO @Inject()(db: DatabaseService) {
     run(q).map(_ => ())
   }
 
-  def find(sessionId: SessionId): Future[Option[PushNotificationSettings]] = {
+  def find(sessionId: SessionId): Future[Option[NotificationSettings]] = {
     val userId = sessionId.userId
     val q = quote {
-      query[PushNotificationSettings]
+      query[NotificationSettings]
         .filter(_.userId == lift(userId))
     }
     run(q).map(_.headOption)

@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
-class PushNotificationCommentsDAOSpec extends DAOSpec {
+class NotificationCommentsDAOSpec extends DAOSpec {
 
   feature("create - fanout") (pending)
 //  {
@@ -17,12 +17,12 @@ class PushNotificationCommentsDAOSpec extends DAOSpec {
 //    val udid = "740f4707 bebcf74f 9b7c25d4 8e335894 5f6aa01d a5ddb387 462c7eaf 61bb78ad"
 //    val pushToken: Option[String] = Some("0000000000000000000000000000000000000000000000000000000000000000")
 //
-//    await(pushNotificationSettingDAO.create(false, true, false, false, false, false, false, sessionUser1.id.toSessionId))
+//    await(notificationSettingDAO.create(false, true, false, false, false, false, false, sessionUser1.id.toSessionId))
 //    await(devicesDAO.create(udid, DeviceType.ios, None, sessionUser1.id.toSessionId))
 //    await(devicesDAO.update(udid, pushToken, sessionUser1.id.toSessionId))
 //    await(usersDAO.updateDisplayName(sessionUser2.id, displayName, sessionUser1.id.toSessionId))
 //
-//    val result = await(pushNotificationCommentsDAO.find(commentId))
+//    val result = await(notificationCommentsDAO.find(commentId))
 //    assert(result.isDefined)
 //    assert(result.get(0).destinations.head.userId == sessionUser1.id)
 //    assert(result.get(0).displayName == displayName.get)
@@ -61,8 +61,8 @@ class PushNotificationCommentsDAOSpec extends DAOSpec {
 //    val commentId1 = await(commentsDAO.create(tweetId, "1" * 100, sessionUser2.id.toSessionId))
 //    val commentId2 = await(commentsDAO.create(tweetId, "2" * 100, sessionUser1.id.toSessionId))
 //
-//    await(pushNotificationCommentsDAO.update(commentId1))
-//    await(pushNotificationCommentsDAO.update(commentId2))
+//    await(notificationCommentsDAO.update(commentId1))
+//    await(notificationCommentsDAO.update(commentId2))
 //
 //    val comment1 = await(db.run(query[Comments].filter(_.id == lift(commentId1))).map(_.head))
 //    val comment2 = await(db.run(query[Comments].filter(_.id == lift(commentId2))).map(_.head))
