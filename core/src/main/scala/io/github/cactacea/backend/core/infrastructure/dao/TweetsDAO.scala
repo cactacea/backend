@@ -2,14 +2,15 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.{ContentStatusType,  TweetPrivacyType}
-import io.github.cactacea.backend.core.domain.models.Tweet
+import io.github.cactacea.backend.core.domain.enums.{ContentStatusType, NotificationType, TweetPrivacyType}
+import io.github.cactacea.backend.core.domain.models.{Destination, Notification, Tweet}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class TweetsDAO @Inject()(db: DatabaseService) {
+class TweetsDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkService) {
 
   import db._
 
@@ -280,6 +281,72 @@ class TweetsDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_.headOption)
   }
+
+
+  // Notifications
+
+  def findNotifications(id: TweetId): Future[Option[Seq[Notification]]] = {
+    findTweet(id).flatMap(_ match {
+      case Some(f) =>
+        findDestinations(id).map({ d =>
+          val url = deepLinkService.getTweet(id)
+          val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
+            Notification(userName, None, f.postedAt, url, destinations, NotificationType.tweet)
+          }).toSeq
+          Some(r)
+        })
+      case None =>
+        Future.None
+    })
+  }
+
+  private def findTweet(id: TweetId): Future[Option[Tweets]] = {
+    val q = quote {
+      query[Tweets]
+        .filter(_.id == lift(id))
+        .filter(!_.notified)
+    }
+    run(q).map(_.headOption)
+  }
+
+
+  private def findDestinations(id: TweetId): Future[Seq[Destination]] = {
+    val q = quote {
+      for {
+        af <- query[UserTweets]
+          .filter(_.tweetId == lift(id))
+          .filter(!_.notified)
+        a <- query[Users]
+          .join(_.id == af.by)
+        d <- query[Devices]
+          .join(_.userId == af.userId)
+          .filter(_.pushToken.isDefined)
+        _ <- query[NotificationSettings]
+          .join(_.userId == af.userId)
+          .filter(_.tweet)
+        r <- query[Relationships]
+          .leftJoin(r => r.userId == af.by && r.by == af.userId)
+
+      } yield {
+        Destination(
+          af.userId,
+          d.pushToken.getOrElse(""),
+          r.flatMap(_.displayName).getOrElse(a.displayName),
+          af.by)
+      }
+    }
+    run(q)
+  }
+
+  def updateNotified(tweetId: TweetId): Future[Unit] = {
+    val q = quote {
+      query[Tweets]
+        .filter(_.id == lift(tweetId))
+        .update(_.notified -> true)
+    }
+    run(q).map(_ => ())
+  }
+
 
 }
 

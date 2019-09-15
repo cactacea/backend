@@ -3,9 +3,9 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.enums.{ TweetPrivacyType}
+import io.github.cactacea.backend.core.domain.enums.TweetPrivacyType
 import io.github.cactacea.backend.core.domain.models.Tweet
-import io.github.cactacea.backend.core.infrastructure.identifiers.{SessionId, TweetId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{SessionId, TweetId, UserId}
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
@@ -88,5 +88,17 @@ class UserTweetsDAO @Inject()(db: DatabaseService) {
     }))
   }
 
+
+  // Notifications
+
+  def updateNotified(tweetId: TweetId, userIds: Seq[UserId]): Future[Unit] = {
+    val q = quote {
+      query[UserTweets]
+        .filter(_.tweetId == lift(tweetId))
+        .filter(m => liftQuery(userIds).contains(m.userId))
+        .update(_.notified -> true)
+    }
+    run(q).map(_ => ())
+  }
 
 }

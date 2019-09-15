@@ -10,7 +10,7 @@ class NotificationSettingsDAOSpec extends DAOSpec {
       forOne(userGen) { (a) =>
         val sessionId = await(usersDAO.create(a.userName)).sessionId
         await(notificationSettingsDAO.create(sessionId))
-        val result = await(notificationSettingDAO.find(sessionId))
+        val result = await(notificationSettingsDAO.find(sessionId))
         assert(result.exists(_.comment))
         assert(result.exists(_.friendRequest))
         assert(result.exists(_.tweet))
@@ -38,7 +38,7 @@ class NotificationSettingsDAOSpec extends DAOSpec {
         val sessionId = await(usersDAO.create(a.userName)).sessionId
         await(notificationSettingsDAO.create(sessionId))
         await(notificationSettingsDAO.update(b(0), b(1), b(2), b(3), b(4), b(5), b(6), sessionId))
-        val result = await(notificationSettingDAO.find(sessionId))
+        val result = await(notificationSettingsDAO.find(sessionId))
         assert(result.exists(_.tweet == b(0)))
         assert(result.exists(_.comment == b(1)))
         assert(result.exists(_.friendRequest == b(2)))

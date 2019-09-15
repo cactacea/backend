@@ -78,13 +78,7 @@ class RepositorySpec extends Spec
   val mediumsDAO = injector.instance[MediumsDAO]
   val messagesDAO = injector.instance[MessagesDAO]
   val mutesDAO = injector.instance[MutesDAO]
-  val notificationSettingDAO = injector.instance[NotificationSettingsDAO]
   val notificationSettingsDAO = injector.instance[NotificationSettingsDAO]
-  val notificationTweetsDAO = injector.instance[NotificationTweetsDAO]
-  val notificationCommentsDAO = injector.instance[NotificationCommentsDAO]
-  val notificationMessagesDAO = injector.instance[NotificationMessagesDAO]
-  val notificationInvitationsDAO = injector.instance[NotificationInvitationsDAO]
-  val notificationRequestsDAO = injector.instance[NotificationRequestsDAO]
 
   def createUser(userName: String): Future[User] = {
     for {

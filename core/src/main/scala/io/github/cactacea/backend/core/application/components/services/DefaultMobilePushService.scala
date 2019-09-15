@@ -6,23 +6,16 @@ import io.github.cactacea.backend.core.application.components.interfaces.MobileP
 import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
-class DefaultMobilePushService @Inject()(
-                                          notificationTweetsRepository: NotificationTweetsRepository,
-                                          notificationCommentsRepository: NotificationCommentsRepository,
-                                          notificationMessagesRepository: NotificationMessagesRepository,
-                                          notificationFriendRequestsRepository: NotificationFriendRequestsRepository,
-                                          notificationInvitationsRepository: NotificationInvitationsRepository
-
-                                        ) extends MobilePushService {
+class DefaultMobilePushService @Inject()(notificationsRepository: NotificationsRepository) extends MobilePushService {
 
   def sendTweet(id: TweetId): Future[Unit] = {
-    notificationTweetsRepository.find(id).flatMap(_ match {
+    notificationsRepository.findTweet(id).flatMap(_ match {
       case Some(l) =>
         println("----- Push Notification ----") // scalastyle:ignore
         println(l) // scalastyle:ignore
         for {
-          _ <- notificationTweetsRepository.update(id)
-          _ <- notificationTweetsRepository.update(id, l.map(_.destinations.map(_.userId)).flatten)
+          _ <- notificationsRepository.updateTweetNotified(id)
+          _ <- notificationsRepository.updateUserTweetsNotified(id, l.map(_.destinations.map(_.userId)).flatten)
         } yield (())
 
       case None =>
@@ -33,13 +26,13 @@ class DefaultMobilePushService @Inject()(
   }
 
   def sendMessage(id: MessageId): Future[Unit] = {
-    notificationMessagesRepository.find(id).flatMap(_ match {
+    notificationsRepository.findMessages(id).flatMap(_ match {
       case Some(l) =>
         println("----- Push Notification ----") // scalastyle:ignore
         println(l) // scalastyle:ignore
         for {
-          _ <- notificationMessagesRepository.update(id)
-          _ <- notificationMessagesRepository.update(id, l.map(_.destinations.map(_.userId)).flatten)
+          _ <- notificationsRepository.updateMessageNotified(id)
+          _ <- notificationsRepository.updateUserMessageNotified(id, l.map(_.destinations.map(_.userId)).flatten)
         } yield (())
 
       case None =>
@@ -50,12 +43,12 @@ class DefaultMobilePushService @Inject()(
   }
 
   def sendComment(id: CommentId): Future[Unit] = {
-    notificationCommentsRepository.find(id).flatMap(_ match {
+    notificationsRepository.findComment(id).flatMap(_ match {
       case Some(l) =>
         println("----- Push Notification ----") // scalastyle:ignore
         println(l) // scalastyle:ignore
         for {
-          _ <- notificationCommentsRepository.update(id)
+          _ <- notificationsRepository.updateCommentNotified(id)
         } yield (())
 
       case None =>
@@ -66,12 +59,12 @@ class DefaultMobilePushService @Inject()(
   }
 
   def sendFriendRequest(id: FriendRequestId): Future[Unit] = {
-    notificationFriendRequestsRepository.find(id).flatMap(_ match {
+    notificationsRepository.findRequests(id).flatMap(_ match {
       case Some(l) =>
         println("----- Push Notification ----") // scalastyle:ignore
         println(l) // scalastyle:ignore
         for {
-          _ <- notificationFriendRequestsRepository.update(id)
+          _ <- notificationsRepository.updateRequestNotified(id)
         } yield (())
 
       case None =>
@@ -82,12 +75,12 @@ class DefaultMobilePushService @Inject()(
   }
 
   def sendInvitation(id: InvitationId): Future[Unit] = {
-    notificationInvitationsRepository.find(id).flatMap(_ match {
+    notificationsRepository.findInvitations(id).flatMap(_ match {
       case Some(l) =>
         println("----- Push Notification ----") // scalastyle:ignore
         println(l) // scalastyle:ignore
         for {
-          _ <- notificationInvitationsRepository.update(id)
+          _ <- notificationsRepository.updateInvitationNotified(id)
         } yield (())
 
       case None =>
