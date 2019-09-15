@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
   .settings(migrationSettings)
-  .aggregate(auth, chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, docs, utils, benchmarks)
+  .aggregate(auth, chat, api, server, core, plugin, finagger, filhouette, finasocket, finachat, onesignal, aws, docs, utils, benchmarks, members)
   .enablePlugins(FlywayPlugin)
 
 
