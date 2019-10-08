@@ -9,10 +9,10 @@ case class GetLikes(
                      @ApiModelProperty(value = "User Identifier.", required = true)
                      @RouteParam id: UserId,
 
-                     @ApiModelProperty(value = "Filters feeds which started on since or later.")
+                     @ApiModelProperty(value = "Filters tweets which started on since or later.")
                      @QueryParam since: Option[Long],
 
-                     @ApiModelProperty(value = "The offset of feeds. By default the value is 0.")
+                     @ApiModelProperty(value = "The offset of tweets. By default the value is 0.")
                      @QueryParam offset: Option[Int],
 
                      @ApiModelProperty(value = "Maximum number of entries returned on one result page." +

@@ -140,6 +140,18 @@ class UserMessagesDAO @Inject()(db: DatabaseService) {
   }
 
 
+  // Notifications
+
+  def updateNotified(messageId: MessageId, userIds: Seq[UserId]): Future[Unit] = {
+    val q = quote {
+      query[UserMessages]
+        .filter(_.messageId == lift(messageId))
+        .filter(m => liftQuery(userIds).contains(m.userId))
+        .update(_.notified -> true)
+    }
+    run(q).map(_ => ())
+  }
+
 
 
 }

@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.enums.{ReportType, UserStatusType}
 import io.github.cactacea.backend.core.domain.models.{User, UserStatus}
-import io.github.cactacea.backend.core.infrastructure.dao.{DevicesDAO, PushNotificationSettingsDAO, UserReportsDAO, UsersDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{DevicesDAO, NotificationSettingsDAO, UserReportsDAO, UsersDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{MediumId, SessionId, UserId}
 import io.github.cactacea.backend.core.infrastructure.validators.{MediumsValidator, UsersValidator}
 
@@ -15,7 +15,7 @@ class UsersRepository @Inject()(
                                  usersDAO: UsersDAO,
                                  userReportsDAO: UserReportsDAO,
                                  mediumsValidator: MediumsValidator,
-                                 notificationSettingsDAO: PushNotificationSettingsDAO
+                                 notificationSettingsDAO: NotificationSettingsDAO
                                   ) {
 
   def create(userName: String): Future[UserId] = {

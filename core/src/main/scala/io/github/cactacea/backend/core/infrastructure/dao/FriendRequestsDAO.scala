@@ -2,13 +2,15 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.FriendRequest
+import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.domain.models.{Destination, FriendRequest, Notification}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: RelationshipsDAO) {
+class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: RelationshipsDAO, deepLinkService: DeepLinkService) {
 
   import db._
 
@@ -136,6 +138,71 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
     }
     run(q).map(_.map({case (f, a, r) => FriendRequest(f, a, r, f.id.value)}))
 
+  }
+
+
+  // Notifications
+
+  def findNotifications(id: FriendRequestId): Future[Option[Seq[Notification]]] = {
+    findFriendRequest(id).flatMap(_ match {
+      case Some(f) =>
+        findDestinations(id).map({ d =>
+          val pt = NotificationType.invitation
+          val url = deepLinkService.getRequest(id)
+          val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
+            Notification(userName, None, f.requestedAt, url, destinations, pt)
+          }).toSeq
+          Some(r)
+        })
+      case None =>
+        Future.None
+    })
+  }
+
+  private def findFriendRequest(id: FriendRequestId): Future[Option[FriendRequests]] = {
+    val q = quote {
+      query[FriendRequests]
+        .filter(_.id       == lift(id))
+        .filter(!_.notified)
+    }
+    run(q).map(_.headOption)
+  }
+
+
+  private def findDestinations(id: FriendRequestId): Future[Seq[Destination]] = {
+    val q = quote {
+      for {
+        f <- query[FriendRequests]
+          .filter(_.id == lift(id))
+          .filter(!_.notified)
+        _ <- query[NotificationSettings]
+          .join(_.userId == f.by)
+          .filter(_.friendRequest)
+        a <- query[Users]
+          .join(_.id == f.by)
+        d <- query[Devices]
+          .join(_.userId == f.by)
+          .filter(_.pushToken.isDefined)
+        r <- query[Relationships]
+          .leftJoin(r => r.userId == f.userId && r.by == f.by)
+      } yield {
+        Destination(
+          f.userId,
+          d.pushToken.getOrElse(""),
+          r.flatMap(_.displayName).getOrElse(a.displayName),
+          f.by)
+      }
+    }
+    run(q)
+  }
+
+  def updateNotified(id: FriendRequestId): Future[Unit] = {
+    val q = quote {
+      query[FriendRequests]
+        .filter(_.id == lift(id))
+        .update(_.notified -> true)
+    }
+    run(q).map(_ => ())
   }
 
 }

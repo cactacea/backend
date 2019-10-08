@@ -6,10 +6,10 @@ trait DeepLinkService {
 
   def getUsers(): String
   def getUser(id: UserId): String
-  def getFeeds(): String
-  def getFeed(id: FeedId): String
-  def getComments(id: FeedId): String
-  def getComment(feedId: FeedId, commentId: CommentId): String
+  def getTweets(): String
+  def getTweet(id: TweetId): String
+  def getComments(id: TweetId): String
+  def getComment(tweetId: TweetId, commentId: CommentId): String
   def getRequests(): String
   def getRequest(id: FriendRequestId): String
   def getInvitations(): String
@@ -17,6 +17,6 @@ trait DeepLinkService {
   def getChannels(): String
   def getChannel(id: ChannelId): String
   def getMessages(channelId: ChannelId, id: MessageId): String
-  def getNotification(id: NotificationId): String
+  def getFeed(id: FeedId): String
 
 }

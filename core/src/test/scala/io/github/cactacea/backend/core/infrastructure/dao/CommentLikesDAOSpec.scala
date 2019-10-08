@@ -1,7 +1,7 @@
 package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.twitter.finagle.mysql.ServerError
-import io.github.cactacea.backend.core.domain.enums.FeedPrivacyType
+import io.github.cactacea.backend.core.domain.enums.TweetPrivacyType
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
 
 
@@ -10,9 +10,9 @@ class CommentLikesDAOSpec extends DAOSpec {
   feature("create") {
     scenario("should return like count") {
 
-      forOne(userGen, userGen, userGen, userGen, feedGen, commentGen) { (s, a1, a2, a3, f, c) =>
+      forOne(userGen, userGen, userGen, userGen, tweetGen, commentGen) { (s, a1, a2, a3, f, c) =>
         // preparing
-        //  session user creates a feed
+        //  session user creates a tweet
         //  session user create a comment
         //  user1 like a comment
         //  user2 like a comment
@@ -25,8 +25,8 @@ class CommentLikesDAOSpec extends DAOSpec {
         val userId3 = await(usersDAO.create(a3.userName))
         await(blocksDAO.create(userId2, userId1.sessionId))
         await(blocksDAO.create(userId1, userId2.sessionId))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-        val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
+        val tweetId = await(tweetsDAO.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsDAO.create(tweetId, c.message, None, sessionId))
         await(commentLikesDAO.create(commentId, userId1.sessionId))
         await(commentLikesDAO.create(commentId, userId2.sessionId))
         await(commentLikesDAO.create(commentId, userId3.sessionId))
@@ -47,14 +47,14 @@ class CommentLikesDAOSpec extends DAOSpec {
     }
 
     scenario("should return an exception occurs when duplication") {
-      forOne(userGen, userGen, feedGen, commentGen) { (s, a1, f, c) =>
+      forOne(userGen, userGen, tweetGen, commentGen) { (s, a1, f, c) =>
         // preparing
-        //  session user creates a feed
+        //  session user creates a tweet
         //  session user create a comment
         val sessionId = await(usersDAO.create(s.userName)).sessionId
         val userId1 = await(usersDAO.create(a1.userName))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-        val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
+        val tweetId = await(tweetsDAO.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsDAO.create(tweetId, c.message, None, sessionId))
 
         // exception occurs
         await(commentLikesDAO.create(commentId, userId1.sessionId))
@@ -69,10 +69,10 @@ class CommentLikesDAOSpec extends DAOSpec {
 
   feature("delete") {
     scenario("should delete a comment like and decrease like count") {
-      forOne(userGen, userGen, userGen, userGen, feedGen, commentGen) {
+      forOne(userGen, userGen, userGen, userGen, tweetGen, commentGen) {
         (s, a1, a2, a3, f, c) =>
           // preparing
-          //  session user creates a feed
+          //  session user creates a tweet
           //  session user create a comment
           //  user1 like a comment
           //  user2 like a comment
@@ -81,8 +81,8 @@ class CommentLikesDAOSpec extends DAOSpec {
           val userId1 = await(usersDAO.create(a1.userName))
           val userId2 = await(usersDAO.create(a2.userName))
           val userId3 = await(usersDAO.create(a3.userName))
-          val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-          val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
+          val tweetId = await(tweetsDAO.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+          val commentId = await(commentsDAO.create(tweetId, c.message, None, sessionId))
           await(commentLikesDAO.create(commentId, userId1.sessionId))
           await(commentLikesDAO.create(commentId, userId2.sessionId))
           await(commentLikesDAO.create(commentId, userId3.sessionId))
@@ -106,10 +106,10 @@ class CommentLikesDAOSpec extends DAOSpec {
 
   feature("own") {
     scenario("should return owner or not") {
-      forOne(userGen, userGen, userGen, userGen, feedGen, commentGen) { (s, a1, a2, a3, f, c) =>
+      forOne(userGen, userGen, userGen, userGen, tweetGen, commentGen) { (s, a1, a2, a3, f, c) =>
 
         // preparing
-        //  session user creates a feed
+        //  session user creates a tweet
         //  session user create a comment
         //  user1 like a comment
         //  user2 like a comment
@@ -118,8 +118,8 @@ class CommentLikesDAOSpec extends DAOSpec {
         val userId1 = await(usersDAO.create(a1.userName))
         val userId2 = await(usersDAO.create(a2.userName))
         val userId3 = await(usersDAO.create(a3.userName))
-        val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-        val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
+        val tweetId = await(tweetsDAO.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+        val commentId = await(commentsDAO.create(tweetId, c.message, None, sessionId))
         await(commentLikesDAO.create(commentId, userId1.sessionId))
         await(commentLikesDAO.create(commentId, userId2.sessionId))
         await(commentLikesDAO.create(commentId, userId3.sessionId))
@@ -151,11 +151,11 @@ class CommentLikesDAOSpec extends DAOSpec {
 
   feature("findUsers") {
     scenario("should return user list who liked a comment") {
-      forOne(userGen, userGen, userGen, userGen, userGen, userGen, feedGen, commentGen) {
+      forOne(userGen, userGen, userGen, userGen, userGen, userGen, tweetGen, commentGen) {
         (s, a1, a2, a3, a4, a5, f, c) =>
 
           // preparing
-          //  session user creates a feed
+          //  session user creates a tweet
           //  session user create a comment
           //  user1 like a comment
           //  user2 like a comment
@@ -173,8 +173,8 @@ class CommentLikesDAOSpec extends DAOSpec {
           await(blocksDAO.create(userId4, userId5.sessionId))
           await(blocksDAO.create(userId5, userId4.sessionId))
 
-          val feedId = await(feedsDAO.create(f.message, None, None, FeedPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
-          val commentId = await(commentsDAO.create(feedId, c.message, None, sessionId))
+          val tweetId = await(tweetsDAO.create(f.message, None, None, TweetPrivacyType.everyone, f.contentWarning, f.expiration, sessionId))
+          val commentId = await(commentsDAO.create(tweetId, c.message, None, sessionId))
           await(commentLikesDAO.create(commentId, userId1.sessionId))
           await(commentLikesDAO.create(commentId, userId2.sessionId))
           await(commentLikesDAO.create(commentId, userId3.sessionId))

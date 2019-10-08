@@ -21,8 +21,8 @@ case class CactaceaAuthorization(scope: Scope) extends Authorization[Authenticat
 object CactaceaAuthorization {
 
   val basic: Authorization[Authentication, JWTAuthenticator] = CactaceaAuthorization(Scope.basic)
-  val feeds: Authorization[Authentication, JWTAuthenticator] = CactaceaAuthorization(Scope.feeds)
-  val feedLikes: Authorization[Authentication, JWTAuthenticator] = CactaceaAuthorization(Scope.feedLikes)
+  val tweets: Authorization[Authentication, JWTAuthenticator] = CactaceaAuthorization(Scope.tweets)
+  val tweetLikes: Authorization[Authentication, JWTAuthenticator] = CactaceaAuthorization(Scope.tweetLikes)
   val comments: Authorization[Authentication, JWTAuthenticator] = CactaceaAuthorization(Scope.comments)
   val commentLikes: Authorization[Authentication, JWTAuthenticator] = CactaceaAuthorization(Scope.commentLikes)
   val channels: Authorization[Authentication, JWTAuthenticator] = CactaceaAuthorization(Scope.channels)

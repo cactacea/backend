@@ -2,13 +2,15 @@ package io.github.cactacea.backend.core.infrastructure.dao
 
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
+import io.github.cactacea.backend.core.application.components.interfaces.DeepLinkService
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.Invitation
+import io.github.cactacea.backend.core.domain.enums.NotificationType
+import io.github.cactacea.backend.core.domain.models.{Destination, Invitation, Notification}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 
 @Singleton
-class InvitationsDAO @Inject()(db: DatabaseService) {
+class InvitationsDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkService) {
 
   import db._
 
@@ -101,6 +103,70 @@ class InvitationsDAO @Inject()(db: DatabaseService) {
     }
     run(q).map(_ => ())
 
+  }
+
+
+  // Notifications
+
+  def findInvitations(id: InvitationId): Future[Option[Seq[Notification]]] = {
+    findInvitation(id).flatMap(_.map(f => f) match {
+      case Some(f) =>
+        findDestinations(id).map({ d =>
+          val pt = NotificationType.invitation
+          val url = deepLinkService.getInvitation(id)
+          val r = d.groupBy(_.userName).map({ case (userName, destinations) =>
+            Notification(userName, None, f.invitedAt, url, destinations, pt)
+          }).toSeq
+          Option(r)
+        })
+      case None =>
+        Future.None
+    })
+  }
+
+
+  private def findInvitation(id: InvitationId): Future[Option[Invitations]] = {
+    val q = quote {
+      query[Invitations]
+        .filter(_.id == lift(id))
+    }
+    run(q).map(_.headOption)
+  }
+
+  def findDestinations(id: InvitationId): Future[Seq[Destination]] = {
+    val q = quote {
+      for {
+        g <- query[Invitations]
+          .filter(_.id == lift(id))
+          .filter(!_.notified)
+        a <- query[Users]
+          .join(_.id == g.by)
+        d <- query[Devices]
+          .join(_.userId == g.userId)
+          .filter(_.pushToken.isDefined)
+        _ <- query[NotificationSettings]
+          .join(_.userId == g.userId)
+          .filter(_.invitation)
+        r <- query[Relationships]
+          .leftJoin(r => r.userId == g.by && r.by == g.userId)
+      } yield {
+        Destination(
+          g.userId,
+          d.pushToken.getOrElse(""),
+          r.flatMap(_.displayName).getOrElse(a.displayName),
+          g.by)
+      }
+    }
+    run(q)
+  }
+
+  def updateNotified(id: InvitationId): Future[Unit] = {
+    val q = quote {
+      query[Invitations]
+        .filter(_.id == lift(id))
+        .update(_.notified -> true)
+    }
+    run(q).map(_ => ())
   }
 
 }

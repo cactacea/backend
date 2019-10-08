@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`users` (
   `profile_image_url` VARCHAR(2083) NULL DEFAULT NULL,
   `follower_count` BIGINT(20) NOT NULL DEFAULT '0',
   `friend_count` BIGINT(20) NOT NULL DEFAULT '0',
-  `feed_count` BIGINT(20) NOT NULL DEFAULT '0',
+  `tweet_count` BIGINT(20) NOT NULL DEFAULT '0',
   `web` VARCHAR(2083) NULL DEFAULT NULL,
   `birthday` BIGINT(20) NULL DEFAULT NULL,
   `location` VARCHAR(255) NULL DEFAULT NULL,
@@ -204,9 +204,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`feeds`
+-- Table `${schema}`.`tweets`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`feeds` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`tweets` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `message` VARCHAR(1000) NOT NULL,
   `tags` VARCHAR(1000) NULL DEFAULT NULL,
@@ -225,25 +225,25 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`feeds` (
   `notified` TINYINT(4) NOT NULL,
   `posted_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_feeds_mediums2_idx` (`medium_id1` ASC),
-  INDEX `fk_feeds_mediums3_idx` (`medium_id2` ASC),
-  INDEX `fk_feeds_mediums4_idx` (`medium_id3` ASC),
-  INDEX `fk_feeds_mediums5_idx` (`medium_id4` ASC),
-  INDEX `fk_feeds_mediums6_idx` (`medium_id5` ASC),
-  INDEX `idx_feeds1` (`id` ASC, `medium_id1` ASC, `medium_id2` ASC, `medium_id3` ASC, `medium_id4` ASC, `medium_id5` ASC, `by` ASC, `privacy_type` ASC, `content_warning` ASC, `content_status` ASC, `expiration` ASC),
-  CONSTRAINT `fk_feeds_mediums2`
+  INDEX `fk_tweets_mediums2_idx` (`medium_id1` ASC),
+  INDEX `fk_tweets_mediums3_idx` (`medium_id2` ASC),
+  INDEX `fk_tweets_mediums4_idx` (`medium_id3` ASC),
+  INDEX `fk_tweets_mediums5_idx` (`medium_id4` ASC),
+  INDEX `fk_tweets_mediums6_idx` (`medium_id5` ASC),
+  INDEX `idx_tweets1` (`id` ASC, `medium_id1` ASC, `medium_id2` ASC, `medium_id3` ASC, `medium_id4` ASC, `medium_id5` ASC, `by` ASC, `privacy_type` ASC, `content_warning` ASC, `content_status` ASC, `expiration` ASC),
+  CONSTRAINT `fk_tweets_mediums2`
     FOREIGN KEY (`medium_id1`)
     REFERENCES `${schema}`.`mediums` (`id`),
-  CONSTRAINT `fk_feeds_mediums3`
+  CONSTRAINT `fk_tweets_mediums3`
     FOREIGN KEY (`medium_id2`)
     REFERENCES `${schema}`.`mediums` (`id`),
-  CONSTRAINT `fk_feeds_mediums4`
+  CONSTRAINT `fk_tweets_mediums4`
     FOREIGN KEY (`medium_id3`)
     REFERENCES `${schema}`.`mediums` (`id`),
-  CONSTRAINT `fk_feeds_mediums5`
+  CONSTRAINT `fk_tweets_mediums5`
     FOREIGN KEY (`medium_id4`)
     REFERENCES `${schema}`.`mediums` (`id`),
-  CONSTRAINT `fk_feeds_mediums6`
+  CONSTRAINT `fk_tweets_mediums6`
     FOREIGN KEY (`medium_id5`)
     REFERENCES `${schema}`.`mediums` (`id`))
 ENGINE = InnoDB
@@ -257,7 +257,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `${schema}`.`comments` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `message` VARCHAR(1000) NOT NULL,
-  `feed_id` BIGINT(20) NOT NULL,
+  `tweet_id` BIGINT(20) NOT NULL,
   `reply_id` BIGINT(20) NULL DEFAULT NULL,
   `like_count` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
@@ -266,10 +266,10 @@ CREATE TABLE IF NOT EXISTS `${schema}`.`comments` (
   `notified` TINYINT(4) NOT NULL,
   `posted_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_comments_feeds1` (`feed_id` ASC),
-  CONSTRAINT `fk_comments_feeds1`
-    FOREIGN KEY (`feed_id`)
-    REFERENCES `${schema}`.`feeds` (`id`)
+  INDEX `fk_comments_tweets1` (`tweet_id` ASC),
+  CONSTRAINT `fk_comments_tweets1`
+    FOREIGN KEY (`tweet_id`)
+    REFERENCES `${schema}`.`tweets` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -348,22 +348,22 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`feed_likes`
+-- Table `${schema}`.`tweet_likes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`feed_likes` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`tweet_likes` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `feed_id` BIGINT(20) NOT NULL,
+  `tweet_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `liked_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `ui_feed_likes1_idx` (`feed_id` ASC, `by` ASC),
-  INDEX `fk_feed_likes_feeds1_idx` (`feed_id` ASC),
-  INDEX `fk_feed_likes_users1_idx` (`by` ASC),
-  CONSTRAINT `fk_feed_likes_feeds1`
-    FOREIGN KEY (`feed_id`)
-    REFERENCES `${schema}`.`feeds` (`id`)
+  UNIQUE INDEX `ui_tweet_likes1_idx` (`tweet_id` ASC, `by` ASC),
+  INDEX `fk_tweet_likes_tweets1_idx` (`tweet_id` ASC),
+  INDEX `fk_tweet_likes_users1_idx` (`by` ASC),
+  CONSTRAINT `fk_tweet_likes_tweets1`
+    FOREIGN KEY (`tweet_id`)
+    REFERENCES `${schema}`.`tweets` (`id`)
     ON DELETE CASCADE,
-  CONSTRAINT `fk_feed_likes_users1`
+  CONSTRAINT `fk_tweet_likes_users1`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`users` (`id`))
 ENGINE = InnoDB
@@ -372,16 +372,16 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`feed_mediums`
+-- Table `${schema}`.`tweet_mediums`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`feed_mediums` (
-  `feed_id` BIGINT(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS `${schema}`.`tweet_mediums` (
+  `tweet_id` BIGINT(20) NOT NULL,
   `medium_id` BIGINT(20) NOT NULL,
   `order_no` INT(11) NOT NULL,
-  INDEX `fk_feed_mediums_feeds1_idx` (`feed_id` ASC),
-  CONSTRAINT `fk_feed_mediums_feeds1`
-    FOREIGN KEY (`feed_id`)
-    REFERENCES `${schema}`.`feeds` (`id`)
+  INDEX `fk_tweet_mediums_tweets1_idx` (`tweet_id` ASC),
+  CONSTRAINT `fk_tweet_mediums_tweets1`
+    FOREIGN KEY (`tweet_id`)
+    REFERENCES `${schema}`.`tweets` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -389,23 +389,23 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`feed_reports`
+-- Table `${schema}`.`tweet_reports`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`feed_reports` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`tweet_reports` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `feed_id` BIGINT(20) NOT NULL,
+  `tweet_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `report_type` TINYINT(4) NOT NULL,
   `report_content` VARCHAR(1000) NULL DEFAULT NULL,
   `reported_at` BIGINT(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  INDEX `fk_feed_reports_users_idx` (`by` ASC),
-  INDEX `fk_feed_reports_feeds1_idx` (`feed_id` ASC),
-  CONSTRAINT `fk_feed_reports_feeds1`
-    FOREIGN KEY (`feed_id`)
-    REFERENCES `${schema}`.`feeds` (`id`)
+  INDEX `fk_tweet_reports_users_idx` (`by` ASC),
+  INDEX `fk_tweet_reports_tweets1_idx` (`tweet_id` ASC),
+  CONSTRAINT `fk_tweet_reports_tweets1`
+    FOREIGN KEY (`tweet_id`)
+    REFERENCES `${schema}`.`tweets` (`id`)
     ON DELETE CASCADE,
-  CONSTRAINT `fk_feed_reports_users1`
+  CONSTRAINT `fk_tweet_reports_users1`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`users` (`id`))
 ENGINE = InnoDB
@@ -414,16 +414,16 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`feed_tags`
+-- Table `${schema}`.`tweet_tags`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`feed_tags` (
-  `feed_id` BIGINT(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS `${schema}`.`tweet_tags` (
+  `tweet_id` BIGINT(20) NOT NULL,
   `name` VARCHAR(1024) NOT NULL,
   `order_no` INT(11) NOT NULL,
-  INDEX `fk_feed_tags_feeds1_idx` (`feed_id` ASC),
-  CONSTRAINT `fk_feed_tags_feeds1`
-    FOREIGN KEY (`feed_id`)
-    REFERENCES `${schema}`.`feeds` (`id`)
+  INDEX `fk_tweet_tags_tweets1_idx` (`tweet_id` ASC),
+  CONSTRAINT `fk_tweet_tags_tweets1`
+    FOREIGN KEY (`tweet_id`)
+    REFERENCES `${schema}`.`tweets` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -630,25 +630,25 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`notifications`
+-- Table `${schema}`.`feeds`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`notifications` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`feeds` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `user_id` BIGINT(20) NOT NULL,
   `by` BIGINT(20) NOT NULL,
-  `notification_type` TINYINT(4) NOT NULL,
+  `feed_type` TINYINT(4) NOT NULL,
   `content_id` BIGINT(20) NULL DEFAULT NULL,
   `url` VARCHAR(2083) NOT NULL,
   `unread` TINYINT(4) NOT NULL,
   `notified_at` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `ui_notifications1_idx` (`user_id` ASC, `by` ASC, `notification_type` ASC, `content_id` ASC),
-  INDEX `fk_notifications_users1_idx` (`user_id` ASC),
-  INDEX `fk_notifications_users2_idx` (`by` ASC),
-  CONSTRAINT `fk_notifications_users1`
+  UNIQUE INDEX `ui_feeds1_idx` (`user_id` ASC, `by` ASC, `feed_type` ASC, `content_id` ASC),
+  INDEX `fk_feeds_users1_idx` (`user_id` ASC),
+  INDEX `fk_feeds_users2_idx` (`by` ASC),
+  CONSTRAINT `fk_feeds_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `${schema}`.`users` (`id`),
-  CONSTRAINT `fk_notifications_users2`
+  CONSTRAINT `fk_feeds_users2`
     FOREIGN KEY (`by`)
     REFERENCES `${schema}`.`users` (`id`))
 ENGINE = InnoDB
@@ -657,18 +657,18 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`push_notification_settings`
+-- Table `${schema}`.`notification_settings`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`push_notification_settings` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`notification_settings` (
   `user_id` BIGINT(20) NOT NULL,
   `invitation` TINYINT(4) NOT NULL,
-  `feed` TINYINT(4) NOT NULL,
+  `tweet` TINYINT(4) NOT NULL,
   `comment` TINYINT(4) NOT NULL,
   `channel_message` TINYINT(4) NOT NULL,
   `message` TINYINT(4) NOT NULL,
   `show_message` TINYINT(4) NOT NULL,
   `friend_request` TINYINT(4) NOT NULL,
-  UNIQUE INDEX `ui_push_notification_settings1_idx` (`user_id` ASC),
+  UNIQUE INDEX `ui_notification_settings1_idx` (`user_id` ASC),
   INDEX `fk_user_notification_settings_users1_idx` (`user_id` ASC),
   CONSTRAINT `fk_user_notification_settings_users1`
     FOREIGN KEY (`user_id`)
@@ -744,22 +744,22 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `${schema}`.`user_feeds`
+-- Table `${schema}`.`user_tweets`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `${schema}`.`user_feeds` (
+CREATE TABLE IF NOT EXISTS `${schema}`.`user_tweets` (
   `user_id` BIGINT(20) NOT NULL,
-  `feed_id` BIGINT(20) NOT NULL,
+  `tweet_id` BIGINT(20) NOT NULL,
   `notified` TINYINT(4) NOT NULL,
   `by` BIGINT(20) NOT NULL,
   `posted_at` BIGINT(20) NOT NULL,
-  UNIQUE INDEX `ui_user_feeds1_idx` (`user_id` ASC, `feed_id` ASC),
-  INDEX `fk_user_feeds_users1_idx` (`user_id` ASC),
-  INDEX `fk_user_feeds_feeds1_idx` (`feed_id` ASC),
-  CONSTRAINT `fk_user_feeds_feeds1`
-    FOREIGN KEY (`feed_id`)
-    REFERENCES `${schema}`.`feeds` (`id`)
+  UNIQUE INDEX `ui_user_tweets1_idx` (`user_id` ASC, `tweet_id` ASC),
+  INDEX `fk_user_tweets_users1_idx` (`user_id` ASC),
+  INDEX `fk_user_tweets_tweets1_idx` (`tweet_id` ASC),
+  CONSTRAINT `fk_user_tweets_tweets1`
+    FOREIGN KEY (`tweet_id`)
+    REFERENCES `${schema}`.`tweets` (`id`)
     ON DELETE CASCADE,
-  CONSTRAINT `fk_user_feeds_users1`
+  CONSTRAINT `fk_user_tweets_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `${schema}`.`users` (`id`))
 ENGINE = InnoDB

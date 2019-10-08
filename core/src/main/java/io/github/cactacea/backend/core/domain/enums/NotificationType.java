@@ -1,12 +1,14 @@
 package io.github.cactacea.backend.core.domain.enums;
 
 public enum NotificationType {
-    operator((byte)0),
-    invitation((byte)1),
-    friendRequest((byte)2),
-    feed((byte)3),
-    feedReply((byte)4),
-    commentReply((byte)5);
+    message((byte)0),
+    nonDisplay((byte)1),
+    image((byte)2),
+    invitation((byte)3),
+    request((byte)4),
+    tweet((byte)5),
+    tweetReply((byte)6),
+    commentReply((byte)7);
 
     public byte value;
 

@@ -13,7 +13,6 @@ import io.github.cactacea.backend.auth.server.controllers._
 import io.github.cactacea.backend.auth.server.utils.filters.AuthenticationFilter
 import io.github.cactacea.backend.auth.server.utils.moduels.DefaultAuthModule
 import io.github.cactacea.backend.core.application.components.modules._
-import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 import io.github.cactacea.backend.server.controllers._
 import io.github.cactacea.backend.server.utils.filters.CactaceaAPIKeyFilter
 import io.github.cactacea.backend.server.utils.mappers._
@@ -44,7 +43,6 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
           DefaultAPIPrefixModule,
           DefaultAuthModule,
           DefaultAuthFilterModule,
-          DefaultCoreModule,
           DefaultJacksonModule,
           DefaultChatModule,
           DefaultDeepLinkModule,
@@ -72,8 +70,8 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, BlocksController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, CommentsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, CommentLikesController]
-      .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FeedsController]
-      .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FeedLikesController]
+      .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, TweetsController]
+      .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, TweetLikesController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FriendsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FollowsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, ChannelsController]
@@ -81,7 +79,7 @@ abstract class ControllerBenchmark extends StdBenchAnnotations {
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, MediumsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, MessagesController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, MutesController]
-      .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, NotificationsController]
+      .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FeedsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, FriendRequestsController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SessionController]
       .add[CactaceaAPIKeyFilter, ETagFilter, CorsFilter, SettingsController]

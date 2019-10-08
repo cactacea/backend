@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Status}
 import com.twitter.inject.annotations.Flag
 import io.github.cactacea.backend.core.application.services._
-import io.github.cactacea.backend.core.domain.models.PushNotificationSetting
+import io.github.cactacea.backend.core.domain.models.NotificationSetting
 import io.github.cactacea.backend.server.models.requests.setting.{PutDevice, PutNotificationSetting}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
@@ -29,10 +29,10 @@ class SettingsController @Inject()(
     scope(basic).getWithDoc("/session/push/notification")  { o =>
       o.summary("Get push notification settings")
         .tag(settingsTag)
-        .operationId("findPushNotification")
-        .responseWith[PushNotificationSetting](Status.Ok.code, successfulMessage)
+        .operationId("findNotification")
+        .responseWith[NotificationSetting](Status.Ok.code, successfulMessage)
     } { _: Request =>
-      settingsService.findPushNotificationSettings(
+      settingsService.findNotificationSettings(
         CactaceaContext.sessionId
       )
     }
@@ -40,12 +40,12 @@ class SettingsController @Inject()(
     scope(basic).putWithDoc("/session/push/notification")  { o =>
       o.summary("Update ths push notification settings")
         .tag(settingsTag)
-        .operationId("updatePushNotification")
+        .operationId("updateNotification")
         .request[PutNotificationSetting]
         .responseWith(Status.Ok.code, successfulMessage)
     } { request: PutNotificationSetting =>
-      settingsService.updatePushNotificationSettings(
-        request.feed,
+      settingsService.updateNotificationSettings(
+        request.tweet,
         request.comment,
         request.friendRequest,
         request.message,

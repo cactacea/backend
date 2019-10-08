@@ -5,7 +5,7 @@ import io.github.cactacea.backend.core.infrastructure.identifiers._
 
 trait MobilePushService {
 
-  def sendFeed(feedId: FeedId): Future[Unit]
+  def sendTweet(tweetId: TweetId): Future[Unit]
   def sendComment(commentId: CommentId): Future[Unit]
   def sendMessage(id: MessageId): Future[Unit]
   def sendFriendRequest(id: FriendRequestId): Future[Unit]

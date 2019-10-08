@@ -9,7 +9,6 @@ import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.helpers.generators.{ModelsGenerator, StatusGenerator}
 import io.github.cactacea.backend.core.helpers.utils.DAOHelper
 import io.github.cactacea.backend.core.infrastructure.dao._
-import io.github.cactacea.backend.core.util.modules.DefaultCoreModule
 
 class RepositorySpec extends Spec
   with StatusGenerator
@@ -20,7 +19,6 @@ class RepositorySpec extends Spec
     TestInjector(
       modules = Seq(
         DatabaseModule,
-        DefaultCoreModule,
         DefaultChatModule,
         DefaultMessageModule,
         DefaultQueueModule,
@@ -39,8 +37,8 @@ class RepositorySpec extends Spec
   val commentsRepository = injector.instance[CommentsRepository]
   val commentLikesRepository = injector.instance[CommentLikesRepository]
   val devicesRepository = injector.instance[DevicesRepository]
-  val feedsRepository = injector.instance[FeedsRepository]
-  val feedLikesRepository = injector.instance[FeedLikesRepository]
+  val tweetsRepository = injector.instance[TweetsRepository]
+  val tweetLikesRepository = injector.instance[TweetLikesRepository]
   val followsRepository = injector.instance[FollowsRepository]
   val followersRepository = injector.instance[FollowersRepository]
   val friendsRepository = injector.instance[FriendsRepository]
@@ -51,11 +49,11 @@ class RepositorySpec extends Spec
   val mediumsRepository = injector.instance[MediumsRepository]
   val mutesRepository = injector.instance[MutesRepository]
   val messagesRepository = injector.instance[MessagesRepository]
-  val notificationsRepository = injector.instance[NotificationsRepository]
-  val pushNotificationSettingsRepository = injector.instance[PushNotificationSettingsRepository]
+  val notificationsRepository = injector.instance[FeedsRepository]
+  val notificationSettingsRepository = injector.instance[NotificationSettingsRepository]
 
   val usersDAO = injector.instance[UsersDAO]
-  val userFeedsDAO = injector.instance[UserFeedsDAO]
+  val userTweetsDAO = injector.instance[UserTweetsDAO]
   val userChannelsDAO = injector.instance[UserChannelsDAO]
   val userMessagesDAO = injector.instance[UserMessagesDAO]
   val userReportsDAO = injector.instance[UserReportsDAO]
@@ -64,11 +62,11 @@ class RepositorySpec extends Spec
   val commentLikesDAO = injector.instance[CommentLikesDAO]
   val commentReportsDAO = injector.instance[CommentReportsDAO]
   val devicesDAO = injector.instance[DevicesDAO]
-  val feedsDAO = injector.instance[FeedsDAO]
-  val feedTagsDAO = injector.instance[FeedTagsDAO]
-  val feedMediumsDAO = injector.instance[FeedMediumsDAO]
-  val feedLikesDAO = injector.instance[FeedLikesDAO]
-  val feedReportsDAO = injector.instance[FeedReportsDAO]
+  val tweetsDAO = injector.instance[TweetsDAO]
+  val tweetTagsDAO = injector.instance[TweetTagsDAO]
+  val tweetMediumsDAO = injector.instance[TweetMediumsDAO]
+  val tweetLikesDAO = injector.instance[TweetLikesDAO]
+  val tweetReportsDAO = injector.instance[TweetReportsDAO]
   val followsDAO = injector.instance[FollowsDAO]
   val followersDAO = injector.instance[FollowersDAO]
   val friendsDAO = injector.instance[FriendsDAO]
@@ -80,13 +78,7 @@ class RepositorySpec extends Spec
   val mediumsDAO = injector.instance[MediumsDAO]
   val messagesDAO = injector.instance[MessagesDAO]
   val mutesDAO = injector.instance[MutesDAO]
-  val pushNotificationSettingDAO = injector.instance[PushNotificationSettingsDAO]
-  val pushNotificationSettingsDAO = injector.instance[PushNotificationSettingsDAO]
-  val pushNotificationFeedsDAO = injector.instance[PushNotificationFeedsDAO]
-  val pushNotificationCommentsDAO = injector.instance[PushNotificationCommentsDAO]
-  val pushNotificationMessagesDAO = injector.instance[PushNotificationMessagesDAO]
-  val pushNotificationInvitationsDAO = injector.instance[PushNotificationInvitationsDAO]
-  val pushNotificationRequestsDAO = injector.instance[PushNotificationRequestsDAO]
+  val notificationSettingsDAO = injector.instance[NotificationSettingsDAO]
 
   def createUser(userName: String): Future[User] = {
     for {

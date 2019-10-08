@@ -7,7 +7,7 @@ import io.github.cactacea.backend.core.application.components.services.DatabaseS
 import io.github.cactacea.backend.core.domain.enums.ReportType
 import io.github.cactacea.backend.core.domain.models.Comment
 import io.github.cactacea.backend.core.domain.repositories.CommentsRepository
-import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, FeedId, SessionId}
+import io.github.cactacea.backend.core.infrastructure.identifiers.{CommentId, TweetId, SessionId}
 
 @Singleton
 class CommentsService @Inject()(
@@ -18,10 +18,10 @@ class CommentsService @Inject()(
 
   import databaseService._
 
-  def create(feedId: FeedId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
+  def create(tweetId: TweetId, message: String, replyId: Option[CommentId], sessionId: SessionId): Future[CommentId] = {
     transaction {
       for {
-        i <- commentsRepository.create(feedId, message, replyId, sessionId)
+        i <- commentsRepository.create(tweetId, message, replyId, sessionId)
         _ <- queueService.enqueueComment(i)
       } yield (i)
     }
@@ -33,8 +33,8 @@ class CommentsService @Inject()(
     }
   }
 
-  def find(feedId: FeedId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
-    commentsRepository.find(feedId, since, offset, count, sessionId)
+  def find(tweetId: TweetId, since: Option[Long], offset: Int, count: Int, sessionId: SessionId): Future[Seq[Comment]] = {
+    commentsRepository.find(tweetId, since, offset, count, sessionId)
   }
 
   def find(commentId: CommentId, sessionId: SessionId): Future[Comment] = {

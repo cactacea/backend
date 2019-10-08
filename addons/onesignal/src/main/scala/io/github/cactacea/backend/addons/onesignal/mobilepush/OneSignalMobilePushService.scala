@@ -7,7 +7,7 @@ import com.twitter.util.Future
 import io.github.cactacea.backend.addons.onesignal.utils.{OneSignalClient, OneSignalConfig, OneSignalNotification}
 import io.github.cactacea.backend.core.application.components.interfaces.{MessageService, MobilePushService}
 import io.github.cactacea.backend.core.application.components.services.DatabaseService
-import io.github.cactacea.backend.core.domain.models.PushNotification
+import io.github.cactacea.backend.core.domain.models.Notification
 import io.github.cactacea.backend.core.domain.repositories._
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 
@@ -15,26 +15,22 @@ class OneSignalMobilePushService @Inject()(
                                             db: DatabaseService,
                                             client: OneSignalClient,
                                             messageService: MessageService,
-                                            pushNotificationFeedsRepository: PushNotificationFeedsRepository,
-                                            pushNotificationCommentsRepository: PushNotificationCommentsRepository,
-                                            pushNotificationMessagesRepository: PushNotificationMessagesRepository,
-                                            pushNotificationFriendRequestsRepository: PushNotificationFriendRequestsRepository,
-                                            pushNotificationInvitationsRepository: PushNotificationInvitationsRepository
+                                            notificationsRepository: NotificationsRepository
 
                                 ) extends MobilePushService {
 
   val numberOfChannels = 100
 
-  def sendFeed(id: FeedId): Future[Unit] = {
-    pushNotificationFeedsRepository.find(id).flatMap(_ match {
+  def sendTweet(id: TweetId): Future[Unit] = {
+    notificationsRepository.findTweet(id).flatMap(_ match {
       case Some(notifications) =>
         val list = createContentSeq(notifications)
         sendContentSeq(list).map({ result =>
           Future.traverseSequentially(result) { ids =>
-            pushNotificationFeedsRepository.update(id, ids)
+            notificationsRepository.updateUserTweetsNotified(id, ids)
           }.map(_ =>
             if (result.size == list.size) {
-              pushNotificationFeedsRepository.update(id)
+              notificationsRepository.updateTweetNotified(id)
             } else {
               Future.Done
             }
@@ -42,21 +38,21 @@ class OneSignalMobilePushService @Inject()(
         })
       case None =>
         db.transaction {
-          pushNotificationFeedsRepository.update(id)
+          notificationsRepository.updateTweetNotified(id)
         }
     })
   }
 
   def sendMessage(id: MessageId): Future[Unit] = {
-    pushNotificationMessagesRepository.find(id).flatMap(_ match {
+    notificationsRepository.findMessages(id).flatMap(_ match {
       case Some(notifications) =>
         val list = createContentSeq(notifications)
         sendContentSeq(list).map({ result =>
           Future.traverseSequentially(result) { ids =>
-            pushNotificationMessagesRepository.update(id, ids)
+            notificationsRepository.updateUserMessageNotified(id, ids)
           }.map(_ =>
             if (result.size == list.size) {
-              pushNotificationMessagesRepository.update(id)
+              notificationsRepository.updateMessageNotified(id)
             } else {
               Future.Done
             }
@@ -64,61 +60,61 @@ class OneSignalMobilePushService @Inject()(
         })
       case None =>
         db.transaction {
-          pushNotificationMessagesRepository.update(id)
+          notificationsRepository.updateMessageNotified(id)
         }
     })
   }
 
   def sendComment(id: CommentId): Future[Unit] = {
-    pushNotificationCommentsRepository.find(id).flatMap(_ match {
+    notificationsRepository.findComment(id).flatMap(_ match {
       case Some(notifications) =>
         for {
           _ <- sendContentSeq(createContentSeq(notifications))
-          r <- db.transaction(pushNotificationCommentsRepository.update(id))
+          r <- db.transaction(notificationsRepository.updateCommentNotified(id))
         } yield (r)
       case None =>
         db.transaction {
-          pushNotificationCommentsRepository.update(id)
+          notificationsRepository.updateCommentNotified(id)
         }
     })
   }
 
   def sendFriendRequest(id: FriendRequestId): Future[Unit] = {
-    pushNotificationFriendRequestsRepository.find(id).flatMap(_ match {
+    notificationsRepository.findRequests(id).flatMap(_ match {
       case Some(notifications) =>
         for {
           _ <- sendContentSeq(createContentSeq(notifications))
-          r <- db.transaction(pushNotificationFriendRequestsRepository.update(id))
+          r <- db.transaction(notificationsRepository.updateRequestNotified(id))
         } yield (r)
       case None =>
         db.transaction {
-          pushNotificationFriendRequestsRepository.update(id)
+          notificationsRepository.updateRequestNotified(id)
         }
     })
   }
 
   def sendInvitation(id: InvitationId): Future[Unit] = {
-    pushNotificationInvitationsRepository.find(id).flatMap(_ match {
+    notificationsRepository.findInvitations(id).flatMap(_ match {
       case Some(notifications) =>
         for {
           _ <- sendContentSeq(createContentSeq(notifications))
-          r <- db.transaction(pushNotificationInvitationsRepository.update(id))
+          r <- db.transaction(notificationsRepository.updateInvitationNotified(id))
         } yield (r)
       case None =>
         db.transaction {
-          pushNotificationInvitationsRepository.update(id)
+          notificationsRepository.updateInvitationNotified(id)
         }
     })
   }
 
 
 
-  private def createContentSeq(notifications: Seq[PushNotification]): Seq[(OneSignalNotification, Seq[UserId])] = {
+  private def createContentSeq(notifications: Seq[Notification]): Seq[(OneSignalNotification, Seq[UserId])] = {
     notifications.flatMap({ notification =>
       val displayName = notification.displayName
       val message = notification.message
-      val en = messageService.getPushNotificationMessage(notification.notificationType, Seq(Locale.US), displayName, message)
-      val jp = messageService.getPushNotificationMessage(notification.notificationType, Seq(Locale.JAPAN), displayName, message)
+      val en = messageService.getNotificationMessage(notification.feedType, Seq(Locale.US), displayName, message)
+      val jp = messageService.getNotificationMessage(notification.feedType, Seq(Locale.JAPAN), displayName, message)
       val url = notification.url
       notification.destinations.grouped(numberOfChannels).map({ channelsDestinations =>
         val accessTokens = channelsDestinations.map(_.userToken)

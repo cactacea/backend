@@ -11,9 +11,9 @@ class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extend
   override def start(): Unit = {
   }
 
-  def enqueueFeed(feedId: FeedId): Future[Unit] = {
+  def enqueueTweet(tweetId: TweetId): Future[Unit] = {
     FuturePool.unboundedPool {
-      mobilePushService.sendFeed(feedId)
+      mobilePushService.sendTweet(tweetId)
     }
   }
 
@@ -60,8 +60,8 @@ class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extend
 //    new Thread(receiver).start()
 //  }
 //
-//  def enqueueFeed(feedId: FeedId): Future[Unit] = {
-//    queue.put(FeedQueue(feedId))
+//  def enqueueTweet(tweetId: TweetId): Future[Unit] = {
+//    queue.put(TweetQueue(tweetId))
 //    Future.Unit
 //  }
 //
@@ -95,7 +95,7 @@ class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extend
 //      while (!finished) {
 //        val item = queue.take()
 //        item match {
-//          case q: FeedQueue =>            mobilePushService.sendFeed(q.id)
+//          case q: TweetQueue =>            mobilePushService.sendTweet(q.id)
 //          case q: CommentQueue =>         mobilePushService.sendComment(q.id)
 //          case q: MessageQueue =>         mobilePushService.sendMessage(q.id)
 //          case q: InvitationQueue => mobilePushService.sendInvitation(q.id)
@@ -108,7 +108,7 @@ class DefaultQueueService @Inject()(mobilePushService: MobilePushService) extend
 //  }
 //
 //  private trait Queue
-//  private case class FeedQueue(id: FeedId) extends Queue
+//  private case class TweetQueue(id: TweetId) extends Queue
 //  private case class CommentQueue(id: CommentId) extends Queue
 //  private case class MessageQueue(id: MessageId) extends Queue
 //  private case class InvitationQueue(id: InvitationId) extends Queue

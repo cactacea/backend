@@ -8,7 +8,7 @@ import io.github.cactacea.backend.core.domain.models._
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors
 import io.github.cactacea.backend.core.util.responses.CactaceaErrors._
 import io.github.cactacea.backend.server.models.requests.user._
-import io.github.cactacea.backend.server.models.requests.feed.GetUserFeeds
+import io.github.cactacea.backend.server.models.requests.tweet.GetUserTweets
 import io.github.cactacea.backend.server.models.requests.channel.{GetUserChannel, GetUserChannels}
 import io.github.cactacea.backend.server.utils.authorizations.CactaceaAuthorization._
 import io.github.cactacea.backend.server.utils.context.CactaceaContext
@@ -20,8 +20,8 @@ import io.swagger.models.Swagger
 class UsersController @Inject()(
                                  @Flag("cactacea.api.prefix") apiPrefix: String,
                                  usersService: UsersService,
-                                 feedsService: FeedsService,
-                                 feedLikesService: FeedLikesService,
+                                 tweetsService: TweetsService,
+                                 tweetLikesService: TweetLikesService,
                                  followersService: FollowersService,
                                  friendsService: FriendsService,
                                  channelUsersService: ChannelUsersService,
@@ -96,15 +96,15 @@ class UsersController @Inject()(
       ).map(_ => response.ok)
     }
 
-    scope(feeds).getWithDoc("/users/:id/feeds") { o =>
-      o.summary("Get feeds list an user posted")
+    scope(tweets).getWithDoc("/users/:id/tweets") { o =>
+      o.summary("Get tweets list an user posted")
         .tag(usersTag)
-        .operationId("findUserFeeds")
-        .request[GetUserFeeds]
-        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
+        .operationId("findUserTweets")
+        .request[GetUserTweets]
+        .responseWith[Seq[Tweet]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
-    } { request: GetUserFeeds =>
-      feedsService.find(
+    } { request: GetUserTweets =>
+      tweetsService.find(
         request.id,
         request.since,
         request.offset.getOrElse(0),
@@ -114,14 +114,14 @@ class UsersController @Inject()(
     }
 
     scope(basic).getWithDoc("/users/:id/likes") { o =>
-      o.summary("Get user's liked feeds")
+      o.summary("Get user's liked tweets")
         .tag(usersTag)
-        .operationId("findUserFeedsLiked")
+        .operationId("findUserTweetsLiked")
         .request[GetLikes]
-        .responseWith[Seq[Feed]](Status.Ok.code, successfulMessage)
+        .responseWith[Seq[Tweet]](Status.Ok.code, successfulMessage)
         .responseWith[CactaceaErrors](Status.NotFound.code, Status.NotFound.reason, Some(CactaceaErrors(Seq(UserNotFound))))
     } { request: GetLikes =>
-      feedLikesService.find(
+      tweetLikesService.find(
         request.id,
         request.since,
         request.offset.getOrElse(0),

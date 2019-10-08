@@ -2,12 +2,12 @@ package io.github.cactacea.backend.server.models.requests.comment
 
 import com.twitter.finatra.request.QueryParam
 import com.twitter.finatra.validation.Max
-import io.github.cactacea.backend.core.infrastructure.identifiers.FeedId
+import io.github.cactacea.backend.core.infrastructure.identifiers.TweetId
 import io.swagger.annotations.ApiModelProperty
 
 case class GetComments(
-                        @ApiModelProperty(value = "Feed identifier.", required = true)
-                        @QueryParam id: FeedId,
+                        @ApiModelProperty(value = "Tweet identifier.", required = true)
+                        @QueryParam id: TweetId,
 
                         @ApiModelProperty(value = "Filters comments which started on since or later.")
                         @QueryParam since: Option[Long],

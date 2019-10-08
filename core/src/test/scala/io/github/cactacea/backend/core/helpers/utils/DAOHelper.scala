@@ -13,8 +13,8 @@ trait DAOHelper extends IntegrationFeatureTest {
 
   import db._
 
-  def existsUserFeeds(feedId: FeedId, userId: UserId): Boolean = {
-    await(db.run(quote(query[UserFeeds].filter(_.feedId == lift(feedId)).filter(_.userId == lift(userId)).nonEmpty)))
+  def existsUserTweets(tweetId: TweetId, userId: UserId): Boolean = {
+    await(db.run(quote(query[UserTweets].filter(_.tweetId == lift(tweetId)).filter(_.userId == lift(userId)).nonEmpty)))
   }
 
   def findUserChannel(channelId: ChannelId, userId: UserId): Option[UserChannels] = {
@@ -88,31 +88,31 @@ trait DAOHelper extends IntegrationFeatureTest {
     db.run(q)
   }
 
-  def existsFeedMedium(feedId: FeedId, mediumId: MediumId): Future[Boolean] = {
+  def existsTweetMedium(tweetId: TweetId, mediumId: MediumId): Future[Boolean] = {
     val q = quote {
-      query[FeedMediums]
-        .filter(_.feedId == lift(feedId))
+      query[TweetMediums]
+        .filter(_.tweetId == lift(tweetId))
         .filter(_.mediumId == lift(mediumId))
         .nonEmpty
     }
     db.run(q)
   }
 
-  def existsFeedTag(feedId: FeedId, name: String): Future[Boolean] = {
+  def existsTweetTag(tweetId: TweetId, name: String): Future[Boolean] = {
     val q = quote {
-      query[FeedTags]
-        .filter(_.feedId == lift(feedId))
+      query[TweetTags]
+        .filter(_.tweetId == lift(tweetId))
         .filter(_.name == lift(name))
         .nonEmpty
     }
     db.run(q)
   }
 
-  def existsFeedReport(feedId: FeedId, sessionId: SessionId): Future[Boolean] = {
+  def existsTweetReport(tweetId: TweetId, sessionId: SessionId): Future[Boolean] = {
     val by = sessionId.userId
     val q = quote {
-      query[FeedReports]
-        .filter(_.feedId == lift(feedId))
+      query[TweetReports]
+        .filter(_.tweetId == lift(tweetId))
         .filter(_.by == lift(by))
         .nonEmpty
     }

@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.helpers.generators
 
 import java.util.UUID
 
-import io.github.cactacea.backend.core.domain.enums.{ChannelAuthorityType, ChannelPrivacyType, FeedPrivacyType, MessageType}
+import io.github.cactacea.backend.core.domain.enums.{ChannelAuthorityType, ChannelPrivacyType, TweetPrivacyType, MessageType}
 import io.github.cactacea.backend.core.infrastructure.identifiers._
 import io.github.cactacea.backend.core.infrastructure.models._
 import org.scalacheck.Gen
@@ -11,7 +11,7 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   // list generator
   lazy val comment20SeqGen = Gen.listOfN(20, commentGen)
-  lazy val feed20SeqGen = Gen.listOfN(20, feedGen)
+  lazy val tweet20SeqGen = Gen.listOfN(20, tweetGen)
   lazy val medium5SeqOptGen: Gen[Option[Seq[Mediums]]] = Gen.option(medium5SeqGen)
   lazy val channel20SeqGen: Gen[Seq[Channels]] = Gen.listOfN(20, channelGen)
   lazy val medium5SeqGen: Gen[Seq[Mediums]] = Gen.listOfN(5, mediumGen)
@@ -165,76 +165,76 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
 
   lazy val mediumOptGen = Gen.option(mediumGen)
 
-  lazy val feedGen: Gen[Feeds] = for {
-    message <- feedMessageTextGen
-    tags <- feedTag5SeqOptGen
-    privacyType <- feedPrivacyTypeGen
+  lazy val tweetGen: Gen[Tweets] = for {
+    message <- tweetMessageTextGen
+    tags <- tweetTag5SeqOptGen
+    privacyType <- tweetPrivacyTypeGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, privacyType, 0L, 0L, UserId(0L), contentWarning, contentStatus, None, false, postedAt)
+  } yield Tweets(TweetId(0L), message, tags, None, None, None, None, None, privacyType, 0L, 0L, UserId(0L), contentWarning, contentStatus, None, false, postedAt)
 
-  lazy val notExpiredFeedGen: Gen[Feeds] = for {
-    message <- feedMessageTextGen
-    tags <- feedTag5SeqOptGen
-    privacyType <- feedPrivacyTypeGen
+  lazy val notExpiredTweetGen: Gen[Tweets] = for {
+    message <- tweetMessageTextGen
+    tags <- tweetTag5SeqOptGen
+    privacyType <- tweetPrivacyTypeGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, privacyType, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Tweets(TweetId(0L), message, tags, None, None, None, None, None, privacyType, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
-  lazy val expiredFeedsGen: Gen[Feeds] = for {
-    message <- feedMessageTextGen
-    tags <- feedTag5SeqOptGen
+  lazy val expiredTweetsGen: Gen[Tweets] = for {
+    message <- tweetMessageTextGen
+    tags <- tweetTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- passDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.everyone, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Tweets(TweetId(0L), message, tags, None, None, None, None, None, TweetPrivacyType.everyone, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
-  lazy val everyoneFeedGen: Gen[Feeds] = for {
-    message <- feedMessageTextGen
-    tags <- feedTag5SeqOptGen
+  lazy val everyoneTweetGen: Gen[Tweets] = for {
+    message <- tweetMessageTextGen
+    tags <- tweetTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.everyone, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Tweets(TweetId(0L), message, tags, None, None, None, None, None, TweetPrivacyType.everyone, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
-  lazy val followerFeedGen: Gen[Feeds] = for {
-    message <- feedMessageTextGen
-    tags <- feedTag5SeqOptGen
+  lazy val followerTweetGen: Gen[Tweets] = for {
+    message <- tweetMessageTextGen
+    tags <- tweetTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.followers, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Tweets(TweetId(0L), message, tags, None, None, None, None, None, TweetPrivacyType.followers, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
-  lazy val selfFeedGen: Gen[Feeds] = for {
-    message <- feedMessageTextGen
-    tags <- feedTag5SeqOptGen
+  lazy val selfTweetGen: Gen[Tweets] = for {
+    message <- tweetMessageTextGen
+    tags <- tweetTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.self, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Tweets(TweetId(0L), message, tags, None, None, None, None, None, TweetPrivacyType.self, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
-  lazy val friendFeedGen: Gen[Feeds] = for {
-    message <- feedMessageTextGen
-    tags <- feedTag5SeqOptGen
+  lazy val friendTweetGen: Gen[Tweets] = for {
+    message <- tweetMessageTextGen
+    tags <- tweetTag5SeqOptGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     expiration <- futureDateTimeMillisGen
     postedAt <- currentTimeMillisGen
-  } yield Feeds(FeedId(0L), message, tags, None, None, None, None, None, FeedPrivacyType.friends, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
+  } yield Tweets(TweetId(0L), message, tags, None, None, None, None, None, TweetPrivacyType.friends, 0L, 0L, UserId(0L), contentWarning, contentStatus, Option(expiration), false, postedAt)
 
   lazy val commentGen: Gen[Comments] = for {
     message <- commentMessageGen
     contentWarning <- booleanGen
     contentStatus <- contentStatusGen
     postedAt <- currentTimeMillisGen
-  } yield Comments(CommentId(0L), message, FeedId(0L), None, 0L, UserId(0L), contentWarning, contentStatus, false, postedAt)
+  } yield Comments(CommentId(0L), message, TweetId(0L), None, 0L, UserId(0L), contentWarning, contentStatus, false, postedAt)
 
   lazy val userReportGen: Gen[UserReports] = for {
     reportType <- reportTypeGen
@@ -248,11 +248,11 @@ trait ModelsGenerator extends StatusGenerator with DomainValueGenerator {
     reportedAt <- currentTimeMillisGen
   } yield CommentReports(CommentReportId(0L), CommentId(0L), UserId(0L), reportType, reportContent, reportedAt)
 
-  lazy val feedReportGen: Gen[FeedReports] = for {
+  lazy val tweetReportGen: Gen[TweetReports] = for {
     reportType <- reportTypeGen
     reportContent <- reportContentOptGen
     reportedAt <- currentTimeMillisGen
-  } yield FeedReports(FeedReportId(0L), FeedId(0L), UserId(0L), reportType, reportContent, reportedAt)
+  } yield TweetReports(TweetReportId(0L), TweetId(0L), UserId(0L), reportType, reportContent, reportedAt)
 
   lazy val channelReportGen: Gen[ChannelReports] = for {
     reportType <- reportTypeGen

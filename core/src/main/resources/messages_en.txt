@@ -1,8 +1,8 @@
 operator = Notification from the administrative office.
 channel_invitation = {0}'ve invitation you to a channel.
 friend_request = {0}'ve sent a friend request.
-feed = {0} posted a feed.
-feed_reply = {0} posted a comment.
+tweet = {0} posted a tweet.
+tweet_reply = {0} posted a comment.
 comment_reply = {0} replied your comment.
 
 message = {0} : {1}
