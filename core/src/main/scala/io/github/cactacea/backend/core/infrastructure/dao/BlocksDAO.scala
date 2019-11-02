@@ -21,7 +21,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
           _.userId     -> lift(userId),
           _.by            -> lift(by),
           _.blockedAt     -> lift(blockedAt)
-        ).returning(_.id)
+        ).returningGenerated(_.id)
     }
     run(q).map(_ => ())
   }
@@ -60,6 +60,7 @@ class BlocksDAO @Inject()(db: DatabaseService) {
           .filter(a => lift(userName.map(_ + "%")).forall(a.userName like _))
         r <- query[Relationships]
           .leftJoin(r => r.userId == a.id && r.by == lift(by))
+
       } yield (a, r, b))
         .sortBy({ case (_, _, b) => b.id})(Ord.desc)
         .drop(lift(offset))

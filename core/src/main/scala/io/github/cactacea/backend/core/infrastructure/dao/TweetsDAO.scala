@@ -13,6 +13,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 class TweetsDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkService) {
 
   import db._
+  import db.extras._
 
   def create(message: String,
              mediumIds: Option[Seq[MediumId]],
@@ -62,7 +63,7 @@ class TweetsDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkService)
         _.contentStatus       -> lift(ContentStatusType.unchecked),
         _.notified            -> false,
         _.postedAt            -> lift(postedAt)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
 
@@ -193,11 +194,11 @@ class TweetsDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkService)
                   query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty
                 ).size))
         l <- query[TweetLikes].leftJoin(fl => fl.tweetId == f.id && fl.by == lift(by))
-        i1 <- query[Mediums].leftJoin(_.id == f.mediumId1)
-        i2 <- query[Mediums].leftJoin(_.id == f.mediumId2)
-        i3 <- query[Mediums].leftJoin(_.id == f.mediumId3)
-        i4 <- query[Mediums].leftJoin(_.id == f.mediumId4)
-        i5 <- query[Mediums].leftJoin(_.id == f.mediumId5)
+        i1 <- query[Mediums].leftJoin(_.id === f.mediumId1)
+        i2 <- query[Mediums].leftJoin(_.id === f.mediumId2)
+        i3 <- query[Mediums].leftJoin(_.id === f.mediumId3)
+        i4 <- query[Mediums].leftJoin(_.id === f.mediumId4)
+        i5 <- query[Mediums].leftJoin(_.id === f.mediumId5)
         a <- query[Users]
           .join(a => a.id == f.by)
         r <- query[Relationships]
@@ -244,11 +245,11 @@ class TweetsDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkService)
                   query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty
                 ).size))
         l <- query[TweetLikes].leftJoin(fl => fl.tweetId == f.id && fl.by == lift(by))
-        i1 <- query[Mediums].leftJoin(_.id == f.mediumId1)
-        i2 <- query[Mediums].leftJoin(_.id == f.mediumId2)
-        i3 <- query[Mediums].leftJoin(_.id == f.mediumId3)
-        i4 <- query[Mediums].leftJoin(_.id == f.mediumId4)
-        i5 <- query[Mediums].leftJoin(_.id == f.mediumId5)
+        i1 <- query[Mediums].leftJoin(_.id === f.mediumId1)
+        i2 <- query[Mediums].leftJoin(_.id === f.mediumId2)
+        i3 <- query[Mediums].leftJoin(_.id === f.mediumId3)
+        i4 <- query[Mediums].leftJoin(_.id === f.mediumId4)
+        i5 <- query[Mediums].leftJoin(_.id === f.mediumId5)
         a <- query[Users]
           .join(_.id == f.by)
         r <- query[Relationships]

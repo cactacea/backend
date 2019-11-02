@@ -27,7 +27,7 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
         _.userCount      -> 0L,
         _.by                -> lift(by),
         _.organizedAt       -> lift(organizedAt)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
   }
@@ -51,7 +51,7 @@ class ChannelsDAO @Inject()(db: DatabaseService) {
         _.userCount        -> 0L,
         _.by                  -> lift(by),
         _.organizedAt         -> lift(organizedAt)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
   }

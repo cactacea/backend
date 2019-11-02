@@ -9,11 +9,12 @@ import io.github.cactacea.backend.core.infrastructure.models._
 class ClientsDAO @Inject()(db: DatabaseService) {
 
   import db._
+  import db.extras._
 
   def find(clientId: String, clientSecret: String): Future[Option[Clients]] = {
     val q = quote {
       query[Clients]
-        .filter(c => c.id == lift(clientId) && c.secret == lift(clientSecret))
+        .filter(c => c.id == lift(clientId) && c.secret === lift(clientSecret))
         .join(query[ClientGrantTypes]).on({ case (c, ocg) => ocg.clientId == c.id})
         .join(query[GrantTypes]).on({ case ((_, ocg), gt) => gt.id == ocg.grantTypeId})
         .map({ case ((c, _), _) => c})

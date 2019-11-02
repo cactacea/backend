@@ -22,7 +22,7 @@ class TweetReportsDAO @Inject()(db: DatabaseService) {
         _.reportType    -> lift(reportType),
         _.reportContent -> lift(reportContent),
         _.reportedAt    -> lift(reportedAt)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
   }

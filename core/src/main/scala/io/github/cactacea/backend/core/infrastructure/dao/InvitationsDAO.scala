@@ -25,7 +25,7 @@ class InvitationsDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkSer
           _.channelId           -> lift(channelId),
           _.notified          -> false,
           _.invitedAt         -> lift(invitedAt)
-        ).returning(_.id)
+        ).returningGenerated(_.id)
     }
     run(q)
   }

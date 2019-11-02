@@ -10,6 +10,7 @@ import io.github.cactacea.backend.core.infrastructure.models.Informations
 class InformationsDAOSpec extends DAOSpec {
 
   import db._
+  import db.extras._
 
   feature("createInvitation") {
     scenario("should create a invitation notification") {
@@ -73,7 +74,7 @@ class InformationsDAOSpec extends DAOSpec {
         val contentId = tweetId.value
 
         // result
-        val result = await(db.run(query[Informations].filter(_.by == lift(sessionId.userId)).filter(_.contentId == lift(contentId)))).headOption
+        val result = await(db.run(query[Informations].filter(_.by == lift(sessionId.userId)).filter(_.contentId === lift(contentId)))).headOption
         assert(result.isDefined)
         assert(result.exists(_.userId == userId))
         assert(result.exists(_.by == sessionId.userId))

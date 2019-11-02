@@ -74,7 +74,7 @@ class InformationsDAO @Inject()(db: DatabaseService,
         _.url               -> lift(url),
         _.unread            -> true,
         _.notifiedAt        -> lift(notifiedAt)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
   }

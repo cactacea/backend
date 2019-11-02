@@ -29,7 +29,7 @@ class MessagesDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkServic
         _.contentStatus       -> lift(ContentStatusType.unchecked),
         _.notified            -> false,
         _.postedAt            -> lift(postedAt)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
   }
@@ -75,7 +75,7 @@ class MessagesDAO @Inject()(db: DatabaseService, deepLinkService: DeepLinkServic
         _.contentStatus       -> lift(ContentStatusType.unchecked),
         _.notified            -> false,
         _.postedAt            -> lift(postedAt)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q).map(id => (id, postedAt))
   }

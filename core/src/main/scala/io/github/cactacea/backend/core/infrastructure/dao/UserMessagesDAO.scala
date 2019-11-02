@@ -11,6 +11,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 class UserMessagesDAO @Inject()(db: DatabaseService) {
 
   import db._
+  import db.extras._
 
   def create(channelId: ChannelId, messageId: MessageId, sessionId: SessionId): Future[Unit] = {
     val postedAt = System.currentTimeMillis()
@@ -97,7 +98,7 @@ class UserMessagesDAO @Inject()(db: DatabaseService) {
         a <- query[Users]
           .join(_.id == m.by)
         i <- query[Mediums]
-          .leftJoin(_.id == m.mediumId)
+          .leftJoin(_.id === m.mediumId)
         r <- query[Relationships]
           .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (m, am, i, a, r))
@@ -120,7 +121,7 @@ class UserMessagesDAO @Inject()(db: DatabaseService) {
         a <- query[Users]
           .join(_.id == m.by)
         i <- query[Mediums]
-          .leftJoin(_.id == m.mediumId)
+          .leftJoin(_.id === m.mediumId)
         r <- query[Relationships]
           .leftJoin(r => r.userId == a.id && r.by == lift(by))
       } yield (m, am, i, a, r))
