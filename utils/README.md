@@ -10,13 +10,13 @@ Utils
 To get started, add a dependency on cactacea depending.
 
 ```
-"io.github.cactacea" %% "utils" % "19.9.4"
+"io.github.cactacea" %% "utils" % "19.11.0"
 ```
 Or similarily with Maven:
 ```
 <dependency>
   <groupId>io.github.cactacea</groupId>
   <artifactId>utils_2.12</artifactId>
-  <version>19.9.4</version>
+  <version>19.11.0</version>
 </dependency>
 ```
