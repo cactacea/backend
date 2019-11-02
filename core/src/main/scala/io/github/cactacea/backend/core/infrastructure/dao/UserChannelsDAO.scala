@@ -12,6 +12,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 class UserChannelsDAO @Inject()(db: DatabaseService) {
 
   import db._
+  import db.extras._
 
   def create(channelId: ChannelId, authorityType: ChannelAuthorityType, sessionId: SessionId): Future[UserChannelId] = {
     create(sessionId.userId, channelId, authorityType, sessionId)
@@ -38,7 +39,7 @@ class UserChannelsDAO @Inject()(db: DatabaseService) {
           _.hidden              -> false,
           _.authorityType       -> lift(authorityType),
           _.mute                -> false
-        ).returning(_.id)
+        ).returningGenerated(_.id)
     }
     run(q)
   }
@@ -118,15 +119,15 @@ class UserChannelsDAO @Inject()(db: DatabaseService) {
         g <- query[Channels]
           .join(_.id == ag.channelId)
         am <- query[UserMessages]
-          .leftJoin(_.messageId == g.messageId)
+          .leftJoin(_.messageId === g.messageId)
         m <- query[Messages]
-          .leftJoin(_.id == g.messageId)
+          .leftJoin(_.id === g.messageId)
         i <- query[Mediums]
-          .leftJoin(_.id == m.map(_.mediumId))
+          .leftJoin(i => m.exists(_.mediumId === i.id))
         a <- query[Users]
-          .leftJoin(_.id == m.map(_.by))
+          .leftJoin(u => m.exists(_.by == u.id))
         r <- query[Relationships]
-          .leftJoin(r => a.map(_.id) == r.userId && r.by == lift(by))
+          .leftJoin(r => a.exists(_.id == r.userId)  && r.by == lift(by))
       } yield (g, am, m, i, a, r, ag.id)
     }
     run(q).map(_.map({ case (g, am, m, i, a, r, id) => Channel(g, am, m, i, a, r, id.value)}).headOption)
@@ -143,15 +144,15 @@ class UserChannelsDAO @Inject()(db: DatabaseService) {
         g <- query[Channels]
           .join(_.id == ag.channelId)
         am <- query[UserMessages]
-          .leftJoin(am => am.userId == lift(userId) && am.messageId == g.messageId)
+          .leftJoin(am => am.userId == lift(userId) && am.messageId === g.messageId)
         m <- query[Messages]
-          .leftJoin(_.id == g.messageId)
+          .leftJoin(_.id === g.messageId)
         i <- query[Mediums]
-          .leftJoin(_.id == m.map(_.mediumId))
+          .leftJoin(i => m.exists(_.mediumId === i.id))
         a <- query[Users]
-          .leftJoin(_.id == m.map(_.by))
+          .leftJoin(u => m.exists(_.by == u.id))
         r <- query[Relationships]
-            .leftJoin(r => r.userId == a.map(_.id) && r.by == lift(by))
+            .leftJoin(r => a.exists(_.id == r.userId) && r.by == lift(by))
       } yield (g, am, m, i, a, r, ag.id))
         .sortBy({ case (_, _, _, _, _, _, id) => id})(Ord.desc)
         .drop(lift(offset))

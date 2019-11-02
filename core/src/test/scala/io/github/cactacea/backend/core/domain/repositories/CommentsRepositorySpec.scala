@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import java.util.Locale
 
-import io.github.cactacea.backend.core.domain.enums.{TweetPrivacyType, FeedType}
+import io.github.cactacea.backend.core.domain.enums.{TweetPrivacyType, InformationType}
 import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.CommentId
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -32,11 +32,11 @@ class CommentsRepositorySpec extends RepositorySpec {
 
         val result2 = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), sessionId))
         assert(result2.headOption.exists(_.contentId.exists(_ == commentId1.value)))
-        assert(result2.headOption.exists(_.feedType == FeedType.tweetReply))
+        assert(result2.headOption.exists(_.informationType == InformationType.tweetReply))
 
         val result3 = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), userId1.sessionId))
         assert(result3.headOption.exists(_.contentId.exists(_ == commentId2.value)))
-        assert(result3.headOption.exists(_.feedType == FeedType.commentReply))
+        assert(result3.headOption.exists(_.informationType == InformationType.commentReply))
 
       }
     }

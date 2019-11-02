@@ -113,8 +113,8 @@ class OneSignalMobilePushService @Inject()(
     notifications.flatMap({ notification =>
       val displayName = notification.displayName
       val message = notification.message
-      val en = messageService.getNotificationMessage(notification.feedType, Seq(Locale.US), displayName, message)
-      val jp = messageService.getNotificationMessage(notification.feedType, Seq(Locale.JAPAN), displayName, message)
+      val en = messageService.getNotificationMessage(notification.notificationType, Seq(Locale.US), displayName, message)
+      val jp = messageService.getNotificationMessage(notification.notificationType, Seq(Locale.JAPAN), displayName, message)
       val url = notification.url
       notification.destinations.grouped(numberOfChannels).map({ channelsDestinations =>
         val accessTokens = channelsDestinations.map(_.userToken)

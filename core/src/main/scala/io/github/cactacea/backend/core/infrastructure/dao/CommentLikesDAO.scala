@@ -28,7 +28,7 @@ class CommentLikesDAO @Inject()(db: DatabaseService) {
           _.commentId   -> lift(commentId),
           _.by          -> lift(by),
           _.likedAt     -> lift(likedAt)
-        ).returning(_.id)
+        ).returningGenerated(_.id)
     }
     run(q)
   }

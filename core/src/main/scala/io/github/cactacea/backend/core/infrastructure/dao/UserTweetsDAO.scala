@@ -12,6 +12,7 @@ import io.github.cactacea.backend.core.infrastructure.models._
 class UserTweetsDAO @Inject()(db: DatabaseService) {
 
   import db._
+  import db.extras._
 
   def create(tweetId: TweetId, sessionId: SessionId): Future[Unit] = {
     val by = sessionId.userId
@@ -67,11 +68,11 @@ class UserTweetsDAO @Inject()(db: DatabaseService) {
             )
           )
         l <- query[TweetLikes].leftJoin(fl => fl.tweetId == f.id && fl.by == lift(by))
-        i1 <- query[Mediums].leftJoin(_.id == f.mediumId1)
-        i2 <- query[Mediums].leftJoin(_.id == f.mediumId2)
-        i3 <- query[Mediums].leftJoin(_.id == f.mediumId3)
-        i4 <- query[Mediums].leftJoin(_.id == f.mediumId4)
-        i5 <- query[Mediums].leftJoin(_.id == f.mediumId5)
+        i1 <- query[Mediums].leftJoin(_.id === f.mediumId1)
+        i2 <- query[Mediums].leftJoin(_.id === f.mediumId2)
+        i3 <- query[Mediums].leftJoin(_.id === f.mediumId3)
+        i4 <- query[Mediums].leftJoin(_.id === f.mediumId4)
+        i5 <- query[Mediums].leftJoin(_.id === f.mediumId5)
         a <- query[Users]
           .join(_.id == f.by)
           .filter(a => query[Blocks].filter(b => b.userId == lift(by) && b.by == a.id).isEmpty)

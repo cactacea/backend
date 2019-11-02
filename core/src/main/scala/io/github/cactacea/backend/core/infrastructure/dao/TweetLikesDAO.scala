@@ -12,7 +12,7 @@ import io.github.cactacea.backend.core.infrastructure.models.{TweetLikes, _}
 class TweetLikesDAO @Inject()(db: DatabaseService) {
 
   import db._
-
+  import db.extras._
 
   def create(tweetId: TweetId, sessionId: SessionId): Future[Unit] = {
     for {
@@ -30,7 +30,7 @@ class TweetLikesDAO @Inject()(db: DatabaseService) {
           _.tweetId -> lift(tweetId),
           _.likedAt -> lift(likedAt),
           _.by -> lift(by)
-        ).returning(_.id)
+        ).returningGenerated(_.id)
     }
     run(q).map(_ => ())
   }
@@ -118,11 +118,11 @@ class TweetLikesDAO @Inject()(db: DatabaseService) {
                 .filter(_.tweetId == f.id)
                 .filter(c => query[Blocks].filter(b => b.userId == lift(by) && b.by == c.by).nonEmpty).size))
         l <- query[TweetLikes].leftJoin(fl => fl.tweetId == f.id && fl.by == lift(by))
-        i1 <- query[Mediums].leftJoin(_.id == f.mediumId1)
-        i2 <- query[Mediums].leftJoin(_.id == f.mediumId2)
-        i3 <- query[Mediums].leftJoin(_.id == f.mediumId3)
-        i4 <- query[Mediums].leftJoin(_.id == f.mediumId4)
-        i5 <- query[Mediums].leftJoin(_.id == f.mediumId5)
+        i1 <- query[Mediums].leftJoin(_.id === f.mediumId1)
+        i2 <- query[Mediums].leftJoin(_.id === f.mediumId2)
+        i3 <- query[Mediums].leftJoin(_.id === f.mediumId3)
+        i4 <- query[Mediums].leftJoin(_.id === f.mediumId4)
+        i5 <- query[Mediums].leftJoin(_.id === f.mediumId5)
         a <- query[Users]
           .join(_.id == f.by)
           .filter(a => query[Blocks].filter(b => (b.userId == lift(by) && b.by == a.id)).isEmpty)

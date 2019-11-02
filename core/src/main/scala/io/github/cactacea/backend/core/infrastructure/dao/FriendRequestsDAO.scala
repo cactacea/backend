@@ -31,7 +31,7 @@ class FriendRequestsDAO @Inject()(db: DatabaseService, relationshipsDAO: Relatio
           _.by              -> lift(by),
           _.notified        -> false,
           _.requestedAt     -> lift(requestedAt)
-        ).returning(_.id)
+        ).returningGenerated(_.id)
     }
     run(q)
   }

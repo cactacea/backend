@@ -19,7 +19,7 @@ class InvitationsRepository @Inject()(
                                        channelAuthorityValidator: ChannelAuthorityValidator,
                                        invitationsDAO: InvitationsDAO,
                                        invitationsValidator: InvitationsValidator,
-                                       notificationsDAO: FeedsDAO,
+                                       notificationsDAO: InformationsDAO,
                                        messagesDAO: MessagesDAO
                                           ) {
 

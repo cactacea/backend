@@ -21,7 +21,7 @@ class UsersDAO @Inject()(db: DatabaseService) {
         _.userName           -> lift(userName),
         _.displayName           -> lift(userName),
         _.userStatus         -> lift(userStatus)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
   }
@@ -34,7 +34,7 @@ class UsersDAO @Inject()(db: DatabaseService) {
         _.userName           -> lift(userName),
         _.displayName           -> lift(displayName),
         _.userStatus         -> lift(userStatus)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
   }

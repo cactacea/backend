@@ -34,7 +34,7 @@ class MediumsDAO @Inject()(db: DatabaseService) {
         _.mediumType      -> lift(mediumType),
         _.contentWarning  -> false,
         _.contentStatus   -> lift(ContentStatusType.unchecked)
-      ).returning(_.id)
+      ).returningGenerated(_.id)
     }
     run(q)
   }

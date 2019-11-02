@@ -17,6 +17,6 @@ trait DeepLinkService {
   def getChannels(): String
   def getChannel(id: ChannelId): String
   def getMessages(channelId: ChannelId, id: MessageId): String
-  def getFeed(id: FeedId): String
+  def getInformation(id: InformationId): String
 
 }

@@ -55,8 +55,8 @@ trait Encoders {
   implicit val mediumIdEncode: MappedEncoding[Long, MediumId] = MappedEncoding[Long, MediumId] (long => MediumId(long))
   implicit val messageIdDecode: MappedEncoding[MessageId, Long] = MappedEncoding[MessageId, Long] (id => id.onlyValue)
   implicit val messageIdEncode: MappedEncoding[Long, MessageId] = MappedEncoding[Long, MessageId] (long => MessageId(long))
-  implicit val feedIdDecode: MappedEncoding[FeedId, Long] = MappedEncoding[FeedId, Long] (id => id.onlyValue)
-  implicit val feedIdEncode: MappedEncoding[Long, FeedId] = MappedEncoding[Long, FeedId] (long => FeedId(long))
+  implicit val feedIdDecode: MappedEncoding[InformationId, Long] = MappedEncoding[InformationId, Long] (id => id.onlyValue)
+  implicit val feedIdEncode: MappedEncoding[Long, InformationId] = MappedEncoding[Long, InformationId] (long => InformationId(long))
   implicit val sessionIdDecode: MappedEncoding[SessionId, Long] = MappedEncoding[SessionId, Long] (id => id.onlyValue)
   implicit val sessionIdEncode: MappedEncoding[Long, SessionId] = MappedEncoding[Long, SessionId] (long => SessionId(long))
   implicit val stampIdDecode: MappedEncoding[StampId, Long] = MappedEncoding[StampId, Long] (id => id.onlyValue)
@@ -75,8 +75,8 @@ trait Encoders {
   implicit val mediumTypeEncode: MappedEncoding[Byte, MediumType] = MappedEncoding[Byte, MediumType] (long => MediumType.forName(long))
   implicit val messageTypeDecode: MappedEncoding[MessageType, Byte] = MappedEncoding[MessageType, Byte] (enumValue => enumValue.value)
   implicit val messageTypeEncode: MappedEncoding[Byte, MessageType] = MappedEncoding[Byte, MessageType] (long => MessageType.forName(long))
-  implicit val feedTypeDecode: MappedEncoding[FeedType, Byte] = MappedEncoding[FeedType, Byte] (enumValue => enumValue.value)
-  implicit val feedTypeEncode: MappedEncoding[Byte, FeedType] = MappedEncoding[Byte, FeedType] (long => FeedType.forName(long))
+  implicit val feedTypeDecode: MappedEncoding[InformationType, Byte] = MappedEncoding[InformationType, Byte] (enumValue => enumValue.value)
+  implicit val feedTypeEncode: MappedEncoding[Byte, InformationType] = MappedEncoding[Byte, InformationType] (long => InformationType.forName(long))
   implicit val notificationTypeDecode: MappedEncoding[NotificationType, Byte]
   = MappedEncoding[NotificationType, Byte] (enumValue => enumValue.value)
   implicit val notificationTypeEncode: MappedEncoding[Byte, NotificationType]

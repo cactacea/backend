@@ -6,7 +6,7 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
-addSbtPlugin("io.github.davidmweber" % "flyway-sbt" % "6.0.0")
+addSbtPlugin("io.github.davidmweber" % "flyway-sbt" % "6.0.7")
 
 addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "2.112")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0")

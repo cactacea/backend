@@ -51,7 +51,7 @@ class DAOSpec extends Spec
   val mediumsDAO = injector.instance[MediumsDAO]
   val messagesDAO = injector.instance[MessagesDAO]
   val mutesDAO = injector.instance[MutesDAO]
-  val notificationsDAO = injector.instance[FeedsDAO]
+  val notificationsDAO = injector.instance[InformationsDAO]
   val notificationSettingsDAO = injector.instance[NotificationSettingsDAO]
 
   val deepLinkService = injector.instance[DeepLinkService]

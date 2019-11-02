@@ -3,13 +3,14 @@ package io.github.cactacea.backend.core.infrastructure.dao
 import java.util.Locale
 
 import com.twitter.finagle.mysql.ServerError
-import io.github.cactacea.backend.core.domain.enums.{TweetPrivacyType, FeedType}
+import io.github.cactacea.backend.core.domain.enums.{TweetPrivacyType, InformationType}
 import io.github.cactacea.backend.core.helpers.specs.DAOSpec
-import io.github.cactacea.backend.core.infrastructure.models.Feeds
+import io.github.cactacea.backend.core.infrastructure.models.Informations
 
-class FeedsDAOSpec extends DAOSpec {
+class InformationsDAOSpec extends DAOSpec {
 
   import db._
+  import db.extras._
 
   feature("createInvitation") {
     scenario("should create a invitation notification") {
@@ -24,12 +25,12 @@ class FeedsDAOSpec extends DAOSpec {
         val link = deepLinkService.getInvitation(invitationId)
 
         // result
-        val result = await(db.run(query[Feeds].filter(_.id == lift(notificationId)))).headOption
+        val result = await(db.run(query[Informations].filter(_.id == lift(notificationId)))).headOption
         assert(result.isDefined)
         assert(result.exists(_.id == notificationId))
         assert(result.exists(_.userId == userId))
         assert(result.exists(_.by == sessionId.userId))
-        assert(result.exists(_.feedType == FeedType.invitation))
+        assert(result.exists(_.informationType == InformationType.invitation))
         assert(result.exists(_.url == link))
         assert(result.exists(_.unread))
       }
@@ -46,12 +47,12 @@ class FeedsDAOSpec extends DAOSpec {
         val link = deepLinkService.getRequest(friendRequestId)
 
         // result
-        val result = await(db.run(query[Feeds].filter(_.id == lift(notificationId)))).headOption
+        val result = await(db.run(query[Informations].filter(_.id == lift(notificationId)))).headOption
         assert(result.isDefined)
         assert(result.exists(_.id == notificationId))
         assert(result.exists(_.userId == userId))
         assert(result.exists(_.by == sessionId.userId))
-        assert(result.exists(_.feedType == FeedType.friendRequest))
+        assert(result.exists(_.informationType == InformationType.friendRequest))
         assert(result.exists(_.url == link))
         assert(result.exists(_.unread))
       }
@@ -73,11 +74,11 @@ class FeedsDAOSpec extends DAOSpec {
         val contentId = tweetId.value
 
         // result
-        val result = await(db.run(query[Feeds].filter(_.by == lift(sessionId.userId)).filter(_.contentId == lift(contentId)))).headOption
+        val result = await(db.run(query[Informations].filter(_.by == lift(sessionId.userId)).filter(_.contentId === lift(contentId)))).headOption
         assert(result.isDefined)
         assert(result.exists(_.userId == userId))
         assert(result.exists(_.by == sessionId.userId))
-        assert(result.exists(_.feedType == FeedType.tweet))
+        assert(result.exists(_.informationType == InformationType.tweet))
         assert(result.exists(_.url == link))
         assert(result.exists(_.unread))
       }
@@ -95,12 +96,12 @@ class FeedsDAOSpec extends DAOSpec {
         val link = deepLinkService.getComment(tweetId, commentId)
 
         // result
-        val result = await(db.run(query[Feeds].filter(_.id == lift(notificationId)))).headOption
+        val result = await(db.run(query[Informations].filter(_.id == lift(notificationId)))).headOption
         assert(result.isDefined)
         assert(result.exists(_.id == notificationId))
         assert(result.exists(_.userId == userId))
         assert(result.exists(_.by == sessionId.userId))
-        assert(result.exists(_.feedType == FeedType.tweetReply))
+        assert(result.exists(_.informationType == InformationType.tweetReply))
         assert(result.exists(_.url == link))
         assert(result.exists(_.unread))
       }
@@ -118,12 +119,12 @@ class FeedsDAOSpec extends DAOSpec {
         val link = deepLinkService.getComment(tweetId, commentId)
 
         // result
-        val result = await(db.run(query[Feeds].filter(_.id == lift(notificationId)))).headOption
+        val result = await(db.run(query[Informations].filter(_.id == lift(notificationId)))).headOption
         assert(result.isDefined)
         assert(result.exists(_.id == notificationId))
         assert(result.exists(_.userId == userId))
         assert(result.exists(_.by == sessionId.userId))
-        assert(result.exists(_.feedType == FeedType.commentReply))
+        assert(result.exists(_.informationType == InformationType.commentReply))
         assert(result.exists(_.url == link))
         assert(result.exists(_.unread))
       }
@@ -162,7 +163,7 @@ class FeedsDAOSpec extends DAOSpec {
         await(notificationsDAO.updateReadStatus(Seq(notificationId), userId.sessionId))
 
         // result
-        val result = await(db.run(query[Feeds].filter(_.id == lift(notificationId)))).headOption
+        val result = await(db.run(query[Informations].filter(_.id == lift(notificationId)))).headOption
         assert(result.isDefined)
         assert(result.exists(!_.unread))
       }

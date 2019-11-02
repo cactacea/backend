@@ -2,7 +2,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import java.util.Locale
 
-import io.github.cactacea.backend.core.domain.enums.FeedType
+import io.github.cactacea.backend.core.domain.enums.InformationType
 import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.{FriendRequestId, UserId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -27,7 +27,7 @@ class FriendRequestsRepositorySpec extends RepositorySpec {
 
         val result2 = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), userId1.sessionId))
         assert(result2.headOption.exists(_.contentId.exists(_ == friendRequestId.value)))
-        assert(result2.headOption.exists(_.feedType == FeedType.friendRequest))
+        assert(result2.headOption.exists(_.informationType == InformationType.friendRequest))
       }
     }
 

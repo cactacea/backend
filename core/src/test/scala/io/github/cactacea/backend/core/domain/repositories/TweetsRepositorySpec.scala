@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.domain.repositories
 
 import java.util.Locale
 
-import io.github.cactacea.backend.core.domain.enums.{TweetType, FeedType}
+import io.github.cactacea.backend.core.domain.enums.{TweetType, InformationType}
 import io.github.cactacea.backend.core.helpers.specs.RepositorySpec
 import io.github.cactacea.backend.core.infrastructure.identifiers.{TweetId, MediumId}
 import io.github.cactacea.backend.core.util.exceptions.CactaceaException
@@ -59,7 +59,7 @@ class TweetsRepositorySpec extends RepositorySpec {
         val result = await(notificationsRepository.find(None, 0, 10, Seq(Locale.getDefault()), userId.sessionId))
         assert(result.size == 1)
         assert(result.headOption.exists(_.contentId.exists(_ == tweetId.value)))
-        assert(result.headOption.exists(_.feedType == FeedType.tweet))
+        assert(result.headOption.exists(_.informationType == InformationType.tweet))
       }
     }
 
