@@ -10,7 +10,7 @@ object Dependencies {
     val scalaCheck = "1.14.0"
     val scalaTest = "3.0.4"
     val specs2 = "3.8.6"
-    val mysql = "8.0.15"
+    val mysql = "8.0.18"
     val config = "1.3.4"
     val ficus = "1.4.7"
     val jjwt = "0.9.1"
