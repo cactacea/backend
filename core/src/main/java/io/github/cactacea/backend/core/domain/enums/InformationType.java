@@ -1,6 +1,6 @@
 package io.github.cactacea.backend.core.domain.enums;
 
-public enum FeedType {
+public enum InformationType {
     operator((byte)0),
     invitation((byte)1),
     friendRequest((byte)2),
@@ -10,12 +10,12 @@ public enum FeedType {
 
     public byte value;
 
-    FeedType(byte value) {
+    InformationType(byte value) {
         this.value = value;
     }
 
-    static public FeedType forName(byte value) {
-        for (FeedType e : values()) {
+    static public InformationType forName(byte value) {
+        for (InformationType e : values()) {
             if (e.value == value) {
                 return e;
             }

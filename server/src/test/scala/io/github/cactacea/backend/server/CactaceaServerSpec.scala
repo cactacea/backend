@@ -42,7 +42,7 @@ class CactaceaServerSpec extends FeatureTest
   with InvitationsControllerSpec
   with MessagesControllerSpec
   with MutesControllerSpec
-  with FeedsControllerSpec
+  with InformationsControllerSpec
   with FriendRequestsControllerSpec
   with SessionControllerSpec
   with SessionsControllerSpec

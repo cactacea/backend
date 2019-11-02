@@ -4,7 +4,7 @@ import com.google.inject.Singleton
 import com.twitter.inject.server.FeatureTest
 
 @Singleton
-trait FeedsControllerSpec extends FeatureTest {
+trait InformationsControllerSpec extends FeatureTest {
   self: CactaceaServerSpec =>
 
   test("GET /notifications") (pending)

@@ -49,7 +49,7 @@ class RepositorySpec extends Spec
   val mediumsRepository = injector.instance[MediumsRepository]
   val mutesRepository = injector.instance[MutesRepository]
   val messagesRepository = injector.instance[MessagesRepository]
-  val notificationsRepository = injector.instance[FeedsRepository]
+  val notificationsRepository = injector.instance[InformationssRepository]
   val notificationSettingsRepository = injector.instance[NotificationSettingsRepository]
 
   val usersDAO = injector.instance[UsersDAO]

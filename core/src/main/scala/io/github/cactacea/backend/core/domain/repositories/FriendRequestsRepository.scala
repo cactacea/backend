@@ -3,7 +3,7 @@ package io.github.cactacea.backend.core.domain.repositories
 import com.google.inject.{Inject, Singleton}
 import com.twitter.util.Future
 import io.github.cactacea.backend.core.domain.models.FriendRequest
-import io.github.cactacea.backend.core.infrastructure.dao.{FriendRequestsDAO, FriendsDAO, FeedsDAO}
+import io.github.cactacea.backend.core.infrastructure.dao.{FriendRequestsDAO, FriendsDAO, InformationsDAO}
 import io.github.cactacea.backend.core.infrastructure.identifiers.{FriendRequestId, SessionId, UserId}
 import io.github.cactacea.backend.core.infrastructure.validators.{FriendRequestsValidator, FriendsValidator, UsersValidator}
 
@@ -14,7 +14,7 @@ class FriendRequestsRepository @Inject()(
                                           friendRequestsDAO: FriendRequestsDAO,
                                           friendsDAO: FriendsDAO,
                                           friendRequestsValidator: FriendRequestsValidator,
-                                          notificationsDAO: FeedsDAO
+                                          notificationsDAO: InformationsDAO
                                         ) {
 
   def create(userId: UserId, sessionId: SessionId): Future[FriendRequestId] = {
