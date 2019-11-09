@@ -207,14 +207,6 @@
                         <a href="DevicesService.html" title="">DevicesService</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="FeedLikesService.html" title=""></a>
-                        <a href="FeedLikesService.html" title="">FeedLikesService</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="FeedsService.html" title=""></a>
-                        <a href="FeedsService.html" title="">FeedsService</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
                         <a class="class" href="FollowersService.html" title=""></a>
                         <a href="FollowersService.html" title="">FollowersService</a>
                       </li><li class="current-entities indented7">
@@ -229,6 +221,10 @@
                         <span class="separator"></span>
                         <a class="class" href="FriendsService.html" title=""></a>
                         <a href="FriendsService.html" title="">FriendsService</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="InformationsService.html" title=""></a>
+                        <a href="InformationsService.html" title="">InformationsService</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="InvitationsService.html" title=""></a>
@@ -247,12 +243,16 @@
                         <a href="MutesService.html" title="">MutesService</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="NotificationsService.html" title=""></a>
-                        <a href="NotificationsService.html" title="">NotificationsService</a>
-                      </li><li class="current-entities indented7">
-                        <span class="separator"></span>
                         <a class="class" href="" title=""></a>
                         <a href="" title="">SettingsService</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="TweetLikesService.html" title=""></a>
+                        <a href="TweetLikesService.html" title="">TweetLikesService</a>
+                      </li><li class="current-entities indented7">
+                        <span class="separator"></span>
+                        <a class="class" href="TweetsService.html" title=""></a>
+                        <a href="TweetsService.html" title="">TweetsService</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="UserChannelsService.html" title=""></a>
@@ -348,9 +348,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.application.services.SettingsService#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(databaseService:io.github.cactacea.backend.core.application.components.services.DatabaseService,notificationSettingsRepository:io.github.cactacea.backend.core.domain.repositories.PushNotificationSettingsRepository):io.github.cactacea.backend.core.application.services.SettingsService"></a><a id="&lt;init&gt;:SettingsService"></a>
+      <a id="&lt;init&gt;(databaseService:io.github.cactacea.backend.core.application.components.services.DatabaseService,notificationSettingsRepository:io.github.cactacea.backend.core.domain.repositories.NotificationSettingsRepository):io.github.cactacea.backend.core.application.services.SettingsService"></a><a id="&lt;init&gt;:SettingsService"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/SettingsService.html#&lt;init&gt;(databaseService:io.github.cactacea.backend.core.application.components.services.DatabaseService,notificationSettingsRepository:io.github.cactacea.backend.core.domain.repositories.PushNotificationSettingsRepository):io.github.cactacea.backend.core.application.services.SettingsService" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/SettingsService.html#&lt;init&gt;(databaseService:io.github.cactacea.backend.core.application.components.services.DatabaseService,notificationSettingsRepository:io.github.cactacea.backend.core.domain.repositories.NotificationSettingsRepository):io.github.cactacea.backend.core.application.services.SettingsService" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -359,7 +359,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SettingsService</span><span class="params">(<span name="databaseService">databaseService: <a href="../components/services/DatabaseService.html" class="extype" name="io.github.cactacea.backend.core.application.components.services.DatabaseService">DatabaseService</a></span>, <span name="notificationSettingsRepository">notificationSettingsRepository: <a href="../../domain/repositories/PushNotificationSettingsRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.PushNotificationSettingsRepository">PushNotificationSettingsRepository</a></span>)</span>
+        <span class="name">SettingsService</span><span class="params">(<span name="databaseService">databaseService: <a href="../components/services/DatabaseService.html" class="extype" name="io.github.cactacea.backend.core.application.components.services.DatabaseService">DatabaseService</a></span>, <span name="notificationSettingsRepository">notificationSettingsRepository: <a href="../../domain/repositories/NotificationSettingsRepository.html" class="extype" name="io.github.cactacea.backend.core.domain.repositories.NotificationSettingsRepository">NotificationSettingsRepository</a></span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -641,10 +641,10 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.application.services.SettingsService#findPushNotificationSettings" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="findPushNotificationSettings(sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.PushNotificationSetting]"></a><a id="findPushNotificationSettings(SessionId):Future[PushNotificationSetting]"></a>
+    </li><li name="io.github.cactacea.backend.core.application.services.SettingsService#findNotificationSettings" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="findNotificationSettings(sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.NotificationSetting]"></a><a id="findNotificationSettings(SessionId):Future[NotificationSetting]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/SettingsService.html#findPushNotificationSettings(sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.PushNotificationSetting]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/SettingsService.html#findNotificationSettings(sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[io.github.cactacea.backend.core.domain.models.NotificationSetting]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -653,7 +653,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">findPushNotificationSettings</span><span class="params">(<span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../domain/models/PushNotificationSetting.html" class="extype" name="io.github.cactacea.backend.core.domain.models.PushNotificationSetting">PushNotificationSetting</a>]</span>
+        <span class="name">findNotificationSettings</span><span class="params">(<span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<a href="../../domain/models/NotificationSetting.html" class="extype" name="io.github.cactacea.backend.core.domain.models.NotificationSetting">NotificationSetting</a>]</span>
       </span>
       
       
@@ -820,10 +820,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.application.services.SettingsService#updatePushNotificationSettings" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="updatePushNotificationSettings(feed:Boolean,comment:Boolean,friendRequest:Boolean,message:Boolean,channelMessage:Boolean,invitation:Boolean,showMessage:Boolean,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="updatePushNotificationSettings(Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,SessionId):Future[Unit]"></a>
+    </li><li name="io.github.cactacea.backend.core.application.services.SettingsService#updateNotificationSettings" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="updateNotificationSettings(tweet:Boolean,comment:Boolean,friendRequest:Boolean,message:Boolean,channelMessage:Boolean,invitation:Boolean,showMessage:Boolean,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]"></a><a id="updateNotificationSettings(Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,SessionId):Future[Unit]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/SettingsService.html#updatePushNotificationSettings(feed:Boolean,comment:Boolean,friendRequest:Boolean,message:Boolean,channelMessage:Boolean,invitation:Boolean,showMessage:Boolean,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/application/services/SettingsService.html#updateNotificationSettings(tweet:Boolean,comment:Boolean,friendRequest:Boolean,message:Boolean,channelMessage:Boolean,invitation:Boolean,showMessage:Boolean,sessionId:io.github.cactacea.backend.core.infrastructure.identifiers.SessionId):com.twitter.util.Future[Unit]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -832,7 +832,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">updatePushNotificationSettings</span><span class="params">(<span name="feed">feed: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="comment">comment: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequest">friendRequest: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="message">message: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="channelMessage">channelMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="invitation">invitation: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="showMessage">showMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+        <span class="name">updateNotificationSettings</span><span class="params">(<span name="tweet">tweet: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="comment">comment: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequest">friendRequest: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="message">message: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="channelMessage">channelMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="invitation">invitation: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="showMessage">showMessage: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sessionId">sessionId: <a href="../../infrastructure/identifiers/SessionId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.SessionId">SessionId</a></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
       

@@ -194,13 +194,13 @@
                         <a class="class" href="Destination.html" title=""></a>
                         <a href="Destination.html" title="">Destination</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Feed$.html" title=""></a>
-                        <a class="class" href="Feed.html" title=""></a>
-                        <a href="Feed.html" title="">Feed</a>
-                      </li><li class="current-entities indented7">
                         <a class="object" href="FriendRequest$.html" title=""></a>
                         <a class="class" href="FriendRequest.html" title=""></a>
                         <a href="FriendRequest.html" title="">FriendRequest</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="Information$.html" title=""></a>
+                        <a class="class" href="Information.html" title=""></a>
+                        <a href="Information.html" title="">Information</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Invitation$.html" title=""></a>
                         <a class="class" href="Invitation.html" title=""></a>
@@ -214,21 +214,21 @@
                         <a class="class" href="Message.html" title=""></a>
                         <a href="Message.html" title="">Message</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Notification$.html" title=""></a>
+                        <span class="separator"></span>
                         <a class="class" href="" title=""></a>
                         <a href="" title="">Notification</a>
                       </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="PushNotification.html" title=""></a>
-                        <a href="PushNotification.html" title="">PushNotification</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="PushNotificationSetting$.html" title=""></a>
-                        <a class="class" href="PushNotificationSetting.html" title=""></a>
-                        <a href="PushNotificationSetting.html" title="">PushNotificationSetting</a>
+                        <a class="object" href="NotificationSetting$.html" title=""></a>
+                        <a class="class" href="NotificationSetting.html" title=""></a>
+                        <a href="NotificationSetting.html" title="">NotificationSetting</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="Tweet$.html" title=""></a>
+                        <a class="class" href="Tweet.html" title=""></a>
+                        <a href="Tweet.html" title="">Tweet</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="User$.html" title=""></a>
                         <a class="class" href="User.html" title=""></a>
@@ -244,16 +244,14 @@
           <div id="content">
             <body class="class type">
       <div id="definition">
-        <a href="Notification$.html" title="See companion object"><div class="big-circle class-companion-object">c</div></a>
+        <div class="big-circle class">c</div>
         <p id="owner"><a href="../../../../../../index.html" class="extype" name="io">io</a>.<a href="../../../../../index.html" class="extype" name="io.github">github</a>.<a href="../../../../index.html" class="extype" name="io.github.cactacea">cactacea</a>.<a href="../../../index.html" class="extype" name="io.github.cactacea.backend">backend</a>.<a href="../../index.html" class="extype" name="io.github.cactacea.backend.core">core</a>.<a href="../index.html" class="extype" name="io.github.cactacea.backend.core.domain">domain</a>.<a href="index.html" class="extype" name="io.github.cactacea.backend.core.domain.models">models</a></p>
-        <h1><a href="Notification$.html" title="See companion object">Notification</a><span class="permalink">
+        <h1>Notification<span class="permalink">
       <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
-        <h3><span class="morelinks"><div>
-            Companion <a href="Notification$.html" title="See companion object">object Notification</a>
-          </div></span></h3>
+        <h3><span class="morelinks"></span></h3>
       </div>
 
       <h4 id="signature" class="signature">
@@ -262,7 +260,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Notification</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/NotificationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId">NotificationId</a></span>, <span name="notificationType">notificationType: <a href="../enums/NotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.NotificationType">NotificationType</a></span>, <span name="contentId">contentId: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="url">url: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="notifiedAt">notifiedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Notification</span><span class="params">(<span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="message">message: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="url">url: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinations">destinations: <span class="extype" name="scala.Seq">Seq</span>[<a href="Destination.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Destination">Destination</a>]</span>, <span name="notificationType">notificationType: <a href="../enums/NotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.NotificationType">NotificationType</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -323,9 +321,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.models.Notification#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId,notificationType:io.github.cactacea.backend.core.domain.enums.NotificationType,contentId:Option[Long],message:String,url:String,notifiedAt:Long,next:Long):io.github.cactacea.backend.core.domain.models.Notification"></a><a id="&lt;init&gt;:Notification"></a>
+      <a id="&lt;init&gt;(displayName:String,message:Option[String],postedAt:Long,url:String,destinations:Seq[io.github.cactacea.backend.core.domain.models.Destination],notificationType:io.github.cactacea.backend.core.domain.enums.NotificationType):io.github.cactacea.backend.core.domain.models.Notification"></a><a id="&lt;init&gt;:Notification"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId,notificationType:io.github.cactacea.backend.core.domain.enums.NotificationType,contentId:Option[Long],message:String,url:String,notifiedAt:Long,next:Long):io.github.cactacea.backend.core.domain.models.Notification" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#&lt;init&gt;(displayName:String,message:Option[String],postedAt:Long,url:String,destinations:Seq[io.github.cactacea.backend.core.domain.models.Destination],notificationType:io.github.cactacea.backend.core.domain.enums.NotificationType):io.github.cactacea.backend.core.domain.models.Notification" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -334,7 +332,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Notification</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/NotificationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId">NotificationId</a></span>, <span name="notificationType">notificationType: <a href="../enums/NotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.NotificationType">NotificationType</a></span>, <span name="contentId">contentId: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="url">url: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="notifiedAt">notifiedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span>
+        <span class="name">Notification</span><span class="params">(<span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="message">message: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="postedAt">postedAt: <span class="extype" name="scala.Long">Long</span></span>, <span name="url">url: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinations">destinations: <span class="extype" name="scala.Seq">Seq</span>[<a href="Destination.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Destination">Destination</a>]</span>, <span name="notificationType">notificationType: <a href="../enums/NotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.NotificationType">NotificationType</a></span>)</span>
       </span>
       
       
@@ -479,10 +477,10 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.Notification#contentId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="contentId:Option[Long]"></a>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Notification#destinations" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="destinations:Seq[io.github.cactacea.backend.core.domain.models.Destination]"></a><a id="destinations:Seq[Destination]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#contentId:Option[Long]" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#destinations:Seq[io.github.cactacea.backend.core.domain.models.Destination]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -491,7 +489,23 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">contentId</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">destinations</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="Destination.html" class="extype" name="io.github.cactacea.backend.core.domain.models.Destination">Destination</a>]</span>
+      </span>
+      
+      
+    </li><li name="io.github.cactacea.backend.core.domain.models.Notification#displayName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="displayName:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#displayName:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">displayName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       
@@ -655,22 +669,6 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.Notification#id" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="id:io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId"></a><a id="id:NotificationId"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#id:io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">id</span><span class="result">: <a href="../../infrastructure/identifiers/NotificationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId">NotificationId</a></span>
-      </span>
-      
-      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
@@ -688,9 +686,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.domain.models.Notification#message" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="message:String"></a>
+      <a id="message:Option[String]"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#message:String" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#message:Option[String]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -699,7 +697,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">message</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">message</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       
@@ -719,22 +717,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.Notification#next" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="next:Long"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#next:Long" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">next</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
-      </span>
-      
-      
     </li><li name="io.github.cactacea.backend.core.domain.models.Notification#notificationType" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="notificationType:io.github.cactacea.backend.core.domain.enums.NotificationType"></a><a id="notificationType:NotificationType"></a>
       <span class="permalink">
@@ -748,22 +730,6 @@
       </span>
       <span class="symbol">
         <span class="name">notificationType</span><span class="result">: <a href="../enums/NotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.NotificationType">NotificationType</a></span>
-      </span>
-      
-      
-    </li><li name="io.github.cactacea.backend.core.domain.models.Notification#notifiedAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="notifiedAt:Long"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#notifiedAt:Long" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">notifiedAt</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       
       
@@ -805,6 +771,22 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.Notification#postedAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="postedAt:Long"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/Notification.html#postedAt:Long" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">postedAt</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">

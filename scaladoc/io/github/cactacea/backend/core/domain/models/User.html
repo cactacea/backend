@@ -194,13 +194,13 @@
                         <a class="class" href="Destination.html" title=""></a>
                         <a href="Destination.html" title="">Destination</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Feed$.html" title=""></a>
-                        <a class="class" href="Feed.html" title=""></a>
-                        <a href="Feed.html" title="">Feed</a>
-                      </li><li class="current-entities indented7">
                         <a class="object" href="FriendRequest$.html" title=""></a>
                         <a class="class" href="FriendRequest.html" title=""></a>
                         <a href="FriendRequest.html" title="">FriendRequest</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="Information$.html" title=""></a>
+                        <a class="class" href="Information.html" title=""></a>
+                        <a href="Information.html" title="">Information</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="Invitation$.html" title=""></a>
                         <a class="class" href="Invitation.html" title=""></a>
@@ -214,21 +214,21 @@
                         <a class="class" href="Message.html" title=""></a>
                         <a href="Message.html" title="">Message</a>
                       </li><li class="current-entities indented7">
-                        <a class="object" href="Notification$.html" title=""></a>
+                        <span class="separator"></span>
                         <a class="class" href="Notification.html" title=""></a>
                         <a href="Notification.html" title="">Notification</a>
                       </li><li class="current-entities indented7">
-                        <span class="separator"></span>
-                        <a class="class" href="PushNotification.html" title=""></a>
-                        <a href="PushNotification.html" title="">PushNotification</a>
-                      </li><li class="current-entities indented7">
-                        <a class="object" href="PushNotificationSetting$.html" title=""></a>
-                        <a class="class" href="PushNotificationSetting.html" title=""></a>
-                        <a href="PushNotificationSetting.html" title="">PushNotificationSetting</a>
+                        <a class="object" href="NotificationSetting$.html" title=""></a>
+                        <a class="class" href="NotificationSetting.html" title=""></a>
+                        <a href="NotificationSetting.html" title="">NotificationSetting</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="StorageFile.html" title=""></a>
                         <a href="StorageFile.html" title="">StorageFile</a>
+                      </li><li class="current-entities indented7">
+                        <a class="object" href="Tweet$.html" title=""></a>
+                        <a class="class" href="Tweet.html" title=""></a>
+                        <a href="Tweet.html" title="">Tweet</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="User$.html" title=""></a>
                         <a class="class" href="" title=""></a>
@@ -262,7 +262,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">User</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="profileImageUrl">profileImageUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="follow">follow: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followCount">followCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followerCount">followerCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendCount">friendCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="feedCount">feedCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="muted">muted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="blocked">blocked: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="web">web: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="birthday">birthday: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="location">location: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="bio">bio: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="joinedAt">joinedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="userStatus">userStatus: <a href="../enums/UserStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.UserStatusType">UserStatusType</a></span>, <span name="signedOutAt">signedOutAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">User</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="profileImageUrl">profileImageUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="follow">follow: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followCount">followCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followerCount">followerCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendCount">friendCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="tweetCount">tweetCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="muted">muted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="blocked">blocked: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="web">web: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="birthday">birthday: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="location">location: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="bio">bio: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="joinedAt">joinedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="userStatus">userStatus: <a href="../enums/UserStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.UserStatusType">UserStatusType</a></span>, <span name="signedOutAt">signedOutAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -323,9 +323,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.github.cactacea.backend.core.domain.models.User#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,userName:String,displayName:String,profileImageUrl:Option[String],isFriend:Boolean,friendRequestInProgress:Boolean,follow:Boolean,isFollower:Boolean,followCount:Long,followerCount:Long,friendCount:Long,feedCount:Long,muted:Boolean,blocked:Boolean,web:Option[String],birthday:Option[Long],location:Option[String],bio:Option[String],joinedAt:Option[Long],userStatus:io.github.cactacea.backend.core.domain.enums.UserStatusType,signedOutAt:Option[Long],next:Long):io.github.cactacea.backend.core.domain.models.User"></a><a id="&lt;init&gt;:User"></a>
+      <a id="&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,userName:String,displayName:String,profileImageUrl:Option[String],isFriend:Boolean,friendRequestInProgress:Boolean,follow:Boolean,isFollower:Boolean,followCount:Long,followerCount:Long,friendCount:Long,tweetCount:Long,muted:Boolean,blocked:Boolean,web:Option[String],birthday:Option[Long],location:Option[String],bio:Option[String],joinedAt:Option[Long],userStatus:io.github.cactacea.backend.core.domain.enums.UserStatusType,signedOutAt:Option[Long],next:Long):io.github.cactacea.backend.core.domain.models.User"></a><a id="&lt;init&gt;:User"></a>
       <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/User.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,userName:String,displayName:String,profileImageUrl:Option[String],isFriend:Boolean,friendRequestInProgress:Boolean,follow:Boolean,isFollower:Boolean,followCount:Long,followerCount:Long,friendCount:Long,feedCount:Long,muted:Boolean,blocked:Boolean,web:Option[String],birthday:Option[Long],location:Option[String],bio:Option[String],joinedAt:Option[Long],userStatus:io.github.cactacea.backend.core.domain.enums.UserStatusType,signedOutAt:Option[Long],next:Long):io.github.cactacea.backend.core.domain.models.User" title="Permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/User.html#&lt;init&gt;(id:io.github.cactacea.backend.core.infrastructure.identifiers.UserId,userName:String,displayName:String,profileImageUrl:Option[String],isFriend:Boolean,friendRequestInProgress:Boolean,follow:Boolean,isFollower:Boolean,followCount:Long,followerCount:Long,friendCount:Long,tweetCount:Long,muted:Boolean,blocked:Boolean,web:Option[String],birthday:Option[Long],location:Option[String],bio:Option[String],joinedAt:Option[Long],userStatus:io.github.cactacea.backend.core.domain.enums.UserStatusType,signedOutAt:Option[Long],next:Long):io.github.cactacea.backend.core.domain.models.User" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -334,7 +334,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">User</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="profileImageUrl">profileImageUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="follow">follow: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followCount">followCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followerCount">followerCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendCount">friendCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="feedCount">feedCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="muted">muted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="blocked">blocked: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="web">web: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="birthday">birthday: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="location">location: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="bio">bio: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="joinedAt">joinedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="userStatus">userStatus: <a href="../enums/UserStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.UserStatusType">UserStatusType</a></span>, <span name="signedOutAt">signedOutAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span>
+        <span class="name">User</span><span class="params">(<span name="id">id: <a href="../../infrastructure/identifiers/UserId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.UserId">UserId</a></span>, <span name="userName">userName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="displayName">displayName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="profileImageUrl">profileImageUrl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isFriend">isFriend: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="friendRequestInProgress">friendRequestInProgress: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="follow">follow: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isFollower">isFollower: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="followCount">followCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="followerCount">followerCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="friendCount">friendCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="tweetCount">tweetCount: <span class="extype" name="scala.Long">Long</span></span>, <span name="muted">muted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="blocked">blocked: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="web">web: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="birthday">birthday: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="location">location: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="bio">bio: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="joinedAt">joinedAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="userStatus">userStatus: <a href="../enums/UserStatusType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.UserStatusType">UserStatusType</a></span>, <span name="signedOutAt">signedOutAt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="next">next: <span class="extype" name="scala.Long">Long</span></span>)</span>
       </span>
       
       
@@ -639,22 +639,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.domain.models.User#feedCount" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="feedCount:Long"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/User.html#feedCount:Long" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">feedCount</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
@@ -1029,6 +1013,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.domain.models.User#tweetCount" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="tweetCount:Long"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/core/domain/models/User.html#tweetCount:Long" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetCount</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      
+      
     </li><li name="io.github.cactacea.backend.core.domain.models.User#userName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="userName:String"></a>
       <span class="permalink">

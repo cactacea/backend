@@ -1257,6 +1257,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>IOMonad</dd></dl></div>
+    </li><li name="io.getquill.context.Context.Session" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Session"></a><a id="Session:Session"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#Session" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Session</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Context</dd></dl></div>
     </li><li name="io.getquill.dsl.DynamicQueryDsl.ToDynamicAction" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ToDynamicAction[T]extendsAnyRef"></a><a id="ToDynamicAction[T]:getquill.dsl.CoreDsl.ToDynamicAction[T]"></a>
       <span class="permalink">
@@ -2581,9 +2597,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FinagleMysqlContext</dd></dl></div>
     </li><li name="io.getquill.FinagleMysqlContext#executeActionReturning" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="executeActionReturning[T](sql:String,prepare:FinagleMysqlContext.this.Prepare,extractor:FinagleMysqlContext.this.Extractor[T],returningColumn:String):com.twitter.util.Future[T]"></a><a id="executeActionReturning[T](String,Prepare,Extractor[T],String):Future[T]"></a>
+      <a id="executeActionReturning[T](sql:String,prepare:FinagleMysqlContext.this.Prepare,extractor:FinagleMysqlContext.this.Extractor[T],returningAction:io.getquill.ReturnAction):com.twitter.util.Future[T]"></a><a id="executeActionReturning[T](String,Prepare,Extractor[T],ReturnAction):Future[T]"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#executeActionReturning[T](sql:String,prepare:FinagleMysqlContext.this.Prepare,extractor:FinagleMysqlContext.this.Extractor[T],returningColumn:String):com.twitter.util.Future[T]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#executeActionReturning[T](sql:String,prepare:FinagleMysqlContext.this.Prepare,extractor:FinagleMysqlContext.this.Extractor[T],returningAction:io.getquill.ReturnAction):com.twitter.util.Future[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -2592,7 +2608,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">executeActionReturning</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="sql">sql: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="prepare">prepare: <a href="#Prepare=Context.this.PrepareRow=&gt;(List[Any],Context.this.PrepareRow)" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Prepare">Prepare</a></span>, <span name="extractor">extractor: <a href="#Extractor[T]=Context.this.ResultRow=&gt;T" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Extractor">Extractor</a>[<span class="extype" name="io.getquill.FinagleMysqlContext.executeActionReturning.T">T</span>]</span>, <span name="returningColumn">returningColumn: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="io.getquill.FinagleMysqlContext.executeActionReturning.T">T</span>]</span>
+        <span class="name">executeActionReturning</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="sql">sql: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="prepare">prepare: <a href="#Prepare=Context.this.PrepareRow=&gt;(List[Any],Context.this.PrepareRow)" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Prepare">Prepare</a></span>, <span name="extractor">extractor: <a href="#Extractor[T]=Context.this.ResultRow=&gt;T" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Extractor">Extractor</a>[<span class="extype" name="io.getquill.FinagleMysqlContext.executeActionReturning.T">T</span>]</span>, <span name="returningAction">returningAction: <span class="extype" name="io.getquill.ReturnAction">ReturnAction</span></span>)</span><span class="result">: <span class="extype" name="com.twitter.util.Future">Future</span>[<span class="extype" name="io.getquill.FinagleMysqlContext.executeActionReturning.T">T</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FinagleMysqlContext</dd></dl></div>
@@ -2661,9 +2677,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FinagleMysqlContext</dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedIdDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feedIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,Long]"></a><a id="feedIdDecode:MappedEncoding[FeedId,Long]"></a>
+      <a id="feedIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.InformationId,Long]"></a><a id="feedIdDecode:MappedEncoding[InformationId,Long]"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.FeedId,Long]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.InformationId,Long]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -2672,14 +2688,14 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">feedIdDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a>, <span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">feedIdDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../infrastructure/identifiers/InformationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.InformationId">InformationId</a>, <span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedIdEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feedIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.FeedId]"></a><a id="feedIdEncode:MappedEncoding[Long,FeedId]"></a>
+      <a id="feedIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.InformationId]"></a><a id="feedIdEncode:MappedEncoding[Long,InformationId]"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.FeedId]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.InformationId]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -2688,14 +2704,14 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">feedIdEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Long">Long</span>, <a href="../../../infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a>]</span>
+        <span class="name">feedIdEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Long">Long</span>, <a href="../../../infrastructure/identifiers/InformationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.InformationId">InformationId</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedLikeIdDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feedLikeIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.FeedLikeId,Long]"></a><a id="feedLikeIdDecode:MappedEncoding[FeedLikeId,Long]"></a>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedTypeDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="feedTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.InformationType,Byte]"></a><a id="feedTypeDecode:MappedEncoding[InformationType,Byte]"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedLikeIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.FeedLikeId,Long]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.InformationType,Byte]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -2704,14 +2720,14 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">feedLikeIdDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../infrastructure/identifiers/FeedLikeId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedLikeId">FeedLikeId</a>, <span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">feedTypeDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../domain/enums/InformationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.InformationType">InformationType</a>, <span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedLikeIdEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feedLikeIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.FeedLikeId]"></a><a id="feedLikeIdEncode:MappedEncoding[Long,FeedLikeId]"></a>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedTypeEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="feedTypeEncode:Encoders.this.MappedEncoding[Byte,io.github.cactacea.backend.core.domain.enums.InformationType]"></a><a id="feedTypeEncode:MappedEncoding[Byte,InformationType]"></a>
       <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedLikeIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.FeedLikeId]" title="Permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedTypeEncode:Encoders.this.MappedEncoding[Byte,io.github.cactacea.backend.core.domain.enums.InformationType]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -2720,71 +2736,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">feedLikeIdEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Long">Long</span>, <a href="../../../infrastructure/identifiers/FeedLikeId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedLikeId">FeedLikeId</a>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedPrivacyTypeDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feedPrivacyTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.FeedPrivacyType,Byte]"></a><a id="feedPrivacyTypeDecode:MappedEncoding[FeedPrivacyType,Byte]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedPrivacyTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.FeedPrivacyType,Byte]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">feedPrivacyTypeDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../domain/enums/FeedPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FeedPrivacyType">FeedPrivacyType</a>, <span class="extype" name="scala.Byte">Byte</span>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedPrivacyTypeEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feedPrivacyTypeEncode:Encoders.this.MappedEncoding[Byte,io.github.cactacea.backend.core.domain.enums.FeedPrivacyType]"></a><a id="feedPrivacyTypeEncode:MappedEncoding[Byte,FeedPrivacyType]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedPrivacyTypeEncode:Encoders.this.MappedEncoding[Byte,io.github.cactacea.backend.core.domain.enums.FeedPrivacyType]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">feedPrivacyTypeEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Byte">Byte</span>, <a href="../../../domain/enums/FeedPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.FeedPrivacyType">FeedPrivacyType</a>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedReportIdDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feedReportIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.FeedReportId,Long]"></a><a id="feedReportIdDecode:MappedEncoding[FeedReportId,Long]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedReportIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.FeedReportId,Long]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">feedReportIdDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../infrastructure/identifiers/FeedReportId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedReportId">FeedReportId</a>, <span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#feedReportIdEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feedReportIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.FeedReportId]"></a><a id="feedReportIdEncode:MappedEncoding[Long,FeedReportId]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#feedReportIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.FeedReportId]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">feedReportIdEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Long">Long</span>, <a href="../../../infrastructure/identifiers/FeedReportId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedReportId">FeedReportId</a>]</span>
+        <span class="name">feedTypeEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Byte">Byte</span>, <a href="../../../domain/enums/InformationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.InformationType">InformationType</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
@@ -3743,38 +3695,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#notificationIdDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="notificationIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId,Long]"></a><a id="notificationIdDecode:MappedEncoding[NotificationId,Long]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#notificationIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId,Long]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">notificationIdDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../infrastructure/identifiers/NotificationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId">NotificationId</a>, <span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#notificationIdEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="notificationIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId]"></a><a id="notificationIdEncode:MappedEncoding[Long,NotificationId]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#notificationIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">notificationIdEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Long">Long</span>, <a href="../../../infrastructure/identifiers/NotificationId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.NotificationId">NotificationId</a>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
     </li><li name="io.github.cactacea.backend.core.util.db.Encoders#notificationTypeDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notificationTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.NotificationType,Byte]"></a><a id="notificationTypeDecode:MappedEncoding[NotificationType,Byte]"></a>
       <span class="permalink">
@@ -3893,6 +3813,54 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FinagleMysqlContext → TwitterFutureIOMonad</dd></dl></div>
+    </li><li name="io.getquill.context.Context#prepare" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="prepare(quoted:Context.this.Quoted[Context.this.BatchAction[Context.this.Action[_]]]):Context.this.Session=&gt;Context.this.Result[List[Context.this.PrepareRow]]"></a><a id="prepare(Quoted[BatchAction[Action[_]]]):(Session)⇒Result[List[PrepareRow]]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#prepare(quoted:Context.this.Quoted[Context.this.BatchAction[Context.this.Action[_]]]):Context.this.Session=&gt;Context.this.Result[List[Context.this.PrepareRow]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">prepare</span><span class="params">(<span name="quoted">quoted: <a href="#Quoted[+T]extendsAnyRef" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Quoted">Quoted</a>[<a href="#BatchAction[+A&lt;:QueryDsl.this.Action[_]]extendsAnyRef" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.BatchAction">BatchAction</a>[<a href="#Action[E]extendsAnyRef" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Action">Action</a>[_]]]</span>)</span><span class="result">: (<a href="#Session" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Session">Session</a>) ⇒ <a href="#Result[T]=com.twitter.util.Future[T]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Result">Result</a>[<span class="extype" name="scala.List">List</span>[<a href="#PrepareRow=List[com.twitter.finagle.mysql.Parameter]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.PrepareRow">PrepareRow</a>]]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Context</dd></dl></div>
+    </li><li name="io.getquill.context.Context#prepare" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="prepare(quoted:Context.this.Quoted[Context.this.Action[_]]):Context.this.Session=&gt;Context.this.Result[Context.this.PrepareRow]"></a><a id="prepare(Quoted[Action[_]]):(Session)⇒Result[PrepareRow]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#prepare(quoted:Context.this.Quoted[Context.this.Action[_]]):Context.this.Session=&gt;Context.this.Result[Context.this.PrepareRow]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">prepare</span><span class="params">(<span name="quoted">quoted: <a href="#Quoted[+T]extendsAnyRef" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Quoted">Quoted</a>[<a href="#Action[E]extendsAnyRef" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Action">Action</a>[_]]</span>)</span><span class="result">: (<a href="#Session" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Session">Session</a>) ⇒ <a href="#Result[T]=com.twitter.util.Future[T]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Result">Result</a>[<a href="#PrepareRow=List[com.twitter.finagle.mysql.Parameter]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.PrepareRow">PrepareRow</a>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Context</dd></dl></div>
+    </li><li name="io.getquill.context.Context#prepare" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="prepare[T](quoted:Context.this.Quoted[Context.this.Query[T]]):Context.this.Session=&gt;Context.this.Result[Context.this.PrepareRow]"></a><a id="prepare[T](Quoted[Query[T]]):(Session)⇒Result[PrepareRow]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#prepare[T](quoted:Context.this.Quoted[Context.this.Query[T]]):Context.this.Session=&gt;Context.this.Result[Context.this.PrepareRow]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">prepare</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="quoted">quoted: <a href="#Quoted[+T]extendsAnyRef" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Quoted">Quoted</a>[<a href="#Query[+T]extendsAnyRef" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Query">Query</a>[<span class="extype" name="io.getquill.context.Context.prepare.T">T</span>]]</span>)</span><span class="result">: (<a href="#Session" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Session">Session</a>) ⇒ <a href="#Result[T]=com.twitter.util.Future[T]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.Result">Result</a>[<a href="#PrepareRow=List[com.twitter.finagle.mysql.Parameter]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.PrepareRow">PrepareRow</a>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Context</dd></dl></div>
     </li><li name="io.getquill.context.TranslateContextBase#prepareParam" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="prepareParam(param:Any):String"></a><a id="prepareParam(Any):String"></a>
       <span class="permalink">
@@ -3928,38 +3896,6 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FinagleMysqlContext → Context</dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#pushNotificationTypeDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="pushNotificationTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.PushNotificationType,Byte]"></a><a id="pushNotificationTypeDecode:MappedEncoding[PushNotificationType,Byte]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#pushNotificationTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.PushNotificationType,Byte]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pushNotificationTypeDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../domain/enums/PushNotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.PushNotificationType">PushNotificationType</a>, <span class="extype" name="scala.Byte">Byte</span>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#pushNotificationTypeEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="pushNotificationTypeEncode:Encoders.this.MappedEncoding[Byte,io.github.cactacea.backend.core.domain.enums.PushNotificationType]"></a><a id="pushNotificationTypeEncode:MappedEncoding[Byte,PushNotificationType]"></a>
-      <span class="permalink">
-      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#pushNotificationTypeEncode:Encoders.this.MappedEncoding[Byte,io.github.cactacea.backend.core.domain.enums.PushNotificationType]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pushNotificationTypeEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Byte">Byte</span>, <a href="../../../domain/enums/PushNotificationType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.PushNotificationType">PushNotificationType</a>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
     </li><li name="io.getquill.dsl.QueryDsl#query" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="query[T]:QueryDsl.this.EntityQuery[T]"></a><a id="query[T]:EntityQuery[T]"></a>
       <span class="permalink">
@@ -4910,6 +4846,134 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TranslateContextBase</dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#tweetIdDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweetIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.TweetId,Long]"></a><a id="tweetIdDecode:MappedEncoding[TweetId,Long]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#tweetIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.TweetId,Long]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetIdDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../infrastructure/identifiers/TweetId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.TweetId">TweetId</a>, <span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#tweetIdEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweetIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.TweetId]"></a><a id="tweetIdEncode:MappedEncoding[Long,TweetId]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#tweetIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.TweetId]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetIdEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Long">Long</span>, <a href="../../../infrastructure/identifiers/TweetId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.TweetId">TweetId</a>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#tweetLikeIdDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweetLikeIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.TweetLikeId,Long]"></a><a id="tweetLikeIdDecode:MappedEncoding[TweetLikeId,Long]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#tweetLikeIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.TweetLikeId,Long]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetLikeIdDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../infrastructure/identifiers/TweetLikeId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.TweetLikeId">TweetLikeId</a>, <span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#tweetLikeIdEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweetLikeIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.TweetLikeId]"></a><a id="tweetLikeIdEncode:MappedEncoding[Long,TweetLikeId]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#tweetLikeIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.TweetLikeId]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetLikeIdEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Long">Long</span>, <a href="../../../infrastructure/identifiers/TweetLikeId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.TweetLikeId">TweetLikeId</a>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#tweetPrivacyTypeDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweetPrivacyTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.TweetPrivacyType,Byte]"></a><a id="tweetPrivacyTypeDecode:MappedEncoding[TweetPrivacyType,Byte]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#tweetPrivacyTypeDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.domain.enums.TweetPrivacyType,Byte]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetPrivacyTypeDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../domain/enums/TweetPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.TweetPrivacyType">TweetPrivacyType</a>, <span class="extype" name="scala.Byte">Byte</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#tweetPrivacyTypeEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweetPrivacyTypeEncode:Encoders.this.MappedEncoding[Byte,io.github.cactacea.backend.core.domain.enums.TweetPrivacyType]"></a><a id="tweetPrivacyTypeEncode:MappedEncoding[Byte,TweetPrivacyType]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#tweetPrivacyTypeEncode:Encoders.this.MappedEncoding[Byte,io.github.cactacea.backend.core.domain.enums.TweetPrivacyType]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetPrivacyTypeEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Byte">Byte</span>, <a href="../../../domain/enums/TweetPrivacyType.html" class="extype" name="io.github.cactacea.backend.core.domain.enums.TweetPrivacyType">TweetPrivacyType</a>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#tweetReportIdDecode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweetReportIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.TweetReportId,Long]"></a><a id="tweetReportIdDecode:MappedEncoding[TweetReportId,Long]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#tweetReportIdDecode:Encoders.this.MappedEncoding[io.github.cactacea.backend.core.infrastructure.identifiers.TweetReportId,Long]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetReportIdDecode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<a href="../../../infrastructure/identifiers/TweetReportId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.TweetReportId">TweetReportId</a>, <span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.core.util.db.Encoders#tweetReportIdEncode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweetReportIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.TweetReportId]"></a><a id="tweetReportIdEncode:MappedEncoding[Long,TweetReportId]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#tweetReportIdEncode:Encoders.this.MappedEncoding[Long,io.github.cactacea.backend.core.infrastructure.identifiers.TweetReportId]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tweetReportIdEncode</span><span class="result">: <a href="#MappedEncoding[I,O]=io.getquill.MappedEncoding[I,O]" class="extmbr" name="io.github.cactacea.backend.core.application.components.services.DatabaseService.MappedEncoding">MappedEncoding</a>[<span class="extype" name="scala.Long">Long</span>, <a href="../../../infrastructure/identifiers/TweetReportId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.TweetReportId">TweetReportId</a>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../util/db/Encoders.html" class="extype" name="io.github.cactacea.backend.core.util.db.Encoders">Encoders</a></dd></dl></div>
     </li><li name="io.getquill.dsl.QuotationDsl#unquote" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="unquote[T](quoted:QuotationDsl.this.Quoted[T]):T"></a><a id="unquote[T](Quoted[T]):T"></a>
       <span class="permalink">
@@ -5228,6 +5292,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>OrdDsl</dd></dl></div>
+    </li><li name="io.getquill.dsl.QueryDsl.extras" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="extras"></a><a id="extras:extras"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../io/github/cactacea/backend/core/application/components/services/DatabaseService.html#extras" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <span class="name">extras</span><span class="result"> extends <span class="extype" name="io.getquill.dsl.QueryDsl.LowPriorityExtras">getquill.dsl.CoreDsl.LowPriorityExtras</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>QueryDsl</dd></dl></div>
     </li>
               </ol>
             </div>

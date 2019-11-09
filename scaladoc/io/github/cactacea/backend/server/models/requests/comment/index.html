@@ -245,23 +245,7 @@
                         <span class="separator"></span>
                         <a class="class" href="PostCommentReport.html" title=""></a>
                         <a href="PostCommentReport.html" title="">PostCommentReport</a>
-                      </li><li name="io.github.cactacea.backend.server.models.requests.feed" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="feed"></a><a id="feed:feed"></a>
-      <span class="permalink">
-      <a href="../../../../../../../io/github/cactacea/backend/server/models/requests/index.html#feed" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../feed/index.html"><span class="name">feed</span></a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.server.models.requests">requests</a></dd></dl></div>
-    </li><li name="io.github.cactacea.backend.server.models.requests.medium" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+                      </li><li name="io.github.cactacea.backend.server.models.requests.medium" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="medium"></a><a id="medium:medium"></a>
       <span class="permalink">
       <a href="../../../../../../../io/github/cactacea/backend/server/models/requests/index.html#medium" title="Permalink">
@@ -354,6 +338,22 @@
       </span>
       <span class="symbol">
         <a title="" href="../setting/index.html"><span class="name">setting</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.server.models.requests">requests</a></dd></dl></div>
+    </li><li name="io.github.cactacea.backend.server.models.requests.tweet" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tweet"></a><a id="tweet:tweet"></a>
+      <span class="permalink">
+      <a href="../../../../../../../io/github/cactacea/backend/server/models/requests/index.html#tweet" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../tweet/index.html"><span class="name">tweet</span></a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.github.cactacea.backend.server.models.requests">requests</a></dd></dl></div>
@@ -488,7 +488,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="GetComments.html"><span class="name">GetComments</span></a><span class="params">(<span name="id">id: <a href="../../../../core/infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="GetComments.html"><span class="name">GetComments</span></a><span class="params">(<span name="id">id: <a href="../../../../core/infrastructure/identifiers/TweetId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.TweetId">TweetId</a></span>, <span name="since">since: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="offset">offset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="count">count: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -504,7 +504,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="PostComment.html"><span class="name">PostComment</span></a><span class="params">(<span name="id">id: <a href="../../../../core/infrastructure/identifiers/FeedId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.FeedId">FeedId</a></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="PostComment.html"><span class="name">PostComment</span></a><span class="params">(<span name="id">id: <a href="../../../../core/infrastructure/identifiers/TweetId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.TweetId">TweetId</a></span>, <span name="replyId">replyId: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../core/infrastructure/identifiers/CommentId.html" class="extype" name="io.github.cactacea.backend.core.infrastructure.identifiers.CommentId">CommentId</a>]</span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
