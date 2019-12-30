@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
 
   val versions = new {
-    val twitter = "19.7.0"
+    val twitter = "19.12.0"
     val guice = "4.0"
     val logback = "1.2.3"
     val mockito = "1.10.19"
@@ -15,7 +15,7 @@ object Dependencies {
     val ficus = "1.4.7"
     val jjwt = "0.9.1"
     val flyway = "6.0.7"
-    val quill = "3.4.1"
+    val quill = "3.5.0"
     val arm = "2.0"
     val hasher = "1.2.0"
     val extractor = "2.11.0"
@@ -133,7 +133,7 @@ object Dependencies {
     "com.twitter" %% "inject-utils" % versions.twitter,
     "com.twitter" %% "finagle-http" % versions.twitter,
     "com.twitter" %% "finagle-redis" % versions.twitter,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.8",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10",
     "com.iheart" %% "ficus" % versions.ficus,
     "com.typesafe" % "config" % versions.config,
     "org.scalatest" %% "scalatest" % versions.scalaTest % Test,
