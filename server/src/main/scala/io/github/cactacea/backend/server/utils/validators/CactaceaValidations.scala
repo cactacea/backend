@@ -35,7 +35,7 @@ object CactaceaValidations {
       case Some(value) =>
         ValidationResult.validate(regex.findFirstMatchIn(value).isDefined, message)
       case None =>
-        ValidationResult.Valid
+        ValidationResult.Valid()
     }
   }
 
